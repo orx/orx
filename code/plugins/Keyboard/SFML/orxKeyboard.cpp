@@ -185,27 +185,208 @@ static sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eK
   return eResult;
 }
 
+static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_GetKeyID(sf::Key::Code _eKey)
+{
+  orxKEYBOARD_KEY eResult;
+
+  /* Depending on key */
+  switch(_eKey)
+  {
+    case sf::Key::Escape:     {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
+    case sf::Key::Space:      {eResult = orxKEYBOARD_KEY_SPACE; break;}
+    case sf::Key::Return:     {eResult = orxKEYBOARD_KEY_RETURN; break;}
+    case sf::Key::Back:       {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
+    case sf::Key::Tab:        {eResult = orxKEYBOARD_KEY_TAB; break;}
+    case sf::Key::PageUp:     {eResult = orxKEYBOARD_KEY_PAGEUP; break;}
+    case sf::Key::PageDown:     {eResult = orxKEYBOARD_KEY_PAGEDOWN; break;}
+    case sf::Key::End:        {eResult = orxKEYBOARD_KEY_END; break;}
+    case sf::Key::Home:       {eResult = orxKEYBOARD_KEY_HOME; break;}
+    case sf::Key::Insert:     {eResult = orxKEYBOARD_KEY_INSERT; break;}
+    case sf::Key::Delete:     {eResult = orxKEYBOARD_KEY_DELETE; break;}
+    case sf::Key::Add:        {eResult = orxKEYBOARD_KEY_ADD; break;}
+    case sf::Key::Subtract:   {eResult = orxKEYBOARD_KEY_SUBTRACT; break;}
+    case sf::Key::Multiply:   {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}
+    case sf::Key::Divide:     {eResult = orxKEYBOARD_KEY_DIVIDE; break;}
+    case sf::Key::Pause:      {eResult = orxKEYBOARD_KEY_PAUSE; break;}
+    case sf::Key::RAlt:       {eResult = orxKEYBOARD_KEY_RALT; break;}
+    case sf::Key::RControl:   {eResult = orxKEYBOARD_KEY_RCTRL; break;}
+    case sf::Key::RShift:     {eResult = orxKEYBOARD_KEY_RSHIFT; break;}
+    case sf::Key::RSystem:    {eResult = orxKEYBOARD_KEY_RSYSTEM; break;}
+    case sf::Key::LAlt:       {eResult = orxKEYBOARD_KEY_LALT; break;}
+    case sf::Key::LControl:   {eResult = orxKEYBOARD_KEY_LCTRL; break;}
+    case sf::Key::LShift:     {eResult = orxKEYBOARD_KEY_LSHIFT; break;}
+    case sf::Key::LSystem:    {eResult = orxKEYBOARD_KEY_LSYSTEM; break;}
+    case sf::Key::Menu:       {eResult = orxKEYBOARD_KEY_MENU; break;}
+    case sf::Key::LBracket:   {eResult = orxKEYBOARD_KEY_LBRACKET; break;}
+    case sf::Key::RBracket:   {eResult = orxKEYBOARD_KEY_RBRACKET; break;}
+    case sf::Key::SemiColon:  {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}
+    case sf::Key::Comma:      {eResult = orxKEYBOARD_KEY_COMMA; break;}
+    case sf::Key::Period:     {eResult = orxKEYBOARD_KEY_PERIOD; break;}
+    case sf::Key::Quote:      {eResult = orxKEYBOARD_KEY_QUOTE; break;}
+    case sf::Key::Slash:      {eResult = orxKEYBOARD_KEY_SLASH; break;}
+    case sf::Key::BackSlash:  {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
+    case sf::Key::Tilde:      {eResult = orxKEYBOARD_KEY_TILDE; break;}
+    case sf::Key::Equal:      {eResult = orxKEYBOARD_KEY_EQUAL; break;}
+    case sf::Key::Dash:       {eResult = orxKEYBOARD_KEY_DASH; break;}
+    case sf::Key::F1:         {eResult = orxKEYBOARD_KEY_F1; break;}
+    case sf::Key::F2:         {eResult = orxKEYBOARD_KEY_F2; break;}
+    case sf::Key::F3:         {eResult = orxKEYBOARD_KEY_F3; break;}
+    case sf::Key::F4:         {eResult = orxKEYBOARD_KEY_F4; break;}
+    case sf::Key::F5:         {eResult = orxKEYBOARD_KEY_F5; break;}
+    case sf::Key::F6:         {eResult = orxKEYBOARD_KEY_F6; break;}
+    case sf::Key::F7:         {eResult = orxKEYBOARD_KEY_F7; break;}
+    case sf::Key::F8:         {eResult = orxKEYBOARD_KEY_F8; break;}
+    case sf::Key::F9:         {eResult = orxKEYBOARD_KEY_F9; break;}
+    case sf::Key::F10:        {eResult = orxKEYBOARD_KEY_F10; break;}
+    case sf::Key::F11:        {eResult = orxKEYBOARD_KEY_F11; break;}
+    case sf::Key::F12:        {eResult = orxKEYBOARD_KEY_F12; break;}
+    case sf::Key::F13:        {eResult = orxKEYBOARD_KEY_F13; break;}
+    case sf::Key::F14:        {eResult = orxKEYBOARD_KEY_F14; break;}
+    case sf::Key::F15:        {eResult = orxKEYBOARD_KEY_F15; break;}
+    case sf::Key::Up:         {eResult = orxKEYBOARD_KEY_UP; break;}
+    case sf::Key::Right:      {eResult = orxKEYBOARD_KEY_RIGHT; break;}
+    case sf::Key::Down:       {eResult = orxKEYBOARD_KEY_DOWN; break;}
+    case sf::Key::Left:       {eResult = orxKEYBOARD_KEY_LEFT; break;}
+    case sf::Key::Numpad0:    {eResult = orxKEYBOARD_KEY_NUMPAD0; break;}
+    case sf::Key::Numpad1:    {eResult = orxKEYBOARD_KEY_NUMPAD1; break;}
+    case sf::Key::Numpad2:    {eResult = orxKEYBOARD_KEY_NUMPAD2; break;}
+    case sf::Key::Numpad3:    {eResult = orxKEYBOARD_KEY_NUMPAD3; break;}
+    case sf::Key::Numpad4:    {eResult = orxKEYBOARD_KEY_NUMPAD4; break;}
+    case sf::Key::Numpad5:    {eResult = orxKEYBOARD_KEY_NUMPAD5; break;}
+    case sf::Key::Numpad6:    {eResult = orxKEYBOARD_KEY_NUMPAD6; break;}
+    case sf::Key::Numpad7:    {eResult = orxKEYBOARD_KEY_NUMPAD7; break;}
+    case sf::Key::Numpad8:    {eResult = orxKEYBOARD_KEY_NUMPAD8; break;}
+    case sf::Key::Numpad9:    {eResult = orxKEYBOARD_KEY_NUMPAD9; break;}
+    case sf::Key::A:          {eResult = orxKEYBOARD_KEY_A; break;}
+    case sf::Key::Z:          {eResult = orxKEYBOARD_KEY_Z; break;}
+    case sf::Key::E:          {eResult = orxKEYBOARD_KEY_E; break;}
+    case sf::Key::R:          {eResult = orxKEYBOARD_KEY_R; break;}
+    case sf::Key::T:          {eResult = orxKEYBOARD_KEY_T; break;}
+    case sf::Key::Y:          {eResult = orxKEYBOARD_KEY_Y; break;}
+    case sf::Key::U:          {eResult = orxKEYBOARD_KEY_U; break;}
+    case sf::Key::I:          {eResult = orxKEYBOARD_KEY_I; break;}
+    case sf::Key::O:          {eResult = orxKEYBOARD_KEY_O; break;}
+    case sf::Key::P:          {eResult = orxKEYBOARD_KEY_P; break;}
+    case sf::Key::Q:          {eResult = orxKEYBOARD_KEY_Q; break;}
+    case sf::Key::S:          {eResult = orxKEYBOARD_KEY_S; break;}
+    case sf::Key::D:          {eResult = orxKEYBOARD_KEY_D; break;}
+    case sf::Key::F:          {eResult = orxKEYBOARD_KEY_F; break;}
+    case sf::Key::G:          {eResult = orxKEYBOARD_KEY_G; break;}
+    case sf::Key::H:          {eResult = orxKEYBOARD_KEY_H; break;}
+    case sf::Key::J:          {eResult = orxKEYBOARD_KEY_J; break;}
+    case sf::Key::K:          {eResult = orxKEYBOARD_KEY_K; break;}
+    case sf::Key::L:          {eResult = orxKEYBOARD_KEY_L; break;}
+    case sf::Key::M:          {eResult = orxKEYBOARD_KEY_M; break;}
+    case sf::Key::W:          {eResult = orxKEYBOARD_KEY_W; break;}
+    case sf::Key::X:          {eResult = orxKEYBOARD_KEY_X; break;}
+    case sf::Key::C:          {eResult = orxKEYBOARD_KEY_C; break;}
+    case sf::Key::V:          {eResult = orxKEYBOARD_KEY_V; break;}
+    case sf::Key::B:          {eResult = orxKEYBOARD_KEY_B; break;}
+    case sf::Key::N:          {eResult = orxKEYBOARD_KEY_N; break;}
+    case sf::Key::Num0:       {eResult = orxKEYBOARD_KEY_0; break;}
+    case sf::Key::Num1:       {eResult = orxKEYBOARD_KEY_1; break;}
+    case sf::Key::Num2:       {eResult = orxKEYBOARD_KEY_2; break;}
+    case sf::Key::Num3:       {eResult = orxKEYBOARD_KEY_3; break;}
+    case sf::Key::Num4:       {eResult = orxKEYBOARD_KEY_4; break;}
+    case sf::Key::Num5:       {eResult = orxKEYBOARD_KEY_5; break;}
+    case sf::Key::Num6:       {eResult = orxKEYBOARD_KEY_6; break;}
+    case sf::Key::Num7:       {eResult = orxKEYBOARD_KEY_7; break;}
+    case sf::Key::Num8:       {eResult = orxKEYBOARD_KEY_8; break;}
+    case sf::Key::Num9:       {eResult = orxKEYBOARD_KEY_9; break;}
+    default:                  {eResult = orxKEYBOARD_KEY_NUMBER;}
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Is a key pressed or released? */
+  if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed)
+   && (_pstEvent->eID == sf::Event::KeyPressed))
+  || ((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased)
+   && (_pstEvent->eID == sf::Event::KeyReleased)))
+  {
+    orxKEYBOARD_EVENT_PAYLOAD stPayload;
+    sf::Event                *poEvent;
+
+    /* Gets SFML event */
+    poEvent = (sf::Event *)(_pstEvent->pstPayload);
+
+    /* Inits payload */
+    stPayload.eKey        = orxKeyboard_SFML_GetKeyID(poEvent->Key.Code);
+    stPayload.u32Unicode  = 0;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, (_pstEvent->eID == sf::Event::KeyPressed) ? orxKEYBOARD_EVENT_KEY_PRESSED : orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stPayload);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  /* Is a text entered? */
+  else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered)
+       && (_pstEvent->eID == sf::Event::TextEntered))
+  {
+    orxKEYBOARD_EVENT_PAYLOAD stPayload;
+    sf::Event                *poEvent;
+
+    /* Gets SFML event */
+    poEvent = (sf::Event *)(_pstEvent->pstPayload);
+
+    /* Inits payload */
+    stPayload.eKey        = orxKEYBOARD_KEY_NONE;
+    stPayload.u32Unicode  = poEvent->Text.Unicode;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stPayload);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Was already initialized. */
+  /* Wasn't already initialized? */
   if(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
-    /* Terrible hack : gets application input from SFML display plugin */
-    sstKeyboard.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
-
-    /* Valid? */
-    if(sstKeyboard.poInput != orxNULL)
+    /* Registers our keyboard event handlers */
+    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), EventHandler) != orxSTATUS_FAILURE))
     {
-      /* Updates status */
-      sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
+      /* Terrible hack : gets application input from SFML display plugin */
+      sstKeyboard.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Valid? */
+      if(sstKeyboard.poInput != orxNULL)
+      {
+        /* Updates status */
+        sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+    else
+    {
+      /* Removes event handlers */
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), EventHandler);
     }
   }
 

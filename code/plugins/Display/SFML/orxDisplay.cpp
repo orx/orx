@@ -293,11 +293,21 @@ static void orxFASTCALL orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClo
       }
 
 #endif /* __orxLINUX__ */
+
       case sf::Event::MouseMoved:
       case sf::Event::MouseWheelMoved:
+      case sf::Event::MouseButtonPressed:
+      case sf::Event::MouseButtonReleased:
+      case sf::Event::KeyPressed:
+      case sf::Event::KeyReleased:
+      case sf::Event::TextEntered:
+      case sf::Event::JoyButtonPressed:
+      case sf::Event::JoyButtonReleased:
       {
         /* Sends reserved event */
         orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + oEvent.Type, oEvent.Type, orxNULL, orxNULL, &oEvent);
+
+        break;
       }
 
       default:

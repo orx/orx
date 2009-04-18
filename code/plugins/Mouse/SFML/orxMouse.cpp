@@ -101,10 +101,11 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     eResult = orxSTATUS_SUCCESS;
   }
   /* Is a mouse wheel? */
-  if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved)
-  && (_pstEvent->eID == sf::Event::MouseWheelMoved))
+  else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved)
+       && (_pstEvent->eID == sf::Event::MouseWheelMoved))
   {
-    sf::Event *poEvent;
+    orxMOUSE_EVENT_PAYLOAD  stPayload;
+    sf::Event              *poEvent;
 
     /* Gets SFML event */
     poEvent = (sf::Event *)(_pstEvent->pstPayload);
@@ -119,6 +120,65 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 
     /* Updates wheel move */
     sstMouse.fWheelMove += orxS2F(poEvent->MouseWheel.Delta);
+
+    /* Inits payload */
+    stPayload.eButton = (poEvent->MouseWheel.Delta > 0) ? orxMOUSE_BUTTON_WHEEL_UP : orxMOUSE_BUTTON_WHEEL_DOWN;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_MOUSE, orxMOUSE_EVENT_BUTTON_PRESSED, orxNULL, orxNULL, &stPayload);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  /* Is a mouse button pressed or released? */
+  else if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
+        && (_pstEvent->eID == sf::Event::MouseButtonPressed))
+       || ((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased)
+        && (_pstEvent->eID == sf::Event::MouseButtonReleased)))
+  {
+    orxMOUSE_EVENT_PAYLOAD  stPayload;
+    sf::Event              *poEvent;
+
+    /* Gets SFML event */
+    poEvent = (sf::Event *)(_pstEvent->pstPayload);
+
+    /* Depending on button */
+    switch(poEvent->MouseButton.Button)
+    {
+      case sf::Mouse::Left:
+      {
+        /* Inits payload */
+        stPayload.eButton = orxMOUSE_BUTTON_LEFT;
+        break;
+      }
+      case sf::Mouse::Middle:
+      {
+        /* Inits payload */
+        stPayload.eButton = orxMOUSE_BUTTON_MIDDLE;
+        break;
+      }
+      case sf::Mouse::Right:
+      {
+        /* Inits payload */
+        stPayload.eButton = orxMOUSE_BUTTON_RIGHT;
+        break;
+      }
+      case sf::Mouse::XButton1:
+      {
+        /* Inits payload */
+        stPayload.eButton = orxMOUSE_BUTTON_EXTRA_1;
+        break;
+      }
+      case sf::Mouse::XButton2:
+      {
+        /* Inits payload */
+        stPayload.eButton = orxMOUSE_BUTTON_EXTRA_2;
+        break;
+      }
+    }
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_MOUSE, (_pstEvent->eID == sf::Event::MouseButtonPressed) ? orxMOUSE_EVENT_BUTTON_PRESSED : orxMOUSE_EVENT_BUTTON_RELEASED, orxNULL, orxNULL, &stPayload);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -150,52 +210,56 @@ extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Was already initialized. */
+  /* Wasn't already initialized? */
   if(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
-    /* Registers our mouse event handler */
-    if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler) != orxSTATUS_FAILURE)
+    /* Registers our mouse event handlers */
+    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), EventHandler) != orxSTATUS_FAILURE))
     {
-      /* Registers our mouse wheell event handler */
-      if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), EventHandler) != orxSTATUS_FAILURE)
+      /* Terrible hack : gets application input from display SFML plugin */
+      sstMouse.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
+
+      /* Valid? */
+      if(sstMouse.poInput != orxNULL)
       {
-        /* Terrible hack : gets application input from display SFML plugin */
-        sstMouse.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
+        /* Updates status */
+        sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 
-        /* Valid? */
-        if(sstMouse.poInput != orxNULL)
+        /* Sets config section */
+        orxConfig_SelectSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+        /* Has show cursor value? */
+        if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
         {
-          /* Updates status */
-          sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
-
-          /* Sets config section */
-          orxConfig_SelectSection(orxMOUSE_KZ_CONFIG_SECTION);
-
-          /* Has show cursor value? */
-          if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
-          {
-            /* Updates cursor status */
-            orxMouse_SFML_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
-          }
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
+          /* Updates cursor status */
+          orxMouse_SFML_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
         }
-        else
-        {
-          /* Removes event handlers */
-          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler);
-          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), EventHandler);
-        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
-        /* Removes event handler */
+        /* Removes event handlers */
         orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler);
+        orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), EventHandler);
+        orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), EventHandler);
+        orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), EventHandler);
       }
+    }
+    else
+    {
+      /* Removes event handlers */
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), EventHandler);
     }
   }
 
