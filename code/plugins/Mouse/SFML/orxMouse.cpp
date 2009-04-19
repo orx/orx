@@ -104,8 +104,7 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved)
        && (_pstEvent->eID == sf::Event::MouseWheelMoved))
   {
-    orxMOUSE_EVENT_PAYLOAD  stPayload;
-    sf::Event              *poEvent;
+    sf::Event *poEvent;
 
     /* Gets SFML event */
     poEvent = (sf::Event *)(_pstEvent->pstPayload);
@@ -121,11 +120,17 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     /* Updates wheel move */
     sstMouse.fWheelMove += orxS2F(poEvent->MouseWheel.Delta);
 
-    /* Inits payload */
-    stPayload.eButton = (poEvent->MouseWheel.Delta > 0) ? orxMOUSE_BUTTON_WHEEL_UP : orxMOUSE_BUTTON_WHEEL_DOWN;
+    /* Has delta? */
+    if(poEvent->MouseWheel.Delta != 0)
+    {
+      orxMOUSE_EVENT_PAYLOAD stPayload;
 
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_MOUSE, orxMOUSE_EVENT_BUTTON_PRESSED, orxNULL, orxNULL, &stPayload);
+      /* Inits payload */
+      stPayload.eButton = (poEvent->MouseWheel.Delta > 0) ? orxMOUSE_BUTTON_WHEEL_UP : orxMOUSE_BUTTON_WHEEL_DOWN;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_MOUSE, orxMOUSE_EVENT_BUTTON_PRESSED, orxNULL, orxNULL, &stPayload);
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
