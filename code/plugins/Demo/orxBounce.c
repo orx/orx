@@ -26,7 +26,6 @@
  *
  * Bounce demo
  *
- * @todo
  */
 
 
@@ -151,6 +150,11 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 
   /* Gets mouse world position */
   bInViewport = (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos) != orxNULL) ? orxTRUE : orxFALSE;
+
+  if(orxInput_IsActive("Screenshot") && orxInput_HasNewStatus("Screenshot"))
+  {
+    orxScreenshot_Capture();
+  }
 
   /* Is mouse in a viewport? */
   if(bInViewport != orxFALSE)

@@ -25,6 +25,8 @@
  * @author iarwain@orx-project.org
  *
  * @todo
+ * - Add internal/external dependency system
+ * - Optimize dependencies storage
  */
 
 /**

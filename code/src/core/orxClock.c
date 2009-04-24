@@ -24,10 +24,6 @@
  * @date 04/04/2004
  * @author iarwain@orx-project.org
  *
- * @todo
- * - Add internal/external dependency system
- * - Optimize dependencies storage
- * - Add freezing behaviour
  */
 
 

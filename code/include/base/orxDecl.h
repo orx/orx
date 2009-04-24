@@ -25,7 +25,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Add the required declarations at need.
  */
 
 /**

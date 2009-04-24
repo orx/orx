@@ -26,7 +26,6 @@
  *
  * SFML mouse plugin implementation
  *
- * @todo
  */
 
 

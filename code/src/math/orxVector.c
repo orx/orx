@@ -24,10 +24,6 @@
  * @date 27/04/2005
  * @author iarwain@orx-project.org
  *
- * @todo
- * - Extract box code into box module
- * - Adds rotate function with matrix module, when it's done
- * - Gets it intrinsic depending on platform.
  */
 
 

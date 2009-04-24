@@ -26,7 +26,6 @@
  *
  * Scroll demo
  *
- * @todo
  */
 
 

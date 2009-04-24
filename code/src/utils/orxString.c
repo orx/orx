@@ -24,8 +24,6 @@
  * @date 21/04/2005
  * @author bestel@arcallians.org
  *
- * @todo
- * - Add autoindexing for ID generation
  */
 
 

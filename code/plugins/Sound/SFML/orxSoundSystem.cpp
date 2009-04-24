@@ -26,7 +26,6 @@
  *
  * SFML sound system plugin implementation
  *
- * @todo
  */
 
 #include "orxPluginAPI.h"

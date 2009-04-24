@@ -20,11 +20,13 @@
 <h1>OrxScreenshot</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g185a79ed12813d2d2d41be49f9b5536c">orxSCREENSHOT_KZ_DIRECTORY</a>&nbsp;&nbsp;&nbsp;&quot;.&quot;</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g4997895dbb56fb38aaf9ef1f567ccbed">orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME</a>&nbsp;&nbsp;&nbsp;&quot;.&quot;</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g622d89356d92d54954184c22ccd4429c">orxSCREENSHOT_KZ_PREFIX</a>&nbsp;&nbsp;&nbsp;&quot;shot&quot;</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g5244c7c84f2d3c02e3f41594bd2366a9">orxSCREENSHOT_KZ_DEFAULT_BASE_NAME</a>&nbsp;&nbsp;&nbsp;&quot;screenshot-&quot;</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g972b7497767f5f929d76436e5d00811e">orxSCREENSHOT_KZ_EXT</a>&nbsp;&nbsp;&nbsp;&quot;bmp&quot;</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g32ee76afde6d1b000c8ff8e4c0485197">orxSCREENSHOT_KZ_DEFAULT_EXTENSION</a>&nbsp;&nbsp;&nbsp;&quot;tga&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#gbbde4147ae9deb870cc15120b150110c">orxSCREENSHOT_KU32_DEFAULT_DIGITS</a>&nbsp;&nbsp;&nbsp;4</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g1f9631ae57b99d820a23b66a9cc515de">orxScreenshot_Setup</a> ()</td></tr>
@@ -33,17 +35,17 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g443ca3d73c62dc9c0119dd34416810b7">orxScreenshot_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g3639bf79fd85ff433fc6a881999e041e">orxScreenshot_Capture</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_screenshot.html#g013c8e1fbdc40b29097cadd8ece218d5">orxScreenshot_Capture</a> ()</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Screenshot module Module that handles screenshots <hr><h2>Define Documentation</h2>
-<a class="anchor" name="g185a79ed12813d2d2d41be49f9b5536c"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KZ_DIRECTORY" ref="g185a79ed12813d2d2d41be49f9b5536c" args="" -->
+Screenshot module Module that captures screenshots <hr><h2>Define Documentation</h2>
+<a class="anchor" name="gbbde4147ae9deb870cc15120b150110c"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KU32_DEFAULT_DIGITS" ref="gbbde4147ae9deb870cc15120b150110c" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSCREENSHOT_KZ_DIRECTORY&nbsp;&nbsp;&nbsp;&quot;.&quot;          </td>
+          <td class="memname">#define orxSCREENSHOT_KU32_DEFAULT_DIGITS&nbsp;&nbsp;&nbsp;4          </td>
         </tr>
       </table>
 </div>
@@ -53,12 +55,12 @@ Screenshot module Module that handles screenshots <hr><h2>Define Documentation</
 
 </div>
 </div><p>
-<a class="anchor" name="g972b7497767f5f929d76436e5d00811e"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KZ_EXT" ref="g972b7497767f5f929d76436e5d00811e" args="" -->
+<a class="anchor" name="g5244c7c84f2d3c02e3f41594bd2366a9"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KZ_DEFAULT_BASE_NAME" ref="g5244c7c84f2d3c02e3f41594bd2366a9" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSCREENSHOT_KZ_EXT&nbsp;&nbsp;&nbsp;&quot;bmp&quot;          </td>
+          <td class="memname">#define orxSCREENSHOT_KZ_DEFAULT_BASE_NAME&nbsp;&nbsp;&nbsp;&quot;screenshot-&quot;          </td>
         </tr>
       </table>
 </div>
@@ -68,12 +70,27 @@ Screenshot module Module that handles screenshots <hr><h2>Define Documentation</
 
 </div>
 </div><p>
-<a class="anchor" name="g622d89356d92d54954184c22ccd4429c"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KZ_PREFIX" ref="g622d89356d92d54954184c22ccd4429c" args="" -->
+<a class="anchor" name="g4997895dbb56fb38aaf9ef1f567ccbed"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME" ref="g4997895dbb56fb38aaf9ef1f567ccbed" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSCREENSHOT_KZ_PREFIX&nbsp;&nbsp;&nbsp;&quot;shot&quot;          </td>
+          <td class="memname">#define orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME&nbsp;&nbsp;&nbsp;&quot;.&quot;          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Misc 
+</div>
+</div><p>
+<a class="anchor" name="g32ee76afde6d1b000c8ff8e4c0485197"></a><!-- doxytag: member="orxScreenshot.h::orxSCREENSHOT_KZ_DEFAULT_EXTENSION" ref="g32ee76afde6d1b000c8ff8e4c0485197" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSCREENSHOT_KZ_DEFAULT_EXTENSION&nbsp;&nbsp;&nbsp;&quot;tga&quot;          </td>
         </tr>
       </table>
 </div>
@@ -84,12 +101,12 @@ Screenshot module Module that handles screenshots <hr><h2>Define Documentation</
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g3639bf79fd85ff433fc6a881999e041e"></a><!-- doxytag: member="orxScreenshot.h::orxScreenshot_Capture" ref="g3639bf79fd85ff433fc6a881999e041e" args="()" -->
+<a class="anchor" name="g013c8e1fbdc40b29097cadd8ece218d5"></a><!-- doxytag: member="orxScreenshot.h::orxScreenshot_Capture" ref="g013c8e1fbdc40b29097cadd8ece218d5" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxFASTCALL orxScreenshot_Capture           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxScreenshot_Capture           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -100,7 +117,8 @@ Screenshot module Module that handles screenshots <hr><h2>Define Documentation</
 <div class="memdoc">
 
 <p>
-Captures a screenshot 
+Captures a screenshot <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g443ca3d73c62dc9c0119dd34416810b7"></a><!-- doxytag: member="orxScreenshot.h::orxScreenshot_Exit" ref="g443ca3d73c62dc9c0119dd34416810b7" args="()" -->

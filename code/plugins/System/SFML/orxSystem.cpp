@@ -26,7 +26,6 @@
  *
  * SFML system plugin implemention
  *
- * @todo
  */
 
 

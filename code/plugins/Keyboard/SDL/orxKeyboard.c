@@ -26,7 +26,6 @@
  *
  * SDL keyboard plugin implementation
  *
- * @todo
  */
 
 

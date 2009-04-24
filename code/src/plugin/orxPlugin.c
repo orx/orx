@@ -24,11 +24,6 @@
  * @date 04/09/2002
  * @author iarwain@orx-project.org
  *
- * @todo
- * - Add execute function for user register function + arg parser/checker
- * - Add execute/get function using ID (with hashtable)
- * - Add new string use for all string related operations, when systeme is done
- * - make a Complete Function Info Archiving (Global Info Structure (hash table?))
  */
 
 

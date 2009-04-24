@@ -24,9 +24,6 @@
  * @date 13/02/2004
  * @author iarwain@orx-project.org
  *
- * @todo
- * - Optimize the link Anim graph handling & structures.
- * - Clean & simplify internal structures.
  */
 
 

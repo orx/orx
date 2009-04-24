@@ -26,7 +26,6 @@
  *
  * SFML keyboard plugin implementation
  *
- * @todo
  */
 
 

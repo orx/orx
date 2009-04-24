@@ -26,7 +26,6 @@
  *
  * SDL sound system plugin implementation
  *
- * @todo
  */
 
 

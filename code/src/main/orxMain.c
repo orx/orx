@@ -26,7 +26,6 @@
  *
  * Default main executable
  *
- * @todo
  */
 
 
@@ -186,7 +185,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
-    static orxBOOL sbBackSpacePressed = 0, sbF11Pressed;
+    static orxBOOL sbBackSpacePressed = 0, sbF11Pressed = 0, sbPausePressed = 0;
 
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
@@ -241,6 +240,29 @@ orxSTATUS orxFASTCALL orxMain_Run()
 
           /* Updates key status */
           sbF11Pressed = orxTRUE;
+        }
+      }
+
+      /* Was pause pressed? */
+      if(sbPausePressed != orxFALSE)
+      {
+        /* No longer pressed? */
+        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAUSE) == orxFALSE)
+        {
+          /* Updates key status */
+          sbPausePressed = orxFALSE;
+        }
+      }
+      else
+      {
+        /* Is pause pressed? */
+        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAUSE) != orxFALSE)
+        {
+          /* Toggles vsync */
+          orxScreenshot_Capture();
+
+          /* Updates key status */
+          sbPausePressed = orxTRUE;
         }
       }
     }

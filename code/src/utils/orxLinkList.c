@@ -24,7 +24,6 @@
  * @date 06/04/2005
  * @author iarwain@orx-project.org
  *
- * @todo
  */
 
 

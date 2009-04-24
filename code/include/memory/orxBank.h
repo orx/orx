@@ -25,7 +25,6 @@
  * @author bestel@arcallians.org
  *
  * @todo
- * - Optimizations 
  */
 
 /**

@@ -26,7 +26,6 @@
  *
  * SDL mouse plugin implementation
  *
- * @todo
  */
 
 

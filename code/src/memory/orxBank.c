@@ -24,8 +24,6 @@
  * @date 02/04/2005
  * @author bestel@arcallians.org
  *
- * @todo
- * - Optimizations 
  */
 
 

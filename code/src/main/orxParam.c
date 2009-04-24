@@ -24,7 +24,6 @@
  * @date 09/09/2005
  * @author bestel@arcallians.org
  *
- * @todo
  */
 
 
@@ -647,7 +646,8 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
       orxCHAR zLocalName[256];
 
       /* Copies it locally */
-      orxString_NCopy(zLocalName, sstParam.azParams[0], 256);
+      orxString_NCopy(zLocalName, sstParam.azParams[0], 255);
+      zLocalName[255] = orxCHAR_NULL;
 
       /* Ends basename before extension */
       *(zLocalName + s32Index) = orxCHAR_NULL;

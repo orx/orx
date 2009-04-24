@@ -99,7 +99,8 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction   = (orxPLUGIN_FUNCTION) FUNCTION; \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID   = FUNCTION_ID; \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName = #NAME; \
-    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, orxPLUGIN_KU32_FUNCTION_ARG_SIZE); \
+    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1); \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1] = orxCHAR_NULL; \
     u32UserPluginFunctionCounter++; \
   } \
   else \

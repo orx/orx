@@ -27,8 +27,7 @@
  * @todo
  * - Add mask test for level displaying
  * - Add graphical debug from outside, using a shared debug info array
- * - Add Assert/Assert after code
- * - Enhance logging, use of different log levels
+ * - Enhance logging, use of different log levels / colors
  */
 
 /**

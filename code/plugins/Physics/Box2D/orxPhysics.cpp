@@ -26,7 +26,6 @@
  *
  * Box2D physics plugin implementation
  *
- * @todo
  */
 
 

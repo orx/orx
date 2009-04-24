@@ -24,11 +24,6 @@
  * @date 02/04/2005
  * @author bestel@arcallians.org
  *
- * @todo
- * - Optimizations
- * - Manage the memory instead of use the access to OS allocation
- * - Manage memory alignment
- * - Allow to specifiy memory starting address & maximum size for each memory type
  */
 
 #include "memory/orxMemory.h"
@@ -75,7 +70,6 @@ void orxFASTCALL orxMemory_Setup()
 }
 
 /** Initialize memory allocation module
- * @todo Really initialize the memory to be managed by the module and not OS
  */
 orxSTATUS orxFASTCALL orxMemory_Init()
 {
@@ -139,7 +133,6 @@ orxU32 orxFASTCALL orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32Align
  * @param[in] _u32Size    size of the memory to allocate
  * @param[in] _eMemType   Memory zone where datas will be allocated
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
- * @todo Use the memory managed by orxMemory (initialized with orxMemory_Init())
  */
 void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
@@ -155,7 +148,6 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 
 /** Free a portion of memory allocated with orxMemory_Allocateate
  * @param[in] _pMem       Pointer on the memory allocated by orx
- * @todo Use the memory managed by orxMemory (not OS)
  */
 void orxFASTCALL orxMemory_Free(void *_pMem)
 {

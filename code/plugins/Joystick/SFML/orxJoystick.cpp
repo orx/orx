@@ -26,7 +26,6 @@
  *
  * SFML joystick plugin implementation
  *
- * @todo
  */
 
 

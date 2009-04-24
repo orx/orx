@@ -24,7 +24,6 @@
  * @date 20/06/2005
  * @author Corrosif (???@???.???)
  *
- * @todo
  */
 
 

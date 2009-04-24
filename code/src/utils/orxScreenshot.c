@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,18 +24,13 @@
  * @date 07/12/2003
  * @author iarwain@orx-project.org
  *
- * @todo
- * - Make a better init system for finding the next screenshot name
- *   (this one is broken is all screenshots aren't contiguous)
  */
 
 
 #include "utils/orxScreenshot.h"
 
-#include <string.h>
-#include <stdio.h>
-
 #include "debug/orxDebug.h"
+#include "core/orxConfig.h"
 #include "display/orxDisplay.h"
 #include "io/orxFile.h"
 #include "io/orxFileSystem.h"
@@ -45,8 +40,23 @@
 
 /** Module flags
  */
-#define orxSCREENSHOT_KU32_STATIC_FLAG_NONE       0x00000000
-#define orxSCREENSHOT_KU32_STATIC_FLAG_READY      0x00000001
+#define orxSCREENSHOT_KU32_STATIC_FLAG_NONE                     0x00000000
+
+#define orxSCREENSHOT_KU32_STATIC_FLAG_READY                    0x00000001
+#define orxSCREENSHOT_KU32_STATIC_FLAG_VALID_DIRECTORY          0x00000002
+
+#define orxSCREENSHOT_KU32_STATIC_MASK_ALL                      0xFFFFFFFF
+
+
+/** Misc defines
+ */
+#define orxSCREENSHOT_KU32_BUFFER_SIZE                          256
+
+#define orxSCREENSHOT_KZ_CONFIG_SECTION                         "Screenshot"
+#define orxSCREENSHOT_KZ_CONFIG_DIRECTORY                       "Directory"
+#define orxSCREENSHOT_KZ_CONFIG_BASE_NAME                       "BaseName"
+#define orxSCREENSHOT_KZ_CONFIG_EXTENSION                       "Extension"
+#define orxSCREENSHOT_KZ_CONFIG_DIGITS                          "Digits"
 
 
 /***************************************************************************
@@ -57,11 +67,13 @@
  */
 typedef struct __orxSCREENSHOT_STATIC_t
 {
-  /* Counter */
-  orxU32 u32Counter;
-
-  /* Control flags */
-  orxU32 u32Flags;
+  orxU32    u32ScreenshotIndex;                                 /**< Screenshot index */
+  orxSTRING zDirectoryName;                                     /**< Directory name */
+  orxSTRING zScreenshotBaseName;                                /**< Screenshot base name */
+  orxSTRING zScreenshotExtension;                               /**< Screenshot extension */
+  orxU32    u32ScreenshotDigits;                                /**< Screenshot digits */
+  orxU32    u32Flags;                                           /**< Control flags */
+  orxCHAR   acScreenshotBuffer[orxSCREENSHOT_KU32_BUFFER_SIZE]; /**< Screenshot file name buffer */
 
 } orxSCREENSHOT_STATIC;
 
@@ -79,6 +91,30 @@ static orxSCREENSHOT_STATIC sstScreenshot;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Computes next screenshot index
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
+
+  do
+  {
+    /* Updates screenshot index */
+    sstScreenshot.u32ScreenshotIndex++;
+
+    /* Gets file to find name */
+    orxString_NPrint(sstScreenshot.acScreenshotBuffer, orxSCREENSHOT_KU32_BUFFER_SIZE, "%s/%s%0*ld.%s", sstScreenshot.zDirectoryName, sstScreenshot.zScreenshotBaseName, sstScreenshot.u32ScreenshotDigits, sstScreenshot.u32ScreenshotIndex, sstScreenshot.zScreenshotExtension);
+  }
+  /* Till not found */
+  while(orxFileSystem_Exists(sstScreenshot.acScreenshotBuffer) != orxFALSE);
+
+  /* Done! */
+  return eResult;
+}
 
 /***************************************************************************
  * Public functions                                                        *
@@ -90,7 +126,8 @@ void orxFASTCALL orxScreenshot_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILESYSTEM);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_DISPLAY);
 
   return;
@@ -101,47 +138,98 @@ void orxFASTCALL orxScreenshot_Setup()
  */
 orxSTATUS orxFASTCALL orxScreenshot_Init()
 {
-  orxCHAR zFileName[256];
-  orxFILESYSTEM_INFO stFileInfos;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY))
   {
+    orxSTRING zPreviousSection;
+
     /* Cleans control structure */
     orxMemory_Zero(&sstScreenshot, sizeof(orxSCREENSHOT_STATIC));
 
-    /* Valid? */
-    if(orxFileSystem_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
+    /* Gets previous config section */
+    zPreviousSection = orxConfig_GetCurrentSection();
+
+    /* Inits flags */
+    sstScreenshot.u32Flags = orxSCREENSHOT_KU32_STATIC_FLAG_READY;
+
+    /* Uses default directory, base name, extension & digits */
+    sstScreenshot.zDirectoryName        = orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME;
+    sstScreenshot.zScreenshotBaseName   = orxSCREENSHOT_KZ_DEFAULT_BASE_NAME;
+    sstScreenshot.zScreenshotExtension  = orxSCREENSHOT_KZ_DEFAULT_EXTENSION;
+    sstScreenshot.u32ScreenshotDigits   = orxSCREENSHOT_KU32_DEFAULT_DIGITS;
+
+    /* Selects section */
+    if((orxConfig_HasSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxFALSE)
+    && (orxConfig_SelectSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
     {
-      /* Gets file to find name */
-      orxString_NPrint(zFileName, 256, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
+      orxSTRING zValue;
+      orxU32    u32Digits;
 
-      /* Finds first screenshot file */
-      if(orxFileSystem_FindFirst(zFileName, &stFileInfos) != orxFALSE)
+      /* Gets directory name */
+      zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY);
+
+      /* Valid? */
+      if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
       {
-        do
-        {
-          /* Updates screenshot counter */
-          sstScreenshot.u32Counter++;
-        }
-        /* Till all screenshots have been found */
-        while(orxFileSystem_FindNext(&stFileInfos) != orxFALSE);
-
-        /* Ends the search */
-        orxFileSystem_FindClose(&stFileInfos);
+        /* Stores it */
+        sstScreenshot.zDirectoryName = zValue;
       }
 
-      /* Inits Flags */
-      sstScreenshot.u32Flags = orxSCREENSHOT_KU32_STATIC_FLAG_READY;
+      /* Gets screenshot base name */
+      zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME);
 
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
+      /* Valid? */
+      if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
+      {
+        /* Stores it */
+        sstScreenshot.zScreenshotBaseName = zValue;
+      }
+
+      /* Gets screenshot extension */
+      zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION);
+
+      /* Valid? */
+      if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
+      {
+        /* Stores it */
+        sstScreenshot.zScreenshotExtension = zValue;
+      }
+
+      /* Gets digit number */
+      if((u32Digits = orxConfig_GetU32(orxSCREENSHOT_KZ_CONFIG_DIGITS)) > 0)
+      {
+        /* Stores it */
+        sstScreenshot.u32ScreenshotDigits = u32Digits;
+      }
+
+      /* Restores previous section */
+      orxConfig_SelectSection(zPreviousSection);
+    }
+
+    /* Valid? */
+    if(orxFileSystem_Exists(sstScreenshot.zDirectoryName) != orxFALSE)
+    {
+      /* Computes current index */
+      eResult = orxScreenshot_ComputeIndex();
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Inits Flags */
+        orxFLAG_SET(sstScreenshot.u32Flags, orxSCREENSHOT_KU32_STATIC_FLAG_VALID_DIRECTORY, orxSCREENSHOT_KU32_STATIC_FLAG_NONE);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Can't compute current screenshot index.");
+      }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Can not find screenshot directory.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Invalid directory [%s]. Please create it to enable screenshots.", sstScreenshot.zDirectoryName);
 
       /* Can't find folder */
       eResult = orxSTATUS_FAILURE;
@@ -180,25 +268,40 @@ void orxFASTCALL orxScreenshot_Exit()
 }
 
 /** Captures a screenshot
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxScreenshot_Capture()
+orxSTATUS orxFASTCALL orxScreenshot_Capture()
 {
-  orxCHAR zName[256];
+  orxSTATUS eResult;
 
   /* Checks */
-  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
+  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY);
 
-  /* Computes screenshot name */
-  orxString_NPrint(zName, 256, "%s/%s-%04ld.%s", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX, sstScreenshot.u32Counter, orxSCREENSHOT_KZ_EXT);
+  /* Has valid directory? */
+  if(orxFLAG_TEST(sstScreenshot.u32Flags, orxSCREENSHOT_KU32_STATIC_FLAG_VALID_DIRECTORY))
+  {
+    /* Saves it */
+    eResult = orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), sstScreenshot.acScreenshotBuffer);
 
-  /* Saves it */
-  orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), zName);
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Logs */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Screenshot captured to [%s].", sstScreenshot.acScreenshotBuffer);
 
-  /* Logs */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Screenshot captured: <%s>.", zName);
+      /* Computes screenshot index */
+      orxScreenshot_ComputeIndex();
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Can't capture screenshot as directory [%s] is invalid.", sstScreenshot.zDirectoryName);
 
-  /* Updates screenshot counter */
-  sstScreenshot.u32Counter++;
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
-  return;
+  /* Done! */
+  return eResult;
 }

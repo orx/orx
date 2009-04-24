@@ -24,7 +24,6 @@
  * @date 05/05/2005
  * @author cursor@arcallians.org
  *
- * @todo
  */
 
 

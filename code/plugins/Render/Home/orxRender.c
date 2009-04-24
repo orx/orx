@@ -26,7 +26,6 @@
  *
  * Home render plugin implementation
  *
- * @todo
  */
 
 

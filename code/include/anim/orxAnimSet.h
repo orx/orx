@@ -25,8 +25,7 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Optimize the link Anim graph handling & structures.
- * - Clean & simplify internal structures.
+ * - Add multi-channel support (events, custom, ...)
  */
 
 /**

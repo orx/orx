@@ -26,7 +26,6 @@
  *
  * SFML display plugin implementation
  *
- * @todo
  */
 
 

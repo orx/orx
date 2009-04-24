@@ -25,7 +25,7 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Needs to refactor value getter (lot of duplicated code to handle random and lists)
+ * - Need to refactor value getters (lot of duplicated code to handle random and lists)
  */
 
 /**

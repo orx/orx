@@ -24,8 +24,6 @@
  * @date 09/06/2008
  * @author iarwain@orx-project.org
  *
- * @todo
- * - Add the required types at need.
  */
 
 

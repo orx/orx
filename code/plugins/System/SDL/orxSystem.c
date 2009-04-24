@@ -24,8 +24,6 @@
  * @date 30/07/2005
  * @author iarwain@orx-project.org
  *
- * @todo
- *
  * SDL system plugin implementation
  *
  */

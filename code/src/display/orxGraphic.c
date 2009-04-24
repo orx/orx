@@ -24,10 +24,6 @@
  * @date 08/12/2003
  * @author iarwain@orx-project.org
  *
- * @todo
- * Later on, add a texture cache system for rotated/scaled texture.
- * This cache system should be activated or not by user.
- * Adds 3D system (Not planned yet).
  */
 
 

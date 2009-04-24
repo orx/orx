@@ -25,7 +25,6 @@
  * @author bestel@arcallians.org
  * @author iarwain@orx-project.org
  *
- * @todo
  */
 
 

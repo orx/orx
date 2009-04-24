@@ -25,17 +25,18 @@
  * @author iarwain@orx-project.org
  *
  * @todo
+ * - Add the embedded targets support (all-in-one executable embedding plugins)
  * - Add unicode support (all to unicode)
- * - Add string handling (using CRC + hash)
+ * - Add optimized string handling (using CRC + hash)
  * - Add multi animation interpreter (for blends, transitions, etc...)
- * C Add fixed point floats + ops + converts (replace (orxFLOAT) casts by a convert function)
- * - Add Matrix type + functions
- * - Update camera to use matrix + vector
+ * - Add fixed point decimals
+ * - Add Matrix module
+ * - Update camera to use matrix
  * - Update camera to use 3D-like computation
- * - Adds rendering context to camera
- * C Add scripting integration
+ * - Add scripting integration
  * - Add network :)
  * - Add waypoint/way system
+ * - Restore generic pathfinder module
  */
 
 /**

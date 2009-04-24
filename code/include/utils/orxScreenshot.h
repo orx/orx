@@ -25,15 +25,13 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Make a better init system for finding the next screenshot name
- *   (this one is broken is all screenshots aren't contiguous)
  */
 
 /**
  * @addtogroup orxScreenshot
  * 
  * Screenshot module
- * Module that handles screenshots
+ * Module that captures screenshots
  *
  * @{
  */
@@ -45,18 +43,14 @@
 #include "orxInclude.h"
 
 
-/*****************************************************************************/
+/** Misc
+ */
 
-/* *** Misc *** */
+#define orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME "."
+#define orxSCREENSHOT_KZ_DEFAULT_BASE_NAME      "screenshot-"
+#define orxSCREENSHOT_KZ_DEFAULT_EXTENSION      "tga"
+#define orxSCREENSHOT_KU32_DEFAULT_DIGITS       4
 
-#define orxSCREENSHOT_KZ_DIRECTORY      "."
-#define orxSCREENSHOT_KZ_PREFIX         "shot"
-#define orxSCREENSHOT_KZ_EXT            "bmp"
-
-
-/*****************************************************************************/
-
-/* *** Functions *** */
 
 /** Screenshot module setup
  */
@@ -72,8 +66,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxScreenshot_Init();
 extern orxDLLAPI void orxFASTCALL       orxScreenshot_Exit();
 
 /** Captures a screenshot
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL       orxScreenshot_Capture();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxScreenshot_Capture();
 
 #endif /* _orxSCREENSHOT_H_ */
 
