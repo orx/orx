@@ -352,14 +352,14 @@ orxBOOL orxFASTCALL orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orx
   {
     orxU32 u32Index;
 
-    /* Clears vars */
-    _pstFileInfo->zPath[0]      = orxCHAR_NULL;
-    _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
-
     /* Stores pattern */
     u32Index = orxMIN(orxString_GetLength(_zSearchPattern), 255);
     orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
     _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+
+    /* Clears vars */
+    orxString_Print(_pstFileInfo->zPath, "./");
+    orxString_Print(_pstFileInfo->zFullName, "./");
   }
 
   /* Open directory */
@@ -418,9 +418,6 @@ orxBOOL orxFASTCALL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
   /* Checks */
   orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFileInfo != orxNULL);
-
-  /* Clear vars */
-  _pstFileInfo->zFullName[1279] = orxCHAR_NULL;
 
   /* Updates full name */
   orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);

@@ -149,6 +149,7 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     /* Depending on button */
     switch(poEvent->MouseButton.Button)
     {
+      default:
       case sf::Mouse::Left:
       {
         /* Inits payload */
