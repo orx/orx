@@ -1429,14 +1429,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   /* Not already created? */
   if(pstResult == orxNULL)
   {
-    orxSTRING zPreviousSection;
-
-    /* Gets previous config section */
-    zPreviousSection = orxConfig_GetCurrentSection();
-
-    /* Selects section */
+    /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-    && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+    && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
       orxU32  u32AnimCounter;
 
@@ -1563,8 +1558,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
       }
 
-      /* Restores previous section */
-      orxConfig_SelectSection(zPreviousSection);
+      /* Pops previous section */
+      orxConfig_PopSection();
     }
     else
     {

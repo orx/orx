@@ -970,13 +970,10 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
 
 #ifdef __orxDEBUG__
 
-  orxSTRING zPreviousSection, zDebugSuffix;
+  orxSTRING zDebugSuffix;
 
-  /* Gets config current section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
-  orxConfig_SelectSection(orxPLUGIN_KZ_CONFIG_SECTION);
+  /* Pushes section */
+  orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SECTION);
 
 #endif /* __ orxDEBUG__ */
 
@@ -1013,8 +1010,8 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
 
   }
 
-  /* Restores previous section */
-  orxConfig_SelectSection(zPreviousSection);
+  /* Pops previous section */
+  orxConfig_PopSection();
 
 #endif /* __orxDEBUG__ */
 

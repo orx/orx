@@ -413,7 +413,8 @@ Plugin user header This header is used to define structures &amp; functions for 
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction   = (<a class="code" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a>) FUNCTION; \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID   = FUNCTION_ID; \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName = #NAME; \
-    <a class="code" href="group__orx_string.html#g79b5537709b17a25daaa794769112723">orxString_NCopy</a>(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, <a class="code" href="group__orx_plugin.html#ga6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a>); \
+    <a class="code" href="group__orx_string.html#g79b5537709b17a25daaa794769112723">orxString_NCopy</a>(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, <a class="code" href="group__orx_plugin.html#ga6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a> - 1); \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs[<a class="code" href="group__orx_plugin.html#ga6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a> - 1] = <a class="code" href="group__orx_type.html#g69748c2eb742ca665e39d222fbd824d0">orxCHAR_NULL</a>; \
     u32UserPluginFunctionCounter++; \
   } \
   <span class="keywordflow">else</span> \

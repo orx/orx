@@ -421,18 +421,14 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner,
  */
 orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID)
 {
-  orxSTRING       zPreviousSection;
   orxANIMPOINTER *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     orxANIMSET *pstAnimSet;
 
@@ -468,8 +464,8 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {

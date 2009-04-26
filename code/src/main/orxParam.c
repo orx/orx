@@ -255,13 +255,10 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Not found? */
       if(azParamList == orxNULL)
       {
-        orxSTRING zParamValue, zPreviousSection;
+        orxSTRING zParamValue;
 
-        /* Stores previous section */
-        zPreviousSection = orxConfig_GetCurrentSection();
-
-        /* Selects config section */
-        orxConfig_SelectSection(orxPARAM_KZ_CONFIG_SECTION);
+        /* Pushes config section */
+        orxConfig_PushSection(orxPARAM_KZ_CONFIG_SECTION);
 
         /* Gets its value */
         zParamValue = orxConfig_GetString(_pstParamInfo->stParam.zLongName);
@@ -329,8 +326,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
           }
         }
 
-        /* Restores previous section */
-        orxConfig_SelectSection(zPreviousSection);
+        /* Pops previous section */
+        orxConfig_PopSection();
       }
 
       /* Found? */

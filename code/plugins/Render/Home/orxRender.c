@@ -989,8 +989,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
  */
 static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
-  orxVIEWPORT  *pstViewport;
-  orxSTRING     zPreviousSection;
+  orxVIEWPORT *pstViewport;
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -1015,11 +1014,8 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
 
-  /* Stores previous section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects render config section */
-  orxConfig_SelectSection(orxRENDER_KZ_CONFIG_SECTION);
+  /* Pushes render config section */
+  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
   /* Should display FPS? */
   if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
@@ -1041,8 +1037,8 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
   }
 
-  /* Restores previous section */
-  orxConfig_SelectSection(zPreviousSection);
+  /* Pops previous section */
+  orxConfig_PopSection();
 
   /* Swap buffers */
   orxDisplay_Swap();
@@ -1195,8 +1191,10 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
     if(sstRender.pstRenderBank != orxNULL)
     {
       /* Creates rendering clock */
+      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
       sstRender.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
       orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, (orxConfig_HasValue(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) && orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) : orxRENDER_KF_TICK_SIZE);
+      orxConfig_PopSection();
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)

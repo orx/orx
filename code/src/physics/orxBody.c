@@ -434,20 +434,16 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
  */
 orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID)
 {
-  orxSTRING zPreviousSection;
-  orxBODY  *pstResult;
+  orxBODY *pstResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstOwner);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     orxBODY_DEF stBodyDef;
 
@@ -521,8 +517,8 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {
@@ -733,7 +729,6 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const
  */
 orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, const orxSTRING _zConfigID)
 {
-  orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -742,12 +737,9 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
   orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     orxSTRING         zBodyPartType;
     orxBODY_PART_DEF  stBodyPartDef;
@@ -885,8 +877,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {

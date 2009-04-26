@@ -185,7 +185,7 @@ orxSTATUS orxFASTCALL orxMouse_SDL_Init()
           sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 
           /* Sets config section */
-          orxConfig_SelectSection(orxMOUSE_KZ_CONFIG_SECTION);
+          orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
           /* Has show cursor value? */
           if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
@@ -193,6 +193,9 @@ orxSTATUS orxFASTCALL orxMouse_SDL_Init()
             /* Updates cursor status */
             orxMouse_SDL_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
           }
+
+          /* Pops config section */
+          orxConfig_PopSection();
         }
         else
         {

@@ -143,13 +143,8 @@ orxSTATUS orxFASTCALL orxScreenshot_Init()
   /* Not already Initialized? */
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY))
   {
-    orxSTRING zPreviousSection;
-
     /* Cleans control structure */
     orxMemory_Zero(&sstScreenshot, sizeof(orxSCREENSHOT_STATIC));
-
-    /* Gets previous config section */
-    zPreviousSection = orxConfig_GetCurrentSection();
 
     /* Inits flags */
     sstScreenshot.u32Flags = orxSCREENSHOT_KU32_STATIC_FLAG_READY;
@@ -160,9 +155,9 @@ orxSTATUS orxFASTCALL orxScreenshot_Init()
     sstScreenshot.zScreenshotExtension  = orxSCREENSHOT_KZ_DEFAULT_EXTENSION;
     sstScreenshot.u32ScreenshotDigits   = orxSCREENSHOT_KU32_DEFAULT_DIGITS;
 
-    /* Selects section */
+    /* Pushes section */
     if((orxConfig_HasSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxFALSE)
-    && (orxConfig_SelectSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
+    && (orxConfig_PushSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
     {
       orxSTRING zValue;
       orxU32    u32Digits;
@@ -204,8 +199,8 @@ orxSTATUS orxFASTCALL orxScreenshot_Init()
         sstScreenshot.u32ScreenshotDigits = u32Digits;
       }
 
-      /* Restores previous section */
-      orxConfig_SelectSection(zPreviousSection);
+      /* Pops previous section */
+      orxConfig_PopSection();
     }
 
     /* Valid? */

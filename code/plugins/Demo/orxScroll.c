@@ -130,8 +130,8 @@ static orxSTATUS orxScroll_Init()
   {
     orxS32 j;
 
-    /* Selects config section */
-    orxConfig_SelectSection(sazResourceNames[i]);
+    /* Pushes config section */
+    orxConfig_PushSection(sazResourceNames[i]);
 
     /* For all requested instances */
     for(j = 0; j < orxConfig_GetS32("Number"); j++)
@@ -151,6 +151,9 @@ static orxSTATUS orxScroll_Init()
         orxObject_SetParent(pstObject, apstWaveGroupList[j % s32WaveGroupNumber]);
       }
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Success? */
@@ -159,9 +162,6 @@ static orxSTATUS orxScroll_Init()
     orxCLOCK     *pstClock;
     orxVIEWPORT  *pstViewport;
     orxOBJECT    *pstBackground;
-
-    /* Selects main section */
-    orxConfig_SelectSection("Scroll");
 
     /* Creates viewport */
     pstViewport = orxViewport_CreateFromConfig("ScrollViewport");

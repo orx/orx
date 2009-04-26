@@ -953,7 +953,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
 
     /* Gets gravity & allow sleep from config */
-    orxConfig_SelectSection(orxPHYSICS_KZ_CONFIG_SECTION);
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
     orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity);
     bAllowSleep = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) : orxTRUE;
 
@@ -1069,6 +1069,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */

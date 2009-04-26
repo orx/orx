@@ -314,14 +314,9 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   /* Not already created? */
   if(pstResult == orxNULL)
   {
-    orxSTRING zPreviousSection;
-
-    /* Gets previous config section */
-    zPreviousSection = orxConfig_GetCurrentSection();
-
-    /* Selects section */
+    /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-    && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+    && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
       /* Creates shader */
       pstResult = orxShader_Create();
@@ -431,8 +426,8 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
         }
       }
 
-      /* Restores previous section */
-      orxConfig_SelectSection(zPreviousSection);
+      /* Pops previous section */
+      orxConfig_PopSection();
     }
     else
     {

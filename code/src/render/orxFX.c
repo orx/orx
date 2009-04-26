@@ -266,7 +266,6 @@ static orxINLINE orxU32 orxFX_FindEmptySlotIndex(const orxFX *_pstFX)
 
 static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zSlotID)
 {
-  orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -276,12 +275,9 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zSlotID) != orxFALSE)
-  && (orxConfig_SelectSection(_zSlotID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zSlotID) != orxSTATUS_FAILURE))
   {
     orxSTRING   zCurveType;
     orxFX_CURVE eCurve;
@@ -493,8 +489,8 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {
@@ -678,14 +674,9 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   /* Not already created? */
   if(pstResult == orxNULL)
   {
-    orxSTRING zPreviousSection;
-
-    /* Gets previous config section */
-    zPreviousSection = orxConfig_GetCurrentSection();
-
-    /* Selects section */
+    /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-    && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+    && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
       /* Creates FX */
       pstResult = orxFX_Create();
@@ -768,8 +759,8 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
         }
       }
 
-      /* Restores previous section */
-      orxConfig_SelectSection(zPreviousSection);
+      /* Pops previous section */
+      orxConfig_PopSection();
     }
     else
     {

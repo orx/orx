@@ -276,18 +276,14 @@ orxVIEWPORT *orxFASTCALL orxViewport_Create()
 orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxVIEWPORT *pstResult;
-  orxSTRING   zPreviousSection;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     /* Creates viewport */
     pstResult = orxViewport_Create();
@@ -461,8 +457,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {

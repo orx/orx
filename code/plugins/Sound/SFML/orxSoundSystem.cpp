@@ -105,7 +105,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Init()
     sf::Listener::SetTarget(0.0f, 0.0f, -1.0f);
 
     /* Gets dimension ratio */
-    orxConfig_SelectSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+    orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
     fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
 
     /* Valid? */
@@ -125,6 +125,9 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Init()
 
     /* Updates status */
     orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+
+    /* Pops config section */
+    orxConfig_PopSection();
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

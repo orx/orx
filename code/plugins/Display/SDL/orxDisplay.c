@@ -660,7 +660,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
         orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags;
 
         /* Gets resolution from config */
-        orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
         u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
         u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
         u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
@@ -693,6 +693,9 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
           sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
           sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
         }
+
+        /* Pops config section */
+        orxConfig_PopSection();
       }
 
 #endif /* __orxGP2X__ */

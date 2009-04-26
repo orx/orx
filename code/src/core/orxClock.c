@@ -301,8 +301,9 @@ orxSTATUS orxFASTCALL orxClock_Init()
       sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
 
       /* Creates default full speed core clock */
-      orxConfig_SelectSection(orxCLOCK_KZ_CONFIG_SECTION);
+      orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
       eResult = (orxClock_Create((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      orxConfig_PopSection();
     }
     else
     {

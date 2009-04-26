@@ -424,18 +424,14 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
  */
 orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxSTRING zPreviousSection;
-  orxANIM  *pstResult = orxNULL;
+  orxANIM *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     orxU32  u32KeyCounter;
     orxCHAR acID[32];
@@ -510,8 +506,8 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
       orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {

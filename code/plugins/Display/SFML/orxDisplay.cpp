@@ -626,16 +626,12 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_CreateBitmap(orxU32 _u32Width,
 {
   sf::Image  *poImage;
   sf::Sprite *poSprite;
-  orxSTRING   zBackupSection;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Backups config section */
-  zBackupSection = orxConfig_GetCurrentSection();
-
-  /* Selects display section */
-  orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  /* Pushes display section */
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
   /* Creates image */
   poImage = new sf::Image(_u32Width, _u32Height);
@@ -646,8 +642,8 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_CreateBitmap(orxU32 _u32Width,
   /* Creates sprite using the new image */
   poSprite = new sf::Sprite(*poImage);
 
-  /* Restores config section */
-  orxConfig_SelectSection(zBackupSection);
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Done! */
   return (orxBITMAP *)poSprite;
@@ -965,13 +961,9 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_LoadBitmap(const orxSTRING _zF
   if(poImage->LoadFromFile(_zFilename) != false)
   {
     sf::Sprite *poSprite;
-    orxSTRING   zBackupSection;
 
-    /* Backups config section */
-    zBackupSection = orxConfig_GetCurrentSection();
-
-    /* Selects display section */
-    orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Activates smoothing */
     poImage->SetSmooth(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? true : false);
@@ -979,8 +971,8 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_LoadBitmap(const orxSTRING _zF
     /* Creates a sprite from it */
     poSprite = new sf::Sprite(*poImage);
 
-    /* Restores config section */
-    orxConfig_SelectSection(zBackupSection);
+    /* Pops config section */
+    orxConfig_PopSection();
 
     /* Updates result */
     pstResult = (orxBITMAP *)poSprite;
@@ -1157,7 +1149,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
             unsigned long ulStyle;
 
             /* Gets resolution from config */
-            orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+            orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
             u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
             u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
             u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
@@ -1239,6 +1231,9 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
               /* Enables vertical sync */
               orxDisplay_SFML_EnableVSync(orxTRUE);
             }
+
+            /* Pops config section */
+            orxConfig_PopSection();
           }
           else
           {

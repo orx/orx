@@ -139,7 +139,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_SDL_Init()
         orxFLOAT fRatio;
 
         /* Gets dimension ratio */
-        orxConfig_SelectSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+        orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
         fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
 
         /* Valid? */
@@ -162,6 +162,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_SDL_Init()
 
         /* Updates status */
         orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+
+        /* Pops config section */
+        orxConfig_PopSection();
       }
       else
       {

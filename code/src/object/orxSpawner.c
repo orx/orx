@@ -500,19 +500,15 @@ orxSPAWNER *orxFASTCALL orxSpawner_Create()
  */
 orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxSPAWNER  *pstResult;
-  orxSTRING   zPreviousSection;
+  orxSPAWNER *pstResult;
 
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     /* Creates spawner */
     pstResult = orxSpawner_Create();
@@ -656,8 +652,8 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {
@@ -924,8 +920,7 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
   /* Enabled? */
   if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED))
   {
-    orxU32    u32SpawnNumber, i;
-    orxSTRING zPreviousSection;
+    orxU32 u32SpawnNumber, i;
 
     /* Has a total limit? */
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
@@ -956,11 +951,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
       u32SpawnNumber = orxMIN(u32SpawnNumber, u32AvailableNumber);
     }
 
-    /* Backups current section */
-    zPreviousSection = orxConfig_GetCurrentSection();
-
-    /* Selects section */
-    orxConfig_SelectSection(_pstSpawner->zReference);
+    /* Pushes section */
+    orxConfig_PushSection(_pstSpawner->zReference);
 
     /* For all objects to spawn */
     for(i = 0; i < u32SpawnNumber; i++)
@@ -1034,8 +1026,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
 
     /* Has a total limit? */
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))

@@ -112,6 +112,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SelectSection(const orxSTRING 
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetCurrentSection();
 
+/** Pushes a section (storing the current one on section stack)
+ * @param[in] _zSectionName     Section name to push
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_PushSection(const orxSTRING _zSectionName);
+
+/** Pops last section from section stack
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_PopSection();
+
 /** Has section for the given section name?
  * @param[in] _zSectionName     Section name
  * @return orxTRUE / orxFALSE

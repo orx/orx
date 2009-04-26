@@ -236,8 +236,8 @@ extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
         /* Updates status */
         sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 
-        /* Sets config section */
-        orxConfig_SelectSection(orxMOUSE_KZ_CONFIG_SECTION);
+        /* Pushes config section */
+        orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
         /* Has show cursor value? */
         if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
@@ -245,6 +245,9 @@ extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
           /* Updates cursor status */
           orxMouse_SFML_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
         }
+
+        /* Pops config section */
+        orxConfig_PopSection();
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;

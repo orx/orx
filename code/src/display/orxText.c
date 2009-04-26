@@ -251,19 +251,15 @@ orxTEXT *orxFASTCALL orxText_Create()
  */
 orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxTEXT    *pstResult;
-  orxSTRING   zPreviousSection;
+  orxTEXT *pstResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects section */
+  /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     /* Creates text */
     pstResult = orxText_Create();
@@ -289,8 +285,8 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
       orxStructure_SetFlags(pstResult, u32Flags, orxTEXT_KU32_FLAG_NONE);
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
   else
   {

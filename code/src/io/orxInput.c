@@ -226,15 +226,11 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
 static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 {
   orxINPUT_SET *pstResult = orxNULL;
-  orxSTRING     zPreviousSection;
-
-  /* Stores previous section */
-  zPreviousSection = orxConfig_GetCurrentSection();
 
   /* Valid? */
   if((_zSetName != orxSTRING_EMPTY)
   && (orxConfig_HasSection(_zSetName) != orxFALSE)
-  && (orxConfig_SelectSection(_zSetName) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(_zSetName) != orxSTATUS_FAILURE))
   {
     orxINPUT_SET *pstPreviousSet;
 
@@ -295,8 +291,8 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
       sstInput.pstCurrentSet = pstPreviousSet;
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -824,7 +820,6 @@ void orxFASTCALL orxInput_Exit()
  */
 orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
 {
-  orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -837,12 +832,9 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
     orxConfig_Load(_zFileName);
   }
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
-
-  /* Selects input section */
+  /* Pushes input section */
   if((orxConfig_HasSection(orxINPUT_KZ_CONFIG_SECTION) != orxFALSE)
-  && (orxConfig_SelectSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
+  && (orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
   {
     /* Gets joystick threshold */
     sstInput.fJoystickAxisThreshold = orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD);
@@ -870,8 +862,8 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -893,17 +885,12 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
   /* Valid? */
   if(_zFileName != orxSTRING_EMPTY)
   {
-    orxSTRING zPreviousSection;
-
-    /* Stores previous section */
-    zPreviousSection = orxConfig_GetCurrentSection();
-
     /* Clears input section */
     orxConfig_ClearSection(orxINPUT_KZ_CONFIG_SECTION);
 
-    /* Selects it */
+    /* Pushes it */
     if((orxConfig_HasSection(orxINPUT_KZ_CONFIG_SECTION) != orxFALSE)
-    && (orxConfig_SelectSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
+    && (orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
     {
       orxU32        u32Index, u32Counter;
       orxINPUT_SET *pstSet;
@@ -968,8 +955,8 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
       }
     }
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
+    /* Pops previous section */
+    orxConfig_PopSection();
 
     /* Saves it */
     eResult = orxConfig_Save(_zFileName, orxFALSE, orxInput_SaveCallback);
