@@ -1284,13 +1284,13 @@ void *orxFASTCALL orxObject_GetOwner(orxOBJECT *_pstObject)
   return pResult;
 }
 
-/** Flips object
+/** Sets object flipping
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _bFlipX         Flip it on X axis
  * @param[in]   _bFlipY         Flip it on Y axis
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_Flip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)
+orxSTATUS orxFASTCALL orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)
 {
   orxFRAME *pstFrame;
   orxSTATUS eResult;
@@ -1313,6 +1313,46 @@ orxSTATUS orxFASTCALL orxObject_Flip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orx
 
     /* Updates frame */
     orxStructure_SetFlags(pstFrame, u32Flags, orxFRAME_KU32_FLAG_FLIP_X | orxFRAME_KU32_FLAG_FLIP_Y);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object flipping
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pbFlipX != orxNULL);
+  orxASSERT(_pbFlipY != orxNULL);
+
+  /* Gets its frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Updates flipping mode */
+    *_pbFlipX = orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_X) ? orxTRUE : orxFALSE;
+    *_pbFlipY = orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_Y) ? orxTRUE : orxFALSE;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

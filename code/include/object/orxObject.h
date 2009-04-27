@@ -180,13 +180,22 @@ extern orxDLLAPI void orxFASTCALL           orxObject_UnlinkStructure(orxOBJECT 
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(const orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
-/** Flips object
+/** Sets object flipping
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _bFlipX         Flip it on X axis
  * @param[in]   _bFlipY         Flip it on Y axis
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Flip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY);
+
+/** Gets object flipping
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
+
 
 /** Sets object pivot
  * @param[in]   _pstObject      Concerned object

@@ -67,7 +67,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g16b071f6b40931ce6617479ca3294b49">_orxObject_GetStructure</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gcc1ff839445be7a3b5e4707651aea02a">orxObject_Flip</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g752e969bd78dcf1a078599964987e6bf">orxObject_SetFlip</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gda5553e90d127d2889985f4ed2a1f822">orxObject_GetFlip</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gb5eff9d2aa5ca146cc0e615a4179a6d3">orxObject_SetPivot</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPivot)</td></tr>
 
@@ -887,49 +889,6 @@ Enables an object's shader <dl compact><dt><b>Parameters:</b></dt><dd>
 Exits from the object module 
 </div>
 </div><p>
-<a class="anchor" name="gcc1ff839445be7a3b5e4707651aea02a"></a><!-- doxytag: member="orxObject.h::orxObject_Flip" ref="gcc1ff839445be7a3b5e4707651aea02a" args="(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_Flip           </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstObject</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxBOOL&nbsp;</td>
-          <td class="paramname"> <em>_bFlipX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxBOOL&nbsp;</td>
-          <td class="paramname"> <em>_bFlipY</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Flips object <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFlipX</em>&nbsp;</td><td>Flip it on X axis </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFlipY</em>&nbsp;</td><td>Flip it on Y axis </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="g354ce8e455d60236c325bb8810a84135"></a><!-- doxytag: member="orxObject.h::orxObject_GetAngularVelocity" ref="g354ce8e455d60236c325bb8810a84135" args="(orxOBJECT *_pstObject)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1051,6 +1010,49 @@ Gets object color <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gda5553e90d127d2889985f4ed2a1f822"></a><!-- doxytag: member="orxObject.h::orxObject_GetFlip" ref="gda5553e90d127d2889985f4ed2a1f822" args="(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_GetFlip           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL *&nbsp;</td>
+          <td class="paramname"> <em>_pbFlipX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL *&nbsp;</td>
+          <td class="paramname"> <em>_pbFlipY</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets object flipping <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pbFlipX</em>&nbsp;</td><td>X axis flipping </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pbFlipY</em>&nbsp;</td><td>Y axis flipping </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
@@ -2205,6 +2207,49 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zAnimName</em>&nbsp;</td><td>Animation name (config's one) to set / orxNULL </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g752e969bd78dcf1a078599964987e6bf"></a><!-- doxytag: member="orxObject.h::orxObject_SetFlip" ref="g752e969bd78dcf1a078599964987e6bf" args="(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_SetFlip           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bFlipX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bFlipY</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets object flipping <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFlipX</em>&nbsp;</td><td>Flip it on X axis </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFlipY</em>&nbsp;</td><td>Flip it on Y axis </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
