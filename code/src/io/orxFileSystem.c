@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -221,7 +221,7 @@ void orxFASTCALL orxFileSystem_Exit()
 orxBOOL orxFASTCALL orxFileSystem_Exists(const orxSTRING _zFileName)
 {
   orxFILESYSTEM_INFO stInfos;
-  
+
   /* Clears it */
   orxMemory_Zero(&stInfos, sizeof(orxFILESYSTEM_INFO));
 
@@ -452,8 +452,12 @@ void orxFASTCALL orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
 
 #ifdef __orxWINDOWS__
 
-  /* Closes the search */
-  _findclose((orxS32)_pstFileInfo->hInternal);
+  /* Has valid handle? */
+  if(((orxS32)_pstFileInfo->hInternal) > 0)
+  {
+    /* Closes the search */
+    _findclose((orxS32)_pstFileInfo->hInternal);
+  }
 
 #else /* __orxWINDOWS__ */
 
