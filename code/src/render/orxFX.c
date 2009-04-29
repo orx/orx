@@ -98,7 +98,7 @@
 #define orxFX_KZ_CONFIG_USE_SCALE               "UseScale"
 
 #define orxFX_KZ_LINEAR                         "linear"
-#define orxFX_KZ_SAW                            "saw"
+#define orxFX_KZ_TRIANGLE                       "triangle"
 #define orxFX_KZ_SQUARE                         "square"
 #define orxFX_KZ_SINE                           "sine"
 #define orxFX_KZ_ALPHA                          "alpha"
@@ -291,11 +291,11 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
       /* Updates its curve */
       eCurve = orxFX_CURVE_LINEAR;
     }
-    /* Saw curve? */
-    else if(orxString_Compare(zCurveType, orxFX_KZ_SAW) == 0)
+    /* Triangle curve? */
+    else if(orxString_Compare(zCurveType, orxFX_KZ_TRIANGLE) == 0)
     {
       /* Updates its curve */
-      eCurve = orxFX_CURVE_SAW;
+      eCurve = orxFX_CURVE_TRIANGLE;
     }
     /* Square curve? */
     else if(orxString_Compare(zCurveType, orxFX_KZ_SQUARE) == 0)
@@ -312,7 +312,7 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve type for FX. Use %s, %s, %s or %s", orxFX_KZ_LINEAR, orxFX_KZ_SAW, orxFX_KZ_SQUARE, orxFX_KZ_SINE);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve type for FX. Use %s, %s, %s or %s", orxFX_KZ_LINEAR, orxFX_KZ_TRIANGLE, orxFX_KZ_SQUARE, orxFX_KZ_SINE);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -992,7 +992,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 break;
               }
 
-              case orxFX_CURVE_SAW:
+              case orxFX_CURVE_TRIANGLE:
               {
                 /* Gets linear coef in period [0.0; 2.0] starting at given phase */
                 fStartCoef = (fStartTime * fFrequency) + pstFXSlot->fCyclePhase;
