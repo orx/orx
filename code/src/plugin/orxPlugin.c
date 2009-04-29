@@ -747,6 +747,9 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
     orxPlugin_LoadUsingExt(_azParams[i], zPluginName);
   }
 
+  /* Updates all modules */
+  orxPlugin_UpdateAllModule();
+
   /* Done! */
   return eResult;
 }
@@ -919,9 +922,6 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
 
         /* Gets plugin handle */
         hPluginHandle = pstPluginInfo->hPluginHandle;
-
-        /* Updates all modules */
-        orxPlugin_UpdateAllModule();
       }
       else
       {
