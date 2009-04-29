@@ -173,6 +173,7 @@
         <headers>
             include/plugin/define/orxPlugin_CoreDefine.h
             include/plugin/define/orxPlugin_CoreID.h
+            include/plugin/define/orxPlugin_EmbeddedList.h
             include/plugin/define/orxPlugin_Display.h
             include/plugin/define/orxPlugin_File.h
             include/plugin/define/orxPlugin_FileSystem.h

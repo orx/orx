@@ -28,6 +28,7 @@
 
 
 #include "plugin/orxPlugin.h"
+#include "plugin/define/orxPlugin_EmbeddedList.h"
 
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
@@ -179,7 +180,7 @@ typedef struct __orxPLUGIN_INFO_t
 typedef struct __orxPLUGIN_CORE_INFO_t
 {
   /* Core functions : 4 */
-  orxPLUGIN_CORE_FUNCTION const *pstCoreFunctionTable;
+  orxPLUGIN_CORE_FUNCTION const    *pstCoreFunctionTable;
 
   /* Core functions counter : 8 */
   orxU32                            u32CoreFunctionCounter;
@@ -380,7 +381,7 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(const orxPLUGIN_FUNCTI
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Function address is not already loaded.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Function address is already loaded.");
     }
   }
   else
@@ -601,7 +602,7 @@ static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN 
  * @param[in] _pstPluginInfo          Info of the plugin to register
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_pstPluginInfo)
+static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
 {
   orxPLUGIN_MAIN_FUNCTION pfnInit;
   orxU32 u32UserFunctionNumber;
@@ -609,11 +610,10 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(_pstSysPlugin != orxNULL);
   orxASSERT(_pstPluginInfo != orxNULL);
 
   /* Gets init function */
-  pfnInit = (orxPLUGIN_MAIN_FUNCTION)orxPlugin_GetFunctionAddress(_pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
+  pfnInit = (orxPLUGIN_MAIN_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
 
   /* Valid? */
   if(pfnInit != orxNULL)
@@ -673,11 +673,13 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_
   return eResult;
 }
 
-/** Adds core info for a plugin
- * @param[in] _ePluginCoreID          Concerned plugin ID
- * @param[in] _eModuleID              ID of the corresponding module
- * @param[in] _astCoreFunction        Array containing the core functions
- * @param[in] _u32CoreFunctionNumber  Number of core function in the array
+/** Adds an info structure for the given core module
+ * Has to be called during a core module init
+ * @param[in] _ePluginCoreID          The numeric id of the core plugin
+ * @param[in] _eModuleID              Corresponding module ID
+ * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _u32CoreFunctionNumber  Number of functions in the array
+ * @return nothing.
  */
 void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
@@ -696,6 +698,28 @@ void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODU
 
   return;
 }
+
+#ifdef __orxEMBEDDED__
+
+/** Binds a core plugin to its embedded implementation
+ * Has to be called during a core module init
+ * @param[in] _ePluginCoreID          The numeric id of the core plugin
+ * @param[in] _pfnPluginInit          Embedded plug-in init function
+ * @return nothing
+ */
+void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_FUNCTION _pfnPluginInit)
+{
+  /* Checks */
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
+  orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
+  orxASSERT(_pfnPluginInit != orxNULL);
+
+  //! TODO: Binds the function to their embedded implementation
+
+  return;
+}
+
+#endif /* __orxEMBEDDED__ */
 
 /** Deletes all the plugins
  */
@@ -915,7 +939,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
       pstPluginInfo->hPluginHandle = (orxHANDLE)pstPluginInfo;
 
       /* Registers plugin */
-      if(orxPlugin_RegisterPlugin(pstSysPlugin, pstPluginInfo) == orxSTATUS_SUCCESS)
+      if(orxPlugin_RegisterPlugin(pstPluginInfo) == orxSTATUS_SUCCESS)
       {
         /* Stores plugin name */
         pstPluginInfo->zPluginName = _zPluginName;
@@ -1082,7 +1106,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, c
     if(pfnFunction == orxNULL)
     {
       /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get function address for plugin.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get function address for plugin.");
     }
   }
   else

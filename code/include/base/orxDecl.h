@@ -180,7 +180,15 @@
 /* Plugin include? */
 #if defined(__orxPLUGIN__)
 
+  #ifdef __orxEMBEDDED__
+
+    #define orxDLLAPI /* Compiling embedded plug-in => API doens't need to be imported */
+
+  #else
+
     #define orxDLLAPI orxDLLIMPORT /* Compiling plug-in => API needs to be imported */
+
+  #endif /* __orxEMBEDDED__ */
 
 /* External include? */
 #elif defined(__orxEXTERN__)

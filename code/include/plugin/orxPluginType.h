@@ -63,6 +63,21 @@
 #define orxPLUGIN_MAKE_CORE_FUNCTION_ID(PLUGIN_CORE_ID, FUNCTION_BASE_ID)   \
   (orxPLUGIN_FUNCTION_ID)(orxPLUGIN_KU32_FLAG_CORE_ID | orxPLUGIN_MAKE_FUNCTION_ID(PLUGIN_CORE_ID, FUNCTION_BASE_ID))
 
+/* Defines plugin init function */
+#define orxPLUGIN_K_INIT_FUNCTION_NAME                  orxPlugin_MainInit          /**< Plugin init function name */
+
+
+/* Defines core plugin init function */
+#ifdef __orxEMBEDDED__
+
+#define orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(SUFFIX)     orxPlugin_##SUFFIX##_Init   /**< Plugin core init function name */
+
+#else /* __orxEMBEDDED__ */
+
+#define orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(SUFFIX)     orxPlugin_MainInit          /**< Plugin core init function name */
+
+#endif /* __orxEMBEDDED__ */
+
 
 /*********************************************
  Structures

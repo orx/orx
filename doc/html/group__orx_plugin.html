@@ -59,6 +59,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a>&nbsp;&nbsp;&nbsp;orxPlugin_MainInit</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(SUFFIX)&nbsp;&nbsp;&nbsp;orxPlugin_MainInit</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g540e90ccb4ee0fff6b1caea4e40fa5da">orxPLUGIN_KZ_IMPORT</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g071a2272df71ff393d741088a9537fd4">orxPLUGIN_DECLARE_ENTRY_POINT</a>(ENTRY_FUNCTION)</td></tr>
@@ -369,6 +371,7 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 Header that regroups all core plugin defines.<p>
 Header that defines all the plugin IDs<p>
 Header that defines all IDs of the display plugin<p>
+Header that regroups all plugins to embed<p>
 Header that defines all IDs of the file plugin<p>
 Header that defines all IDs of the file system plugin<p>
 Header that defines all IDs of the joystick plugin<p>
@@ -468,7 +471,7 @@ Plugin user header This header is used to define structures &amp; functions for 
 <div class="memdoc">
 
 <p>
-<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a> sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] = \
+<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a> sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] =  \
   {
 </pre></div>
 </div>
@@ -584,9 +587,9 @@ Plugin user header This header is used to define structures &amp; functions for 
 <div class="memdoc">
 
 <p>
-<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL <a class="code" href="group__orx_plugin.html#gdfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME)() \
-  {                                                                               \
-    <span class="keywordflow">return</span>(<a class="code" href="group__orx_plugin.html#g9533c138e64ba45a78b4f50fb819a919">orxPlugin_DefaultCoreFunction</a>(#FUNCTION_NAME, __FILE__, __LINE__));    \
+<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL <a class="code" href="group__orx_plugin.html#gdfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME)()  \
+  {                                                                                         \
+    <span class="keywordflow">return</span>(<a class="code" href="group__orx_plugin.html#g9533c138e64ba45a78b4f50fb819a919">orxPlugin_DefaultCoreFunction</a>(#FUNCTION_NAME, __FILE__, __LINE__));              \
   }
 </pre></div>
 </div>
@@ -658,7 +661,7 @@ Plugin user header This header is used to define structures &amp; functions for 
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment">};                                                                            \
-  <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> <a class="code" href="group__orx_plugin.html#g87c12bc67d2607a888c7d01cb1199676">orxPLUGIN_CORE_REGISTER_FUNCTION_NAME</a>(PLUGIN_SUFFIX)()                \
+  <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> <a class="code" href="group__orx_plugin.html#g87c12bc67d2607a888c7d01cb1199676">orxPLUGIN_CORE_REGISTER_FUNCTION_NAME</a>(PLUGIN_SUFFIX)()  \
   {                                                                             \
     <a class="code" href="group__orx_plugin.html#g86f73fa692ea5cbb4c4480d8d01bfaa2">orxPLUGIN_REGISTER_CORE_INFO</a>(PLUGIN_SUFFIX);                                \
     <span class="keywordflow">return</span>;                                                                     \
@@ -666,7 +669,27 @@ Plugin user header This header is used to define structures &amp; functions for 
 </pre></div>
 </div>
 </div><p>
-<a class="anchor" name="g06446ed58fb59ad4b1208ea1281aed1b"></a><!-- doxytag: member="orxPluginUser.h::orxPLUGIN_K_INIT_FUNCTION_NAME" ref="g06446ed58fb59ad4b1208ea1281aed1b" args="" -->
+<a class="anchor" name="g3b42d2893b37f907792640c16e231a2c"></a><!-- doxytag: member="orxPluginType.h::orxPLUGIN_K_CORE_INIT_FUNCTION_NAME" ref="g3b42d2893b37f907792640c16e231a2c" args="(SUFFIX)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxPLUGIN_K_CORE_INIT_FUNCTION_NAME          </td>
+          <td>(</td>
+          <td class="paramtype">SUFFIX&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td>&nbsp;&nbsp;&nbsp;orxPlugin_MainInit</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Plugin core init function name 
+</div>
+</div><p>
+<a class="anchor" name="g06446ed58fb59ad4b1208ea1281aed1b"></a><!-- doxytag: member="orxPluginType.h::orxPLUGIN_K_INIT_FUNCTION_NAME" ref="g06446ed58fb59ad4b1208ea1281aed1b" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -908,7 +931,7 @@ Plugin ID bits shift
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">static</span> <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
-  <span class="keyword">extern</span> <a class="code" href="group__orx_plugin.html#g540e90ccb4ee0fff6b1caea4e40fa5da">orxPLUGIN_KZ_IMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a>(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \
+  <span class="keyword">extern</span> <a class="code" href="group__orx_plugin.html#g540e90ccb4ee0fff6b1caea4e40fa5da">orxPLUGIN_KZ_IMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(PLUGIN_SUFFIX)(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \
   { \
     <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult = <a class="code" href="group__orx_type.html#gg18b11c4d0ed79ac2f8542e3bcfac340da6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>; \
     <a class="code" href="group__orx_plugin.html#gc61884b29f3bf244014c6c275eda4748">orxPLUGIN_USER_FUNCTION_START</a>(sau32##PLUGIN_SUFFIX##_Function);
@@ -1602,7 +1625,7 @@ Plugin ID bits shift
 <div class="memdoc">
 
 <p>
-Adds an info structure for the given core module. Has to be called during a core module init. <dl compact><dt><b>Parameters:</b></dt><dd>
+Adds an info structure for the given core module Has to be called during a core module init <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_ePluginCoreID</em>&nbsp;</td><td>The numeric id of the core plugin </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eModuleID</em>&nbsp;</td><td>Corresponding module ID </td></tr>
@@ -1806,7 +1829,7 @@ Adds an info structure for the given core module. Has to be called during a core
 <div class="memdoc">
 
 <p>
-Default core plugin function. Needs to be referenced by all core functions at module init. 
+Default core plugin function Needs to be referenced by all core functions at module init. 
 </div>
 </div><p>
 <a class="anchor" name="gb3021851c2e58f7038c69423e631ec3b"></a><!-- doxytag: member="orxPlugin.h::orxPlugin_Exit" ref="gb3021851c2e58f7038c69423e631ec3b" args="()" -->

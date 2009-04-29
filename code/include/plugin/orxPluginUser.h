@@ -54,9 +54,6 @@
  Constants
  *********************************************/
 
-/* Defines plugin registration main function */
-#define orxPLUGIN_K_INIT_FUNCTION_NAME                  orxPlugin_MainInit  /**< Plugin init function name */
-
 #ifdef __cplusplus
 
   #define orxPLUGIN_KZ_IMPORT  "C"
@@ -129,7 +126,7 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
 
 #define orxPLUGIN_USER_CORE_FUNCTION_START(PLUGIN_SUFFIX) \
   static orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
-  extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+  extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(PLUGIN_SUFFIX)(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
   { \
     orxSTATUS eResult = orxSTATUS_SUCCESS; \
     orxPLUGIN_USER_FUNCTION_START(sau32##PLUGIN_SUFFIX##_Function);
