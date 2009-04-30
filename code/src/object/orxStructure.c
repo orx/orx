@@ -419,7 +419,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           orxMemory_Zero(pstStructure, sstStructure.astInfo[_eStructureID].u32Size);
 
           /* Stores ID with magic number */
-          pstStructure->eID           = _eStructureID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE;
+          pstStructure->eID           = (orxSTRUCTURE_ID)(_eStructureID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE);
 
           /* Stores storage handle */
           pstStructure->hStorageNode  = (orxHANDLE)pstNode;
@@ -515,7 +515,7 @@ void orxFASTCALL orxStructure_Delete(void *_pStructure)
     orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstStructureBank, _pStructure);
 
     /* Tags structure as deleted */
-    orxSTRUCTURE(_pStructure)->eID = orxSTRUCTURE_MAGIC_TAG_DELETED;
+    orxSTRUCTURE(_pStructure)->eID = (orxSTRUCTURE_ID)orxSTRUCTURE_MAGIC_TAG_DELETED;
   }
   else
   {

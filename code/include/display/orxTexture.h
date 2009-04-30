@@ -108,7 +108,7 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(const orxTEXTURE 
  * @param[out]  _pfHeight       Texture's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture

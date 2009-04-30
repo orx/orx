@@ -235,13 +235,13 @@ void orxFASTCALL    orxModule_Setup(orxMODULE_ID _eModuleID)
  */
 void orxFASTCALL orxModule_SetupAll()
 {
-  orxMODULE_ID eID;
+  orxU32 eID;
 
   /* For all modules */
   for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
   {
     /* Calls module setup */
-    orxModule_Setup(eID);
+    orxModule_Setup((orxMODULE_ID)eID);
   }
 
   return;
@@ -280,7 +280,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
           if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
           {
             /* Inits it */
-            eResult = orxModule_Init(u32Index);
+            eResult = orxModule_Init((orxMODULE_ID)u32Index);
 
             /* Failed ? */
             if(eResult != orxSTATUS_SUCCESS)
@@ -304,7 +304,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
           if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
           {
             /* Inits it */
-            orxModule_Init(u32Index);
+            orxModule_Init((orxMODULE_ID)u32Index);
           }
         }
       }
@@ -358,7 +358,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_TEMP)
         {
           /* Internal exit call */
-          orxModule_Exit(u32Index);
+          orxModule_Exit((orxMODULE_ID)u32Index);
         }
       }
     }
@@ -382,15 +382,14 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
  */
 orxSTATUS orxFASTCALL orxModule_InitAll()
 {
-  orxMODULE_ID  eID;
-  orxSTATUS     eResult = orxSTATUS_SUCCESS;
-  orxU32        u32InitCounter;
+  orxU32    eID, u32InitCounter;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* For all modules */
   for(eID = 0, u32InitCounter = 0; eID < orxMODULE_ID_NUMBER; eID++)
   {
     /* Calls module init */
-    eResult = orxModule_Init(eID);
+    eResult = orxModule_Init((orxMODULE_ID)eID);
 
     /* Failed? */
     if(eResult == orxSTATUS_SUCCESS)
@@ -450,7 +449,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       if(sstModule.astModuleInfo[u32Index].u64DependFlags & u64Depend)
       {
         /* Exits from it */
-        orxModule_Exit(u32Index);
+        orxModule_Exit((orxMODULE_ID)u32Index);
       }
     }
 
@@ -461,7 +460,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       if(sstModule.astModuleInfo[u32Index].u64OptionalDependFlags & u64Depend)
       {
         /* Exits from it */
-        orxModule_Exit(u32Index);
+        orxModule_Exit((orxMODULE_ID)u32Index);
       }
     }
 
@@ -476,13 +475,13 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
  */
 void orxFASTCALL orxModule_ExitAll()
 {
-  orxMODULE_ID  eID;
+  orxU32 eID;
 
   /* For all modules */
   for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
   {
     /* Calls module exit */
-    orxModule_Exit(eID);
+    orxModule_Exit((orxMODULE_ID)eID);
   }
 
   /* Done! */

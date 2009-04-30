@@ -669,7 +669,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   u32ID = orxString_ToCRC(_zConfigID);
 
   /* Search for reference */
-  pstResult = orxHashTable_Get(sstFX.pstReferenceTable, u32ID);
+  pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, u32ID);
 
   /* Not already created? */
   if(pstResult == orxNULL)

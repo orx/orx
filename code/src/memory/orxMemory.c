@@ -223,7 +223,7 @@ void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.
  */
-orxDLLAPI void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 {
   return((void *)realloc(_pMem, _u32Size));
 }

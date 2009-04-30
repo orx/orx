@@ -624,7 +624,7 @@ orxCAMERA *orxFASTCALL orxCamera_Get(const orxSTRING _zName)
   orxASSERT(_zName != orxNULL);
 
   /* Updates result */
-  pstResult = orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zName));
+  pstResult = (orxCAMERA *)orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zName));
 
   /* Done! */
   return pstResult;

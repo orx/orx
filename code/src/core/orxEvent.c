@@ -237,9 +237,9 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
     orxEVENT_HANDLER *ppfnHandler;
 
     /* For all handler */
-    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+    for(ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, orxNULL);
         ppfnHandler != orxNULL;
-        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+        ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
     {
       /* Found? */
       if(*ppfnHandler == _pfnEventHandler)
@@ -285,9 +285,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
     orxEVENT_HANDLER *ppfnHandler;
 
     /* For all handler */
-    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+    for(ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, orxNULL);
         ppfnHandler != orxNULL;
-        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+        ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
     {
       /* Calls handler */
       if((*ppfnHandler)(_pstEvent) != orxSTATUS_FAILURE)
@@ -332,9 +332,9 @@ orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEv
     orxEVENT_HANDLER *ppfnHandler;
 
     /* For all handler */
-    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+    for(ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, orxNULL);
         ppfnHandler != orxNULL;
-        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+        ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
     {
       /* Calls handler */
       if((*ppfnHandler)(&stEvent) != orxSTATUS_FAILURE)

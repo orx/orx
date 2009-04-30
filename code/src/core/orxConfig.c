@@ -533,7 +533,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
   orxASSERT(_zValue != orxNULL);
 
   /* Creates entry */
-  pstEntry = orxBank_Allocate(sstConfig.pstCurrentSection->pstEntryBank);
+  pstEntry = (orxCONFIG_ENTRY *)orxBank_Allocate(sstConfig.pstCurrentSection->pstEntryBank);
 
   /* Valid? */
   if(pstEntry != orxNULL)
@@ -641,7 +641,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
   orxASSERT(_zSectionName != orxSTRING_EMPTY);
 
   /* Allocates it */
-  pstSection = orxBank_Allocate(sstConfig.pstSectionBank);
+  pstSection = (orxCONFIG_SECTION *)orxBank_Allocate(sstConfig.pstSectionBank);
 
   /* Valid? */
   if(pstSection != orxNULL)
@@ -2303,9 +2303,9 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
 
     /* For all entries in history */
-    for(pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
+    for(pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
         (pzHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
-        pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
+        pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
     {
       /* Reloads it */
       eResult = orxConfig_Load(*pzHistoryEntry);

@@ -298,7 +298,7 @@ orxSHADER *orxFASTCALL orxShader_Create()
  */
 orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxU32  u32ID;
+  orxU32      u32ID;
   orxSHADER  *pstResult;
 
   /* Checks */
@@ -309,7 +309,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   u32ID = orxString_ToCRC(_zConfigID);
 
   /* Search for reference */
-  pstResult = orxHashTable_Get(sstShader.pstReferenceTable, u32ID);
+  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, u32ID);
 
   /* Not already created? */
   if(pstResult == orxNULL)

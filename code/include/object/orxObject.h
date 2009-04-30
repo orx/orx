@@ -323,14 +323,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
 /** Is target animation test
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
 
 /** Gets object's bounding box (OBB)

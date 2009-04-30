@@ -128,7 +128,7 @@ static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
   register orxTEXTURE *pstTexture;
 
   /* Gets texture from hash table */
-  pstTexture = orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
+  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
 
   /* Done! */
   return pstTexture;
@@ -569,7 +569,7 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(const orxTEXTURE *_pstTexture)
  * @param[out]  _pfHeight       Texture's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult;
 

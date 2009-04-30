@@ -2004,7 +2004,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
   else
   {
     /* Updates result */
-    eResult = orxFALSE;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -2016,7 +2016,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+orxBOOL orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxBOOL         bResult;
@@ -2050,7 +2050,7 @@ orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxST
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-orxSTATUS orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+orxBOOL orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxBOOL         bResult;
@@ -2193,7 +2193,7 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, const orxVECTOR 
     orxVector_Copy(&(_pstObject->vSpeed), _pvSpeed);
 
     /* Updates result */
-    eResult = orxTRUE;
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -2254,7 +2254,7 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
     _pstObject->fAngularVelocity = _fVelocity;
 
     /* Updates result */
-    eResult = orxTRUE;
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

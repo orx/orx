@@ -39,7 +39,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gb567f0e3fc2242ba86b99585b8952d30">orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g644b1bd6e2a5987438ebef28848dd097">orxPLUGIN_ADD_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX, FUNCTION_SUFFIX, FUNCTION_NAME)&nbsp;&nbsp;&nbsp;{orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX, (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a> *)&amp;orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a>)&amp;orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)},</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g644b1bd6e2a5987438ebef28848dd097">orxPLUGIN_ADD_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX, FUNCTION_SUFFIX, FUNCTION_NAME)&nbsp;&nbsp;&nbsp;{(<a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a>)orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX, (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a> *)&amp;orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a>)&amp;orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)},</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g7416306ffde890b27a29471229a906d9">orxPLUGIN_END_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX)</td></tr>
 
@@ -60,8 +60,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a>&nbsp;&nbsp;&nbsp;orxPlugin_MainInit</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(SUFFIX)&nbsp;&nbsp;&nbsp;orxPlugin_MainInit</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g540e90ccb4ee0fff6b1caea4e40fa5da">orxPLUGIN_KZ_IMPORT</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g071a2272df71ff393d741088a9537fd4">orxPLUGIN_DECLARE_ENTRY_POINT</a>(ENTRY_FUNCTION)</td></tr>
 
@@ -444,7 +442,7 @@ Plugin user header This header is used to define structures &amp; functions for 
           <td class="paramtype">FUNCTION_NAME&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;{orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX, (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a> *)&amp;orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a>)&amp;orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)},</td>
+          <td>&nbsp;&nbsp;&nbsp;{(<a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a>)orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX, (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a> *)&amp;orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), (<a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a>)&amp;orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)},</td>
         </tr>
       </table>
 </div>
@@ -553,7 +551,7 @@ Plugin user header This header is used to define structures &amp; functions for 
 <div class="memdoc">
 
 <p>
-<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">extern</span> <a class="code" href="group__orx_plugin.html#g540e90ccb4ee0fff6b1caea4e40fa5da">orxPLUGIN_KZ_IMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a>(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \
+<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gb970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a>(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \
 {                                                       \
   <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;                                    \
                                                         \
@@ -779,21 +777,6 @@ Plugin ID mask
 Plugin ID bits shift 
 </div>
 </div><p>
-<a class="anchor" name="g540e90ccb4ee0fff6b1caea4e40fa5da"></a><!-- doxytag: member="orxPluginUser.h::orxPLUGIN_KZ_IMPORT" ref="g540e90ccb4ee0fff6b1caea4e40fa5da" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxPLUGIN_KZ_IMPORT          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-
-</div>
-</div><p>
 <a class="anchor" name="gf27c27d746c6a658e421baaf68f117a2"></a><!-- doxytag: member="orxPluginType.h::orxPLUGIN_MAKE_CORE_FUNCTION_ID" ref="gf27c27d746c6a658e421baaf68f117a2" args="(PLUGIN_CORE_ID, FUNCTION_BASE_ID)" -->
 <div class="memitem">
 <div class="memproto">
@@ -931,7 +914,7 @@ Plugin ID bits shift
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">static</span> <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
-  <span class="keyword">extern</span> <a class="code" href="group__orx_plugin.html#g540e90ccb4ee0fff6b1caea4e40fa5da">orxPLUGIN_KZ_IMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(PLUGIN_SUFFIX)(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \
+  <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gb970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(PLUGIN_SUFFIX)(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \
   { \
     <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult = <a class="code" href="group__orx_type.html#gg18b11c4d0ed79ac2f8542e3bcfac340da6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>; \
     <a class="code" href="group__orx_plugin.html#gc61884b29f3bf244014c6c275eda4748">orxPLUGIN_USER_FUNCTION_START</a>(sau32##PLUGIN_SUFFIX##_Function);

@@ -458,7 +458,7 @@ orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE
   orxASSERT(_pstInitialState != orxNULL);
 
   /* Verify that the proposed initial state is part of the FSM. */
-  pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, orxNULL);
+  pstState = (orxFSM_STATE *)orxBank_GetNext(_pstStateMachine->pstStatesBank, orxNULL);
   while(pstState != orxNULL && eStatus == orxSTATUS_FAILURE)
   {
     if(pstState == _pstInitialState)
@@ -468,7 +468,7 @@ orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE
     }
 
     /* Explore the next state. */
-    pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, pstState);
+    pstState = (orxFSM_STATE *)orxBank_GetNext(_pstStateMachine->pstStatesBank, pstState);
   }
 
   if(eStatus == orxSTATUS_SUCCESS)
@@ -493,7 +493,7 @@ orxFSM_STATE *orxFASTCALL orxFSM_GetState(const orxFSM *_pstStateMachine, orxU16
   /* Correct parameters? */
   orxASSERT(_pstStateMachine != orxNULL);
 
-  return orxHashTable_Get(_pstStateMachine->pstStatesHashTable, _u16Id);
+  return (orxFSM_STATE *)orxHashTable_Get(_pstStateMachine->pstStatesHashTable, _u16Id);
 }
 
 /** Get a state Id.
@@ -532,7 +532,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
   orxASSERT(_pstState != orxNULL);
 
   /* Search and manage related links. */
-  pstLink = orxBank_GetNext(_pstStateMachine->pstLinksBank, orxNULL);
+  pstLink = (orxFSM_LINK *)orxBank_GetNext(_pstStateMachine->pstLinksBank, orxNULL);
   while(pstLink != orxNULL && eStatus == orxSTATUS_SUCCESS)
   {
     if(pstLink->pstBeginningState == _pstState || pstLink->pstEndingState == _pstState)
@@ -560,7 +560,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
     }
 
     /* Explore the next link. */
-    pstLink = orxBank_GetNext(_pstStateMachine->pstLinksBank, pstLink);
+    pstLink = (orxFSM_LINK *)orxBank_GetNext(_pstStateMachine->pstLinksBank, pstLink);
   }
 
   if(eStatus == orxSTATUS_SUCCESS)
@@ -643,7 +643,7 @@ orxFSM_LINK *orxFASTCALL orxFSM_GetLink(const orxFSM *_pstStateMachine, const or
   orxASSERT(_pstBeginningState != orxNULL);
   orxASSERT(_pstEndingState != orxNULL);
 
-  return orxHashTable_Get(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(_pstBeginningState->u16Id, _pstEndingState->u16Id));
+  return (orxFSM_LINK *)orxHashTable_Get(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(_pstBeginningState->u16Id, _pstEndingState->u16Id));
 }
 
 /**Remove a link.
@@ -833,14 +833,14 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
         orxFSM_LINK *pstLink;             /* Explored link. */
 
         /* Find an applicable link to follow. */
-        pstTestedState = orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, orxNULL);
+        pstTestedState = (orxFSM_STATE *)orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, orxNULL);
         while(pstTestedState != orxNULL)
         {
           pstLink = orxFSM_GetLink(_pstInstance->pstStateMachine, _pstInstance->pstCurrentState, pstTestedState);
           if(pstLink == orxNULL)
           {
             /* A link has not been found yet... continue the search. */
-            pstTestedState = orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, pstTestedState);
+            pstTestedState = (orxFSM_STATE *)orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, pstTestedState);
           }
           else
           {
@@ -864,7 +864,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
             else
             {
               /* The link was not valid... search a new one. */
-              pstTestedState = orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, pstTestedState);
+              pstTestedState = (orxFSM_STATE *)orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, pstTestedState);
             }
           }
         }
@@ -898,10 +898,11 @@ orxSTATUS orxFASTCALL orxFSM_Update(orxFSM *_pstStateMachine)
   orxASSERT(_pstStateMachine != orxNULL);
 
   /* Loop while there are instances and no problem. */
-  pstInstance = orxBank_GetNext(_pstStateMachine->pstInstancesBank, orxNULL);
+  pstInstance = (orxFSM_INSTANCE *)orxBank_GetNext(_pstStateMachine->pstInstancesBank, orxNULL);
   while(pstInstance != orxNULL && eStatus == orxSTATUS_SUCCESS)
   {
     eStatus = orxFSM_UpdateInstance(pstInstance);
+    pstInstance = (orxFSM_INSTANCE *)orxBank_GetNext(_pstStateMachine->pstInstancesBank, pstInstance);
   }
 
   return eStatus;

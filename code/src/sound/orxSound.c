@@ -135,7 +135,7 @@ static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName
   u32ID = orxString_ToCRC(_zFileName);
 
   /* Looks for reference */
-  pstResult = orxHashTable_Get(sstSound.pstReferenceTable, u32ID);
+  pstResult = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstReferenceTable, u32ID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -146,7 +146,7 @@ static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName
   else
   {
     /* Allocates a sample */
-    pstResult = orxBank_Allocate(sstSound.pstSampleBank);
+    pstResult = (orxSOUND_SAMPLE *)orxBank_Allocate(sstSound.pstSampleBank);
 
     /* Valid? */
     if(pstResult != orxNULL)
@@ -218,7 +218,7 @@ static orxINLINE void orxSound_UnloadAllSample()
   orxSOUND_SAMPLE *pstSample;
 
   /* Gets first sample */
-  pstSample = orxBank_GetNext(sstSound.pstSampleBank, orxNULL);
+  pstSample = (orxSOUND_SAMPLE *)orxBank_GetNext(sstSound.pstSampleBank, orxNULL);
 
   /* Non empty? */
   while(pstSample != orxNULL)
@@ -227,7 +227,7 @@ static orxINLINE void orxSound_UnloadAllSample()
     orxSound_UnloadSample(pstSample);
 
     /* Gets first sample */
-    pstSample = orxBank_GetNext(sstSound.pstSampleBank, orxNULL);
+    pstSample = (orxSOUND_SAMPLE *)orxBank_GetNext(sstSound.pstSampleBank, orxNULL);
   }
 
   return;

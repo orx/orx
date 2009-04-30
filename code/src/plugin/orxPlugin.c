@@ -126,7 +126,7 @@
 
 /** Plugin main function prototype
  */
-typedef orxSTATUS (*orxPLUGIN_MAIN_FUNCTION)();
+typedef orxSTATUS (*orxPLUGIN_MAIN_FUNCTION)(orxU32 *_peUserFunctionNumber, orxPLUGIN_USER_FUNCTION_INFO **_pastUserFunctionInfo);
 
 
 /***************************************************************************
@@ -510,9 +510,9 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
   orxASSERT(_pstPluginInfo != orxNULL);
 
   /* Deletes all function info */
-  for(pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
+  for(pstFunctionInfo = (orxPLUGIN_FUNCTION_INFO *)orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
       pstFunctionInfo != orxNULL;
-      pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL))
+      pstFunctionInfo = (orxPLUGIN_FUNCTION_INFO *)orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL))
   {
     /* Is it a core function? */
     if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
@@ -728,7 +728,7 @@ static orxINLINE void orxPlugin_DeleteAll()
   orxPLUGIN_INFO *pstPluginInfo;
 
   /* Gets first plugin info */
-  pstPluginInfo = orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
+  pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
 
   /* Not empty */
   while(pstPluginInfo != orxNULL)
@@ -737,7 +737,7 @@ static orxINLINE void orxPlugin_DeleteAll()
     orxPlugin_DeletePluginInfo(pstPluginInfo);
 
     /* Gets first plugin info */
-    pstPluginInfo = orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
+    pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
   }
 
   return;
@@ -1100,7 +1100,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, c
   if(pstPluginInfo != orxNULL)
   {
     /* Tries to get the function handle */
-    pfnFunction = orxPlugin_GetFunctionAddress(pstPluginInfo->hPluginHandle, _zFunctionName);
+    pfnFunction = orxPlugin_GetFunctionAddress((orxSYSPLUGIN)pstPluginInfo->hPluginHandle, _zFunctionName);
 
     /* Not found? */
     if(pfnFunction == orxNULL)
@@ -1133,9 +1133,9 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
   orxASSERT(_zPluginName != orxNULL);
 
   /* Search all plugin info */
-  for(pstPluginInfo = orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
+  for(pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
       pstPluginInfo != orxNULL;
-      pstPluginInfo = orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))
+      pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))
   {
     /* Found? */
     if(orxString_Compare(_zPluginName, pstPluginInfo->zPluginName) == 0)

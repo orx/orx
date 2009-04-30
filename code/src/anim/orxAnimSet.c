@@ -1424,7 +1424,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
 
   /* Search for reference */
-  pstResult = orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_ToCRC(_zConfigID));
+  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_ToCRC(_zConfigID));
 
   /* Not already created? */
   if(pstResult == orxNULL)
