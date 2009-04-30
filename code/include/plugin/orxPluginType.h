@@ -47,12 +47,15 @@
  Constants / Defines
  *********************************************/
 
-#define orxPLUGIN_KU32_FLAG_CORE_ID     0x10000000    /**< Plugin core ID flag */
+#define orxPLUGIN_KU32_FLAG_CORE_ID             0x10000000    /**< Plugin core ID flag */
 
-#define orxPLUGIN_KU32_MASK_PLUGIN_ID   0x0000FF00    /**< Plugin ID mask */
-#define orxPLUGIN_KU32_SHIFT_PLUGIN_ID  8             /**< Plugin ID bits shift */
+#define orxPLUGIN_KU32_MASK_PLUGIN_ID           0x0000FF00    /**< Plugin ID mask */
+#define orxPLUGIN_KU32_SHIFT_PLUGIN_ID          8             /**< Plugin ID bits shift */
 
-#define orxPLUGIN_KU32_MASK_FUNCTION_ID 0x000000FF    /**< Plugin function mask */
+#define orxPLUGIN_KU32_MASK_FUNCTION_ID         0x000000FF    /**< Plugin function mask */
+
+/* Argument max size */
+#define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
 
 
 /* Macro for getting plugin function id */

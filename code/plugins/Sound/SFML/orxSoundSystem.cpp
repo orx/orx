@@ -42,7 +42,10 @@
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL       0xFFFFFFFF /**< All mask */
 
 
-static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+namespace orxSoundSystem
+{
+  static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+}
 
 
 /***************************************************************************
@@ -117,7 +120,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Init()
     else
     {
       /* Stores default one */
-      sstSoundSystem.fDimensionRatio = sfDefaultDimensionRatio;
+      sstSoundSystem.fDimensionRatio = (orxFLOAT)orxSoundSystem::sfDefaultDimensionRatio;
     }
 
     /* Stores reciprocal dimenstion ratio */

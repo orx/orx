@@ -168,7 +168,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         pstBitmap = orxTexture_GetBitmap(pstTexture);
 
         /* Gets rendering frame's position, rotation & scale */
-        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFALSE);
+        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
         orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
         orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
@@ -438,7 +438,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
 
         /* Gets rendering frame's position, rotation & scale */
-        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFALSE);
+        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
         orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
         orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
@@ -747,7 +747,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                             orxLINKLIST_NODE *pstNode;
 
                             /* Creates a render node */
-                            pstRenderNode = orxBank_Allocate(sstRender.pstRenderBank);
+                            pstRenderNode = (orxRENDER_NODE *)orxBank_Allocate(sstRender.pstRenderBank);
 
                             /* Cleans its internal node */
                             orxMemory_Zero(pstRenderNode, sizeof(orxLINKLIST_NODE));

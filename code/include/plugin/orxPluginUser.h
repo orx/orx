@@ -71,9 +71,6 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_
   return eResult;                                       \
 }
 
-/* Argument max size */
-#define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
-
 
 /*********************************************
  Structures
@@ -131,17 +128,6 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_
   orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo); \
   return eResult; \
   }
-
-
-/* Structure */
-typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
-{
-  orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID */
-  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address */
-  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types */
-  orxSTRING zFunctionName;                                  /**< Function Name */
-
-} orxPLUGIN_USER_FUNCTION_INFO;
 
 #endif /* _orxPLUGIN_USER_H_ */
 

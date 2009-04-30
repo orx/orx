@@ -25,6 +25,8 @@
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g0ff3c377c1f92fb4bb44c32de9a59705">orxPLUGIN_CORE_FUNCTION_POINTER_NAME</a>(FUNCTION_NAME)&nbsp;&nbsp;&nbsp;_orxCoreFunctionPointer_##FUNCTION_NAME</td></tr>
 
@@ -41,6 +43,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g7416306ffde890b27a29471229a906d9">orxPLUGIN_END_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g86f73fa692ea5cbb4c4480d8d01bfaa2">orxPLUGIN_REGISTER_CORE_INFO</a>(PLUGIN_SUFFIX)&nbsp;&nbsp;&nbsp;orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(<a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a>));</td></tr>
+
+<tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g0509b2d61ddb1a3baf4c2a7dedf6a5b1">orxPLUGIN_INIT_FUNCTION</a> )(orxU32 *_peUserFunctionNumber, <a class="el" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_pastUserFunctionInfo)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gc2d80ed85322ebf239a94637e627fbef">orxPlugin_AddCoreInfo</a> (<a class="el" href="group__orx_plugin.html#gc8f3a703cf9f5799bff24a129beee67e">orxPLUGIN_CORE_ID</a> _ePluginCoreID, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, const <a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a> *_astCoreFunction, orxU32 _u32CoreFunctionNumber)</td></tr>

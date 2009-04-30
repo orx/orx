@@ -55,6 +55,7 @@
  Structures
  *********************************************/
  
+/* Structure */
 typedef struct __orxPLUGIN_CORE_FUNCTION_t
 {
   orxPLUGIN_FUNCTION_ID eFunctionID;        /**< Function ID : 4 */
@@ -64,6 +65,21 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
   orxPAD(12)                                /**< Padding */
 
 } orxPLUGIN_CORE_FUNCTION;
+
+/* Structure */
+typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
+{
+  orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID */
+  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address */
+  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types */
+  orxSTRING zFunctionName;                                  /**< Function Name */
+
+} orxPLUGIN_USER_FUNCTION_INFO;
+
+
+/** Plugin init function prototype
+ */
+typedef orxSTATUS (*orxPLUGIN_INIT_FUNCTION)(orxU32 *_peUserFunctionNumber, orxPLUGIN_USER_FUNCTION_INFO **_pastUserFunctionInfo);
 
 
 /*********************************************
@@ -88,7 +104,7 @@ extern orxDLLAPI void orxFASTCALL     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _e
  * @param[in] _pfnPluginInit          Embedded plug-in init function
  * @return nothing
  */
-extern orxDLLAPI void orxFASTCALL     orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_FUNCTION _pfnPluginInit);
+extern orxDLLAPI void orxFASTCALL     orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_INIT_FUNCTION _pfnPluginInit);
 
 #endif /* __orxEMBEDDED__ */
 
@@ -153,6 +169,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 /* *** Core info array end macro *** */
 #define orxPLUGIN_END_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                        \
   };                                                                            \
+  extern orxIMPORT orxSTATUS orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(PLUGIN_SUFFIX)(orxU32 *, orxPLUGIN_USER_FUNCTION_INFO **); \
   extern orxDLLAPI void orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()  \
   {                                                                             \
     orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX);                                \
@@ -170,7 +187,6 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 
   /* *** Core info register macro *** */
   #define orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX)                             \
-    extern orxSTATUS orxFASTCALL orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(PLUGIN_SUFFIX)(); \
     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION)); \
     orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(PLUGIN_SUFFIX))
 

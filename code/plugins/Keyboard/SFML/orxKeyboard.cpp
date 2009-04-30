@@ -301,7 +301,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_GetKeyID(sf::Key::Code _eKey
 
 /** Event handler
  */
-static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxKeyboard_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -363,9 +363,9 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
     /* Registers our keyboard event handlers */
-    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), EventHandler) != orxSTATUS_FAILURE))
+    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), orxKeyboard_SFML_EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), orxKeyboard_SFML_EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), orxKeyboard_SFML_EventHandler) != orxSTATUS_FAILURE))
     {
       /* Terrible hack : gets application input from SFML display plugin */
       sstKeyboard.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
@@ -383,9 +383,9 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Init()
     else
     {
       /* Removes event handlers */
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), orxKeyboard_SFML_EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), orxKeyboard_SFML_EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), orxKeyboard_SFML_EventHandler);
     }
   }
 

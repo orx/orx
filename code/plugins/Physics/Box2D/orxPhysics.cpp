@@ -49,10 +49,12 @@
 
 #define orxPHYSICS_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-
-static const orxU32   su32DefaultIterations   = 10;
-static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
-static const orxU32   su32MessageBankSize     = 64;
+namespace orxPhysics
+{
+  static const orxU32   su32DefaultIterations   = 10;
+  static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+  static const orxU32   su32MessageBankSize     = 64;
+}
 
 
 /***************************************************************************
@@ -969,7 +971,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     else
     {
       /* Stores default one */
-      sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
+      sstPhysics.fDimensionRatio = orxPhysics::sfDefaultDimensionRatio;
     }
 
     /* Gets world corners from config */
@@ -1014,7 +1016,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       else
       {
         /* Uses default value */
-        sstPhysics.u32Iterations = su32DefaultIterations;
+        sstPhysics.u32Iterations = orxPhysics::su32DefaultIterations;
       }
 
       /* Creates physics clock */
@@ -1033,7 +1035,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Creates event bank */
-          sstPhysics.pstEventBank = orxBank_Create(su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
           /* Updates status */
           sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;

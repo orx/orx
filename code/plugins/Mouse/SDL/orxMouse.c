@@ -74,7 +74,7 @@ static orxMOUSE_STATIC sstMouse;
 
 /** Event handler
  */
-static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxMouse_SDL_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -176,10 +176,10 @@ orxSTATUS orxFASTCALL orxMouse_SDL_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers our mouse event handler */
-      if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), EventHandler) != orxSTATUS_FAILURE)
+      if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), orxMouse_SDL_EventHandler) != orxSTATUS_FAILURE)
       {
         /* Registers our mouse wheell event handler */
-        if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN), EventHandler) != orxSTATUS_FAILURE)
+        if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN), orxMouse_SDL_EventHandler) != orxSTATUS_FAILURE)
         {
           /* Updates status */
           sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
@@ -200,7 +200,7 @@ orxSTATUS orxFASTCALL orxMouse_SDL_Init()
         else
         {
           /* Removes event handler */
-          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), EventHandler);
+          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), orxMouse_SDL_EventHandler);
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
@@ -219,8 +219,8 @@ void orxFASTCALL orxMouse_SDL_Exit()
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
     /* Unregisters event handlers */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN), EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), orxMouse_SDL_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN), orxMouse_SDL_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));

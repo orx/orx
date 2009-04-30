@@ -53,6 +53,7 @@ void orxFASTCALL orxJoystick_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_DISPLAY);
 
   return;
 }

@@ -44,7 +44,14 @@
 /** Includes all plugins to embed
  */
 //! TODO
-//#include <../plugins/System/SFML/orxSystem.cpp>
+#include <../plugins/Display/SFML/orxDisplay.cpp>
+#include <../plugins/Joystick/SFML/orxJoystick.cpp>
+#include <../plugins/Keyboard/SFML/orxKeyboard.cpp>
+#include <../plugins/Mouse/SFML/orxMouse.cpp>
+#include <../plugins/Physics/Box2D/orxPhysics.cpp>
+#include <../plugins/Render/Home/orxRender.c>
+#include <../plugins/Sound/SFML/orxSoundSystem.cpp>
+#include <../plugins/System/SFML/orxSystem.cpp>
 
 #endif /* __orxEMBEDDED__ */
 

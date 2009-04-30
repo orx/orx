@@ -72,7 +72,7 @@ static orxJOYSTICK_STATIC sstJoystick;
 
 /** Event handler
  */
-static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxJoystick_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -114,8 +114,8 @@ extern "C" orxSTATUS orxFASTCALL orxJoystick_SFML_Init()
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
     /* Registers our keyboard event handlers */
-    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), EventHandler) != orxSTATUS_FAILURE))
+    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler) != orxSTATUS_FAILURE))
     {
       /* Terrible hack : gets application input from display SFML plugin */
       sstJoystick.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
@@ -133,8 +133,8 @@ extern "C" orxSTATUS orxFASTCALL orxJoystick_SFML_Init()
     else
     {
       /* Removes event handlers */
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler);
+      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler);
     }
   }
 

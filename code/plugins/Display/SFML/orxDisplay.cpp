@@ -44,15 +44,17 @@
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
-static const orxU32     su32ScreenWidth         = 1024;
-static const orxU32     su32ScreenHeight        = 768;
-static const orxU32     su32ScreenDepth         = 32;
-static const orxBITMAP *spoScreen               = (const orxBITMAP *)-1;
-static const orxU32     su32TextBankSize        = 32;
-static const orxU32     su32InstantTextBankSize = 4;
-static const orxU32     su32FontTableSize       = 4;
-static const orxSTRING  szPlaceHolderString     = " "; /* Prevents a weird bug when creating a sf::String with SFML 1.4 on mac OS X */
-
+namespace orxDisplay
+{
+  static const orxU32     su32ScreenWidth         = 1024;
+  static const orxU32     su32ScreenHeight        = 768;
+  static const orxU32     su32ScreenDepth         = 32;
+  static const orxBITMAP *spoScreen               = (const orxBITMAP *)-1;
+  static const orxU32     su32TextBankSize        = 32;
+  static const orxU32     su32InstantTextBankSize = 4;
+  static const orxU32     su32FontTableSize       = 4;
+  static const orxSTRING  szPlaceHolderString     = " "; /* Prevents a weird bug when creating a sf::String with SFML 1.4 on mac OS X */
+}
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -185,7 +187,7 @@ static orxINLINE sf::Blend::Mode orxDisplay_SFML_GetBlendMode(orxDISPLAY_BLEND_M
 
 /** Event handler
  */
-static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxDisplay_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -319,7 +321,7 @@ static void orxFASTCALL orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClo
 
 extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_GetScreen()
 {
-  return const_cast<orxBITMAP *>(spoScreen);
+  return const_cast<orxBITMAP *>(orxDisplay::spoScreen);
 }
 
 extern "C" orxDISPLAY_TEXT *orxFASTCALL orxDisplay_SFML_CreateText()
@@ -339,12 +341,12 @@ extern "C" orxDISPLAY_TEXT *orxFASTCALL orxDisplay_SFML_CreateText()
     if(sstDisplay.poDefaultFont != orxNULL)
     {
       /* Allocates text */
-      pstResult->poString = new sf::String(szPlaceHolderString, *sstDisplay.poDefaultFont);
+      pstResult->poString = new sf::String(orxDisplay::szPlaceHolderString, *sstDisplay.poDefaultFont);
     }
     else
     {
       /* Allocates text */
-      pstResult->poString = new sf::String(szPlaceHolderString);
+      pstResult->poString = new sf::String(orxDisplay::szPlaceHolderString);
     }
 
     /* No string nor font */
@@ -375,7 +377,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(orxBITMAP *_pstDs
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
   orxASSERT(_pstText != orxNULL);
   orxASSERT(_pstTransform != orxNULL);
 
@@ -530,7 +532,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_PrintString(const orxBITMAP *_p
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_pstBitmap == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
   orxASSERT(_pstTransform != orxNULL);
 
   /* Valid? */
@@ -603,7 +605,7 @@ extern "C" void orxFASTCALL orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Not screen? */
-  if(_pstBitmap != spoScreen)
+  if(_pstBitmap != orxDisplay::spoScreen)
   {
     /* Gets sprite */
     poSprite = (sf::Sprite *)_pstBitmap;
@@ -662,7 +664,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitm
   oColor = sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor));
 
   /* Is not screen? */
-  if(_pstBitmap != spoScreen)
+  if(_pstBitmap != orxDisplay::spoScreen)
   {
     sf::Image  *poImage;
     orxU32     *pu32Cursor, *pu32End, u32Color;
@@ -733,7 +735,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_p
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != orxDisplay::spoScreen));
 
   /* Gets image */
   poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
@@ -761,7 +763,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstB
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != orxDisplay::spoScreen));
 
   /* Gets sprite */
   poSprite = (sf::Sprite *)_pstBitmap;
@@ -781,7 +783,7 @@ extern "C" orxRGBA orxFASTCALL orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != orxDisplay::spoScreen));
 
   /* Gets image */
   poSprite = (sf::Sprite *)_pstBitmap;
@@ -804,8 +806,8 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, 
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != spoScreen));
-  orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != orxDisplay::spoScreen));
+  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
 
   /* Gets sprite */
   poSprite = (sf::Sprite *)_pstSrc;
@@ -833,8 +835,8 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(orxBITMAP *_pst
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != spoScreen));
-  orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != orxDisplay::spoScreen));
+  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
   orxASSERT(_pstTransform != orxNULL);
 
   /* Gets sprite */
@@ -925,7 +927,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SaveBitmap(const orxBITMAP *_ps
   orxASSERT(_zFilename != orxNULL);
 
   /* Not screen? */
-  if(_pstBitmap != spoScreen)
+  if(_pstBitmap != orxDisplay::spoScreen)
   {
     sf::Image *poImage;
 
@@ -1001,7 +1003,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapSize(const orxBITMAP *
   orxASSERT(_pfHeight != orxNULL);
 
   /* Not screen? */
-  if(_pstBitmap != spoScreen)
+  if(_pstBitmap != orxDisplay::spoScreen)
   {
     sf::Image *poImage;
 
@@ -1054,7 +1056,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_p
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Screen? */
-  if(_pstBitmap == spoScreen)
+  if(_pstBitmap == orxDisplay::spoScreen)
   {
     /* Stores screen clipping */
     glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
@@ -1126,20 +1128,20 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
     /* Registers our mouse event handler */
-    if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler) != orxSTATUS_FAILURE)
+    if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxDisplay_SFML_EventHandler) != orxSTATUS_FAILURE)
     {
       /* Registers our mouse wheell event handler */
-      if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), EventHandler) != orxSTATUS_FAILURE)
+      if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxDisplay_SFML_EventHandler) != orxSTATUS_FAILURE)
       {
         /* Creates font table */
-        sstDisplay.pstFontTable = orxHashTable_Create(su32FontTableSize, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        sstDisplay.pstFontTable = orxHashTable_Create(orxDisplay::su32FontTableSize, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
         /* Valid? */
         if(sstDisplay.pstFontTable != orxNULL)
         {
           /* Creates text banks */
-          sstDisplay.pstTextBank        = orxBank_Create(su32TextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-          sstDisplay.pstInstantTextBank = orxBank_Create(su32InstantTextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstDisplay.pstTextBank        = orxBank_Create(orxDisplay::su32TextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstDisplay.pstInstantTextBank = orxBank_Create(orxDisplay::su32InstantTextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
           /* Valid? */
           if((sstDisplay.pstTextBank != orxNULL) && (sstDisplay.pstInstantTextBank != orxNULL))
@@ -1180,7 +1182,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
             if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle)) == orxNULL)
             {
               /* Inits default rendering window */
-              sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight, su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle);
+              sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(orxDisplay::su32ScreenWidth, orxDisplay::su32ScreenHeight, orxDisplay::su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle);
             }
 
             /* Clears rendering window */
@@ -1238,13 +1240,13 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
           else
           {
             /* Removes event handler */
-            orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler);
+            orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxDisplay_SFML_EventHandler);
           }
         }
         else
         {
           /* Removes event handler */
-          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler);
+          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxDisplay_SFML_EventHandler);
         }
       }
     }
@@ -1268,8 +1270,8 @@ extern "C" void orxFASTCALL orxDisplay_SFML_Exit()
     orxU32    u32Key;
 
     /* Unregisters event handlers */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxDisplay_SFML_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxDisplay_SFML_EventHandler);
 
     /* For all fonts */
     while(orxHashTable_FindFirst(sstDisplay.pstFontTable, &u32Key, (void **)&poFont) != orxHANDLE_UNDEFINED)
@@ -1443,7 +1445,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
   poFX = (sf::PostFX *)_hShader;
 
   /* Screen? */
-  if((_pstValue == orxNULL) || (_pstValue == spoScreen))
+  if((_pstValue == orxNULL) || (_pstValue == orxDisplay::spoScreen))
   {
     /* Sets texture */
     poFX->SetTexture(_zParam, NULL);

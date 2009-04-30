@@ -53,6 +53,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g2fd4a16dc14944caf2511cd55cbe72a2">orxPLUGIN_KU32_MASK_FUNCTION_ID</a>&nbsp;&nbsp;&nbsp;0x000000FF</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#ga6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a>&nbsp;&nbsp;&nbsp;128</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g827e16c99bb34554b9db8c1d90d937a0">orxPLUGIN_MAKE_FUNCTION_ID</a>(PLUGIN_ID, FUNCTION_BASE_ID)&nbsp;&nbsp;&nbsp;(<a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a>)(((PLUGIN_ID &lt;&lt; orxPLUGIN_KU32_SHIFT_PLUGIN_ID) &amp; orxPLUGIN_KU32_MASK_PLUGIN_ID) | (FUNCTION_BASE_ID &amp; orxPLUGIN_KU32_MASK_FUNCTION_ID))</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gf27c27d746c6a658e421baaf68f117a2">orxPLUGIN_MAKE_CORE_FUNCTION_ID</a>(PLUGIN_CORE_ID, FUNCTION_BASE_ID)&nbsp;&nbsp;&nbsp;(<a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a>)(orxPLUGIN_KU32_FLAG_CORE_ID | orxPLUGIN_MAKE_FUNCTION_ID(PLUGIN_CORE_ID, FUNCTION_BASE_ID))</td></tr>
@@ -62,8 +64,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(SUFFIX)&nbsp;&nbsp;&nbsp;orxPlugin_MainInit</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g071a2272df71ff393d741088a9537fd4">orxPLUGIN_DECLARE_ENTRY_POINT</a>(ENTRY_FUNCTION)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#ga6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a>&nbsp;&nbsp;&nbsp;128</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#ge68e2f1653de6d09f92f98212d158652">_orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL</a>(FUNCTION, FUNCTION_ID, NAME, ARGS)</td></tr>
 
@@ -80,6 +80,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#ge330278ae9ee2b6f7005ba898f6080e4">orxPLUGIN_USER_CORE_FUNCTION_END</a>()</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g0509b2d61ddb1a3baf4c2a7dedf6a5b1">orxPLUGIN_INIT_FUNCTION</a> )(orxU32 *_peUserFunctionNumber, <a class="el" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_pastUserFunctionInfo)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gee95a834a645318e1cebd9753324ffa7">orxPLUGIN_FUNCTION</a> )()</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
@@ -659,6 +661,7 @@ Plugin user header This header is used to define structures &amp; functions for 
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment">};                                                                            \
+  <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gb970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> <a class="code" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#g3b42d2893b37f907792640c16e231a2c">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(PLUGIN_SUFFIX)(orxU32 *, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **); \
   <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> <a class="code" href="group__orx_plugin.html#g87c12bc67d2607a888c7d01cb1199676">orxPLUGIN_CORE_REGISTER_FUNCTION_NAME</a>(PLUGIN_SUFFIX)()  \
   {                                                                             \
     <a class="code" href="group__orx_plugin.html#g86f73fa692ea5cbb4c4480d8d01bfaa2">orxPLUGIN_REGISTER_CORE_INFO</a>(PLUGIN_SUFFIX);                                \
@@ -717,7 +720,7 @@ Plugin init function name
 Plugin core ID flag 
 </div>
 </div><p>
-<a class="anchor" name="ga6c1f8c5e57881b220104ade34166944"></a><!-- doxytag: member="orxPluginUser.h::orxPLUGIN_KU32_FUNCTION_ARG_SIZE" ref="ga6c1f8c5e57881b220104ade34166944" args="" -->
+<a class="anchor" name="ga6c1f8c5e57881b220104ade34166944"></a><!-- doxytag: member="orxPluginType.h::orxPLUGIN_KU32_FUNCTION_ARG_SIZE" ref="ga6c1f8c5e57881b220104ade34166944" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1022,6 +1025,21 @@ Plugin ID bits shift
 
 <p>
 
+</div>
+</div><p>
+<a class="anchor" name="g0509b2d61ddb1a3baf4c2a7dedf6a5b1"></a><!-- doxytag: member="orxPluginCore.h::orxPLUGIN_INIT_FUNCTION" ref="g0509b2d61ddb1a3baf4c2a7dedf6a5b1" args=")(orxU32 *_peUserFunctionNumber, orxPLUGIN_USER_FUNCTION_INFO **_pastUserFunctionInfo)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(* <a class="el" href="group__orx_plugin.html#g0509b2d61ddb1a3baf4c2a7dedf6a5b1">orxPLUGIN_INIT_FUNCTION</a>)(orxU32 *_peUserFunctionNumber, <a class="el" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_pastUserFunctionInfo)          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Plugin init function prototype 
 </div>
 </div><p>
 <hr><h2>Enumeration Type Documentation</h2>

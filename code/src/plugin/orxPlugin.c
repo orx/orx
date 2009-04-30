@@ -62,30 +62,30 @@
 /* WINDOWS */
 #ifdef __orxWINDOWS__
 
-  typedef HINSTANCE                                       orxSYSPLUGIN;
+  typedef HINSTANCE                                         orxSYSPLUGIN;
 
-  #define orxPLUGIN_OPEN(PLUGIN)                          LoadLibrary(PLUGIN)
-  #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    GetProcAddress(PLUGIN, SYMBOL)
-  #define orxPLUGIN_CLOSE(PLUGIN)                         FreeLibrary(PLUGIN)
+  #define orxPLUGIN_OPEN(PLUGIN)                            LoadLibrary(PLUGIN)
+  #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)      GetProcAddress(PLUGIN, SYMBOL)
+  #define orxPLUGIN_CLOSE(PLUGIN)                           FreeLibrary(PLUGIN)
 
-  static const orxSTRING                            szPluginLibraryExt = "dll";
+  static const orxSTRING                                    szPluginLibraryExt = "dll";
 
 /* OTHERS */
 #else /* __orxWINDOWS__ */
 
-  typedef void *                                       orxSYSPLUGIN;
+  typedef void *                                            orxSYSPLUGIN;
 
-  #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
-  #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
-  #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
+  #define orxPLUGIN_OPEN(PLUGIN)                            dlopen(PLUGIN, RTLD_LAZY)
+  #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)      dlsym(PLUGIN, SYMBOL)
+  #define orxPLUGIN_CLOSE(PLUGIN)                           dlclose(PLUGIN)
 
 #ifdef __orxMAC__
 
-  static const orxSTRING                            szPluginLibraryExt = "so";
+  static const orxSTRING                                    szPluginLibraryExt = "so";
 
 #else /* __orxMAC__ */
 
-  static const orxSTRING                            szPluginLibraryExt = "so";
+  static const orxSTRING                                    szPluginLibraryExt = "so";
 
 #endif /* __orxMAC__ */
 
@@ -122,11 +122,6 @@
   #define orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX                 "d"
 
 #endif /* __orxDEBUG__ */
-
-
-/** Plugin main function prototype
- */
-typedef orxSTATUS (*orxPLUGIN_MAIN_FUNCTION)(orxU32 *_peUserFunctionNumber, orxPLUGIN_USER_FUNCTION_INFO **_pastUserFunctionInfo);
 
 
 /***************************************************************************
@@ -335,20 +330,21 @@ static void orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginI
 }
 
 /** Registers a core function
- * @param[in] _pfnFunctionInfo        Concerned function info
+ * @param[in] _eFunctionID            Concerned function ID
+ * @param[in] _pfnFunction            Concerned function implementation
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID _eFunctionID, orxPLUGIN_FUNCTION _pfnFunction)
 {
-  const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
-  orxU32                            u32PluginIndex, u32FunctionIndex;
-  orxSTATUS                         eResult = orxSTATUS_FAILURE;
+  const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
+  orxU32                          u32PluginIndex, u32FunctionIndex;
+  orxSTATUS                       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
-  orxASSERT(_pfnFunctionInfo != orxNULL);
+  orxASSERT(_pfnFunction != orxNULL);
 
   /* Gets plugin index */
-  u32PluginIndex = (_pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_PLUGIN_ID) >> orxPLUGIN_KU32_SHIFT_PLUGIN_ID;
+  u32PluginIndex = (_eFunctionID & orxPLUGIN_KU32_MASK_PLUGIN_ID) >> orxPLUGIN_KU32_SHIFT_PLUGIN_ID;
 
   /* Checks */
   orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
@@ -360,7 +356,7 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(const orxPLUGIN_FUNCTI
   if(pstCoreFunction != orxNULL)
   {
     /* Gets function index */
-    u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
+    u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
     /* Checks */
     orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCounter);
@@ -370,7 +366,7 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(const orxPLUGIN_FUNCTI
     if(*(pstCoreFunction[u32FunctionIndex].pfnFunction) == pstCoreFunction[u32FunctionIndex].pfnDefaultFunction)
     {
       /* Registers core function */
-      *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunctionInfo->pfnFunction;
+      *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunction;
 
       /* Updates plugin status */
       sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
@@ -604,7 +600,7 @@ static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN 
  */
 static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
 {
-  orxPLUGIN_MAIN_FUNCTION pfnInit;
+  orxPLUGIN_INIT_FUNCTION pfnInit;
   orxU32 u32UserFunctionNumber;
   orxPLUGIN_USER_FUNCTION_INFO *astUserFunctionInfo;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -613,7 +609,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
   orxASSERT(_pstPluginInfo != orxNULL);
 
   /* Gets init function */
-  pfnInit = (orxPLUGIN_MAIN_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
+  pfnInit = (orxPLUGIN_INIT_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
 
   /* Valid? */
   if(pfnInit != orxNULL)
@@ -647,7 +643,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
         if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
         {
           /* Registers core function */
-          eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo);
+          eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo->eFunctionID, pstFunctionInfo->pfnFunction);
         }
       }
       else
@@ -707,15 +703,32 @@ void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODU
  * @param[in] _pfnPluginInit          Embedded plug-in init function
  * @return nothing
  */
-void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_FUNCTION _pfnPluginInit)
+void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_INIT_FUNCTION _pfnPluginInit)
 {
+  orxU32                        u32UserFunctionNumber, i;
+  orxPLUGIN_USER_FUNCTION_INFO *astUserFunctionInfo;
+  orxSTATUS                     eResult;
+
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
   orxASSERT(_pfnPluginInit != orxNULL);
 
-  //! TODO: Binds the function to their embedded implementation
+  /* Calls init function it */
+  eResult = _pfnPluginInit(&u32UserFunctionNumber, &astUserFunctionInfo);
 
+  /* Adds all functions to plugin info */
+  for(i = 0; (eResult == orxSTATUS_SUCCESS) && (i < u32UserFunctionNumber); i++)
+  {
+    /* Checks */
+    orxASSERT(astUserFunctionInfo[i].pfnFunction != orxNULL);
+    orxASSERT(astUserFunctionInfo[i].eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID);
+
+    /* Registers core function */
+    eResult = orxPlugin_RegisterCoreFunction(astUserFunctionInfo[i].eFunctionID, astUserFunctionInfo[i].pfnFunction);
+  }
+
+  /* Done! */
   return;
 }
 
@@ -815,13 +828,24 @@ orxSTATUS orxFASTCALL orxPlugin_Init()
     /* Is bank valid? */
     if(sstPlugin.pstPluginBank != orxNULL)
     {
+#ifndef __orxEMBEDDED__
+
       orxPARAM stParams;
+
+#endif /* !__orxEMBEDDED__ */
 
       /* Updates status flags */
       sstPlugin.u32Flags = orxPLUGIN_KU32_STATIC_FLAG_READY;
 
       /* Registers all core plugins */
       orxPlugin_RegisterCorePlugins();
+
+#ifdef __orxEMBEDDED__
+
+      /* Updates all modules */
+      orxPlugin_UpdateAllModule();
+
+#else /* __orxEMBEDDED__ */
 
       /* Inits the param structure */
       orxMemory_Zero(&stParams, sizeof(orxPARAM));
@@ -835,13 +859,15 @@ orxSTATUS orxFASTCALL orxPlugin_Init()
       /* Registers it */
       orxParam_Register(&stParams);
 
+#endif /* __orxEMBEDDED__ */
+
       /* Successful */
       eResult = orxSTATUS_SUCCESS;
     }
     else
     {
       /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to create bank.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to create bank.");
 
       /* Bank not created */
       eResult = orxSTATUS_FAILURE;
