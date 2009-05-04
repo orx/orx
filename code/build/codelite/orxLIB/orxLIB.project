@@ -58,6 +58,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="plugin">
       <File Name="../../../src/plugin/orxPlugin.c"/>
+      <File Name="../../../src/plugin/orxPlugin_EmbeddedList.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <File Name="../../../src/render/orxCamera.c"/>
@@ -154,7 +155,6 @@
         <File Name="../../../include/plugin/define/orxPlugin_CoreDefine.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_CoreID.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Display.h"/>
-        <File Name="../../../include/plugin/define/orxPlugin_EmbeddedList.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_File.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_FileSystem.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Joystick.h"/>
@@ -196,9 +196,18 @@
   <Dependencies Name="Linux Dynamic Release"/>
   <Dependencies Name="Linux Static Debug"/>
   <Dependencies Name="Linux Static Release"/>
+  <Dependencies Name="Linux Embedded Dynamic Debug"/>
+  <Dependencies Name="Linux Embedded Dynamic Release"/>
+  <Dependencies Name="Linux Embedded Static Debug"/>
+  <Dependencies Name="Linux Embedded Static Release"/>
   <Dependencies Name="Win32 Dynamic Debug"/>
   <Dependencies Name="Win32 Static Debug"/>
   <Dependencies Name="Win32 Static Release"/>
+  <Dependencies Name="Win32 Dynamic Release"/>
+  <Dependencies Name="Win32 Embedded Dynamic Debug"/>
+  <Dependencies Name="Win32 Embedded Static Debug"/>
+  <Dependencies Name="Win32 Embedded Static Release"/>
+  <Dependencies Name="Win32 Embedded Dynamic Release"/>
   <Settings Type="Static Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/gp2x/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin/gp2x" PauseExecWhenProcTerminates="no"/>
@@ -227,7 +236,7 @@
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/gp2x/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin/gp2x" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+      <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -277,7 +286,7 @@
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../lib/dynamic/liborx.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+      <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
@@ -326,7 +335,7 @@
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+      <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
@@ -375,7 +384,7 @@
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../lib/dynamic/orx.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+      <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborx.a -s"/>
@@ -424,7 +433,7 @@
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+      <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
@@ -445,6 +454,115 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
+    <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../lib/dynamic/orxd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -W">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../extern/SFML_1.4/include"/>
+        <IncludePath Value="../../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="__orxEMBEDDED__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborxd.a"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\lib\dynamic\orxd.dll ..\..\..\bin</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../lib/dynamic/orx.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../extern/SFML_1.4/include"/>
+        <IncludePath Value="../../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <Preprocessor Value="__orxEMBEDDED__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborx.a -s"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\lib\dynamic\orx.dll ..\..\..\bin</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../../lib/static/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -W">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../extern/SFML_1.4/include"/>
+        <IncludePath Value="../../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="__orxEMBEDDED__"/>
+      </Compiler>
+      <Linker Required="yes" Options=""/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
+      <General OutputFile="../../../lib/static/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../extern/SFML_1.4/include"/>
+        <IncludePath Value="../../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <Preprocessor Value="__orxEMBEDDED__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
   </Settings>
-  <Dependencies Name="Win32 Dynamic Release"/>
 </CodeLite_Project>

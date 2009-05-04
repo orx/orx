@@ -20,30 +20,16 @@
  */
 
 /**
- * @file orxPlugin_EmbeddedList.h
- * @date 29/04/2009
+ * @file orxPlugin_EmbeddedList.cpp
+ * @date 03/05/2009
  * @author iarwain@orx-project.org
  *
- * @todo
  */
-
-/**
- * @addtogroup orxPlugin
- * 
- * Header that regroups all plugins to embed
- *
- * @{
- */
-
-
-#ifndef _orxPLUGIN_EMBEDDEDLIST_H_
-#define _orxPLUGIN_EMBEDDEDLIST_H_
 
 #ifdef __orxEMBEDDED__
 
 /** Includes all plugins to embed
  */
-//! TODO
 #include <../plugins/Display/SFML/orxDisplay.cpp>
 #include <../plugins/Joystick/SFML/orxJoystick.cpp>
 #include <../plugins/Keyboard/SFML/orxKeyboard.cpp>
@@ -54,7 +40,3 @@
 #include <../plugins/System/SFML/orxSystem.cpp>
 
 #endif /* __orxEMBEDDED__ */
-
-#endif /*_orxPLUGIN_EMBEDDEDLIST_H_*/
-
-/** @} */

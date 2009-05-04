@@ -25,7 +25,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Add the embedded targets support (all-in-one executable embedding plugins)
  * - Add unicode support (all to unicode)
  * - Add optimized string handling (using CRC + hash)
  * - Add multi animation interpreter (for blends, transitions, etc...)
