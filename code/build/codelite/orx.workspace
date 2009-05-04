@@ -70,28 +70,60 @@
       <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Static Debug" Selected="no">
-      <Project Name="orxLIB" ConfigName="Linux Embedded Static Debug"/>
-      <Project Name="orx" ConfigName="Linux Embedded Static Debug"/>
-      <Project Name="Bounce" ConfigName="Linux Embedded Static Debug"/>
-      <Project Name="Scroll" ConfigName="Linux Embedded Static Debug"/>
+      <Project Name="Scroll" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Win32 Embedded Static Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Static Release" Selected="no">
-      <Project Name="orxLIB" ConfigName="Linux Embedded Static Release"/>
-      <Project Name="orx" ConfigName="Linux Embedded Static Release"/>
-      <Project Name="Bounce" ConfigName="Linux Embedded Static Release"/>
-      <Project Name="Scroll" ConfigName="Linux Embedded Static Release"/>
+      <Project Name="Scroll" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Win32 Embedded Static Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Dynamic Debug" Selected="no">
-      <Project Name="orxLIB" ConfigName="Linux Embedded Dynamic Debug"/>
-      <Project Name="orx" ConfigName="Linux Embedded Dynamic Debug"/>
-      <Project Name="Bounce" ConfigName="Linux Embedded Dynamic Debug"/>
-      <Project Name="Scroll" ConfigName="Linux Embedded Dynamic Debug"/>
+      <Project Name="Scroll" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Win32 Embedded Dynamic Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Linux Embedded Dynamic Release" Selected="yes">
-      <Project Name="orxLIB" ConfigName="Linux Embedded Dynamic Release"/>
-      <Project Name="orx" ConfigName="Linux Embedded Dynamic Release"/>
-      <Project Name="Bounce" ConfigName="Linux Embedded Dynamic Release"/>
-      <Project Name="Scroll" ConfigName="Linux Embedded Dynamic Release"/>
+    <WorkspaceConfiguration Name="Linux Embedded Dynamic Release" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Win32 Embedded Dynamic Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Static Debug" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Win32 Static Debug"/>
@@ -135,7 +167,7 @@
       <Project Name="orxJoystick_SFML" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="yes">
+    <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Release"/>
       <Project Name="Scroll" ConfigName="Win32 Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Release"/>
@@ -150,28 +182,60 @@
       <Project Name="orx" ConfigName="Win32 Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Static Debug" Selected="no">
+      <Project Name="Scroll" ConfigName="Win32 Embedded Static Debug"/>
+      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
       <Project Name="orxLIB" ConfigName="Win32 Embedded Static Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
       <Project Name="orx" ConfigName="Win32 Embedded Static Debug"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Static Debug"/>
-      <Project Name="Scroll" ConfigName="Win32 Embedded Static Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Static Release" Selected="no">
+      <Project Name="Scroll" ConfigName="Win32 Embedded Static Release"/>
+      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
       <Project Name="orxLIB" ConfigName="Win32 Embedded Static Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
       <Project Name="orx" ConfigName="Win32 Embedded Static Release"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Static Release"/>
-      <Project Name="Scroll" ConfigName="Win32 Embedded Static Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Debug" Selected="no">
+    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Debug" Selected="yes">
+      <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Debug"/>
+      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
       <Project Name="orxLIB" ConfigName="Win32 Embedded Dynamic Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
       <Project Name="orx" ConfigName="Win32 Embedded Dynamic Debug"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Dynamic Debug"/>
-      <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Release" Selected="yes">
+    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Release" Selected="no">
+      <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Release"/>
+      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
       <Project Name="orxLIB" ConfigName="Win32 Embedded Dynamic Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
       <Project Name="orx" ConfigName="Win32 Embedded Dynamic Release"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Dynamic Release"/>
-      <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
