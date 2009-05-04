@@ -14,7 +14,6 @@
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-W" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
@@ -28,7 +27,6 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-W" />
 					<Add option="-Wno-strict-aliasing" />
 				</Compiler>
 				<Linker>
@@ -44,7 +42,6 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-W" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
@@ -66,7 +63,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-W" />
 					<Add option="-Wno-strict-aliasing" />
 				</Compiler>
 				<Linker>
@@ -80,6 +76,11 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wmissing-braces" />
+			<Add option="-Wparentheses" />
+			<Add option="-Wsign-compare" />
+			<Add option="-Wswitch" />
+			<Add option="-Wunused-variable" />
 			<Add directory="..\..\..\include" />
 		</Compiler>
 		<Unit filename="..\..\..\include\anim\orxAnim.h" />
@@ -253,8 +254,7 @@
 		<Unit filename="..\..\..\src\plugin\orxPlugin.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="..\..\..\src\plugin\orxPlugin_EmbeddedList.cpp">
-		</Unit>
+		<Unit filename="..\..\..\src\plugin\orxPlugin_EmbeddedList.cpp" />
 		<Unit filename="..\..\..\src\render\orxCamera.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -74,7 +74,11 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-W" />
+			<Add option="-Wmissing-braces" />
+			<Add option="-Wparentheses" />
+			<Add option="-Wsign-compare" />
+			<Add option="-Wswitch" />
+			<Add option="-Wunused-variable" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--export-dynamic -Wl,--export-all-symbols" />

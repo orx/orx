@@ -14,7 +14,6 @@
 				<Option compiler="gcc" />
 				<Option host_application="orxd.exe" />
 				<Compiler>
-					<Add option="-W" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
@@ -31,7 +30,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-W" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -46,7 +44,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-W" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
@@ -63,7 +60,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-W" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -73,6 +69,11 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wmissing-braces" />
+			<Add option="-Wparentheses" />
+			<Add option="-Wsign-compare" />
+			<Add option="-Wswitch" />
+			<Add option="-Wunused-variable" />
 			<Add directory="..\..\..\include" />
 		</Compiler>
 		<Linker>

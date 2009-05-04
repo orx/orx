@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -64,13 +64,13 @@ typedef struct __orxDEBUG_STATIC_t
 {
   /* Debug file : 4 */
   orxSTRING zDebugFile;
-  
+
   /* Log file : 8 */
   orxSTRING zLogFile;
 
   /* Debug flags : 12 */
   orxU32 u32DebugFlags;
-  
+
   /* Backup debug flags : 16 */
   orxU32 u32BackupDebugFlags;
 
@@ -126,14 +126,14 @@ static orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
     orxDEBUG_DECLARE_LEVEL_ENTRY(SYSTEM);
     orxDEBUG_DECLARE_LEVEL_ENTRY(TIMER);
     orxDEBUG_DECLARE_LEVEL_ENTRY(USER);
-    
+
     orxDEBUG_DECLARE_LEVEL_ENTRY(ALL);
 
     orxDEBUG_DECLARE_LEVEL_ENTRY(LOG);
 
     orxDEBUG_DECLARE_LEVEL_ENTRY(ASSERT);
     orxDEBUG_DECLARE_LEVEL_ENTRY(CRITICAL_ASSERT);
-    
+
     default: zResult = "INVALID DEBUG!"; break;
   }
 
@@ -156,7 +156,7 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Init dependencies */
-  
+
   /* Correct parameters ? */
   if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
   {
@@ -180,17 +180,17 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
     {
       *pu8++ = 0;
     }
-  
+
     /* Inits default files */
     sstDebug.zDebugFile     = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
     sstDebug.zLogFile       = orxDEBUG_KZ_DEFAULT_LOG_FILE;
-  
+
     /* Inits default debug flags */
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
-    
+
     /* Set module as initialized */
     sstDebug.u32Flags       = orxDEBUG_KU32_STATIC_FLAG_READY;
-    
+
     /* Success */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -226,7 +226,7 @@ void orxFASTCALL _orxDebug_Break()
   /* Compiler specific */
 
   #ifdef __orxGCC__
-  
+
     #ifdef __orxGP2X__
 
     //! TODO: Add GP2X software break code
@@ -236,7 +236,7 @@ void orxFASTCALL _orxDebug_Break()
       #ifdef __orxPPC__
 
         asm("li r0, 20\nsc\nnop\nli r0, 37\nli r4, 2\nsc\nnop\n" : : : "memory", "r0", "r3", "r4");
-  
+
       #else /* __orxPPC__ */
 
         asm("int $3");
@@ -372,7 +372,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   }
 
   /* Console Display? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)  
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
   {
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
@@ -400,7 +400,7 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
   /* Had a previous external name? */
-  if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
+  if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
   {
     /* Deletes it */
     free(sstDebug.zDebugFile);
@@ -436,7 +436,7 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
   /* Had a previous external name? */
-  if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != orxDEBUG_KZ_DEFAULT_LOG_FILE))
+  if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
   {
     /* Deletes it */
     free(sstDebug.zLogFile);

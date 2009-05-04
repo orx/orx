@@ -75,8 +75,8 @@
     </set>
     <!-- Set the warning level. Max if debug and normal if release. -->
     <set var="orxWARNINGFLAG">
-        <if cond="BUILD=='debug'">max</if>
-        <if cond="BUILD=='release'">default</if>
+        <if cond="BUILD=='debug'">no</if>
+        <if cond="BUILD=='release'">no</if>
     </set>
     
     <set var="orxSUFFIX">
@@ -91,7 +91,7 @@
 
     <!-- Disable specifics warnings -->
     <set var="orxDISABLE_WARNING">
-      <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wno-unused-parameter -Wno-write-strings</if>
+      <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wmissing-braces -Wparentheses -Wsign-compare -Wswitch -Wunused-variable -Wno-unused-parameter -Wno-write-strings</if>
       <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
       <if cond="FORMAT in ['msvc','msvs2005prj']">/wd4100 /wd4206 /wd4201</if>
     </set>
