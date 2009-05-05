@@ -149,7 +149,6 @@
 		<Unit filename="..\..\..\include\sound\orxSound.h" />
 		<Unit filename="..\..\..\include\sound\orxSoundPointer.h" />
 		<Unit filename="..\..\..\include\sound\orxSoundSystem.h" />
-		<Unit filename="..\..\..\include\utils\orxFSM.h" />
 		<Unit filename="..\..\..\include\utils\orxHashTable.h" />
 		<Unit filename="..\..\..\include\utils\orxLinkList.h" />
 		<Unit filename="..\..\..\include\utils\orxScreenshot.h" />
@@ -283,9 +282,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\sound\orxSoundSystem.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\..\..\src\utils\orxFSM.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxHashTable.c">

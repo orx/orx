@@ -201,7 +201,6 @@
         </sources>
 
         <headers>
-            include/utils/orxFSM.h
             include/utils/orxHashTable.h
             include/utils/orxLinkList.h
             include/utils/orxScreenshot.h
@@ -209,7 +208,6 @@
             include/utils/orxTree.h
         </headers>
         <sources>
-            src/utils/orxFSM.c
             src/utils/orxHashTable.c
             src/utils/orxLinkList.c
             src/utils/orxScreenshot.c

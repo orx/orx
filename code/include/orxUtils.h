@@ -43,7 +43,6 @@
 /** Includes all the utils modules of the engine
  */
 
-#include "utils/orxFSM.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxScreenshot.h"

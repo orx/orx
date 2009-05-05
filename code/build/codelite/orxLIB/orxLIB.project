@@ -75,7 +75,6 @@
       <File Name="../../../src/sound/orxSoundPointer.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
-      <File Name="../../../src/utils/orxFSM.c"/>
       <File Name="../../../src/utils/orxHashTable.c"/>
       <File Name="../../../src/utils/orxLinkList.c"/>
       <File Name="../../../src/utils/orxScreenshot.c"/>
@@ -181,7 +180,6 @@
       <File Name="../../../include/sound/orxSoundPointer.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
-      <File Name="../../../include/utils/orxFSM.h"/>
       <File Name="../../../include/utils/orxHashTable.h"/>
       <File Name="../../../include/utils/orxLinkList.h"/>
       <File Name="../../../include/utils/orxScreenshot.h"/>

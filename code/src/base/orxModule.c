@@ -55,9 +55,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_FILE, orxFile);
   orxMODULE_REGISTER(orxMODULE_ID_FILESYSTEM, orxFileSystem);
   orxMODULE_REGISTER(orxMODULE_ID_FPS, orxFPS);
-  //orxMODULE_REGISTER(orxMODULE_ID_FRAME, orxFrame);
-  orxModule_Register(orxMODULE_ID_FRAME, orxFrame_Setup, (orxMODULE_INIT_FUNCTION)orxFrame_Init, orxFrame_Exit);
-  orxMODULE_REGISTER(orxMODULE_ID_FSM, orxFSM);
+  orxMODULE_REGISTER(orxMODULE_ID_FRAME, orxFrame);
   orxMODULE_REGISTER(orxMODULE_ID_FX, orxFX);
   orxMODULE_REGISTER(orxMODULE_ID_FXPOINTER, orxFXPointer);
   orxMODULE_REGISTER(orxMODULE_ID_GRAPHIC, orxGraphic);
