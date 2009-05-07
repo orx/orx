@@ -37,9 +37,6 @@
   <Dependencies Name="GP2X Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Win32 Embedded Dynamic Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
   <Dependencies Name="Win32 Embedded Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
@@ -53,6 +50,9 @@
     <Project Name="orxLIB"/>
   </Dependencies>
   <Dependencies Name="Linux Embedded Dynamic Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Embedded Dynamic Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
   <Settings Type="Executable">
@@ -217,9 +217,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -250,9 +248,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -455,9 +451,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -466,8 +460,9 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic ../../../lib/dynamic/liborxd.a -Wl,--export-all-symbols" Required="yes">
+      <Linker Options="" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxd"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
@@ -498,8 +493,9 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic ../../../lib/dynamic/liborx.a -Wl,--export-all-symbols" Required="yes">
+      <Linker Options="-s" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orx"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
@@ -520,7 +516,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -528,7 +526,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/libimporxd.a" Required="yes">
+      <Linker Options="-Wl,--out-implib,../../../lib/static/libimporxd.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
         <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
@@ -558,14 +556,16 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic ../../../lib/static/liborx.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/libimporx.a" Required="yes">
+      <Linker Options="-s -Wl,--out-implib,../../../lib/static/libimporx.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
         <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
@@ -595,7 +595,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">

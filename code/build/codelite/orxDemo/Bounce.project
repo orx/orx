@@ -149,6 +149,15 @@
     <Project Name="orx"/>
   </Dependencies>
   <Settings Type="Dynamic Library">
+    <GlobalSettings>
+      <Compiler Options="-Wmissing-braces -Wparentheses -Wsign-compare -Wswitch -Wunused-variable">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
     <Configuration Name="GP2X Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
@@ -362,9 +371,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -394,9 +401,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -579,7 +584,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -704,14 +711,5 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <GlobalSettings>
-      <Compiler Options="-Wmissing-braces -Wparentheses -Wsign-compare -Wswitch -Wunused-variable">
-        <IncludePath Value="."/>
-      </Compiler>
-      <Linker Options="">
-        <LibraryPath Value="."/>
-      </Linker>
-      <ResourceCompiler Options=""/>
-    </GlobalSettings>
   </Settings>
 </CodeLite_Project>
