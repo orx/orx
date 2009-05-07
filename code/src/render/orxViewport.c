@@ -73,7 +73,7 @@
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_CLEAR  "BackgroundClear"
-#define orxVIEWPORT_KZ_CONFIG_SHADER            "Shader"
+#define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
 
 #define orxVIEWPORT_KZ_LEFT                     "left"
 #define orxVIEWPORT_KZ_RIGHT                    "right"
@@ -321,7 +321,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* *** Shader *** */
 
       /* Has shader? */
-      if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_SHADER)) > 0)
+      if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_SHADER_LIST)) > 0)
       {
         orxS32 i;
 
@@ -329,7 +329,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         for(i = 0; i < s32Number; i++)
         {
           /* Adds it */
-          orxViewport_AddShader(pstResult, orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER, i));
+          orxViewport_AddShader(pstResult, orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER_LIST, i));
         }
       }
 

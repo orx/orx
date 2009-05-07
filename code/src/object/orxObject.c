@@ -106,9 +106,9 @@
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
-#define orxOBJECT_KZ_CONFIG_FX                  "FX"
-#define orxOBJECT_KZ_CONFIG_SOUND               "Sound"
-#define orxOBJECT_KZ_CONFIG_SHADER              "Shader"
+#define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
+#define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
+#define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
@@ -849,7 +849,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
 
       /* Has FX? */
-      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX)) > 0)
+      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
       {
         orxS32 i;
 
@@ -857,12 +857,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         for(i = 0; i < s32Number; i++)
         {
           /* Adds it */
-          orxObject_AddFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX, i));
+          orxObject_AddFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i));
         }
       }
 
       /* Has sound? */
-      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SOUND)) > 0)
+      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
       {
         orxS32 i;
 
@@ -870,12 +870,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         for(i = 0; i < s32Number; i++)
         {
           /* Adds it */
-          orxObject_AddSound(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND, i));
+          orxObject_AddSound(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i));
         }
       }
 
       /* Has shader? */
-      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SHADER)) > 0)
+      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
       {
         orxS32 i;
 
@@ -883,7 +883,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         for(i = 0; i < s32Number; i++)
         {
           /* Adds it */
-          orxObject_AddShader(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER, i));
+          orxObject_AddShader(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, i));
         }
       }
 
