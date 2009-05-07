@@ -46,10 +46,13 @@
   <Dependencies Name="Win32 Embedded Static Release">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Linux Embedded Dynamic Debug">
+  <Dependencies Name="Linux Embedded Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Linux Embedded Static Debug">
+  <Dependencies Name="Linux Embedded Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Linux Embedded Dynamic Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
   <Settings Type="Executable">
@@ -149,9 +152,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -193,18 +194,9 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../../extern/SFML_1.3/lib/linux" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orxd"/>
-        <Library Value="dl"/>
-        <Library Value="m"/>
-        <Library Value="sfml-graphics"/>
-        <Library Value="sfml-window"/>
-        <Library Value="sfml-audio"/>
-        <Library Value="sfml-system"/>
-        <Library Value="Box2Dd"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
@@ -235,18 +227,9 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../../extern/SFML_1.3/lib/linux" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orx"/>
-        <Library Value="dl"/>
-        <Library Value="m"/>
-        <Library Value="sfml-graphics"/>
-        <Library Value="sfml-window"/>
-        <Library Value="sfml-audio"/>
-        <Library Value="sfml-system"/>
-        <Library Value="Box2D"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orx" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
@@ -309,9 +292,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -350,9 +331,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -384,9 +363,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -478,7 +455,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -509,7 +488,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -577,9 +558,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
@@ -616,9 +595,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
