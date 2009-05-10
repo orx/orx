@@ -68,6 +68,7 @@
 #define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
 #define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x04000000  /**< Has lifetime flag  */
+#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x08000000  /**< Has child flag */
 
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
 
@@ -109,6 +110,7 @@
 #define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
+#define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
@@ -486,6 +488,28 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
       orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
     }
 
+    /* Has child? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILD))
+    {
+      orxOBJECT *pstObject;
+
+      /* For all objects */
+      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+          pstObject != orxNULL;
+          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      {
+        /* Is a child? */
+        if(orxObject_GetOwner(pstObject) == _pstObject)
+        {
+          /* Removes its owner */
+          orxObject_SetOwner(pstObject, orxNULL);
+
+          /* Marks it for deletion */
+          orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+        }
+      }
+    }
+
     /* Removes owner */
     orxObject_SetOwner(_pstObject, orxNULL);
 
@@ -804,6 +828,35 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_SPAWNER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+          }
+        }
+      }
+
+      /* *** Children *** */
+      
+      /* Has child list? */
+      /* Has shader? */
+      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_CHILD_LIST)) > 0)
+      {
+        orxS32 i;
+        
+        /* For all defined objects */
+        for(i = 0; i < s32Number; i++)
+        {
+          orxOBJECT *pstChild;
+
+          /* Creates it */
+          pstChild = orxObject_CreateFromConfig(orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_LIST, i));
+
+          /* Valid? */
+          if(pstChild != orxNULL)
+          {
+            /* Sets its owner & parent */
+            orxObject_SetOwner(pstChild, pstResult);
+            orxObject_SetParent(pstChild, pstResult);
+
+            /* Updates flags */
+            u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILD;
           }
         }
       }
