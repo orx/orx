@@ -13,7 +13,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./">
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../bin/linux">
         <LibraryPath Value="../../../lib/linux"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
