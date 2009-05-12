@@ -180,13 +180,22 @@ extern orxDLLAPI void orxFASTCALL           orxObject_UnlinkStructure(orxOBJECT 
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(const orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
-/** Flips object
+/** Sets object flipping
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _bFlipX         Flip it on X axis
  * @param[in]   _bFlipY         Flip it on Y axis
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Flip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY);
+
+/** Gets object flipping
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
+
 
 /** Sets object pivot
  * @param[in]   _pstObject      Concerned object
@@ -314,14 +323,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
 /** Is target animation test
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
 
 /** Gets object's bounding box (OBB)
@@ -499,12 +508,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_ps
 extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(const orxOBJECT *_pstObject);
 
 
-/** Sets an object's shader using its config ID
+/** Adds a shader to an object using its config ID
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
+/** Removes a shader using using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zShaderConfigID Config ID of the shader to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
 /** Enables an object's shader
  * @param[in]   _pstObject        Concerned object

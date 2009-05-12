@@ -25,6 +25,8 @@
  * @author iarwain@orx-project.org
  *
  * @todo
+ * - Add internal/external dependency system
+ * - Optimize dependencies storage
  */
 
 /**
@@ -61,7 +63,6 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_FILESYSTEM,
   orxMODULE_ID_FPS,
   orxMODULE_ID_FRAME,
-  orxMODULE_ID_FSM,
   orxMODULE_ID_FX,
   orxMODULE_ID_FXPOINTER,
   orxMODULE_ID_GRAPHIC,

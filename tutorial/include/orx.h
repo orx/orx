@@ -115,6 +115,8 @@ static void orxFASTCALL orx_MainSetup()
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
 
+    orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
+
     return;
 }
 

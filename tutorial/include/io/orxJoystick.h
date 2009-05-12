@@ -128,11 +128,35 @@ typedef enum __orxJOYSTICK_AXIS_t
 } orxJOYSTICK_AXIS;
 
 
+/** Event enum
+ */
+typedef enum __orxJOYSTICK_EVENT_t
+{
+  orxJOYSTICK_EVENT_BUTTON_PRESSED = 0,
+  orxJOYSTICK_EVENT_BUTTON_RELEASED,
+
+  orxJOYSTICK_EVENT_NUMBER,
+
+  orxJOYSTICK_EVENT_NONE = orxENUM_NONE
+
+} orxJOYSTICK_EVENT;
+
+
+/** Joystick event payload
+ */
+typedef struct __orxJOYSTICK_EVENT_PAYLOAD_t
+{
+  orxU32              u32JoystickID;  /**< Joystick ID : 4 */
+  orxJOYSTICK_BUTTON  eButton;        /**< Joystick button : 8 */
+
+} orxJOYSTICK_EVENT_PAYLOAD;
+
+
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Mouse module setup
+/** JOYSTICK module setup
  */
 extern orxDLLAPI void orxFASTCALL             orxJoystick_Setup();
 
@@ -150,7 +174,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxJoystick_Init();
  */
 extern orxDLLAPI void orxFASTCALL             orxJoystick_Exit();
 
-/** Gets mouse on screen position
+/** Gets JOYSTICK on screen position
  * @param[in] _u32ID        ID of the joystick to test
  * @param[in] _eAxis        Joystick axis to check
  * @return Value of the axis

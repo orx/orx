@@ -25,8 +25,8 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Use matrix instead of disjoint pos vector/angle float/scale float for frame data structure.
- * - 3D system (later).
+ * - Use matrix instead of disjoint position vector/angle float/scale vector
+ * - Add 3D support
  */
 
 /**

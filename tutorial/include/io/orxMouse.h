@@ -63,6 +63,29 @@ typedef enum __orxMOUSE_BUTTON_t
 } orxMOUSE_BUTTON;
 
 
+/** Event enum
+ */
+typedef enum __orxMOUSE_EVENT_t
+{
+  orxMOUSE_EVENT_BUTTON_PRESSED = 0,
+  orxMOUSE_EVENT_BUTTON_RELEASED,
+
+  orxMOUSE_EVENT_NUMBER,
+
+  orxMOUSE_EVENT_NONE = orxENUM_NONE
+
+} orxMOUSE_EVENT;
+
+
+/** Mouse event payload
+ */
+typedef struct __orxMOUSE_EVENT_PAYLOAD_t
+{
+  orxMOUSE_BUTTON eButton;        /**< Mouse button : 4 */
+
+} orxMOUSE_EVENT_PAYLOAD;
+
+
 #define orxMOUSE_KZ_CONFIG_SECTION      "Mouse"
 #define orxMOUSE_KZ_CONFIG_SHOW_CURSOR  "ShowCursor"
 

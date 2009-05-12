@@ -25,7 +25,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Add the required declarations at need.
  */
 
 /**
@@ -110,6 +109,19 @@
 #endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ */
 
 
+#ifdef __cplusplus
+
+  #define orxIMPORT             "C"
+  #define __orxCPP__
+
+#else /* __cplusplus */
+
+  #define orxIMPORT
+  #undef __orxCPP__
+
+#endif /* __cplusplus */
+
+
 /* Windows */
 #ifdef __orxWINDOWS__
 
@@ -126,7 +138,7 @@
   #define orxDLLIMPORT          __declspec(dllimport)
 
   /** The null adress. */
-  #define orxNULL               ((void *)0)
+  #define orxNULL               (0)
 
   /* *** Compiler specific *** */
   /** The function intend to be inlined. */
@@ -171,7 +183,7 @@
     #define orxINLINE           inline
 
     /** The null adress. */
-    #define orxNULL             ((void *)0)
+    #define orxNULL             (0)
 
   #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
@@ -181,25 +193,33 @@
 /* Plugin include? */
 #if defined(__orxPLUGIN__)
 
-    #define orxDLLAPI orxDLLIMPORT /* Compiling plug-in => API needs to be imported */
+  #ifdef __orxEMBEDDED__
+
+    #define orxDLLAPI orxIMPORT /* Compiling embedded plug-in => API doens't need to be imported */
+
+  #else
+
+    #define orxDLLAPI orxIMPORT orxDLLIMPORT /* Compiling plug-in => API needs to be imported */
+
+  #endif /* __orxEMBEDDED__ */
 
 /* External include? */
 #elif defined(__orxEXTERN__)
 
   #ifdef __orxDLL__
 
-    #define orxDLLAPI orxDLLIMPORT /* Linking executable against orx dynamic library */
+    #define orxDLLAPI orxIMPORT orxDLLIMPORT /* Linking executable against orx dynamic library */
 
   #else /* __orxDLL__ */
 
-    #define orxDLLAPI /* Linking executable against orx static library */
+    #define orxDLLAPI orxIMPORT /* Linking executable against orx static library */
 
   #endif /* __orxDLL__ */
 
 /* Internal (library) include */
 #else
 
-  #define orxDLLAPI orxDLLEXPORT /* Compiling orx library => API needs to be exported */
+  #define orxDLLAPI orxIMPORT orxDLLEXPORT /* Compiling orx library => API needs to be exported */
 
 #endif
 

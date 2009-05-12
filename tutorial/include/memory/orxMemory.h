@@ -25,8 +25,6 @@
  * @author bestel@arcallians.org
  *
  * @todo
- * - Optimizations
- * - Manage the memory instead of use the access to OS allocation
  * - Manage memory alignment
  * - Allow to specifiy memory starting address & maximum size for each memory type
  */
@@ -86,13 +84,11 @@ extern orxDLLAPI void orxFASTCALL       orxMemory_Exit();
  * @param[in]  _u32Size  Size of the memory to allocate
  * @param[in]  _eMemType Memory zone where datas will be allocated
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
- * @todo Use the memory managed by orxMemory (initialized with orxMemory_Init())
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
 
 /** Frees a portion of memory allocated with orxMemory_Allocate
  * @param[in]  _pMem     Pointer on the memory allocated by orx
- * @todo Use the memory managed by orxMemory (not OS)
  */
 extern orxDLLAPI void orxFASTCALL       orxMemory_Free(void *_pMem);
 

@@ -25,7 +25,7 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Adds rotate function with matrix module, when it's done
+ * - Add rotate function with matrix module, when it's done
  */
 
 /**

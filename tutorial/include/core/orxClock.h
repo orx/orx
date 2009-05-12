@@ -25,8 +25,7 @@
  * @author iarwain@orx-project.org
  * 
  * @todo 
- * - Add internal/external dependency system
- * - Optimize dependencies storage
+ * - Use double or int/fixed point for time to keep DT precision over time
  * - Add freezing behaviour
  */
 

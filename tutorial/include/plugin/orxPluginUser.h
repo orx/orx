@@ -54,22 +54,9 @@
  Constants
  *********************************************/
 
-/* Defines plugin registration main function */
-#define orxPLUGIN_K_INIT_FUNCTION_NAME                  orxPlugin_MainInit  /**< Plugin init function name */
-
-#ifdef __cplusplus
-
-  #define orxPLUGIN_KZ_IMPORT  "C"
-
-#else /* __cplusplus */
-
-  #define orxPLUGIN_KZ_IMPORT
-
-#endif /* __cplusplus */
-
 /* Defines a user plugin entry function (that takes no arguments and return an orxSTATUS value) */
 #define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)   \
-extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
 {                                                       \
   orxSTATUS eResult;                                    \
                                                         \
@@ -84,9 +71,6 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
   return eResult;                                       \
 }
 
-/* Argument max size */
-#define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
-
 
 /*********************************************
  Structures
@@ -99,7 +83,8 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction   = (orxPLUGIN_FUNCTION) FUNCTION; \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID   = FUNCTION_ID; \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName = #NAME; \
-    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, orxPLUGIN_KU32_FUNCTION_ARG_SIZE); \
+    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1); \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1] = orxCHAR_NULL; \
     u32UserPluginFunctionCounter++; \
   } \
   else \
@@ -128,7 +113,7 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
 
 #define orxPLUGIN_USER_CORE_FUNCTION_START(PLUGIN_SUFFIX) \
   static orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
-  extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+  extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(PLUGIN_SUFFIX)(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
   { \
     orxSTATUS eResult = orxSTATUS_SUCCESS; \
     orxPLUGIN_USER_FUNCTION_START(sau32##PLUGIN_SUFFIX##_Function);
@@ -143,17 +128,6 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
   orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo); \
   return eResult; \
   }
-
-
-/* Structure */
-typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
-{
-  orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID */
-  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address */
-  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types */
-  orxSTRING zFunctionName;                                  /**< Function Name */
-
-} orxPLUGIN_USER_FUNCTION_INFO;
 
 #endif /* _orxPLUGIN_USER_H_ */
 
