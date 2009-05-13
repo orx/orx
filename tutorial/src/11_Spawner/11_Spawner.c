@@ -20,7 +20,7 @@
  */
 
 /**
- * @file 10_StandAlone.cpp
+ * @file 11_Spawner.c
  * @date 03/04/2009
  * @author iarwain@orx-project.org
  *
