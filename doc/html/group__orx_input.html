@@ -32,7 +32,8 @@
 <a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704">orxINPUT_TYPE_JOYSTICK_BUTTON</a>, 
 <a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8">orxINPUT_TYPE_JOYSTICK_AXIS</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b">orxINPUT_TYPE_NUMBER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066">orxINPUT_TYPE_EXTERNAL</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b">orxINPUT_TYPE_NUMBER</a>, 
 <a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8">orxINPUT_TYPE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
@@ -64,6 +65,12 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gc5afa246a389c779ac3c3a0d6635e363">orxInput_HasNewStatus</a> (const orxSTRING _zInputName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gdaa46efcffa6a0267862228ca01f9131">orxInput_GetValue</a> (const orxSTRING _zInputName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gb2b159105a935ccb1547119a07822f97">orxInput_SetValue</a> (const orxSTRING _zInputName, orxFLOAT _fValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g42393f5dfe8922974e5ecf198abde788">orxInput_SetPermanentValue</a> (const orxSTRING _zInputName, orxFLOAT _fValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g2a34aa6090226956398b7b1753760f71">orxInput_ResetValue</a> (const orxSTRING _zInputName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g11e483a6951d7c96b51db668cc148e04">orxInput_SetCombineMode</a> (const orxSTRING _zName, orxBOOL _bCombine)</td></tr>
 
@@ -154,6 +161,8 @@ Input type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_BUTTON" ref="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704" args="" -->orxINPUT_TYPE_JOYSTICK_BUTTON</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_AXIS" ref="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8" args="" -->orxINPUT_TYPE_JOYSTICK_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066"></a><!-- doxytag: member="orxINPUT_TYPE_EXTERNAL" ref="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066" args="" -->orxINPUT_TYPE_EXTERNAL</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b"></a><!-- doxytag: member="orxINPUT_TYPE_NUMBER" ref="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b" args="" -->orxINPUT_TYPE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
@@ -641,6 +650,32 @@ Loads inputs from config <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g2a34aa6090226956398b7b1753760f71"></a><!-- doxytag: member="orxInput.h::orxInput_ResetValue" ref="g2a34aa6090226956398b7b1753760f71" args="(const orxSTRING _zInputName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_ResetValue           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zInputName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Resets input value (peripheral inputs will then be used instead of code ones) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zInputName</em>&nbsp;</td><td>Concerned input name </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gcb452866d26f0e8845775a8fe7b414d0"></a><!-- doxytag: member="orxInput.h::orxInput_Save" ref="gcb452866d26f0e8845775a8fe7b414d0" args="(const orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -728,6 +763,42 @@ Sets an input combine mode <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g42393f5dfe8922974e5ecf198abde788"></a><!-- doxytag: member="orxInput.h::orxInput_SetPermanentValue" ref="g42393f5dfe8922974e5ecf198abde788" args="(const orxSTRING _zInputName, orxFLOAT _fValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_SetPermanentValue           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zInputName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets permanent input value (will prevail on peripheral inputs till reset) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zInputName</em>&nbsp;</td><td>Concerned input name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fValue</em>&nbsp;</td><td>Value to set, orxFLOAT_0 to deactivate </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g1095ad88059cd0d841a28ad60efc0a22"></a><!-- doxytag: member="orxInput.h::orxInput_Setup" ref="g1095ad88059cd0d841a28ad60efc0a22" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -745,6 +816,42 @@ Sets an input combine mode <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Input module setup 
+</div>
+</div><p>
+<a class="anchor" name="gb2b159105a935ccb1547119a07822f97"></a><!-- doxytag: member="orxInput.h::orxInput_SetValue" ref="gb2b159105a935ccb1547119a07822f97" args="(const orxSTRING _zInputName, orxFLOAT _fValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_SetValue           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zInputName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets input value (will prevail on peripheral inputs only once) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zInputName</em>&nbsp;</td><td>Concerned input name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fValue</em>&nbsp;</td><td>Value to set, orxFLOAT_0 to deactivate </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g41dac9027f2f429d21026c0a2994e7ae"></a><!-- doxytag: member="orxInput.h::orxInput_Unbind" ref="g41dac9027f2f429d21026c0a2994e7ae" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
