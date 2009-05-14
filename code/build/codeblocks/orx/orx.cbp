@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-D__orxSTATIC__" />
 					<Add option="-D__orxDEBUG__" />
 					<Add directory="..\..\..\include" />
 				</Compiler>
@@ -30,6 +31,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-D__orxSTATIC__" />
 					<Add directory="..\..\..\include" />
 				</Compiler>
 				<Linker>
@@ -47,7 +49,6 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
-					<Add option="-D__orxDLL__" />
 					<Add directory="..\..\..\include" />
 				</Compiler>
 				<Linker>
@@ -63,7 +64,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-D__orxDLL__" />
 					<Add directory="..\..\..\include" />
 				</Compiler>
 				<Linker>

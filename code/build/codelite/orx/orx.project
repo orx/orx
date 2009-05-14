@@ -59,6 +59,7 @@
     <Configuration Name="GP2X Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -92,6 +93,7 @@
     <Configuration Name="GP2X Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/gp2x/liborx.a -Wl,--no-whole-archive" Required="yes">
@@ -124,7 +126,6 @@
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
@@ -158,7 +159,6 @@
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
@@ -191,7 +191,6 @@
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../../extern/SFML_1.3/lib/linux" Required="yes">
@@ -223,7 +222,6 @@
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../../extern/SFML_1.3/lib/linux" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
@@ -254,6 +252,7 @@
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
@@ -294,6 +293,7 @@
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
@@ -333,6 +333,7 @@
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
@@ -365,6 +366,7 @@
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
@@ -396,7 +398,6 @@
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--export-dynamic ../../../lib/dynamic/liborxd.a -Wl,--export-all-symbols" Required="yes">
@@ -427,7 +428,6 @@
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic ../../../lib/dynamic/liborx.a -Wl,--export-all-symbols" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
@@ -457,7 +457,6 @@
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="" Required="yes">
@@ -491,7 +490,6 @@
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Options="-s" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
@@ -524,6 +522,7 @@
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--out-implib,../../../lib/static/libimporxd.a" Required="yes">
@@ -564,6 +563,7 @@
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Options="-s -Wl,--out-implib,../../../lib/static/libimporx.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
@@ -603,6 +603,7 @@
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/libimporxd.a" Required="yes">
@@ -633,6 +634,7 @@
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/libimporx.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>

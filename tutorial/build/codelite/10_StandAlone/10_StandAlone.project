@@ -11,7 +11,6 @@
       <General OutputFile="../../../bin/linux/10_StandAlone" IntermediateDirectory="$(ConfigurationName)" Command="10_StandAlone" CommandArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../bin/linux">
         <LibraryPath Value="../../../lib/linux"/>
@@ -44,7 +43,6 @@
       <General OutputFile="../../../bin/mingw/10_StandAlone.exe" IntermediateDirectory="$(ConfigurationName)" Command="10_StandAlone.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--export-all-symbols">
         <LibraryPath Value="../../../lib/mingw"/>

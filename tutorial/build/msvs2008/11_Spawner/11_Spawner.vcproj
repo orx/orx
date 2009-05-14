@@ -46,7 +46,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDLL__"
+				PreprocessorDefinitions=""
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="false"
