@@ -61,6 +61,7 @@ typedef enum __orxINPUT_TYPE_t
   orxINPUT_TYPE_MOUSE_BUTTON,
   orxINPUT_TYPE_JOYSTICK_BUTTON,
   orxINPUT_TYPE_JOYSTICK_AXIS,
+  orxINPUT_TYPE_EXTERNAL,
 
   orxINPUT_TYPE_NUMBER,
 
@@ -149,6 +150,26 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_HasNewStatus(const orxSTRING _z
  * @return orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxInput_GetValue(const orxSTRING _zInputName);
+
+/** Sets input value (will prevail on peripheral inputs only once)
+ * @param[in] _zInputName       Concerned input name
+ * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _fValue);
+
+/** Sets permanent input value (will prevail on peripheral inputs till reset)
+ * @param[in] _zInputName       Concerned input name
+ * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_SetPermanentValue(const orxSTRING _zInputName, orxFLOAT _fValue);
+
+/** Resets input value (peripheral inputs will then be used instead of code ones)
+ * @param[in] _zInputName       Concerned input name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_ResetValue(const orxSTRING _zInputName);
 
 
 /** Sets an input combine mode
