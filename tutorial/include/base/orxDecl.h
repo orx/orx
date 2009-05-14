@@ -206,15 +206,15 @@
 /* External include? */
 #elif defined(__orxEXTERN__)
 
-  #ifdef __orxDLL__
-
-    #define orxDLLAPI orxIMPORT orxDLLIMPORT /* Linking executable against orx dynamic library */
-
-  #else /* __orxDLL__ */
+  #ifdef __orxSTATIC__
 
     #define orxDLLAPI orxIMPORT /* Linking executable against orx static library */
 
-  #endif /* __orxDLL__ */
+  #else /* __orxSTATIC__ */
+
+    #define orxDLLAPI orxIMPORT orxDLLIMPORT /* Linking executable against orx dynamic library */
+
+  #endif /* __orxSTATIC__ */
 
 /* Internal (library) include */
 #else
