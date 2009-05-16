@@ -56,7 +56,7 @@
     <Project Name="orxLIB"/>
   </Dependencies>
   <Settings Type="Executable">
-    <Configuration Name="GP2X Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
@@ -90,7 +90,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="GP2X Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>

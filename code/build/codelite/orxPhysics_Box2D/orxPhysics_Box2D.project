@@ -49,7 +49,7 @@
     <Project Name="orx"/>
   </Dependencies>
   <Settings Type="Dynamic Library">
-    <Configuration Name="GP2X Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -86,7 +86,7 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="GP2X Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
