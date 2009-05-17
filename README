@@ -98,7 +98,7 @@ Here is a list with a small description for each package.
 use orx-src-1.0rc0.zip and you plan on compiling orx yourself. They are not neeeded otherwise.
 The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
-Warning for slow connections: this package is ~ 20MB.
+Warning for slow connections: this package is ~ 27MB.
 
 - orx-dev-linux-1.0rc0.bz2    : orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
 - orx-dev-mac-1.0rc0.zip      : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
