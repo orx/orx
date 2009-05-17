@@ -1,9 +1,9 @@
 Orx authors:
 
-  Architecture and all core features except memory management, script (WIP), package (WIP) and file handling:
+  Architecture and all core features except memory management and file handling:
     Romain Killian
 
-  Memory management, script (WIP), package (WIP) and file handling:
+  Memory management and file handling:
     Nicolas Antoniazzi
 
   Tools:
@@ -19,7 +19,7 @@ Orx authors:
   IDE project files (CodeLite, Code::Blocks, Visual Studio, XCode) and external dependencies:
     Romain Killian
 
-  GP2X version:
+  GP2X version (WIP):
     Romain Killian
 
   MacOS X (ppc/x86) version:
