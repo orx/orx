@@ -100,13 +100,13 @@ The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
 Warning for slow connections: this package is ~ 27MB.
 
-- orx-dev-linux-1.0rc0.bz2    : orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
+- orx-dev-linux-1.0rc0.tar.bz2: orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
 - orx-dev-mac-1.0rc0.zip      : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
 - orx-dev-mingw-1.0rc0.zip    : orx's dynamic embedded precompiled binaries for Win32 (mingw), release and debug.
 - orx-dev-msvs2005-1.0rc0.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2005), release and debug.
 - orx-dev-msvs2008-1.0rc0.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
 
-- orx-tutorial-linux-1.0rc0.bz2     : orx's precompiled tutorial for Linux (x86), release only.
+- orx-tutorial-linux-1.0rc0.tar.bz2 : orx's precompiled tutorial for Linux (x86), release only.
 - orx-tutorial-mac-1.0rc0.zip       : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
 - orx-tutorial-mingw-1.0rc0.zip     : orx's precompiled tutorial for Win32 (mingw), release only.
 - orx-tutorial-msvs2005-1.0rc0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2005), release only.
