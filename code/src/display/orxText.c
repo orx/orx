@@ -281,6 +281,9 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
       /* Stores its reference key */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
+      /* Protects it */
+      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
       /* Stores flags */
       orxStructure_SetFlags(pstResult, u32Flags, orxTEXT_KU32_FLAG_NONE);
     }
@@ -321,6 +324,13 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
 
     /* Deletes internal data */
     orxDisplay_DeleteText(_pstText->pstData);
+
+    /* Has reference? */
+    if(_pstText->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstText->zReference, orxFALSE);
+    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstText);

@@ -873,7 +873,10 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Stores its reference */
-        _pstBody->astPartList[_u32Index].zReference = _zConfigID;
+        _pstBody->astPartList[_u32Index].zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(_zConfigID, orxTRUE);
       }
     }
 
@@ -928,9 +931,17 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index)
   {
     /* Deletes it */
     orxPhysics_DeleteBodyPart(_pstBody->astPartList[_u32Index].pstData);
-
-    /* Deletes reference */
     _pstBody->astPartList[_u32Index].pstData = orxNULL;
+
+    /* Has reference? */
+    if(_pstBody->astPartList[_u32Index].zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstBody->astPartList[_u32Index].zReference, orxFALSE);
+
+      /* Clears it */
+      _pstBody->astPartList[_u32Index].zReference = orxNULL;
+    }
   }
   else
   {
@@ -1175,11 +1186,16 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
           /* Has reference? */
           if(_pstBody->astPartList[i].zReference != orxNULL)
           {
-            /* Removes parts */
+            orxSTRING zReference;
+
+            /* Stores it locally */
+            zReference = _pstBody->astPartList[i].zReference;
+
+            /* Removes part */
             orxBody_RemovePart(_pstBody, i);
 
             /* Creates new part */
-            orxBody_AddPartFromConfig(_pstBody, i, _pstBody->astPartList[i].zReference);
+            orxBody_AddPartFromConfig(_pstBody, i, zReference);
           }
           else
           {

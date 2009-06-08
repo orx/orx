@@ -1551,6 +1551,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* Stores its reference key */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
         /* Adds it to reference table */
         orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
 
@@ -1606,6 +1609,13 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
     {
       /* Deletes it */
       orxHashTable_Delete(_pstAnimSet->pstIDTable);
+    }
+
+    /* Has reference? */
+    if(_pstAnimSet->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstAnimSet->zReference, orxFALSE);
     }
 
     /* Deletes structure */

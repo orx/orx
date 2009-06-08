@@ -491,27 +491,34 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     /* Has child? */
     if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILD))
     {
-      orxOBJECT *pstObject;
+      orxOBJECT *pstChild;
 
       /* For all objects */
-      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
-          pstObject != orxNULL;
-          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      for(pstChild = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+          pstChild != orxNULL;
+          pstChild = orxOBJECT(orxStructure_GetNext(pstChild)))
       {
         /* Is a child? */
-        if(orxObject_GetOwner(pstObject) == _pstObject)
+        if(orxObject_GetOwner(pstChild) == _pstObject)
         {
           /* Removes its owner */
-          orxObject_SetOwner(pstObject, orxNULL);
+          orxObject_SetOwner(pstChild, orxNULL);
 
           /* Marks it for deletion */
-          orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+          orxObject_SetLifeTime(pstChild, orxFLOAT_0);
         }
       }
     }
 
     /* Removes owner */
     orxObject_SetOwner(_pstObject, orxNULL);
+
+    /* Has reference? */
+    if(_pstObject->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstObject->zReference, orxFALSE);
+    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstObject);
@@ -569,6 +576,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
+
+      /* Protects it */
+      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
       /* *** Frame *** */
 

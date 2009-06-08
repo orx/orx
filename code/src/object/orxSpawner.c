@@ -522,6 +522,9 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
       /* Stores its reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
+      /* Protects it */
+      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
       /* Gets total limit */
       u32Value = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_TOTAL_OBJECT);
 
@@ -706,6 +709,13 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
 
     /* Deletes its frame */
     orxFrame_Delete(_pstSpawner->pstFrame);
+
+    /* Has reference? */
+    if(_pstSpawner->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstSpawner->zReference, orxFALSE);
+    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstSpawner);

@@ -689,6 +689,9 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
         /* Stores its reference */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
         /* Adds it to reference table */
         if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
@@ -802,6 +805,9 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
     {
       /* Removes from hashtable */
       orxHashTable_Remove(sstFX.pstReferenceTable, orxString_ToCRC(_pstFX->zReference));
+
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstFX->zReference, orxFALSE);
 
       /* Deletes structure */
       orxStructure_Delete(_pstFX);

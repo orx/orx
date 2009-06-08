@@ -182,9 +182,10 @@ typedef struct __orxCONFIG_SECTION_t
   orxSTRING         zName;                  /**< Section name : 20 */
   orxU32            u32ID;                  /**< Section CRC : 24 */
   orxU32            u32ParentID;            /**< Parent ID (CRC) : 28 */
-  orxLINKLIST       stEntryList;            /**< Entry list : 40 */
+  orxS32            s32ProtectionCounter;   /**< Protection counter : 32 */
+  orxLINKLIST       stEntryList;            /**< Entry list : 44 */
 
-  orxPAD(40)
+  orxPAD(44)
 
 } orxCONFIG_SECTION;
 
@@ -668,8 +669,11 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
         /* Sets its ID */
         pstSection->u32ID = _u32SectionID;
 
-        /* Cleans its parent ID */
+        /* Inits its parent ID */
         pstSection->u32ParentID = _u32ParentID;
+
+        /* Clears its protection counter */
+        pstSection->s32ProtectionCounter = 0;
       }
       else
       {
@@ -708,7 +712,8 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
  */
 static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
 {
-  orxCONFIG_ENTRY *pstEntry;
+  orxCONFIG_ENTRY        *pstEntry;
+  orxCONFIG_STACK_ENTRY  *pstStackEntry;
 
   /* Checks */
   orxASSERT(_pstSection != orxNULL);
@@ -720,18 +725,49 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
     orxConfig_DeleteEntry(_pstSection, pstEntry);
   }
 
-  /* Is the current selected one? */
-  if(sstConfig.pstCurrentSection == _pstSection)
+  /* Not protected? */
+  if(_pstSection->s32ProtectionCounter == 0)
   {
-    /* Deselects it */
-    sstConfig.pstCurrentSection = orxNULL;
+    /* For all stack entries */
+    for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
+        pstStackEntry != orxNULL;
+        pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode)))
+    {
+      /* Is deleted section? */
+      if(pstStackEntry->pstSection == _pstSection)
+      {
+        /* Removes it from stack list */
+        orxLinkList_Remove(&(pstStackEntry->stNode));
+
+        /* Deletes it */
+        orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Warning: deleted section <%s> was previously pushed and has to be removed from stack.", _pstSection->zName);
+      }
+    }
+
+    /* Is the current selected one? */
+    if(sstConfig.pstCurrentSection == _pstSection)
+    {
+      /* Deselects it */
+      sstConfig.pstCurrentSection = orxNULL;
+    }
+
+    /* Deletes its name */
+    orxString_Delete(_pstSection->zName);
+
+    /* Removes it from list */
+    orxLinkList_Remove(&(_pstSection->stNode));
+
+    /* Removes section */
+    orxBank_Free(sstConfig.pstSectionBank, _pstSection);
   }
-
-  /* Removes it from list */
-  orxLinkList_Remove(&(_pstSection->stNode));
-
-  /* Removes section */
-  orxBank_Free(sstConfig.pstSectionBank, _pstSection);
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Warning: section <%s> can't be deleted as it's protected by %d entities.", _pstSection->zName, _pstSection->s32ProtectionCounter);
+  }
 
   return;
 }
@@ -1847,6 +1883,26 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
 
+  /* Should keep history? */
+  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
+  {
+    /* External call? */
+    if(sstConfig.u32LoadCounter == 0)
+    {
+      orxSTRING *pzEntry;
+
+      /* Add an history entry */
+      pzEntry = (orxSTRING *)orxBank_Allocate(sstConfig.pstHistoryBank);
+
+      /* Valid? */
+      if(pzEntry != orxNULL)
+      {
+        /* Stores the file name */
+        *pzEntry = orxString_Duplicate(_zFileName);
+      }
+    }
+  }
+
   /* Updates load counter */
   sstConfig.u32LoadCounter++;
 
@@ -2246,22 +2302,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
 
-    /* Should keep history? */
-    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
-    {
-      orxSTRING *pzEntry;
-
-      /* Add an history entry */
-      pzEntry = (orxSTRING *)orxBank_Allocate(sstConfig.pstHistoryBank);
-
-      /* Valid? */
-      if(pzEntry != orxNULL)
-      {
-        /* Stores the file name */
-        *pzEntry = orxString_Duplicate(_zFileName);
-      }
-    }
-
     /* Pops previous section */
     sstConfig.pstCurrentSection = pstPreviousSection;
 
@@ -2558,20 +2598,76 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   return bResult;
 }
 
+/** Protects/unprotects a section from deletion (content might still be changed or deleted, but the section itself will resist delete/clear calls)
+ * @param[in] _zSectionName     Section name to protect
+ * @param[in] _bProtect         orxTRUE for protecting the section, orxFALSE to remove the protection
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxU32              u32ID;
+  orxSTATUS           eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+  orxASSERT(_zSectionName != orxSTRING_EMPTY);
+
+  /* Gets section name ID */
+  u32ID = orxString_ToCRC(_zSectionName);
+
+  /* For all the sections */
+  for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+      pstSection != orxNULL;
+      pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
+  {
+    /* Found? */
+    if(pstSection->u32ID == u32ID)
+    {
+      /* Updates protection counter */
+      pstSection->s32ProtectionCounter += (_bProtect != orxFALSE) ? 1 : -1;
+
+      /* Checks */
+      orxASSERT(pstSection->s32ProtectionCounter >= 0);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Clears all config data
  */
 void orxFASTCALL orxConfig_Clear()
 {
-  orxCONFIG_SECTION *pstSection;
+  orxCONFIG_SECTION *pstLastSection, *pstNewSection;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
-  /* While there's still a section */
-  while((pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList))) != orxNULL)
+  /* For all sections */
+  for(pstLastSection = orxNULL, pstNewSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+      pstNewSection != orxNULL;
+      pstNewSection = (pstLastSection != orxNULL) ? (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstLastSection->stNode)) : (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList)))
   {
-    /* Deletes it */
-    orxConfig_DeleteSection(pstSection);
+    /* Checks */
+    orxASSERT(pstNewSection->s32ProtectionCounter >= 0);
+
+    /* Protected? */
+    if(pstNewSection->s32ProtectionCounter > 0)
+    {
+      /* Updates last section */
+      pstLastSection = pstNewSection;
+    }
+
+    /* Deletes section */
+    orxConfig_DeleteSection(pstNewSection);
   }
 
   return;
@@ -2602,27 +2698,6 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
     /* Found? */
     if(pstSection->u32ID == u32ID)
     {
-      orxCONFIG_STACK_ENTRY *pstStackEntry;
-
-      /* For all stack entries */
-      for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
-          pstStackEntry != orxNULL;
-          pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode)))
-      {
-        /* Is cleared section? */
-        if(pstStackEntry->pstSection == pstSection)
-        {
-          /* Removes it from stack list */
-          orxLinkList_Remove(&(pstStackEntry->stNode));
-
-          /* Deletes it */
-          orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
-
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Warning: cleared section <%s> was previously pushed and has to be removed from stack.", pstSection->zName);
-        }
-      }
-
       /* Deletes it */
       orxConfig_DeleteSection(pstSection);
 

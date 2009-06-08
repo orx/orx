@@ -416,6 +416,9 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
             /* Stores its reference */
             pstResult->zReference = orxConfig_GetCurrentSection();
 
+            /* Protects it */
+            orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
             /* Should keep it in cache? */
             if(orxConfig_GetBool(orxSOUND_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
             {
@@ -567,6 +570,9 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
       /* Stops it */
       orxSound_Stop(_pstSound);
 
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstSound->zReference, orxFALSE);
+
       /* Has data? */
       if(_pstSound->pstData != orxNULL)
       {
@@ -601,7 +607,7 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
     else
     {
       /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Cannot delete structure while it is still referenced by others.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Cannot delete structure while it is still referenced by others.");
 
       /* Referenced by others */
       eResult = orxSTATUS_FAILURE;
