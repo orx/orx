@@ -174,8 +174,6 @@
             include/plugin/define/orxPlugin_CoreDefine.h
             include/plugin/define/orxPlugin_CoreID.h
             include/plugin/define/orxPlugin_Display.h
-            include/plugin/define/orxPlugin_File.h
-            include/plugin/define/orxPlugin_FileSystem.h
             include/plugin/define/orxPlugin_Joystick.h
             include/plugin/define/orxPlugin_Keyboard.h
             include/plugin/define/orxPlugin_Mouse.h

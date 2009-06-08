@@ -126,8 +126,6 @@
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_CoreDefine.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_CoreID.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Display.h" />
-		<Unit filename="..\..\..\include\plugin\define\orxPlugin_File.h" />
-		<Unit filename="..\..\..\include\plugin\define\orxPlugin_FileSystem.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Joystick.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Keyboard.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Mouse.h" />
