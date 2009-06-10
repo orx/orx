@@ -73,9 +73,7 @@
         <StartupCommands></StartupCommands>
       </Debugger>
       <PreBuild/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
-      </PostBuild>
+      <PostBuild/>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -112,9 +110,7 @@
         <StartupCommands></StartupCommands>
       </Debugger>
       <PreBuild/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
-      </PostBuild>
+      <PostBuild/>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -154,9 +150,7 @@
         <StartupCommands></StartupCommands>
       </Debugger>
       <PreBuild/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
-      </PostBuild>
+      <PostBuild/>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -195,9 +189,7 @@
         <StartupCommands></StartupCommands>
       </Debugger>
       <PreBuild/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
-      </PostBuild>
+      <PostBuild/>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
