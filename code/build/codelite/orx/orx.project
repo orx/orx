@@ -259,6 +259,12 @@
         <LibraryPath Value="../../../lib/static"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <Library Value="X11"/>
+        <Library Value="Xrandr"/>
+        <Library Value="GL"/>
+        <Library Value="freetype"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
         <Library Value="orxd"/>
         <Library Value="dl"/>
         <Library Value="m"/>
@@ -299,6 +305,12 @@
         <LibraryPath Value="../../../lib/static"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <Library Value="X11"/>
+        <Library Value="Xrandr"/>
+        <Library Value="GL"/>
+        <Library Value="freetype"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
         <Library Value="m"/>
