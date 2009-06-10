@@ -129,6 +129,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_PopSection();
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(const orxSTRING _zSectionName);
 
+/** Protects/unprotects a section from deletion (content might still be changed or deleted, but the section itself will resist delete/clear calls)
+ * @param[in] _zSectionName     Section name to protect
+ * @param[in] _bProtect         orxTRUE for protecting the section, orxFALSE to remove the protection
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect);
+
 /** Clears all config info
  */
 extern orxDLLAPI void orxFASTCALL       orxConfig_Clear();
