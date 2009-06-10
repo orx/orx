@@ -44,13 +44,15 @@
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <Library Value="orxd"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
         <Library Value="sfml-audio"/>
         <Library Value="sfml-system"/>
       </Linker>
@@ -62,7 +64,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML_1.3/lib/linux/*.so.1 ../../../bin</Command>
+        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -83,12 +85,14 @@
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <Library Value="orx"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
         <Library Value="sfml-audio"/>
         <Library Value="sfml-system"/>
       </Linker>
@@ -100,7 +104,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML_1.3/lib/linux/*.so.1 ../../../bin</Command>
+        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -121,13 +125,15 @@
     <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <Library Value="orxd"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
         <Library Value="sfml-audio"/>
         <Library Value="sfml-system"/>
       </Linker>
@@ -139,7 +145,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML_1.3/lib/linux/*.so.1 ../../../bin</Command>
+        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -160,12 +166,14 @@
     <Configuration Name="Linux Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <Library Value="orx"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
         <Library Value="sfml-audio"/>
         <Library Value="sfml-system"/>
       </Linker>
@@ -177,7 +185,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../extern/SFML_1.3/lib/linux/*.so.1 ../../../bin</Command>
+        <Command Enabled="yes">cp -f ../../../../extern/SFML-1.5/lib/linux/*.so.1 ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -230,12 +238,12 @@
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC -lsfml-audio-d -lsfml-system-d" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <Library Value="orxd"/>
         <Library Value="sfml-audio-d"/>
         <Library Value="sfml-system-d"/>
@@ -248,7 +256,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML_1.4\extlibs\bin\\*.dll ..\..\..\bin</Command>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML-1.5\extlibs\bin\\*.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -269,11 +277,11 @@
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <Library Value="orx"/>
         <Library Value="sfml-audio"/>
         <Library Value="sfml-system"/>
@@ -286,7 +294,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML_1.4\extlibs\bin\\*.dll ..\..\..\bin</Command>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML-1.5\extlibs\bin\\*.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -307,12 +315,12 @@
     <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <Library Value="sfml-audio-d"/>
         <Library Value="sfml-system-d"/>
         <Library Value="imporxd"/>
@@ -325,7 +333,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML_1.4\extlibs\bin\\*.dll ..\..\..\bin</Command>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML-1.5\extlibs\bin\\*.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -346,11 +354,11 @@
     <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <Library Value="sfml-audio"/>
         <Library Value="sfml-system"/>
         <Library Value="imporx"/>
@@ -363,7 +371,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML_1.4\extlibs\bin\\*.dll ..\..\..\bin</Command>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\extern\SFML-1.5\extlibs\bin\\*.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>

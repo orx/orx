@@ -193,7 +193,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../../extern/SFML_1.3/lib/linux" Required="yes">
+      <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
       </Linker>
@@ -223,7 +223,7 @@
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../../extern/SFML_1.3/lib/linux" Required="yes">
+      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
       </Linker>
@@ -257,7 +257,7 @@
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="dl"/>
@@ -297,7 +297,7 @@
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
@@ -527,7 +527,7 @@
       </Compiler>
       <Linker Options="-Wl,--out-implib,../../../lib/static/libimporxd.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="orxd"/>
         <Library Value="sfml-graphics-d"/>
@@ -567,7 +567,7 @@
       </Compiler>
       <Linker Options="-s -Wl,--out-implib,../../../lib/static/libimporx.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="orx"/>
         <Library Value="sfml-graphics"/>

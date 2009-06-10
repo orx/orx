@@ -40,10 +40,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\..\include"
+				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="false"
+				FloatingPointModel="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="2"
@@ -60,9 +65,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\lib\msvs2005\orx.lib"
+				AdditionalDependencies="orx.lib"
 				OutputFile="..\..\..\bin\msvs2005\$(ProjectName).exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\lib\msvs2005"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="1"

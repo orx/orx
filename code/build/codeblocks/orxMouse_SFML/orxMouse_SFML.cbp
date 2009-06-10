@@ -78,11 +78,11 @@
 			<Add option="-Wswitch" />
 			<Add option="-Wunused-variable" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\..\extern\SFML_1.4\include" />
+			<Add directory="..\..\..\..\extern\SFML-1.5\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-fPIC" />
-			<Add directory="..\..\..\..\extern\SFML_1.4\lib\mingw" />
+			<Add directory="..\..\..\..\extern\SFML-1.5\lib\mingw" />
 		</Linker>
 		<Unit filename="..\..\..\plugins\Mouse\SFML\orxMouse.cpp" />
 		<Extensions>

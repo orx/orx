@@ -272,9 +272,6 @@ static void orxFASTCALL orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClo
         break;
       }
 
-//! TEMP: Linux is still using SFML 1.3 which doesn't handle these events. SFML 1.4 is crashing for now on linux
-#ifndef __orxLINUX__
-
       /* Mouse in? */
       case sf::Event::MouseEntered:
       {
@@ -292,8 +289,6 @@ static void orxFASTCALL orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClo
         
         break;
       }
-
-#endif /* __orxLINUX__ */
 
       case sf::Event::MouseMoved:
       case sf::Event::MouseWheelMoved:

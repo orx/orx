@@ -79,15 +79,15 @@
   </set>
 
   <set var="orxSFMLLIB_PATH">
-    <if cond="FORMAT=='mingw'">-L../../../../extern/SFML_1.4/lib/mingw</if>
-    <if cond="FORMAT=='gnu'">-L../../../../extern/SFML_1.3/lib/linux</if>
-    <if cond="FORMAT=='autoconf'">-L../../../../extern/SFML_1.3/lib/linux</if>
+    <if cond="FORMAT=='mingw'">-L../../../../extern/SFML-1.5/lib/mingw</if>
+    <if cond="FORMAT=='gnu'">-L../../../../extern/SFML-1.5/lib/linux</if>
+    <if cond="FORMAT=='autoconf'">-L../../../../extern/SFML-1.5/lib/linux</if>
   </set>
 
   <set var="orxSFMLINC_PATH">
-    <if cond="FORMAT=='mingw'">-I../../../../extern/SFML_1.4/include</if>
-    <if cond="FORMAT=='gnu'">-I../../../../extern/SFML_1.3/include</if>
-    <if cond="FORMAT=='autoconf'">-I../../../../extern/SFML_1.3/include</if>
+    <if cond="FORMAT=='mingw'">-I../../../../extern/SFML-1.5/include</if>
+    <if cond="FORMAT=='gnu'">-I../../../../extern/SFML-1.5/include</if>
+    <if cond="FORMAT=='autoconf'">-I../../../../extern/SFML-1.5/include</if>
   </set>
 
   <set var="orxSFMLLIB_MSVC">
@@ -96,7 +96,7 @@
 
 
   <set var="orxSFMLLIB_UNIX">
-    <if cond="PLATFORM_UNIX=='1'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
+    <if cond="PLATFORM_UNIX=='1'">-lX11 -lXrandr -lGL -lfreetype -lsndfile -lopenal -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
   </set>
 
   <!-- Define the module template -->
