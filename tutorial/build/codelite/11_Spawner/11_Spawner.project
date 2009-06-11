@@ -12,7 +12,7 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./ -Wl,-rpath-link ../../../bin/linux">
+      <Linker Required="yes" Options="-s -Wl,-rpath ./">
         <LibraryPath Value="../../../lib/linux"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
