@@ -792,6 +792,7 @@ void orxFASTCALL    orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   /* Resets counters */
   _pstSpawner->u16ActiveObjectCounter = 0;
   _pstSpawner->u16TotalObjectCounter  = 0;
+  _pstSpawner->fWaveTimeStamp         = orxFLOAT_0;
 
   /* For all objects */
   for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
