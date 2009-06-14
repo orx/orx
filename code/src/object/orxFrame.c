@@ -412,7 +412,6 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
     pvPos         = _orxFrame_GetPosition(_pstSrcFrame, orxFRAME_SPACE_LOCAL);
 
     /* Gets frame's local scales */
-
     _orxFrame_GetScale(_pstSrcFrame, orxFRAME_SPACE_LOCAL, &vLocalScale);
 
     /* Updates angle */

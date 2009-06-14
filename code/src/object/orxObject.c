@@ -1817,10 +1817,6 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR
     /* Gets object scale */
     orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
 
-    /* Clears scale on Z */
-
-    _pvScale->fZ = orxFLOAT_1;
-
     /* Updates result */
     pvResult = _pvScale;
   }

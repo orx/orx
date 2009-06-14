@@ -625,7 +625,7 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const
   if(eResult != orxSTATUS_FAILURE)
   {
     orxBODY_PART_DEF            stMergedPartDef;
-    const orxBODY_PART_DEF  *pstSelectedPartDef;
+    const orxBODY_PART_DEF     *pstSelectedPartDef;
     orxPHYSICS_BODY_PART       *pstBodyPart;
 
     /* Uses part template? */
@@ -774,7 +774,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         orxVECTOR vPivot, vSize;
         orxFLOAT  fRadius;
 
-        /* Gets object size, scale & pivot */
+        /* Gets object size & pivot */
         orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &vSize);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
@@ -803,7 +803,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       {
         orxVECTOR vPivot, vSize;
 
-        /* Gets object size, scale & pivot */
+        /* Gets object size & pivot */
         orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &vSize);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 

@@ -1017,10 +1017,11 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
           /* Use relative speed? */
           if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED))
           {
-            orxVECTOR vSpeed;
+            orxVECTOR vSpeed, vSpawnerScale;
 
             /* Applies relative speed */
-            orxObject_SetSpeed(pstObject, orxVector_2DRotate(&vSpeed, &(_pstSpawner->vSpeed), fSpawnerRotation));
+            orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, &(_pstSpawner->vSpeed), fSpawnerRotation), orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale));
+            orxObject_SetSpeed(pstObject, &vSpeed);
           }
           else
           {
