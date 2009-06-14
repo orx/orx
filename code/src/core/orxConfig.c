@@ -641,66 +641,75 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
   orxASSERT(_zSectionName != orxNULL);
   orxASSERT(_zSectionName != orxSTRING_EMPTY);
 
-  /* Allocates it */
-  pstSection = (orxCONFIG_SECTION *)orxBank_Allocate(sstConfig.pstSectionBank);
-
   /* Valid? */
-  if(pstSection != orxNULL)
+  if((_u32SectionID != 0) && (_u32SectionID != orxU32_UNDEFINED))
   {
-    /* Creates its bank */
-    pstSection->pstEntryBank = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    /* Allocates it */
+    pstSection = (orxCONFIG_SECTION *)orxBank_Allocate(sstConfig.pstSectionBank);
 
     /* Valid? */
-    if(pstSection->pstEntryBank != orxNULL)
+    if(pstSection != orxNULL)
     {
-      /* Duplicates its name */
-      pstSection->zName = orxString_Duplicate(_zSectionName);
+      /* Creates its bank */
+      pstSection->pstEntryBank = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
       /* Valid? */
-      if(pstSection->zName != orxNULL)
+      if(pstSection->pstEntryBank != orxNULL)
       {
-        /* Clears its entry list */
-        orxMemory_Zero(&(pstSection->stEntryList), sizeof(orxLINKLIST));
+        /* Duplicates its name */
+        pstSection->zName = orxString_Duplicate(_zSectionName);
 
-        /* Adds it to list */
-        orxMemory_Zero(&(pstSection->stNode), sizeof(orxLINKLIST_NODE));
-        orxLinkList_AddEnd(&(sstConfig.stSectionList), &(pstSection->stNode));
+        /* Valid? */
+        if(pstSection->zName != orxNULL)
+        {
+          /* Clears its entry list */
+          orxMemory_Zero(&(pstSection->stEntryList), sizeof(orxLINKLIST));
 
-        /* Sets its ID */
-        pstSection->u32ID = _u32SectionID;
+          /* Adds it to list */
+          orxMemory_Zero(&(pstSection->stNode), sizeof(orxLINKLIST_NODE));
+          orxLinkList_AddEnd(&(sstConfig.stSectionList), &(pstSection->stNode));
 
-        /* Inits its parent ID */
-        pstSection->u32ParentID = _u32ParentID;
+          /* Sets its ID */
+          pstSection->u32ID = _u32SectionID;
 
-        /* Clears its protection counter */
-        pstSection->s32ProtectionCounter = 0;
+          /* Inits its parent ID */
+          pstSection->u32ParentID = _u32ParentID;
+
+          /* Clears its protection counter */
+          pstSection->s32ProtectionCounter = 0;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating section name failed.");
+
+          /* Deletes its bank */
+          orxBank_Delete(pstSection->pstEntryBank);
+
+          /* Deletes it */
+          orxBank_Free(sstConfig.pstSectionBank, pstSection);
+
+          /* Updates result */
+          pstSection = orxNULL;
+        }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating section name failed.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config bank.");
 
-        /* Deletes its bank */
-        orxBank_Delete(pstSection->pstEntryBank);
-
-        /* Deletes it */
+        /* Deletes the section */
         orxBank_Free(sstConfig.pstSectionBank, pstSection);
 
         /* Updates result */
         pstSection = orxNULL;
       }
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config bank.");
-
-      /* Deletes the section */
-      orxBank_Free(sstConfig.pstSectionBank, pstSection);
-
-      /* Updates result */
-      pstSection = orxNULL;
-    }
+  }
+  else
+  {
+    /* Updates result */
+    pstSection = orxNULL;
   }
 
   /* Done! */
@@ -1633,39 +1642,92 @@ const orxSTRING orxFASTCALL orxConfig_GetMainFileName()
  */
 orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTRING   zTrimmedName;
+  orxCHAR    *pc, *pcEnd;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
 
+  /* Gets trimmed section name */
+  for(pc = _zSectionName, zTrimmedName = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of name yet? */
+      if(zTrimmedName == orxNULL)
+      {
+        /* Stores start of name */
+        zTrimmedName = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
+
   /* Valid? */
-  if(_zSectionName != orxSTRING_EMPTY)
+  if(zTrimmedName != orxSTRING_EMPTY)
   {
     orxCONFIG_SECTION  *pstSection;
+    orxCHAR            *pcNameEnd;
     orxU32              u32SectionID, u32ParentID;
     orxS32              s32MarkerIndex;
 
     /* Looks for inheritance index */
-    s32MarkerIndex = orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_MARKER, 0);
+    s32MarkerIndex = orxString_SearchCharIndex(zTrimmedName, orxCONFIG_KC_INHERITANCE_MARKER, 0);
 
     /* Found? */
     if(s32MarkerIndex >= 0)
     {
+      orxSTRING zParent;
+
       /* Cut the name */
-      *(_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
+      *(zTrimmedName + s32MarkerIndex) = orxCHAR_NULL;
+
+      /* Gets end of name */
+      for(pcNameEnd = zTrimmedName + s32MarkerIndex - 1; (pcNameEnd > zTrimmedName) && (*pcNameEnd == ' '); pcNameEnd--);
+
+      /* Should trim? */
+      if(((++pcNameEnd) < zTrimmedName + s32MarkerIndex) && (pcNameEnd > zTrimmedName))
+      {
+        /* Ends name here */
+        *pcNameEnd = orxCHAR_NULL;
+      }
+      else
+      {
+        /* Clears name end pointer */
+        pcNameEnd = orxNULL;
+      }
+
+      /* Gets parent name */
+      for(zParent = zTrimmedName + s32MarkerIndex + 1; *zParent == ' '; zParent++);
 
       /* Gets its parent ID */
-      u32ParentID = orxString_ToCRC(_zSectionName + s32MarkerIndex + 1);
+      u32ParentID = orxString_ToCRC(zParent);
     }
     else
     {
       /* Clears parent ID */
       u32ParentID = orxU32_UNDEFINED;
+
+      /* Clears end of name */
+      pcNameEnd = orxNULL;
     }
 
     /* Gets the section ID */
-    u32SectionID = orxString_ToCRC(_zSectionName);
+    u32SectionID = orxString_ToCRC(zTrimmedName);
 
     /* Not already selected? */
     if((sstConfig.pstCurrentSection == orxNULL)
@@ -1696,7 +1758,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     if(pstSection == orxNULL)
     {
       /* Creates it */
-      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, (u32ParentID != orxU32_UNDEFINED) ? u32ParentID : 0);
+      pstSection = orxConfig_CreateSection(zTrimmedName, u32SectionID, (u32ParentID != orxU32_UNDEFINED) ? u32ParentID : 0);
 
       /* Success? */
       if(pstSection != orxNULL)
@@ -1707,7 +1769,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %ld, %ld).", _zSectionName, u32SectionID, u32ParentID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %0X, %0X).", zTrimmedName, u32SectionID, u32ParentID);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -1727,17 +1789,31 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       }
     }
 
+    /* Had trimmed name */
+    if(pcNameEnd != orxNULL)
+    {
+      /* Restores space */
+      *pcNameEnd = ' ';
+    }
+
     /* Had inheritance marker? */
     if(s32MarkerIndex >= 0)
     {
       /* Restores it */
-      *(_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
+      *(zTrimmedName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
     }
   }
   else
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
   }
 
   /* Done! */
@@ -2568,6 +2644,8 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
 orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
+  orxSTRING           zTrimmedName;
+  orxCHAR            *pc, *pcEnd;
   orxU32              u32ID;
   orxBOOL             bResult = orxFALSE;
 
@@ -2576,8 +2654,35 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   orxASSERT(_zSectionName != orxNULL);
   orxASSERT(_zSectionName != orxSTRING_EMPTY);
 
+  /* Gets trimmed section name */
+  for(pc = _zSectionName, zTrimmedName = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of name yet? */
+      if(zTrimmedName == orxNULL)
+      {
+        /* Stores start of name */
+        zTrimmedName = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
+
   /* Gets section name ID */
-  u32ID = orxString_ToCRC(_zSectionName);
+  u32ID = orxString_ToCRC(zTrimmedName);
 
   /* For all the sections */
   for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
@@ -2592,6 +2697,13 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 
       break;
     }
+  }
+
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
   }
 
   /* Done! */
