@@ -7,7 +7,10 @@ orx 1.0rc1
 -----
 * Migrated all SFML plugins on all platforms to SFML 1.5: linux was using SFML 1.3, other platforms were using SFML 1.4
 * Fixed the reload of config history: logic was broken and it could even crash
+* Physics plugin now can handle negative scales (mirror effect)
+* Fixed spawner not using scale when setting spawned object's relative speed
 * Added orxLOG_CONSOLE(), orxLOG_FILE() and orxLOG_RAW() helpers
+* Config section are not allowed anylonger to have leading or trailing spaces + trimmed all requests accordingly
 * Fixed spawner wave timestamp not being correctly cleared when a spawner was reset
 * Removed obsolete files
 * Misc minor updates in comments/doc files
