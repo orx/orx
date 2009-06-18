@@ -339,21 +339,49 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all parameters */
           for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
           {
-            orxSTRING zParamName;
+            orxSTRING zParamName, zTrimmedName;
+            orxCHAR  *pc, *pcEnd;
 
             /* Gets its name */
             zParamName = orxConfig_GetListString(orxSHADER_KZ_CONFIG_PARAM_LIST, i);
 
+            /* Gets trimmed param name */
+            for(pc = zParamName, zTrimmedName = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+            {
+              /* Not a space? */
+              if(*pc != ' ')
+              {
+                /* Hasn't found the start of name yet? */
+                if(zTrimmedName == orxNULL)
+                {
+                  /* Stores start of name */
+                  zTrimmedName = (orxSTRING)pc;
+                }
+                else
+                {
+                  /* Updates end of name */
+                  pcEnd = pc;
+                }
+              }
+            }
+
+            /* Had trailing spaces? */
+            if((++pcEnd) < pc)
+            {
+              /* Ends name here for now */
+              *pcEnd = orxCHAR_NULL;
+            }
+
             /* Valid? */
-            if(zParamName != orxSTRING_EMPTY)
+            if(zTrimmedName != orxSTRING_EMPTY)
             {
               orxVECTOR vValue;
 
               /* Is a vector? */
-              if(orxConfig_GetVector(zParamName, &vValue) != orxNULL)
+              if(orxConfig_GetVector(zTrimmedName, &vValue) != orxNULL)
               {
                 /* Adds vector param */
-                orxShader_AddVectorParam(pstResult, zParamName, &vValue);
+                orxShader_AddVectorParam(pstResult, zTrimmedName, &vValue);
               }
               else
               {
@@ -361,13 +389,13 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                 orxFLOAT  fValue;
 
                 /* Gets its literal value */
-                zValue = orxString_LowerCase(orxConfig_GetString(zParamName));
+                zValue = orxString_LowerCase(orxConfig_GetString(zTrimmedName));
 
                 /* Is a float? */
                 if(orxString_ToFloat(zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
                 {
                   /* Adds float param */
-                  orxShader_AddFloatParam(pstResult, zParamName, fValue);
+                  orxShader_AddFloatParam(pstResult, zTrimmedName, fValue);
                 }
                 else
                 {
@@ -386,9 +414,16 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                   }
 
                   /* Adds texture param */
-                  orxShader_AddTextureParam(pstResult, zParamName, pstTexture);
+                  orxShader_AddTextureParam(pstResult, zTrimmedName, pstTexture);
                 }
               }
+            }
+
+            /* Had end pointer? */
+            if(pcEnd < pc)
+            {
+              /* Restores space */
+              *pcEnd = ' ';
             }
           }
 

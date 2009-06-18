@@ -414,11 +414,15 @@ static orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
   return pstResult;
 }
 
+/** Forward declaration of orxConfig_GetValue
+ */
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey);
+
 /** Gets a value from the current section, using inheritance
  * @param[in] _u32KeyID         Entry key ID
  * @return                      orxCONFIG_VALUE / orxNULL
  */
-static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCONFIG_VALUE  *pstResult = orxNULL;
@@ -454,7 +458,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
         /* Gets its inherited value */
-        pstResult = orxConfig_GetValue(orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1));
+        pstResult = orxConfig_GetValue(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
 
         /* Cut the name */
         *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
@@ -465,7 +469,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
         /* Gets its inherited value */
-        pstResult = orxConfig_GetValue(_u32KeyID);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID);
       }
 
       /* Restores current section */
@@ -501,7 +505,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
           sstConfig.pstCurrentSection = pstSection;
 
           /* Gets inherited value */
-          pstResult = orxConfig_GetValue(_u32KeyID);
+          pstResult = orxConfig_GetValueFromKey(_u32KeyID);
 
           /* Restores current section */
           sstConfig.pstCurrentSection = pstPreviousSection;
@@ -510,6 +514,60 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
         }
       }
     }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a value from the current section, using inheritance
+ * @param[in] _zKeyID           Entry key
+ * @return                      orxCONFIG_VALUE / orxNULL
+ */
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
+{
+  orxSTRING         zTrimmedKey;
+  orxCHAR          *pc, *pcEnd;
+  orxCONFIG_VALUE  *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstConfig.pstCurrentSection != orxNULL);
+
+  /* Gets trimmed key */
+  for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of key yet? */
+      if(zTrimmedKey == orxNULL)
+      {
+        /* Stores start of key */
+        zTrimmedKey = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
+
+  /* Gets value */
+  pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(zTrimmedKey));
+
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
   }
 
   /* Done! */
@@ -539,6 +597,36 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
   /* Valid? */
   if(pstEntry != orxNULL)
   {
+    orxSTRING zTrimmedKey;
+    orxCHAR  *pc, *pcEnd;
+
+    /* Gets trimmed key */
+    for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+    {
+      /* Not a space? */
+      if(*pc != ' ')
+      {
+        /* Hasn't found the start of name yet? */
+        if(zTrimmedKey == orxNULL)
+        {
+          /* Stores start of key */
+          zTrimmedKey = (orxSTRING)pc;
+        }
+        else
+        {
+          /* Updates end of key */
+          pcEnd = pc;
+        }
+      }
+    }
+
+    /* Had trailing spaces? */
+    if((++pcEnd) < pc)
+    {
+      /* Ends name here for now */
+      *pcEnd = orxCHAR_NULL;
+    }
+
     /* Stores value */
     pstEntry->stValue.zValue = orxString_Duplicate(_zValue);
 
@@ -546,7 +634,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
     if(pstEntry->stValue.zValue != orxNULL)
     {
       /* Stores key */
-      pstEntry->zKey = orxString_Duplicate(_zKey);
+      pstEntry->zKey = orxString_Duplicate(zTrimmedKey);
 
       /* Valid? */
       if(pstEntry->zKey != orxNULL)
@@ -580,7 +668,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", _zKey);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", zTrimmedKey);
 
         /* Deletes allocated string */
         orxString_Delete(pstEntry->stValue.zValue);
@@ -596,6 +684,13 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
 
       /* Deletes entry */
       orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
+    }
+
+    /* Had end pointer? */
+    if(pcEnd < pc)
+    {
+      /* Restores space */
+      *pcEnd = ' ';
     }
   }
 
@@ -2631,7 +2726,7 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Updates result */
-  bResult = (orxConfig_GetValue(orxString_ToCRC(_zKey)) != orxNULL) ? orxTRUE : orxFALSE;
+  bResult = (orxConfig_GetValue(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -2875,7 +2970,7 @@ orxS32 orxFASTCALL orxConfig_GetS32(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Found? */
   if(pstValue != orxNULL)
@@ -2908,7 +3003,7 @@ orxU32 orxFASTCALL orxConfig_GetU32(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Found? */
   if(pstValue != orxNULL)
@@ -2941,7 +3036,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Found? */
   if(pstValue != orxNULL)
@@ -2974,7 +3069,7 @@ const orxSTRING orxFASTCALL orxConfig_GetString(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Found? */
   if(pstValue != orxNULL)
@@ -3007,7 +3102,7 @@ orxBOOL orxFASTCALL orxConfig_GetBool(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Found? */
   if(pstValue != orxNULL)
@@ -3042,7 +3137,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pv
   orxASSERT(_pvVector != orxNULL);
 
   /* Gets corresponding value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Found? */
   if(pstValue != orxNULL)
@@ -3297,7 +3392,7 @@ orxBOOL orxFASTCALL orxConfig_IsList(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets associated value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3325,7 +3420,7 @@ orxS32 orxFASTCALL orxConfig_GetListCounter(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets associated value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3355,7 +3450,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIn
   orxASSERT(_s32ListIndex < 0xFF);
 
   /* Gets value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3394,7 +3489,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIn
   orxASSERT(_s32ListIndex < 0xFF);
 
   /* Gets value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3433,7 +3528,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32Li
   orxASSERT(_s32ListIndex < 0xFF);
 
   /* Gets value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3472,7 +3567,7 @@ const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS3
   orxASSERT(_s32ListIndex < 0xFF);
 
   /* Gets value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3511,7 +3606,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32List
   orxASSERT(_s32ListIndex < 0xFF);
 
   /* Gets value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
@@ -3551,7 +3646,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
   orxASSERT(_s32ListIndex < 0xFF);
 
   /* Gets value */
-  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(_zKey);
 
   /* Valid? */
   if(pstValue != orxNULL)
