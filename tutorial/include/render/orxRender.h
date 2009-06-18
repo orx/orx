@@ -106,7 +106,7 @@ extern orxDLLAPI void orxFASTCALL             orxRender_Exit();
 
 /** Get a world position given a screen one (absolute picking)
  * @param[in]   _pvScreenPosition                     Concerned screen position
- * @param[out]  _pvWorldPosition                      Concerned callback
+ * @param[out]  _pvWorldPosition                      Corresponding world position
  * @return      orxVECTOR if found, orxNULL otherwise
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
