@@ -2047,12 +2047,42 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
  */
 orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 {
+  orxSTRING zTrimmedName;
   FILE     *pstFile;
+  orxCHAR  *pc, *pcEnd;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
+  orxASSERT(_zFileName != orxSTRING_EMPTY);
+
+  /* Gets trimmed file name */
+  for(pc = _zFileName, zTrimmedName = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of name yet? */
+      if(zTrimmedName == orxNULL)
+      {
+        /* Stores start of name */
+        zTrimmedName = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
 
   /* Should keep history? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
@@ -2069,7 +2099,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
       if(pzEntry != orxNULL)
       {
         /* Stores the file name */
-        *pzEntry = orxString_Duplicate(_zFileName);
+        *pzEntry = orxString_Duplicate(zTrimmedName);
       }
     }
   }
@@ -2078,7 +2108,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   sstConfig.u32LoadCounter++;
 
   /* Valid file to open? */
-  if((_zFileName != orxSTRING_EMPTY) && ((pstFile = fopen(_zFileName, "rb")) != orxNULL))
+  if((zTrimmedName != orxSTRING_EMPTY) && ((pstFile = fopen(zTrimmedName, "rb")) != orxNULL))
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
@@ -2190,7 +2220,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
               /* Logs */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, zTrimmedName);
 
               /* Deletes entry */
               orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
@@ -2276,13 +2306,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               *pc = orxCHAR_NULL;
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", zTrimmedName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Loads file */
               orxConfig_Load(pcLineStart + 1);
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", zTrimmedName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Restores current section */
               sstConfig.pstCurrentSection = pstCurrentSection;
@@ -2483,6 +2513,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   /* Updates load counter */
   sstConfig.u32LoadCounter--;
 
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
+  }
+
   /* Done! */
   return eResult;
 }
@@ -2550,8 +2587,36 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
   FILE     *pstFile;
+  orxCHAR  *pc, *pcEnd;
   orxSTRING zFileName;
   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Gets trimmed file name */
+  for(pc = _zFileName, zFileName = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of name yet? */
+      if(zFileName == orxNULL)
+      {
+        /* Stores start of name */
+        zFileName = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -2559,13 +2624,8 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   /* No encryption requested or has a valid key? */
   if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
-    /* Is given file name valid? */
-    if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY))
-    {
-      /* Uses it */
-      zFileName = _zFileName;
-    }
-    else
+    /* Is given file name invalid? */
+    if((zFileName == orxNULL) || (zFileName == orxSTRING_EMPTY))
     {
       /* Uses default file */
       zFileName = sstConfig.zBaseFile;
@@ -2706,6 +2766,13 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
+  }
+
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
   }
 
   /* Done! */
