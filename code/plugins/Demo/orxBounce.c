@@ -32,7 +32,7 @@
 #include "orxPluginAPI.h"
 
 static orxU32       su32BallCounter = 0;
-static orxOBJECT   *spoParticleSpawner;
+static orxSPAWNER  *spoBallSpawner;
 static orxVIEWPORT *spstViewport;
 static orxFLOAT     sfShaderPhase = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude = orx2F(0.0f);
@@ -162,46 +162,35 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
     sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
 
-    /* Has particle spawner? */
-    if(spoParticleSpawner != orxNULL)
-    {
-      /* Updates position */
-      vMousePos.fZ += orx2F(0.5f);
-
-      /* Updates its position */
-      orxObject_SetPosition(spoParticleSpawner, &vMousePos);
-    }
-
     /* Updates position */
     vMousePos.fZ += orxFLOAT_1;
 
-    /* Spawning? */
-    if(orxInput_IsActive("Spawn"))
+    /* Has ball spawner? */
+    if(spoBallSpawner != orxNULL)
     {
-      orxOBJECT *pstObject;
-
-      /* Under limit? */
-      if(su32BallCounter < orxConfig_GetU32("BallLimit"))
-      {
-        /* Spawns a ball under the cursor */
-        pstObject = orxObject_CreateFromConfig("Ball");
-        orxObject_SetPosition(pstObject, &vMousePos);
-
-        /* Update counter */
-        su32BallCounter++;
-      }
+      /* Updates its position */
+      orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
     }
 
+    /* Spawning */
+    if(orxInput_IsActive("Spawn"))
+    {
+      /* Spawn one ball */
+      orxSpawner_Spawn(spoBallSpawner, 1);
+    }
     /* Picking? */
     else if(orxInput_IsActive("Pick"))
     {
       orxOBJECT *pstObject;
 
+      /* Updates mouse position */
+      vMousePos.fZ -= orx2F(0.5f);
+
       /* Picks object under mouse */
       pstObject = orxObject_Pick(&vMousePos);
 
-      /* Found and is a ball? */
-      if((pstObject) && (!orxString_Compare(orxObject_GetName(pstObject), "Ball")))
+      /* Found? */
+      if(pstObject)
       {
         /* Adds FX */
         orxObject_AddUniqueFX(pstObject, "Pick");
@@ -231,35 +220,56 @@ static orxSTATUS orxBounce_Init()
   /* Loads input */
   orxInput_Load(orxNULL);
 
-  /* Should hide cursor */
-  if(orxConfig_GetBool("ShowCursor") == orxFALSE)
+  /* Creates ball spawner */
+  spoBallSpawner = orxSpawner_CreateFromConfig("BallSpawner");
+
+  /* Valid? */
+  if(spoBallSpawner != orxNULL)
   {
-    orxMouse_ShowCursor(orxFALSE);
+    orxOBJECT *poParticleSource;
+
+    /* Creates particle source */
+    poParticleSource = orxObject_CreateFromConfig("ParticleSource");
+
+    /* Valid? */
+    if(poParticleSource != orxNULL)
+    {
+      /* Sets its parent */
+      orxObject_SetParent(poParticleSource, spoBallSpawner);
+    }
+
+    /* Should hide cursor */
+    if(orxConfig_GetBool("ShowCursor") == orxFALSE)
+    {
+      orxMouse_ShowCursor(orxFALSE);
+    }
+
+    /* Creates walls */
+    orxObject_CreateFromConfig("Wall1");
+    orxObject_CreateFromConfig("Wall2");
+    orxObject_CreateFromConfig("Wall3");
+    orxObject_CreateFromConfig("Wall4");
+
+    /* Creates viewport on screen */
+    spstViewport = orxViewport_CreateFromConfig("BounceViewport");
+    orxViewport_EnableShader(spstViewport, orxFALSE);
+
+    /* Gets rendering clock */
+    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+    /* Registers callback */
+    eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+    /* Registers event handler */
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
-
-  /* Creates walls */
-  orxObject_CreateFromConfig("Wall1");
-  orxObject_CreateFromConfig("Wall2");
-  orxObject_CreateFromConfig("Wall3");
-  orxObject_CreateFromConfig("Wall4");
-
-  /* Creates particle spawner */
-  spoParticleSpawner = orxObject_CreateFromConfig("ParticleSpawner");
-
-  /* Creates viewport on screen */
-  spstViewport = orxViewport_CreateFromConfig("BounceViewport");
-  orxViewport_EnableShader(spstViewport, orxFALSE);
-
-  /* Gets rendering clock */
-  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-  /* Registers callback */
-  eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
-
-  /* Registers event handler */
-  eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-  eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-  eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  else
+  {
+    /* Failure */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;

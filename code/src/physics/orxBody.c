@@ -772,18 +772,17 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
       {
         orxVECTOR vPivot, vSize;
-        orxFLOAT  fRadius;
 
         /* Gets object size & pivot */
         orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &vSize);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
-        /* Gets minimal radius */
-        fRadius = orx2F(0.25f) * (vSize.fX + vSize.fY);
+        /* Gets radius size */
+        orxVector_Mulf(&vSize, &vSize, orx2F(0.5f));
 
         /* Inits body part def */
-        orxVector_Set(&(stBodyPartDef.stSphere.vCenter), fRadius - vPivot.fX, fRadius - vPivot.fY, fRadius - vPivot.fZ);
-        stBodyPartDef.stSphere.fRadius = fRadius;
+        orxVector_Set(&(stBodyPartDef.stSphere.vCenter), vSize.fX - vPivot.fX, vSize.fY - vPivot.fY, vSize.fZ - vPivot.fZ);
+        stBodyPartDef.stSphere.fRadius = orxMAX(vSize.fX, orxMAX(vSize.fY, vSize.fZ));
       }
       else
       {

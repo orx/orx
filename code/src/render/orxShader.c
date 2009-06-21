@@ -346,7 +346,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
             zParamName = orxConfig_GetListString(orxSHADER_KZ_CONFIG_PARAM_LIST, i);
 
             /* Gets trimmed param name */
-            for(pc = zParamName, zTrimmedName = orxNULL, pcEnd = orxNULL; *pc != orxCHAR_NULL; pc++)
+            for(pc = zParamName, zTrimmedName = orxNULL, pcEnd = zParamName; *pc != orxCHAR_NULL; pc++)
             {
               /* Not a space? */
               if(*pc != ' ')
