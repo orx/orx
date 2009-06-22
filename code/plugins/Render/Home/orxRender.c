@@ -136,7 +136,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         orxTEXTURE     *pstTexture;
         orxANIMPOINTER *pstAnimPointer;
         orxRGBA         stBackupColor = 0;
-        orxBOOL         bFlipX = orxFALSE, bFlipY = orxFALSE;
+        orxBOOL         bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
         orxFLOAT        fClipTop, fClipLeft, fClipBottom, fClipRight, fRepeatX, fRepeatY;
 
         /* Gets animation pointer */
@@ -182,28 +182,35 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         /* Updates its clipping */
         orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
 
-        /* Uses flipping? */
-        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_MASK_FLIP_BOTH) != orxFALSE)
-        {
-          /* X-axis flip? */
-          if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) != orxFALSE)
-          {
-            /* Updates render scale */
-            vScale.fX = -vScale.fX;
-            bFlipX    = orxTRUE;
-          }
+        /* Gets object & graphic flipping */
+        orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
+        orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
 
-          /* Y-axis flip? */
-          if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) != orxFALSE)
-          {
-            /* Updates render scale */
-            vScale.fY = -vScale.fY;
-            bFlipY    = orxTRUE;
-          }
+        /* Updates using combined flipping */
+        if(bObjectFlipX ^ bGraphicFlipX)
+        {
+          bFlipX = orxTRUE;
+          vScale.fX = -vScale.fX;
+        }
+        if(bObjectFlipY ^ bGraphicFlipY)
+        {
+          bFlipY = orxTRUE;
+          vScale.fY = -vScale.fY;
         }
 
+        /* Has object color? */
+        if(orxObject_HasColor(_pstObject) != orxFALSE)
+        {
+          orxCOLOR stColor;
+
+          /* Backups previous color */
+          stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
+
+          /* Updates display color */
+          orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
+        }
         /* Has graphic color? */
-        if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+        else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
         {
           orxCOLOR stColor;
 
@@ -237,8 +244,14 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         /* Gets graphic blend mode */
         eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
 
+        /* None? */
+        if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
+        {
+          /* Gets object blend mode */
+          eBlendMode = orxObject_GetBlendMode(_pstObject);
+        }
         /* No scale nor rotation nor repeat? */
-        if((!bFlipY) && (fRotation == orxFLOAT_0) && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
+        if((bFlipX == orxFALSE) && (bFlipY == orxFALSE) && (fRotation == orxFLOAT_0) && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
         {
           /* Updates position with pivot */
           orxVector_Sub(&vPosition, &vPosition, &vPivot);
@@ -256,6 +269,13 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
             /* Gets graphic smoothing */
             eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
+
+            /* Default? */
+            if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
+            {
+              /* Gets object smoothing */
+              eSmoothing = orxObject_GetSmoothing(_pstObject);
+            }
 
             /* No repeat? */
             if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))
@@ -395,8 +415,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           }
         }
 
-        /* Has graphic color? */
-        if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+        /* Has object or graphic color? */
+        if((orxObject_HasColor(_pstObject) != orxFALSE)
+        || (orxGraphic_HasColor(pstGraphic) != orxFALSE))
         {
           /* Restores its original color */
           orxDisplay_SetBitmapColor(pstBitmap, stBackupColor);
@@ -406,7 +427,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
       {
         orxTEXT  *pstText;
         orxRGBA   stRGBA;
-        orxBOOL   bFlipX = orxFALSE, bFlipY = orxFALSE;
+        orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
 
         /* Gets its pivot & size*/
         orxGraphic_GetPivot(pstGraphic, &vPivot);
@@ -420,28 +441,32 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
         orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
-        /* Uses flipping? */
-        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_MASK_FLIP_BOTH) != orxFALSE)
-        {
-          /* X-axis flip? */
-          if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) != orxFALSE)
-          {
-            /* Updates render scale */
-            vScale.fX = -vScale.fX;
-            bFlipX    = orxTRUE;
-          }
+        /* Gets object & graphic flipping */
+        orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
+        orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
 
-          /* Y-axis flip? */
-          if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) != orxFALSE)
-          {
-            /* Updates render scale */
-            vScale.fY = -vScale.fY;
-            bFlipY    = orxTRUE;
-          }
+        /* Updates using combined flipping */
+        if(bObjectFlipX ^ bGraphicFlipX)
+        {
+          bFlipX = orxTRUE;
+          vScale.fX = -vScale.fX;
+        }
+        if(bObjectFlipY ^ bGraphicFlipY)
+        {
+          bFlipY = orxTRUE;
+          vScale.fY = -vScale.fY;
         }
 
+        /* Has object color? */
+        if(orxObject_HasColor(_pstObject) != orxFALSE)
+        {
+          orxCOLOR stColor;
+
+          /* Gets it */
+          stRGBA = orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor));
+        }
         /* Has graphic color? */
-        if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+        else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
         {
           orxCOLOR stColor;
 
@@ -456,6 +481,13 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
         /* Gets graphic blend mode */
         eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
+
+        /* None? */
+        if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
+        {
+          /* Gets object blend mode */
+          eBlendMode = orxObject_GetBlendMode(_pstObject);
+        }
 
         /* Valid scale? */
         if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
