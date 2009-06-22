@@ -302,7 +302,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             }
             else
             {
-              orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY;
+              orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY, fAbsScaleX, fAbsScaleY;
 
               /* Has no rotation */
               if(fRotation == orxFLOAT_0)
@@ -380,7 +380,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               fRelativePivotY = vPivot.fY / vSize.fY;
 
               /* For all lines */
-              for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = fRepeatY * vSize.fY;
+              for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = fRepeatY * vSize.fY, fAbsScaleY = orxMath_Abs(vScale.fY);
                   fRemainderY > orxFLOAT_0;
                   fY += fIncY, fRemainderY -= vSize.fY)
               {
@@ -408,7 +408,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                     if(fRemainderY < vSize.fY)
                     {
                       /* Gets adjusted position */
-                      fPosY += fRemainderY;
+                      fPosY += fAbsScaleY * (vSize.fY - fRemainderY);
                     }
                   }
                   else
@@ -422,7 +422,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                     else
                     {
                       /* Gets adjusted position */
-                      fPosY += fInitRemainderY + fRemainderY;
+                      fPosY += fInitRemainderY + fAbsScaleY * (vSize.fY - fRemainderY);
                     }
                   }
 
@@ -431,7 +431,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                 }
 
                 /* For all columns */
-                for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = fRepeatX * vSize.fX;
+                for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = fRepeatX * vSize.fX, fAbsScaleX = orxMath_Abs(vScale.fX);
                     fRemainderX > orxFLOAT_0;
                     fX += fIncX, fRemainderX -= vSize.fX)
                 {
@@ -462,7 +462,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                       if(fRemainderX < vSize.fX)
                       {
                         /* Gets adjusted position */
-                        fPosX += fRemainderX;
+                        fPosX += fAbsScaleX * (vSize.fX - fRemainderX);
                       }
                     }
                     else
@@ -476,7 +476,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                       else
                       {
                         /* Gets adjusted position */
-                        fPosX += fInitRemainderX + fRemainderX;
+                        fPosX += fInitRemainderX + fAbsScaleX * (vSize.fX - fRemainderX);
                       }
                     }
 
