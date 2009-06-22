@@ -462,7 +462,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
     }
 
     /* Updates texture name */
-    _pstTexture->zDataName = _zDataName;
+    _pstTexture->zDataName = orxString_Duplicate(_zDataName);
 
     /* Adds it to hash table */
     orxHashTable_Add(sstTexture.pstTable, orxString_ToCRC(_zDataName), _pstTexture);
@@ -521,6 +521,10 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 
     /* Removes from hash table */
     orxHashTable_Remove(sstTexture.pstTable, orxString_ToCRC(_pstTexture->zDataName));
+
+    /* Deletes name */
+    orxString_Delete(_pstTexture->zDataName);
+    _pstTexture->zDataName = orxNULL;
   }
   else
   {
