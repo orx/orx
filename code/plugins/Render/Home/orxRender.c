@@ -192,10 +192,18 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           bFlipX = orxTRUE;
           vScale.fX = -vScale.fX;
         }
+        else
+        {
+          bFlipX = orxFALSE;
+        }
         if(bObjectFlipY ^ bGraphicFlipY)
         {
           bFlipY = orxTRUE;
           vScale.fY = -vScale.fY;
+        }
+        else
+        {
+          bFlipY = orxFALSE;
         }
 
         /* Has object color? */
@@ -451,10 +459,18 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           bFlipX = orxTRUE;
           vScale.fX = -vScale.fX;
         }
+        else
+        {
+          bFlipX = orxFALSE;
+        }
         if(bObjectFlipY ^ bGraphicFlipY)
         {
           bFlipY = orxTRUE;
           vScale.fY = -vScale.fY;
+        }
+        else
+        {
+          bFlipY = orxFALSE;
         }
 
         /* Has object color? */
