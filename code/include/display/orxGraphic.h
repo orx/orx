@@ -123,6 +123,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetData(orxGRAPHIC *_ps
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(const orxGRAPHIC *_pstGraphic);
 
+
+/** Sets graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _bFlipX         Flip it on X axis
+ * @param[in]   _bFlipY         Flip it on Y axis
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY);
+
+/** Gets graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
+
+
 /** Sets graphic pivot
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _pvPivot        Pivot to set

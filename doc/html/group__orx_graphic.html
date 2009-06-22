@@ -70,6 +70,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gf2bf0a43dfcd07dc7294e46d29c70894">orxGraphic_GetData</a> (const <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ge55b308b2025264368800f5e365fda57">orxGraphic_SetFlip</a> (<a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g49707d128385388a046065c6f390edc6">orxGraphic_GetFlip</a> (const <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ge01be2a3f442614d270efa856c469797">orxGraphic_SetPivot</a> (<a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPivot)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga35eae0c694b4ebb1373c42cb465fc9f">orxGraphic_SetRelativePivot</a> (<a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic, orxU32 _u32AlignFlags)</td></tr>
@@ -556,6 +560,49 @@ Gets graphic data <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g49707d128385388a046065c6f390edc6"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_GetFlip" ref="g49707d128385388a046065c6f390edc6" args="(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxGraphic_GetFlip           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstGraphic</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL *&nbsp;</td>
+          <td class="paramname"> <em>_pbFlipX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL *&nbsp;</td>
+          <td class="paramname"> <em>_pbFlipY</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets graphic flipping <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pbFlipX</em>&nbsp;</td><td>X axis flipping </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pbFlipY</em>&nbsp;</td><td>Y axis flipping </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g4fe9f2154ccf2c6ad3d60ea2b559e0f0"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_GetLeft" ref="g4fe9f2154ccf2c6ad3d60ea2b559e0f0" args="(const orxGRAPHIC *_pstGraphic)" -->
 <div class="memitem">
 <div class="memproto">
@@ -896,6 +943,49 @@ Sets graphic data <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstData</em>&nbsp;</td><td>Data structure to set / orxNULL </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ge55b308b2025264368800f5e365fda57"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_SetFlip" ref="ge55b308b2025264368800f5e365fda57" args="(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxGraphic_SetFlip           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstGraphic</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bFlipX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bFlipY</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets graphic flipping <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFlipX</em>&nbsp;</td><td>Flip it on X axis </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFlipY</em>&nbsp;</td><td>Flip it on Y axis </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

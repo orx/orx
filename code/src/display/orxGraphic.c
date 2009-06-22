@@ -550,6 +550,11 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
           }
         }
+        else
+        {
+          /* Defaults to alpha */
+          u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+        }
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, u32Flags, orxGRAPHIC_KU32_FLAG_NONE);
@@ -719,6 +724,56 @@ orxSTRUCTURE *orxFASTCALL orxGraphic_GetData(const orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return pstStructure;
+}
+
+/** Sets graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _bFlipX         Flip it on X axis
+ * @param[in]   _bFlipY         Flip it on Y axis
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY)
+{
+  orxU32    u32Flags;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates flags */
+  u32Flags  = (_bFlipX != orxFALSE) ? orxGRAPHIC_KU32_FLAG_FLIP_X : orxGRAPHIC_KU32_FLAG_NONE;
+  u32Flags |= (_bFlipY != orxFALSE) ? orxGRAPHIC_KU32_FLAG_FLIP_Y : orxGRAPHIC_KU32_FLAG_NONE;
+
+  /* Updates status */
+  orxStructure_SetFlags(_pstGraphic, u32Flags, orxGRAPHIC_KU32_MASK_FLIP_BOTH);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pbFlipX != orxNULL);
+  orxASSERT(_pbFlipY != orxNULL);
+
+  /* Updates flipping mode */
+  *_pbFlipX = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) ? orxTRUE : orxFALSE;
+  *_pbFlipY = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets graphic pivot
@@ -1273,7 +1328,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
     case orxDISPLAY_BLEND_MODE_ADD:
     {
       /* Updates status */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
 
       break;
     }

@@ -163,7 +163,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
 
     /* Updates position */
-    vMousePos.fZ += orxFLOAT_1;
+    vMousePos.fZ += orx2F(0.5f);
 
     /* Has ball spawner? */
     if(spoBallSpawner != orxNULL)
