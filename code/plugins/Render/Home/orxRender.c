@@ -289,8 +289,8 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))
             {
               /* Sets transformation values */
-              stTransform.fSrcX     = ((vScale.fX < orxFLOAT_0) ^ (bFlipX == orxTRUE)) ? vSize.fX - vPivot.fX : vPivot.fX;
-              stTransform.fSrcY     = ((vScale.fY < orxFLOAT_0) ^ (bFlipY == orxTRUE)) ? vSize.fY - vPivot.fY : vPivot.fY;
+              stTransform.fSrcX     = ((vScale.fX < orxFLOAT_0) ^ (bFlipX != orxFALSE)) ? vSize.fX - vPivot.fX : vPivot.fX;
+              stTransform.fSrcY     = ((vScale.fY < orxFLOAT_0) ^ (bFlipY != orxFALSE)) ? vSize.fY - vPivot.fY : vPivot.fY;
               stTransform.fDstX     = vPosition.fX;
               stTransform.fDstY     = vPosition.fY;
               stTransform.fScaleX   = vScale.fX;
@@ -302,7 +302,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             }
             else
             {
-              orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fRelativePivotX, fRelativePivotY;
+              orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY;
 
               /* Has no rotation */
               if(fRotation == orxFLOAT_0)
@@ -380,27 +380,115 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               fRelativePivotY = vPivot.fY / vSize.fY;
 
               /* For all lines */
-              for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fRemainderY = fRepeatY * vSize.fY;
+              for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = fRepeatY * vSize.fY;
                   fRemainderY > orxFLOAT_0;
                   fY += fIncY, fRemainderY -= vSize.fY)
               {
+                orxFLOAT fPosY = fY;
+
+                /* Positive scale on Y? */
+                if(vScale.fY > orxFLOAT_0)
+                {
+                  /* Flipped? */
+                  if(bFlipY != orxFALSE)
+                  {
+                    /* Gets adjusted position */
+                    fPosY -= fInitRemainderY;
+                  }
+
+                  /* Sets Y source */
+                  stTransform.fSrcY = vPivot.fY;
+                }
+                else
+                {
+                  /* Not flipped? */
+                  if(bFlipY == orxFALSE)
+                  {
+                    /* Last line? */
+                    if(fRemainderY < vSize.fY)
+                    {
+                      /* Gets adjusted position */
+                      fPosY += fRemainderY;
+                    }
+                  }
+                  else
+                  {
+                    /* Not last line? */
+                    if(fRemainderY >= vSize.fY)
+                    {
+                      /* Gets adjusted position */
+                      fPosY += fInitRemainderY;
+                    }
+                    else
+                    {
+                      /* Gets adjusted position */
+                      fPosY += fInitRemainderY + fRemainderY;
+                    }
+                  }
+
+                  /* Sets Y source */
+                  stTransform.fSrcY = vSize.fY - vPivot.fY;
+                }
+
                 /* For all columns */
-                for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fRemainderX = fRepeatX * vSize.fX;
+                for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = fRepeatX * vSize.fX;
                     fRemainderX > orxFLOAT_0;
                     fX += fIncX, fRemainderX -= vSize.fX)
                 {
-                  orxFLOAT fOffsetX, fOffsetY;
+                  orxFLOAT fOffsetX, fOffsetY, fPosX = fX;
 
                   /* Updates clipping */
                   orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(vSize.fX, fRemainderX)), orxF2U(fClipTop + orxMIN(vSize.fY, fRemainderY)));
 
+                  /* Positive scale on X? */
+                  if(vScale.fX > orxFLOAT_0)
+                  {
+                    /* Flipped? */
+                    if(bFlipX != orxFALSE)
+                    {
+                      /* Gets adjusted position */
+                      fPosX -= fInitRemainderX;
+                    }
+
+                    /* Sets X source */
+                    stTransform.fSrcX = vPivot.fX;
+                  }
+                  else
+                  {
+                    /* Not flipped? */
+                    if(bFlipX == orxFALSE)
+                    {
+                      /* Last line? */
+                      if(fRemainderX < vSize.fX)
+                      {
+                        /* Gets adjusted position */
+                        fPosX += fRemainderX;
+                      }
+                    }
+                    else
+                    {
+                      /* Not last line? */
+                      if(fRemainderX >= vSize.fX)
+                      {
+                        /* Gets adjusted position */
+                        fPosX += fInitRemainderX;
+                      }
+                      else
+                      {
+                        /* Gets adjusted position */
+                        fPosX += fInitRemainderX + fRemainderX;
+                      }
+                    }
+
+                    /* Sets X source */
+                    stTransform.fSrcX = vSize.fX - vPivot.fX;
+                  }
+
                   /* Computes offsets */
-                  fOffsetX = (fCos * fX) + (fSin * fY);
-                  fOffsetY = (-fSin * fX) + (fCos * fY);
+                  fOffsetX = (fCos * fPosX) + (fSin * fPosY);
+                  fOffsetY = (-fSin * fPosX) + (fCos * fPosY);
 
                   /* Sets transformation values */
-                  stTransform.fSrcX     = vPivot.fX;
-                  stTransform.fSrcY     = vPivot.fY;
                   stTransform.fDstX     = vPosition.fX + fOffsetX;
                   stTransform.fDstY     = vPosition.fY + fOffsetY;
                   stTransform.fScaleX   = vScale.fX;
@@ -511,8 +599,8 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           orxDISPLAY_TRANSFORM stTransform;
 
           /* Sets transformation values */
-          stTransform.fSrcX     = ((vScale.fX < orxFLOAT_0) ^ (bFlipX == orxTRUE)) ? vSize.fX - vPivot.fX : vPivot.fX;
-          stTransform.fSrcY     = ((vScale.fY < orxFLOAT_0) ^ (bFlipY == orxTRUE)) ? vSize.fY - vPivot.fY : vPivot.fY;
+          stTransform.fSrcX     = ((vScale.fX < orxFLOAT_0) ^ (bFlipX != orxFALSE)) ? vSize.fX - vPivot.fX : vPivot.fX;
+          stTransform.fSrcY     = ((vScale.fY < orxFLOAT_0) ^ (bFlipY != orxFALSE)) ? vSize.fY - vPivot.fY : vPivot.fY;
           stTransform.fDstX     = vPosition.fX;
           stTransform.fDstY     = vPosition.fY;
           stTransform.fScaleX   = vScale.fX;
