@@ -1384,6 +1384,8 @@ extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _z
         }
         else
         {
+          orxLOG("Failed to compile shader code: %s", acBuffer);
+
           /* Deletes post FX */
           delete poFX;
         }
