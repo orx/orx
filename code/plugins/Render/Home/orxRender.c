@@ -833,7 +833,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           vSize.fY *= vObjectScale.fY;
 
                           /* Gets object square bounding radius */
-                          fObjectBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
+                          fObjectBoundingRadius = orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
 
                           /* Gets 2D distance vector */
                           orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
