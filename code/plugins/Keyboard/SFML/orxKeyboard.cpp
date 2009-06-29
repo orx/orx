@@ -398,6 +398,11 @@ extern "C" void orxFASTCALL orxKeyboard_SFML_Exit()
   /* Was initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handlers */
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), orxKeyboard_SFML_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), orxKeyboard_SFML_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), orxKeyboard_SFML_EventHandler);
+
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
   }

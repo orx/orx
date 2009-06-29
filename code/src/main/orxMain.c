@@ -168,6 +168,9 @@ void orxFASTCALL orxMain_Exit()
   /* Module initialized ? */
   if(orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
+
     /* Sets module as not ready */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_NONE, orxMAIN_KU32_STATIC_FLAG_READY);
   }

@@ -283,6 +283,8 @@ extern "C" void orxFASTCALL orxMouse_SFML_Exit()
     /* Unregisters event handlers */
     orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxMouse_SFML_EventHandler);
     orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), orxMouse_SFML_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxMouse_SFML_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), orxMouse_SFML_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));

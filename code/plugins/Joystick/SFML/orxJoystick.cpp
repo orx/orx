@@ -147,6 +147,10 @@ extern "C" void orxFASTCALL orxJoystick_SFML_Exit()
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handlers */
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler);
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }

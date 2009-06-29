@@ -282,6 +282,9 @@ void orxFASTCALL orxShaderPointer_Exit()
   /* Initialized? */
   if(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxShaderPointer_EventHandler);
+
     /* Deletes ShaderPointer list */
     orxShaderPointer_DeleteAll();
 
