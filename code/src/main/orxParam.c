@@ -160,7 +160,7 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
     /* No => display the full list of registered option with short description */
     while((pstParamInfo = (orxPARAM_INFO *)orxBank_GetNext(sstParam.pstBank, pstParamInfo)) != orxNULL)
     {
-      orxPARAM_LOG("%s%s %s%s\t\t%s",
+      orxPARAM_LOG("%s%-8s %s%-24s %s",
              orxPARAM_KZ_MODULE_SHORT_PREFIX,
              pstParamInfo->stParam.zShortName,
              orxPARAM_KZ_MODULE_LONG_PREFIX,

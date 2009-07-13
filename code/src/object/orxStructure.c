@@ -637,29 +637,29 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
   /* Depending on type */
   switch(sstStructure.astStorage[_eStructureID].eType)
   {
-  case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+    case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+    {
+      /* Gets node from list */
+      pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[_eStructureID].stLinkList));
 
-    /* Gets node from list */
-    pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[_eStructureID].stLinkList));
+      break;
+    }
 
-    break;
+    case orxSTRUCTURE_STORAGE_TYPE_TREE:
+    {
+      /* Gets node from tree */
+      pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree));
 
-  case orxSTRUCTURE_STORAGE_TYPE_TREE:
+      break;
+    }
 
-    /* Gets node from tree */
-    pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree));
+    default:
+    {
+      /* No node found */
+      pstNode = orxNULL;
 
-    break;
-
-  default:
-
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
-
-    /* No node found */
-    pstNode = orxNULL;
-
-    break;
+      break;
+    }
   }
 
   /* Node found? */
