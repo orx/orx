@@ -15,6 +15,7 @@
       <File Name="../../../src/core/orxClock.c"/>
       <File Name="../../../src/core/orxConfig.c"/>
       <File Name="../../../src/core/orxEvent.c"/>
+      <File Name="../../../src/core/orxLocale.c"/>
       <File Name="../../../src/core/orxSystem.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="debug">
@@ -102,6 +103,7 @@
       <File Name="../../../include/core/orxClock.h"/>
       <File Name="../../../include/core/orxConfig.h"/>
       <File Name="../../../include/core/orxEvent.h"/>
+      <File Name="../../../include/core/orxLocale.h"/>
       <File Name="../../../include/core/orxSystem.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="debug">

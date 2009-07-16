@@ -3795,7 +3795,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
 }
 
 /** Gets key counter for the current section
- * @return Key counter the current section is valid, 0 otherwise
+ * @return Key counter the current section if valid, 0 otherwise
  */
 orxS32 orxFASTCALL orxConfig_GetKeyCounter()
 {

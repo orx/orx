@@ -62,6 +62,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_INPUT, orxInput);
   orxMODULE_REGISTER(orxMODULE_ID_JOYSTICK, orxJoystick);
   orxMODULE_REGISTER(orxMODULE_ID_KEYBOARD, orxKeyboard);
+  orxMODULE_REGISTER(orxMODULE_ID_LOCALE, orxLocale);
   orxMODULE_REGISTER(orxMODULE_ID_MEMORY, orxMemory);
   orxMODULE_REGISTER(orxMODULE_ID_MOUSE, orxMouse);
   orxMODULE_REGISTER(orxMODULE_ID_OBJECT, orxObject);

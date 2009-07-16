@@ -67,12 +67,14 @@
             include/core/orxConfig.h
             include/core/orxClock.h
             include/core/orxEvent.h
+            include/core/orxLocale.h
             include/core/orxSystem.h
         </headers>
         <sources>
             src/core/orxConfig.c
             src/core/orxClock.c
             src/core/orxEvent.c
+            src/core/orxLocale.c
             src/core/orxSystem.c
         </sources>
 
