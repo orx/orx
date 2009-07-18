@@ -487,7 +487,7 @@ orxSTATUS orxFASTCALL orxCamera_SetPosition(orxCAMERA *_pstCamera, const orxVECT
 
 /** Sets camera rotation
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _fRotation      Camera rotation
+ * @param[in]   _fRotation      Camera rotation (radians)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation)
@@ -571,7 +571,7 @@ orxVECTOR *orxFASTCALL orxCamera_GetPosition(const orxCAMERA *_pstCamera, orxVEC
 
 /** Get camera rotation
  * @param[in]   _pstCamera      Concerned camera
- * @return      Rotation value
+ * @return      Rotation value (radians)
  */
 orxFLOAT orxFASTCALL orxCamera_GetRotation(const orxCAMERA *_pstCamera)
 {

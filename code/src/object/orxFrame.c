@@ -153,7 +153,7 @@ static orxINLINE void _orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR
 
 /** Sets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _fAngle         Rotation angle to set
+ * @param[in]   _fAngle         Rotation angle to set (radians)
  * @param[in]   _eSpace         Coordinate space system to use
  */
 static orxINLINE void _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE _eSpace)
@@ -279,7 +279,7 @@ static orxINLINE const orxVECTOR *_orxFrame_GetPosition(const orxFRAME *_pstFram
 /** Gets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @return orxFLOAT / orxNULL
+ * @return orxFLOAT (radians) / orxNULL
  */
 static orxINLINE orxFLOAT _orxFrame_GetRotation(const orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
@@ -811,7 +811,7 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvP
 
 /** Sets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _fAngle         Angle to set
+ * @param[in]   _fAngle         Angle to set (radians)
  */
 void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
@@ -912,7 +912,8 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
 /** Gets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @return Rotation of the given frame */
+ * @return Rotation of the given frame (radians)
+ */
 orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
   orxFLOAT fAngle = orxFLOAT_0;

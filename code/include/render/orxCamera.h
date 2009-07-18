@@ -114,7 +114,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetPosition(orxCAMERA *_pstCam
 
 /** Sets camera rotation
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _fRotation      Camera rotation
+ * @param[in]   _fRotation      Camera rotation (radians)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation);
@@ -141,7 +141,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxCamera_GetPosition(const orxCAMERA *_
 
 /** Get camera rotation
  * @param[in]   _pstCamera      Concerned camera
- * @return      Rotation value
+ * @return      Rotation value (radians)
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetRotation(const orxCAMERA *_pstCamera);
 

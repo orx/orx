@@ -1113,7 +1113,7 @@ orxSTATUS orxFASTCALL orxSpawner_SetPosition(orxSPAWNER *_pstSpawner, const orxV
 
 /** Sets spawner rotation
  * @param[in]   _pstSpawner     Concerned spawner
- * @param[in]   _fRotation      Spawner rotation
+ * @param[in]   _fRotation      Spawner rotation (radians)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxSpawner_SetRotation(orxSPAWNER *_pstSpawner, orxFLOAT _fRotation)
@@ -1196,7 +1196,7 @@ orxVECTOR *orxFASTCALL orxSpawner_GetWorldPosition(const orxSPAWNER *_pstSpawner
 
 /** Get spawner rotation
  * @param[in]   _pstSpawner     Concerned spawner
- * @return      orxFLOAT
+ * @return      orxFLOAT (radians)
  */
 orxFLOAT orxFASTCALL orxSpawner_GetRotation(const orxSPAWNER *_pstSpawner)
 {
@@ -1215,7 +1215,7 @@ orxFLOAT orxFASTCALL orxSpawner_GetRotation(const orxSPAWNER *_pstSpawner)
 
 /** Get spawner world rotation
  * @param[in]   _pstSpawner     Concerned spawner
- * @return      orxFLOAT
+ * @return      orxFLOAT (radians)
  */
 orxFLOAT orxFASTCALL orxSpawner_GetWorldRotation(const orxSPAWNER *_pstSpawner)
 {

@@ -1121,7 +1121,7 @@ orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, const orxVECTOR *_p
 
 /** Sets a body rotation
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _fRotation      Rotation to set
+ * @param[in]   _fRotation      Rotation to set (radians)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation)
@@ -1260,7 +1260,7 @@ orxSTATUS orxFASTCALL orxBody_SetSpeed(orxBODY *_pstBody, const orxVECTOR *_pvSp
 
 /** Sets a body angular velocity
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _fVelocity      Angular velocity to set
+ * @param[in]   _fVelocity      Angular velocity to set (radians/seconds)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fVelocity)
@@ -1322,7 +1322,7 @@ orxVECTOR *orxFASTCALL orxBody_GetPosition(orxBODY *_pstBody, orxVECTOR *_pvPosi
 
 /** Gets a body rotation
  * @param[in]   _pstBody        Concerned body
- * @return      Body rotation
+ * @return      Body rotation (radians)
  */
 orxFLOAT orxFASTCALL orxBody_GetRotation(orxBODY *_pstBody)
 {
@@ -1380,7 +1380,7 @@ orxVECTOR *orxFASTCALL orxBody_GetSpeed(orxBODY *_pstBody, orxVECTOR *_pvSpeed)
 
 /** Gets a body angular velocity
  * @param[in]   _pstBody        Concerned body
- * @return      Body angular velocity
+ * @return      Body angular velocity (radians/seconds)
  */
 orxFLOAT orxFASTCALL orxBody_GetAngularVelocity(orxBODY *_pstBody)
 {

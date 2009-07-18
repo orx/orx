@@ -1517,7 +1517,7 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
 
 /** Sets object rotation
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fRotation      Object rotation
+ * @param[in]   _fRotation      Object rotation (radians)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation)
@@ -1725,7 +1725,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(const orxOBJECT *_pstObject, o
 
 /** Get object rotation
  * @param[in]   _pstObject      Concerned object
- * @return      orxFLOAT
+ * @return      orxFLOAT (radians)
  */
 orxFLOAT orxFASTCALL orxObject_GetRotation(const orxOBJECT *_pstObject)
 {
@@ -1760,7 +1760,7 @@ orxFLOAT orxFASTCALL orxObject_GetRotation(const orxOBJECT *_pstObject)
 
 /** Get object world rotation
  * @param[in]   _pstObject      Concerned object
- * @return      orxFLOAT
+ * @return      orxFLOAT (radians)
  */
 orxFLOAT orxFASTCALL orxObject_GetWorldRotation(const orxOBJECT *_pstObject)
 {
@@ -2285,7 +2285,7 @@ orxSTATUS orxFASTCALL orxObject_SetRelativeSpeed(orxOBJECT *_pstObject, const or
 
 /** Sets an object angular velocity
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fVelocity      Angular velocity to set
+ * @param[in]   _fVelocity      Angular velocity to set (radians/seconds)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity)
@@ -2386,7 +2386,7 @@ orxVECTOR *orxFASTCALL orxObject_GetRelativeSpeed(orxOBJECT *_pstObject, orxVECT
 
 /** Gets an object angular velocity
  * @param[in]   _pstObject      Concerned object
- * @return      Object angular velocity
+ * @return      Object angular velocity (radians/seconds)
  */
 orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
 {
