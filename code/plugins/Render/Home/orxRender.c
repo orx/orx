@@ -744,8 +744,13 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               /* Should clear bitmap? */
               if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
               {
+                orxCOLOR stColor;
+
+                /* Gets viewport color */
+                orxViewport_GetBackgroundColor(_pstViewport, &stColor);
+
                 /* Clears it */
-                orxDisplay_ClearBitmap(pstBitmap, orxViewport_GetBackgroundColor(_pstViewport));
+                orxDisplay_ClearBitmap(pstBitmap, orxColor_ToRGBA(&stColor));
               }
 
               /* Valid? */

@@ -94,10 +94,10 @@ struct __orxVIEWPORT_t
   orxFLOAT          fY;                       /**< Y position (top left corner) : 24 */
   orxFLOAT          fWidth;                   /**< Width : 28 */
   orxFLOAT          fHeight;                  /**< Height : 32 */
-  orxCAMERA        *pstCamera;                /**< Associated camera : 36 */
-  orxTEXTURE       *pstTexture;               /**< Associated texture : 40 */
-  orxRGBA           stBackgroundColor;        /**< Background color : 48 */
-  orxSHADERPOINTER *pstShaderPointer;         /**< Shader pointer : 52 */
+  orxCOLOR          stBackgroundColor;        /**< Background color : 48 */
+  orxCAMERA        *pstCamera;                /**< Associated camera : 52 */
+  orxTEXTURE       *pstTexture;               /**< Associated texture : 56 */
+  orxSHADERPOINTER *pstShaderPointer;         /**< Shader pointer : 60 */
 };
 
 
@@ -370,17 +370,15 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has background color? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
       {
-        orxVECTOR vColor;
-        orxRGBA   stColor;
+        orxCOLOR stColor;
 
         /* Gets color vector */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &vColor);
-
-        /* Gets RGBA color */
-        stColor = orx2RGBA(orxF2U(vColor.fX), orxF2U(vColor.fY), orxF2U(vColor.fZ), 0);
+        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
+        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxRGBA_NORMALIZER);
+        stColor.fAlpha = orxFLOAT_1;
 
         /* Applies it */
-        orxViewport_SetBackgroundColor(pstResult, stColor);
+        orxViewport_SetBackgroundColor(pstResult, &stColor);
       }
 
       /* Has relative size? */
@@ -631,32 +629,47 @@ orxTEXTURE *orxFASTCALL orxViewport_GetTexture(const orxVIEWPORT *_pstViewport)
 
 /** Sets a viewport background color
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _stColor        Color to use for background
+ * @param[in]   _pstColor        Color to use for background
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, const orxCOLOR *_pstColor)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Updates background color */
-  _pstViewport->stBackgroundColor = _stColor;
+  orxColor_Copy(&(_pstViewport->stBackgroundColor), _pstColor);
 
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /** Gets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _pstColor       Viewport's color
  * @return      Current background color
  */
-orxRGBA orxFASTCALL orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport)
+orxCOLOR *orxFASTCALL orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport, orxCOLOR *_pstColor)
 {
+  orxCOLOR *pstResult;
+
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_pstColor != orxNULL);
+
+  /* Stores color */
+  orxColor_Copy(_pstColor, &(_pstViewport->stBackgroundColor));
+
+  /* Updates result */
+  pstResult = _pstColor;
 
   /* Done! */
-  return(_pstViewport->stBackgroundColor);
+  return pstResult;
 }
 
 /** Enables / disables a viewport
