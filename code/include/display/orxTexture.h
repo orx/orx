@@ -118,10 +118,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE
 
 /** Sets texture color
  * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _stColor        Color to set
+ * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTexture, const orxCOLOR *_pstColor);
 
 /** Gets screen texture
  * @return      Screen texture / orxNULL

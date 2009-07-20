@@ -630,10 +630,10 @@ const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
 
 /** Sets texture color
  * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _stColor        Color to set
+ * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, const orxCOLOR *_pstColor)
 {
   orxBITMAP  *pstBitmap;
   orxSTATUS   eResult;
@@ -641,6 +641,7 @@ orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stCo
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTexture);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Gets bitmap */
   pstBitmap = orxTexture_GetBitmap(_pstTexture);
@@ -649,7 +650,7 @@ orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stCo
   if(pstBitmap != orxNULL)
   {
     /* Updates its color */
-    eResult = orxDisplay_SetBitmapColor(pstBitmap, _stColor);
+    eResult = orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(_pstColor));
   }
   else
   {

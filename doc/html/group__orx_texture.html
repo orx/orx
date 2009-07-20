@@ -46,7 +46,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g78eb3dd271806f3dedc5f606fc8e231b">orxTexture_GetName</a> (const <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gafde75fe10eeb1903076336d1dbd1234">orxTexture_SetColor</a> (<a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture, orxRGBA _stColor)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gb25a63846495c29c1f3413118f90f93b">orxTexture_SetColor</a> (<a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g825ee63bf968b878456de7471d09e267">orxTexture_GetScreenTexture</a> ()</td></tr>
 
@@ -338,7 +338,7 @@ Links a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gafde75fe10eeb1903076336d1dbd1234"></a><!-- doxytag: member="orxTexture.h::orxTexture_SetColor" ref="gafde75fe10eeb1903076336d1dbd1234" args="(orxTEXTURE *_pstTexture, orxRGBA _stColor)" -->
+<a class="anchor" name="gb25a63846495c29c1f3413118f90f93b"></a><!-- doxytag: member="orxTexture.h::orxTexture_SetColor" ref="gb25a63846495c29c1f3413118f90f93b" args="(orxTEXTURE *_pstTexture, const orxCOLOR *_pstColor)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -351,8 +351,8 @@ Links a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxRGBA&nbsp;</td>
-          <td class="paramname"> <em>_stColor</em></td><td>&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstColor</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -367,7 +367,7 @@ Links a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
 Sets texture color <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTexture</em>&nbsp;</td><td>Concerned texture </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_stColor</em>&nbsp;</td><td>Color to set </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstColor</em>&nbsp;</td><td>Color to set </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
