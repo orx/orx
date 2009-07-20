@@ -137,7 +137,7 @@ extern orxDLLAPI void orxFASTCALL             orxFrame_SetPosition(orxFRAME *_ps
 
 /** Sets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _fAngle         Angle to set
+ * @param[in]   _fAngle         Angle to set (radians)
  */
 extern orxDLLAPI void orxFASTCALL             orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle);
 
@@ -159,7 +159,8 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_GetPosition(orxFRAME *_ps
 /** Gets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @return Rotation of the given frame */
+ * @return Rotation of the given frame (radians)
+ */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace);
 
 /** Gets a frame scale

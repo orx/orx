@@ -113,15 +113,17 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxViewport_GetTexture(const orxVI
 
 /** Sets a viewport background color
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _stColor        Color to use for background
+ * @param[in]   _pstColor        Color to use for background
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL             orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, const orxCOLOR *_pstColor);
 
 /** Gets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
+ * @param[out]  _pstColor       Viewport's color
  * @return      Current background color
  */
-extern orxDLLAPI orxRGBA orxFASTCALL          orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxCOLOR *orxFASTCALL        orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport, orxCOLOR *_pstColor);
 
 
 /** Enables / disables a viewport

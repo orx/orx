@@ -48,8 +48,21 @@
 #include "utils/orxLinkList.h"
 
 
-typedef struct __orxBITMAP_t            orxBITMAP;
-typedef struct __orxDISPLAY_TEXT_t      orxDISPLAY_TEXT;
+/** Misc defines
+ */
+typedef orxU32                      orxRGBA;
+#define orx2RGBA(R, G, B, A)        ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
+#define orxRGBA_R(RGBA)             (orxU8)(((RGBA) >> 24) & 0xFF)
+#define orxRGBA_G(RGBA)             (orxU8)(((RGBA) >> 16) & 0xFF)
+#define orxRGBA_B(RGBA)             (orxU8)(((RGBA) >> 8) & 0xFF)
+#define orxRGBA_A(RGBA)             (orxU8)((RGBA) & 0xFF)
+
+#define orxCOLOR_NORMALIZER         (orx2F(1.0f / 255.0f))
+#define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
+
+
+typedef struct __orxBITMAP_t        orxBITMAP;
+typedef struct __orxDISPLAY_TEXT_t  orxDISPLAY_TEXT;
 
 /** Transform structure
  */
@@ -133,10 +146,10 @@ static orxINLINE orxCOLOR *       orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA 
   orxASSERT(_pstColor != orxNULL);
 
   /* Stores RGB */
-  orxVector_Set(&(_pstColor->vRGB), orxRGBA_NORMALIZER * orxU2F(orxRGBA_R(_stRGBA)), orxRGBA_NORMALIZER * orxU2F(orxRGBA_G(_stRGBA)), orxRGBA_NORMALIZER * orxU2F(orxRGBA_B(_stRGBA)));
+  orxVector_Set(&(_pstColor->vRGB), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stRGBA)));
 
   /* Stores alpha */
-  _pstColor->fAlpha = orxRGBA_NORMALIZER * orxRGBA_A(_stRGBA);
+  _pstColor->fAlpha = orxCOLOR_NORMALIZER * orxRGBA_A(_stRGBA);
 
   /* Done! */
   return pstResult;
@@ -221,13 +234,13 @@ static orxINLINE orxRGBA          orxColor_ToRGBA(const orxCOLOR *_pstColor)
   orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_0, &orxVECTOR_WHITE);
 
   /* De-normalizes vector */
-  orxVector_Mulf(&vColor, &vColor, orxRGBA_DENORMALIZER);
+  orxVector_Mulf(&vColor, &vColor, orxCOLOR_DENORMALIZER);
 
   /* Clamps alpha */
   fAlpha = orxCLAMP(_pstColor->fAlpha, orxFLOAT_0, orxFLOAT_1);
 
   /* Updates result */
-  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(orxRGBA_DENORMALIZER * fAlpha));
+  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(orxCOLOR_DENORMALIZER * fAlpha));
 
   /* Done! */
   return stResult;

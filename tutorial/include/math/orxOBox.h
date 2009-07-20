@@ -66,7 +66,7 @@ typedef struct __orxOBOX_t
  * @param[in]   _pvWorldPosition              World space position vector
  * @param[in]   _pvPivot                      Pivot vector
  * @param[in]   _pvSize                       Size vector
- * @param[in]   _fAngle                       Z-axis angle
+ * @param[in]   _fAngle                       Z-axis angle (radians)
  * @return      orxOBOX / orxNULL
  */
 static orxINLINE orxOBOX *                    orxOBox_2DSet(orxOBOX *_pstRes, const orxVECTOR *_pvWorldPosition, const orxVECTOR *_pvPivot, const orxVECTOR *_pvSize, orxFLOAT _fAngle)
@@ -158,7 +158,7 @@ static orxINLINE orxOBOX *                    orxOBox_Move(orxOBOX *_pstRes, con
 /** Rotates in 2D an OBox
  * @param[out]  _pstRes                       OBox where to store result
  * @param[in]   _pstOp                        OBox to rotate (its Z-axis vector will be unchanged)
- * @param[in]   _fAngle                       Z-axis rotation angle
+ * @param[in]   _fAngle                       Z-axis rotation angle (radians)
  * @return      Rotated OBox
  */
 static orxINLINE orxOBOX *                    orxOBox_2DRotate(orxOBOX *_pstRes, const orxOBOX *_pstOp, orxFLOAT _fAngle)

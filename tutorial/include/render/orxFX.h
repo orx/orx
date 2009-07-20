@@ -190,8 +190,8 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColor(orxFX *_pstFX, or
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fStartRotation Starting rotation value
- * @param[in]   _fEndRotation   Ending rotation value
+ * @param[in]   _fStartRotation Starting rotation value (radians)
+ * @param[in]   _fEndRotation   Ending rotation value (radians)
  * @param[in]   _eCurve         Blending curve type
  * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags
