@@ -33,23 +33,10 @@
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
 #include "math/orxMath.h"
+#include "io/orxFile.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
-
-#ifdef __orxMSVC__
-
-  #pragma warning(disable : 4996)
-
-#endif /* __orxMSVC__ */
-
-#include<stdio.h>
-
-#ifdef __orxMAC__
-
-  #include <unistd.h>
-
-#endif /* __orxMAC__ */
 
 
 /** Module flags
@@ -1473,6 +1460,7 @@ void orxFASTCALL orxConfig_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
 
   return;
 }
@@ -2064,7 +2052,7 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
 orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 {
   orxSTRING zTrimmedName;
-  FILE     *pstFile;
+  orxFILE  *pstFile;
   orxCHAR  *pc, *pcEnd;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2124,7 +2112,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   sstConfig.u32LoadCounter++;
 
   /* Valid file to open? */
-  if((zTrimmedName != orxSTRING_EMPTY) && ((pstFile = fopen(zTrimmedName, "rb")) != orxNULL))
+  if((zTrimmedName != orxSTRING_EMPTY) && ((pstFile = orxFile_Open(zTrimmedName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
@@ -2141,9 +2129,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
     /* While file isn't empty */
-    for(u32Size = (orxU32)fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0, bFirstTime = orxTRUE;
+    for(u32Size = orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0, bFirstTime = orxTRUE;
         u32Size > 0;
-        u32Size = (orxU32)fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset, bFirstTime = orxFALSE)
+        u32Size = orxFile_Read(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset, bFirstTime = orxFALSE)
     {
       orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
       orxBOOL   bBlockMode;
@@ -2602,7 +2590,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
  */
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
-  FILE     *pstFile;
+  orxFILE  *pstFile;
   orxCHAR  *pc, *pcEnd;
   orxSTRING zFileName;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -2648,7 +2636,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     }
 
     /* Opens file */
-    pstFile = fopen(zFileName, "wb+");
+    pstFile = orxFile_Open(zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
     /* Valid? */
     if(pstFile != orxNULL)
@@ -2667,7 +2655,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
         /* Adds encryption tag */
-        fprintf(pstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+        orxFile_Print(pstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
       }
 
       /* For all sections */
@@ -2692,12 +2680,12 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           if(pstParentSection != orxNULL)
           {
             /* Writes section name with inheritance */
-            u32BufferSize = sprintf(acBuffer, "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            u32BufferSize = (orxU32)orxString_Print(acBuffer, "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
           }
           else
           {
             /* Writes section name */
-            u32BufferSize = sprintf(acBuffer, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            u32BufferSize = (orxU32)orxString_Print(acBuffer, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
           }
 
           /* Encrypt? */
@@ -2708,7 +2696,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          fwrite(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
 
           /* For all entries */
           for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
@@ -2722,7 +2710,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
               /* Writes it */
-              u32BufferSize = sprintf(acBuffer, "%s%c%s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
+              u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s %c %s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
 
               /* Computes working value */
               orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
@@ -2735,12 +2723,12 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               }
 
               /* Saves it */
-              fwrite(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+              orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
             }
           }
 
           /* Adds a new line */
-          u32BufferSize = sprintf(acBuffer, "%s", orxSTRING_EOL);
+          u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s", orxSTRING_EOL);
 
           /* Encrypt? */
           if(_bUseEncryption != orxFALSE)
@@ -2750,16 +2738,12 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          fwrite(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
         }
       }
 
       /* Flushes & closes the file */
-      if((fflush(pstFile) == 0) && (fclose(pstFile) == 0))
-      {
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
+      eResult = orxFile_Close(pstFile);
 
       /* Use encryption? */
       if(_bUseEncryption != orxFALSE)
@@ -3854,9 +3838,3 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
   /* Done! */
   return zResult;
 }
-
-#ifdef __orxMSVC__
-
-  #pragma warning(default : 4996)
-
-#endif /* __orxMSVC__ */

@@ -46,6 +46,7 @@
 #define orxFILE_KU32_FLAG_OPEN_READ   0x00000001 /**< opened for read */
 #define orxFILE_KU32_FLAG_OPEN_WRITE  0x00000002 /**< opened for write */
 #define orxFILE_KU32_FLAG_OPEN_APPEND 0x00000004 /**< descriptor positioned at the end of file */
+#define orxFILE_KU32_FLAG_OPEN_BINARY 0x00000008 /**< binary file accessing */
 
 
 /** Internal File structure
@@ -88,6 +89,13 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Read(void *_pReadData, orxU32 _u
  * @return Returns the number of written elements (not bytes)
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+
+/** Prints a formatted string to a file
+ * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _zString             Formatted string
+ * @return Returns the number of written characters
+ */
+extern orxDLLAPI orxS32 orxCDECL        orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...);
 
 /** Gets text line from a file
  * @param[out] _zBuffer             Pointer where will be stored datas

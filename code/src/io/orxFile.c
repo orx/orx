@@ -31,14 +31,14 @@
 #include "io/orxFile.h"
 #include "memory/orxMemory.h"
 #include "debug/orxDebug.h"
+#include "utils/orxString.h"
+
 
 #ifdef __orxMSVC__
 
   #pragma warning(disable : 4996)
 
 #endif /* __orxMSVC__ */
-
-#include <stdio.h>
 
 
 /***************************************************************************
@@ -125,13 +125,14 @@ void orxFASTCALL orxFile_Exit()
 orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
 {
   /* Convert the open flags into a string */
-  orxCHAR zMode[3];
+  orxCHAR acMode[4];
+  orxBOOL bBinaryMode;
 
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
   /* Fills with null terminated characters */
-  orxMemory_Set(&zMode, orxCHAR_NULL, 3);
+  orxMemory_Zero(acMode, 4 * sizeof(orxCHAR));
 
   /*** LIB C MODES :
    * r   : Open text file for reading.
@@ -161,39 +162,99 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
    *  X   |  X    |   X    | a+
    */
 
-  /* Read only ? */
+  /* Binary? */
+  if(_u32OpenFlags & orxFILE_KU32_FLAG_OPEN_BINARY)
+  {
+    /* Removes it */
+    _u32OpenFlags &= ~orxFILE_KU32_FLAG_OPEN_BINARY;
+
+    /* Updates binary status*/
+    bBinaryMode = orxTRUE;
+  }
+  else
+  {
+    /* Updates binary status*/
+    bBinaryMode = orxFALSE;
+  }
+
+  /* Read only? */
   if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_READ)
   {
-    /* Copy the mode in the string */
-    orxMemory_Copy(&zMode, "r", sizeof(orxCHAR));
+    /* Binary? */
+    if(bBinaryMode != orxFALSE)
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "rb");
+    }
+    else
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "r");
+    }
   }
   /* Write only ?*/
   else if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_WRITE)
   {
-    /* Copy the mode in the string */
-    orxMemory_Copy(&zMode, "w", sizeof(orxCHAR));
+    /* Binary? */
+    if(bBinaryMode != orxFALSE)
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "wb");
+    }
+    else
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "w");
+    }
   }
   /* Append only ? */
   else if((_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_APPEND)
        || (_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND)))
   {
-    /* Copy the mode in the string */
-    orxMemory_Copy(&zMode, "a", sizeof(orxCHAR));
+    /* Binary? */
+    if(bBinaryMode != orxFALSE)
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "ab");
+    }
+    else
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "a");
+    }
   }
   else if(_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE))
   {
-    /* Copy the mode in the string */
-    orxMemory_Copy(&zMode, "w+", 2 * sizeof(orxCHAR));
+    /* Binary? */
+    if(bBinaryMode != orxFALSE)
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "wb+");
+    }
+    else
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "w+");
+    }
   }
   else if((_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND))
        || (_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND)))
   {
-    /* Copy the mode in the string */
-    orxMemory_Copy(&zMode, "a+", 2 * sizeof(orxCHAR));
+    /* Binary? */
+    if(bBinaryMode != orxFALSE)
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "ab+");
+    }
+    else
+    {
+      /* Sets literal mode */
+      orxString_Print(acMode, "a+");
+    }
   }
 
   /* Open the file */
-  return(orxFILE*)fopen(_zPath, zMode);
+  return(orxFILE*)fopen(_zPath, acMode);
 }
 
 /** Reads data from a file
@@ -247,6 +308,34 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
 
   /* Returns the number of read elements */
   return u32Ret;
+}
+
+/** Prints a formatted string to a file
+ * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _zString             Formatted string
+ * @return Returns the number of written characters
+ */
+orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
+{
+  orxS32 s32Result;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+
+  /* Valid input? */
+  if(_pstFile != orxNULL)
+  {
+    va_list stArgs;
+
+    /* Gets variable arguments & print the string */
+    va_start(stArgs, _zString);
+    s32Result = vfprintf((FILE *)_pstFile, _zString, stArgs);
+    va_end(stArgs);
+  }
+
+  /* Done! */
+  return s32Result;
 }
 
 /** Gets text line from a file

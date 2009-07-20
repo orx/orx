@@ -26,6 +26,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g86e101811244bfbdc9bbb289d05c4ea1">orxFILE_KU32_FLAG_OPEN_APPEND</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g86b8ab492ac1345a01f7965aa32c9cf4">orxFILE_KU32_FLAG_OPEN_BINARY</a>&nbsp;&nbsp;&nbsp;0x00000008</td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxFILE_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a></td></tr>
 
@@ -41,6 +43,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g6b28e81a5fe57e673f79b20c3f6c641f">orxFile_Read</a> (void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g179d964e4e74c7266468f7f6c54dc1ad">orxFile_Write</a> (void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga440ac942c5d5f341a60a606f6de8435">orxFile_Print</a> (<a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxSTRING _zString,...)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga41c8f652c63af29f09be2422bdc4141">orxFile_ReadLine</a> (orxSTRING _zBuffer, orxU32 _u32Size, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
@@ -62,6 +66,21 @@ File plugin module Module that handles file access <hr><h2>Define Documentation<
 
 <p>
 descriptor positioned at the end of file 
+</div>
+</div><p>
+<a class="anchor" name="g86b8ab492ac1345a01f7965aa32c9cf4"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_OPEN_BINARY" ref="g86b8ab492ac1345a01f7965aa32c9cf4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFILE_KU32_FLAG_OPEN_BINARY&nbsp;&nbsp;&nbsp;0x00000008          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+binary file accessing 
 </div>
 </div><p>
 <a class="anchor" name="g0eb747b5ff0c937da5666b8fbce778b5"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_OPEN_READ" ref="g0eb747b5ff0c937da5666b8fbce778b5" args="" -->
@@ -208,6 +227,48 @@ Opens a file for later read or write operation <dl compact><dt><b>Parameters:</b
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>a File pointer (or orxNULL if an error has occured) </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ga440ac942c5d5f341a60a606f6de8435"></a><!-- doxytag: member="orxFile.h::orxFile_Print" ref="ga440ac942c5d5f341a60a606f6de8435" args="(orxFILE *_pstFile, orxSTRING _zString,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxS32 orxCDECL orxFile_Print           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFile</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>...</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Prints a formatted string to a file <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Pointer on the file descriptor </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>Formatted string </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of written characters </dd></dl>
 
 </div>
 </div><p>
