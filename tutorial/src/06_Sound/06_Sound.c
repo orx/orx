@@ -31,7 +31,7 @@
 #include "orxPluginAPI.h"
 
 
-/* This is a basic C tutorial creating sounds FXs and musics (streams).
+/* This is a basic C tutorial creating sounds effects and musics (streams).
  * As we are using the default executable for this tutorial, this code
  * will be loaded and executed as a runtime plugin.
  *
@@ -43,6 +43,7 @@
  * The main executable also handles some keys:
  * - F11 as vertical sync toggler
  * - Escape as exit key
+ * - F12 to capture a screenshot
  * - Backspace to reload all configuration files (provided that config history is turned on)
  * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *

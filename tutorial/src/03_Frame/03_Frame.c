@@ -43,6 +43,7 @@
  * The main executable also handles some keys:
  * - F11 as vertical sync toggler
  * - Escape as exit key
+ * - F12 to capture a screenshot
  * - Backspace to reload all configuration files (provided that config history is turned on)
  * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *
@@ -51,6 +52,8 @@
  * These frame are assembled in a hierarchy graph, meaning that changing a parent frame
  * properties will affect all its children.
  * Here we have four objects that we link to a common parent (an empty object) and a fifth one which has no parent.
+ * The first two children are implicitely created using the object's config property ChildList whereas the two
+ * others are created and linked in code (for didactic purposes).
  * You can use arrow keys to move the parent object, '+' & '-' to scale it, left & right mouse button to rotate it.
  * All these transformation will affect its children.
  * This provides us with an easy way to create grouped object or complex object assembly and transform them
@@ -63,7 +66,7 @@
 
 /** Tutorial objects
  */
-orxOBJECT *pstObjectList[5];
+orxOBJECT *pstObjectList[3];
 orxOBJECT *pstParentObject;
 
 
@@ -75,7 +78,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   orxU32    i;
 
   /* For all objects */
-  for(i = 0; i < 5; i++)
+  for(i = 0; i < 3; i++)
   {
     /* Rotates object on self */
     orxObject_SetRotation(pstObjectList[i], orxMATH_KF_PI * _pstClockInfo->fTime);
@@ -100,7 +103,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
     /* Scales up the Parent object */
     orxObject_SetScale(pstParentObject, orxVector_Mulf(&vScale, orxObject_GetScale(pstParentObject, &vScale), orx2F(1.02f)));
   }
-  /* Is '-' pressed? */
+  /* Is scale down input active? */
   if(orxInput_IsActive("ScaleDown"))
   {
     /* Scales down the Parent object */
@@ -162,14 +165,10 @@ orxSTATUS Init()
   pstObjectList[0] = orxObject_CreateFromConfig("Object0");
   pstObjectList[1] = orxObject_CreateFromConfig("Object1");
   pstObjectList[2] = orxObject_CreateFromConfig("Object2");
-  pstObjectList[3] = orxObject_CreateFromConfig("Object3");
-  pstObjectList[4] = orxObject_CreateFromConfig("Object4");
 
-  /* Links the four last to our parent object */
+  /* Links the two last to our parent object */
   orxObject_SetParent(pstObjectList[1], pstParentObject);
   orxObject_SetParent(pstObjectList[2], pstParentObject);
-  orxObject_SetParent(pstObjectList[3], pstParentObject);
-  orxObject_SetParent(pstObjectList[4], pstParentObject);
 
   /* Creates a 100 Hz clock */
   pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);

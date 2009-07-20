@@ -43,6 +43,7 @@
  * The main executable also handles some keys:
  * - F11 as vertical sync toggler
  * - Escape as exit key
+ * - F12 to capture a screenshot
  * - Backspace to reload all configuration files (provided that config history is turned on)
  * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *
