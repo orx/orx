@@ -373,8 +373,8 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
         orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
 
         /* Normalizes them */
-        orxVector_Mulf(&vStartColor, &vStartColor, orxRGBA_NORMALIZER);
-        orxVector_Mulf(&vEndColor, &vEndColor, orxRGBA_NORMALIZER);
+        orxVector_Mulf(&vStartColor, &vStartColor, orxCOLOR_NORMALIZER);
+        orxVector_Mulf(&vEndColor, &vEndColor, orxCOLOR_NORMALIZER);
 
         /* Adds color blend slot */
         eResult = orxFX_AddColor(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);

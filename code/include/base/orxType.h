@@ -64,18 +64,9 @@
   typedef char                    orxCHAR;
   typedef orxCHAR *               orxSTRING;
 
-  typedef orxU32                  orxRGBA;
   typedef orxU32                  orxENUM;
 
   #define orx2F(V)                ((orxFLOAT)(V))
-
-  #define orx2RGBA(R, G, B, A)    ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
-  #define orxRGBA_R(RGBA)         (orxU8)(((RGBA) >> 24) & 0xFF)
-  #define orxRGBA_G(RGBA)         (orxU8)(((RGBA) >> 16) & 0xFF)
-  #define orxRGBA_B(RGBA)         (orxU8)(((RGBA) >> 8) & 0xFF)
-  #define orxRGBA_A(RGBA)         (orxU8)((RGBA) & 0xFF)
-  #define orxRGBA_NORMALIZER      (orx2F(1.0f / 255.0f))
-  #define orxRGBA_DENORMALIZER    (orx2F(255.0f))
 
   #define orxENUM_NONE            0xFFFFFFFFL
 
@@ -117,18 +108,9 @@
     typedef char                  orxCHAR;
     typedef orxCHAR *             orxSTRING;
 
-    typedef orxU32                orxRGBA;
     typedef orxU32                orxENUM;
 
     #define orx2F(V)              ((orxFLOAT)(V))
-
-    #define orx2RGBA(R, G, B, A)  ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
-    #define orxRGBA_R(RGBA)       (orxU8)(((RGBA) >> 24) & 0xFF)
-    #define orxRGBA_G(RGBA)       (orxU8)(((RGBA) >> 16) & 0xFF)
-    #define orxRGBA_B(RGBA)       (orxU8)(((RGBA) >> 8) & 0xFF)
-    #define orxRGBA_A(RGBA)       (orxU8)((RGBA) & 0xFF)
-    #define orxRGBA_NORMALIZER    (orx2F(1.0f / 255.0f))
-    #define orxRGBA_DENORMALIZER  (orx2F(255.0f))
 
     #define orxENUM_NONE          0xFFFFFFFFL
 

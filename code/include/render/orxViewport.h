@@ -120,7 +120,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetBackgroundColor(orx
 
 /** Gets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _pstColor       Viewport's color
+ * @param[out]  _pstColor       Viewport's color
  * @return      Current background color
  */
 extern orxDLLAPI orxCOLOR *orxFASTCALL        orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport, orxCOLOR *_pstColor);

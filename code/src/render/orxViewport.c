@@ -374,7 +374,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Gets color vector */
         orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
-        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxRGBA_NORMALIZER);
+        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
         stColor.fAlpha = orxFLOAT_1;
 
         /* Applies it */
@@ -650,7 +650,7 @@ orxSTATUS orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, 
 
 /** Gets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _pstColor       Viewport's color
+ * @param[out]  _pstColor       Viewport's color
  * @return      Current background color
  */
 orxCOLOR *orxFASTCALL orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport, orxCOLOR *_pstColor)
