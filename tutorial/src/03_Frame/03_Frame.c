@@ -161,7 +161,7 @@ orxSTATUS Init()
   /* Creates Parent object */
   pstParentObject = orxObject_CreateFromConfig("ParentObject");
 
-  /* Creates all 5 test objects */
+  /* Creates all 3 test objects */
   pstObjectList[0] = orxObject_CreateFromConfig("Object0");
   pstObjectList[1] = orxObject_CreateFromConfig("Object1");
   pstObjectList[2] = orxObject_CreateFromConfig("Object2");
