@@ -127,13 +127,13 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   orxVECTOR vScale;
 
   /* Is walk right active? */
-  if(orxInput_IsActive("WalkRight"))
+  if(orxInput_IsActive("GoRight"))
   {
     /* Sets walk right as target anim */
     orxObject_SetTargetAnim(pstSoldier, "WalkRight");
   }
   /* Is walk left active? */
-  else if(orxInput_IsActive("WalkLeft"))
+  else if(orxInput_IsActive("GoLeft"))
   {
     /* Sets walk left as target anim */
     orxObject_SetTargetAnim(pstSoldier, "WalkLeft");
