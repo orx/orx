@@ -533,8 +533,9 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 /** Gets camera frustum (3D box for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pstFrustum    Frustum box
+ * @return      Frustum orxAABOX
  */
-void orxFASTCALL orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
+orxAABOX *orxFASTCALL orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
 {
   orxVECTOR vPosition;
 
@@ -550,7 +551,8 @@ void orxFASTCALL orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_ps
   orxVector_Add(&(_pstFrustum->vTL), &(_pstCamera->stFrustum.vTL), &vPosition);
   orxVector_Add(&(_pstFrustum->vBR), &(_pstCamera->stFrustum.vBR), &vPosition);
 
-  return;
+  /* Done! */
+  return _pstFrustum;
 }
 
 /** Get camera position
