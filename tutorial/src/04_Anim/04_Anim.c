@@ -78,7 +78,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   orxANIM_EVENT_PAYLOAD *pstPayload;
 
   /* Gets event payload */
-  pstPayload = _pstEvent->pstPayload;
+  pstPayload = (orxANIM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
   /* Depending on event type */
   switch(_pstEvent->eID)
