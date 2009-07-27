@@ -58,8 +58,8 @@
  * If you press up & down arrows, the music volume will change accordingly. The soldier will be scale in consequence.
  * By pressing left & right arrows, the music pitch (frequency) will change. The soldier will rotate like a knob.
  *
- * Left clicking will play the music (and activate the soldier) if the music was paused.
- * The right click is used to pause the music (and deactivate the soldier).
+ * Left control key will play the music (and activate the soldier) if the music was paused,
+ * otherwise it'll pause the music (and deactivate the soldier).
  *
  * Lastly, enter and space will play a sound effect on the soldier. Space triggered sound effect
  * is the same as enter except that its volume and pitch are randomly defined in the default config file.
@@ -69,11 +69,9 @@
  * NB: The sound effect will only be added and played on an active soldier.
  * If you want to play a sound effect with no object as support,
  * you can do it the same way we create the music in this tutorial.
- * However, playing a sound on an object will allow spatial sound positioning (WIP).
+ * However, playing a sound on an object will allow spatial sound positioning (not covered by this tutorial).
  *
- * Many sound effects can be played at the same time on a single object,
- * this tutorial contains some logic to only allow a single sound effect at a time.
- * This behavior is tweakable through the config system.
+ * Many sound effects can be played at the same time on a single object.
  *
  * The sound config attribute KeepDataInCache allows to keep the sound sample
  * in memory instead of rereading it from file every time.
@@ -99,7 +97,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   orxSOUND_EVENT_PAYLOAD *pstPayload;
 
   /* Gets event payload */
-  pstPayload = _pstEvent->pstPayload;
+  pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
   /* Depending on event type */
   switch(_pstEvent->eID)
@@ -139,30 +137,22 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   orxConfig_SelectSection("Tutorial");
 
   /* Random SFX? */
-  if(orxInput_IsActive("RandomSFX"))
+  if(orxInput_IsActive("RandomSFX") && orxInput_HasNewStatus("RandomSFX"))
   {
-    /* No sound FX playing or multiple sound FXs allowed? */
-    if(orxConfig_GetBool("AllowMultipleSoundFX") || !orxObject_GetLastAddedSound(pstSoldier))
-    {
-      /* Adds a sound FX on soldier */
-      orxObject_AddSound(pstSoldier, "RandomBip");
+    /* Adds a sound FX on soldier */
+    orxObject_AddSound(pstSoldier, "RandomBip");
 
-      /* Sets a random color on soldier */
-      orxObject_SetColor(pstSoldier, orxColor_Set(&stColor, orxConfig_GetVector("RandomColor", &v), orxFLOAT_1));
-    }
+    /* Sets a random color on soldier */
+    orxObject_SetColor(pstSoldier, orxColor_Set(&stColor, orxConfig_GetVector("RandomColor", &v), orxFLOAT_1));
   }
   /* Default SFX? */
-  if(orxInput_IsActive("DefaultSFX"))
+  if(orxInput_IsActive("DefaultSFX") && orxInput_HasNewStatus("DefaultSFX"))
   {
-    /* No sound FX playing or multiple sound FXs allowed? */
-    if(orxConfig_GetBool("AllowMultipleSoundFX") || !orxObject_GetLastAddedSound(pstSoldier))
-    {
-      /* Adds a sound FX on soldier */
-      orxObject_AddSound(pstSoldier, "DefaultBip");
+    /* Adds a sound FX on soldier */
+    orxObject_AddSound(pstSoldier, "DefaultBip");
 
-      /* Resets color on soldier */
-      orxObject_SetColor(pstSoldier, orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1));
-    }
+    /* Resets color on soldier */
+    orxObject_SetColor(pstSoldier, orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1));
   }
 
   /* *** MUSIC CONTROLS *** */
