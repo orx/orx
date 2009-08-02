@@ -152,7 +152,7 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
  * @param[in]   _pstObject    Concerned object
  * @return      Owner / orxNULL
  */
-extern orxDLLAPI void *orxFASTCALL          orxObject_GetOwner(orxOBJECT *_pstObject);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
 
 
 /** Links a structure to an object

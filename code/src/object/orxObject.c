@@ -499,7 +499,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
           pstChild = orxOBJECT(orxStructure_GetNext(pstChild)))
       {
         /* Is a child? */
-        if(orxObject_GetOwner(pstChild) == _pstObject)
+        if(orxOBJECT(orxObject_GetOwner(pstChild)) == _pstObject)
         {
           /* Removes its owner */
           orxObject_SetOwner(pstChild, orxNULL);
@@ -1314,7 +1314,7 @@ void *orxFASTCALL orxObject_GetUserData(const orxOBJECT *_pstObject)
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pOwner       Owner to set / orxNULL
  */
-void orxFASTCALL    orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
+void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1331,9 +1331,9 @@ void orxFASTCALL    orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
  * @param[in]   _pstObject    Concerned object
  * @return      Owner / orxNULL
  */
-void *orxFASTCALL orxObject_GetOwner(orxOBJECT *_pstObject)
+orxSTRUCTURE *orxFASTCALL orxObject_GetOwner(const orxOBJECT *_pstObject)
 {
-  void *pResult;
+  orxSTRUCTURE *pResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);

@@ -129,8 +129,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetZoom(orxCAMERA *_pstCamera,
 /** Gets camera frustum (3D box for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pstFrustum    Frustum box
+ * @return      Frustum orxAABOX
  */
-extern orxDLLAPI void orxFASTCALL       orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum);
+extern orxDLLAPI orxAABOX *orxFASTCALL  orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum);
 
 /** Get camera position
  * @param[in]   _pstCamera      Concerned camera

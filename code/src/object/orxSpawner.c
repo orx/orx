@@ -697,7 +697,7 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
         pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
     {
       /* Is spawner the owner */
-      if(orxObject_GetOwner(pstObject) == _pstSpawner)
+      if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
       {
         /* Removes it */
         orxObject_SetOwner(pstObject, orxNULL);
@@ -800,7 +800,7 @@ void orxFASTCALL    orxSpawner_Reset(orxSPAWNER *_pstSpawner)
       pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
   {
     /* Is spawner the owner */
-    if(orxObject_GetOwner(pstObject) == _pstSpawner)
+    if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
     {
       /* Removes it */
       orxObject_SetOwner(pstObject, orxNULL);

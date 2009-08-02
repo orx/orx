@@ -51,35 +51,36 @@
  *
  * This tutorial shows what FXs are and how to create them.
  *
- * FXs are based on a combination of curves based on sine, saw or linear shape, applied on different parameters
- * suchs as scale, rotation, alpha, flash and position.
+ * FXs are based on a combination of curves based on sine, triangle, square or linear shape,
+ * applied on different parameters such as scale, rotation, position, speed, alpha and color.
  *
  * FXs are set through config file requiring only one line of code to apply them on an object.
- * There can be up to 5 curves of any type combined to form an FX. Up to 4 FXs can be applied
- * on the same object at a given time.
+ * There can be up to 8 curves of any type combined to form a single FX. Up to 4 FXs can be applied
+ * on the same object at the same time.
  *
- * FX can set absolute or relative values, depending on the attribute Absolute in its config.
- * Control over curve period, phasis, pow, amplification over time is also granted.
- * For rotation FXs, value can use object's orientation and/or scale on demand.
- * This allows the creation of pretty elaborated and great looking visual FXs.
+ * FXs can use absolute or relative values, depending on the Absolute attribute in its config.
+ * Control over curve period, phase, pow and amplification over time is also granted.
+ * For position and speed FXs, the output value can use the object's orientation and/or scale
+ * so as to be applied relatively to the object's current state.
+ * This allows the creation of pretty elaborated and nice looking visual FXs.
  *
  * FX parameters can be tweaked in the config file and reloaded on-the-fly using backspace,
- * unless the FX was specified to be kept in cache memory (with the attribute KeepInCache).
+ * unless the FX was specified to be cached in memory (cf. the ''KeepInCache'' attribute).
  *
- * For example you won't be able to tweak on the fly the circle FX as it's defined
- * with this attribute in the default config file. All the other FXs can be updated while
- * the tutorial run, at their next application.
+ * For example you won't be able to tweak on the fly the circle FX as it has been defined
+ * with this attribute in the default config file.
+ * All the other FXs can be updated while the tutorial run.
  *
  * As always, random parameters can be used from config allowing some variety for a single FX.
- * For example, the wobble scale, the flash flash and the "attack" of the move FX are using limited random values.
+ * For example, the wobble scale, the flash color and the "attack" move FXs are using limited random values.
  *
- * We also register to the FX events to display when FXs are played and stopped.
- * As the FX played on the box object is tagget as looping, it'll never stop and thus
- * the corresponding event (FX_STOP) won't ever be sent.
+ * We also register to the FX events so as to display when FXs are played and stopped.
+ * As the FX played on the box object is tagged as looping, it'll never stop.
+ * Therefore the corresponding event (orxFX_EVENT_STOP) will never be sent.
  *
  * We also show briefly how to add some personal user data to an orxOBJECT (here a structure containing a single boolean).
  * We retrieve it in the event callback to lock the object when an FX starts and unlock it when it stops.
- * We use this lock to allow only one FX at a time on the soldier. It's only written here as a didactic purpose.
+ * We use this lock to allow only one FX at a time on the soldier. It's only written here for didactic purpose.
  *
  */
 
