@@ -143,7 +143,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   }
 
   /* Updates camera position */
-  orxCamera_SetPosition(pstCamera, orxVector_Add(&(vPosition), orxCamera_GetPosition(pstCamera, &vPosition), &vMove));
+  orxCamera_SetPosition(pstCamera, orxVector_Add(&vPosition, orxCamera_GetPosition(pstCamera, &vPosition), &vMove));
 }
 
 
