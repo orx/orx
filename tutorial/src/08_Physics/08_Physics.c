@@ -58,18 +58,18 @@
  * Each body can be made of up to 8 parts.
  *
  * A body part is defined by
- * - its shape (currently box and sphere are the only available)
- * - information about the shape size (corners for the box, center and radius for the sphere)
+ * - its shape (currently box, sphere and mesh (ie. convex polygon) are the only available)
+ * - information about the shape size (corners for the box, center and radius for the sphere, vertices for the mesh)
  *   if no size data is specified, the shape will try to fill the complete body (using the
  *   object size and scale)
  * - collision "self" flags that defines this part
- * - a collision "check" that defines with which other part this one can collide
- *   ( two parts in the same body will never collide)
+ * - collision "check" mask that defines with which other parts this one will collide
+ *   (two parts in the same body will never collide)
  * - a flag (Solid) specifying if this shaped should only give information about collisions
  *   or if it should impact on the body physics simulation (bouncing, etc...)
- * - various attribute such as restitution, friction, density, ...
+ * - various attributes such as restitution, friction, density, ...
  *
- * Here we create 4 static solid walls around our screen. We then spawn boxes in between.
+ * Here we create static solid walls around our screen. We then spawn boxes in the middle.
  * The number of boxes created is tweakable through the config file and is 100 by default.
  *
  * The only interaction possible is using left and right mouse buttons to rotate the camera.
@@ -207,10 +207,7 @@ orxSTATUS Init()
   orxObject_CreateFromConfig("Sky");
 
   /* Creates walls */
-  orxObject_CreateFromConfig("Wall1");
-  orxObject_CreateFromConfig("Wall2");
-  orxObject_CreateFromConfig("Wall3");
-  orxObject_CreateFromConfig("Wall4");
+  orxObject_CreateFromConfig("Walls");
 
   /* For all requested boxes */
   for(i = 0; i < orxConfig_GetU32("BoxNumber"); i++)
