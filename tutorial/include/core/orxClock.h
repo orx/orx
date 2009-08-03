@@ -166,8 +166,9 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _
 
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL                     orxClock_Delete(orxCLOCK *_pstClock);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Delete(orxCLOCK *_pstClock);
 
 /** Resyncs a clock (accumulated DT => 0)
  * @param[in]   _pstClock                             Concerned clock

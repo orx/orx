@@ -105,8 +105,9 @@ extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL   orxSoundSystem_LoadSample(
 
 /** Unloads a sound sample
  * @param[in]   _pstSample                            Concerned sample
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL                     orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
 /** Creates a sound from preloaded sample (can be played directly)
  * @param[in]   _pstSample                            Concerned sample
@@ -123,7 +124,7 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStrea
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound
  */
-extern orxDLLAPI void orxFASTCALL                     orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Plays a sound
  * @param[in]   _pstSound                             Concerned sound

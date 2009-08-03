@@ -186,7 +186,7 @@ extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_SFML_LoadSample(con
   return pstResult;
 }
 
-extern "C" void orxFASTCALL orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   sf::SoundBuffer *poBuffer;
 
@@ -200,7 +200,8 @@ extern "C" void orxFASTCALL orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMP
   /* Deletes it */
   delete poBuffer;
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
@@ -265,7 +266,7 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateStreamFro
   return pstResult;
 }
 
-extern "C" void orxFASTCALL orxSoundSystem_SFML_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -286,7 +287,8 @@ extern "C" void orxFASTCALL orxSoundSystem_SFML_Delete(orxSOUNDSYSTEM_SOUND *_ps
   /* Deletes it */
   delete _pstSound;
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Play(orxSOUNDSYSTEM_SOUND *_pstSound)

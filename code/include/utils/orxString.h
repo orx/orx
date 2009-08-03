@@ -181,7 +181,7 @@ static orxINLINE orxSTRING              orxString_Duplicate(const orxSTRING _zSr
 /** Deletes a string
  * @param[in] _zString                  String to delete
  */
-static orxINLINE void                   orxString_Delete(orxSTRING _zString)
+static orxINLINE orxSTATUS              orxString_Delete(orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -190,7 +190,8 @@ static orxINLINE void                   orxString_Delete(orxSTRING _zString)
   /* Frees its memory */
   orxMemory_Free(_zString);
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Compare two strings. If the first one is smaller than the second, it returns -1,

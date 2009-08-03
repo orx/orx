@@ -496,8 +496,9 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
+orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -516,7 +517,8 @@ void orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 	  orxBank_Free(sstClock.pstClockBank, _pstClock);
   }
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Resyncs a clock (accumulated DT => 0)

@@ -137,8 +137,9 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(const orxSTRING _zS
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect);
 
 /** Clears all config info
+* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL       orxConfig_Clear();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Clear();
 
 /** Clears section
  * @param[in] _zSectionName     Section name to clear

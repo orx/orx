@@ -141,8 +141,9 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 
 /** Delete a hash table.
  * @param[in] _pstHashTable  Hash table to delete.
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
+orxSTATUS orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 {
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -157,12 +158,14 @@ void orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
   orxMemory_Free(_pstHashTable);
 
   /* Done ! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Clear a hash table.
  * @param[in] _pstHashTable  Hash table to clear.
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
+orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 {
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -171,7 +174,10 @@ void orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
   orxBank_Clear(_pstHashTable->pstBank);
 
   /* Clear the hash */
-  orxMemory_Zero(_pstHashTable->apstCell, sizeof(_pstHashTable->apstCell));
+  orxMemory_Zero(_pstHashTable->apstCell, orxHASHTABLE_KU32_INDEX_SIZE * sizeof(orxHASHTABLE_CELL *));
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Gets a hash table item counter
@@ -235,8 +241,9 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
  * @param[in] _pstHashTable The hash table where set.
  * @param[in] _u32Key      Key to assign.
  * @param[in] _pData       Data to assign.
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
+orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
@@ -278,6 +285,9 @@ void orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, v
       _pstHashTable->apstCell[u32Index] = pstCell;
     }
   }
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 

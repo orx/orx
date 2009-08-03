@@ -204,8 +204,9 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(or
 
 /** Unregisters a given ID
  * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void       orxFASTCALL                 orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
 
 
 /** Creates a clean structure for given type
@@ -216,8 +217,9 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_Create(orxS
 
 /** Deletes a structure (needs to be cleaned beforehand)
  * @param[in]   _pStructure    Concerned structure
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void       orxFASTCALL                 orxStructure_Delete(void *_pStructure);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Delete(void *_pStructure);
 
 
 /** Gets structure storage type

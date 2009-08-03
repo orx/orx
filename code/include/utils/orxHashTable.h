@@ -63,13 +63,15 @@ extern orxDLLAPI orxHASHTABLE *orxFASTCALL      orxHashTable_Create(orxU32 _u32N
 
 /** Delete a hash table.
  * @param[in] _pstHashTable  Hash table to delete.
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL               orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
 
 /** Clear a hash table.
  * @param[in] _pstHashTable  Hash table to clear.
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL               orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
 /** @} */
 
 /** Gets a hash table item counter
@@ -91,8 +93,9 @@ extern orxDLLAPI void *orxFASTCALL              orxHashTable_Get(const orxHASHTA
  * @param[in] _pstHashTable The hash table where set.
  * @param[in] _u32Key      Key to assign.
  * @param[in] _pData       Data to assign.
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL               orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
 
 
 /** Add an item value.

@@ -91,7 +91,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#geaddca772571521857434876f61aea0e">orxClock_Create</a> (orxFLOAT _fTickSize, <a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a> _eType)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g0773b1e8ac0d5b490f9b5f8b393e0fc1">orxClock_Delete</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g93f8fe8c1e9aa8d220c1513d280f20ba">orxClock_Delete</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g646ec2e3a995507a81f71e7ee602458e">orxClock_Resync</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
@@ -356,12 +356,12 @@ Creates a clock <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g0773b1e8ac0d5b490f9b5f8b393e0fc1"></a><!-- doxytag: member="orxClock.h::orxClock_Delete" ref="g0773b1e8ac0d5b490f9b5f8b393e0fc1" args="(orxCLOCK *_pstClock)" -->
+<a class="anchor" name="g93f8fe8c1e9aa8d220c1513d280f20ba"></a><!-- doxytag: member="orxClock.h::orxClock_Delete" ref="g93f8fe8c1e9aa8d220c1513d280f20ba" args="(orxCLOCK *_pstClock)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxFASTCALL orxClock_Delete           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxClock_Delete           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClock</em>          </td>
@@ -378,6 +378,7 @@ Deletes a clock <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstClock</em>&nbsp;</td><td>Concerned clock </td></tr>
   </table>
 </dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>

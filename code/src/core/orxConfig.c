@@ -2898,8 +2898,9 @@ orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, or
 }
 
 /** Clears all config data
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxConfig_Clear()
+orxSTATUS orxFASTCALL orxConfig_Clear()
 {
   orxCONFIG_SECTION *pstLastSection, *pstNewSection;
 
@@ -2925,7 +2926,8 @@ void orxFASTCALL orxConfig_Clear()
     orxConfig_DeleteSection(pstNewSection);
   }
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Clears section

@@ -314,8 +314,9 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
 
 /** Unregisters a given ID
  * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
+orxSTATUS orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
@@ -338,7 +339,8 @@ void orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is already registered.");
   }
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Creates a clean structure for given type
@@ -470,8 +472,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 
 /** Deletes a structure (needs to be cleaned beforehand)
  * @param[in]   _pStructure    Concerned structure
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxStructure_Delete(void *_pStructure)
+orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
 {
   register orxSTRUCTURE_STORAGE_NODE *pstNode;
 
@@ -523,7 +526,8 @@ void orxFASTCALL orxStructure_Delete(void *_pStructure)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage node.");
   }
 
-  return;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 /** Gets structure storage type
