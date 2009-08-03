@@ -59,7 +59,7 @@
  * You can try to set this value to x, y or even remove it.
  *
  * Along the AutoScroll property, you can find the DepthScale one. This one is used to automatically
- * adjust object's scale depending on how far it is from the camera.
+ * adjust objects' scale depending on how far they are from the camera.
  * The smaller the camera frustum is, the faster this autoscale will apply. You can try to play with
  * object positionning and camera near & far planes to achieve the desired scrolling and depth scale you want.
  *
@@ -67,13 +67,10 @@
  * modify its value in real time and ask for a config history reload.
  *
  * As you can see, our update code simply moves the camera in the 3D space.
- * Pressing arrows will move it along X and Y axis, and pressing keypad '+' & '-' will move it along the Z one.
- * As told before, all the differential scrolling will happen because objects have been flagged accordingly.
- * Your code merely needs to move your camera in your scenery, without having to bother about scrolling effect.
+ * Pressing arrows will move it along X and Y axis, and pressing control & alt keys will move it along the Z one.
+ * As told before, all the differential scrolling will happen because objects have been flagged appropriately.
+ * Your code merely needs to move your camera in your scenery, without having to bother about any scrolling effect.
  * This gives you a full control about how many scrolling planes you want, and which objects should be affected by it.
- *
- * Thus, by pressing 'S' and 'N' keys, we update the corresponding config value directly in memory.
- * The same effect could be achieved by modifying the config file and asking for a reload by pressing backspace.
  *
  * The last point concerns the sky. As seen in the tutorial 03_Frame, we set the sky object's frame as a child
  * of the camera one. This means the position set for the sky object in the config file will always be
