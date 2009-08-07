@@ -38,6 +38,12 @@
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
+#ifdef __orxMAC__
+
+  #include <unistd.h>
+
+#endif /* __orxMAC__ */
+
 
 /** Module flags
  */
@@ -1690,8 +1696,6 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   {
     /* Mac? */
     #ifdef __orxMAC__
-
-      #include <unistd.h>
 
       orxS32 s32Index, s32NextIndex;
 
