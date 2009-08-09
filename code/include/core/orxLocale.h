@@ -44,6 +44,30 @@
 #include "orxInclude.h"
 
 
+/** Event enum
+ */
+typedef enum __orxLOCALE_EVENT_t
+{
+  orxLOCALE_EVENT_SELECT_LANGUAGE = 0,                  /**< Event sent when selecting a language */
+  orxLOCALE_EVENT_SET_STRING,                           /**< Event sent when setting a string */
+
+  orxLOCALE_EVENT_NUMBER,
+
+  orxLOCALE_EVENT_NONE = orxENUM_NONE
+
+} orxLOCALE_EVENT;
+
+/** Locale event payload
+ */
+typedef struct __orxLOCALE_EVENT_PAYLOAD_t
+{
+  orxSTRING zLanguage;                                  /**< Current language : 4 */
+  orxSTRING zStringKey;                                 /**< String key : 8 */
+  orxSTRING zStringValue;                               /**< String value : 12 */
+
+} orxLOCALE_EVENT_PAYLOAD;
+
+
 /** Locale module setup
  */
 extern orxDLLAPI void orxFASTCALL       orxLocale_Setup();

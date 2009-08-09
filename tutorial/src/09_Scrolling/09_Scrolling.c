@@ -31,7 +31,7 @@
 #include "orxPluginAPI.h"
 
 
-/* This is a basic C tutorial showing how to do a differential parallax scrolling.
+/* This is a basic C tutorial showing how to do a parallax scrolling.
  * As we are using the default executable for this tutorial, this code
  * will be loaded and executed as a runtime plugin.
  *
@@ -49,13 +49,13 @@
  *
  * See previous tutorials for more info about the basic object creation, clock, animation, viewport, sound, FX and physics/collision handling.
  *
- * This tutorial shows how to display a differential scrolling.
+ * This tutorial shows how to display a parallax scrolling.
  *
- * As you can see, there's no special code for the differential scrolling. Actually,
+ * As you can see, there's no special code for the parallax scrolling. Actually,
  * orx's default 2D render plugin will take care of this for you, depending on how you
  * set the objects' properties in the config file. By default, AutoScroll is set to 'both'.
  *
- * This means a differential scrolling will happen on both X and Y axis when the camera moves.
+ * This means a parallax scrolling will happen on both X and Y axis when the camera moves.
  * You can try to set this value to x, y or even remove it.
  *
  * Along the AutoScroll property, you can find the DepthScale one. This one is used to automatically
@@ -68,7 +68,7 @@
  *
  * As you can see, our update code simply moves the camera in the 3D space.
  * Pressing arrows will move it along X and Y axis, and pressing control & alt keys will move it along the Z one.
- * As told before, all the differential scrolling will happen because objects have been flagged appropriately.
+ * As told before, all the parallax scrolling will happen because objects have been flagged appropriately.
  * Your code merely needs to move your camera in your scenery, without having to bother about any scrolling effect.
  * This gives you a full control about how many scrolling planes you want, and which objects should be affected by it.
  *

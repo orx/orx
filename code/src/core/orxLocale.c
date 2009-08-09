@@ -27,9 +27,9 @@
  */
 
 
-#include "orxInclude.h"
-
 #include "core/orxLocale.h"
+
+#include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
 #include "utils/orxString.h"
@@ -88,6 +88,7 @@ void orxFASTCALL orxLocale_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_EVENT);
 
   return;
 }
@@ -232,6 +233,8 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
+            orxLOCALE_EVENT_PAYLOAD stPayload;
+
             /* Has selected language? */
             if(sstLocale.zCurrentLanguage != orxNULL)
             {
@@ -241,10 +244,17 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
 
             /* Stores its reference */
             sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
-          }
 
-          /* Pops config section */
-          orxConfig_PopSection();
+            /* Pops config section */
+            orxConfig_PopSection();
+
+            /* Inits event payload */
+            orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
+            stPayload.zLanguage = sstLocale.zCurrentLanguage;
+
+            /* Sends it */
+            orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
+          }
         }
 
         break;
@@ -507,6 +517,8 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
   /* Has current language? */
   if(sstLocale.zCurrentLanguage != orxNULL)
   {
+    orxLOCALE_EVENT_PAYLOAD stPayload;
+
     /* Pushes its section */
     orxConfig_PushSection(sstLocale.zCurrentLanguage);
 
@@ -515,6 +527,15 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
 
     /* Pops config section */
     orxConfig_PopSection();
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
+    stPayload.zLanguage     = sstLocale.zCurrentLanguage;
+    stPayload.zStringKey    = _zKey;
+    stPayload.zStringValue  = _zValue;
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
   }
   else
   {
