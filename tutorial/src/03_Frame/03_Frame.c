@@ -66,7 +66,6 @@
 
 /** Tutorial objects
  */
-orxOBJECT *pstObjectList[3];
 orxOBJECT *pstParentObject;
 
 
@@ -75,26 +74,18 @@ orxOBJECT *pstParentObject;
 void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vScale, vPosition;
-  orxU32    i;
-
-  /* For all objects */
-  for(i = 0; i < 3; i++)
-  {
-    /* Rotates object on self */
-    orxObject_SetRotation(pstObjectList[i], orxMATH_KF_PI * _pstClockInfo->fTime);
-  }
 
   /* Is rotate left input active ? */
   if(orxInput_IsActive("RotateLeft"))
   {
     /* Rotates Parent object CCW */
-    orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) + orx2F(-4.0f) * _pstClockInfo->fDT);
+    orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) - orxMATH_KF_PI * _pstClockInfo->fDT);
   }    
   /* Is rotate right input active? */
   if(orxInput_IsActive("RotateRight"))
   {
     /* Rotates Parent object CW */
-    orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) + orx2F(4.0f) * _pstClockInfo->fDT);
+    orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) + orxMATH_KF_PI * _pstClockInfo->fDT);
   }    
 
   /* Is scale up input active? */
@@ -132,6 +123,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 orxSTATUS Init()
 {
   orxCLOCK       *pstClock;
+  orxOBJECT      *pstObject;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
   orxSTRING       zInputRotateLeft, zInputRotateRight, zInputScaleUp, zInputScaleDown;
@@ -161,23 +153,18 @@ orxSTATUS Init()
   /* Creates Parent object */
   pstParentObject = orxObject_CreateFromConfig("ParentObject");
 
-  /* Creates all 3 test objects */
-  pstObjectList[0] = orxObject_CreateFromConfig("Object0");
-  pstObjectList[1] = orxObject_CreateFromConfig("Object1");
-  pstObjectList[2] = orxObject_CreateFromConfig("Object2");
-
-  /* Links the two last to our parent object */
-  orxObject_SetParent(pstObjectList[1], pstParentObject);
-  orxObject_SetParent(pstObjectList[2], pstParentObject);
+  /* Creates all 3 test objects and links the last two to our parent object */
+  orxObject_CreateFromConfig("Object0");
+  pstObject = orxObject_CreateFromConfig("Object1");
+  orxObject_SetParent(pstObject, pstParentObject);
+  pstObject = orxObject_CreateFromConfig("Object2");
+  orxObject_SetParent(pstObject, pstParentObject);
 
   /* Creates a 100 Hz clock */
   pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
-
-  /* Deactivates vertical sync */
-  orxDisplay_EnableVSync(orxFALSE);
 
   /* Done! */
   return orxSTATUS_SUCCESS;

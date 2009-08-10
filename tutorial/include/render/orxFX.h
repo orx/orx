@@ -158,6 +158,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(const orxFX *_ps
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
  * @param[in]   _fStartAlpha    Starting alpha value
  * @param[in]   _fEndAlpha      Ending alpha value
  * @param[in]   _eCurve         Blending curve type
@@ -165,7 +166,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(const orxFX *_ps
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds color to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -174,6 +175,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, or
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
  * @param[in]   _pvStartColor   Starting color value
  * @param[in]   _pvEndColor     Ending color value
  * @param[in]   _eCurve         Blending curve type
@@ -181,7 +183,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, or
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColor(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColor(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds rotation to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -190,6 +192,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColor(orxFX *_pstFX, or
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
  * @param[in]   _fStartRotation Starting rotation value (radians)
  * @param[in]   _fEndRotation   Ending rotation value (radians)
  * @param[in]   _eCurve         Blending curve type
@@ -197,7 +200,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColor(orxFX *_pstFX, or
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds scale to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -206,6 +209,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRotation(orxFX *_pstFX,
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
  * @param[in]   _pvStartScale   Starting scale value
  * @param[in]   _pvEndScale     Ending scale value
  * @param[in]   _eCurve         Blending curve type
@@ -213,7 +217,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRotation(orxFX *_pstFX,
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartScale, const orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartScale, const orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds position to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -222,6 +226,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, or
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
  * @param[in]   _pvStartTranslation Starting position value
  * @param[in]   _pvEndTranslation Ending position value
  * @param[in]   _eCurve         Blending curve type
@@ -229,7 +234,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, or
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartTranslation, const orxVECTOR *_pvEndTranslation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartTranslation, const orxVECTOR *_pvEndTranslation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds speed to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -238,6 +243,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX,
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhase    Cycle phase (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
  * @param[in]   _pvStartSpeed   Starting speed value
  * @param[in]   _pvEndSpeed     Ending speed value
  * @param[in]   _eCurve         Blending curve type
@@ -245,7 +251,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX,
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSpeed(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSpeed(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Gets FX duration
  * @param[in]   _pstFX          Concerned FX

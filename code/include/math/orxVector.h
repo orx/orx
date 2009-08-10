@@ -273,7 +273,7 @@ static orxINLINE orxVECTOR *                  orxVector_Div(orxVECTOR *_pvRes, c
  * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
- * @param[in]   _fOp                          Lerp coefficien parameter
+ * @param[in]   _fOp                          Lerp coefficient parameter
  * @return      Resulting vector
  */
 static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2, orxFLOAT _fOp)
@@ -282,7 +282,7 @@ static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, 
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
   orxASSERT(_pvOp2 != orxNULL);
-  orxASSERT((_fOp >= orxFLOAT_0) && (_fOp <= orxFLOAT_1));
+  orxASSERT(_fOp >= orxFLOAT_0);
 
   /* Lerps all*/
   _pvRes->fX = orxLERP(_pvOp1->fX, _pvOp2->fX, _fOp);
