@@ -32,6 +32,8 @@
 #include "display/orxDisplay.h"
 #include "memory/orxMemory.h"
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "core/orxLocale.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 
@@ -55,6 +57,8 @@
  */
 #define orxTEXT_KZ_CONFIG_STRING              "String"
 #define orxTEXT_KZ_CONFIG_FONT                "Font"
+
+#define orxTEXT_KC_LOCALE_MARKER              '$'
 
 
 /***************************************************************************
@@ -90,6 +94,100 @@ static orxTEXT_STATIC sstText;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Gets corresponding locale key
+ * @param[in]   _pstText Concerned text
+ * @return      orxSTRING / orxNULL
+ */
+static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText)
+{
+  orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pstText);
+
+  /* Has reference? */
+  if(_pstText->zReference != orxNULL)
+  {
+    orxSTRING zString;
+
+    /* Pushes its section */
+    orxConfig_PushSection(_pstText->zReference);
+
+    /* Gets its string */
+    zString = orxConfig_GetString(orxTEXT_KZ_CONFIG_STRING);
+
+    /* Valid? */
+    if(zString != orxNULL)
+    {
+      /* Skips white space */
+      zString = orxString_SkipWhiteSpaces(zString);
+
+      /* Begins with locale marker? */
+      if(*zString == orxTEXT_KC_LOCALE_MARKER)
+      {
+        /* Updates result */
+        zResult = zString + 1;
+      }
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Select language event */
+    case orxLOCALE_EVENT_SELECT_LANGUAGE:
+    {
+      orxTEXT *pstText;
+
+      /* For all texts */
+      for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
+          pstText != orxNULL;
+          pstText = orxTEXT(orxStructure_GetNext(pstText)))
+      {
+        orxSTRING zLocaleKey;
+
+        /* Gets its corresponding locale key */
+        zLocaleKey = orxText_GetLocaleKey(pstText);
+
+        /* Valid? */
+        if(zLocaleKey != orxNULL)
+        {
+          /* Updates text */
+          orxText_SetString(pstText, orxLocale_GetString(zLocaleKey));
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Deletes all texts
  */
 static orxINLINE void orxText_DeleteAll()
@@ -124,6 +222,8 @@ void orxFASTCALL orxText_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_LOCALE);
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_DISPLAY);
 
@@ -143,14 +243,26 @@ orxSTATUS orxFASTCALL orxText_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstText, sizeof(orxTEXT_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    /* Registers event handler */
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_LOCALE, orxText_EventHandler);
 
-    /* Success? */
-    if(eResult == orxSTATUS_SUCCESS)
+    /* Valid? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Updates flags for screen text creation */
-      sstText.u32Flags = orxTEXT_KU32_STATIC_FLAG_READY;
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+
+      /* Success? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        /* Updates flags for screen text creation */
+        sstText.u32Flags = orxTEXT_KU32_STATIC_FLAG_READY;
+      }
+      else
+      {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxText_EventHandler);
+      }
     }
   }
   else
@@ -267,13 +379,29 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxU32 u32Flags;
+      orxU32    u32Flags;
+      orxSTRING zString, zTrimmedString;
 
       /* Inits flags */
       u32Flags = orxTEXT_KU32_FLAG_NONE;
 
-      /* Stores text */
-      orxText_SetString(pstResult, orxConfig_GetString(orxTEXT_KZ_CONFIG_STRING));
+      /* Gets its string */
+      zString = orxConfig_GetString(orxTEXT_KZ_CONFIG_STRING);
+
+      /* Gets its trimmed version */
+      zTrimmedString = orxString_SkipWhiteSpaces(zString);
+
+      /* Begins with locale marker? */
+      if(*zTrimmedString == orxTEXT_KC_LOCALE_MARKER)
+      {
+        /* Stores its locale value */
+        orxText_SetString(pstResult, orxLocale_GetString(zTrimmedString + 1));
+      }
+      else
+      {
+        /* Stores raw text */
+        orxText_SetString(pstResult, zString);
+      }
 
       /* Stores font */
       orxText_SetFont(pstResult, orxConfig_GetString(orxTEXT_KZ_CONFIG_FONT));
@@ -377,7 +505,7 @@ orxSTATUS orxFASTCALL orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidt
  */
 const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
 {
-  orxSTRING zResult = orxNULL;
+  orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);

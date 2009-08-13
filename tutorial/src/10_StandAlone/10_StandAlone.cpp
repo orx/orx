@@ -121,8 +121,6 @@ private:
 public:
   Logo();
   ~Logo();
-
-  void UpdateLegend();
 };
 
 // C-tor
@@ -144,13 +142,6 @@ Logo::~Logo()
   // Deletes our orxOBJECTs
   orxObject_Delete(m_pstObject);
   orxObject_Delete(m_pstLegend);
-}
-
-// Updates legend
-void Logo::UpdateLegend()
-{
-  // Updates its text according to the current language
-  orxObject_SetTextString(m_pstLegend, orxLocale_GetString("Legend"));
 }
 
 
@@ -238,9 +229,6 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
 
       // Logs info
       orxLOG("Switching to '%s'.", pstPayload->zLanguage);
-
-      // Updates our logo's legend
-      soMyStandAloneGame.m_poLogo->UpdateLegend();
     }
 
     default:

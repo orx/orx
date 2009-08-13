@@ -394,6 +394,9 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
       }
       else
       {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSpawner_EventHandler);
+
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to register link list structure.");
       }
