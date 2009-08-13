@@ -80,7 +80,7 @@ static orxMAIN_STATIC sstMain;
  */
 static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
@@ -93,9 +93,6 @@ static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
     {
       /* Updates status */
       orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
 
       break;
     }

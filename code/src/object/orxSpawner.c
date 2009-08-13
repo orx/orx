@@ -134,7 +134,7 @@ static orxSPAWNER_STATIC sstSpawner;
  */
 static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((_pstEvent->eType == orxEVENT_TYPE_OBJECT) || (_pstEvent->eType == orxEVENT_TYPE_SPAWNER));

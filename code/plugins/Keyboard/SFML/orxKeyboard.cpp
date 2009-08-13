@@ -303,7 +303,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_GetKeyID(sf::Key::Code _eKey
  */
 static orxSTATUS orxFASTCALL orxKeyboard_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Is a key pressed or released? */
   if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed)
@@ -323,9 +323,6 @@ static orxSTATUS orxFASTCALL orxKeyboard_SFML_EventHandler(const orxEVENT *_pstE
 
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, (_pstEvent->eID == sf::Event::KeyPressed) ? orxKEYBOARD_EVENT_KEY_PRESSED : orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stPayload);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
   /* Is a text entered? */
   else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered)
@@ -343,9 +340,6 @@ static orxSTATUS orxFASTCALL orxKeyboard_SFML_EventHandler(const orxEVENT *_pstE
 
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stPayload);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

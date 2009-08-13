@@ -76,7 +76,7 @@ static orxMOUSE_STATIC sstMouse;
  */
 static orxSTATUS orxFASTCALL orxMouse_SDL_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Is a mouse move? */
   if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION)
@@ -94,9 +94,6 @@ static orxSTATUS orxFASTCALL orxMouse_SDL_EventHandler(const orxEVENT *_pstEvent
     /* Stores last mouse position */
     sstMouse.vMouseBackup.fX = orxS2F(pstEvent->motion.xrel);
     sstMouse.vMouseBackup.fY = orxS2F(pstEvent->motion.yrel);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Is a mouse wheel? */
@@ -118,9 +115,6 @@ static orxSTATUS orxFASTCALL orxMouse_SDL_EventHandler(const orxEVENT *_pstEvent
 
     /* Updates wheel move */
     sstMouse.fWheelMove += (pstEvent->button.button == SDL_BUTTON_WHEELDOWN) ? 1 : -1;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

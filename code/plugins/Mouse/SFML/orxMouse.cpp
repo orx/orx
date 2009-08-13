@@ -77,7 +77,7 @@ static orxMOUSE_STATIC sstMouse;
  */
 static orxSTATUS orxFASTCALL orxMouse_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Is a mouse move? */
   if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved)
@@ -95,9 +95,6 @@ static orxSTATUS orxFASTCALL orxMouse_SFML_EventHandler(const orxEVENT *_pstEven
     /* Stores last mouse position */
     sstMouse.vMouseBackup.fX = orxS2F(poEvent->MouseMove.X);
     sstMouse.vMouseBackup.fY = orxS2F(poEvent->MouseMove.Y);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
   /* Is a mouse wheel? */
   else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved)
@@ -130,9 +127,6 @@ static orxSTATUS orxFASTCALL orxMouse_SFML_EventHandler(const orxEVENT *_pstEven
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_MOUSE, orxMOUSE_EVENT_BUTTON_PRESSED, orxNULL, orxNULL, &stPayload);
     }
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
   /* Is a mouse button pressed or released? */
   else if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
@@ -184,9 +178,6 @@ static orxSTATUS orxFASTCALL orxMouse_SFML_EventHandler(const orxEVENT *_pstEven
 
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_MOUSE, (_pstEvent->eID == sf::Event::MouseButtonPressed) ? orxMOUSE_EVENT_BUTTON_PRESSED : orxMOUSE_EVENT_BUTTON_RELEASED, orxNULL, orxNULL, &stPayload);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

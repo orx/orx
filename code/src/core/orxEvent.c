@@ -270,7 +270,7 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
 orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
 {
   orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
@@ -290,10 +290,10 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
         ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
     {
       /* Calls handler */
-      if((*ppfnHandler)(_pstEvent) != orxSTATUS_FAILURE)
+      if((*ppfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
       {
         /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+        eResult = orxSTATUS_FAILURE;
 
         break;
       }
@@ -313,7 +313,7 @@ orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEv
 {
   orxEVENT stEvent;
   orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
@@ -337,10 +337,10 @@ orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEv
         ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
     {
       /* Calls handler */
-      if((*ppfnHandler)(&stEvent) != orxSTATUS_FAILURE)
+      if((*ppfnHandler)(&stEvent) == orxSTATUS_FAILURE)
       {
         /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+        eResult = orxSTATUS_FAILURE;
 
         break;
       }

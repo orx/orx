@@ -74,7 +74,7 @@ static orxJOYSTICK_STATIC sstJoystick;
  */
 static orxSTATUS orxFASTCALL orxJoystick_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Is a button pressed or released? */
   if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed)
@@ -94,9 +94,6 @@ static orxSTATUS orxFASTCALL orxJoystick_SFML_EventHandler(const orxEVENT *_pstE
 
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_JOYSTICK, (_pstEvent->eID == sf::Event::JoyButtonPressed) ? orxJOYSTICK_EVENT_BUTTON_PRESSED : orxJOYSTICK_EVENT_BUTTON_RELEASED, orxNULL, orxNULL, &stPayload);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

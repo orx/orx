@@ -72,7 +72,7 @@ static orxBOOL sbStopByEvent = 0;
  */
 static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
@@ -85,9 +85,6 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
     {
       /* Updates status */
       sbStopByEvent = orxTRUE;
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
 
       break;
     }

@@ -120,7 +120,7 @@ static orxSHADERPOINTER_STATIC sstShaderPointer;
  */
 static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);

@@ -127,7 +127,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
 
     /* Sends start event */
-    if(orxEvent_Send(&stEvent) == orxSTATUS_FAILURE)
+    if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
     {
       /* 2D? */
       if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
@@ -683,7 +683,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
         orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_START, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
 
         /* Sends start event */
-        if(orxEvent_Send(&stEvent) == orxSTATUS_FAILURE)
+        if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
         {
           orxFRAME *pstRenderFrame;
 
@@ -1077,14 +1077,18 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
  */
 static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
-  orxVIEWPORT *pstViewport;
+  orxVIEWPORT  *pstViewport;
+  orxBOOL       bRender;
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Sends render start event */
-  if(orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_START) == orxSTATUS_FAILURE)
+  bRender = (orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_START) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Should render? */
+  if(bRender != orxFALSE)
   {
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
@@ -1102,27 +1106,31 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
 
-  /* Pushes render config section */
-  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
-
-  /* Should display FPS? */
-  if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
+  /* Should render? */
+  if(bRender != orxFALSE)
   {
-    orxDISPLAY_TRANSFORM stTextTransform;
-    orxCHAR             acText[16];
+    /* Pushes render config section */
+    orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
-    /* Clears text transform */
-    orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
+    /* Should display FPS? */
+    if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
+    {
+      orxDISPLAY_TRANSFORM stTextTransform;
+      orxCHAR             acText[16];
 
-    /* Inits it */
-    stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
-    stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
+      /* Clears text transform */
+      orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
-    /* Writes text */
-    orxString_NPrint(acText, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+      /* Inits it */
+      stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
+      stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
 
-    /* Display FPS */
-    orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
+      /* Writes text */
+      orxString_NPrint(acText, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+
+      /* Display FPS */
+      orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
+    }
   }
 
   /* Pops previous section */

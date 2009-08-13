@@ -189,7 +189,7 @@ static orxINLINE sf::Blend::Mode orxDisplay_SFML_GetBlendMode(orxDISPLAY_BLEND_M
  */
 static orxSTATUS orxFASTCALL orxDisplay_SFML_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Is a cursor set position? */
   if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved)
@@ -202,9 +202,6 @@ static orxSTATUS orxFASTCALL orxDisplay_SFML_EventHandler(const orxEVENT *_pstEv
 
     /* Updates cursor position */
     sstDisplay.poRenderWindow->SetCursorPosition(orxF2S(pvPosition->fX), orxF2S(pvPosition->fY));
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
   /* Is a cursor show/hide? */
   else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
@@ -217,9 +214,6 @@ static orxSTATUS orxFASTCALL orxDisplay_SFML_EventHandler(const orxEVENT *_pstEv
 
     /* Updates cursor status */
     sstDisplay.poRenderWindow->ShowMouseCursor((*pbShowCursor != orxFALSE) ? true : false);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

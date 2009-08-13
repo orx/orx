@@ -144,7 +144,7 @@ static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText)
  */
 static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);

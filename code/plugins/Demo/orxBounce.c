@@ -44,7 +44,7 @@ static orxFLOAT     sfShaderFrequency = orx2F(1.0f);
  */
 static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER));
