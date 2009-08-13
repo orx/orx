@@ -240,7 +240,7 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
   }
 
   // Done!
-  return orxSTATUS_FAILURE;
+  return orxSTATUS_SUCCESS;
 }
 
 // Init function
