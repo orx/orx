@@ -69,8 +69,8 @@
  *
  * This stand alone executable also creates a console (as does the default orx executable),
  * but you can have you own console-less program if you wish. In order to achieve that, you only need to provide
- * an arc/argv style parameter list that contains the executable name, otherwise the default loaded config file will be
- * orx.ini instead of 10_StandAlone.ini.
+ * an argc/argv style parameter list that contains the executable name, otherwise the default loaded config file will be
+ * orx.ini instead of being based on our executable name (ie. 10_StandAlone.ini).
  *
  * For visual studio users (windows), it can easily be achieved by writing a WinMain() function instead of main(),
  * and by getting the executable name (or hardcoding it).
@@ -229,6 +229,8 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
 
       // Logs info
       orxLOG("Switching to '%s'.", pstPayload->zLanguage);
+
+      break;
     }
 
     default:
