@@ -30,7 +30,7 @@
 
 /* This is a basic C tutorial showing how to use spawners.
  * As we are *NOT* using the default executable anymore for this tutorial, the tutorial
- * code will be directly in the executable and not in an external library.
+ * code will be directly built into the executable and not into an external library.
  *
  * See previous tutorials for more info about the basic object creation, clock, animation,
  * viewport, sound, FX, physics/collision, differentiel scrolling handling and stand alone creation.
@@ -40,19 +40,19 @@
  * firing bullets.
  *
  * The code is only used for two tasks:
- * - creating 2 main objects (spawner and optional mask) and a viewport
+ * - creating 1 main objects and a viewport
  * - switching from one test to the other by reloading the appropriate config files
  *
  * Beside that, this tutorial is completely data-driven: the different test settings and the input definitions
  * are stored in config along with all the spawning/move/display logic.
  *
  * With this very few amount of lines of code, you can have an infinite number of results: playing with physics,
- * additional/multiply blend, masking, speed/acceleration of objects, ... is all up to you. All you need is changing
- * the config files and you can even test your experience without restarting this tutorial as config files will
- * be reloaded when switching from a test to another.
+ * additive/multiply blend, masking, speed/acceleration of objects, ... is all up to you. All you need is changing
+ * the config files. You can even test your changes without restarting this tutorial: config files will
+ * be entirely reloaded when switching from a test to another.
  *
  * If there are too many particles displayed for your config, just turn down the amount of particles spawned
- * per wave and/or the waves frequency. For that, search for the WaveNumber/WaveDelay properties in the different
+ * per wave and/or the frequency of the waves. To do so, search for the WaveNumber/WaveDelay attributes in the different
  * spawner sections. Have fun! =)
  *
  */
@@ -63,29 +63,29 @@
 
 /** Local storage
  */
-static orxS32 ss32ConfigID = 0;
+static orxS32       ss32ConfigID  = 0;
+static orxVIEWPORT *pstViewport   = orxNULL;
+static orxOBJECT   *pstScene      = orxNULL;
 
 
 /** Loads configuration
  */
 static orxINLINE orxSTATUS LoadConfig()
 {
-  orxOBJECT    *pstObject;
-  orxVIEWPORT  *pstViewport;
-  orxSTATUS     eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* For all objects */
-  while((pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT))))
+  /* Deletes our scene */
+  if(pstScene)
   {
-    /* Deletes it */
-    orxObject_Delete(pstObject);
+    orxObject_Delete(pstScene);
+    pstScene = orxNULL;
   }
 
-  /* For all viewports */
-  while((pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT))))
+  /* Deletes our viewport */
+  if(pstViewport)
   {
-    /* Deletes it */
     orxViewport_Delete(pstViewport);
+    pstViewport = orxNULL;
   }
 
   /* Clears all config data */
@@ -103,7 +103,7 @@ static orxINLINE orxSTATUS LoadConfig()
     /* Gets config file list */
     zFileList = orxConfig_GetListString("ConfigIDList", ss32ConfigID);
 
-    // Valid?
+    /* Valid? */
     if(zFileList != orxSTRING_EMPTY)
     {
       orxS32 i, s32Number;
@@ -116,11 +116,10 @@ static orxINLINE orxSTATUS LoadConfig()
       }
 
       /* Creates viewport */
-      orxViewport_CreateFromConfig("Viewport");
+      pstViewport = orxViewport_CreateFromConfig("Viewport");
 
-      /* Creates both objets */
-      orxObject_CreateFromConfig("Mask");
-      orxObject_CreateFromConfig("ParticleSpawner");
+      /* Creates our scene */
+      pstScene = orxObject_CreateFromConfig("Scene");
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
@@ -150,7 +149,7 @@ orxSTATUS orxFASTCALL Init()
   orxLOG("\n- '%s' will switch to the next config settings"
          "\n- '%s' will switch to the previous config settings"
          "\n* Config files are used with inheritance to provide all the combinations"
-         "\n* All the tests use the same minimalist code (creating 2 objects & 1 viewport)",
+         "\n* All the tests use the same minimalist code (creating 1 object & 1 viewport)",
          zInputNextConfig, zInputPreviousConfig);
 
   /* Loads default configuration */
