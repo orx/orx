@@ -96,33 +96,21 @@ static orxINLINE orxSTATUS LoadConfig()
   orxConfig_SelectSection("Tutorial");
 
   /* Is current ID valid? */
-  if(ss32ConfigID < orxConfig_GetListCounter("ConfigIDList"))
+  if(ss32ConfigID < orxConfig_GetListCounter("ConfigList"))
   {
-    orxSTRING zFileList;
+    orxSTRING zConfigFile;
 
-    /* Gets config file list */
-    zFileList = orxConfig_GetListString("ConfigIDList", ss32ConfigID);
+    /* Gets config file */
+    zConfigFile = orxConfig_GetListString("ConfigList", ss32ConfigID);
 
-    /* Valid? */
-    if(zFileList != orxSTRING_EMPTY)
+    /* Can load it? */
+    if((eResult = orxConfig_Load(zConfigFile)) != orxSTATUS_FAILURE)
     {
-      orxS32 i, s32Number;
-
-      /* For all defined config files */
-      for(i = 0, s32Number = orxConfig_GetListCounter(zFileList); i < s32Number; i++)
-      {
-        /* Loads it */
-        orxConfig_Load(orxConfig_GetListString(zFileList, i));
-      }
-
       /* Creates viewport */
       pstViewport = orxViewport_CreateFromConfig("Viewport");
 
       /* Creates our scene */
       pstScene = orxObject_CreateFromConfig("Scene");
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -166,7 +154,7 @@ orxSTATUS orxFASTCALL Run()
   if(orxInput_IsActive("NextConfig") && orxInput_HasNewStatus("NextConfig"))
   {
     /* Updates config ID */
-    ss32ConfigID = (ss32ConfigID < orxConfig_GetListCounter("ConfigIDList") - 1) ? ss32ConfigID + 1 : 0;
+    ss32ConfigID = (ss32ConfigID < orxConfig_GetListCounter("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
 
     /* Loads it */
     LoadConfig();
@@ -175,7 +163,7 @@ orxSTATUS orxFASTCALL Run()
   else if(orxInput_IsActive("PreviousConfig") && orxInput_HasNewStatus("PreviousConfig"))
   {
     /* Updates config ID */
-    ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCounter("ConfigIDList") - 1;
+    ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCounter("ConfigList") - 1;
 
     /* Loads it */
     LoadConfig();
