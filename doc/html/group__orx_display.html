@@ -175,6 +175,10 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge71ba04631c1ac576300c5b97d083312">orxDisplay_IsVSyncEnabled</a> ()</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g26e2f135b978a2dc39e53a8465940e42">orxDisplay_SetFullScreen</a> (orxBOOL _bFullScreen)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0bbde87afcc4090fd37efd155b5568df">orxDisplay_IsFullScreen</a> ()</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Display plugin module Module that handles display <hr><h2>Define Documentation</h2>
@@ -1351,6 +1355,26 @@ Inits the display module <dl class="return" compact><dt><b>Returns:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g0bbde87afcc4090fd37efd155b5568df"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_IsFullScreen" ref="g0bbde87afcc4090fd37efd155b5568df" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxDisplay_IsFullScreen           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is in full screen mode? <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if full screen, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="ge71ba04631c1ac576300c5b97d083312"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_IsVSyncEnabled" ref="ge71ba04631c1ac576300c5b97d083312" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -1639,6 +1663,32 @@ Sets a bitmap color key (used with non alpha transparency) <dl compact><dt><b>Pa
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_stColor</em>&nbsp;</td><td>Color to use as transparent one </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bEnable</em>&nbsp;</td><td>Enable / disable transparence for this color </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g26e2f135b978a2dc39e53a8465940e42"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetFullScreen" ref="g26e2f135b978a2dc39e53a8465940e42" args="(orxBOOL _bFullScreen)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_SetFullScreen           </td>
+          <td>(</td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bFullScreen</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets full screen mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bFullScreen</em>&nbsp;</td><td>orxTRUE / orxFALSE </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

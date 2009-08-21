@@ -620,6 +620,34 @@ orxBOOL orxFASTCALL orxDisplay_SDL_IsVSyncEnabled()
   return bResult;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxBOOL orxFASTCALL orxDisplay_SDL_IsFullScreen()
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return bResult;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
 {
   orxSTATUS eResult;
@@ -718,14 +746,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
           eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGH);
         }
 
-        /* Full screen? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
-        {
-          /* Toggles full screen */
-          SDL_WM_ToggleFullScreen(sstDisplay.pstScreen);
-        }
         /* Decoration? */
-        else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+        if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
         || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
         {
           /* Logs message */
@@ -889,4 +911,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderVector, DISPLAY, SET_SH
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -40,7 +40,9 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE              0x00000000 /**< No flags */
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY             0x00000001 /**< Ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC             0x00000002 /**< Ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC             0x00000002 /**< VSync flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN        0x00000004 /**< FullScreen flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR       0x00000008 /**< Show cursor flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
@@ -75,7 +77,8 @@ typedef struct __orxDISPLAY_TEXT_t
 typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
-  orxU32            u32ScreenWidth, u32ScreenHeight;
+  orxU32            u32ScreenWidth, u32ScreenHeight, u32ScreenDepth;
+  unsigned long     ulWindowStyle;
   orxBOOL           bDefaultSmooth;
   sf::RenderWindow *poRenderWindow;
   sf::Font         *poDefaultFont;
@@ -212,8 +215,23 @@ static orxSTATUS orxFASTCALL orxDisplay_SFML_EventHandler(const orxEVENT *_pstEv
     /* Gets cursor status */
     pbShowCursor = (orxBOOL *)(_pstEvent->pstPayload);
 
-    /* Updates cursor status */
-    sstDisplay.poRenderWindow->ShowMouseCursor((*pbShowCursor != orxFALSE) ? true : false);
+    /* Show? */
+    if(*pbShowCursor != orxFALSE)
+    {
+      /* Shows cursor */
+      sstDisplay.poRenderWindow->ShowMouseCursor(true);
+
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      /* Hides cursor */
+      sstDisplay.poRenderWindow->ShowMouseCursor(false);
+
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR);
+    }
   }
 
   /* Done! */
@@ -1106,6 +1124,83 @@ extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_IsVSyncEnabled()
   return bResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetFullScreen(orxBOOL _bFullScreen)
+{
+  orxBOOL   bUpdate = orxFALSE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Enables? */
+  if(_bFullScreen != orxFALSE)
+  {
+    /* Wasn't already full screen? */
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
+    {
+      /* Updates window style */
+      sstDisplay.ulWindowStyle |= sf::Style::Fullscreen;
+
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
+      /* Asks for update */
+      bUpdate = orxTRUE;
+    }
+  }
+  else
+  {
+    /* Was full screen? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
+    {
+      /* Updates window style */
+      sstDisplay.ulWindowStyle &= ~sf::Style::Fullscreen;
+
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
+
+      /* Asks for update */
+      bUpdate = orxTRUE;
+    }
+  }
+
+  /* Should update? */
+  if(bUpdate != orxFALSE)
+  {
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Creates new window */
+    sstDisplay.poRenderWindow->Create(sf::VideoMode(sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, sstDisplay.u32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
+
+    /* Enforces mouse cursor status */
+    sstDisplay.poRenderWindow->ShowMouseCursor(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR) ? true : false);
+
+    /* Enforces VSync status */
+    sstDisplay.poRenderWindow->UseVerticalSync(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? true : false);
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_IsFullScreen()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1135,15 +1230,14 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
           /* Valid? */
           if((sstDisplay.pstTextBank != orxNULL) && (sstDisplay.pstInstantTextBank != orxNULL))
           {
-            orxU32        u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
+            orxU32        u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
             orxCLOCK     *pstClock;
-            unsigned long ulStyle;
 
             /* Gets resolution from config */
             orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-            u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
-            u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
-            u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
+            u32ConfigWidth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : orxDisplay::su32ScreenWidth;
+            u32ConfigHeight = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : orxDisplay::su32ScreenHeight;
+            u32ConfigDepth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : orxDisplay::su32ScreenDepth;
 
             /* Gets default smoothing */
             sstDisplay.bDefaultSmooth = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
@@ -1152,31 +1246,46 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
             if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
             {
               /* Updates flags */
-              ulStyle = sf::Style::Fullscreen;
+              sstDisplay.ulWindowStyle  = sf::Style::Fullscreen;
+              u32Flags                 |= orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN;
             }
             /* Decoration? */
             else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
             || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
             {
               /* Updates flags */
-              ulStyle = sf::Style::Close | sf::Style::Titlebar;
+              sstDisplay.ulWindowStyle = sf::Style::Close | sf::Style::Titlebar;
             }
             else
             {
               /* Updates flags */
-              ulStyle = sf::Style::None;
+              sstDisplay.ulWindowStyle = sf::Style::None;
             }
 
             /* Not valid? */
-            if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle)) == orxNULL)
+            if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle)) == orxNULL)
             {
               /* Inits default rendering window */
-              sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(orxDisplay::su32ScreenWidth, orxDisplay::su32ScreenHeight, orxDisplay::su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle);
+              sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(orxDisplay::su32ScreenWidth, orxDisplay::su32ScreenHeight, orxDisplay::su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
+
+              /* Stores depth */
+              sstDisplay.u32ScreenDepth = orxDisplay::su32ScreenDepth;
+            }
+            else
+            {
+              /* Stores depth */
+              sstDisplay.u32ScreenDepth = u32ConfigDepth;
             }
 
             /* Clears rendering window */
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            /* Shows cursor */
+            sstDisplay.poRenderWindow->ShowMouseCursor(true);
+
+            /* Updates status */
+            orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
             /* Stores values */
             sstDisplay.u32ScreenWidth   = sstDisplay.poRenderWindow->GetWidth();
@@ -1199,7 +1308,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
 #endif /* __orxWINDOWS__ */
 
             /* Updates status */
-            orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
+            orxFLAG_SET(sstDisplay.u32Flags, u32Flags, orxDISPLAY_KU32_STATIC_MASK_ALL);
 
             /* Gets clock */
             pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
@@ -1553,4 +1662,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderVector, DISPLAY, SET_S
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_END();

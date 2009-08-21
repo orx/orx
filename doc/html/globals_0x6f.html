@@ -806,6 +806,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#g1550dfa30abe77939926ec322902dc92">orxDisplay.h</a>
 <li>orxDisplay_Init()
 : <a class="el" href="group__orx_display.html#geaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay.h</a>
+<li>orxDisplay_IsFullScreen()
+: <a class="el" href="group__orx_display.html#g0bbde87afcc4090fd37efd155b5568df">orxDisplay.h</a>
 <li>orxDisplay_IsVSyncEnabled()
 : <a class="el" href="group__orx_display.html#ge71ba04631c1ac576300c5b97d083312">orxDisplay.h</a>
 <li>orxDISPLAY_KZ_CONFIG_DECORATION
@@ -842,6 +844,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#gc46c653446e1a50b19715ffb1a181cde">orxDisplay.h</a>
 <li>orxDisplay_SetBitmapColorKey()
 : <a class="el" href="group__orx_display.html#g18aa50eae6667cacdfc804e0643bfa47">orxDisplay.h</a>
+<li>orxDisplay_SetFullScreen()
+: <a class="el" href="group__orx_display.html#g26e2f135b978a2dc39e53a8465940e42">orxDisplay.h</a>
 <li>orxDisplay_SetShaderBitmap()
 : <a class="el" href="group__orx_display.html#g4db0337264656df33302f70d0bef6c7f">orxDisplay.h</a>
 <li>orxDisplay_SetShaderFloat()
@@ -2419,6 +2423,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb70ad5e71e11506a4c93e12b5af286fcd8">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_INIT
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79deb266a63c47237ca614ca8908c45e9">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_FULL_SCREEN
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79fa24ad95450f6fddd8cd9466d9eb75c">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb792bed8869928b756ca47acc76f3489ef">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_LOAD_BITMAP
@@ -2439,6 +2445,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7b22f7dfca21b165612ce5baa68e10a1a">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_COLOR_KEY
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb75d886cbe14f03e0da1872b0b3d697b08">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_FULL_SCREEN
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb70c267a57b705e543e31fd2defa316876">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7618d76e814a5b5e7aa3bbb3d33b63855">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT
@@ -2917,8 +2925,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSound_Stop()
 : <a class="el" href="group__orx_sound.html#g0390001e26b32b18253b9bcd3ac15e49">orxSound.h</a>
 <li>orxSOUNDPOINTER
-: <a class="el" href="group__orx_structure.html#gc20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
-, <a class="el" href="group__orx_sound_pointer.html#g9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+: <a class="el" href="group__orx_sound_pointer.html#g9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+, <a class="el" href="group__orx_structure.html#gc20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
 <li>orxSoundPointer_AddSound()
 : <a class="el" href="group__orx_sound_pointer.html#g0188b5336738367bfb210e8907bdfcbb">orxSoundPointer.h</a>
 <li>orxSoundPointer_AddSoundFromConfig()
@@ -3336,8 +3344,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSystem_Setup()
 : <a class="el" href="group__orx_system.html#g70faf0fe659b66de0cd0249a14b462c6">orxSystem.h</a>
 <li>orxTEXT
-: <a class="el" href="group__orx_structure.html#g796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
-, <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
+: <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
+, <a class="el" href="group__orx_structure.html#g796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
 <li>orxText_Create()
 : <a class="el" href="group__orx_text.html#g7db9913d83299e4951a308f10a129cd3">orxText.h</a>
 <li>orxText_CreateFromConfig()

@@ -107,6 +107,9 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
 
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetFullScreen, orxSTATUS, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsFullScreen, orxBOOL, void);
+
 
 /* *** Core function info array *** */
 
@@ -159,6 +162,9 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_APPLICATION_INPUT, orxDisplay_Get
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, ENABLE_VSYNC, orxDisplay_EnableVSync)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VSYNC_ENABLED, orxDisplay_IsVSyncEnabled)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_FULL_SCREEN, orxDisplay_SetFullScreen)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_FULL_SCREEN, orxDisplay_IsFullScreen)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(DISPLAY)
 
@@ -338,4 +344,14 @@ orxSTATUS orxFASTCALL orxDisplay_EnableVSync(orxBOOL _bEnable)
 orxBOOL orxFASTCALL orxDisplay_IsVSyncEnabled()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsVSyncEnabled)();
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SetFullScreen(orxBOOL _bFullScreen)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetFullScreen)(_bFullScreen);
+}
+
+orxBOOL orxFASTCALL orxDisplay_IsFullScreen()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsFullScreen)();
 }
