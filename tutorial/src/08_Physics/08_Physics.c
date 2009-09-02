@@ -176,6 +176,9 @@ orxSTATUS Init()
   orxConfig_Load("../08_Physics.ini");
   orxConfig_SelectSection("Tutorial");
 
+  /* Reloads inputs */
+  orxInput_Load(orxSTRING_EMPTY);
+
   /* Gets input binding names */
   orxInput_GetBinding("RotateLeft", 0, &eType, &eID);
   zInputRotateLeft = orxInput_GetBindingName(eType, eID);

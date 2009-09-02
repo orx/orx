@@ -244,6 +244,9 @@ orxSTATUS Init()
   /* Loads config file and selects main section */
   orxConfig_Load("../05_Viewport.ini");
 
+  /* Reloads inputs */
+  orxInput_Load(orxSTRING_EMPTY);
+
   /* Gets input binding names */
   orxInput_GetBinding("CameraLeft", 0, &eType, &eID);
   zInputCameraLeft = orxInput_GetBindingName(eType, eID);

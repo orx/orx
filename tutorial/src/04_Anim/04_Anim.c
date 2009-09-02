@@ -172,6 +172,9 @@ orxSTATUS Init()
   /* Loads config file and selects main section */
   orxConfig_Load("../04_Anim.ini");
 
+  /* Reloads inputs */
+  orxInput_Load(orxSTRING_EMPTY);
+
   /* Gets input binding names */
   orxInput_GetBinding("WalkLeft", 0, &eType, &eID);
   zInputWalkLeft  = orxInput_GetBindingName(eType, eID);

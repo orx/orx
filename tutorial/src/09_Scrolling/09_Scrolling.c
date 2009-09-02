@@ -164,6 +164,9 @@ orxSTATUS Init()
   orxConfig_Load("../09_Scrolling.ini");
   orxConfig_SelectSection("Tutorial");
 
+  /* Reloads inputs */
+  orxInput_Load(orxSTRING_EMPTY);
+
   /* Gets input binding names */
   orxInput_GetBinding("CameraLeft", 0, &eType, &eID);
   zInputCameraLeft = orxInput_GetBindingName(eType, eID);

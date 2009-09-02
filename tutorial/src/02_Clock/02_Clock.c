@@ -143,6 +143,9 @@ orxSTATUS Init()
   /* Loads config file and selects main section */
   orxConfig_Load("../02_Clock.ini");
 
+  /* Reloads inputs */
+  orxInput_Load(orxSTRING_EMPTY);
+
   /* Gets input binding names */
   orxInput_GetBinding("Log", 0, &eType, &eID);
   zInputLog     = orxInput_GetBindingName(eType, eID);
