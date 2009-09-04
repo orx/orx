@@ -330,14 +330,26 @@ int main(int argc, char **argv)
 // Here's an example for a console-less program under windows with visual studio
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-  // Boo! Hardcoded executable name. Command line parameters won't be passed to orx! ^^
-  orxSTRING az[] =
+  static const orxS32 szMaxArgs = 256;
+
+  int   argc;
+  char *argv[szMaxArgs];
+  char *pcToken, *pcNextToken;
+  LPSTR lpFullCmdLine;
+
+  // Gets full command line
+  lpFullCmdLine = GetCommandLineA();
+
+  // Process command line
+  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, " \"", &pcNextToken);
+      pcToken && (argc < szMaxArgs);
+      pcToken = strtok_s(NULL, " = ", &pcNextToken))
   {
-    "10_StandAlone.exe"
-  };
+    argv[argc++] = pcToken;
+  }
 
   // Inits and executes orx
-  orx_Execute(1, az, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
+  orx_Execute(argc, argv, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
 
   // Done!
   return EXIT_SUCCESS;

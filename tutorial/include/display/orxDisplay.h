@@ -508,6 +508,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_GetApplicationInput();
 
+
 /** Enables / disables vertical synchro
  * @param[in]   _bEnable                              Enable / disable
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -518,6 +519,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_EnableVSync(orx
  * @return orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsVSyncEnabled();
+
+
+/** Sets full screen mode
+ * @param[in]   _bFullScreen                          orxTRUE / orxFALSE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetFullScreen(orxBOOL _bFullScreen);
+
+/** Is in full screen mode?
+ * @return orxTRUE if full screen, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsFullScreen();
 
 #endif /* _orxDISPLAY_H_ */
 
