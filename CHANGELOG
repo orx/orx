@@ -1,7 +1,21 @@
 
-Orx - Portable Game Engine  (Version 1.0rc1)
+Orx - Portable Game Engine  (Version 1.0 final)
 
 =============================================================================
+
+orx 1.0 final
+-----
+* Added fully featured localization module (orxLocale)
+* orxTEXT that relies on the orxLocale module will now be automatically updated when changing language at runtime
+* Updated to screenshot module to work with config reloads
+* Optimized some access to the config module
+* Added acceleration paramter to FX curves (to controle its frequency over time)
+* Fixed flipped & tiled objects rendering
+* Replaced all external uses of orxRGBA by orxCOLOR
+* Events callback now expects orxSTATUS_SUCCESS as return so as to continue calling other handlers
+* Added orxDisplay_SetFullScreen() and orxDisplay_IsFullScreen() functions + SFML implementation
+* Improved some tutorials + added localization example in tutorial #10
+* Misc minor updated in code & comments
 
 orx 1.0rc1
 -----
