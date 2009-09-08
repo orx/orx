@@ -341,9 +341,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   lpFullCmdLine = GetCommandLineA();
 
   // Process command line
-  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, " \"", &pcNextToken);
+  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, "\"", &pcNextToken);
       pcToken && (argc < szMaxArgs);
-      pcToken = strtok_s(NULL, " = ", &pcNextToken))
+      pcToken = strtok_s(NULL, " ", &pcNextToken))
   {
     argv[argc++] = pcToken;
   }
