@@ -61,6 +61,7 @@
 #define orxCONFIG_VALUE_KU16_FLAG_LIST            0x0001      /**< List flag */
 #define orxCONFIG_VALUE_KU16_FLAG_RANDOM          0x0002      /**< Random flag */
 #define orxCONFIG_VALUE_KU16_FLAG_INHERITANCE     0x0004      /**< Inheritance flag */
+#define orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE      0x0008      /**< Block mode flag */
 
 #define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /**< All mask */
 
@@ -637,8 +638,8 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
         }
         else
         {
-          /* No list nor random allowed */
-          pstEntry->stValue.u16Flags      = orxCONFIG_VALUE_KU16_FLAG_NONE;
+          /* Block mode, no list nor random allowed */
+          pstEntry->stValue.u16Flags      = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
           pstEntry->stValue.u8ListCounter = 1;
         }
 
@@ -697,8 +698,12 @@ static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection, orxC
   /* Checks */
   orxASSERT(_pstEntry != orxNULL);
 
-  /* Restore literal value */
-  orxConfig_RestoreLiteralValue(&(_pstEntry->stValue));
+  /* Not in block mode? */
+  if(!orxFLAG_TEST(_pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+  {
+    /* Restore literal value */
+    orxConfig_RestoreLiteralValue(&(_pstEntry->stValue));
+  }
 
   /* Deletes key & value */
   orxString_Delete(_pstEntry->zKey);
@@ -2224,8 +2229,12 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             /* Already defined? */
             if((pstEntry = orxConfig_GetEntry(u32KeyID)) != orxNULL)
             {
-              /* Restores literal value */
-              orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+              /* Not in block mode? */
+              if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+              {
+                /* Restores literal value */
+                orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+              }
 
               /* Logs */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, zTrimmedName);
@@ -2710,14 +2719,23 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
             /* No callback or should save it? */
             if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey, _bUseEncryption) != orxFALSE))
             {
-              /* Restores string */
-              orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+              /* Not in block mode? */
+              if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+              {
+                /* Restores string */
+                orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
-              /* Writes it */
-              u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s %c %s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
+                /* Writes it */
+                u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s %c %s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
 
-              /* Computes working value */
-              orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+                /* Computes working value */
+                orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+              }
+              else
+              {
+                /* Writes it */
+                u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s %c %c%s%c%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK, pstEntry->stValue.zValue, orxCONFIG_KC_BLOCK, orxSTRING_EOL);
+              }
 
               /* Encrypt? */
               if(_bUseEncryption != orxFALSE)
