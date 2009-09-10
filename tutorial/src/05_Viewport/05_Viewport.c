@@ -93,23 +93,6 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   orxCAMERA *pstCamera;
   orxFLOAT  fWidth, fHeight, fX, fY;
 
-  /* *** SOLDIER MOVE UPDATE *** */
-
-  /* Has mouse world position? */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos) != orxNULL)
-  {
-    orxVECTOR vSoldierPos;
-
-    /* Gets object current position */
-    orxObject_GetWorldPosition(pstSoldier, &vSoldierPos);
-
-    /* Keeps Z value */
-    vPos.fZ = vSoldierPos.fZ;
-
-    /* Moves the soldier under the cursor */
-    orxObject_SetPosition(pstSoldier, &vPos);
-  }
-
   /* *** CAMERA CONTROLS *** */
 
   /* Gets first viewport camera */
@@ -226,6 +209,23 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 
   /* Updates viewport position */
   orxViewport_SetPosition(pstViewport, fX, fY);
+
+  /* *** SOLDIER MOVE UPDATE *** */
+
+  /* Has mouse world position? */
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos) != orxNULL)
+  {
+    orxVECTOR vSoldierPos;
+
+    /* Gets object current position */
+    orxObject_GetWorldPosition(pstSoldier, &vSoldierPos);
+
+    /* Keeps Z value */
+    vPos.fZ = vSoldierPos.fZ;
+
+    /* Moves the soldier under the cursor */
+    orxObject_SetPosition(pstSoldier, &vPos);
+  }
 }
 
 
@@ -317,7 +317,7 @@ orxSTATUS Init()
   pstSoldier = orxObject_CreateFromConfig("Soldier");
 
   /* Creates a 100 Hz clock */
-  pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
+  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
