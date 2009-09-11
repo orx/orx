@@ -270,13 +270,13 @@ static orxSTATUS orxFASTCALL Init()
   // Defaults to encryption mode
   orxFLAG_SET(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_USE_ENCRYPTION, orxCRYPT_KU32_STATIC_MASK_ALL);
 
-  // Asks for command line input file parameter
+  // Asks for command line key parameter
   stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-  stParams.zShortName = "f";
-  stParams.zLongName  = "filelist";
-  stParams.zShortDesc = "Input file list";
-  stParams.zLongDesc  = "List of root config files to decode/encode (they'll all be merged into one single file)";
-  stParams.pfnParser  = ProcessInputParams;
+  stParams.zShortName = "k";
+  stParams.zLongName  = "key";
+  stParams.zShortDesc = "Key for decoding/encoding";
+  stParams.zLongDesc  = "Key used for decoding/encoding provided config files";
+  stParams.pfnParser  = ProcessKeyParams;
 
   // Registers params
   eResult = orxParam_Register(&stParams);
@@ -284,13 +284,13 @@ static orxSTATUS orxFASTCALL Init()
   // Success?
   if(eResult != orxSTATUS_FAILURE)
   {
-    // Asks for command line key parameter
+    // Asks for command line input file parameter
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-    stParams.zShortName = "k";
-    stParams.zLongName  = "key";
-    stParams.zShortDesc = "Key for decoding/encoding";
-    stParams.zLongDesc  = "Key used for decoding/encoding provided config files";
-    stParams.pfnParser  = ProcessKeyParams;
+    stParams.zShortName = "f";
+    stParams.zLongName  = "filelist";
+    stParams.zShortDesc = "Input file list";
+    stParams.zLongDesc  = "List of root config files to decode/encode (they'll all be merged into one single file)";
+    stParams.pfnParser  = ProcessInputParams;
 
     // Registers params
     eResult = orxParam_Register(&stParams);
