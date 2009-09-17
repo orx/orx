@@ -985,7 +985,10 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
 
     /* Gets gravity & allow sleep from config */
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
-    orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity);
+    if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)
+    {
+        orxVector_Copy(&vGravity, &orxVECTOR_0);
+    }
     bAllowSleep = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) : orxTRUE;
 
     /* Gets dimension ratio */
