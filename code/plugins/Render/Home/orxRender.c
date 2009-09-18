@@ -936,33 +936,11 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   vRenderPos.fX  *= fObjectScaleX;
                   vRenderPos.fY  *= fObjectScaleY;
 
-                  /* Uses differential scrolling? */
-                  if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
+                  /* Uses differential scrolling or depth scaling? */
+                  if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
+                  || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
                   {
-                    register orxFLOAT fScroll;
-
-                    /* Gets scroll coefficient */
-                    fScroll = (stFrustum.vBR.fZ - stFrustum.vTL.fZ) / (vObjectPos.fZ - stFrustum.vTL.fZ);
-
-                    /* X-axis scroll? */
-                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
-                    {
-                      /* Updates render position */
-                      vRenderPos.fX *= fScroll;
-                    }
-
-                    /* Y-axis scroll? */
-                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
-                    {
-                      /* Updates render position */
-                      vRenderPos.fY *= fScroll;
-                    }
-                  }
-
-                  /* Uses depth scaling? */
-                  if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
-                  {
-                    orxFLOAT fObjectRelativeDepth, fCameraDepth, fDepthScale;
+                    orxFLOAT fObjectRelativeDepth, fCameraDepth, fDepthCoef;
 
                     /* Gets objects relative depth */
                     fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
@@ -974,18 +952,36 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                     if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
                     {
                       /* Gets depth scale */
-                      fDepthScale = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
+                      fDepthCoef = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
                     }
                     /* Far space */
                     else
                     {
                       /* Gets depth scale */
-                      fDepthScale = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
+                      fDepthCoef = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
                     }
 
-                    /* Updates object scales */
-                    vObjectScale.fX *= fDepthScale;
-                    vObjectScale.fY *= fDepthScale;
+                    /* X-axis scroll? */
+                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
+                    {
+                      /* Updates render position */
+                      vRenderPos.fX *= fDepthCoef;
+                    }
+
+                    /* Y-axis scroll? */
+                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
+                    {
+                      /* Updates render position */
+                      vRenderPos.fY *= fDepthCoef;
+                    }
+
+                    /* Depth scale? */
+                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
+                    {
+                      /* Updates object scales */
+                      vObjectScale.fX *= fDepthCoef;
+                      vObjectScale.fY *= fDepthCoef;
+                    }
                   }
 
                   /* Has camera rotation? */
