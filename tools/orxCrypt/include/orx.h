@@ -103,21 +103,21 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 */
 static void orxFASTCALL orx_MainSetup()
 {
-    /* Adds module dependencies */
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_INPUT);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILESYSTEM);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
-    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_INPUT);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILESYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
 
-    orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
+  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
-    return;
+  return;
 }
 
 /** Orx main execution function
@@ -149,10 +149,10 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxModule_SetupAll();
 
   /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(_u32NbParams, _azParams) == orxSTATUS_SUCCESS)
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
     /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
       orxSTATUS eClockStatus, eMainStatus;
       orxBOOL   bStop;
