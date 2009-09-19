@@ -760,7 +760,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 orxOBJECT      *pstObject;
                 orxRENDER_NODE *pstRenderNode;
                 orxVECTOR       vCameraCenter, vCameraPosition;
-                orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraBoundingRadius;
+                orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraBoundingRadius;
 
                 /* Gets camera zoom */
                 fZoom = orxCamera_GetZoom(pstCamera);
@@ -771,6 +771,9 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 
                 /* Gets camera position */
                 orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+                /* Gets camera depth */
+                fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
 
                 /* Gets camera square bounding radius */
                 fCameraBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight)) / fZoom;
@@ -837,12 +840,60 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           vSize.fX *= vObjectScale.fX;
                           vSize.fY *= vObjectScale.fY;
 
-                          /* Gets object square bounding radius */
-                          fObjectBoundingRadius = orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
-
-                          /* Gets 2D distance vector */
+                          /* Gets real 2D distance vector */
                           orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
                           vDist.fZ = orxFLOAT_0;
+
+                          /* Uses differential scrolling or depth scaling? */
+                          if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
+                          || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
+                          {
+                            orxFLOAT fObjectRelativeDepth, fDepthCoef, fRecDepthCoef;
+
+                            /* Gets objects relative depth */
+                            fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
+
+                            /* Near space? */
+                            if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
+                            {
+                              /* Gets depth scale coef */
+                              fDepthCoef = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
+                            }
+                            /* Far space */
+                            else
+                            {
+                              /* Gets depth scale coef */
+                              fDepthCoef = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
+                            }
+
+                            /* Gets reciprocal depth coef */
+                            fRecDepthCoef = orxFLOAT_1 / fDepthCoef;
+
+                            /* X-axis scroll? */
+                            if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
+                            {
+                              /* Updates base distance vector */
+                              vDist.fX *= fDepthCoef;
+                            }
+
+                            /* Y-axis scroll? */
+                            if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
+                            {
+                              /* Updates base distance vector */
+                              vDist.fY *= fDepthCoef;
+                            }
+
+                            /* Depth scale? */
+                            if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
+                            {
+                              /* Updates size */
+                              vSize.fX *= fDepthCoef;
+                              vSize.fY *= fDepthCoef;
+                            }
+                          }
+
+                          /* Gets object square bounding radius */
+                          fObjectBoundingRadius = orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
 
                           /* Gets 2D square distance to camera */
                           fSqrDist = orxVector_GetSquareSize(&vDist);
@@ -946,7 +997,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                     fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
 
                     /* Gets camera depth */
-                    fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
+                    fCameraDepth = stFrustum.vBR.fZ - stFrustum.vTL.fZ;
 
                     /* Near space? */
                     if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
