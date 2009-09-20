@@ -668,7 +668,7 @@ orxFRAME *orxFASTCALL orxFrame_Create(orxU32 _u32Flags)
   orxASSERT((_u32Flags & orxFRAME_KU32_MASK_USER_ALL) == _u32Flags);
 
   /* Creates frame */
-  pstFrame = (orxFRAME *)orxStructure_Create(orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxFRAME(orxStructure_Create(orxSTRUCTURE_ID_FRAME));
 
   /* Valid? */
   if(pstFrame != orxNULL)

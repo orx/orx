@@ -58,6 +58,7 @@ typedef struct __orxRENDER_RENDER_NODE_t
   orxLINKLIST_NODE  stNode;                       /**< Linklist node : 12 */
   orxOBJECT        *pstObject;                    /**< Object pointer : 16 */
   orxVECTOR         vPosition;                    /**< Object position : 32 */
+  orxFLOAT          fDepthCoef;                   /**< Depth coef : 36 */
 
 } orxRENDER_NODE;
 
@@ -827,7 +828,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                         /* Is object in Z frustum? */
                         if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                         {
-                          orxFLOAT  fObjectBoundingRadius, fSqrDist;
+                          orxFLOAT  fObjectBoundingRadius, fSqrDist, fDepthCoef;
                           orxVECTOR vSize, vObjectScale, vDist;
 
                           /* Gets its size */
@@ -848,7 +849,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
                           || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
                           {
-                            orxFLOAT fObjectRelativeDepth, fDepthCoef, fRecDepthCoef;
+                            orxFLOAT fObjectRelativeDepth, fRecDepthCoef;
 
                             /* Gets objects relative depth */
                             fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
@@ -891,6 +892,11 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                               vSize.fY *= fDepthCoef;
                             }
                           }
+                          else
+                          {
+                            /* Clears depth coef */
+                            fDepthCoef = orxFLOAT_1;
+                          }
 
                           /* Gets object square bounding radius */
                           fObjectBoundingRadius = orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
@@ -914,6 +920,9 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 
                             /* Stores its position */
                             orxVector_Copy(&(pstRenderNode->vPosition), &vObjectPos);
+
+                            /* Stores its depth coef */
+                            pstRenderNode->fDepthCoef = fDepthCoef;
 
                             /* Empty list? */
                             if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
@@ -991,47 +1000,26 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
                   || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
                   {
-                    orxFLOAT fObjectRelativeDepth, fCameraDepth, fDepthCoef;
-
-                    /* Gets objects relative depth */
-                    fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
-
-                    /* Gets camera depth */
-                    fCameraDepth = stFrustum.vBR.fZ - stFrustum.vTL.fZ;
-
-                    /* Near space? */
-                    if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
-                    {
-                      /* Gets depth scale */
-                      fDepthCoef = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
-                    }
-                    /* Far space */
-                    else
-                    {
-                      /* Gets depth scale */
-                      fDepthCoef = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
-                    }
-
                     /* X-axis scroll? */
                     if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
                     {
                       /* Updates render position */
-                      vRenderPos.fX *= fDepthCoef;
+                      vRenderPos.fX *= pstRenderNode->fDepthCoef;
                     }
 
                     /* Y-axis scroll? */
                     if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
                     {
                       /* Updates render position */
-                      vRenderPos.fY *= fDepthCoef;
+                      vRenderPos.fY *= pstRenderNode->fDepthCoef;
                     }
 
                     /* Depth scale? */
                     if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
                     {
                       /* Updates object scales */
-                      vObjectScale.fX *= fDepthCoef;
-                      vObjectScale.fY *= fDepthCoef;
+                      vObjectScale.fX *= pstRenderNode->fDepthCoef;
+                      vObjectScale.fY *= pstRenderNode->fDepthCoef;
                     }
                   }
 
