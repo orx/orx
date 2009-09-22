@@ -2725,7 +2725,8 @@ orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
   orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
 
   /* Restores default color */
-  orxColor_SetRGBA(&(_pstObject->stColor), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
+  _pstObject->stColor.fAlpha = orxFLOAT_1;
+  orxVector_Copy(&(_pstObject->stColor.vRGB), &orxVECTOR_WHITE);
 
   /* Done! */
   return eResult;
@@ -2775,9 +2776,6 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Object does not have color.");
-
     /* Clears result */
     pstResult = orxNULL;
   }

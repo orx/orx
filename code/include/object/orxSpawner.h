@@ -48,6 +48,20 @@
 #include "object/orxFrame.h"
 
 
+/** Spawner flags
+ */
+#define orxSPAWNER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
+
+#define orxSPAWNER_KU32_FLAG_AUTO_DELETE          0x00000001  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x00000002  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_USE_ALPHA            0x00000004  /**< Use alpha flag */
+#define orxSPAWNER_KU32_FLAG_USE_COLOR            0x00000008  /**< Use color flag */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000010  /**< Use relative speed flag */
+#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000020  /**< Use self as parent flag */
+
+#define orxSPAWNER_KU32_MASK_USER_ALL             0x000000FF  /**< All mask */
+
+
 /** Event enum
  */
 typedef enum __orxSPAWNER_EVENT_t
@@ -174,7 +188,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWaveDelay(const orxSPA
 
 /** Sets spawner object speed
  * @param[in]   _pstSpawner     Concerned spawner
- * @param[in]   _pvObjectSpeed  Speed to apply to every spawned object
+ * @param[in]   _pvObjectSpeed  Speed to apply to every spawned object / orxNULL to not apply any speed
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvObjectSpeed);
@@ -182,7 +196,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetObjectSpeed(orxSPAWNER
 /** Gets spawner object speed
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _pvObjectSpeed  Speed applied to every spawned object
- * @return      Speed applied to every spawned object
+ * @return      Speed applied to every spawned object / orxNULL if none is applied
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetObjectSpeed(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvObjectSpeed);
 

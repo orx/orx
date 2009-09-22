@@ -322,9 +322,6 @@ orxSTATUS Init()
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
-  /* Deactivates vertical sync */
-  orxDisplay_EnableVSync(orxFALSE);
-
   /* Done! */
   return orxSTATUS_SUCCESS;
 }

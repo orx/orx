@@ -19,6 +19,23 @@
 <div class="contents">
 <h1>OrxSpawner</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Defines</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g7539c41c2c9e9b50e49e9198f65ddaac">orxSPAWNER_KU32_FLAG_NONE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ge85d9762c0af0efefd9371c8bf81f6af">orxSPAWNER_KU32_FLAG_AUTO_DELETE</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g9787936032dc7d434c0011c995c6873b">orxSPAWNER_KU32_FLAG_AUTO_RESET</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gacc4ba128377d1617c203696cf724332">orxSPAWNER_KU32_FLAG_USE_ALPHA</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g1a4e8d2ca6a5107c1f0b0aed92d790fc">orxSPAWNER_KU32_FLAG_USE_COLOR</a>&nbsp;&nbsp;&nbsp;0x00000008</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g4e4f5989c0174b711f89f1b154aff283">orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED</a>&nbsp;&nbsp;&nbsp;0x00000010</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g9dac3f048e3fd9117d296f24f281b88b">orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT</a>&nbsp;&nbsp;&nbsp;0x00000020</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g26db6b62deb1e9d00aa7033ce157c4aa">orxSPAWNER_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x000000FF</td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxSPAWNER_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a></td></tr>
 
@@ -108,7 +125,128 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Spawner module Allows to spawn orxSPAWNERS Spawners derived from structures <hr><h2>Typedef Documentation</h2>
+Spawner module Allows to spawn orxSPAWNERS Spawners derived from structures <hr><h2>Define Documentation</h2>
+<a class="anchor" name="ge85d9762c0af0efefd9371c8bf81f6af"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_AUTO_DELETE" ref="ge85d9762c0af0efefd9371c8bf81f6af" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_AUTO_DELETE&nbsp;&nbsp;&nbsp;0x00000001          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Auto delete flag 
+</div>
+</div><p>
+<a class="anchor" name="g9787936032dc7d434c0011c995c6873b"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_AUTO_RESET" ref="g9787936032dc7d434c0011c995c6873b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_AUTO_RESET&nbsp;&nbsp;&nbsp;0x00000002          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Auto delete flag 
+</div>
+</div><p>
+<a class="anchor" name="g7539c41c2c9e9b50e49e9198f65ddaac"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_NONE" ref="g7539c41c2c9e9b50e49e9198f65ddaac" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_NONE&nbsp;&nbsp;&nbsp;0x00000000          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Spawner flags No flags 
+</div>
+</div><p>
+<a class="anchor" name="gacc4ba128377d1617c203696cf724332"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_USE_ALPHA" ref="gacc4ba128377d1617c203696cf724332" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_USE_ALPHA&nbsp;&nbsp;&nbsp;0x00000004          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Use alpha flag 
+</div>
+</div><p>
+<a class="anchor" name="g1a4e8d2ca6a5107c1f0b0aed92d790fc"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_USE_COLOR" ref="g1a4e8d2ca6a5107c1f0b0aed92d790fc" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_USE_COLOR&nbsp;&nbsp;&nbsp;0x00000008          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Use color flag 
+</div>
+</div><p>
+<a class="anchor" name="g4e4f5989c0174b711f89f1b154aff283"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED" ref="g4e4f5989c0174b711f89f1b154aff283" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED&nbsp;&nbsp;&nbsp;0x00000010          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Use relative speed flag 
+</div>
+</div><p>
+<a class="anchor" name="g9dac3f048e3fd9117d296f24f281b88b"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT" ref="g9dac3f048e3fd9117d296f24f281b88b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT&nbsp;&nbsp;&nbsp;0x00000020          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Use self as parent flag 
+</div>
+</div><p>
+<a class="anchor" name="g26db6b62deb1e9d00aa7033ce157c4aa"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_MASK_USER_ALL" ref="g26db6b62deb1e9d00aa7033ce157c4aa" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_MASK_USER_ALL&nbsp;&nbsp;&nbsp;0x000000FF          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+All mask 
+</div>
+</div><p>
+<hr><h2>Typedef Documentation</h2>
 <a class="anchor" name="g92079497160c92dff118837b22c0ea31"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER" ref="g92079497160c92dff118837b22c0ea31" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -396,7 +534,7 @@ Gets spawner object speed <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvObjectSpeed</em>&nbsp;</td><td>Speed applied to every spawned object </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Speed applied to every spawned object </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Speed applied to every spawned object / orxNULL if none is applied </dd></dl>
 
 </div>
 </div><p>
@@ -836,7 +974,7 @@ Sets spawner active object limit <dl compact><dt><b>Parameters:</b></dt><dd>
 Sets spawner object speed <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvObjectSpeed</em>&nbsp;</td><td>Speed to apply to every spawned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvObjectSpeed</em>&nbsp;</td><td>Speed to apply to every spawned object / orxNULL to not apply any speed </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

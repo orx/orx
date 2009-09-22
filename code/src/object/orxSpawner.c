@@ -48,19 +48,11 @@
 
 /** Flags
  */
-#define orxSPAWNER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
-
 #define orxSPAWNER_KU32_FLAG_ENABLED              0x10000000  /**< Enabled flag */
 #define orxSPAWNER_KU32_FLAG_TOTAL_LIMIT          0x20000000  /**< Total limit flag */
 #define orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT         0x40000000  /**< Active limit flag */
 #define orxSPAWNER_KU32_FLAG_WAVE_MODE            0x80000000  /**< Wave mode flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_DELETE          0x01000000  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x02000000  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_USE_ALPHA            0x04000000  /**< Use alpha flag */
-#define orxSPAWNER_KU32_FLAG_USE_COLOR            0x08000000  /**< Use color flag */
-#define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x00100000  /**< Speed flag */
-#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00200000  /**< Use relative speed flag */
-#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00400000  /**< Use self as parent flag */
+#define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x01000000  /**< Speed flag */
 
 #define orxSPAWNER_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -1034,7 +1026,7 @@ orxFLOAT orxFASTCALL orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner)
 
 /** Sets spawner object speed
  * @param[in]   _pstSpawner     Concerned spawner
- * @param[in]   _pvObjectSpeed  Speed to apply to every spawned object
+ * @param[in]   _pvObjectSpeed  Speed to apply to every spawned object / orxNULL to not apply any speed
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvObjectSpeed)
@@ -1044,10 +1036,21 @@ orxSTATUS orxFASTCALL orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const o
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
-  orxASSERT(_pvObjectSpeed != orxNULL);
 
-  /* Stores object speed */
-  orxVector_Copy(&(_pstSpawner->vSpeed), _pvObjectSpeed);
+  /* Should apply speed? */
+  if(_pvObjectSpeed != orxNULL)
+  {
+    /* Stores object speed */
+    orxVector_Copy(&(_pstSpawner->vSpeed), _pvObjectSpeed);
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_OBJECT_SPEED);
+  }
 
   /* Done! */
   return eResult;
@@ -1055,19 +1058,31 @@ orxSTATUS orxFASTCALL orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const o
 
 /** Gets spawner object speed
  * @param[in]   _pstSpawner     Concerned spawner
- * @return      Speed applied to every spawned object
+ * @return      Speed applied to every spawned object / orxNULL if none is applied
  */
 orxVECTOR *orxFASTCALL orxSpawner_GetObjectSpeed(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvObjectSpeed)
 {
-  orxVECTOR *pvResult = _pvObjectSpeed;
+  orxVECTOR *pvResult;
 
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
   orxASSERT(_pvObjectSpeed != orxNULL);
 
-  /* Stores object speed */
-  orxVector_Copy(_pvObjectSpeed, &(_pstSpawner->vSpeed));
+  /* Does use object speed? */
+  if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED))
+  {
+    /* Stores object speed */
+    orxVector_Copy(_pvObjectSpeed, &(_pstSpawner->vSpeed));
+
+    /* Updates result */
+    pvResult = _pvObjectSpeed;
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
 
   /* Done! */
   return pvResult;

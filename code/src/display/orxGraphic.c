@@ -1050,7 +1050,8 @@ orxSTATUS orxFASTCALL orxGraphic_ClearColor(orxGRAPHIC *_pstGraphic)
   orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
 
   /* Restores default color */
-  orxColor_SetRGBA(&(_pstGraphic->stColor), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
+  _pstGraphic->stColor.fAlpha = orxFLOAT_1;
+  orxVector_Copy(&(_pstGraphic->stColor.vRGB), &orxVECTOR_WHITE);
 
   /* Done! */
   return eResult;
