@@ -3070,6 +3070,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_spawner.html#gf3adfb153f40a2fe58f6ff25f6a7cb4f">orxSpawner.h</a>
 <li>orxSpawner_GetName()
 : <a class="el" href="group__orx_spawner.html#g916c22f1f611db75738be14dfee0d846">orxSpawner.h</a>
+<li>orxSpawner_GetOwner()
+: <a class="el" href="group__orx_spawner.html#gee94910c703d0c9cdd9deefe9597bc6d">orxSpawner.h</a>
 <li>orxSpawner_GetPosition()
 : <a class="el" href="group__orx_spawner.html#g52ebd1b1eb8cd55f9240f394ffb7c35d">orxSpawner.h</a>
 <li>orxSpawner_GetRotation()
@@ -3092,6 +3094,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_spawner.html#g94e4e78d9003e0d5f140230552953c95">orxSpawner.h</a>
 <li>orxSpawner_SetActiveObjectLimit()
 : <a class="el" href="group__orx_spawner.html#g447ab00a10c978925eaed817af28cddf">orxSpawner.h</a>
+<li>orxSpawner_SetOwner()
+: <a class="el" href="group__orx_spawner.html#g5087a1a7f2208d1a0fdcd0536f5296bb">orxSpawner.h</a>
 <li>orxSpawner_SetParent()
 : <a class="el" href="group__orx_spawner.html#gbdbe00e4edfe81e1861c8eb27a23280f">orxSpawner.h</a>
 <li>orxSpawner_SetPosition()
@@ -3106,9 +3110,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_spawner.html#g8e4f2c007fe069cc5b8d5819bdcdaff4">orxSpawner.h</a>
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gd08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
-<li>orxSTATUS()
-: <a class="el" href="group__orx_module.html#gf44141f0bc45f319187952b4629b862c">orxModule.h</a>
-, <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+<li>orxSTATUS
+: <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+, <a class="el" href="group__orx_module.html#gf44141f0bc45f319187952b4629b862c">orxModule.h</a>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gg18b11c4d0ed79ac2f8542e3bcfac340dfae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
 <li>orxSTATUS_NONE
@@ -3283,10 +3287,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxStructure.h</a>
 <li>orxSTRUCTURE_MAGIC_TAG_DELETED
 : <a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxStructure.h</a>
-<li>orxSTRUCTURE_REGISTER
-: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_Register()
 : <a class="el" href="group__orx_structure.html#ga56cb39392bd2ec50767317b4f7603fa">orxStructure.h</a>
+<li>orxSTRUCTURE_REGISTER
+: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#g95058db32c35e47042cf42e560bda596">orxStructure.h</a>
 <li>orxStructure_SetParent()
@@ -3344,8 +3348,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSystem_Setup()
 : <a class="el" href="group__orx_system.html#g70faf0fe659b66de0cd0249a14b462c6">orxSystem.h</a>
 <li>orxTEXT
-: <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
-, <a class="el" href="group__orx_structure.html#g796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#g796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+, <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
 <li>orxText_Create()
 : <a class="el" href="group__orx_text.html#g7db9913d83299e4951a308f10a129cd3">orxText.h</a>
 <li>orxText_CreateFromConfig()
@@ -3373,8 +3377,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxText_Setup()
 : <a class="el" href="group__orx_text.html#gbaf8ba36746f278176c2efec5a0a14d4">orxText.h</a>
 <li>orxTEXTURE
-: <a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
-, <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
+: <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
+, <a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
 <li>orxTexture_Create()
 : <a class="el" href="group__orx_texture.html#g0234c4923d3a53bd299c36bc9a96c60b">orxTexture.h</a>
 <li>orxTexture_CreateFromFile()
@@ -3518,8 +3522,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxVECTOR_Z
 : <a class="el" href="group__orx_vector.html#gfb49da17b1f47004004b7bdfb803fda1">orxVector.h</a>
 <li>orxVIEWPORT
-: <a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
-, <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+: <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+, <a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
 <li>orxViewport_AddShader()
 : <a class="el" href="group__orx_viewport.html#gfae98230b6e33fb16c5827b48db78b4b">orxViewport.h</a>
 <li>orxViewport_Create()

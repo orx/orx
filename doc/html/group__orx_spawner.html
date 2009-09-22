@@ -87,6 +87,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gbdbe00e4edfe81e1861c8eb27a23280f">orxSpawner_SetParent</a> (<a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, void *_pParent)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g5087a1a7f2208d1a0fdcd0536f5296bb">orxSpawner_SetOwner</a> (<a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, void *_pOwner)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gee94910c703d0c9cdd9deefe9597bc6d">orxSpawner_GetOwner</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g916c22f1f611db75738be14dfee0d846">orxSpawner_GetName</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 
@@ -345,6 +349,32 @@ Gets spawner name <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRING / orxSTRING_EMPTY </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gee94910c703d0c9cdd9deefe9597bc6d"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetOwner" ref="gee94910c703d0c9cdd9deefe9597bc6d" args="(const orxSPAWNER *_pstSpawner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxSpawner_GetOwner           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets spawner's owner <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Owner / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -674,6 +704,41 @@ Sets spawner active object limit <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g5087a1a7f2208d1a0fdcd0536f5296bb"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_SetOwner" ref="g5087a1a7f2208d1a0fdcd0536f5296bb" args="(orxSPAWNER *_pstSpawner, void *_pOwner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxSpawner_SetOwner           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>_pOwner</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets owner for a spawner <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pOwner</em>&nbsp;</td><td>Owner to set / orxNULL </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>

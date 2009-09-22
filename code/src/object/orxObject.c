@@ -841,8 +841,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstSpawner)) != orxSTATUS_FAILURE)
           {
-            /* Sets object as parent */
+            /* Sets object as parent & owner */
             orxSpawner_SetParent(pstSpawner, pstResult);
+            orxSpawner_SetOwner(pstSpawner, pstResult);
 
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_SPAWNER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);

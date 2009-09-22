@@ -100,17 +100,17 @@ struct __orxSPAWNER_t
   orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 38 */
   orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 40 */
   orxFRAME           *pstFrame;                   /**< Frame : 44 */
-  orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 48 */
-  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 52 */
-  orxU32              u32WaveNumber;              /**< Total spawned objects counter : 56 */
+  orxSTRUCTURE       *pstOwner;                   /**< Owner: 48 */
+  orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 52 */
+  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 56 */
+  orxU32              u32WaveNumber;              /**< Total spawned objects counter : 60 */
 };
 
 /** Static structure
  */
 typedef struct __orxSPAWNER_STATIC_t
 {
-  orxU32      u32Flags;                           /**< Control flags */
-  orxOBJECT  *pstWaveParent;                      /**< Wave parent object */
+  orxU32 u32Flags;                                /**< Control flags */
 
 } orxSPAWNER_STATIC;
 
@@ -196,57 +196,71 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
         /* Should apply color or alpha? */
         if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_ALPHA | orxSPAWNER_KU32_FLAG_USE_COLOR))
         {
-          orxCOLOR    stColor, stTemp;
-          orxOBJECT  *pstObject;
+          orxOBJECT *pstOwner;
 
-          /* Inits color */
-          orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
+          /* Gets owner */
+          pstOwner = orxOBJECT(pstSpawner->pstOwner);
 
-          /* Gets spawned object */
-          pstObject = orxOBJECT(_pstEvent->hRecipient);
-
-          /* Should apply color? */
-          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_COLOR))
+          /* Valid? */
+          if(pstOwner != orxNULL)
           {
-            /* Has color? */
-            if(orxObject_HasColor(sstSpawner.pstWaveParent) != orxFALSE)
+            orxCOLOR    stColor, stTemp;
+            orxOBJECT  *pstObject;
+
+            /* Inits color */
+            orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
+
+            /* Gets spawned object */
+            pstObject = orxOBJECT(_pstEvent->hRecipient);
+
+            /* Should apply color? */
+            if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_COLOR))
             {
-              /* Gets it */
-              orxObject_GetColor(sstSpawner.pstWaveParent, &stColor);
+              /* Has color? */
+              if(orxObject_HasColor(pstOwner) != orxFALSE)
+              {
+                /* Gets it */
+                orxObject_GetColor(pstOwner, &stColor);
+              }
             }
+            else
+            {
+              /* Has color? */
+              if(orxObject_HasColor(pstObject) != orxFALSE)
+              {
+                /* Uses object's one */
+                orxObject_GetColor(pstObject, &stColor);
+              }
+            }
+
+            /* Should apply alpha? */
+            if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_ALPHA))
+            {
+              /* Has color? */
+              if(orxObject_HasColor(pstOwner) != orxFALSE)
+              {
+                /* Stores it */
+                stColor.fAlpha = orxObject_GetColor(pstOwner, &stTemp)->fAlpha;
+              }
+            }
+            else
+            {
+              /* Has color? */
+              if(orxObject_HasColor(pstObject) != orxFALSE)
+              {
+                /* Uses object's alpha */
+                stColor.fAlpha = orxObject_GetColor(pstObject, &stTemp)->fAlpha;
+              }
+            }
+
+            /* Applies new value */
+            orxObject_SetColor(pstObject, &stColor);
           }
           else
           {
-            /* Has color? */
-            if(orxObject_HasColor(pstObject) != orxFALSE)
-            {
-              /* Uses object's one */
-              orxObject_GetColor(pstObject, &stColor);
-            }
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't update color/alpha for object <%s> spawned by <%s> as spawner has no valid owner.", orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), orxSpawner_GetName(pstSpawner));
           }
-
-          /* Should apply alpha? */
-          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_ALPHA))
-          {
-            /* Has color? */
-            if(orxObject_HasColor(sstSpawner.pstWaveParent) != orxFALSE)
-            {
-              /* Stores it */
-              stColor.fAlpha = orxObject_GetColor(sstSpawner.pstWaveParent, &stTemp)->fAlpha;
-            }
-          }
-          else
-          {
-            /* Has color? */
-            if(orxObject_HasColor(pstObject) != orxFALSE)
-            {
-              /* Uses object's alpha */
-              stColor.fAlpha = orxObject_GetColor(pstObject, &stTemp)->fAlpha;
-            }
-          }
-
-          /* Applies new value */
-          orxObject_SetColor(pstObject, &stColor);
         }
       }
 
@@ -314,20 +328,17 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
     /* Should spawn a new wave? */
     if(_pstClockInfo->fTime >= pstSpawner->fWaveTimeStamp)
     {
+      /* Checks */
+      orxASSERT(orxOBJECT(pstSpawner->pstOwner) == pstObject);
+
       /* Sends wave start event */
       orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
-
-      /* Stores wave parent */
-      sstSpawner.pstWaveParent = pstObject;
 
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
 
       /* Spawn the wave */
       orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveNumber);
-
-      /* Removes wave parent */
-      sstSpawner.pstWaveParent = orxNULL;
 
       /* Removes event handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
@@ -1353,6 +1364,42 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pPare
 
   /* Done! */
   return eResult;
+}
+
+/** Sets owner for a spawner
+ * @param[in]   _pstSpawner   Concerned spawner
+ * @param[in]   _pOwner       Owner to set / orxNULL
+ */
+void orxFASTCALL orxSpawner_SetOwner(orxSPAWNER *_pstSpawner, void *_pOwner)
+{
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+  orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
+
+  /* Sets new owner */
+  _pstSpawner->pstOwner = orxSTRUCTURE(_pOwner);
+
+  return;
+}
+
+/** Gets spawner's owner
+ * @param[in]   _pstSpawner   Concerned object
+ * @return      Owner / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxSpawner_GetOwner(const orxSPAWNER *_pstSpawner)
+{
+  orxSTRUCTURE *pResult;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Gets owner */
+  pResult = _pstSpawner->pstOwner;
+
+  /* Done! */
+  return pResult;
 }
 
 /** Gets spawner name
