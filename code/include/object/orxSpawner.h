@@ -145,6 +145,48 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectLimit(const
 extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner);
 
 
+/** Sets spawner wave size
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _u32WaveSize    Number of objects to spawn in a wave / 0 for deactivating wave mode
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetWaveSize(orxSPAWNER *_pstSpawner, orxU32 _u32WaveSize);
+
+/** Sets spawner wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _fWaveDelay     Delay between two waves / -1 for deactivating wave mode
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay);
+
+/** Gets spawner wave size
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Number of objects spawned in a wave / 0 if not in wave mode
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetWaveSize(const orxSPAWNER *_pstSpawner);
+
+/** Gets spawner wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Delay between two waves / -1 if not in wave mode
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner);
+
+
+/** Sets spawner object speed
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _pvObjectSpeed  Speed to apply to every spawned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvObjectSpeed);
+
+/** Gets spawner object speed
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _pvObjectSpeed  Speed applied to every spawned object
+ * @return      Speed applied to every spawned object
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetObjectSpeed(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvObjectSpeed);
+
+
 /** Spawns items
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _u32Number      Number of items to spawn

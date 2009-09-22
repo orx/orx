@@ -73,7 +73,7 @@
 #define orxSPAWNER_KZ_CONFIG_SCALE                "Scale"
 #define orxSPAWNER_KZ_CONFIG_TOTAL_OBJECT         "TotalObject"
 #define orxSPAWNER_KZ_CONFIG_ACTIVE_OBJECT        "ActiveObject"
-#define orxSPAWNER_KZ_CONFIG_WAVE_NUMBER          "WaveNumber"
+#define orxSPAWNER_KZ_CONFIG_WAVE_SIZE            "WaveSize"
 #define orxSPAWNER_KZ_CONFIG_WAVE_DELAY           "WaveDelay"
 #define orxSPAWNER_KZ_CONFIG_AUTO_DELETE          "AutoDelete"
 #define orxSPAWNER_KZ_CONFIG_AUTO_RESET           "AutoReset"
@@ -103,7 +103,7 @@ struct __orxSPAWNER_t
   orxSTRUCTURE       *pstOwner;                   /**< Owner: 48 */
   orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 52 */
   orxFLOAT            fWaveDelay;                 /**< Active objects counter : 56 */
-  orxU32              u32WaveNumber;              /**< Total spawned objects counter : 60 */
+  orxU32              u32WaveSize;                /**< Number of objects spawned in a wave : 60 */
 };
 
 /** Static structure
@@ -325,29 +325,33 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
   /* Is enabled? */
   if(orxSpawner_IsEnabled(pstSpawner) != orxFALSE)
   {
-    /* Should spawn a new wave? */
-    if(_pstClockInfo->fTime >= pstSpawner->fWaveTimeStamp)
+    /* Is in wave mode? */
+    if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_WAVE_MODE))
     {
-      /* Checks */
-      orxASSERT(orxOBJECT(pstSpawner->pstOwner) == pstObject);
+      /* Should spawn a new wave? */
+      if(_pstClockInfo->fTime >= pstSpawner->fWaveTimeStamp)
+      {
+        /* Checks */
+        orxASSERT(orxOBJECT(pstSpawner->pstOwner) == pstObject);
 
-      /* Sends wave start event */
-      orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
+        /* Sends wave start event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
 
-      /* Adds event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
+        /* Adds event handler */
+        orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
 
-      /* Spawn the wave */
-      orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveNumber);
+        /* Spawn the wave */
+        orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveSize);
 
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
 
-      /* Updates wave time stamp */
-      pstSpawner->fWaveTimeStamp = _pstClockInfo->fTime + pstSpawner->fWaveDelay;
+        /* Updates wave time stamp */
+        pstSpawner->fWaveTimeStamp = _pstClockInfo->fTime + pstSpawner->fWaveDelay;
 
-      /* Sends wave stop event */
-      orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_STOP, pstSpawner, orxNULL, orxNULL);
+        /* Sends wave stop event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_STOP, pstSpawner, orxNULL, orxNULL);
+      }
     }
   }
 
@@ -571,22 +575,11 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT, orxSPAWNER_KU32_FLAG_NONE);
       }
 
-      /* Gets wave number */
-      pstResult->u32WaveNumber = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_NUMBER);
+      /* Sets wave size */
+      orxSpawner_SetWaveSize(pstResult, orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE));
 
-      /* Has defined wave? */
-      if(pstResult->u32WaveNumber > 0)
-      {
-        /* Gets wave delay */
-        pstResult->fWaveDelay = orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY);
-
-        /* Valid? */
-        if(pstResult->fWaveDelay >= orxFLOAT_0)
-        {
-          /* Updates status */
-          orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_WAVE_MODE, orxSPAWNER_KU32_FLAG_NONE);
-        }
-      }
+      /* Sets wave delay */
+      orxSpawner_SetWaveDelay(pstResult, orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY));
 
       /* Has a position? */
       if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
@@ -898,6 +891,10 @@ orxU32 orxFASTCALL orxSpawner_GetTotalObjectLimit(const orxSPAWNER *_pstSpawner)
 {
   orxU32 u32Result = 0;
 
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
   /* Has limit */
   if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
   {
@@ -917,6 +914,10 @@ orxU32 orxFASTCALL orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner
 {
   orxU32 u32Result = 0;
 
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
   /* Has limit */
   if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT))
   {
@@ -926,6 +927,150 @@ orxU32 orxFASTCALL orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner
 
   /* Done! */
   return u32Result;
+}
+
+/** Sets spawner wave size
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _u32WaveSize    Number of objects to spawn in a wave / 0 for deactivating wave mode
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSpawner_SetWaveSize(orxSPAWNER *_pstSpawner, orxU32 _u32WaveSize)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+  orxASSERT(_u32WaveSize <= 0xFFFF);
+
+  /* Stores wave size */
+  _pstSpawner->u32WaveSize = _u32WaveSize;
+
+  /* Active? */
+  if((_pstSpawner->u32WaveSize > 0) && (_pstSpawner->fWaveDelay >= orxFLOAT_0))
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_WAVE_MODE, orxSPAWNER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_WAVE_MODE);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets spawner wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _fWaveDelay     Delay between two waves / -1 for deactivating wave mode
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Stores wave delay */
+  _pstSpawner->fWaveDelay = (_fWaveDelay >= orxFLOAT_0) ? _fWaveDelay : orx2F(-1.0f);
+
+  /* Active? */
+  if((_pstSpawner->fWaveDelay >= orxFLOAT_0) && (_pstSpawner->u32WaveSize > 0))
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_WAVE_MODE, orxSPAWNER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_WAVE_MODE);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets spawner wave size
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Number of objects spawned in a wave / 0 if not in wave mode
+ */
+orxU32 orxFASTCALL orxSpawner_GetWaveSize(const orxSPAWNER *_pstSpawner)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Updates result */
+  u32Result = _pstSpawner->u32WaveSize;
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets spawner wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Delay between two waves / -1 if not in wave mode
+ */
+orxFLOAT orxFASTCALL orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Updates result */
+  fResult = _pstSpawner->fWaveDelay;
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets spawner object speed
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _pvObjectSpeed  Speed to apply to every spawned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvObjectSpeed)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+  orxASSERT(_pvObjectSpeed != orxNULL);
+
+  /* Stores object speed */
+  orxVector_Copy(&(_pstSpawner->vSpeed), _pvObjectSpeed);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets spawner object speed
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Speed applied to every spawned object
+ */
+orxVECTOR *orxFASTCALL orxSpawner_GetObjectSpeed(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvObjectSpeed)
+{
+  orxVECTOR *pvResult = _pvObjectSpeed;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+  orxASSERT(_pvObjectSpeed != orxNULL);
+
+  /* Stores object speed */
+  orxVector_Copy(_pvObjectSpeed, &(_pstSpawner->vSpeed));
+
+  /* Done! */
+  return pvResult;
 }
 
 /** Spawns objects

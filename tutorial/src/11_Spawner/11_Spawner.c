@@ -52,7 +52,7 @@
  * be entirely reloaded when switching from a test to another.
  *
  * If there are too many particles displayed for your config, just turn down the amount of particles spawned
- * per wave and/or the frequency of the waves. To do so, search for the WaveNumber/WaveDelay attributes in the different
+ * per wave and/or the frequency of the waves. To do so, search for the WaveSize/WaveDelay attributes in the different
  * spawner sections. Have fun! =)
  *
  */

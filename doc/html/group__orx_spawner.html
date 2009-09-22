@@ -63,6 +63,18 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g67e8df619d4104358acd24208bd36ef0">orxSpawner_GetActiveObjectLimit</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga6fd783070023ab4b65477ded61aac5e">orxSpawner_SetWaveSize</a> (<a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, orxU32 _u32WaveSize)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g77225815024bf3bd63ebf72c38da65ab">orxSpawner_SetWaveDelay</a> (<a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, orxFLOAT _fWaveDelay)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gb7326aa893f19ace86d9f9f72d66993e">orxSpawner_GetWaveSize</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g4ddda12512bf4fa8769a37ae3793f60e">orxSpawner_GetWaveDelay</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g56689aca0a6e07e4190e8b81804035ab">orxSpawner_SetObjectSpeed</a> (<a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvObjectSpeed)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#g3a2cdb23f680bae3192e36d6f3aede27">orxSpawner_GetObjectSpeed</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvObjectSpeed)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gd08003006dc08bcb3f3916a2c234e9af">orxSpawner_Spawn</a> (<a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, orxU32 _u32Number)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gf3adfb153f40a2fe58f6ff25f6a7cb4f">orxSpawner_GetFrame</a> (const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
@@ -352,6 +364,42 @@ Gets spawner name <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g3a2cdb23f680bae3192e36d6f3aede27"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetObjectSpeed" ref="g3a2cdb23f680bae3192e36d6f3aede27" args="(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvObjectSpeed)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxFASTCALL orxSpawner_GetObjectSpeed           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvObjectSpeed</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets spawner object speed <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvObjectSpeed</em>&nbsp;</td><td>Speed applied to every spawned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Speed applied to every spawned object </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gee94910c703d0c9cdd9deefe9597bc6d"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetOwner" ref="gee94910c703d0c9cdd9deefe9597bc6d" args="(const orxSPAWNER *_pstSpawner)" -->
 <div class="memitem">
 <div class="memproto">
@@ -499,6 +547,58 @@ Gets spawner total object limit <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Total object limit, 0 for unlimited </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g4ddda12512bf4fa8769a37ae3793f60e"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetWaveDelay" ref="g4ddda12512bf4fa8769a37ae3793f60e" args="(const orxSPAWNER *_pstSpawner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxSpawner_GetWaveDelay           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets spawner wave delay <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Delay between two waves / -1 if not in wave mode </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gb7326aa893f19ace86d9f9f72d66993e"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetWaveSize" ref="gb7326aa893f19ace86d9f9f72d66993e" args="(const orxSPAWNER *_pstSpawner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxSpawner_GetWaveSize           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets spawner wave size <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of objects spawned in a wave / 0 if not in wave mode </dd></dl>
 
 </div>
 </div><p>
@@ -701,6 +801,42 @@ Sets spawner active object limit <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32ActiveObjectLimit</em>&nbsp;</td><td>Active object limit, 0 for unlimited </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g56689aca0a6e07e4190e8b81804035ab"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_SetObjectSpeed" ref="g56689aca0a6e07e4190e8b81804035ab" args="(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvObjectSpeed)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxSpawner_SetObjectSpeed           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvObjectSpeed</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets spawner object speed <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvObjectSpeed</em>&nbsp;</td><td>Speed to apply to every spawned object </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -939,6 +1075,78 @@ Sets spawner total object limit <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Spawner module setup 
+</div>
+</div><p>
+<a class="anchor" name="g77225815024bf3bd63ebf72c38da65ab"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_SetWaveDelay" ref="g77225815024bf3bd63ebf72c38da65ab" args="(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxSpawner_SetWaveDelay           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fWaveDelay</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets spawner wave delay <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fWaveDelay</em>&nbsp;</td><td>Delay between two waves / -1 for deactivating wave mode </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ga6fd783070023ab4b65477ded61aac5e"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_SetWaveSize" ref="ga6fd783070023ab4b65477ded61aac5e" args="(orxSPAWNER *_pstSpawner, orxU32 _u32WaveSize)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxSpawner_SetWaveSize           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSpawner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32WaveSize</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets spawner wave size <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSpawner</em>&nbsp;</td><td>Concerned spawner </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32WaveSize</em>&nbsp;</td><td>Number of objects to spawn in a wave / 0 for deactivating wave mode </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="gd08003006dc08bcb3f3916a2c234e9af"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_Spawn" ref="gd08003006dc08bcb3f3916a2c234e9af" args="(orxSPAWNER *_pstSpawner, orxU32 _u32Number)" -->
