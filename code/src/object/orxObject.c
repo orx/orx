@@ -1336,6 +1336,86 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   return;
 }
 
+/** Gets object's first child
+ * @param[in]   _pstObject    Concerned object
+ * @return      First child object / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
+{
+  orxOBJECT *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Has child? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILD))
+  {
+    orxOBJECT *pstChild;
+
+    /* For all objects */
+    for(pstChild = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+        pstChild != orxNULL;
+        pstChild = orxOBJECT(orxStructure_GetNext(pstChild)))
+    {
+      /* Is a child? */
+      if(orxOBJECT(orxObject_GetOwner(pstChild)) == _pstObject)
+      {
+        /* Updates result */
+        pstResult = pstChild;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets object's next sibling
+ * @param[in]   _pstObject    Concerned object
+ * @return      Next sibling object / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
+{
+  orxOBJECT *pstOwner, *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets object's owner */
+  pstOwner = orxOBJECT(orxObject_GetOwner(_pstObject));
+
+  /* Valid? */
+  if(pstOwner != orxNULL)
+  {
+    orxOBJECT *pstSibling;
+
+    /* Checks */
+    orxASSERT(orxStructure_TestFlags(pstOwner, orxOBJECT_KU32_FLAG_HAS_CHILD));
+
+    /* For all objects after current one */
+    for(pstSibling = orxOBJECT(orxStructure_GetNext(_pstObject));
+        pstSibling != orxNULL;
+        pstSibling = orxOBJECT(orxStructure_GetNext(pstSibling)))
+    {
+      /* Is a child of the same owner? */
+      if(orxOBJECT(orxObject_GetOwner(pstSibling)) == pstOwner)
+      {
+        /* Updates result */
+        pstResult = pstSibling;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Gets object's owner
  * @param[in]   _pstObject    Concerned object
  * @return      Owner / orxNULL

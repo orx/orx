@@ -226,16 +226,16 @@ static orxSTATUS orxBounce_Init()
   /* Valid? */
   if(spoBallSpawner != orxNULL)
   {
-    orxOBJECT *poParticleSource;
+    orxOBJECT *pstParticleSource;
 
     /* Creates particle source */
-    poParticleSource = orxObject_CreateFromConfig("ParticleSource");
+    pstParticleSource = orxObject_CreateFromConfig("ParticleSource");
 
     /* Valid? */
-    if(poParticleSource != orxNULL)
+    if(pstParticleSource != orxNULL)
     {
       /* Sets its parent */
-      orxObject_SetParent(poParticleSource, spoBallSpawner);
+      orxObject_SetParent(pstParticleSource, spoBallSpawner);
     }
 
     /* Should hide cursor */
