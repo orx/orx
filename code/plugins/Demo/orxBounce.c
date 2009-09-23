@@ -245,10 +245,7 @@ static orxSTATUS orxBounce_Init()
     }
 
     /* Creates walls */
-    orxObject_CreateFromConfig("Wall1");
-    orxObject_CreateFromConfig("Wall2");
-    orxObject_CreateFromConfig("Wall3");
-    orxObject_CreateFromConfig("Wall4");
+    orxObject_CreateFromConfig("Walls");
 
     /* Creates viewport on screen */
     spstViewport = orxViewport_CreateFromConfig("BounceViewport");
