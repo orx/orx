@@ -1336,7 +1336,7 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   return;
 }
 
-/** Gets object's first child
+/** Gets object's first child (only if created with a config ChildList)
  * @param[in]   _pstObject    Concerned object
  * @return      First child object / orxNULL
  */
@@ -1373,7 +1373,7 @@ orxOBJECT *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
-/** Gets object's next sibling
+/** Gets object's next sibling (only if created with a config ChildList)
  * @param[in]   _pstObject    Concerned object
  * @return      Next sibling object / orxNULL
  */
