@@ -11,8 +11,8 @@
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/mingw/liborxd.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
-        <LibraryPath Value="../../../lib/mingw"/>
+      <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/linux/liborxd.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
+        <LibraryPath Value="../../../lib/linux"/>
         <Library Value="dl"/>
         <Library Value="m"/>
       </Linker>
@@ -43,8 +43,8 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/mingw/liborx.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
-        <LibraryPath Value="../../../lib/mingw"/>
+      <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/linux/liborx.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
+        <LibraryPath Value="../../../lib/linux"/>
         <Library Value="dl"/>
         <Library Value="m"/>
       </Linker>
