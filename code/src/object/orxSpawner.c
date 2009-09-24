@@ -67,7 +67,6 @@
 #define orxSPAWNER_KZ_CONFIG_ACTIVE_OBJECT        "ActiveObject"
 #define orxSPAWNER_KZ_CONFIG_WAVE_SIZE            "WaveSize"
 #define orxSPAWNER_KZ_CONFIG_WAVE_DELAY           "WaveDelay"
-#define orxSPAWNER_KZ_CONFIG_AUTO_DELETE          "AutoDelete"
 #define orxSPAWNER_KZ_CONFIG_AUTO_RESET           "AutoReset"
 #define orxSPAWNER_KZ_CONFIG_USE_ALPHA            "UseAlpha"
 #define orxSPAWNER_KZ_CONFIG_USE_COLOR            "UseColor"
@@ -623,13 +622,6 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
           /* Updates status */
           orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
         }
-      }
-
-      /* Auto delete? */
-      if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_AUTO_DELETE) != orxFALSE)
-      {
-        /* Updates status */
-        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_AUTO_DELETE, orxSPAWNER_KU32_FLAG_NONE);
       }
 
       /* Auto reset? */
@@ -1224,14 +1216,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_EMPTY, _pstSpawner, orxNULL, orxNULL);
 
-        /* Auto delete? */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_DELETE))
-        {
-          /* Deletes spawner */
-          orxSpawner_Delete(_pstSpawner);
-        }
         /* Auto reset? */
-        else if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
+        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
         {
           /* Resets spawner */
           orxSpawner_Reset(_pstSpawner);
