@@ -397,7 +397,7 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
     orxVECTOR           vTempPos, vScale, vParentScale, vLocalScale;
     const orxVECTOR *pvParentPos, *pvPos;
     orxFLOAT            fParentAngle, fAngle;
-    orxFLOAT            fX, fY, fLocalX, fLocalY, fCos, fSin, fCoef;
+    orxFLOAT            fX, fY, fLocalX, fLocalY, fCos, fSin;
     orxFRAME            *pstParentFrame;
 
     /* gets parent frame */
@@ -416,27 +416,21 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
 
     /* Updates angle */
     fAngle        = _orxFrame_GetRotation(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
-
-    /* Gets angle coefficient */
-    fCoef         = fParentAngle;
-    orxCIRCULAR_CLAMP_INC_MIN(fCoef, orxFLOAT_0, orxMATH_KF_PI);
-    fCoef         = orxMATH_KF_PI_BY_2 - fCoef;
-    fCoef         = orxMath_Abs(fCoef) * (orx2F(1.0f) / orxMATH_KF_PI_BY_2);
-
-    /* Updates scales */
-    vScale.fX     = vLocalScale.fX * ((fCoef * vParentScale.fX) + ((orxFLOAT_1 - fCoef) * vParentScale.fY));
-    vScale.fY     = vLocalScale.fY * ((fCoef * vParentScale.fY) + ((orxFLOAT_1 - fCoef) * vParentScale.fX));
-
-    /* Updates coord */
-    /* Gets needed orxFLOAT values for rotation & scale applying */
-    fLocalX       = pvPos->fX;
-    fLocalY       = pvPos->fY;
     fCos          = orxMath_Cos(fParentAngle);
     fSin          = orxMath_Sin(fParentAngle);
 
-    /* Applies rotation & scale on X&Y coordinates*/
-    fX            = vParentScale.fX * ((fLocalX * fCos) - (fLocalY * fSin));
-    fY            = vParentScale.fY * ((fLocalX * fSin) + (fLocalY * fCos));
+    /* Updates scales */
+    vScale.fX     = vLocalScale.fX * vParentScale.fX;
+    vScale.fY     = vLocalScale.fY * vParentScale.fY;
+
+    /* Updates coord */
+    /* Gets scaled X&Y coordinates */
+    fLocalX       = vParentScale.fX * pvPos->fX;
+    fLocalY       = vParentScale.fY * pvPos->fY;
+
+    /* Applies rotation on X&Y coordinates */
+    fX            = (fLocalX * fCos) - (fLocalY * fSin);
+    fY            = (fLocalX * fSin) + (fLocalY * fCos);
 
     /* Computes final global coordinates */
     vTempPos.fX   = fX + pvParentPos->fX;
