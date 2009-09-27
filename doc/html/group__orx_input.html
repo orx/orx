@@ -80,7 +80,7 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g41dac9027f2f429d21026c0a2994e7ae">orxInput_Unbind</a> (<a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gadecd5ab7e08fc0f7e8e9b1d6059749d">orxInput_GetBoundInputNumber</a> (<a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g4f1eae3eb68f2d9fe9912cdb3512f291">orxInput_GetBoundInputCounter</a> (<a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g1d785a408be82ed78e4a2defb0c0acdc">orxInput_GetBoundInput</a> (<a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID, orxU32 _u32InputIndex)</td></tr>
@@ -444,12 +444,12 @@ Gets the input name to which a mouse/joystick button, keyboard key or joystick a
 
 </div>
 </div><p>
-<a class="anchor" name="gadecd5ab7e08fc0f7e8e9b1d6059749d"></a><!-- doxytag: member="orxInput.h::orxInput_GetBoundInputNumber" ref="gadecd5ab7e08fc0f7e8e9b1d6059749d" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
+<a class="anchor" name="g4f1eae3eb68f2d9fe9912cdb3512f291"></a><!-- doxytag: member="orxInput.h::orxInput_GetBoundInputCounter" ref="g4f1eae3eb68f2d9fe9912cdb3512f291" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxInput_GetBoundInputNumber           </td>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxInput_GetBoundInputCounter           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eType</em>, </td>
@@ -470,7 +470,7 @@ Gets the input name to which a mouse/joystick button, keyboard key or joystick a
 <div class="memdoc">
 
 <p>
-Gets the input number to which a mouse/joystick button, keyboard key or joystick axis is bound <dl compact><dt><b>Parameters:</b></dt><dd>
+Gets the input counter to which a mouse/joystick button, keyboard key or joystick axis is bound <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eType</em>&nbsp;</td><td>Type of peripheral to test </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eID</em>&nbsp;</td><td>ID of button/key/axis to test </td></tr>

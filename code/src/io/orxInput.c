@@ -1698,12 +1698,12 @@ orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID)
   return eResult;
 }
 
-/** Gets the input number to which a mouse/joystick button, keyboard key or joystick axis is bound
+/** Gets the input counter to which a mouse/joystick button, keyboard key or joystick axis is bound
  * @param[in] _eType            Type of peripheral to test
  * @param[in] _eID              ID of button/key/axis to test
  * @return Number of bound inputs
  */
-orxU32 orxFASTCALL orxInput_GetBoundInputNumber(orxINPUT_TYPE _eType, orxENUM _eID)
+orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxU32 u32Result = 0;
 
@@ -1755,7 +1755,7 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
   /* Valid? */
-  if((sstInput.pstCurrentSet != orxNULL) && (_u32InputIndex < orxInput_GetBoundInputNumber(_eType, _eID)))
+  if((sstInput.pstCurrentSet != orxNULL) && (_u32InputIndex < orxInput_GetBoundInputCounter(_eType, _eID)))
   {
     orxINPUT_ENTRY *pstEntry;
     orxU32          u32CurrentIndex;

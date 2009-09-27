@@ -544,11 +544,11 @@ orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_I
   return(sstStructure.astStorage[_eStructureID].eType);
 }
 
-/** Gets given type structure number
+/** Gets given type structure counter
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxU32 / orxU32_UNDEFINED
  */
-orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
+orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
 {
   register orxU32 u32Result = orxU32_UNDEFINED;
 

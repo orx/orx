@@ -648,6 +648,62 @@ orxBOOL orxFASTCALL orxDisplay_SDL_IsFullScreen()
   return bResult;
 }
 
+orxU32 orxFASTCALL orxDisplay_SDL_GetVideoModeCounter()
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return u32Result;
+}
+
+orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  orxDISPLAY_VIDEO_MODE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return pstResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxBOOL orxFASTCALL orxDisplay_SDL_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return bResult;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
 {
   orxSTATUS eResult;
@@ -913,4 +969,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
 orxPLUGIN_USER_CORE_FUNCTION_END();

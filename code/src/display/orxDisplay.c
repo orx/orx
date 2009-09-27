@@ -110,6 +110,11 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetFullScreen, orxSTATUS, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsFullScreen, orxBOOL, void);
 
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetVideoModeCounter, orxU32, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetVideoMode, orxDISPLAY_VIDEO_MODE *, orxU32, orxDISPLAY_VIDEO_MODE *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetVideoMode, orxSTATUS, const orxDISPLAY_VIDEO_MODE *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVideoModeAvailable, orxBOOL, const orxDISPLAY_VIDEO_MODE *);
+
 
 /* *** Core function info array *** */
 
@@ -165,6 +170,11 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VSYNC_ENABLED, orxDisplay_IsVSyncE
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_FULL_SCREEN, orxDisplay_SetFullScreen)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_FULL_SCREEN, orxDisplay_IsFullScreen)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_VIDEO_MODE_COUNTER, orxDisplay_GetVideoModeCounter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_VIDEO_MODE, orxDisplay_GetVideoMode)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_VIDEO_MODE, orxDisplay_SetVideoMode)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VIDEO_MODE_AVAILABLE, orxDisplay_IsVideoModeAvailable)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(DISPLAY)
 
@@ -354,4 +364,24 @@ orxSTATUS orxFASTCALL orxDisplay_SetFullScreen(orxBOOL _bFullScreen)
 orxBOOL orxFASTCALL orxDisplay_IsFullScreen()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsFullScreen)();
+}
+
+orxU32 orxFASTCALL orxDisplay_GetVideoModeCounter()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetVideoModeCounter)();
+}
+
+orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetVideoMode)(_u32Index, _pstVideoMode);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetVideoMode)(_pstVideoMode);
+}
+
+orxBOOL orxFASTCALL orxDisplay_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsVideoModeAvailable)(_pstVideoMode);
 }

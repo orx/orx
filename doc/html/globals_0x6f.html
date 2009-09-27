@@ -804,10 +804,16 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#g7ffc21c019ca289f6ff6cc7ab228c428">orxDisplay.h</a>
 <li>orxDisplay_GetTextString()
 : <a class="el" href="group__orx_display.html#g1550dfa30abe77939926ec322902dc92">orxDisplay.h</a>
+<li>orxDisplay_GetVideoMode()
+: <a class="el" href="group__orx_display.html#g7099d1d4919c383535a31bbe900f7e3c">orxDisplay.h</a>
+<li>orxDisplay_GetVideoModeCounter()
+: <a class="el" href="group__orx_display.html#g638dd5b17942872b2e681ca849ac43f2">orxDisplay.h</a>
 <li>orxDisplay_Init()
 : <a class="el" href="group__orx_display.html#geaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay.h</a>
 <li>orxDisplay_IsFullScreen()
 : <a class="el" href="group__orx_display.html#g0bbde87afcc4090fd37efd155b5568df">orxDisplay.h</a>
+<li>orxDisplay_IsVideoModeAvailable()
+: <a class="el" href="group__orx_display.html#g4df9750ffeddd581b7eb6e086e851a50">orxDisplay.h</a>
 <li>orxDisplay_IsVSyncEnabled()
 : <a class="el" href="group__orx_display.html#ge71ba04631c1ac576300c5b97d083312">orxDisplay.h</a>
 <li>orxDISPLAY_KZ_CONFIG_DECORATION
@@ -858,6 +864,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#g7101ee0f060465309eb6edccaf23aceb">orxDisplay.h</a>
 <li>orxDisplay_Setup()
 : <a class="el" href="group__orx_display.html#g8484ff566cd9b6d1d352de05f7c889d6">orxDisplay.h</a>
+<li>orxDisplay_SetVideoMode()
+: <a class="el" href="group__orx_display.html#g9d682325a94ee3d0c1d9ae22c3ba3ed2">orxDisplay.h</a>
 <li>orxDISPLAY_SMOOTHING
 : <a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDisplay.h</a>
 <li>orxDISPLAY_SMOOTHING_DEFAULT
@@ -1352,8 +1360,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_input.html#gd764ac0f8b77dbd4bbefdd9891519dbf">orxInput.h</a>
 <li>orxInput_GetBoundInput()
 : <a class="el" href="group__orx_input.html#g1d785a408be82ed78e4a2defb0c0acdc">orxInput.h</a>
-<li>orxInput_GetBoundInputNumber()
-: <a class="el" href="group__orx_input.html#gadecd5ab7e08fc0f7e8e9b1d6059749d">orxInput.h</a>
+<li>orxInput_GetBoundInputCounter()
+: <a class="el" href="group__orx_input.html#g4f1eae3eb68f2d9fe9912cdb3512f291">orxInput.h</a>
 <li>orxInput_GetCurrentSet()
 : <a class="el" href="group__orx_input.html#gbf638c2d7b0cf7488050b390caf26b21">orxInput.h</a>
 <li>orxInput_GetValue()
@@ -2425,10 +2433,16 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb720445b35a96a34c691cf50f0f3638fc5">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_TEXT_STRING
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb70ad5e71e11506a4c93e12b5af286fcd8">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb78e208331d1bf571cd3a823103fd75fe9">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE_COUNTER
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb71902e735494cce8980572b5e6e40cab8">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_INIT
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79deb266a63c47237ca614ca8908c45e9">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_FULL_SCREEN
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79fa24ad95450f6fddd8cd9466d9eb75c">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VIDEO_MODE_AVAILABLE
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79541393c1e5c303dfa6702737be60915">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb792bed8869928b756ca47acc76f3489ef">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_LOAD_BITMAP
@@ -2461,6 +2475,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb724cbb8d9198373acfe91dcb84726570f">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_TEXT_STRING
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb710bc7e15889e54a6e10864fe580eb12d">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_VIDEO_MODE
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7d2ed2a217cd0f922f585acbfa967bc1e">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SWAP
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb769115132acc10b2838fca589707dc7c1">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_TRANSFORM_BITMAP
@@ -3142,9 +3158,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_spawner.html#ga6fd783070023ab4b65477ded61aac5e">orxSpawner.h</a>
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gd08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
-<li>orxSTATUS
-: <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
-, <a class="el" href="group__orx_module.html#gf44141f0bc45f319187952b4629b862c">orxModule.h</a>
+<li>orxSTATUS()
+: <a class="el" href="group__orx_module.html#gf44141f0bc45f319187952b4629b862c">orxModule.h</a>
+, <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gg18b11c4d0ed79ac2f8542e3bcfac340dfae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
 <li>orxSTATUS_NONE
@@ -3245,6 +3261,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxStructure.h</a>
 <li>orxStructure_GetChild()
 : <a class="el" href="group__orx_structure.html#ge595f4aeb26996db954c589d4582dbd0">orxStructure.h</a>
+<li>orxStructure_GetCounter()
+: <a class="el" href="group__orx_structure.html#g085d85e17a69a47684ac20fe9e1e966d">orxStructure.h</a>
 <li>orxStructure_GetFirst()
 : <a class="el" href="group__orx_structure.html#g19ed685999b2338e949f1332fc27ff2f">orxStructure.h</a>
 <li>orxStructure_GetFlags()
@@ -3255,8 +3273,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gc368eeddaae9c34df6c1a56f950e528b">orxStructure.h</a>
 <li>orxStructure_GetNext()
 : <a class="el" href="group__orx_structure.html#gdc054536d88700f7e8b10489e94609cf">orxStructure.h</a>
-<li>orxStructure_GetNumber()
-: <a class="el" href="group__orx_structure.html#g6eeb884934388de29b421ab8d8b05b2e">orxStructure.h</a>
 <li>orxStructure_GetParent()
 : <a class="el" href="group__orx_structure.html#g862d22374bae77072677d56b7f74d80d">orxStructure.h</a>
 <li>orxStructure_GetPrevious()
@@ -3319,10 +3335,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxStructure.h</a>
 <li>orxSTRUCTURE_MAGIC_TAG_DELETED
 : <a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxStructure.h</a>
-<li>orxStructure_Register()
-: <a class="el" href="group__orx_structure.html#ga56cb39392bd2ec50767317b4f7603fa">orxStructure.h</a>
 <li>orxSTRUCTURE_REGISTER
 : <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
+<li>orxStructure_Register()
+: <a class="el" href="group__orx_structure.html#ga56cb39392bd2ec50767317b4f7603fa">orxStructure.h</a>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#g95058db32c35e47042cf42e560bda596">orxStructure.h</a>
 <li>orxStructure_SetParent()
@@ -3409,8 +3425,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxText_Setup()
 : <a class="el" href="group__orx_text.html#gbaf8ba36746f278176c2efec5a0a14d4">orxText.h</a>
 <li>orxTEXTURE
-: <a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
-, <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
+: <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
+, <a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
 <li>orxTexture_Create()
 : <a class="el" href="group__orx_texture.html#g0234c4923d3a53bd299c36bc9a96c60b">orxTexture.h</a>
 <li>orxTexture_CreateFromFile()

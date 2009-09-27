@@ -583,6 +583,13 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 
+  /* Is screen? */
+  if(_pstTexture == sstTexture.pstScreen)
+  {
+    /* Updates its size (screen might have changed) */
+    orxDisplay_GetBitmapSize(orxDisplay_GetScreenBitmap(), &(((orxTEXTURE *)_pstTexture)->fWidth), &(((orxTEXTURE *)_pstTexture)->fHeight));
+  }
+
   /* Has size? */
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
   {

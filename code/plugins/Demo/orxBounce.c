@@ -32,11 +32,44 @@
 #include "orxPluginAPI.h"
 
 static orxU32       su32BallCounter = 0;
+static orxU32       su32VideoModeIndex = 0;
 static orxSPAWNER  *spoBallSpawner;
 static orxVIEWPORT *spstViewport;
 static orxFLOAT     sfShaderPhase = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency = orx2F(1.0f);
+
+/** Applies current selected video mode
+ */
+static void orxBounce_ApplyCurrentVideoMode()
+{
+  orxDISPLAY_VIDEO_MODE stVideoMode;
+  orxFLOAT              fWidth, fHeight;
+  orxCHAR               acBuffer[1024];
+
+  /* Gets desired video mode */
+  orxDisplay_GetVideoMode(su32VideoModeIndex, &stVideoMode);
+
+  /* Updates title string */
+  orxConfig_PushSection("Bounce");
+  orxString_NPrint(acBuffer, 1024, "%s (%ldx%ld)", orxConfig_GetString("Title"), stVideoMode.u32Width, stVideoMode.u32Height);
+  acBuffer[1023] = orxCHAR_NULL;
+  orxConfig_PopSection();
+
+  /* Updates display module config content */
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  orxConfig_SetString(orxDISPLAY_KZ_CONFIG_TITLE, acBuffer);
+  orxConfig_PopSection();
+
+  /* Gets current viewport relative size */
+  orxViewport_GetRelativeSize(spstViewport, &fWidth, &fHeight);
+
+  /* Applies new video mode */
+  orxDisplay_SetVideoMode(&stVideoMode);
+
+  /* Updates viewport to its previous relative size */
+  orxViewport_SetRelativeSize(spstViewport, fWidth, fHeight);
+}
 
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event
@@ -147,6 +180,28 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 {
   orxVECTOR vMousePos;
   orxBOOL   bInViewport;
+
+  if(orxInput_IsActive("PreviousResolution") && orxInput_HasNewStatus("PreviousResolution"))
+  {
+    /* Updates video mode index */
+    su32VideoModeIndex = (su32VideoModeIndex == 0) ? orxDisplay_GetVideoModeCounter() - 1 : su32VideoModeIndex - 1;
+
+    /* Applies it */
+    orxBounce_ApplyCurrentVideoMode();
+  }
+  else if(orxInput_IsActive("NextResolution") && orxInput_HasNewStatus("NextResolution"))
+  {
+    /* Updates video mode index */
+    su32VideoModeIndex = (su32VideoModeIndex >= orxDisplay_GetVideoModeCounter() - 1) ? 0 : su32VideoModeIndex + 1;
+
+    /* Applies it */
+    orxBounce_ApplyCurrentVideoMode();
+  }
+  if(orxInput_IsActive("ToggleFullScreen") && orxInput_HasNewStatus("ToggleFullScreen"))
+  {
+    /* Toggles full screen display */
+    orxDisplay_SetFullScreen(!orxDisplay_IsFullScreen());
+  }
 
   /* Gets mouse world position */
   bInViewport = (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos) != orxNULL) ? orxTRUE : orxFALSE;

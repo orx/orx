@@ -1201,6 +1201,117 @@ extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_IsFullScreen()
   return bResult;
 }
 
+extern "C" orxU32 orxFASTCALL orxDisplay_SFML_GetVideoModeCounter()
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  u32Result = (orxU32)sf::VideoMode::GetModesCount();
+
+  /* Done! */
+  return u32Result;
+}
+
+extern "C" orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SFML_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  orxDISPLAY_VIDEO_MODE *pstResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstVideoMode != orxNULL);
+
+  /* Is index valid? */
+  if(_u32Index < orxDisplay_SFML_GetVideoModeCounter())
+  {
+    /* Gets video mode */
+    sf::VideoMode &roVideoMode = sf::VideoMode::GetMode(_u32Index);
+
+    /* Stores info */
+    _pstVideoMode->u32Width   = roVideoMode.Width;
+    _pstVideoMode->u32Height  = roVideoMode.Height;
+    _pstVideoMode->u32Depth   = roVideoMode.BitsPerPixel;
+
+    /* Updates result */
+    pstResult = _pstVideoMode;
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  sf::VideoMode oVideoMode;
+  orxBOOL       bResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstVideoMode != orxNULL);
+
+  /* Stores info */
+  oVideoMode.Width        = _pstVideoMode->u32Width;
+  oVideoMode.Height       = _pstVideoMode->u32Height;
+  oVideoMode.BitsPerPixel = _pstVideoMode->u32Depth;
+
+  /* Updates result */
+  bResult = oVideoMode.IsValid() ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstVideoMode != orxNULL);
+
+  /* Is video mode available? */
+  if(orxDisplay_SFML_IsVideoModeAvailable(_pstVideoMode) != orxFALSE)
+  {
+    /* Updates local info */
+    sstDisplay.u32ScreenWidth   = _pstVideoMode->u32Width;
+    sstDisplay.u32ScreenHeight  = _pstVideoMode->u32Height;
+    sstDisplay.u32ScreenDepth   = _pstVideoMode->u32Depth;
+
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Creates new window */
+    sstDisplay.poRenderWindow->Create(sf::VideoMode(sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, sstDisplay.u32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
+
+    /* Enforces mouse cursor status */
+    sstDisplay.poRenderWindow->ShowMouseCursor(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR) ? true : false);
+
+    /* Enforces VSync status */
+    sstDisplay.poRenderWindow->UseVerticalSync(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? true : false);
+
+    /* Pops config section */
+    orxConfig_PopSection();
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1664,4 +1775,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VS
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
 orxPLUGIN_USER_CORE_FUNCTION_END();

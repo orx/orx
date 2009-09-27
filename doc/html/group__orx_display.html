@@ -22,6 +22,8 @@
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a></td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
@@ -178,6 +180,16 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g26e2f135b978a2dc39e53a8465940e42">orxDisplay_SetFullScreen</a> (orxBOOL _bFullScreen)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0bbde87afcc4090fd37efd155b5568df">orxDisplay_IsFullScreen</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g638dd5b17942872b2e681ca849ac43f2">orxDisplay_GetVideoModeCounter</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <br>
+<a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> <br>
+*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g7099d1d4919c383535a31bbe900f7e3c">orxDisplay_GetVideoMode</a> (orxU32 _u32Index, <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g9d682325a94ee3d0c1d9ae22c3ba3ed2">orxDisplay_SetVideoMode</a> (const <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4df9750ffeddd581b7eb6e086e851a50">orxDisplay_IsVideoModeAvailable</a> (const <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -1335,6 +1347,62 @@ Gets a text string <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g7099d1d4919c383535a31bbe900f7e3c"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetVideoMode" ref="g7099d1d4919c383535a31bbe900f7e3c" args="(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a>* orxFASTCALL orxDisplay_GetVideoMode           </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstVideoMode</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets an available video mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Index</em>&nbsp;</td><td>Video mode index, must be lesser than <a class="el" href="group__orx_display.html#g638dd5b17942872b2e681ca849ac43f2">orxDisplay_GetVideoModeCounter()</a> </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstVideoMode</em>&nbsp;</td><td>Storage for the video mode </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> / orxNULL if invalid </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g638dd5b17942872b2e681ca849ac43f2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetVideoModeCounter" ref="g638dd5b17942872b2e681ca849ac43f2" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxDisplay_GetVideoModeCounter           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets available video mode counter <dl class="return" compact><dt><b>Returns:</b></dt><dd>Available video mode counter </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="geaa35d99583568b07d3d8c83e7f1e5ac"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_Init" ref="geaa35d99583568b07d3d8c83e7f1e5ac" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -1372,6 +1440,32 @@ Inits the display module <dl class="return" compact><dt><b>Returns:</b></dt><dd>
 
 <p>
 Is in full screen mode? <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if full screen, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g4df9750ffeddd581b7eb6e086e851a50"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_IsVideoModeAvailable" ref="g4df9750ffeddd581b7eb6e086e851a50" args="(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxDisplay_IsVideoModeAvailable           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstVideoMode</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is video mode available <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstVideoMode</em>&nbsp;</td><td>Video mode to test </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE is available, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>
@@ -1913,6 +2007,32 @@ Sets a text string <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Display module setup 
+</div>
+</div><p>
+<a class="anchor" name="g9d682325a94ee3d0c1d9ae22c3ba3ed2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetVideoMode" ref="g9d682325a94ee3d0c1d9ae22c3ba3ed2" args="(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_SetVideoMode           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstVideoMode</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets an available video mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstVideoMode</em>&nbsp;</td><td>Video mode to set </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="gfaabd0c9b95224c08f531072369e80bf"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_Swap" ref="gfaabd0c9b95224c08f531072369e80bf" args="()" -->

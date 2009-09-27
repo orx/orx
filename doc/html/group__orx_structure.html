@@ -132,7 +132,7 @@
 <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g92c89569bf3d75646c5ae5a9f36ac58a">orxStructure_GetStorageType</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6eeb884934388de29b421ab8d8b05b2e">orxStructure_GetNumber</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g085d85e17a69a47684ac20fe9e1e966d">orxStructure_GetCounter</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g240a05b714cde3269191aaafcb5c56e7">orxStructure_Update</a> (void *_pStructure, const void *_phCaller, const <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
 
@@ -919,6 +919,32 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g085d85e17a69a47684ac20fe9e1e966d"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetCounter" ref="g085d85e17a69a47684ac20fe9e1e966d" args="(orxSTRUCTURE_ID _eStructureID)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxStructure_GetCounter           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramname"> <em>_eStructureID</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets given type structure counter <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>Concerned structure ID </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxU32 / orxU32_UNDEFINED </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g19ed685999b2338e949f1332fc27ff2f"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetFirst" ref="g19ed685999b2338e949f1332fc27ff2f" args="(orxSTRUCTURE_ID _eStructureID)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1056,32 +1082,6 @@ Gets structure list next <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g6eeb884934388de29b421ab8d8b05b2e"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetNumber" ref="g6eeb884934388de29b421ab8d8b05b2e" args="(orxSTRUCTURE_ID _eStructureID)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxStructure_GetNumber           </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
-          <td class="paramname"> <em>_eStructureID</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets given type structure number <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>Concerned structure ID </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxU32 / orxU32_UNDEFINED </dd></dl>
 
 </div>
 </div><p>
