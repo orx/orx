@@ -60,8 +60,6 @@
 
 /** Misc defines
  */
-#define orxBODY_KZ_CONFIG_POSITION            "Position"
-#define orxBODY_KZ_CONFIG_ROTATION            "Rotation"
 #define orxBODY_KZ_CONFIG_INERTIA             "Inertia"
 #define orxBODY_KZ_CONFIG_MASS                "Mass"
 #define orxBODY_KZ_CONFIG_LINEAR_DAMPING      "LinearDamping"
@@ -356,12 +354,16 @@ void orxFASTCALL orxBody_Exit()
  */
 orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY_DEF *_pstBodyDef)
 {
-  orxBODY *pstBody;
+  orxBODY    *pstBody;
+  orxOBJECT  *pstObject;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxASSERT(orxOBJECT(_pstOwner));
   orxASSERT((_pstBodyDef != orxNULL) || (orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE)));
+
+  /* Gets owner object */
+  pstObject = orxOBJECT(_pstOwner);
 
   /* Creates body */
   pstBody = orxBODY(orxStructure_Create(orxSTRUCTURE_ID_BODY));
@@ -385,8 +387,8 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
         orxMemory_Zero(&stMergedDef, sizeof(orxBODY_DEF));
 
         /* Merges template with specialized definition */
-        orxVector_Copy(&(stMergedDef.vPosition), (orxVector_IsNull(&(_pstBodyDef->vPosition)) == orxFALSE) ? &(_pstBodyDef->vPosition) : &(sstBody.stBodyTemplate.vPosition));
-        stMergedDef.fRotation       = (_pstBodyDef->fRotation != 0.0f) ? _pstBodyDef->fRotation : sstBody.stBodyTemplate.fRotation;
+        orxObject_GetWorldPosition(pstObject, &(stMergedDef.vPosition));
+        stMergedDef.fRotation       = orxObject_GetWorldRotation(pstObject);
         stMergedDef.fInertia        = (_pstBodyDef->fInertia > 0.0f) ? _pstBodyDef->fInertia : sstBody.stBodyTemplate.fInertia;
         stMergedDef.fMass           = (_pstBodyDef->fMass > 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
         stMergedDef.fLinearDamping  = (_pstBodyDef->fLinearDamping > 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
@@ -418,7 +420,7 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       pstBody->pstOwner = _pstOwner;
 
       /* Stores its scale */
-      orxObject_GetScale(orxOBJECT(_pstOwner), &(pstBody->vScale));
+      orxObject_GetScale(pstObject, &(pstBody->vScale));
 
       /* Stores its definition flags */
       pstBody->u32DefFlags = pstSelectedDef->u32Flags;
@@ -465,8 +467,6 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
     orxMemory_Zero(&stBodyDef, sizeof(orxBODY_DEF));
 
     /* Inits it */
-    orxConfig_GetVector(orxBODY_KZ_CONFIG_POSITION, &(stBodyDef.vPosition));
-    stBodyDef.fRotation       = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION);
     stBodyDef.fInertia        = orxConfig_GetFloat(orxBODY_KZ_CONFIG_INERTIA);
     stBodyDef.fMass           = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MASS);
     stBodyDef.fLinearDamping  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_LINEAR_DAMPING);
