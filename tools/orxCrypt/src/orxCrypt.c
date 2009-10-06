@@ -80,7 +80,7 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
   if(!orxString_Compare(_zSectionName, "Param"))
   {
     // Section?
-    if(_zKeyName == orxNULL)
+    if(!_zKeyName)
     {
       // Pushes it
       orxConfig_PushSection("Param");
@@ -110,7 +110,7 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
   else if(!orxString_Compare(_zSectionName, "Config"))
   {
     // Section?
-    if(_zKeyName == orxNULL)
+    if(!_zKeyName)
     {
       // Pushes it
       orxConfig_PushSection("Config");
