@@ -1227,7 +1227,7 @@ extern "C" orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SFML_GetVideoMode(orxU3
   if(_u32Index < orxDisplay_SFML_GetVideoModeCounter())
   {
     /* Gets video mode */
-    sf::VideoMode &roVideoMode = sf::VideoMode::GetMode(_u32Index);
+    sf::VideoMode roVideoMode = sf::VideoMode::GetMode(_u32Index);
 
     /* Stores info */
     _pstVideoMode->u32Width   = roVideoMode.Width;
