@@ -79,8 +79,24 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
   // Is param section?
   if(!orxString_Compare(_zSectionName, "Param"))
   {
+    // Section?
+    if(_zKeyName == orxNULL)
+    {
+      // Pushes it
+      orxConfig_PushSection("Param");
+
+      // Is empty?
+      if(orxConfig_GetKeyCounter() == 0)
+      {
+        // Don't save it
+        bResult = orxFALSE;
+      }
+
+      // Pops previous section
+      orxConfig_PopSection();
+    }
     // Is one of our keys?
-    if(_zKeyName
+    else if(_zKeyName
     && (!orxString_Compare(_zKeyName, "filelist")
      || !orxString_Compare(_zKeyName, "key")
      || !orxString_Compare(_zKeyName, "output")
@@ -88,6 +104,26 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
     {
       // Don't save it
       bResult = orxFALSE;
+    }
+  }
+  // Is config section?
+  else if(!orxString_Compare(_zSectionName, "Config"))
+  {
+    // Section?
+    if(_zKeyName == orxNULL)
+    {
+      // Pushes it
+      orxConfig_PushSection("Config");
+
+      // Is empty?
+      if(orxConfig_GetKeyCounter() == 0)
+      {
+        // Don't save it
+        bResult = orxFALSE;
+      }
+
+      // Pops previous section
+      orxConfig_PopSection();
     }
   }
 

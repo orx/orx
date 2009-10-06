@@ -75,6 +75,14 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 
 } orxDISPLAY_TRANSFORM;
 
+/** Video mode structure
+ */
+typedef struct __orxDISPLAY_VIDEO_MODE_t
+{
+  orxU32  u32Width, u32Height, u32Depth;
+
+} orxDISPLAY_VIDEO_MODE;
+
 /** Bitmap smoothing enum
  */
 typedef enum __orxDISPLAY_SMOOTHING_t
@@ -531,6 +539,32 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetFullScreen(o
  * @return orxTRUE if full screen, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsFullScreen();
+
+
+/** Gets available video mode counter
+ * @return Available video mode counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCounter();
+
+/** Gets an available video mode
+ * @param[in]   _u32Index                             Video mode index, must be lesser than orxDisplay_GetVideoModeCounter()
+ * @param[out]  _pstVideoMode                         Storage for the video mode
+ * @return orxDISPLAY_VIDEO_MODE / orxNULL if invalid
+ */
+extern orxDLLAPI orxDISPLAY_VIDEO_MODE *orxFASTCALL   orxDisplay_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode);
+
+/** Gets an available video mode
+ * @param[in]  _pstVideoMode                          Video mode to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
+
+/** Is video mode available
+ * @param[in]  _pstVideoMode                          Video mode to test
+ * @return orxTRUE is available, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
+
 
 #endif /* _orxDISPLAY_H_ */
 

@@ -155,6 +155,19 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
 
 
+/** Gets object's first child (only if created with a config ChildList)
+ * @param[in]   _pstObject    Concerned object
+ * @return      First child object / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *_pstObject);
+
+/** Gets object's next sibling (only if created with a config ChildList)
+ * @param[in]   _pstObject    Concerned object
+ * @return      Next sibling object / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+
 /** Links a structure to an object
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstStructure   Structure to link

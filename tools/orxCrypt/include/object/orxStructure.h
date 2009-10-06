@@ -228,11 +228,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Delete(void
  */
 extern orxDLLAPI orxSTRUCTURE_STORAGE_TYPE orxFASTCALL  orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID);
 
-/** Gets given type structure number
+/** Gets given type structure counter
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxU32 / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32     orxFASTCALL                 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxU32     orxFASTCALL                 orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID);
 
 /** Updates structure if update function was registered for the structure type
  * @param[in]   _pStructure    Concerned structure
