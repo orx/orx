@@ -2527,6 +2527,11 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     /* Restores previous encryption character */
     sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
   }
+  else
+  {
+    /* Logs */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] couldn't be loaded.", _zFileName);
+  }
 
   /* Updates load counter */
   sstConfig.u32LoadCounter--;
