@@ -334,14 +334,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   int   argc;
   char *argv[szMaxArgs];
-  char *pcToken, *pcNextToken;
+  char *pcToken, *pcNextToken, *pcFirstDelimiters;
   LPSTR lpFullCmdLine;
 
   // Gets full command line
   lpFullCmdLine = GetCommandLineA();
 
+  // Starts with a double quote?
+  if(*orxString_SkipWhiteSpaces(lpFullCmdLine) == '"')
+  {
+    // Gets first delimiters
+    pcFirstDelimiters = "\"";
+  }
+  else
+  {
+    // Gets first delimiters
+    pcFirstDelimiters = " ";
+  }
+
   // Process command line
-  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, "\"", &pcNextToken);
+  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &pcNextToken);
       pcToken && (argc < szMaxArgs);
       pcToken = strtok_s(NULL, " ", &pcNextToken))
   {
