@@ -427,18 +427,18 @@ static orxINLINE orxSTATUS              orxString_ToFloat(const orxSTRING _zStri
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
-  /* Linux / Mac / GP2X? */
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxMSVC__)
+  /* Linux / Mac / GP2X / Wii / MSVC? */
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxMSVC__)
 
   /* Converts it */
   *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxMSVC__ */
+#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxMSVC__ */
 
   /* Converts it */
   *_pfOutValue = strtof(_zString, &pcEnd);
 
-#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxMSVC__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxMSVC__ */
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))

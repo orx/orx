@@ -95,7 +95,7 @@ typedef enum __orxJOYSTICK_BUTTON_t
 } orxJOYSTICK_BUTTON;
 
 
-/** Axis enu,
+/** Axis enum
  */
 typedef enum __orxJOYSTICK_AXIS_t
 {

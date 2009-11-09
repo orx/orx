@@ -39,7 +39,7 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined (__orxMAC__) || defined(__orxGP2X__)
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
   #include <dlfcn.h>
 
@@ -69,24 +69,36 @@
 
   static const orxSTRING                                    szPluginLibraryExt = "dll";
 
-/* OTHERS */
+  #define __orxPLUGIN_DYNAMIC__
+
 #else /* __orxWINDOWS__ */
 
   typedef void *                                            orxSYSPLUGIN;
 
-  #define orxPLUGIN_OPEN(PLUGIN)                            dlopen(PLUGIN, RTLD_LAZY)
-  #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)      dlsym(PLUGIN, SYMBOL)
-  #define orxPLUGIN_CLOSE(PLUGIN)                           dlclose(PLUGIN)
+  /* Wii */
+  #ifdef __orxWII__
 
-#ifdef __orxMAC__
+    #undef __orxPLUGIN_DYNAMIC__
 
-  static const orxSTRING                                    szPluginLibraryExt = "so";
+  #else /* __orxWII__ */
 
-#else /* __orxMAC__ */
+    #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
+    #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
+    #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
 
-  static const orxSTRING                                    szPluginLibraryExt = "so";
+    #ifdef __orxMAC__
 
-#endif /* __orxMAC__ */
+      static const orxSTRING                                szPluginLibraryExt = "so";
+
+    #else /* __orxMAC__ */
+
+      static const orxSTRING                                szPluginLibraryExt = "so";
+
+    #endif /* __orxMAC__ */
+
+    #define __orxPLUGIN_DYNAMIC__
+
+  #endif /* __orxWII__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -925,7 +937,7 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() - %s:%ld> has been called before being loaded!\nPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() @ %s:%ld> has been called before being loaded!\nPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
   return orxNULL;
@@ -938,9 +950,12 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
  */
 orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
 {
-  orxSYSPLUGIN pstSysPlugin;
-  orxPLUGIN_INFO *pstPluginInfo;
   orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
+  orxSYSPLUGIN    pstSysPlugin;
+  orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -1002,6 +1017,13 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't load the plugin <%s>.", _zPluginFileName);
   }
 
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
+
   /* Returns its handle */
   return hPluginHandle;
 }
@@ -1014,8 +1036,11 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
  */
 orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
 {
-  orxCHAR   zFileName[256];
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
+  orxCHAR zFileName[256];
 
 #ifdef __orxDEBUG__
 
@@ -1064,6 +1089,13 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
 
 #endif /* __orxDEBUG__ */
 
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
+
   /* Done! */
   return hResult;
 }
@@ -1074,7 +1106,10 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
  */
 orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
   orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
@@ -1089,15 +1124,22 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
   {
     /* Deletes plugin */
     orxPlugin_DeletePluginInfo(pstPluginInfo);
+
+    /* Found */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin info for handle.");
-
-    /* Not found */
-    eResult = orxSTATUS_FAILURE;
   }
+
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
 
   /* Done! */
   return eResult;
@@ -1110,8 +1152,11 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
  */
 orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, const orxSTRING _zFunctionName)
 {
-  orxPLUGIN_INFO *pstPluginInfo;
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
+  orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -1140,6 +1185,13 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, c
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin info for handle.");
   }
 
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
+
   /* Done! */
   return pfnFunction;
 }
@@ -1150,8 +1202,11 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, c
  */
 orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
 {
-  orxPLUGIN_INFO *pstPluginInfo;
   orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
+  orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -1171,6 +1226,13 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
     }
   }
 
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
+
   /* Done! */
   return hPluginHandle;
 }
@@ -1181,8 +1243,11 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
  */
 const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
 {
-  orxPLUGIN_INFO *pstPluginInfo;
   orxSTRING zPluginName = orxSTRING_EMPTY;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
+  orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -1203,6 +1268,13 @@ const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin info for handle.");
   }
 
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
+
   /* Done! */
-  return(zPluginName);
+  return zPluginName;
 }

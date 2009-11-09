@@ -28,6 +28,12 @@
 
 #ifdef __orxEMBEDDED__
 
+#ifdef __orxWII__
+
+//! TODO: Includes all plugins to embed for Wii
+
+#else /* __orxWII__ */
+
 /** Includes all plugins to embed
  */
 #include <../plugins/Display/SFML/orxDisplay.cpp>
@@ -38,5 +44,7 @@
 #include <../plugins/Render/Home/orxRender.c>
 #include <../plugins/Sound/SFML/orxSoundSystem.cpp>
 #include <../plugins/System/SFML/orxSystem.cpp>
+
+#endif /* __orxWII__ */
 
 #endif /* __orxEMBEDDED__ */
