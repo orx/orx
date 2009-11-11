@@ -113,7 +113,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
 
 #else /* __orxWINDOWS__ */
 
-  timeval stCurrentTime;
+  struct timeval stCurrentTime;
 
   /* Gets current time */
   if(gettimeofday(&stCurrentTime, NULL) == 0)
