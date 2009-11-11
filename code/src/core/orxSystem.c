@@ -33,11 +33,12 @@
 #include "memory/orxMemory.h"
 #include "math/orxMath.h"
 
+#include <time.h>
+
 #ifdef __orxWINDOWS__
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <time.h>
 
 #else /* __orxWINDOWS__ */
 
@@ -118,7 +119,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
   if(gettimeofday(&stCurrentTime, NULL) == 0)
   {
     /* Updates result */
-    dResult = (orxDOUBLE)stCurrentTime.tv_sec + ((orxDOUBLE)Time.tv_usec * (orxDOUBLE)0.000001);
+    dResult = (orxDOUBLE)stCurrentTime.tv_sec + ((orxDOUBLE)stCurrentTime.tv_usec * (orxDOUBLE)0.000001);
   }
   else
   {
