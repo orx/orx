@@ -133,7 +133,6 @@
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Physics.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Render.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_SoundSystem.h" />
-		<Unit filename="..\..\..\include\plugin\define\orxPlugin_System.h" />
 		<Unit filename="..\..\..\include\plugin\orxPlugin.h" />
 		<Unit filename="..\..\..\include\plugin\orxPluginCore.h" />
 		<Unit filename="..\..\..\include\plugin\orxPluginType.h" />

@@ -43,7 +43,6 @@
 #include <../plugins/Physics/Box2D/orxPhysics.cpp>
 #include <../plugins/Render/Home/orxRender.c>
 #include <../plugins/Sound/SFML/orxSoundSystem.cpp>
-#include <../plugins/System/SFML/orxSystem.cpp>
 
 #endif /* __orxWII__ */
 

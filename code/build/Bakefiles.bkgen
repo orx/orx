@@ -6,7 +6,7 @@
 	</input>
 
     <add-formats>
-        gnu,autoconf,mingw
+        gnu,mingw
     </add-formats>
 
     <add-flags files="bakefiles/orx.bkl" formats="autoconf">

@@ -41,10 +41,6 @@
 #define _orxSYSTEM_H_
 
 #include "orxInclude.h"
-#include "plugin/orxPluginCore.h"
-
-
-typedef orxU32                      orxDATE;
 
 
 /** Event enum
@@ -64,17 +60,9 @@ typedef enum __orxSYSTEM_EVENT_t
 } orxSYSTEM_EVENT;
 
 
-/***************************************************************************
- * Functions directly implemented by orx core
- ***************************************************************************/
-
-/** Setups the system module */
+/** System module setup
+ */
 extern orxDLLAPI void orxFASTCALL       orxSystem_Setup();
-
-
-/***************************************************************************
- * Functions extended by plugins
- ***************************************************************************/
 
 /** Inits the system module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

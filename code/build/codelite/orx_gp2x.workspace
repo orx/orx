@@ -7,10 +7,8 @@
   <Project Name="Bounce" Path="orxDemo/Bounce.project" Active="No"/>
   <Project Name="Scroll" Path="orxDemo/Scroll.project" Active="No"/>
   <Project Name="orxDisplay_SDL" Path="orxDisplay_SDL/orxDisplay_SDL.project" Active="No"/>
-  <Project Name="orxSystem_SDL" Path="orxSystem_SDL/orxSystem_SDL.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="GP2X Debug" Selected="yes">
-      <Project Name="orxSystem_SDL" ConfigName="GP2X Debug"/>
       <Project Name="Scroll" ConfigName="GP2X Debug"/>
       <Project Name="orxRender_Home" ConfigName="GP2X Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="GP2X Debug"/>
@@ -20,7 +18,6 @@
       <Project Name="orx" ConfigName="GP2X Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="GP2X Release" Selected="no">
-      <Project Name="orxSystem_SDL" ConfigName="GP2X Release"/>
       <Project Name="Scroll" ConfigName="GP2X Release"/>
       <Project Name="orxRender_Home" ConfigName="GP2X Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="GP2X Release"/>

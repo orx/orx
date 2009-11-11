@@ -33,10 +33,6 @@
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
 		</Project>
-		<Project filename="orxSystem_SFML\orxSystem_SFML.cbp">
-			<Depends filename="orxLIB\orxLIB.cbp" />
-			<Depends filename="orx\orx.cbp" />
-		</Project>
 		<Project filename="orxDemo\Bounce.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />

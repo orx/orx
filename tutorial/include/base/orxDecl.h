@@ -47,12 +47,17 @@
 
 /* *** Platform dependant base declarations */
 
-/* PowerPC? */
-#if defined(__ppc__) || defined(__POWERPC__)
+/* No compiler defines? */
+#if !defined(__orxPPC__)
 
-  #define __orxPPC__
+  /* PowerPC? */
+  #if defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__)
 
-#endif /* __ppc__ || __POWERPC__ */
+    #define __orxPPC__
+
+  #endif /* __ppc__ || PPC || __PPC || __POWERPC__ */
+
+#endif /* !__orxPPC__ */
 
 
 /* No compiler defines? */
@@ -78,7 +83,7 @@
 
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -100,13 +105,18 @@
 
     #define __orxMAC__
 
+  /* Wii? */
+  #elif defined(__orxPPC__)
+
+    #define __orxWII__
+
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ && !__orxWII__ */
 
 
 #ifdef __cplusplus
@@ -152,8 +162,8 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
+  /* Linux / Mac / GP2X / Wii */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__)
 
     #if defined(__orxGP2X__) || defined(__orxPPC__)
 
@@ -185,7 +195,14 @@
     /** The null adress. */
     #define orxNULL             (0)
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
+    #ifdef __orxWII__
+
+      /* Wii version can only be embedded due to the lack of dlfcn presence */
+      #define __orxEMBEDDED__
+
+    #endif /* __orxWII__ */
+
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -195,7 +212,7 @@
 
   #ifdef __orxEMBEDDED__
 
-    #define orxDLLAPI orxIMPORT /* Compiling embedded plug-in => API doens't need to be imported */
+    #define orxDLLAPI orxIMPORT /* Compiling embedded plug-in => API doesn't need to be imported */
 
   #else
 

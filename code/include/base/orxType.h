@@ -60,6 +60,7 @@
   typedef unsigned  long          orxBOOL;
 
   typedef float                   orxFLOAT;
+  typedef double                  orxDOUBLE;
 
   typedef char                    orxCHAR;
   typedef orxCHAR *               orxSTRING;
@@ -104,6 +105,7 @@
     typedef unsigned  long        orxBOOL;
 
     typedef float                 orxFLOAT;
+    typedef double                orxDOUBLE;
 
     typedef char                  orxCHAR;
     typedef orxCHAR *             orxSTRING;

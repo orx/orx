@@ -57,7 +57,6 @@
 #include "plugin/define/orxPlugin_Physics.h"
 #include "plugin/define/orxPlugin_Render.h"
 #include "plugin/define/orxPlugin_SoundSystem.h"
-#include "plugin/define/orxPlugin_System.h"
 
 
 /*
@@ -70,7 +69,6 @@ orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(MOUSE);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(PHYSICS);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(RENDER);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SOUNDSYSTEM);
-orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SYSTEM);
 
 /*
  * Inline core plugin registration function
@@ -84,7 +82,6 @@ static orxINLINE void orxPlugin_RegisterCorePlugins()
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PHYSICS)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(RENDER)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(SOUNDSYSTEM)();
-  orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(SYSTEM)();
 }
 
 #endif /*_orxPLUGIN_COREDEFINE_H_*/

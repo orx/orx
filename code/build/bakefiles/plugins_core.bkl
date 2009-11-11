@@ -208,22 +208,6 @@
       <sources>plugins/Physics/Box2D/orxPhysics.cpp</sources>
     </orx-plugin>
 
-  <!-- SYSTEM -->
-
-	<!-- Depends on SDL -->
-  	<orx-plugin id="orxSystem_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
-      <dllname>orxSystem_SDL$(orxSUFFIX)</dllname>
-  		<destination></destination>
-  		<sources>plugins/System/SDL/orxSystem.c</sources>
-    </orx-plugin>
-
-	<!-- Depends on SFML -->
-  	<orx-plugin id="orxSystem_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
-      <dllname>orxSystem_SFML$(orxSUFFIX)</dllname>
-      <destination></destination>
-      <sources>plugins/System/SFML/orxSystem.cpp</sources>
-  	</orx-plugin> -->
-
 	<!-- BOUNCE DEMO -->
 
 	<!-- Depends on nothing -->

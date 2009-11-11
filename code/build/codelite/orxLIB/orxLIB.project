@@ -162,7 +162,6 @@
         <File Name="../../../include/plugin/define/orxPlugin_Physics.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Render.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_SoundSystem.h"/>
-        <File Name="../../../include/plugin/define/orxPlugin_System.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="render">

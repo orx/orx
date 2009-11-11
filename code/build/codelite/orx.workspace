@@ -4,7 +4,6 @@
   <Project Name="orxLIB" Path="orxLIB/orxLIB.project" Active="No"/>
   <Project Name="orxKeyboard_SFML" Path="orxKeyboard_SFML/orxKeyboard_SFML.project"/>
   <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D/orxPhysics_Box2D.project"/>
-  <Project Name="orxSystem_SFML" Path="orxSystem_SFML/orxSystem_SFML.project"/>
   <Project Name="orxDisplay_SFML" Path="orxDisplay_SFML/orxDisplay_SFML.project"/>
   <Project Name="orx" Path="orx/orx.project" Active="Yes"/>
   <Project Name="orxMouse_SFML" Path="orxMouse_SFML/orxMouse_SFML.project"/>
@@ -14,7 +13,6 @@
   <Project Name="orxSoundSystem_SFML" Path="orxSoundSystem_SFML/orxSoundSystem_SFML.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Linux Static Debug" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Linux Static Debug"/>
       <Project Name="Scroll" ConfigName="Linux Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="Linux Static Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Linux Static Debug"/>
@@ -28,7 +26,6 @@
       <Project Name="orx" ConfigName="Linux Static Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Static Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Linux Static Release"/>
       <Project Name="Scroll" ConfigName="Linux Static Release"/>
       <Project Name="orxRender_Home" ConfigName="Linux Static Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Linux Static Release"/>
@@ -42,7 +39,6 @@
       <Project Name="orx" ConfigName="Linux Static Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Dynamic Debug" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Debug"/>
       <Project Name="orxRender_Home" ConfigName="Linux Dynamic Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Debug"/>
       <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Debug"/>
@@ -56,7 +52,6 @@
       <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
@@ -71,7 +66,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Static Debug" Selected="no">
       <Project Name="Scroll" ConfigName="Linux Embedded Static Debug"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -85,7 +79,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Static Release" Selected="no">
       <Project Name="Scroll" ConfigName="Linux Embedded Static Release"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -99,7 +92,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Dynamic Debug" Selected="no">
       <Project Name="Scroll" ConfigName="Linux Embedded Dynamic Debug"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -113,7 +105,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Dynamic Release" Selected="no">
       <Project Name="Scroll" ConfigName="Linux Embedded Dynamic Release"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -126,7 +117,6 @@
       <Project Name="Bounce" ConfigName="Linux Embedded Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Static Debug" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Win32 Static Debug"/>
       <Project Name="Scroll" ConfigName="Win32 Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Static Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Win32 Static Debug"/>
@@ -140,7 +130,6 @@
       <Project Name="orx" ConfigName="Win32 Static Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Static Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Win32 Static Release"/>
       <Project Name="Scroll" ConfigName="Win32 Static Release"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Static Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Win32 Static Release"/>
@@ -154,7 +143,6 @@
       <Project Name="orx" ConfigName="Win32 Static Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Dynamic Debug" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxMouse_SFML" ConfigName="Win32 Dynamic Debug"/>
@@ -168,7 +156,6 @@
       <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Release"/>
       <Project Name="Scroll" ConfigName="Win32 Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Win32 Dynamic Release"/>
@@ -183,7 +170,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Static Debug" Selected="no">
       <Project Name="Scroll" ConfigName="Win32 Embedded Static Debug"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -197,7 +183,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Static Release" Selected="no">
       <Project Name="Scroll" ConfigName="Win32 Embedded Static Release"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -211,7 +196,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Dynamic Debug" Selected="no">
       <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Debug"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
@@ -225,7 +209,6 @@
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Dynamic Release" Selected="yes">
       <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Release"/>
-      <Project Name="orxSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
