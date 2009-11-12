@@ -44,7 +44,7 @@
 #include <time.h>
 
 
-/** Platform independant defines
+/** Platform independent defines
  */
 
 #define orxDEBUG_KU32_STATIC_FLAG_NONE          0x00000000

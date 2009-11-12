@@ -45,7 +45,7 @@
 #define _orxDECL_H_
 
 
-/* *** Platform dependant base declarations */
+/* *** Platform dependent base declarations */
 
 /* No processor defines? */
 #if !defined(__orxPPC__) && !defined(__orxX86_64__)
