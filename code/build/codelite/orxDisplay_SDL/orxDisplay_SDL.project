@@ -19,7 +19,7 @@
   <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/gp2x/plugins/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g">
+      <Compiler Required="yes" Options="-g -fPIC">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
@@ -52,7 +52,7 @@
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/gp2x/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing -fPIC">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -84,7 +84,7 @@
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -W">
+      <Compiler Required="yes" Options="-g -W -fPIC">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -114,7 +114,7 @@
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O2 -fPIC">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC  -s">
@@ -143,7 +143,7 @@
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -W">
+      <Compiler Required="yes" Options="-g -W -fPIC">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -172,7 +172,7 @@
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O2 -fPIC">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">

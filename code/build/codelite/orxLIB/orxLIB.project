@@ -206,7 +206,7 @@
   <Dependencies Name="Linux Embedded Dynamic Debug"/>
   <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
@@ -235,7 +235,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -263,7 +263,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -293,7 +293,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
@@ -322,7 +322,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -Wno-write-strings" Required="yes">
+      <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -372,7 +372,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -421,7 +421,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -Wno-write-strings" Required="yes">
+      <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -452,7 +452,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -482,7 +482,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -510,7 +510,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>

@@ -8,7 +8,7 @@
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/linux/01_Object.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../01_Object.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O2 -fPIC">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">

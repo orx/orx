@@ -9,7 +9,7 @@
   <Settings Type="Executable">
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/linux/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner" CommandArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O2 -Wno-write-strings">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,-rpath ./">

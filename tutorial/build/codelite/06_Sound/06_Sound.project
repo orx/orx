@@ -9,7 +9,7 @@
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/linux/06_Sound.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../06_Sound.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O2 -fPIC">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
