@@ -47,17 +47,22 @@
 
 /* *** Platform dependant base declarations */
 
-/* No compiler defines? */
-#if !defined(__orxPPC__)
+/* No processor defines? */
+#if !defined(__orxPPC__) && !defined(__orxX86_64__)
 
   /* PowerPC? */
   #if defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__)
 
     #define __orxPPC__
 
-  #endif /* __ppc__ || PPC || __PPC || __POWERPC__ */
+  /* x86_64? */
+  #elif defined(__x86_64)
 
-#endif /* !__orxPPC__ */
+    #define __orxX86_64__
+
+  #endif
+
+#endif /* !__orxPPC__ && !__orxX86_64__ */
 
 
 /* No compiler defines? */
@@ -165,7 +170,7 @@
   /* Linux / Mac / GP2X / Wii */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__)
 
-    #if defined(__orxGP2X__) || defined(__orxPPC__)
+    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__)
 
       #define orxFASTCALL
 
@@ -173,7 +178,7 @@
 
       #define orxCDECL
 
-    #else /* __orxGP2X__ || __orxPPC__ */
+    #else /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */
 
       #define orxFASTCALL       __attribute__ ((fastcall))
 
@@ -181,7 +186,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxGP2X__ || __orxPPC__ */
+    #endif /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
