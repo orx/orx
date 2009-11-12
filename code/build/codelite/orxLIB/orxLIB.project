@@ -322,7 +322,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -372,7 +372,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -421,7 +421,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
@@ -452,7 +452,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>

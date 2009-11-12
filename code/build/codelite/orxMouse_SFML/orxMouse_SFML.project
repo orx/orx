@@ -42,7 +42,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -82,7 +82,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
@@ -121,7 +121,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -161,7 +161,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
