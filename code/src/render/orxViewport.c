@@ -34,7 +34,6 @@
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
-#include "render/orxShaderPointer.h"
 
 
 /** Module flags
@@ -927,6 +926,25 @@ orxBOOL orxFASTCALL orxViewport_IsShaderEnabled(const orxVIEWPORT *_pstViewport)
 
   /* Done! */
   return bResult;
+}
+
+/** Gets a viewport's shader pointer
+ * @param[in]   _pstViewport      Concerned viewport
+ * @return      orxSHADERPOINTER / orxNULL
+ */
+const orxSHADERPOINTER *orxFASTCALL orxViewport_GetShaderPointer(const orxVIEWPORT *_pstViewport)
+{
+  orxSHADERPOINTER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Updates result */
+  pstResult = _pstViewport->pstShaderPointer;
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Sets a viewport position

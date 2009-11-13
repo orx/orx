@@ -69,6 +69,8 @@
 #define orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM  "UseCustomParam"
 #define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
 
+#define orxSHADER_KZ_SCREEN                   "screen"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -404,8 +406,17 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Valid? */
                   if(zValue != orxSTRING_EMPTY)
                   {
-                    /* Creates texture */
-                    pstTexture = orxTexture_CreateFromFile(zValue);
+                    /* Is screen? */
+                    if(!orxString_Compare(zValue, orxSHADER_KZ_SCREEN))
+                    {
+                      /* Gets its texture */
+                      pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
+                    }
+                    else
+                    {
+                      /* Creates texture */
+                      pstTexture = orxTexture_CreateFromFile(zValue);
+                    }
                   }
                   else
                   {

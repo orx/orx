@@ -44,6 +44,7 @@
 #include "orxInclude.h"
 #include "core/orxClock.h"
 #include "render/orxCamera.h"
+#include "render/orxShaderPointer.h"
 #include "display/orxTexture.h"
 
 
@@ -190,6 +191,12 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_EnableShader(orxVIEWPO
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsShaderEnabled(const orxVIEWPORT *_pstViewport);
+
+/** Gets a viewport's shader pointer
+ * @param[in]   _pstViewport      Concerned viewport
+ * @return      orxSHADERPOINTER / orxNULL
+ */
+extern orxDLLAPI const orxSHADERPOINTER *orxFASTCALL orxViewport_GetShaderPointer(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport position

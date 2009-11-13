@@ -56,8 +56,6 @@
 
 #define orxTEXTURE_KU32_TABLE_SIZE              128
 
-#define orxTEXTURE_KZ_SCREEN_NAME               "-=SCREEN=-"
-
 
 /***************************************************************************
  * Structure declaration                                                   *

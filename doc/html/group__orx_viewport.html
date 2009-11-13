@@ -76,6 +76,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g3bc8d8736d0e0e062fcbbbe8abdc086c">orxViewport_IsShaderEnabled</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const <br>
+<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gf2a59486f07d77ec447a0ad2ae9bb9c0">orxViewport_GetShaderPointer</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g5512ae8be546ba73aa39b4031a9d1601">orxViewport_SetPosition</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxFLOAT _fX, orxFLOAT _fY)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g24b66707b17087ccdac32062abdfdc96">orxViewport_SetRelativePosition</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxU32 _u32AlignFlags)</td></tr>
@@ -683,6 +686,32 @@ Gets a viewport relative size <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfHeight</em>&nbsp;</td><td>Relative height </td></tr>
   </table>
 </dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gf2a59486f07d77ec447a0ad2ae9bb9c0"></a><!-- doxytag: member="orxViewport.h::orxViewport_GetShaderPointer" ref="gf2a59486f07d77ec447a0ad2ae9bb9c0" args="(const orxVIEWPORT *_pstViewport)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const <a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a>* orxFASTCALL orxViewport_GetShaderPointer           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstViewport</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a viewport's shader pointer <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSHADERPOINTER / orxNULL </dd></dl>
 
 </div>
 </div><p>

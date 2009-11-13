@@ -128,22 +128,19 @@ static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstE
   /* Depending on event ID */
   switch(_pstEvent->eID)
   {
-    case orxRENDER_EVENT_OBJECT_STOP:
     case orxRENDER_EVENT_VIEWPORT_STOP:
+    case orxRENDER_EVENT_OBJECT_STOP:
     {
-      orxSHADERPOINTER *pstShaderPointer;
+      const orxSHADERPOINTER *pstShaderPointer;
 
-      /* For all shader pointers */
-      for(pstShaderPointer = orxSHADERPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADERPOINTER));
-          pstShaderPointer != orxNULL;
-          pstShaderPointer = orxSHADERPOINTER(orxStructure_GetNext(pstShaderPointer)))
+      /* Gets its shader pointer */
+      pstShaderPointer = (_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_STOP) ? orxViewport_GetShaderPointer(orxVIEWPORT(_pstEvent->hSender)) : orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), SHADERPOINTER);
+
+      /* Found? */
+      if(pstShaderPointer != orxNULL)
       {
-        /* Corresponding owner? */
-        if(pstShaderPointer->pstOwner == orxSTRUCTURE(_pstEvent->hSender))
-        {
-          /* Renders it */
-          orxShaderPointer_Render(pstShaderPointer);
-        }
+        /* Renders it */
+        orxShaderPointer_Render(pstShaderPointer);
       }
 
       break;
