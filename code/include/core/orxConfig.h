@@ -107,6 +107,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Save(const orxSTRING _zFileNam
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SelectSection(const orxSTRING _zSectionName);
 
+/** Sets a section's parent
+ * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
+ * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName);
+
 /** Gets current working section
  * @return Current selected section
  */

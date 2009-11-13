@@ -12,6 +12,7 @@ orx 1.1 rc0
 * Removed AutoDelete property for spawners
 * Added orxObject_GetChild() / orxObject_GetSibling() for querying dependencies (for objects created through config's ChildList property only)
 * Fixed config block value incorrectly saved by orxConfig_Save()
+* Config section inheritance can now easily be modified on-the-fly, at runtime (orxConfig_SetParent())
 * Added 'screen' keyword for ShaderList properties
 * Optimized shader lists processing when rendering objects & viewports
 * Fixed tutorial #5 (viewport) jerkyness

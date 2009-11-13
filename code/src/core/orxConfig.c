@@ -1914,6 +1914,9 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
   }
   else
   {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to select config section (%s), invalid name.", _zSectionName);
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -1924,6 +1927,60 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     /* Restores space */
     *pcEnd = ' ';
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a section's parent
+ * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
+ * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased
+ */
+orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName)
+{
+  orxCONFIG_SECTION  *pstPreviousSection;
+  orxSTATUS           eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+
+  /* Backups current section */
+  pstPreviousSection = sstConfig.pstCurrentSection;
+
+  /* Selects concerned section */
+  eResult = orxConfig_SelectSection(_zSectionName);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Has parent? */
+    if(_zParentName != orxNULL)
+    {
+      orxCONFIG_SECTION *pstSection;
+
+      /* Stores it */
+      pstSection = sstConfig.pstCurrentSection;
+
+      /* Selects parent section */
+      eResult = orxConfig_SelectSection(_zParentName);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates concerned section's parent */
+        pstSection->u32ParentID = sstConfig.pstCurrentSection->u32ID;
+      }
+    }
+    else
+    {
+      /* Clears its parent */
+      sstConfig.pstCurrentSection->u32ParentID = 0;
+    }
+  }
+
+  /* Restores previous section */
+  sstConfig.pstCurrentSection = pstPreviousSection;
 
   /* Done! */
   return eResult;

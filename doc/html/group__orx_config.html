@@ -44,6 +44,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ge7895ee64c94af8fa264c1e00e95833b">orxConfig_SelectSection</a> (const orxSTRING _zSectionName)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g896fbb4078e19b04136589050f27488d">orxConfig_SetParent</a> (const orxSTRING _zSectionName, const orxSTRING _zParentName)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gbe3d8af4f39e50865bacc61ca74812b6">orxConfig_GetCurrentSection</a> ()</td></tr>
 
@@ -1137,6 +1139,41 @@ Writes a float value to config <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g896fbb4078e19b04136589050f27488d"></a><!-- doxytag: member="orxConfig.h::orxConfig_SetParent" ref="g896fbb4078e19b04136589050f27488d" args="(const orxSTRING _zSectionName, const orxSTRING _zParentName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_SetParent           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zSectionName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zParentName</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a section's parent <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSectionName</em>&nbsp;</td><td>Concerned section, if the section doesn't exist, it will be created </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zParentName</em>&nbsp;</td><td>Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>

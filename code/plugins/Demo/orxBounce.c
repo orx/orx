@@ -115,7 +115,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
       {
         /* Deletes corresponding object */
-        orxObject_Delete(orxOBJECT(_pstEvent->hSender));
+        orxObject_SetLifeTime(orxOBJECT(_pstEvent->hSender), orxFLOAT_0);
 
         /* Updates ball counter */
         su32BallCounter--;
@@ -316,6 +316,11 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+    orxConfig_SetParent("Wall1", orxNULL);
+    orxConfig_SetParent("Wall2", "Ball");
+    orxConfig_SetParent("Wall3", "TotoAimeLesFraises");
+    orxConfig_Save("testt.ini", orxFALSE, orxNULL);
   }
   else
   {
