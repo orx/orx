@@ -24,7 +24,7 @@
  * @date 14/11/2003
  * @author iarwain@orx-project.org
  *
- * SFML display plugin implementation
+ * SDL display plugin implementation
  *
  */
 
