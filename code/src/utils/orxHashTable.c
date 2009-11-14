@@ -99,7 +99,7 @@ static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable
 orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
   orxHASHTABLE *pstHashTable = orxNULL; /* New created hash table */
-  orxU32 u32Flags;                  /* Flags used for bank creation */
+  orxU32        u32Flags;               /* Flags used for bank creation */
 
   /* Checks */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);

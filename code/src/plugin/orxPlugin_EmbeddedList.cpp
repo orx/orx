@@ -26,23 +26,29 @@
  *
  */
 
+
+#include "orxInclude.h"
+
+
 #ifdef __orxEMBEDDED__
 
 #ifdef __orxWII__
 
 //! TODO: Includes all plugins to embed for Wii
+#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
 
 #else /* __orxWII__ */
 
 /** Includes all plugins to embed
  */
-#include <../plugins/Display/SFML/orxDisplay.cpp>
-#include <../plugins/Joystick/SFML/orxJoystick.cpp>
-#include <../plugins/Keyboard/SFML/orxKeyboard.cpp>
-#include <../plugins/Mouse/SFML/orxMouse.cpp>
-#include <../plugins/Physics/Box2D/orxPhysics.cpp>
-#include <../plugins/Render/Home/orxRender.c>
-#include <../plugins/Sound/SFML/orxSoundSystem.cpp>
+#include "../plugins/Display/SFML/orxDisplay.cpp"
+#include "../plugins/Joystick/SFML/orxJoystick.cpp"
+#include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
+#include "../plugins/Mouse/SFML/orxMouse.cpp"
+#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
+#include "../plugins/Sound/SFML/orxSoundSystem.cpp"
 
 #endif /* __orxWII__ */
 
