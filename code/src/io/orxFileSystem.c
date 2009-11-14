@@ -220,18 +220,18 @@ void orxFASTCALL orxFileSystem_Exit()
  */
 orxBOOL orxFASTCALL orxFileSystem_Exists(const orxSTRING _zFileName)
 {
-  orxFILESYSTEM_INFO stInfos;
+  orxFILESYSTEM_INFO stInfo;
 
   /* Clears it */
-  orxMemory_Zero(&stInfos, sizeof(orxFILESYSTEM_INFO));
+  orxMemory_Zero(&stInfo, sizeof(orxFILESYSTEM_INFO));
 
   /* Done! */
-	return(orxFileSystem_Info(_zFileName, &(stInfos)) == orxSTATUS_SUCCESS);
+	return(orxFileSystem_Info(_zFileName, &(stInfo)) == orxSTATUS_SUCCESS);
 }
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
  * @param[in] _zSearchPattern      Pattern to find
- * @param[out] _pstFileInfos       Informations about the first file found
+ * @param[out] _pstFileInfo        Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
 orxBOOL orxFASTCALL orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orxFILESYSTEM_INFO *_pstFileInfo)
@@ -382,7 +382,7 @@ orxBOOL orxFASTCALL orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orx
 }
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFileSystem_FindFirst
- * @param[in,out] _pstFileInfos    Informations about the found file
+ * @param[in,out] _pstFileInfo    Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
 orxBOOL orxFASTCALL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
@@ -428,7 +428,7 @@ orxBOOL orxFASTCALL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
   while((!bResult)
      && (pstDirEnt = readdir((DIR*)_pstFileInfo->hInternal)))
   {
-    /* Gets file infos */
+    /* Gets file info */
     orxFileSystem_GetInfoFromData(pstDirEnt, _pstFileInfo);
 
     /* Match ? */
@@ -442,7 +442,7 @@ orxBOOL orxFASTCALL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
 }
 
 /** Closes a search (free the memory allocated for this search)
- * @param[in] _pstFileInfos        Informations returned during search
+ * @param[in] _pstFileInfo         Informations returned during search
  */
 void orxFASTCALL orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
 {
@@ -474,7 +474,7 @@ void orxFASTCALL orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
 
 /** Retrieves informations about a file
  * @param[in] _zFileName            Files used to get informations
- * @param[out] _pstFileInfos        Returned file's informations
+ * @param[out] _pstFileInfo         Returned file's informations
  * @return Returns the status of the operation
  */
 orxSTATUS orxFASTCALL orxFileSystem_Info(const orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo)

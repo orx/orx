@@ -227,11 +227,15 @@ void orxFASTCALL _orxDebug_Break()
 
   #ifdef __orxGCC__
 
-    #ifdef __orxGP2X__
+    #if defined(__orxGP2X__)
 
     //! TODO: Add GP2X software break code
 
-    #else /* __orxGP2X__ */
+    #elif defined(__orxWII__)
+
+    //! TODO: Add WII software break code
+
+    #else
 
       #ifdef __orxPPC__
 
@@ -243,7 +247,7 @@ void orxFASTCALL _orxDebug_Break()
 
       #endif /* __orxPPC__ */
 
-    #endif /* __orxGP2X__ */
+    #endif
 
   #endif /* __orxGCC__ */
 

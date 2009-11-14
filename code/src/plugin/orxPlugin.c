@@ -641,7 +641,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
         /* Creates function info */
         pstFunctionInfo = orxPlugin_CreateFunctionInfo(_pstPluginInfo);
 
-        /* Copies infos */
+        /* Copies info */
         pstFunctionInfo->pfnFunction    = astUserFunctionInfo[i].pfnFunction;
         pstFunctionInfo->eFunctionID    = astUserFunctionInfo[i].eFunctionID;
         pstFunctionInfo->zFunctionArgs  = astUserFunctionInfo[i].zFunctionArgs;
