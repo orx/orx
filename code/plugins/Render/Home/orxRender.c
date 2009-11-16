@@ -989,7 +989,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   fObjectScaleY = fRenderScaleY;
 
                   /* Gets position in camera space */
-                  orxVector_Sub(&vRenderPos, &vObjectPos, &(vCameraCenter));
+                  orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraCenter);
                   vRenderPos.fX  *= fObjectScaleX;
                   vRenderPos.fY  *= fObjectScaleY;
 

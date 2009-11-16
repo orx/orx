@@ -315,7 +315,7 @@ orxSTATUS orxFASTCALL orxBody_Init()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to register storage link list." );
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to register storage link list.");
   }
 
   /* Done! */

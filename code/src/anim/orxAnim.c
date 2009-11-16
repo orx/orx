@@ -391,7 +391,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed allocating key list." );
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed allocating key list.");
 
         /* Frees partially allocated anim */
         orxStructure_Delete(pstAnim);
@@ -404,7 +404,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently." );
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently.");
 
       /* Frees partially allocated anim */
       orxStructure_Delete(pstAnim);
@@ -493,7 +493,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
             if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation." );
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
 
               /* Deletes it */
               orxGraphic_Delete(pstGraphic);
@@ -846,7 +846,7 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently." );
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently.");
 
     /* Updates result */
     fLength = orx2F(-1.0f);
