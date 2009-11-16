@@ -849,7 +849,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
                           || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
                           {
-                            orxFLOAT fObjectRelativeDepth, fRecDepthCoef;
+                            orxFLOAT fObjectRelativeDepth;
 
                             /* Gets objects relative depth */
                             fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
@@ -866,9 +866,6 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                               /* Gets depth scale coef */
                               fDepthCoef = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
                             }
-
-                            /* Gets reciprocal depth coef */
-                            fRecDepthCoef = orxFLOAT_1 / fDepthCoef;
 
                             /* X-axis scroll? */
                             if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
