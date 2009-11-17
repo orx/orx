@@ -1274,18 +1274,39 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstVideoMode != orxNULL);
 
   /* Is video mode available? */
-  if(orxDisplay_SFML_IsVideoModeAvailable(_pstVideoMode) != orxFALSE)
+  if((_pstVideoMode == orxNULL) || (orxDisplay_SFML_IsVideoModeAvailable(_pstVideoMode) != orxFALSE))
   {
     /* Updates local info */
-    sstDisplay.u32ScreenWidth   = _pstVideoMode->u32Width;
-    sstDisplay.u32ScreenHeight  = _pstVideoMode->u32Height;
-    sstDisplay.u32ScreenDepth   = _pstVideoMode->u32Depth;
+    if(_pstVideoMode != orxNULL)
+    {
+      sstDisplay.u32ScreenWidth   = _pstVideoMode->u32Width;
+      sstDisplay.u32ScreenHeight  = _pstVideoMode->u32Height;
+      sstDisplay.u32ScreenDepth   = _pstVideoMode->u32Depth;
+    }
 
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Full screen? */
+    if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+    {
+      /* Updates flags */
+      sstDisplay.ulWindowStyle = sf::Style::Fullscreen;
+    }
+    /* Decoration? */
+    else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+    || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
+    {
+      /* Updates flags */
+      sstDisplay.ulWindowStyle = sf::Style::Close | sf::Style::Titlebar;
+    }
+    else
+    {
+      /* Updates flags */
+      sstDisplay.ulWindowStyle = sf::Style::None;
+    }
 
     /* Creates new window */
     sstDisplay.poRenderWindow->Create(sf::VideoMode(sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, sstDisplay.u32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
