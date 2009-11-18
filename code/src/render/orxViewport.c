@@ -54,6 +54,7 @@
 #define orxVIEWPORT_KU32_FLAG_CLEAR             0x00000008  /**< Clear background before render flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE  0x10000000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
 
 #define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000009  /**< Default flags */
 
@@ -350,6 +351,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         {
           /* Sets it */
           orxViewport_SetCamera(pstResult, pstCamera);
+
+          /* Updates flags */
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
         }
       }
 
@@ -485,12 +489,8 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstViewport) == 0)
   {
-    /* Was linked to a camera? */
-    if(_pstViewport->pstCamera != orxNULL)
-    {
-      /* Removes its reference */
-      orxStructure_DecreaseCounter((_pstViewport->pstCamera));
-    }
+    /* Removes camera */
+    orxViewport_SetCamera(_pstViewport, orxNULL);
 
     /* Was linked to a texture? */
     if(_pstViewport->pstTexture != orxNULL)
@@ -765,8 +765,15 @@ void orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_ps
     /* Updates its reference counter */
     orxStructure_DecreaseCounter((_pstViewport->pstCamera));
 
+    /* Was internally allocated? */
+    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA) != orxFALSE)
+    {
+      /* Deletes it */
+      orxCamera_Delete(_pstViewport->pstCamera);
+    }
+
     /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_CAMERA);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_CAMERA | orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA);
   }
 
   /* Updates camera pointer */
