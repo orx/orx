@@ -2435,8 +2435,40 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, const orxVECTOR 
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxVECTOR         vModifiedSpeed;
+    const orxVECTOR  *pvSpeed;
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Gets modified speed */
+        orxVector_Mulf(&vModifiedSpeed, _pvSpeed, pstClockInfo->fModValue);
+
+        /* Uses it */
+        pvSpeed = &vModifiedSpeed;
+      }
+      else
+      {
+        /* Uses default speed */
+        pvSpeed = _pvSpeed;
+      }
+    }
+    else
+    {
+      /* Uses default speed */
+      pvSpeed = _pvSpeed;
+    }
+
     /* Updates its speed */
-    eResult = orxBody_SetSpeed(pstBody, _pvSpeed);
+    eResult = orxBody_SetSpeed(pstBody, pvSpeed);
   }
   else
   {
@@ -2496,8 +2528,29 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxFLOAT fVelocity;
+
+    /* Uses default velocity */
+    fVelocity = _fVelocity;
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates its velocity */
+        fVelocity *= pstClockInfo->fModValue;
+      }
+    }
+
     /* Updates its angular velocity */
-    eResult = orxBody_SetAngularVelocity(pstBody, _fVelocity);
+    eResult = orxBody_SetAngularVelocity(pstBody, fVelocity);
   }
   else
   {
@@ -2535,6 +2588,22 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvS
   {
     /* Gets its speed */
     pvResult = orxBody_GetSpeed(pstBody, _pvSpeed);
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates result */
+        orxVector_Divf(pvResult, pvResult, pstClockInfo->fModValue);
+      }
+    }
   }
   else
   {
@@ -2598,6 +2667,22 @@ orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
   {
     /* Gets its angular velocity */
     fResult = orxBody_GetAngularVelocity(pstBody);
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates result */
+        fResult /= pstClockInfo->fModValue;
+      }
+    }
   }
   else
   {
@@ -2710,13 +2795,34 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxFLOAT fTorque;
+
+    /* Uses default torque */
+    fTorque = _fTorque;
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates its velocity */
+        fTorque *= pstClockInfo->fModValue;
+      }
+    }
+
     /* Applies torque */
-    eResult = orxBody_ApplyTorque(pstBody, _fTorque);
+    eResult = orxBody_ApplyTorque(pstBody, fTorque);
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No body on object <%s>, can't apply torque.", orxObject_GetName(_pstObject));
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2748,13 +2854,45 @@ orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTO
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxVECTOR         vModifiedForce;
+    const orxVECTOR  *pvForce;
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Gets modified force */
+        orxVector_Mulf(&vModifiedForce, _pvForce, pstClockInfo->fModValue);
+
+        /* Uses it */
+        pvForce = &vModifiedForce;
+      }
+      else
+      {
+        /* Uses default force */
+        pvForce = _pvForce;
+      }
+    }
+    else
+    {
+      /* Uses default force */
+      pvForce = _pvForce;
+    }
+
     /* Applies force */
-    eResult = orxBody_ApplyForce(pstBody, _pvForce, _pvPoint);
+    eResult = orxBody_ApplyForce(pstBody, pvForce, _pvPoint);
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No body on object <%s>, can't apply force.", orxObject_GetName(_pstObject));
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2786,13 +2924,45 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVEC
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxVECTOR         vModifiedImpulse;
+    const orxVECTOR  *pvImpulse;
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Gets modified impulse */
+        orxVector_Mulf(&vModifiedImpulse, _pvImpulse, pstClockInfo->fModValue);
+
+        /* Uses it */
+        pvImpulse = &vModifiedImpulse;
+      }
+      else
+      {
+        /* Uses default impulse */
+        pvImpulse = _pvImpulse;
+      }
+    }
+    else
+    {
+      /* Uses default impulse */
+      pvImpulse = _pvImpulse;
+    }
+
     /* Applies impulse */
-    eResult = orxBody_ApplyImpulse(pstBody, _pvImpulse, _pvPoint);
+    eResult = orxBody_ApplyImpulse(pstBody, pvImpulse, _pvPoint);
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No body on object <%s>, can't apply impulse.", orxObject_GetName(_pstObject));
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
