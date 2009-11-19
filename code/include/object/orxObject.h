@@ -45,6 +45,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
 #include "display/orxDisplay.h"
@@ -166,6 +167,19 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *
  * @return      Next sibling object / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+
+/** Sets associated clock for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstClock     Clock to associate / orxNULL
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
+
+/** Gets object's clock
+ * @param[in]   _pstObject    Concerned object
+ * @return      Associated clock / orxNULL
+ */
+extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *_pstObject);
 
 
 /** Links a structure to an object

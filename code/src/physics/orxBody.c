@@ -110,7 +110,8 @@ struct __orxBODY_t
   orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 32 */
   const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 36 */
   orxU32                  u32DefFlags;                                /**< Definition flags : 40 */
-  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 104 */
+  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 44 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 108 */
 };
 
 /** Static structure
@@ -198,8 +199,27 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
         /* Enabled? */
         if(orxObject_IsEnabled(pstObject) != orxFALSE)
         {
-          orxVECTOR vPosition;
+          orxVECTOR vPosition, vSpeed;
           orxFLOAT  fZBackup, fRotation;
+          orxFLOAT  fSpeedCoef;
+
+          /* Has a multiply modifier? */
+          if(_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+          {
+            /* Gets speed coef */
+            fSpeedCoef = (_pstClockInfo->fModValue != pstBody->fTimeMultiplier) ? _pstClockInfo->fModValue / pstBody->fTimeMultiplier : orxFLOAT_1;
+
+            /* Stores multiplier */
+            pstBody->fTimeMultiplier = _pstClockInfo->fModValue;
+          }
+          else
+          {
+            /* Reverts speed coef */
+            fSpeedCoef = (pstBody->fTimeMultiplier != orxFLOAT_1) ? orxFLOAT_1 / pstBody->fTimeMultiplier : orxFLOAT_1;
+
+            /* Stores multiplier */
+            pstBody->fTimeMultiplier = orxFLOAT_1;
+          }
 
           /* Gets current position */
           orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
@@ -231,6 +251,12 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
             /* Updates rotation */
             orxFrame_SetRotation(pstFrame, fRotation);
           }
+
+          /* Updates its angular velocity */
+          orxPhysics_SetAngularVelocity(pstBody->pstData, orxPhysics_GetAngularVelocity(pstBody->pstData) * fSpeedCoef);
+
+          /* Updates its speed */
+          orxPhysics_SetSpeed(pstBody->pstData, orxVector_Mulf(&vSpeed, orxPhysics_GetSpeed(pstBody->pstData, &vSpeed), fSpeedCoef));
 
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
@@ -424,6 +450,9 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
 
       /* Stores its definition flags */
       pstBody->u32DefFlags = pstSelectedDef->u32Flags;
+
+      /* Clears its time multiplier */
+      pstBody->fTimeMultiplier = orxFLOAT_1;
 
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);

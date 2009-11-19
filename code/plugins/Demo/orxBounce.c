@@ -316,11 +316,6 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-    orxConfig_SetParent("Wall1", orxNULL);
-    orxConfig_SetParent("Wall2", "Ball");
-    orxConfig_SetParent("Wall3", "TotoAimeLesFraises");
-    orxConfig_Save("testt.ini", orxFALSE, orxNULL);
   }
   else
   {

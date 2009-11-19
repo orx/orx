@@ -193,11 +193,11 @@ static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE
  * @param[in]   _pstClockInfo                         Concerned clock info
  * @return      Modified DT
  */
-static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstClockInfo)
+static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
 {
-  register orxCLOCK_MOD_TYPE  *peModType;
-  register orxFLOAT           *pfModValue;
-  register orxFLOAT            fNewDT = _fDT;
+  register const orxCLOCK_MOD_TYPE *peModType;
+  register const orxFLOAT          *pfModValue;
+  register orxFLOAT                 fResult;
 
   /* Using global one? */
   if(_pstClockInfo == orxNULL)
@@ -218,39 +218,42 @@ static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstC
     case orxCLOCK_MOD_TYPE_FIXED:
     {
       /* Fixed DT value */
-      fNewDT = *pfModValue;
+      fResult = *pfModValue;
       break;
     }
 
     case orxCLOCK_MOD_TYPE_MULTIPLY:
     {
       /* Multiplied DT value */
-      fNewDT = *pfModValue * _fDT;
+      fResult = *pfModValue * _fDT;
       break;
     }
 
     case orxCLOCK_MOD_TYPE_MAXED:
     {
       /* Updates DT value */
-      fNewDT = orxMIN(*pfModValue, _fDT);
-      break;
-    }
-
-    case orxCLOCK_MOD_TYPE_NONE:
-    {
+      fResult = orxMIN(*pfModValue, _fDT);
       break;
     }
 
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%ld).", *peModType );
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%ld).", *peModType);
+
+      /* Falls through */
+    }
+
+    case orxCLOCK_MOD_TYPE_NONE:
+    {
+      /* Gets base DT */
+      fResult = _fDT;
       break;
     }
   }
 
   /* Done! */
-  return fNewDT;
+  return fResult;
 }
 
 

@@ -613,7 +613,7 @@ void orxFASTCALL orxBank_DebugPrint(const orxBANK *_pstBank)
         orxString_Print(zBuffer, "[");
         for(u32Index3 = 0; u32Index3 < 8; u32Index3++)
         {
-          if((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((u32Index2 << 3) + u32Index3)) ) == (orxU32)(1 << ((u32Index2 << 3) + u32Index3)) )
+          if((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((u32Index2 << 3) + u32Index3))) == (orxU32)(1 << ((u32Index2 << 3) + u32Index3)))
           {
             orxString_Print(zBuffer, "1");
           }

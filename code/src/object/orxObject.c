@@ -31,7 +31,6 @@
 
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
-#include "core/orxClock.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "anim/orxAnimPointer.h"
@@ -156,7 +155,8 @@ struct __orxOBJECT_t
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 116 */
   orxFLOAT          fLifeTime;                  /**< Life time : 120 */
   orxSTRING         zReference;                 /**< Config reference : 124 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 136 */
+  orxCLOCK         *pstClock;                   /**< Associated clock : 128 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 140 */
 };
 
 /** Static structure
@@ -204,6 +204,59 @@ static orxINLINE void orxObject_DeleteAll()
   return;
 }
 
+/** Computes DT according to modifier
+ * @param[in]   _fDT                                  Real DT
+ * @param[in]   _pstClockInfo                         Concerned clock info
+ * @return      Modified DT
+ */
+static orxINLINE orxFLOAT orxObject_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
+{
+  orxFLOAT fResult;
+
+  /* Depending on modifier type */
+  switch(_pstClockInfo->eModType)
+  {
+    case orxCLOCK_MOD_TYPE_FIXED:
+    {
+      /* Fixed DT value */
+      fResult = _pstClockInfo->fModValue;
+      break;
+    }
+
+    case orxCLOCK_MOD_TYPE_MULTIPLY:
+    {
+      /* Multiplied DT value */
+      fResult = _pstClockInfo->fModValue * _fDT;
+      break;
+    }
+
+    case orxCLOCK_MOD_TYPE_MAXED:
+    {
+      /* Updates DT value */
+      fResult = orxMIN(_pstClockInfo->fModValue, _fDT);
+      break;
+    }
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%ld).", _pstClockInfo->eModType);
+
+      /* Falls through */
+    }
+
+    case orxCLOCK_MOD_TYPE_NONE:
+    {
+      /* Keeps DT */
+      fResult = _fDT;
+      break;
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 /** Updates all the objects
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pstContext         User defined context
@@ -220,14 +273,27 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Is object enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      orxU32    i;
-      orxFRAME *pstFrame;
+      orxU32                i;
+      orxFRAME             *pstFrame;
+      const orxCLOCK_INFO  *pstClockInfo;
+
+      /* Has associated clock? */
+      if(pstObject->pstClock != orxNULL)
+      {
+        /* Uses it */
+        pstClockInfo = orxClock_GetInfo(pstObject->pstClock);
+      }
+      else
+      {
+        /* Uses default info */
+        pstClockInfo = _pstClockInfo;
+      }
 
       /* Has life time? */
       if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
       {
         /* Updates its life time */
-        pstObject->fLifeTime -= _pstClockInfo->fDT;
+        pstObject->fLifeTime -= pstClockInfo->fDT;
 
         /* Should die? */
         if(pstObject->fLifeTime <= orxFLOAT_0)
@@ -263,7 +329,7 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
         if(pstObject->astStructure[i].pstStructure != orxNULL)
         {
           /* Updates it */
-          if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
+          if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, pstClockInfo) == orxSTATUS_FAILURE)
           {
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%ld for object <%s>.", i, orxObject_GetName(pstObject));
@@ -283,13 +349,13 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
           orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
 
           /* Computes its move */
-          orxVector_Mulf(&vMove, &(pstObject->vSpeed), _pstClockInfo->fDT);
+          orxVector_Mulf(&vMove, &(pstObject->vSpeed), pstClockInfo->fDT);
 
           /* Gets its new position */
           orxVector_Add(&vPosition, &vPosition, &vMove);
 
           /* Updates its rotation */
-          orxFrame_SetRotation(pstFrame, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * _pstClockInfo->fDT));
+          orxFrame_SetRotation(pstFrame, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
 
           /* Stores it */
           orxFrame_SetPosition(pstFrame, &vPosition);
@@ -1336,6 +1402,25 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   return;
 }
 
+/** Gets object's owner
+ * @param[in]   _pstObject    Concerned object
+ * @return      Owner / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxObject_GetOwner(const orxOBJECT *_pstObject)
+{
+  orxSTRUCTURE *pResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets owner */
+  pResult = _pstObject->pstOwner;
+
+  /* Done! */
+  return pResult;
+}
+
 /** Gets object's first child (only if created with a config ChildList)
  * @param[in]   _pstObject    Concerned object
  * @return      First child object / orxNULL
@@ -1416,23 +1501,42 @@ orxOBJECT *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
-/** Gets object's owner
+/** Sets associated clock for an object
  * @param[in]   _pstObject    Concerned object
- * @return      Owner / orxNULL
+ * @param[in]   _pOwner       Clock to associate / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxObject_GetOwner(const orxOBJECT *_pstObject)
+orxSTATUS orxFASTCALL orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock)
 {
-  orxSTRUCTURE *pResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets owner */
-  pResult = _pstObject->pstOwner;
+  /* Stores it */
+  _pstObject->pstClock = _pstClock;
 
   /* Done! */
-  return pResult;
+  return eResult;
+}
+
+/** Gets object's clock
+ * @param[in]   _pstObject    Concerned object
+ * @return      Associated clock / orxNULL
+ */
+orxCLOCK *orxFASTCALL orxObject_GetClock(const orxOBJECT *_pstObject)
+{
+  orxCLOCK *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  pstResult = _pstObject->pstClock;
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Sets object flipping
