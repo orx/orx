@@ -581,12 +581,18 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
             /* Capped? */
             if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
             {
+              /* Updates modifier value */
+              fModifierValue = orxFLOAT_1 / fModifierValue;
+
               /* Updates modifier type */
               eModifierType = orxCLOCK_MOD_TYPE_MAXED;
             }
             /* Fixed? */
             else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
             {
+              /* Updates modifier value */
+              fModifierValue = orxFLOAT_1 / fModifierValue;
+
               /* Updates modifier type */
               eModifierType = orxCLOCK_MOD_TYPE_FIXED;
             }
