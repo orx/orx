@@ -64,10 +64,11 @@
 #define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000020  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_RENDERED            0x20000000  /**< Rendered flag */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
-#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x04000000  /**< Has lifetime flag  */
-#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x08000000  /**< Has child flag */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x40000000  /**< Smoothing on flag  */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x80000000  /**< Smoothing off flag  */
+#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x01000000  /**< Has lifetime flag  */
+#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x02000000  /**< Has child flag */
+#define orxOBJECT_KU32_FLAG_INTERNAL_CLOCK      0x04000000  /**< Internal clock flag */
 
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
 
@@ -94,6 +95,7 @@
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
+#define orxOBJECT_KZ_CONFIG_CLOCK               "Clock"
 #define orxOBJECT_KZ_CONFIG_SPAWNER             "Spawner"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
@@ -322,43 +324,47 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
       /* !!! TODO !!! */
       /* Updates culling info before calling update subfunctions */
 
-      /* For all linked structures */
-      for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
+      /* Has DT? */
+      if(pstClockInfo->fDT > orxFLOAT_0)
       {
-        /* Is structure linked? */
-        if(pstObject->astStructure[i].pstStructure != orxNULL)
+        /* For all linked structures */
+        for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
         {
-          /* Updates it */
-          if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, pstClockInfo) == orxSTATUS_FAILURE)
+          /* Is structure linked? */
+          if(pstObject->astStructure[i].pstStructure != orxNULL)
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%ld for object <%s>.", i, orxObject_GetName(pstObject));
+            /* Updates it */
+            if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, pstClockInfo) == orxSTATUS_FAILURE)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%ld for object <%s>.", i, orxObject_GetName(pstObject));
+            }
           }
         }
-      }
 
-      /* Has frame? */
-      if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
-      {
-        /* Has no body? */
-        if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
+        /* Has frame? */
+        if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
         {
-          orxVECTOR vPosition, vMove;
+          /* Has no body? */
+          if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
+          {
+            orxVECTOR vPosition, vMove;
 
-          /* Gets its position */
-          orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+            /* Gets its position */
+            orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
 
-          /* Computes its move */
-          orxVector_Mulf(&vMove, &(pstObject->vSpeed), pstClockInfo->fDT);
+            /* Computes its move */
+            orxVector_Mulf(&vMove, &(pstObject->vSpeed), pstClockInfo->fDT);
 
-          /* Gets its new position */
-          orxVector_Add(&vPosition, &vPosition, &vMove);
+            /* Gets its new position */
+            orxVector_Add(&vPosition, &vPosition, &vMove);
 
-          /* Updates its rotation */
-          orxFrame_SetRotation(pstFrame, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
+            /* Updates its rotation */
+            orxFrame_SetRotation(pstFrame, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
 
-          /* Stores it */
-          orxFrame_SetPosition(pstFrame, &vPosition);
+            /* Stores it */
+            orxFrame_SetPosition(pstFrame, &vPosition);
+          }
         }
       }
     }
@@ -579,6 +585,9 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     /* Removes owner */
     orxObject_SetOwner(_pstObject, orxNULL);
 
+    /* Removes clock */
+    orxObject_SetClock(_pstObject, orxNULL);
+
     /* Has reference? */
     if(_pstObject->zReference != orxNULL)
     {
@@ -630,7 +639,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zSpawnerName, zCameraName;
+      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zClockName, zSpawnerName, zCameraName;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags, u32Flags;
       orxS32    s32Number;
@@ -884,6 +893,31 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", _zConfigID);
             }
+          }
+        }
+      }
+
+      /* *** Clock *** */
+
+      /* Gets clock name */
+      zClockName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_CLOCK);
+
+      /* Valid? */
+      if((zClockName != orxNULL) && (zClockName != orxSTRING_EMPTY))
+      {
+        orxCLOCK *pstClock;
+
+        /* Creates clock */
+        pstClock = orxClock_CreateFromConfig(zClockName);
+
+        /* Valid? */
+        if(pstClock != orxNULL)
+        {
+          /* Links it */
+          if(orxObject_SetClock(pstResult, pstClock) != orxSTATUS_FAILURE)
+          {
+            /* Updates flags */
+            orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_INTERNAL_CLOCK, orxOBJECT_KU32_FLAG_NONE);
           }
         }
       }

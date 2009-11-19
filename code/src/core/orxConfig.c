@@ -1792,7 +1792,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
   }
 
   /* Valid? */
-  if(zTrimmedName != orxSTRING_EMPTY)
+  if(zTrimmedName != orxNULL)
   {
     orxCONFIG_SECTION  *pstSection;
     orxCHAR            *pcNameEnd;
@@ -2179,7 +2179,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   sstConfig.u32LoadCounter++;
 
   /* Valid file to open? */
-  if((zTrimmedName != orxSTRING_EMPTY) && ((pstFile = orxFile_Open(zTrimmedName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
+  if((zTrimmedName != orxNULL) && ((pstFile = orxFile_Open(zTrimmedName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;

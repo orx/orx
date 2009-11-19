@@ -91,6 +91,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#geaddca772571521857434876f61aea0e">orxClock_Create</a> (orxFLOAT _fTickSize, <a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a> _eType)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g2877a0cb560d9394397ce42b1cf71ec7">orxClock_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g93f8fe8c1e9aa8d220c1513d280f20ba">orxClock_Delete</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g646ec2e3a995507a81f71e7ee602458e">orxClock_Resync</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
@@ -125,6 +127,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gad1fb87c20e41fd7cc9ee2f7cbe346b8">orxClock_FindNext</a> (const <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g85c2ed06f5fe9246269cabb8ad3ab6be">orxClock_GetNext</a> (const <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g460ad1bad34a106d35fae03a3768b4f1">orxClock_Get</a> (const orxSTRING _zName)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -356,6 +360,31 @@ Creates a clock <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g2877a0cb560d9394397ce42b1cf71ec7"></a><!-- doxytag: member="orxClock.h::orxClock_CreateFromConfig" ref="g2877a0cb560d9394397ce42b1cf71ec7" args="(const orxSTRING _zConfigID)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a>* orxFASTCALL orxClock_CreateFromConfig           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zConfigID</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Creates a clock from config <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zConfigID</em>&nbsp;</td><td>Config ID @ return orxCLOCK / orxNULL </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g93f8fe8c1e9aa8d220c1513d280f20ba"></a><!-- doxytag: member="orxClock.h::orxClock_Delete" ref="g93f8fe8c1e9aa8d220c1513d280f20ba" args="(orxCLOCK *_pstClock)" -->
 <div class="memitem">
 <div class="memproto">
@@ -457,6 +486,32 @@ Finds a clock given its tick size and its type <dl compact><dt><b>Parameters:</b
 Finds next clock of same type/tick size <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstClock</em>&nbsp;</td><td>Concerned clock </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxCLOCK / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g460ad1bad34a106d35fae03a3768b4f1"></a><!-- doxytag: member="orxClock.h::orxClock_Get" ref="g460ad1bad34a106d35fae03a3768b4f1" args="(const orxSTRING _zName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a>* orxFASTCALL orxClock_Get           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets clock given its name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zName</em>&nbsp;</td><td>Clock name </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxCLOCK / orxNULL </dd></dl>

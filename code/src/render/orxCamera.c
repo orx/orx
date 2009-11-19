@@ -299,7 +299,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
  */
 orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxCAMERA  *pstResult;
+  orxCAMERA *pstResult;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);

@@ -36,6 +36,7 @@
 #include "memory/orxMemory.h"
 #include "math/orxMath.h"
 #include "utils/orxLinkList.h"
+#include "utils/orxHashTable.h"
 
 
 /** Module flags
@@ -51,17 +52,27 @@
 
 /** orxCLOCK flags
  */
-#define orxCLOCK_KU32_CLOCK_FLAG_NONE           0x00000000  /**< No flags */
+#define orxCLOCK_KU32_FLAG_NONE                 0x00000000  /**< No flags */
 
-#define orxCLOCK_KU32_CLOCK_FLAG_PAUSED         0x10000000  /**< Clock is paused */
+#define orxCLOCK_KU32_FLAG_PAUSED               0x10000000  /**< Clock is paused */
+#define orxCLOCK_KU32_FLAG_REFERENCED           0x20000000  /**< Referenced flag */
 
-#define orxCLOCK_KU32_CLOCK_MASK_ALL            0xFFFFFFFF  /**< All mask */
+#define orxCLOCK_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
 
 /** Misc
  */
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
+#define orxCLOCK_KZ_CONFIG_FREQUENCY            "Frequency"
+#define orxCLOCK_KZ_CONFIG_MODIFIER_TYPE        "ModifierType"
+#define orxCLOCK_KZ_CONFIG_MODIFIER_VALUE       "ModifierValue"
+
+#define orxCLOCK_KZ_MODIFIER_CAPPED             "capped"
+#define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
+#define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
+
+#define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
 
 /***************************************************************************
@@ -90,10 +101,11 @@ struct __orxCLOCK_t
   orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 36 */
   orxFLOAT          fPartialDT;                 /**< Clock partial DT : 40 */
   orxBANK          *pstFunctionBank;            /**< Function bank : 44 */
-  orxLINKLIST       stFunctionList;             /**< Function list : 48 */
-  orxU32            u32Flags;                   /**< Clock flags : 60 */
+  orxLINKLIST       stFunctionList;             /**< Function list : 56 */
+  orxSTRING         zReference;                 /**< Reference : 60 */
+  orxU32            u32Flags;                   /**< Clock flags : 64 */
 
-  orxPAD(60)
+  orxPAD(64)
 };
 
 
@@ -107,6 +119,7 @@ typedef struct __orxCLOCK_STATIC_t
   orxFLOAT          fTime;                      /**< Current time : 16 */
   orxU32            u32Flags;                   /**< Control flags : 20 */
   orxLINKLIST       stClockList;                /**< Clock list : 32 */
+  orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file : 36 */
 
 } orxCLOCK_STATIC;
 
@@ -294,19 +307,35 @@ orxSTATUS orxFASTCALL orxClock_Init()
     /* Valid? */
     if(sstClock.pstClockBank != orxNULL)
     {
-      /* No mod type by default */
-      sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
+      /* Creates reference table */
+      sstClock.pstReferenceTable = orxHashTable_Create(orxCLOCK_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Gets init time */
-      sstClock.fTime  = orxSystem_GetTime();
+      /* Valid? */
+      if(sstClock.pstReferenceTable != orxNULL)
+      {
+        /* No mod type by default */
+        sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
 
-      /* Inits Flags */
-      sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
+        /* Gets init time */
+        sstClock.fTime  = orxSystem_GetTime();
 
-      /* Creates default full speed core clock */
-      orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
-      eResult = (orxClock_Create((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-      orxConfig_PopSection();
+        /* Inits Flags */
+        sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
+
+        /* Creates default full speed core clock */
+        orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
+        eResult = (orxClock_Create((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        orxConfig_PopSection();
+      }
+      else
+      {
+        /* Deletes bank */
+        orxBank_Delete(sstClock.pstClockBank);
+        sstClock.pstClockBank = orxNULL;
+
+        /* Clock bank not created */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
     else
     {
@@ -349,6 +378,9 @@ void orxFASTCALL orxClock_Exit()
     /* Deletes clock bank */
     orxBank_Delete(sstClock.pstClockBank);
     sstClock.pstClockBank = orxNULL;
+
+    /* Deletes reference table */
+    orxHashTable_Delete(sstClock.pstReferenceTable);
 
     /* Updates flags */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_READY;
@@ -473,7 +505,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
       pstClock->stClockInfo.fTickSize   = _fTickSize;
       pstClock->stClockInfo.eType       = _eType;
       pstClock->stClockInfo.eModType    = orxCLOCK_MOD_TYPE_NONE;
-      pstClock->u32Flags                = orxCLOCK_KU32_CLOCK_FLAG_NONE;
+      pstClock->u32Flags                = orxCLOCK_KU32_FLAG_NONE;
     }
     else
     {
@@ -497,31 +529,156 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
   return pstClock;
 }
 
+/** Creates a clock from config
+ * @param[in]   _zConfigID    Config ID
+ * @ return orxCLOCK / orxNULL
+ */
+orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
+{
+  orxCLOCK *pstResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+
+  /* Search for clock */
+  pstResult = orxClock_Get(_zConfigID);
+
+  /* Not already created? */
+  if(pstResult == orxNULL)
+  {
+    /* Pushes section */
+    if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+    && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
+    {
+      orxFLOAT fFrequency;
+
+      /* Gets its frequency */
+      fFrequency = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY);
+
+      /* Creates clock */
+      pstResult = orxClock_Create((fFrequency > orxFLOAT_0) ? orxFLOAT_1 / fFrequency : orxFLOAT_0, orxCLOCK_TYPE_USER);
+
+      /* Valid? */
+      if(pstResult != orxNULL)
+      {
+        /* Has a modifier? */
+        if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE) != orxFALSE)
+        {
+          orxFLOAT fModifierValue;
+
+          /* Gets its value */
+          fModifierValue = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MODIFIER_VALUE);
+
+          /* Valid? */
+          if(fModifierValue > orxFLOAT_0)
+          {
+            orxSTRING         zModifierType;
+            orxCLOCK_MOD_TYPE eModifierType;
+
+            /* Gets modifier type */
+            zModifierType = orxString_LowerCase(orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE));
+
+            /* Capped? */
+            if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
+            {
+              /* Updates modifier type */
+              eModifierType = orxCLOCK_MOD_TYPE_MAXED;
+            }
+            /* Fixed? */
+            else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+            {
+              /* Updates modifier type */
+              eModifierType = orxCLOCK_MOD_TYPE_FIXED;
+            }
+            /* Multiply? */
+            else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+            {
+              /* Updates modifier type */
+              eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
+            }
+            /* None */
+            else
+            {
+              /* Updates modifier type */
+              eModifierType = orxCLOCK_MOD_TYPE_NONE;
+            }
+
+            /* Updates clock */
+            orxClock_SetModifier(pstResult, eModifierType, fModifierValue);
+          }
+        }
+
+        /* Stores its reference key */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
+        /* Adds it to reference table */
+        orxHashTable_Add(sstClock.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+        /* Updates status flags */
+        orxFLAG_SET(pstResult->u32Flags, orxCLOCK_KU32_FLAG_REFERENCED, orxCLOCK_KU32_FLAG_NONE);
+      }
+
+      /* Pops previous section */
+      orxConfig_PopSection();
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot find config section named (%s).", _zConfigID);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Not locked? */
-  if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
+  if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_FLAG_NONE)
   {
-	  /* Deletes function bank */
-	  orxBank_Delete(_pstClock->pstFunctionBank);
+    /* Deletes function bank */
+    orxBank_Delete(_pstClock->pstFunctionBank);
 
     /* Removes it from list */
     orxLinkList_Remove(&(_pstClock->stNode));
 
-	  /* Frees clock memory */
-	  orxBank_Free(sstClock.pstClockBank, _pstClock);
+    /* Is referenced? */
+    if(orxFLAG_TEST(_pstClock->u32Flags, orxCLOCK_KU32_FLAG_REFERENCED) != orxFALSE)
+    {
+      /* Removes it from reference table */
+      orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));
+    }
+
+    /* Has reference? */
+    if(_pstClock->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstClock->zReference, orxFALSE);
+    }
+
+    /* Frees clock memory */
+    orxBank_Free(sstClock.pstClockBank, _pstClock);
   }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /** Resyncs a clock (accumulated DT => 0)
@@ -642,7 +799,7 @@ orxSTATUS orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
   orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_PAUSE, _pstClock, orxNULL, orxNULL);
 
   /* Updates clock flags */
-  _pstClock->u32Flags |= orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
+  _pstClock->u32Flags |= orxCLOCK_KU32_FLAG_PAUSED;
 
   // Done!
   return eResult;
@@ -664,7 +821,7 @@ orxSTATUS orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
   orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_UNPAUSE, _pstClock, orxNULL, orxNULL);
 
   /* Updates clock flags */
-  _pstClock->u32Flags &= ~orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
+  _pstClock->u32Flags &= ~orxCLOCK_KU32_FLAG_PAUSED;
 
   // Done!
   return eResult;
@@ -681,7 +838,7 @@ orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
   orxASSERT(_pstClock != orxNULL);
 
   /* Tests flags */
-  return((_pstClock->u32Flags & orxCLOCK_KU32_CLOCK_FLAG_PAUSED) ? orxTRUE : orxFALSE);
+  return((_pstClock->u32Flags & orxCLOCK_KU32_FLAG_PAUSED) ? orxTRUE : orxFALSE);
 }
 
 /** Gets clock info
@@ -1010,4 +1167,68 @@ orxCLOCK *orxFASTCALL orxClock_GetNext(const orxCLOCK *_pstClock)
 
   /* Returns next stored clock */
   return((orxCLOCK *)orxLinkList_GetNext(&(_pstClock->stNode)));
+}
+
+/** Gets clock given its name
+ * @param[in]   _zName          Clock name
+ * @return      orxCLOCK / orxNULL
+ */
+orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
+{
+  orxSTRING zTrimmedName;
+  orxCHAR  *pc, *pcEnd;
+  orxCLOCK *pstResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Gets trimmed section name */
+  for(pc = _zName, zTrimmedName = orxNULL, pcEnd = _zName; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of name yet? */
+      if(zTrimmedName == orxNULL)
+      {
+        /* Stores start of name */
+        zTrimmedName = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
+
+  /* Valid name? */
+  if(zTrimmedName != orxNULL)
+  {
+    /* Updates result */
+    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_ToCRC(zTrimmedName));
+  }
+  else
+  {
+    /* Clears result */
+    pstResult = orxNULL;
+  }
+
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
+  }
+
+  /* Done! */
+  return pstResult;
 }

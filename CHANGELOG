@@ -8,6 +8,7 @@ orx 1.1 rc0
 * Added orxCrypt command line tool for merging/encrypting/decrypting config files
 * Added owner to spawner structure + all missing accessors for runtime handling
 * Added associated clock to objects so as to allow localized time stretching (including sound pitch alteration)
+* Clocks can now be created from config files and directly from objects. There can be only one clock with a given name (like cameras)
 * IMPORTANT: Renamed spawner's WaveNumber property to WaveSize
 * Fixed orxFRAME child calculation when using anisotropic scale on parent
 * Removed AutoDelete property for spawners
