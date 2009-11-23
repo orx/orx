@@ -744,6 +744,22 @@ static orxINLINE orxVECTOR *                  orxVector_FromSphericalToCartesian
   fCosTheta = orxMath_Cos(_pvOp->fTheta);
   fSinPhi   = orxMath_Sin(_pvOp->fPhi);
   fCosPhi   = orxMath_Cos(_pvOp->fPhi);
+  if(orxMath_Abs(fSinTheta) < orxMATH_KF_EPSILON)
+  {
+    fSinTheta = orxFLOAT_0;
+  }
+  if(orxMath_Abs(fCosTheta) < orxMATH_KF_EPSILON)
+  {
+    fCosTheta = orxFLOAT_0;
+  }
+  if(orxMath_Abs(fSinPhi) < orxMATH_KF_EPSILON)
+  {
+    fSinPhi = orxFLOAT_0;
+  }
+  if(orxMath_Abs(fCosPhi) < orxMATH_KF_EPSILON)
+  {
+    fCosPhi = orxFLOAT_0;
+  }
 
   /* Updates result */
   _pvRes->fX = _pvOp->fRho * fCosTheta * fSinPhi;
