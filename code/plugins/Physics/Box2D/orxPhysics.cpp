@@ -238,10 +238,10 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
     /* Valid? */
     if(pstEventStorage != orxNULL)
     {
-      const b2Manifold *poManifold;
+      b2WorldManifold oManifold;
 
       /* Gets manifold */
-      poManifold = _poContact->GetManifold();
+      _poContact->GetWorldManifold(&oManifold);
 
       /* Adds it to list */
       orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
@@ -250,8 +250,8 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
       pstEventStorage->eID                                = _eEventID;
       pstEventStorage->poSource                           = _poContact->GetFixtureA()->GetBody();
       pstEventStorage->poDestination                      = _poContact->GetFixtureB()->GetBody();
-      orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * poManifold->m_localPoint.x, sstPhysics.fRecDimensionRatio * poManifold->m_localPoint.y, orxFLOAT_0);
-      orxVector_Set(&(pstEventStorage->stPayload.vNormal), poManifold->m_localPlaneNormal.x, poManifold->m_localPlaneNormal.y, orxFLOAT_0);
+      orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
+      orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
     }
   }
 
