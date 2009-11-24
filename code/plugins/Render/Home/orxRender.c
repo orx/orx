@@ -759,6 +759,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               && (fCameraHeight > orxFLOAT_0))
               {
                 orxOBJECT      *pstObject;
+                orxFRAME       *pstCameraFrame;
                 orxRENDER_NODE *pstRenderNode;
                 orxVECTOR       vCameraCenter, vCameraPosition;
                 orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraBoundingRadius;
@@ -766,12 +767,15 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 /* Gets camera zoom */
                 fZoom = orxCamera_GetZoom(pstCamera);
 
+                /* Gets camera frame */
+                pstCameraFrame = orxCamera_GetFrame(pstCamera);
+
                 /* Gets camera center */
                 orxVector_Add(&vCameraCenter, &(stFrustum.vTL), &(stFrustum.vBR));
                 orxVector_Mulf(&vCameraCenter, &vCameraCenter, orx2F(0.5f));
 
                 /* Gets camera position */
-                orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+                orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
 
                 /* Gets camera depth */
                 fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
@@ -784,7 +788,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 fRenderScaleY = fZoom * (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / fCameraHeight;
 
                 /* Gets camera rotation */
-                fRenderRotation = orxCamera_GetRotation(pstCamera);
+                fRenderRotation = orxFrame_GetRotation(pstCameraFrame, orxFRAME_SPACE_GLOBAL);
 
                 /* For all objects */
                 for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
@@ -1253,7 +1257,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
         fZoom = orxCamera_GetZoom(pstCamera);
 
         /* Has rotation */
-        if((fRotation = orxCamera_GetRotation(pstCamera)) != orxFLOAT_0)
+        if((fRotation = orxFrame_GetRotation(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL)) != orxFLOAT_0)
         {
           orxFLOAT fCos, fSin;
 
