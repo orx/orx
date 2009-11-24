@@ -10,7 +10,10 @@ orx 1.1 rc0
 * Added associated clock to objects so as to allow localized time stretching (including sound pitch alteration)
 * Clocks can now be created from config files and directly from objects. There can be only one clock with a given name (like cameras)
 * IMPORTANT: Renamed spawner's WaveNumber property to WaveSize
+* Integrated current Box2D version from its svn repository
+* Fixed FixedRotation property to use Box2D feature instead of orx's hacked one
 * Fixed orxFRAME child calculation when using anisotropic scale on parent
+* Fixed home render plugin camera rotation when the camera has a parent object
 * Removed AutoDelete property for spawners
 * Added orxObject_GetChild() / orxObject_GetSibling() for querying dependencies (for objects created through config's ChildList property only)
 * Fixed config block value incorrectly saved by orxConfig_Save()

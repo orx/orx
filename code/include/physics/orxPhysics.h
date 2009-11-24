@@ -129,7 +129,6 @@ typedef struct __orxBODY_PART_DEF_t
 typedef enum __orxPHYSICS_EVENT_t
 {
   orxPHYSICS_EVENT_CONTACT_ADD = 0,
-  orxPHYSICS_EVENT_CONTACT_PERSIST,
   orxPHYSICS_EVENT_CONTACT_REMOVE,
   orxPHYSICS_EVENT_OUT_OF_WORLD,
 
@@ -145,9 +144,6 @@ typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
   orxVECTOR vPosition;                    /**< Contact position : 12 */
   orxVECTOR vNormal;                      /**< Contact normal : 24 */
-  orxFLOAT  fPenetration;                 /**< Penetration : 28 */
-  orxU32    u32SourcePartIndex;           /**< Source shape index : 32 */
-  orxU32    u32DestinationPartIndex;      /**< Destination shape index : 36 */
 
 } orxPHYSICS_EVENT_PAYLOAD;
 

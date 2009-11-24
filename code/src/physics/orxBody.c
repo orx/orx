@@ -236,21 +236,11 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
           /* Updates position */
           orxFrame_SetPosition(pstFrame, &vPosition);
 
-          /* Fixed rotation? */
-          if(orxFLAG_TEST(pstBody->u32DefFlags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
-          {
-            /* Enforces rotation & angular velocity */
-            orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
-            orxPhysics_SetAngularVelocity(pstBody->pstData, orxFLOAT_0);
-          }
-          else
-          {
-            /* Gets body up-to-date rotation */
-            fRotation = orxPhysics_GetRotation(pstBody->pstData);
+          /* Gets body up-to-date rotation */
+          fRotation = orxPhysics_GetRotation(pstBody->pstData);
 
-            /* Updates rotation */
-            orxFrame_SetRotation(pstFrame, fRotation);
-          }
+          /* Updates rotation */
+          orxFrame_SetRotation(pstFrame, fRotation);
 
           /* Updates its angular velocity */
           orxPhysics_SetAngularVelocity(pstBody->pstData, orxPhysics_GetAngularVelocity(pstBody->pstData) * fSpeedCoef);
