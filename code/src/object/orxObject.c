@@ -3006,6 +3006,39 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVEC
   return eResult;
 }
 
+/** Issues a raycast to test for potential objects in the way
+ * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvEnd          End of raycast
+ * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
+ * @return Colliding orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+{
+  orxBODY    *pstRaycastResult;
+  orxOBJECT  *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvEnd != orxNULL);
+
+  /* Issues raycast */
+  pstRaycastResult = orxBody_Raycast(_pvStart, _pvEnd, _u16SelfFlags, _u16CheckMask, _pvContact, _pvNormal);
+
+  /* Found? */
+  if(pstRaycastResult != orxNULL)
+  {
+    /* Updates result */
+    pstResult = orxOBJECT(orxBody_GetOwner(pstRaycastResult));
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Gets object's bounding box (OBB)
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstBoundingBox Bounding box result

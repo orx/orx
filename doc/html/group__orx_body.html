@@ -86,6 +86,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g7a075916bcbb81b9390f4bc51f864157">orxBody_ApplyImpulse</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvImpulse, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gef4b79cf2790d191f82cb78dbd223da8">orxBody_Raycast</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvContact, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvNormal)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Body Module Allows to creates and handle physical bodies They are used as container with associated properties Bodies are used by objects They thus can be referenced by objects as structures <hr><h2>Define Documentation</h2>
@@ -752,6 +754,70 @@ Gets the body template <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Inits the Body module 
+</div>
+</div><p>
+<a class="anchor" name="gef4b79cf2790d191f82cb78dbd223da8"></a><!-- doxytag: member="orxBody.h::orxBody_Raycast" ref="gef4b79cf2790d191f82cb78dbd223da8" args="(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a>* orxFASTCALL orxBody_Raycast           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvStart</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvEnd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU16&nbsp;</td>
+          <td class="paramname"> <em>_u16SelfFlags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU16&nbsp;</td>
+          <td class="paramname"> <em>_u16CheckMask</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvContact</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvNormal</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Issues a raycast to test for potential bodies in the way <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvStart</em>&nbsp;</td><td>Start of raycast </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvEnd</em>&nbsp;</td><td>End of raycast </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u16SelfFlags</em>&nbsp;</td><td>Selfs flags used for filtering (0xFFFF for no filtering) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u16CheckMask</em>&nbsp;</td><td>Check mask used for filtering (0xFFFF for no filtering) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvContact</em>&nbsp;</td><td>If non-null and a contact is found it will be stored here </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvNormal</em>&nbsp;</td><td>If non-null and a contact is found, its normal will be stored here </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Colliding orxBODY / orxNULL </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g5334410028c4ea9da0ae8df63d95bf00"></a><!-- doxytag: member="orxBody.h::orxBody_RemovePart" ref="g5334410028c4ea9da0ae8df63d95bf00" args="(orxBODY *_pstBody, orxU32 _u32Index)" -->

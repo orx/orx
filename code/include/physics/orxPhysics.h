@@ -315,6 +315,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxP
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
 
+
+/** Issues a raycast to test for potential physics bodies in the way
+ * @param[in]   _pvStart                              Start of raycast
+ * @param[in]   _pvEnd                                End of raycast
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
+ * @return Colliding body's user data / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
 #endif /* _orxPHYSICS_H_ */
 
 /** @} */

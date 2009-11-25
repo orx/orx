@@ -102,6 +102,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxCLOCK                   *pstClock;           /**< Simulation clock */
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
+  b2Fixture                  *poRaycastFixture;   /**< Raycast fixture */
   orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
   orxPhysicsBoundaryListener *poBoundaryListener; /**< Boundary listener */
 
@@ -171,87 +172,98 @@ static orxINLINE orxU32 orxPhysics_Box2D_GetFixtureIndex(const b2Body *_poBody, 
 
 static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
 {
-  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-  orxBOOL                   bSendEvent = orxTRUE;
+  b2Body *poSource, *poDestination;
 
-  /* For all pending events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-      pstEventStorage != orxNULL;
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
-  {
-    /* Same pair? */
-    if((pstEventStorage->poSource == _poContact->GetFixtureA()->GetBody()) && (pstEventStorage->poDestination == _poContact->GetFixtureB()->GetBody()))
-    {
-      /* Depending on old event */
-      switch(pstEventStorage->eID)
-      {
-        case orxPHYSICS_EVENT_CONTACT_ADD:
-        {
-          /* Removes it */
-          orxLinkList_Remove(&(pstEventStorage->stNode));
-          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+  /* Gets both bodies */
+  poSource      = _poContact->GetFixtureA()->GetBody();
+  poDestination = _poContact->GetFixtureB()->GetBody();
 
-          /* Removing it? */
-          if(_eEventID == orxPHYSICS_EVENT_CONTACT_REMOVE)
-          {
-            /* Don't send event */
-            bSendEvent = orxFALSE;
-          }
-
-          break;
-        }
-
-        case orxPHYSICS_EVENT_CONTACT_REMOVE:
-        {
-          /* Removes it */
-          orxLinkList_Remove(&(pstEventStorage->stNode));
-          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
-
-          /* Is new one a add? */
-          if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
-          {
-            /* Don't send event */
-            bSendEvent = orxFALSE;
-          }
-
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
-
-      break;
-    }
-  }
-
-  /* Should send the event? */
-  if(bSendEvent != orxFALSE)
+  /* Doesn't involve ground? */
+  if((poSource != sstPhysics.poWorld->GetGroundBody())
+  && (poDestination != sstPhysics.poWorld->GetGroundBody()))
   {
     orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+    orxBOOL                   bSendEvent = orxTRUE;
 
-    /* Adds a contact event */
-    pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
-
-    /* Valid? */
-    if(pstEventStorage != orxNULL)
+    /* For all pending events */
+    for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
+        pstEventStorage != orxNULL;
+        pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
     {
-      b2WorldManifold oManifold;
+      /* Same pair? */
+      if((pstEventStorage->poSource == poSource) && (pstEventStorage->poDestination == poDestination))
+      {
+        /* Depending on old event */
+        switch(pstEventStorage->eID)
+        {
+          case orxPHYSICS_EVENT_CONTACT_ADD:
+          {
+            /* Removes it */
+            orxLinkList_Remove(&(pstEventStorage->stNode));
+            orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
 
-      /* Gets manifold */
-      _poContact->GetWorldManifold(&oManifold);
+            /* Removing it? */
+            if(_eEventID == orxPHYSICS_EVENT_CONTACT_REMOVE)
+            {
+              /* Don't send event */
+              bSendEvent = orxFALSE;
+            }
 
-      /* Adds it to list */
-      orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+            break;
+          }
 
-      /* Inits it */
-      pstEventStorage->eID                                = _eEventID;
-      pstEventStorage->poSource                           = _poContact->GetFixtureA()->GetBody();
-      pstEventStorage->poDestination                      = _poContact->GetFixtureB()->GetBody();
-      orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
-      orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
+          case orxPHYSICS_EVENT_CONTACT_REMOVE:
+          {
+            /* Removes it */
+            orxLinkList_Remove(&(pstEventStorage->stNode));
+            orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+
+            /* Is new one a add? */
+            if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+            {
+              /* Don't send event */
+              bSendEvent = orxFALSE;
+            }
+
+            break;
+          }
+
+          default:
+          {
+            break;
+          }
+        }
+
+        break;
+      }
+    }
+
+    /* Should send the event? */
+    if(bSendEvent != orxFALSE)
+    {
+      orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+
+      /* Adds a contact event */
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
+
+      /* Valid? */
+      if(pstEventStorage != orxNULL)
+      {
+        b2WorldManifold oManifold;
+
+        /* Gets manifold */
+        _poContact->GetWorldManifold(&oManifold);
+
+        /* Adds it to list */
+        orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+
+        /* Inits it */
+        pstEventStorage->eID                                = _eEventID;
+        pstEventStorage->poSource                           = poSource;
+        pstEventStorage->poDestination                      = poDestination;
+        orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
+        orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
+      }
     }
   }
 
@@ -892,6 +904,62 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   return eResult;
 }
 
+extern "C" orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+{
+  b2Segment     stSegment;
+  b2Vec2        vNormal;
+  b2Fixture    *poRaycastResult;
+  b2FilterData  stFilterData;
+  float         fLambda;
+  orxHANDLE     hResult = orxHANDLE_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvEnd != orxNULL);
+
+  /* Gets segment */
+  stSegment.p1.Set(sstPhysics.fDimensionRatio * _pvStart->fX, sstPhysics.fDimensionRatio * _pvStart->fY);
+  stSegment.p2.Set(sstPhysics.fDimensionRatio * _pvEnd->fX, sstPhysics.fDimensionRatio * _pvEnd->fY);
+
+  /* Inits filter data */
+  stFilterData.categoryBits = _u16SelfFlags;
+  stFilterData.maskBits     = _u16CheckMask;
+  stFilterData.groupIndex   = 0;
+
+  /* Inits raycast fixture */
+  sstPhysics.poRaycastFixture->SetFilterData(stFilterData);
+
+  /* Issues Raycast */
+  poRaycastResult = sstPhysics.poWorld->RaycastOne(stSegment, &fLambda, &vNormal, false, sstPhysics.poRaycastFixture);
+
+  /* Found? */
+  if(poRaycastResult != orxNULL)
+  {
+    /* Updates result */
+    hResult = (orxHANDLE)poRaycastResult->GetBody()->GetUserData();
+
+    /* Asked for contact? */
+    if(_pvContact != orxNULL)
+    {
+      /* Updates it */
+      _pvContact->fX = ((orxFLOAT_1 - orx2F(fLambda)) * _pvStart->fX) + (orx2F(fLambda) * _pvEnd->fX);
+      _pvContact->fY = ((orxFLOAT_1 - orx2F(fLambda)) * _pvStart->fY) + (orx2F(fLambda) * _pvEnd->fY);
+      _pvContact->fZ = _pvStart->fZ;
+    }
+
+    /* Asked for normal? */
+    if(_pvNormal != orxNULL)
+    {
+      /* Updates it */
+      orxVector_Set(_pvNormal, vNormal.x, vNormal.y, orxFLOAT_0);
+    }
+  }
+
+  /* Done! */
+  return hResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
 {
   b2Vec2    vGravity;
@@ -1027,6 +1095,19 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
+          b2CircleDef stCircleDef;
+
+          /* Updates Fixture type */
+          stCircleDef.type = b2_circleShape;
+
+          /* Stores its coordinates */
+          stCircleDef.localPosition.Set(0.0f, 0.0f);
+          stCircleDef.radius    = 0.0f;
+          stCircleDef.isSensor  = true;
+
+          /* Creates raycast fixture */
+          sstPhysics.poRaycastFixture = sstPhysics.poWorld->GetGroundBody()->CreateFixture(&stCircleDef);
+
           /* Creates event bank */
           sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -1118,6 +1199,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MA
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE)
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, Raycast)
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
 
