@@ -129,7 +129,6 @@ typedef struct __orxBODY_PART_DEF_t
 typedef enum __orxPHYSICS_EVENT_t
 {
   orxPHYSICS_EVENT_CONTACT_ADD = 0,
-  orxPHYSICS_EVENT_CONTACT_PERSIST,
   orxPHYSICS_EVENT_CONTACT_REMOVE,
   orxPHYSICS_EVENT_OUT_OF_WORLD,
 
@@ -145,9 +144,6 @@ typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
   orxVECTOR vPosition;                    /**< Contact position : 12 */
   orxVECTOR vNormal;                      /**< Contact normal : 24 */
-  orxFLOAT  fPenetration;                 /**< Penetration : 28 */
-  orxU32    u32SourcePartIndex;           /**< Source shape index : 32 */
-  orxU32    u32DestinationPartIndex;      /**< Destination shape index : 36 */
 
 } orxPHYSICS_EVENT_PAYLOAD;
 
@@ -318,6 +314,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxP
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
+
+
+/** Issues a raycast to test for potential physics bodies in the way
+ * @param[in]   _pvStart                              Start of raycast
+ * @param[in]   _pvEnd                                End of raycast
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
+ * @return Colliding body's user data / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 #endif /* _orxPHYSICS_H_ */
 

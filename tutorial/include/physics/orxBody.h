@@ -249,6 +249,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
 
+
+/** Issues a raycast to test for potential bodies in the way
+ * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvEnd          End of raycast
+ * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
+ * @return Colliding orxBODY / orxNULL
+ */
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
 #endif /* _orxBODY_H_ */
 
 /** @} */

@@ -58,7 +58,7 @@
  */
 typedef orxSTATUS (orxFASTCALL *orxPARAM_INIT_FUNCTION)(orxU32 _u32NbParam, const orxSTRING _azParams[]);
 
-/* Parameter's infos */
+/* Parameter's info */
 typedef struct __orxPARAM_t
 {
   /* Flags associated to the parameters' parser */

@@ -45,6 +45,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
 #include "display/orxDisplay.h"
@@ -166,6 +167,19 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *
  * @return      Next sibling object / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+
+/** Sets associated clock for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstClock     Clock to associate / orxNULL
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
+
+/** Gets object's clock
+ * @param[in]   _pstObject    Concerned object
+ * @return      Associated clock / orxNULL
+ */
+extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *_pstObject);
 
 
 /** Links a structure to an object
@@ -433,6 +447,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pst
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
+
+
+/** Issues a raycast to test for potential objects in the way
+ * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvEnd          End of raycast
+ * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
+ * @return Colliding orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Sets object color
