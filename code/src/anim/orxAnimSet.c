@@ -1474,7 +1474,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
               hAnimHandle = orxAnimSet_AddAnim(pstResult, pstAnim);
 
               /* Adds it to ID table */
-              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(zAnimName), (void *)((orxU32)hAnimHandle + 1));
+              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *)((orxU32)hAnimHandle + 1));
             }
           }
         }
@@ -1543,7 +1543,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link <[%s] -> [%s]>, please check the declarations of animations.", orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link <[%s] -> [%s]>, please check the declarations of animations.", _zConfigID, zSrcAnim, zDstAnim);
             }
           }
         }
