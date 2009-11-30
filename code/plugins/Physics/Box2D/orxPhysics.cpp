@@ -561,7 +561,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
   /* Inits Fixture definition */
   pstFixtureDef->friction             = _pstBodyPartDef->fFriction;
   pstFixtureDef->restitution          = _pstBodyPartDef->fRestitution;
-  pstFixtureDef->density              = _pstBodyPartDef->fDensity;
+  pstFixtureDef->density              = poBody->IsStatic() ? 0.0f : _pstBodyPartDef->fDensity;
   pstFixtureDef->filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
   pstFixtureDef->filter.maskBits      = _pstBodyPartDef->u16CheckMask;
   pstFixtureDef->filter.groupIndex    = 0;

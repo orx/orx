@@ -239,7 +239,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
       orxOBJECT *pstObject;
 
       /* Updates mouse position */
-      vMousePos.fZ -= orx2F(0.5f);
+      vMousePos.fZ -= orx2F(0.1f);
 
       /* Picks object under mouse */
       pstObject = orxObject_Pick(&vMousePos);
