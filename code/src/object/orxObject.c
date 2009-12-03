@@ -360,10 +360,10 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
             orxVector_Add(&vPosition, &vPosition, &vMove);
 
             /* Updates its rotation */
-            orxFrame_SetRotation(pstFrame, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
+            orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
 
             /* Stores it */
-            orxFrame_SetPosition(pstFrame, &vPosition);
+            orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
           }
         }
       }
@@ -1717,7 +1717,7 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
     orxBODY *pstBody;
 
     /* Sets object position */
-    orxFrame_SetPosition(pstFrame, _pvPosition);
+    orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
 
     /* Gets body */
     pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
@@ -1765,7 +1765,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
     orxBODY *pstBody;
 
     /* Sets Object rotation */
-    orxFrame_SetRotation(pstFrame, _fRotation);
+    orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, _fRotation);
 
     /* Gets body */
     pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
@@ -1814,7 +1814,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
     orxBODY *pstBody;
 
     /* Sets frame scale */
-    orxFrame_SetScale(pstFrame, _pvScale);
+    orxFrame_SetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
 
     /* Gets body */
     pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);

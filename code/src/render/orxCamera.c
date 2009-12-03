@@ -479,7 +479,7 @@ orxSTATUS orxFASTCALL orxCamera_SetPosition(orxCAMERA *_pstCamera, const orxVECT
   orxASSERT(_pvPosition != orxNULL);
 
   /* Sets camera position */
-  orxFrame_SetPosition(_pstCamera->pstFrame, _pvPosition);
+  orxFrame_SetPosition(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
 
   /* Done! */
   return eResult;
@@ -499,7 +499,7 @@ orxSTATUS orxFASTCALL orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRo
   orxSTRUCTURE_ASSERT(_pstCamera);
 
    /* Sets camera rotation */
-  orxFrame_SetRotation(_pstCamera->pstFrame, _fRotation);
+  orxFrame_SetRotation(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, _fRotation);
 
   /* Done! */
   return eResult;
@@ -524,7 +524,7 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   orxVector_SetAll(&vRecZoom, orxFLOAT_1 / _fZoom);
 
   /* Sets camera zoom */
-  orxFrame_SetScale(_pstCamera->pstFrame, &vRecZoom);
+  orxFrame_SetScale(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, &vRecZoom);
 
   /* Done! */
   return eResult;

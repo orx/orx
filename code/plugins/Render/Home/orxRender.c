@@ -1036,11 +1036,11 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   orxVector_Add(&vRenderPos, &vRenderPos, &(stTextureBox.vTL));
 
                   /* Updates render frame */
-                  orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
-                  orxFrame_SetRotation(pstRenderFrame, fObjectRotation - fRenderRotation);
+                  orxFrame_SetPosition(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vRenderPos);
+                  orxFrame_SetRotation(pstRenderFrame, orxFRAME_SPACE_LOCAL, fObjectRotation - fRenderRotation);
                   vObjectScale.fX *= fObjectScaleX;
                   vObjectScale.fY *= fObjectScaleY;
-                  orxFrame_SetScale(pstRenderFrame, &vObjectScale);
+                  orxFrame_SetScale(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vObjectScale);
 
                   /* Renders it */
                   if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_FAILURE)

@@ -1170,8 +1170,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Updates object scale */
         orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale)));
 
-        /* Not using self as parent? */
-        if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
+        /* Not using self as parent or has a body? */
+        if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT) || (_orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_BODY) != orxNULL))
         {
           /* Updates object position */
           orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxVector_Mul(&vPosition, orxObject_GetPosition(pstObject, &vPosition), &vSpawnerScale), fSpawnerRotation), orxSpawner_GetWorldPosition(_pstSpawner, &vSpawnerPosition)));
@@ -1265,7 +1265,7 @@ orxSTATUS orxFASTCALL orxSpawner_SetPosition(orxSPAWNER *_pstSpawner, const orxV
   orxASSERT(_pvPosition != orxNULL);
 
   /* Sets spawner position */
-  orxFrame_SetPosition(_pstSpawner->pstFrame, _pvPosition);
+  orxFrame_SetPosition(_pstSpawner->pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
 
   /* Done! */
   return eResult;
@@ -1285,7 +1285,7 @@ orxSTATUS orxFASTCALL orxSpawner_SetRotation(orxSPAWNER *_pstSpawner, orxFLOAT _
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
   /* Sets Spawner rotation */
-  orxFrame_SetRotation(_pstSpawner->pstFrame, _fRotation);
+  orxFrame_SetRotation(_pstSpawner->pstFrame, orxFRAME_SPACE_LOCAL, _fRotation);
 
   /* Done! */
   return eResult;
@@ -1306,7 +1306,7 @@ orxSTATUS orxFASTCALL orxSpawner_SetScale(orxSPAWNER *_pstSpawner, const orxVECT
   orxASSERT(_pvScale != orxNULL);
 
   /* Sets frame scale */
-  orxFrame_SetScale(_pstSpawner->pstFrame, _pvScale);
+  orxFrame_SetScale(_pstSpawner->pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
 
   /* Done! */
   return eResult;
