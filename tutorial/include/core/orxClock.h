@@ -56,7 +56,6 @@
 typedef enum __orxCLOCK_TYPE_t
 {
   orxCLOCK_TYPE_CORE = 0,
-  orxCLOCK_TYPE_PHYSICS,
   orxCLOCK_TYPE_USER,
 
   orxCLOCK_TYPE_SECOND,

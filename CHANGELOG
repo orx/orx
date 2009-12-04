@@ -12,6 +12,8 @@ orx 1.1 rc0
 * IMPORTANT: Renamed spawner's WaveNumber property to WaveSize
 * Integrated current Box2D version from its svn repository
 * Added Raycast feature when physics is enabled (+wrappers in body & object modules)
+* Dynamic objects can now have parents and get the cumulated result move from parents + physics simulation!
+* Physics simulation is back on main clock to provide a more robust game loop
 * Fixed FixedRotation property to use Box2D feature instead of orx's hacked one
 * Fixed orxFRAME child calculation when using anisotropic scale on parent
 * Fixed home render plugin camera rotation when the camera has a parent object

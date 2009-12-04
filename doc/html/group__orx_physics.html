@@ -135,6 +135,8 @@ __orxPHYSICS_BODY_PART_t&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gd692db43cfa8a348fad80c13996d61b2">orxPhysics_Raycast</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvContact, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvNormal)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g2de71c94d47b65e4b64279f275da10c3">orxPhysics_EnableSimulation</a> (orxBOOL _bEnable)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Physics plugin module Module that handles physics interactions <hr><h2>Define Documentation</h2>
@@ -769,6 +771,31 @@ Deletes a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
 Deletes a physical body part <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBodyPart</em>&nbsp;</td><td>Concerned physical body part </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g2de71c94d47b65e4b64279f275da10c3"></a><!-- doxytag: member="orxPhysics.h::orxPhysics_EnableSimulation" ref="g2de71c94d47b65e4b64279f275da10c3" args="(orxBOOL _bEnable)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxPhysics_EnableSimulation           </td>
+          <td>(</td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bEnable</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Enables/disables physics simulation <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bEnable</em>&nbsp;</td><td>Enable / disable </td></tr>
   </table>
 </dl>
 

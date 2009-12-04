@@ -733,11 +733,14 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
  */
 static orxINLINE orxVECTOR *                  orxVector_FromSphericalToCartesian(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
-  orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta;
+  orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta, fRho;
 
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp != orxNULL);
+
+  /* Stores rho */
+  fRho = _pvOp->fRho;
 
   /* Gets sine & cosine */
   fSinTheta = orxMath_Sin(_pvOp->fTheta);
@@ -762,9 +765,9 @@ static orxINLINE orxVECTOR *                  orxVector_FromSphericalToCartesian
   }
 
   /* Updates result */
-  _pvRes->fX = _pvOp->fRho * fCosTheta * fSinPhi;
-  _pvRes->fY = _pvOp->fRho * fSinTheta * fSinPhi;
-  _pvRes->fZ = _pvOp->fRho * fCosPhi;
+  _pvRes->fX = fRho * fCosTheta * fSinPhi;
+  _pvRes->fY = fRho * fSinTheta * fSinPhi;
+  _pvRes->fZ = fRho * fCosPhi;
 
   /* Done! */
   return _pvRes;

@@ -63,6 +63,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#g8982c83b484b6c879311589df6c4fe4b">orxFrame_IsRootChild</a> (const <a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#g9c21ba399306f11f8246c786aefe2d1b">orxFrame_IsDirty</a> (const <a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#g8663586bec819ab0e639bbd9601bd001">orxFrame_SetPosition</a> (<a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#g2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPos)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#g4fc050a4860f728823572393a3fdf7bc">orxFrame_SetRotation</a> (<a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#g2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, orxFLOAT _fAngle)</td></tr>
@@ -468,6 +470,32 @@ Gets a frame scale <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Inits the frame module <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g9c21ba399306f11f8246c786aefe2d1b"></a><!-- doxytag: member="orxFrame.h::orxFrame_IsDirty" ref="g9c21ba399306f11f8246c786aefe2d1b" args="(const orxFRAME *_pstFrame)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxFrame_IsDirty           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFrame</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is dirty? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFrame</em>&nbsp;</td><td>Concerned frame </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if dirty, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>

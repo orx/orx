@@ -348,22 +348,30 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
           /* Has no body? */
           if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
           {
-            orxVECTOR vPosition, vMove;
+            /* Has speed? */
+            if(orxVector_IsNull(&(pstObject->vSpeed)) == orxFALSE)
+            {
+              orxVECTOR vPosition, vMove;
 
-            /* Gets its position */
-            orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+              /* Gets its position */
+              orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
 
-            /* Computes its move */
-            orxVector_Mulf(&vMove, &(pstObject->vSpeed), pstClockInfo->fDT);
+              /* Computes its move */
+              orxVector_Mulf(&vMove, &(pstObject->vSpeed), pstClockInfo->fDT);
 
-            /* Gets its new position */
-            orxVector_Add(&vPosition, &vPosition, &vMove);
+              /* Gets its new position */
+              orxVector_Add(&vPosition, &vPosition, &vMove);
 
-            /* Updates its rotation */
-            orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
+              /* Stores it */
+              orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+            }
 
-            /* Stores it */
-            orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+            /* Has angular velocity? */
+            if(pstObject->fAngularVelocity != orxFLOAT_0)
+            {
+              /* Updates its rotation */
+              orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
+            }
           }
         }
       }

@@ -783,6 +783,25 @@ orxBOOL orxFASTCALL orxFrame_IsRootChild(const orxFRAME *_pstFrame)
   return bResult;
 }
 
+/** Is dirty?
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxTRUE if dirty, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxFrame_IsDirty(const orxFRAME *_pstFrame)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFrame);
+
+  /* Updates result*/
+  bResult = orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DIRTY);
+
+  /* Done! */
+  return bResult;
+}
+
 /** Sets a frame position
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use

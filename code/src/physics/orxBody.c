@@ -160,120 +160,6 @@ static orxINLINE void orxBody_DeleteAll()
   return;
 }
 
-/** Updates the Body (Callback for generic structure update calling)
- * @param[in]   _pstStructure                 Generic Structure or the concerned Body
- * @param[in]   _pstCaller                    Structure of the caller
- * @param[in]   _pstClockInfo                 Clock info used for time updates
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
-{
-  orxBODY    *pstBody;
-  orxOBJECT  *pstObject;
-  orxSTATUS   eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstStructure);
-
-  /* Gets body */
-  pstBody = orxBODY(_pstStructure);
-
-  /* Gets calling object */
-  pstObject = orxOBJECT(_pstCaller);
-
-  /* Has data? */
-  if(orxStructure_TestFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA))
-  {
-    /* Dynamic? */
-    if(orxFLAG_TEST(pstBody->u32DefFlags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
-    {
-      orxFRAME       *pstFrame;
-      orxFRAME_SPACE  eFrameSpace;
-
-      /* Gets its frame */
-      pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
-
-      /* Gets its frame space */
-      eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
-
-      /* Enabled? */
-      if(orxObject_IsEnabled(pstObject) != orxFALSE)
-      {
-        orxVECTOR vPosition, vSpeed;
-        orxFLOAT  fZBackup, fRotation;
-        orxFLOAT  fSpeedCoef;
-
-        /* Has a multiply modifier? */
-        if(_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-        {
-          /* Gets speed coef */
-          fSpeedCoef = (_pstClockInfo->fModValue != pstBody->fTimeMultiplier) ? _pstClockInfo->fModValue / pstBody->fTimeMultiplier : orxFLOAT_1;
-
-          /* Stores multiplier */
-          pstBody->fTimeMultiplier = _pstClockInfo->fModValue;
-        }
-        else
-        {
-          /* Reverts speed coef */
-          fSpeedCoef = (pstBody->fTimeMultiplier != orxFLOAT_1) ? orxFLOAT_1 / pstBody->fTimeMultiplier : orxFLOAT_1;
-
-          /* Stores multiplier */
-          pstBody->fTimeMultiplier = orxFLOAT_1;
-        }
-
-        /* Gets current position */
-        orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition);
-
-        /* Backups its Z */
-        fZBackup = vPosition.fZ;
-
-        /* Gets body up-to-date position */
-        orxPhysics_GetPosition(pstBody->pstData, &vPosition);
-
-        /* Restores Z */
-        vPosition.fZ = fZBackup;
-
-        /* Updates position */
-        orxFrame_SetPosition(pstFrame, eFrameSpace, &vPosition);
-
-        /* Gets body up-to-date rotation */
-        fRotation = orxPhysics_GetRotation(pstBody->pstData);
-
-        /* Updates rotation */
-        orxFrame_SetRotation(pstFrame, eFrameSpace, fRotation);
-
-        /* Updates its angular velocity */
-        orxPhysics_SetAngularVelocity(pstBody->pstData, orxPhysics_GetAngularVelocity(pstBody->pstData) * fSpeedCoef);
-
-        /* Updates its speed */
-        orxPhysics_SetSpeed(pstBody->pstData, orxVector_Mulf(&vSpeed, orxPhysics_GetSpeed(pstBody->pstData, &vSpeed), fSpeedCoef));
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        orxVECTOR vPosition;
-
-        /* Enforces its body properties */
-        orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, eFrameSpace));
-        orxPhysics_SetAngularVelocity(pstBody->pstData, orxFLOAT_0);
-        orxPhysics_SetPosition(pstBody->pstData, orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition));
-        orxPhysics_SetSpeed(pstBody->pstData, &orxVECTOR_0);
-      }
-    }
-    else
-    {
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 
 /***************************************************************************
  * Public functions                                                        *
@@ -306,7 +192,7 @@ orxSTATUS orxFASTCALL orxBody_Init()
     orxMemory_Zero(&sstBody, sizeof(orxBODY_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxBody_Update);
+    eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
   }
   else
   {
@@ -1608,4 +1494,110 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR 
 
   /* Done! */
   return pstResult;
+}
+
+/** Applies physics simulation result to the Body
+ * @param[in]   _pstBody                      Concerned body
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
+{
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Dynamic? */
+    if(orxFLAG_TEST(_pstBody->u32DefFlags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
+    {
+      orxFRAME_SPACE  eFrameSpace;
+      orxFRAME       *pstFrame;
+      orxOBJECT      *pstOwner;
+
+      /* Gets ower */
+      pstOwner = orxOBJECT(_pstBody->pstOwner);
+
+      /* Gets its frame */
+      pstFrame = orxOBJECT_GET_STRUCTURE(pstOwner, FRAME);
+
+      /* Gets its frame space */
+      eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
+
+      /* Owner enabled? */
+      if(orxObject_IsEnabled(pstOwner) != orxFALSE)
+      {
+        orxVECTOR             vPosition, vSpeed;
+        orxFLOAT              fZBackup, fRotation;
+        orxFLOAT              fSpeedCoef;
+        const orxCLOCK_INFO  *pstClockInfo;
+        orxCLOCK             *pstClock;
+
+        /* Gets owner clock */
+        pstClock = orxObject_GetClock(pstOwner);
+
+        /* Gets corresponding clock info */
+        pstClockInfo = (pstClock != orxNULL) ? orxClock_GetInfo(pstClock) : orxNULL;
+
+        /* Has a multiply modifier? */
+        if((pstClockInfo != orxNULL) && (pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY))
+        {
+          /* Gets speed coef */
+          fSpeedCoef = (pstClockInfo->fModValue != _pstBody->fTimeMultiplier) ? pstClockInfo->fModValue / _pstBody->fTimeMultiplier : orxFLOAT_1;
+
+          /* Stores multiplier */
+          _pstBody->fTimeMultiplier = pstClockInfo->fModValue;
+        }
+        else
+        {
+          /* Reverts speed coef */
+          fSpeedCoef = (_pstBody->fTimeMultiplier != orxFLOAT_1) ? orxFLOAT_1 / _pstBody->fTimeMultiplier : orxFLOAT_1;
+
+          /* Stores multiplier */
+          _pstBody->fTimeMultiplier = orxFLOAT_1;
+        }
+
+        /* Gets current position */
+        orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition);
+
+        /* Backups its Z */
+        fZBackup = vPosition.fZ;
+
+        /* Gets body up-to-date position */
+        orxPhysics_GetPosition(_pstBody->pstData, &vPosition);
+
+        /* Restores Z */
+        vPosition.fZ = fZBackup;
+
+        /* Updates position */
+        orxFrame_SetPosition(pstFrame, eFrameSpace, &vPosition);
+
+        /* Gets body up-to-date rotation */
+        fRotation = orxPhysics_GetRotation(_pstBody->pstData);
+
+        /* Updates rotation */
+        orxFrame_SetRotation(pstFrame, eFrameSpace, fRotation);
+
+        /* Updates its angular velocity */
+        orxPhysics_SetAngularVelocity(_pstBody->pstData, orxPhysics_GetAngularVelocity(_pstBody->pstData) * fSpeedCoef);
+
+        /* Updates its speed */
+        orxPhysics_SetSpeed(_pstBody->pstData, orxVector_Mulf(&vSpeed, orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed), fSpeedCoef));
+      }
+      else
+      {
+        orxVECTOR vPosition;
+
+        /* Enforces its body properties */
+        orxPhysics_SetRotation(_pstBody->pstData, orxFrame_GetRotation(pstFrame, eFrameSpace));
+        orxPhysics_SetAngularVelocity(_pstBody->pstData, orxFLOAT_0);
+        orxPhysics_SetPosition(_pstBody->pstData, orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition));
+        orxPhysics_SetSpeed(_pstBody->pstData, &orxVECTOR_0);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
 }

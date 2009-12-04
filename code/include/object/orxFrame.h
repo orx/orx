@@ -129,6 +129,13 @@ extern orxDLLAPI void orxFASTCALL             orxFrame_SetParent(orxFRAME *_pstF
 extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsRootChild(const orxFRAME *_pstFrame);
 
 
+/** Is dirty?
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxTRUE if dirty, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsDirty(const orxFRAME *_pstFrame);
+
+
 /** Sets a frame position
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use

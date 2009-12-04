@@ -47,6 +47,8 @@
 
 #define orxPHYSICS_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
 
+#define orxPHYSICS_KU32_STATIC_FLAG_ENABLED     0x00000002 /**< Enabled flag */
+
 #define orxPHYSICS_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
 namespace orxPhysics
@@ -99,7 +101,6 @@ typedef struct __orxPHYSICS_STATIC_t
   orxFLOAT                    fDimensionRatio;    /**< Dimension ratio */
   orxFLOAT                    fRecDimensionRatio; /**< Reciprocal dimension ratio */
   orxLINKLIST                 stEventList;        /**< Event link list */
-  orxCLOCK                   *pstClock;           /**< Simulation clock */
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
   b2Fixture                  *poRaycastFixture;   /**< Raycast fixture */
@@ -314,66 +315,89 @@ void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
  */
 static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
-  const orxCLOCK_INFO      *pstClockInfo;
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+  orxBODY                  *pstBody;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
-  /* Gets core clock info */
-  pstClockInfo = orxClock_GetInfo(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE));
-
-  /* Valid? */
-  if(pstClockInfo != orxNULL)
+  /* For all bodies */
+  for(pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
+      pstBody != orxNULL;
+      pstBody = orxBODY(orxStructure_GetNext(pstBody)))
   {
-    /* Updates our clock modifier using core info */
-    orxClock_SetModifier(sstPhysics.pstClock, pstClockInfo->eModType, pstClockInfo->fModValue);
-  }
+    orxFRAME *pstFrame;
 
-  /* Updates world simulation */
-  sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext, (orxU32)_pstContext);
+    /* Gets owner's frame */
+    pstFrame = orxOBJECT_GET_STRUCTURE(orxOBJECT(orxBody_GetOwner(pstBody)), FRAME);
 
-  /* For all stored events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-      pstEventStorage != orxNULL;
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
-  {
-    /* Depending on type */
-    switch(pstEventStorage->eID)
+    /* Is dirty? */
+    if(orxFrame_IsDirty(pstFrame) != orxFALSE)
     {
-      case orxPHYSICS_EVENT_OUT_OF_WORLD:
-      {
-        orxSTRUCTURE *pstOwner;
+      orxVECTOR vPos;
 
-        /* Gets owner */
-        pstOwner = orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
-
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_OUT_OF_WORLD, pstOwner, pstOwner, orxNULL);
-
-        break;
-      }
-
-      case orxPHYSICS_EVENT_CONTACT_ADD:
-      case orxPHYSICS_EVENT_CONTACT_REMOVE:
-      {
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
-
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
+      /* Updates body's position */
+      orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
     }
   }
 
-  /* Clears stored events */
-  orxLinkList_Clean(&(sstPhysics.stEventList));
-  orxBank_Clear(sstPhysics.pstEventBank);
+  /* Is simulation enabled? */
+  if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
+  {
+    /* Updates world simulation */
+    sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext, (orxU32)_pstContext);
+
+    /* For all bodies */
+    for(pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
+        pstBody != orxNULL;
+        pstBody = orxBODY(orxStructure_GetNext(pstBody)))
+    {
+      /* Applies simulation result */
+      orxBody_ApplySimulationResult(pstBody);
+    }
+
+    /* For all stored events */
+    for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
+        pstEventStorage != orxNULL;
+        pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
+    {
+      /* Depending on type */
+      switch(pstEventStorage->eID)
+      {
+        case orxPHYSICS_EVENT_OUT_OF_WORLD:
+        {
+          orxSTRUCTURE *pstOwner;
+
+          /* Gets owner */
+          pstOwner = orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_OUT_OF_WORLD, pstOwner, pstOwner, orxNULL);
+
+          break;
+        }
+
+        case orxPHYSICS_EVENT_CONTACT_ADD:
+        case orxPHYSICS_EVENT_CONTACT_REMOVE:
+        {
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
+    }
+
+    /* Clears stored events */
+    orxLinkList_Clean(&(sstPhysics.stEventList));
+    orxBank_Clear(sstPhysics.pstEventBank);
+  }
 
   return;
 }
@@ -960,6 +984,27 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvSt
   return hResult;
 }
 
+extern "C" void orxFASTCALL orxPhysics_Box2D_EnableSimulation(orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+
+  /* Enabled? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates status */
+    orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED, orxPHYSICS_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_NONE, orxPHYSICS_KU32_STATIC_FLAG_ENABLED);
+  }
+
+  /* Done! */
+  return;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
 {
   b2Vec2    vGravity;
@@ -1052,7 +1097,8 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     /* Success? */
     if(sstPhysics.poWorld != orxNULL)
     {
-      orxU32 u32IterationsPerStep;
+      orxCLOCK *pstClock;
+      orxU32    u32IterationsPerStep;
 
       /* Creates listeners */
       sstPhysics.poContactListener  = new orxPhysicsContactListener();
@@ -1080,17 +1126,17 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
         sstPhysics.u32Iterations = orxPhysics::su32DefaultIterations;
       }
 
-      /* Creates physics clock */
-      sstPhysics.pstClock = orxClock_Create(orxClock_GetInfo(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE))->fTickSize, orxCLOCK_TYPE_PHYSICS);
+      /* Gets core clock */
+      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
       /* Resyncs clocks */
       orxClock_ResyncAll();
 
       /* Valid? */
-      if(sstPhysics.pstClock != orxNULL)
+      if(pstClock != orxNULL)
       {
         /* Registers rendering function */
-        eResult = orxClock_Register(sstPhysics.pstClock, orxPhysics_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWEST);
+        eResult = orxClock_Register(pstClock, orxPhysics_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
@@ -1112,7 +1158,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
           sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
           /* Updates status */
-          sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;
+          sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY | orxPHYSICS_KU32_STATIC_FLAG_ENABLED;
         }
         else
         {
@@ -1200,6 +1246,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TO
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST)
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION)
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
 

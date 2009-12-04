@@ -799,7 +799,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
         if(pstClock != orxNULL)
         {
           /* Registers event update function */
-          eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGH);
+          eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
         }
 
         /* Decoration? */

@@ -327,6 +327,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(or
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
+
+/** Enables/disables physics simulation
+ * @param[in]   _bEnable                              Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_EnableSimulation(orxBOOL _bEnable);
+
 #endif /* _orxPHYSICS_H_ */
 
 /** @} */
