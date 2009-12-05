@@ -1173,6 +1173,10 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetFullScreen(orxBOOL _bFullScr
     /* Creates new window */
     sstDisplay.poRenderWindow->Create(sf::VideoMode(sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, sstDisplay.u32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
 
+    /* Clears rendering window */
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     /* Enforces mouse cursor status */
     sstDisplay.poRenderWindow->ShowMouseCursor(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHOW_CURSOR) ? true : false);
 
