@@ -191,6 +191,53 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
 
+#ifdef __orxMSVC__
+
+#include "windows.h"
+
+/** Orx main execution function (console-less windows application)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
+static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  #define orxMAX_ARGS 256
+
+  int   argc;
+  char *argv[orxMAX_ARGS];
+  char *pcToken, *pcNextToken, *pcFirstDelimiters;
+  LPSTR lpFullCmdLine;
+
+  /* Gets full command line */
+  lpFullCmdLine = GetCommandLineA();
+
+  /* Starts with a double quote? */
+  if(*orxString_SkipWhiteSpaces(lpFullCmdLine) == '"')
+  {
+    /* Gets first delimiters */
+    pcFirstDelimiters = "\"";
+  }
+  else
+  {
+    /* Gets first delimiters */
+    pcFirstDelimiters = " ";
+  }
+
+  /* Process command line */
+  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &pcNextToken);
+      pcToken && (argc < orxMAX_ARGS);
+      pcToken = strtok_s(NULL, " ", &pcNextToken))
+  {
+    argv[argc++] = pcToken;
+  }
+
+  /* Inits and executes orx */
+  orx_Execute(argc, argv, _pfnInit, _pfnRun, _pfnExit);
+}
+
+#endif /* __orxMSVC__ */
+
 #endif /*_orx_H_*/
 
 #ifdef __cplusplus

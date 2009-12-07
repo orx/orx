@@ -232,12 +232,44 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
 
 static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 {
+  orxSTRING     zTrimmedName;
+  orxCHAR      *pc, *pcEnd;
   orxINPUT_SET *pstResult = orxNULL;
 
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Gets trimmed section name */
+  for(pc = _zSetName, zTrimmedName = orxNULL, pcEnd = _zSetName; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Not a space? */
+    if(*pc != ' ')
+    {
+      /* Hasn't found the start of name yet? */
+      if(zTrimmedName == orxNULL)
+      {
+        /* Stores start of name */
+        zTrimmedName = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of name */
+        pcEnd = pc;
+      }
+    }
+  }
+
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
+
   /* Valid? */
-  if((_zSetName != orxSTRING_EMPTY)
-  && (orxConfig_HasSection(_zSetName) != orxFALSE)
-  && (orxConfig_PushSection(_zSetName) != orxSTATUS_FAILURE))
+  if((zTrimmedName != orxNULL)
+  && (orxConfig_HasSection(zTrimmedName) != orxFALSE)
+  && (orxConfig_PushSection(zTrimmedName) != orxSTATUS_FAILURE))
   {
     orxINPUT_SET *pstPreviousSet;
 
@@ -245,7 +277,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
     pstPreviousSet = sstInput.pstCurrentSet;
 
     /* Selects set */
-    if(orxInput_SelectSet(_zSetName) != orxSTATUS_FAILURE)
+    if(orxInput_SelectSet(zTrimmedName) != orxSTATUS_FAILURE)
     {
       orxU32  eType;
       orxU32  i, u32Number;
@@ -300,6 +332,13 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 
     /* Pops previous section */
     orxConfig_PopSection();
+  }
+
+  /* Had end pointer? */
+  if(pcEnd < pc)
+  {
+    /* Restores space */
+    *pcEnd = ' ';
   }
 
   /* Done! */
