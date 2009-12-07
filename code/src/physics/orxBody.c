@@ -789,7 +789,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         _pstBody->astPartList[_u32Index].zReference = orxConfig_GetCurrentSection();
 
         /* Protects it */
-        orxConfig_ProtectSection(_zConfigID, orxTRUE);
+        orxConfig_ProtectSection(_pstBody->astPartList[_u32Index].zReference, orxTRUE);
       }
     }
 
