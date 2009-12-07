@@ -325,43 +325,11 @@ int main(int argc, char **argv)
 
 #ifdef __orxMSVC__
 
-#include "windows.h"
-
 // Here's an example for a console-less program under windows with visual studio
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-  static const orxS32 szMaxArgs = 256;
-
-  int   argc;
-  char *argv[szMaxArgs];
-  char *pcToken, *pcNextToken, *pcFirstDelimiters;
-  LPSTR lpFullCmdLine;
-
-  // Gets full command line
-  lpFullCmdLine = GetCommandLineA();
-
-  // Starts with a double quote?
-  if(*orxString_SkipWhiteSpaces(lpFullCmdLine) == '"')
-  {
-    // Gets first delimiters
-    pcFirstDelimiters = "\"";
-  }
-  else
-  {
-    // Gets first delimiters
-    pcFirstDelimiters = " ";
-  }
-
-  // Process command line
-  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &pcNextToken);
-      pcToken && (argc < szMaxArgs);
-      pcToken = strtok_s(NULL, " ", &pcNextToken))
-  {
-    argv[argc++] = pcToken;
-  }
-
   // Inits and executes orx
-  orx_Execute(argc, argv, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
+  orx_WinExecute(StandAlone::Init, StandAlone::Run, StandAlone::Exit);
 
   // Done!
   return EXIT_SUCCESS;
