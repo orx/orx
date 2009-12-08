@@ -1450,6 +1450,12 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
 
+        /* Stores its reference key */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
         /* For all animations */
         for(i = 0; i < u32AnimCounter; i++)
         {
@@ -1543,16 +1549,10 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link <[%s] -> [%s]>, please check the declarations of animations.", _zConfigID, zSrcAnim, zDstAnim);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link %s <[%s] -> [%s]>, please check its declaration.", _zConfigID, orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
             }
           }
         }
-
-        /* Stores its reference key */
-        pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
         /* Adds it to reference table */
         orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);

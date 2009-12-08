@@ -611,8 +611,8 @@ orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCalle
     }
     else
     {
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
   else
