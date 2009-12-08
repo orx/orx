@@ -262,8 +262,18 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
         pstEventStorage->eID                                = _eEventID;
         pstEventStorage->poSource                           = poSource;
         pstEventStorage->poDestination                      = poDestination;
-        orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
-        orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
+
+        /* Contact add? */
+        if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+        {
+          orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
+          orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
+        }
+        else
+        {
+          orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
+          orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
+        }
       }
     }
   }
