@@ -808,11 +808,28 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
     /* In range? */
     if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
     {
+      orxANIM_EVENT_PAYLOAD stPayload;
+
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
+      stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+      stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
+
       /* Stores ID */
       _pstAnimPointer->hCurrentAnim = _hAnimHandle;
 
       /* Clears target anim */
       _pstAnimPointer->hTargetAnim  = orxHANDLE_UNDEFINED;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUT, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+
+      /* Inits event payload */
+      stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+      stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
 
       /* Updates flags */
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);
