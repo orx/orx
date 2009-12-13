@@ -274,6 +274,10 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
           orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
           orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
         }
+
+        /* Updates part names */
+        pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(orxBODY(poSource->GetUserData()), orxPhysics_Box2D_GetFixtureIndex(poSource, _poContact->GetFixtureA()));
+        pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(orxBODY(poDestination->GetUserData()), orxPhysics_Box2D_GetFixtureIndex(poDestination, _poContact->GetFixtureB()));
       }
     }
   }

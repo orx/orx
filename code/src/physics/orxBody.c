@@ -830,6 +830,27 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU3
   return pstResult;
 }
 
+/** Gets a body part name
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      orxSTRING / orxNULL
+ */
+const orxSTRING orxFASTCALL orxBody_GetPartName(orxBODY *_pstBody, orxU32 _u32Index)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+
+  /* Updates result */
+  zResult = _pstBody->astPartList[_u32Index].zReference;
+
+  /* Done! */
+  return zResult;
+}
+
 /** Removes a body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
