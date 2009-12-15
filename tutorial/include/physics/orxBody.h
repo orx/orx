@@ -199,6 +199,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSpeed(orxBODY *_pstBody
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fVelocity);
 
+/** Sets a body gravity multiplier
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fGravityMultiplier Gravity multiplier to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetGravityMultiplier(orxBODY *_pstBody, orxFLOAT _fGravityMultiplier);
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -224,6 +231,12 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetSpeed(orxBODY *_pstBody
  * @return      Body angular velocity (radians/seconds)
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(orxBODY *_pstBody);
+
+/** Gets a body gravity multiplier
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body gravity multiplier
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetGravityMultiplier(orxBODY *_pstBody);
 
 /** Gets a body center of mass
  * @param[in]   _pstBody        Concerned body

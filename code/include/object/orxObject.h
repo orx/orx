@@ -389,6 +389,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativeSpeed(orxOBJECT
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity);
 
+/** Sets an object gravity multiplier
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fGravityMultiplier Gravity multiplier to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGravityMultiplier(orxOBJECT *_pstObject, orxFLOAT _fGravityMultiplier);
+
 /** Gets an object speed
  * @param[in]   _pstObject      Concerned object
  * @param[out]   _pvSpeed       Speed to get
@@ -408,6 +415,12 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetRelativeSpeed(orxOBJECT
  * @return      Object angular velocity (radians/seconds)
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJECT *_pstObject);
+
+/** Gets an object gravity multiplier
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object gravity multiplier
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetGravityMultiplier(orxOBJECT *_pstObject);
 
 /** Gets an object center of mass
  * @param[in]   _pstObject      Concerned object

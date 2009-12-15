@@ -2607,6 +2607,39 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
   return eResult;
 }
 
+/** Sets an object gravity multiplier
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fGravityMultiplier Gravity multiplier to apply
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetGravityMultiplier(orxOBJECT *_pstObject, orxFLOAT _fGravityMultiplier)
+{
+  orxBODY  *pstBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Updates its gravity multiplier */
+    eResult = orxBody_SetGravityMultiplier(pstBody, _fGravityMultiplier);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets an object speed
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvSpeed        Speed to get
@@ -2730,6 +2763,38 @@ orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
   {
     /* Updates result */
     fResult = _pstObject->fAngularVelocity;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets an object gravity multiplier
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object gravity multiplier
+ */
+orxFLOAT orxFASTCALL orxObject_GetGravityMultiplier(orxOBJECT *_pstObject)
+{
+  orxBODY  *pstBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxBody_GetGravityMultiplier(pstBody);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_1;
   }
 
   /* Done! */

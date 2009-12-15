@@ -1228,6 +1228,38 @@ orxSTATUS orxFASTCALL orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fV
   return eResult;
 }
 
+/** Sets a body gravity multiplier
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fGravityMultiplier Gravity multiplier to set (radians)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetGravityMultiplier(orxBODY *_pstBody, orxFLOAT _fGravityMultiplier)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates its position */
+    eResult = orxPhysics_SetGravityMultiplier(_pstBody->pstData, _fGravityMultiplier);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Structure does not have data.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -1338,6 +1370,34 @@ orxFLOAT orxFASTCALL orxBody_GetAngularVelocity(orxBODY *_pstBody)
   {
     /* Updates result */
     fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets a body gravity multiplier
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body gravity multiplier
+ */
+orxFLOAT orxFASTCALL orxBody_GetGravityMultiplier(orxBODY *_pstBody)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates result */
+    fResult = orxPhysics_GetGravityMultiplier(_pstBody->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_1;
   }
 
   /* Done! */

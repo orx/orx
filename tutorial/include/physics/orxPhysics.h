@@ -261,6 +261,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetSpeed(orxPHY
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity);
 
+/** Sets the gravity multiplier of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _fGravityMultiplier                   Gravity multiplier to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetGravityMultiplier(orxPHYSICS_BODY *_pstBody, orxFLOAT _fGravityMultiplier);
+
 /** Gets the position of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvPosition                           Position to get
@@ -286,6 +293,12 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(orxPHY
  * @return Angular velocity (radians/seconds) of the physical body
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody);
+
+/** Gets the gravity multiplier of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return Gravity multiplier of the physical body
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetGravityMultiplier(orxPHYSICS_BODY *_pstBody);
 
 /** Gets the center of mass of a physical body
  * @param[in]   _pstBody                              Concerned physical body

@@ -73,6 +73,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g22f88b5bfb6ae234c68f6dad79da20df">orxBody_SetAngularVelocity</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxFLOAT _fVelocity)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g143b172ee50c0ffd196b20e000437089">orxBody_SetGravityMultiplier</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxFLOAT _fGravityMultiplier)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g92b66676ad8c75cd92e56e202baaccfd">orxBody_GetPosition</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g47d28fc5d3d48a285500bf247a0c0bfc">orxBody_GetRotation</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
@@ -80,6 +82,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g4d56477fb601208f02faef7cb6dadd8a">orxBody_GetSpeed</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSpeed)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g5f1fc9d05bbf18c3ec256b9751867627">orxBody_GetAngularVelocity</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g12e87c0eb93979d1ad44015ee79004da">orxBody_GetGravityMultiplier</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g6589149bf773148551cc6e2782768b83">orxBody_GetMassCenter</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvMassCenter)</td></tr>
 
@@ -520,6 +524,32 @@ Gets a body angular velocity <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g12e87c0eb93979d1ad44015ee79004da"></a><!-- doxytag: member="orxBody.h::orxBody_GetGravityMultiplier" ref="g12e87c0eb93979d1ad44015ee79004da" args="(orxBODY *_pstBody)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxBody_GetGravityMultiplier           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBody</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a body gravity multiplier <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBody</em>&nbsp;</td><td>Concerned body </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Body gravity multiplier </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g6589149bf773148551cc6e2782768b83"></a><!-- doxytag: member="orxBody.h::orxBody_GetMassCenter" ref="g6589149bf773148551cc6e2782768b83" args="(orxBODY *_pstBody, orxVECTOR *_pvMassCenter)" -->
 <div class="memitem">
 <div class="memproto">
@@ -953,6 +983,42 @@ Sets a body angular velocity <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBody</em>&nbsp;</td><td>Concerned body </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fVelocity</em>&nbsp;</td><td>Angular velocity to set (radians/seconds) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g143b172ee50c0ffd196b20e000437089"></a><!-- doxytag: member="orxBody.h::orxBody_SetGravityMultiplier" ref="g143b172ee50c0ffd196b20e000437089" args="(orxBODY *_pstBody, orxFLOAT _fGravityMultiplier)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxBody_SetGravityMultiplier           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBody</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fGravityMultiplier</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a body gravity multiplier <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBody</em>&nbsp;</td><td>Concerned body </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fGravityMultiplier</em>&nbsp;</td><td>Gravity multiplier to set </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
