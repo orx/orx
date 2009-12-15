@@ -242,42 +242,52 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
     /* Should send the event? */
     if(bSendEvent != orxFALSE)
     {
-      orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+      orxU32 u32SourcePartIndex, u32DestinationPartIndex;
 
-      /* Adds a contact event */
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
+      /* Gets part indexes */
+      u32SourcePartIndex      = orxPhysics_Box2D_GetFixtureIndex(poSource, _poContact->GetFixtureA());
+      u32DestinationPartIndex = orxPhysics_Box2D_GetFixtureIndex(poDestination, _poContact->GetFixtureB());
 
       /* Valid? */
-      if(pstEventStorage != orxNULL)
+      if((u32SourcePartIndex != orxU32_UNDEFINED) && (u32DestinationPartIndex != orxU32_UNDEFINED))
       {
-        b2WorldManifold oManifold;
+        orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
-        /* Gets manifold */
-        _poContact->GetWorldManifold(&oManifold);
+        /* Adds a contact event */
+        pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
 
-        /* Adds it to list */
-        orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
-
-        /* Inits it */
-        pstEventStorage->eID                                = _eEventID;
-        pstEventStorage->poSource                           = poSource;
-        pstEventStorage->poDestination                      = poDestination;
-
-        /* Contact add? */
-        if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+        /* Valid? */
+        if(pstEventStorage != orxNULL)
         {
-          orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
-          orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
-        }
-        else
-        {
-          orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
-          orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
-        }
+          b2WorldManifold oManifold;
 
-        /* Updates part names */
-        pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(orxBODY(poSource->GetUserData()), orxPhysics_Box2D_GetFixtureIndex(poSource, _poContact->GetFixtureA()));
-        pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(orxBODY(poDestination->GetUserData()), orxPhysics_Box2D_GetFixtureIndex(poDestination, _poContact->GetFixtureB()));
+          /* Gets manifold */
+          _poContact->GetWorldManifold(&oManifold);
+
+          /* Adds it to list */
+          orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+
+          /* Inits it */
+          pstEventStorage->eID                                = _eEventID;
+          pstEventStorage->poSource                           = poSource;
+          pstEventStorage->poDestination                      = poDestination;
+
+          /* Contact add? */
+          if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+          {
+            orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
+            orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
+          }
+          else
+          {
+            orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
+            orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
+          }
+
+          /* Updates part names */
+          pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(orxBODY(poSource->GetUserData()), u32SourcePartIndex);
+          pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(orxBODY(poDestination->GetUserData()), u32DestinationPartIndex);
+        }
       }
     }
   }
