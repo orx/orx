@@ -13,12 +13,14 @@ orx 1.1 rc0
 * Integrated current Box2D version from its svn repository
 * Added Raycast feature when physics is enabled (+wrappers in body & object modules)
 * Dynamic objects can now have parents and get the cumulated result move from parents + physics simulation!
+* Added a gravity multiplier as Body's property
 * Physics simulation is back on main clock to provide a more robust game loop
 * Fixed FixedRotation property to use Box2D feature instead of orx's hacked one
 * Added names of both involved parts in contact events
 * Fixed orxFRAME child calculation when using anisotropic scale on parent
 * Fixed home render plugin camera rotation when the camera has a parent object
 * Removed AutoDelete property for spawners
+* Added possibility for spawner to transmit or not parent's rotation & scale (by default it transmit them as before)
 * Added orxObject_GetChild() / orxObject_GetSibling() for querying dependencies (for objects created through config's ChildList property only)
 * Fixed config block value incorrectly saved by orxConfig_Save()
 * Config section inheritance can now easily be modified on-the-fly, at runtime (orxConfig_SetParent())

@@ -56,8 +56,10 @@
 #define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x00000002  /**< Auto delete flag */
 #define orxSPAWNER_KU32_FLAG_USE_ALPHA            0x00000004  /**< Use alpha flag */
 #define orxSPAWNER_KU32_FLAG_USE_COLOR            0x00000008  /**< Use color flag */
-#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000010  /**< Use relative speed flag */
-#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000020  /**< Use self as parent flag */
+#define orxSPAWNER_KU32_FLAG_USE_ROTATION         0x00000010  /**< Use rotation flag */
+#define orxSPAWNER_KU32_FLAG_USE_SCALE            0x00000020  /**< Use scale flag */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000040  /**< Use relative speed flag */
+#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000080  /**< Use self as parent flag */
 
 #define orxSPAWNER_KU32_MASK_USER_ALL             0x000000FF  /**< All mask */
 

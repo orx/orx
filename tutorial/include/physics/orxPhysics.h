@@ -84,7 +84,8 @@ typedef struct __orxBODY_DEF_t
   orxFLOAT  fMass;                          /**< Mass : 24 */
   orxFLOAT  fLinearDamping;                 /**< Linear damping : 28 */
   orxFLOAT  fAngularDamping;                /**< Angular damping : 32 */
-  orxU32    u32Flags;                       /**< Control flags : 36 */
+  orxFLOAT  fGravityMultiplier;             /**< Gravity multiplier : 36 */
+  orxU32    u32Flags;                       /**< Control flags : 40 */
 
 } orxBODY_DEF;
 

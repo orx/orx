@@ -440,12 +440,13 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
   if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_2D))
   {
     /* Inits body definition */
-    stBodyDef.userData        = _hUserData;
-    stBodyDef.angle           = _pstBodyDef->fRotation;
-    stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
-    stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
-    stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
-    stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
+    stBodyDef.userData          = _hUserData;
+    stBodyDef.angle             = _pstBodyDef->fRotation;
+    stBodyDef.linearDamping     = _pstBodyDef->fLinearDamping;
+    stBodyDef.angularDamping    = _pstBodyDef->fAngularDamping;
+    stBodyDef.gravityMultiplier = _pstBodyDef->fGravityMultiplier;
+    stBodyDef.isBullet          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
+    stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
     stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
 
     /* Is dynamic? */

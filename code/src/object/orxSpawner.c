@@ -70,6 +70,8 @@
 #define orxSPAWNER_KZ_CONFIG_AUTO_RESET           "AutoReset"
 #define orxSPAWNER_KZ_CONFIG_USE_ALPHA            "UseAlpha"
 #define orxSPAWNER_KZ_CONFIG_USE_COLOR            "UseColor"
+#define orxSPAWNER_KZ_CONFIG_USE_ROTATION         "UseRotation"
+#define orxSPAWNER_KZ_CONFIG_USE_SCALE            "UseScale"
 #define orxSPAWNER_KZ_CONFIG_OBJECT_SPEED         "ObjectSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED   "UseRelativeSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
@@ -644,6 +646,20 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
         /* Updates status */
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_COLOR, orxSPAWNER_KU32_FLAG_NONE);
       }
+
+      /* Use rotation? */
+      if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_USE_ROTATION) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_ROTATION) != orxFALSE))
+      {
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_ROTATION, orxSPAWNER_KU32_FLAG_NONE);
+      }
+
+      /* Use scale? */
+      if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_USE_SCALE) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_SCALE) != orxFALSE))
+      {
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SCALE, orxSPAWNER_KU32_FLAG_NONE);
+      }
     }
 
     /* Pops previous section */
@@ -1162,13 +1178,16 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         }
 
         /* Gets spawner rotation */
-        fSpawnerRotation = orxSpawner_GetWorldRotation(_pstSpawner);
+        fSpawnerRotation = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? orxSpawner_GetRotation(_pstSpawner) : orxSpawner_GetWorldRotation(_pstSpawner);
 
         /* Updates object rotation */
         orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + fSpawnerRotation);
 
+        /* Gets spawner scale */
+        orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE) ? orxSpawner_GetScale(_pstSpawner, &vSpawnerScale) : orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale);
+
         /* Updates object scale */
-        orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale)));
+        orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), &vSpawnerScale));
 
         /* Not using self as parent or has a body? */
         if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT) || (_orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_BODY) != orxNULL))

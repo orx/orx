@@ -64,6 +64,7 @@
 #define orxBODY_KZ_CONFIG_MASS                "Mass"
 #define orxBODY_KZ_CONFIG_LINEAR_DAMPING      "LinearDamping"
 #define orxBODY_KZ_CONFIG_ANGULAR_DAMPING     "AngularDamping"
+#define orxBODY_KZ_CONFIG_GRAVITY_MULTIPLIER  "GravityMultiplier"
 #define orxBODY_KZ_CONFIG_FIXED_ROTATION      "FixedRotation"
 #define orxBODY_KZ_CONFIG_HIGH_SPEED          "HighSpeed"
 #define orxBODY_KZ_CONFIG_DYNAMIC             "Dynamic"
@@ -285,12 +286,13 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
 
         /* Merges template with specialized definition */
         orxObject_GetWorldPosition(pstObject, &(stMergedDef.vPosition));
-        stMergedDef.fRotation       = orxObject_GetWorldRotation(pstObject);
-        stMergedDef.fInertia        = (_pstBodyDef->fInertia > 0.0f) ? _pstBodyDef->fInertia : sstBody.stBodyTemplate.fInertia;
-        stMergedDef.fMass           = (_pstBodyDef->fMass > 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
-        stMergedDef.fLinearDamping  = (_pstBodyDef->fLinearDamping > 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
-        stMergedDef.fAngularDamping = (_pstBodyDef->fAngularDamping > 0.0f) ? _pstBodyDef->fAngularDamping : sstBody.stBodyTemplate.fAngularDamping;
-        stMergedDef.u32Flags        = (_pstBodyDef->u32Flags != orxBODY_DEF_KU32_FLAG_NONE) ? _pstBodyDef->u32Flags : sstBody.stBodyTemplate.u32Flags;
+        stMergedDef.fRotation           = orxObject_GetWorldRotation(pstObject);
+        stMergedDef.fInertia            = (_pstBodyDef->fInertia > 0.0f) ? _pstBodyDef->fInertia : sstBody.stBodyTemplate.fInertia;
+        stMergedDef.fMass               = (_pstBodyDef->fMass > 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
+        stMergedDef.fLinearDamping      = (_pstBodyDef->fLinearDamping > 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
+        stMergedDef.fAngularDamping     = (_pstBodyDef->fAngularDamping > 0.0f) ? _pstBodyDef->fAngularDamping : sstBody.stBodyTemplate.fAngularDamping;
+        stMergedDef.fGravityMultiplier  = (_pstBodyDef->fGravityMultiplier != orxFLOAT_1) ? _pstBodyDef->fGravityMultiplier : sstBody.stBodyTemplate.fGravityMultiplier;
+        stMergedDef.u32Flags            = (_pstBodyDef->u32Flags != orxBODY_DEF_KU32_FLAG_NONE) ? _pstBodyDef->u32Flags : sstBody.stBodyTemplate.u32Flags;
 
         /* Selects it */
         pstSelectedDef = &stMergedDef;
@@ -367,11 +369,12 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
     orxMemory_Zero(&stBodyDef, sizeof(orxBODY_DEF));
 
     /* Inits it */
-    stBodyDef.fInertia        = orxConfig_GetFloat(orxBODY_KZ_CONFIG_INERTIA);
-    stBodyDef.fMass           = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MASS);
-    stBodyDef.fLinearDamping  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_LINEAR_DAMPING);
-    stBodyDef.fAngularDamping = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ANGULAR_DAMPING);
-    stBodyDef.u32Flags        = orxBODY_DEF_KU32_FLAG_2D;
+    stBodyDef.fInertia            = orxConfig_GetFloat(orxBODY_KZ_CONFIG_INERTIA);
+    stBodyDef.fMass               = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MASS);
+    stBodyDef.fLinearDamping      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_LINEAR_DAMPING);
+    stBodyDef.fAngularDamping     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ANGULAR_DAMPING);
+    stBodyDef.fGravityMultiplier  = orxConfig_HasValue(orxBODY_KZ_CONFIG_GRAVITY_MULTIPLIER) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_GRAVITY_MULTIPLIER) : orxFLOAT_1;
+    stBodyDef.u32Flags            = orxBODY_DEF_KU32_FLAG_2D;
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_FIXED_ROTATION) != orxFALSE)
     {
       stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_FIXED_ROTATION;
