@@ -1178,13 +1178,20 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         }
 
         /* Gets spawner rotation */
-        fSpawnerRotation = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? orxSpawner_GetRotation(_pstSpawner) : orxSpawner_GetWorldRotation(_pstSpawner);
+        fSpawnerRotation = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? orxSpawner_GetWorldRotation(_pstSpawner) : orxSpawner_GetRotation(_pstSpawner) ;
 
         /* Updates object rotation */
         orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + fSpawnerRotation);
 
         /* Gets spawner scale */
-        orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE) ? orxSpawner_GetScale(_pstSpawner, &vSpawnerScale) : orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale);
+        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE))
+        {
+          orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale);
+        }
+        else
+        {
+          orxSpawner_GetScale(_pstSpawner, &vSpawnerScale);
+        }
 
         /* Updates object scale */
         orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), &vSpawnerScale));
