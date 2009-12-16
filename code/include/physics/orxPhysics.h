@@ -48,30 +48,31 @@
 
 /** Body definition flags
  */
-#define orxBODY_DEF_KU32_FLAG_NONE          0x00000000  /**< No flags */
+#define orxBODY_DEF_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxBODY_DEF_KU32_FLAG_2D            0x00000001  /**< 2D type body def flag */
-#define orxBODY_DEF_KU32_FLAG_DYNAMIC       0x00000002  /**< Dynamic type body def flag */
-#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED    0x00000004  /**< High speed type body def flag */
-#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION 0x00000008 /**< Body can't be rotated by physics */
+#define orxBODY_DEF_KU32_FLAG_2D                  0x00000001  /**< 2D type body def flag */
+#define orxBODY_DEF_KU32_FLAG_DYNAMIC             0x00000002  /**< Dynamic type body def flag */
+#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED          0x00000004  /**< High speed type body def flag */
+#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION      0x00000008  /**< Body can't be rotated by physics */
+#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE           0x00000010  /**< Body is allowed to slide */
 
-#define orxBODY_DEF_KU32_MASK_ALL           0xFFFFFFFF  /**< Body def all mask */
+#define orxBODY_DEF_KU32_MASK_ALL                 0xFFFFFFFF  /**< Body def all mask */
 
 /** Body part definition flags
  */
-#define orxBODY_PART_DEF_KU32_FLAG_NONE     0x00000000  /**< No flags */
+#define orxBODY_PART_DEF_KU32_FLAG_NONE           0x00000000  /**< No flags */
 
-#define orxBODY_PART_DEF_KU32_FLAG_SPHERE   0x00000001  /**< Sphere body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_BOX      0x00000002  /**< Box body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_MESH     0x00000004  /**< Mesh body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_SOLID    0x00000010  /**< Solid body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SPHERE         0x00000001  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_BOX            0x00000002  /**< Box body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_MESH           0x00000004  /**< Mesh body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SOLID          0x00000010  /**< Solid body part def flag */
 
-#define orxBODY_PART_DEF_KU32_MASK_ALL      0xFFFFFFFF  /**< Body part def all mask */
+#define orxBODY_PART_DEF_KU32_MASK_ALL            0xFFFFFFFF  /**< Body part def all mask */
 
 
 /** Misc defines
  */
-#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER 8
+#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER  8
 
 
 /** Body definition

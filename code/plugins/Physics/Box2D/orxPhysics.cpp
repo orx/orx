@@ -408,6 +408,37 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
 
+          /* New contact? */
+          if(pstEventStorage->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+          {
+            b2Vec2 vPos;
+
+            /* Source can't slide and destination is static? */
+            if(!pstEventStorage->poSource->CanSlide() && pstEventStorage->poDestination->IsStatic())
+            {
+              /* Gets current position */
+              vPos = pstEventStorage->poSource->GetPosition();
+
+              /* Grounds it*/
+              vPos.y += 0.01f;
+
+              /* Updates it */
+              pstEventStorage->poSource->SetXForm(vPos, pstEventStorage->poSource->GetAngle());
+            }
+            /* Destination can't slide and source is static? */
+            else if(!pstEventStorage->poDestination->CanSlide() && pstEventStorage->poSource->IsStatic())
+            {
+              /* Gets current position */
+              vPos = pstEventStorage->poDestination->GetPosition();
+
+              /* Grounds it*/
+              vPos.y += 0.01f;
+
+              /* Updates it */
+              pstEventStorage->poDestination->SetXForm(vPos, pstEventStorage->poDestination->GetAngle());
+            }
+          }
+
           break;
         }
 
@@ -447,6 +478,7 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
     stBodyDef.gravityMultiplier = _pstBodyDef->fGravityMultiplier;
     stBodyDef.isBullet          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
+    stBodyDef.canSlide          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_SLIDE);
     stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
 
     /* Is dynamic? */
