@@ -405,9 +405,6 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         case orxPHYSICS_EVENT_CONTACT_ADD:
         case orxPHYSICS_EVENT_CONTACT_REMOVE:
         {
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
-
           /* New contact? */
           if(pstEventStorage->eID == orxPHYSICS_EVENT_CONTACT_ADD)
           {
@@ -438,6 +435,9 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
               pstEventStorage->poDestination->SetXForm(vPos, pstEventStorage->poDestination->GetAngle());
             }
           }
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
 
           break;
         }
