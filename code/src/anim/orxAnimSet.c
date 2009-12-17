@@ -2254,7 +2254,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
         /* Has next animation? */
         if((u32TargetAnim != orxU32_UNDEFINED)
         && ((fLength > orxFLOAT_0)
-        ||  ((orxHANDLE)u32TargetAnim != _hSrcAnim)))
+         || ((orxHANDLE)u32TargetAnim != _hSrcAnim)))
         {
           /* Gets link index */
           u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;

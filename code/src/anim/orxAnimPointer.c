@@ -226,6 +226,13 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
 
           /* Sends it */
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+
+          /* Should clear target? */
+          if(bClearTarget != orxFALSE)
+          {
+            /* Removes it */
+            _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+          }
         }
       }
 
