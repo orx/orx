@@ -1167,10 +1167,10 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       /* Display FPS */
       orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
     }
-  }
 
-  /* Pops previous section */
-  orxConfig_PopSection();
+    /* Pops previous section */
+    orxConfig_PopSection();
+  }
 
   /* Swap buffers */
   orxDisplay_Swap();
