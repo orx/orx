@@ -1986,6 +1986,50 @@ orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const o
   return eResult;
 }
 
+/** Gets a section's parent
+ * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
+ * @return Section's parent name / orxNULL
+ */
+const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
+{
+  orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+
+  /* Has section? */
+  if(orxConfig_HasSection(_zSectionName) != orxFALSE)
+  {
+    orxCONFIG_SECTION *pstPreviousSection;
+
+    /* Backups current section */
+    pstPreviousSection = sstConfig.pstCurrentSection;
+
+    /* Selects concerned section */
+    if(orxConfig_SelectSection(_zSectionName) != orxSTATUS_FAILURE)
+    {
+      /* Has parent? */
+      if(sstConfig.pstCurrentSection->u32ParentID != 0)
+      {
+        orxCONFIG_SECTION *pstParentSection;
+
+        /* Gets it from table */
+        pstParentSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, sstConfig.pstCurrentSection->u32ParentID);
+
+        /* Updates result */
+        zResult = pstParentSection->zName;
+      }
+    }
+
+    /* Restores previous section */
+    sstConfig.pstCurrentSection = pstPreviousSection;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets current working section
  * @return Current selected section
  */

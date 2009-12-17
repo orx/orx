@@ -47,6 +47,9 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g896fbb4078e19b04136589050f27488d">orxConfig_SetParent</a> (const orxSTRING _zSectionName, const orxSTRING _zParentName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g9c67829801e603be067ba7d3bfa5127e">orxConfig_GetParent</a> (const orxSTRING _zSectionName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gbe3d8af4f39e50865bacc61ca74812b6">orxConfig_GetCurrentSection</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gc1e65aaecdc7d8349ca76bee0d54f38d">orxConfig_PushSection</a> (const orxSTRING _zSectionName)</td></tr>
@@ -607,6 +610,32 @@ Reads a vector value from config list <dl compact><dt><b>Parameters:</b></dt><dd
 
 <p>
 Gets config main file name <dl class="return" compact><dt><b>Returns:</b></dt><dd>Config main file name / orxSTRING_EMPTY </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g9c67829801e603be067ba7d3bfa5127e"></a><!-- doxytag: member="orxConfig.h::orxConfig_GetParent" ref="g9c67829801e603be067ba7d3bfa5127e" args="(const orxSTRING _zSectionName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetParent           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zSectionName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a section's parent <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSectionName</em>&nbsp;</td><td>Concerned section, if the section doesn't exist, it will be created </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Section's parent name / orxNULL </dd></dl>
 
 </div>
 </div><p>
