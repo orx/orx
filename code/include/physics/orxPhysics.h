@@ -85,8 +85,7 @@ typedef struct __orxBODY_DEF_t
   orxFLOAT  fMass;                          /**< Mass : 24 */
   orxFLOAT  fLinearDamping;                 /**< Linear damping : 28 */
   orxFLOAT  fAngularDamping;                /**< Angular damping : 32 */
-  orxFLOAT  fGravityMultiplier;             /**< Gravity multiplier : 36 */
-  orxU32    u32Flags;                       /**< Control flags : 40 */
+  orxU32    u32Flags;                       /**< Control flags : 36 */
 
 } orxBODY_DEF;
 
@@ -262,51 +261,52 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetSpeed(orxPHY
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity);
 
-/** Sets the gravity multiplier of a physical body
+/** Sets the custom gravity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
- * @param[in]   _fGravityMultiplier                   Gravity multiplier to set
+ * @param[in]   _pvCustomGravity                      Custom gravity multiplier to set / orxNULL to remove it
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetGravityMultiplier(orxPHYSICS_BODY *_pstBody, orxFLOAT _fGravityMultiplier);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity);
 
 /** Gets the position of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvPosition                           Position to get
  * @return Position of the physical body
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition);
 
 /** Gets the rotation of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @return Rotation (radians) of the physical body
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody);
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetRotation(const orxPHYSICS_BODY *_pstBody);
 
 /** Gets the speed of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvSpeed                              Speed to get
  * @return Speed of the physical body
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
 
 /** Gets the angular velocity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @return Angular velocity (radians/seconds) of the physical body
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody);
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody);
 
-/** Gets the gravity multiplier of a physical body
+/** Gets the custom gravity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
- * @return Gravity multiplier of the physical body
+ * @param[out]  _pvCustomGravity                      Custom gravity to get
+ * @return      Physical body custom gravity / orxNULL is object doesn't have any
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetGravityMultiplier(orxPHYSICS_BODY *_pstBody);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
 /** Gets the center of mass of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvMassCenter                         Center of mass to get
  * @return Center of mass of the physical body
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
 
 
 /** Applies a torque to a physical body

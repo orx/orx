@@ -475,7 +475,6 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
     stBodyDef.angle             = _pstBodyDef->fRotation;
     stBodyDef.linearDamping     = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping    = _pstBodyDef->fAngularDamping;
-    stBodyDef.gravityMultiplier = _pstBodyDef->fGravityMultiplier;
     stBodyDef.isBullet          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
     stBodyDef.canSlide          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_SLIDE);
@@ -781,7 +780,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravityMultiplier(orxPHYSICS_BODY *_pstBody, orxFLOAT _fGravityMultiplier)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity)
 {
   b2Body   *poBody;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -796,14 +795,28 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravityMultiplier(orxPHYSIC
   /* Wakes up */
   poBody->WakeUp();
 
-  /* Updates its gravity multiplier */
-  poBody->SetGravityMultiplier(_fGravityMultiplier);
+  /* Has custom gravity */
+  if(_pvCustomGravity != orxNULL)
+  {
+    b2Vec2 vGravity;
+
+    /* Sets gravity vector */
+    vGravity.Set(sstPhysics.fDimensionRatio * _pvCustomGravity->fX, sstPhysics.fDimensionRatio * _pvCustomGravity->fY);
+
+    /* Updates it */
+    poBody->SetCustomGravity(&vGravity);
+  }
+  else
+  {
+    /* Removes it */
+    poBody->SetCustomGravity(orxNULL);
+  }
 
   /* Done! */
   return eResult;
 }
 
-extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
 {
   b2Body     *poBody;
   b2Vec2      vPosition;
@@ -829,7 +842,7 @@ extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *
   return pvResult;
 }
 
-extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_pstBody)
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(const orxPHYSICS_BODY *_pstBody)
 {
   b2Body   *poBody;
   orxFLOAT  fResult;
@@ -848,7 +861,7 @@ extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_p
   return fResult;
 }
 
-extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
 {
   b2Body   *poBody;
   b2Vec2    vSpeed;
@@ -875,7 +888,7 @@ extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_ps
   return pvResult;
 }
 
-extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody)
 {
   b2Body   *poBody;
   orxFLOAT  fResult;
@@ -894,26 +907,41 @@ extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_B
   return fResult;
 }
 
-extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetGravityMultiplier(orxPHYSICS_BODY *_pstBody)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity)
 {
-  b2Body   *poBody;
-  orxFLOAT  fResult;
+  b2Body       *poBody;
+  const b2Vec2 *pvGravity;
+  orxVECTOR    *pvResult;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvCustomGravity != orxNULL);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Gets its gravity multiplier */
-  fResult = poBody->GetGravityMultiplier();
+  /* Gets its custom gravity */
+  pvGravity = poBody->GetCustomGravity();
+
+  /* Found? */
+  if(pvGravity != orxNULL)
+  {
+    /* Updates result */
+    orxVector_Set(_pvCustomGravity, sstPhysics.fRecDimensionRatio * pvGravity->x, sstPhysics.fRecDimensionRatio * pvGravity->y, orxFLOAT_0);
+    pvResult = _pvCustomGravity;
+  }
+  else
+  {
+    /* Clears result */
+    pvResult = orxNULL;
+  }
 
   /* Done! */
-  return fResult;
+  return pvResult;
 }
 
-extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
 {
   b2Body     *poBody;
   b2Vec2      vMassCenter;
@@ -1113,7 +1141,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravity(const orxVECTOR *_p
   orxASSERT(_pvGravity != orxNULL);
 
   /* Sets gravity vector */
-  vGravity.Set(_pvGravity->fX, _pvGravity->fY);
+  vGravity.Set(sstPhysics.fDimensionRatio * _pvGravity->fX, sstPhysics.fDimensionRatio * _pvGravity->fY);
 
   /* Updates gravity */
   sstPhysics.poWorld->SetGravity(vGravity);
@@ -1133,7 +1161,7 @@ extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGrav
 
   /* Gets gravity vector */
   vGravity = sstPhysics.poWorld->GetGravity();
-  orxVector_Set(_pvGravity, vGravity.x, vGravity.y, orxFLOAT_0);
+  orxVector_Set(_pvGravity, sstPhysics.fRecDimensionRatio * vGravity.x, sstPhysics.fRecDimensionRatio * vGravity.y, orxFLOAT_0);
 
   /* Done! */
   return pvResult;
@@ -1187,7 +1215,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     stWorldAABB.upperBound.Set(sstPhysics.fDimensionRatio * vUpper.fX, sstPhysics.fDimensionRatio * vUpper.fY);
 
     /* Inits world gravity */
-    vWorldGravity.Set(vGravity.fX, vGravity.fY);
+    vWorldGravity.Set(sstPhysics.fDimensionRatio * vGravity.fX, sstPhysics.fDimensionRatio * vGravity.fY);
 
     /* Creates world */
     sstPhysics.poWorld = new b2World(stWorldAABB, vWorldGravity, bAllowSleep ? true : false);
@@ -1335,12 +1363,12 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPosition, PHYSICS, SET_POSI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetRotation, PHYSICS, SET_ROTATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetSpeed, PHYSICS, SET_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularVelocity, PHYSICS, SET_ANGULAR_VELOCITY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetGravityMultiplier, PHYSICS, SET_GRAVITY_MULTIPLIER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetCustomGravity, PHYSICS, SET_CUSTOM_GRAVITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeed, PHYSICS, GET_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularVelocity, PHYSICS, GET_ANGULAR_VELOCITY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetGravityMultiplier, PHYSICS, GET_GRAVITY_MULTIPLIER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetCustomGravity, PHYSICS, GET_CUSTOM_GRAVITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MASS_CENTER)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE)

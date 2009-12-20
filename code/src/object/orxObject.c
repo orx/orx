@@ -2309,7 +2309,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxBOOL         bResult;
@@ -2343,7 +2343,7 @@ orxBOOL orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRI
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+orxBOOL orxFASTCALL orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxBOOL         bResult;
@@ -2607,12 +2607,12 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
   return eResult;
 }
 
-/** Sets an object gravity multiplier
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _fGravityMultiplier Gravity multiplier to apply
+/** Sets an object custom gravity
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pvCustomGravity  Custom gravity to set / orxNULL to remove it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetGravityMultiplier(orxOBJECT *_pstObject, orxFLOAT _fGravityMultiplier)
+orxSTATUS orxFASTCALL orxObject_SetCustomGravity(orxOBJECT *_pstObject, const orxVECTOR *_pvCustomGravity)
 {
   orxBODY  *pstBody;
   orxSTATUS eResult;
@@ -2627,8 +2627,8 @@ orxSTATUS orxFASTCALL orxObject_SetGravityMultiplier(orxOBJECT *_pstObject, orxF
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    /* Updates its gravity multiplier */
-    eResult = orxBody_SetGravityMultiplier(pstBody, _fGravityMultiplier);
+    /* Updates its custom gravity */
+    eResult = orxBody_SetCustomGravity(pstBody, _pvCustomGravity);
   }
   else
   {
@@ -2645,7 +2645,7 @@ orxSTATUS orxFASTCALL orxObject_SetGravityMultiplier(orxOBJECT *_pstObject, orxF
  * @param[out]  _pvSpeed        Speed to get
  * @return      Object speed / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed)
+orxVECTOR *orxFASTCALL orxObject_GetSpeed(const orxOBJECT *_pstObject, orxVECTOR *_pvSpeed)
 {
   orxBODY    *pstBody;
   orxVECTOR  *pvResult;
@@ -2698,7 +2698,7 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvS
  * @param[out]  _pvRelativeSpeed Relative speed to get
  * @return      Object relative speed / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetRelativeSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvRelativeSpeed)
+orxVECTOR *orxFASTCALL orxObject_GetRelativeSpeed(const orxOBJECT *_pstObject, orxVECTOR *_pvRelativeSpeed)
 {
   orxVECTOR vObjectScale, *pvResult;
 
@@ -2725,7 +2725,7 @@ orxVECTOR *orxFASTCALL orxObject_GetRelativeSpeed(orxOBJECT *_pstObject, orxVECT
  * @param[in]   _pstObject      Concerned object
  * @return      Object angular velocity (radians/seconds)
  */
-orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
+orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(const orxOBJECT *_pstObject)
 {
   orxBODY  *pstBody;
   orxFLOAT  fResult;
@@ -2769,18 +2769,20 @@ orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Gets an object gravity multiplier
- * @param[in]   _pstObject      Concerned object
- * @return      Object gravity multiplier
+/** Gets an object custom gravity
+ * @param[in]   _pstObject        Concerned object
+ * @param[out]  _pvCustomGravity  Custom gravity to get
+ * @return      Object custom gravity / orxNULL is object doesn't have any
  */
-orxFLOAT orxFASTCALL orxObject_GetGravityMultiplier(orxOBJECT *_pstObject)
+orxVECTOR *orxFASTCALL orxObject_GetCustomGravity(const orxOBJECT *_pstObject, orxVECTOR *_pvCustomGravity)
 {
-  orxBODY  *pstBody;
-  orxFLOAT  fResult;
+  orxBODY    *pstBody;
+  orxVECTOR  *pvResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvCustomGravity != orxNULL);
 
   /* Gets body */
   pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
@@ -2789,16 +2791,16 @@ orxFLOAT orxFASTCALL orxObject_GetGravityMultiplier(orxOBJECT *_pstObject)
   if(pstBody != orxNULL)
   {
     /* Updates result */
-    fResult = orxBody_GetGravityMultiplier(pstBody);
+    pvResult = orxBody_GetCustomGravity(pstBody, _pvCustomGravity);
   }
   else
   {
     /* Updates result */
-    fResult = orxFLOAT_1;
+    pvResult = orxNULL;
   }
 
   /* Done! */
-  return fResult;
+  return pvResult;
 }
 
 /** Gets an object center of mass
@@ -2806,7 +2808,7 @@ orxFLOAT orxFASTCALL orxObject_GetGravityMultiplier(orxOBJECT *_pstObject)
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter)
+orxVECTOR *orxFASTCALL orxObject_GetMassCenter(const orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter)
 {
   orxBODY    *pstBody;
   orxVECTOR  *pvResult;
