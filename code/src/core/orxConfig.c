@@ -67,38 +67,38 @@
 
 /** Defines
  */
-#define orxCONFIG_KU32_SECTION_BANK_SIZE    32          /**< Default section bank size */
-#define orxCONFIG_KU32_STACK_BANK_SIZE      8           /**< Default stack bank size */
-#define orxCONFIG_KU32_ENTRY_BANK_SIZE      8           /**< Default entry bank size */
-#define orxCONFIG_KU32_HISTORY_BANK_SIZE    4           /**< Default history bank size */
-#define orxCONFIG_KU32_BASE_FILENAME_LENGTH 256         /**< Base file name length */
+#define orxCONFIG_KU32_SECTION_BANK_SIZE          32          /**< Default section bank size */
+#define orxCONFIG_KU32_STACK_BANK_SIZE            8           /**< Default stack bank size */
+#define orxCONFIG_KU32_ENTRY_BANK_SIZE            8           /**< Default entry bank size */
+#define orxCONFIG_KU32_HISTORY_BANK_SIZE          4           /**< Default history bank size */
+#define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 
-#define orxCONFIG_KU32_BUFFER_SIZE          4096        /**< Buffer size */
+#define orxCONFIG_KU32_BUFFER_SIZE                4096        /**< Buffer size */
 
-#define orxCONFIG_KC_SECTION_START          '['         /**< Section start character */
-#define orxCONFIG_KC_SECTION_END            ']'         /**< Section end character */
-#define orxCONFIG_KC_ASSIGN                 '='         /**< Assign character */
-#define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
-#define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
-#define orxCONFIG_KC_LIST_SEPARATOR         '#'         /**< List separator */
-#define orxCONFIG_KC_SECTION_SEPARATOR      '.'         /**< Section separator */
-#define orxCONFIG_KC_INHERITANCE_MARKER     '@'         /**< Inheritance marker character */
-#define orxCONFIG_KC_BLOCK                  '"'         /**< Block delimiter character */
+#define orxCONFIG_KC_SECTION_START                '['         /**< Section start character */
+#define orxCONFIG_KC_SECTION_END                  ']'         /**< Section end character */
+#define orxCONFIG_KC_ASSIGN                       '='         /**< Assign character */
+#define orxCONFIG_KC_COMMENT                      ';'         /**< Comment character */
+#define orxCONFIG_KC_RANDOM_SEPARATOR             '~'         /**< Random number separator character */
+#define orxCONFIG_KC_LIST_SEPARATOR               '#'         /**< List separator */
+#define orxCONFIG_KC_SECTION_SEPARATOR            '.'         /**< Section separator */
+#define orxCONFIG_KC_INHERITANCE_MARKER           '@'         /**< Inheritance marker character */
+#define orxCONFIG_KC_BLOCK                        '"'         /**< Block delimiter character */
 
-#define orxCONFIG_KZ_CONFIG_SECTION         "Config"    /**< Config section name */
-#define orxCONFIG_KZ_CONFIG_HISTORY         "History"   /**< History config entry name */
+#define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
+#define orxCONFIG_KZ_CONFIG_HISTORY               "History"   /**< History config entry name */
 
-#define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY "Orx Default Encryption Key =)" /**< Orx default encryption key */
-#define orxCONFIG_KZ_ENCRYPTION_TAG         "OECF"      /**< Encryption file tag */
-#define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH 4          /**< Encryption file tag length */
+#define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
+#define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
+#define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH      4           /**< Encryption file tag length */
 
 #ifdef __orxDEBUG__
 
-  #define orxCONFIG_KZ_DEFAULT_FILE         "orxd.ini"  /**< Default config file name */
+  #define orxCONFIG_KZ_DEFAULT_FILE               "orxd.ini"  /**< Default config file name */
 
 #else /* __orxDEBUG__ */
 
-  #define orxCONFIG_KZ_DEFAULT_FILE         "orx.ini"   /**< Default config file name */
+  #define orxCONFIG_KZ_DEFAULT_FILE               "orx.ini"   /**< Default config file name */
 
 #endif /* __orxDEBUG__ */
 
@@ -2322,6 +2322,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               pc++;
             }
 
+            /* Empty? */
+            if((*pcValueStart == orxCONFIG_KC_COMMENT) || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF))
+            {
+              /* Uses empty string */
+              pcValueStart = (orxCHAR *)orxSTRING_EMPTY;
+            }
+
             /* Cuts the strings */
             *pcKeyEnd = *(++pcValueEnd) = orxCHAR_NULL;
 
@@ -2561,7 +2568,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
               /* Finds start of value position */
               for(pcValueStart = pc + 1;
-                  (pcValueStart < acBuffer + u32Size) && ((*pcValueStart == ' ') || (*pcValueStart == '\t') || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF));
+                  (pcValueStart < acBuffer + u32Size) && ((*pcValueStart == ' ') || (*pcValueStart == '\t'));
                   pcValueStart++);
 
               /* Valid? */
