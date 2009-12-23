@@ -129,7 +129,7 @@ extern orxDLLAPI void orxFASTCALL           orxSpawner_Enable(orxSPAWNER *_pstSp
 extern orxDLLAPI orxBOOL orxFASTCALL        orxSpawner_IsEnabled(const orxSPAWNER *_pstSpawner);
 
 
-/** Resets (and re-enables) a spawner
+/** Resets (and disables) a spawner
  * @param[in]   _pstSpawner     Concerned spawner
  */
 extern orxDLLAPI void orxFASTCALL           orxSpawner_Reset(orxSPAWNER *_pstSpawner);

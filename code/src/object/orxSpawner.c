@@ -782,7 +782,7 @@ orxBOOL orxFASTCALL orxSpawner_IsEnabled(const orxSPAWNER *_pstSpawner)
 /** Resets (and re-enables) a spawner
  * @param[in]   _pstSpawner     Concerned spawner
  */
-void orxFASTCALL    orxSpawner_Reset(orxSPAWNER *_pstSpawner)
+void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
 {
   orxOBJECT *pstObject;
   
@@ -791,7 +791,7 @@ void orxFASTCALL    orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
   /* Updates status */
-  orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_FLAG_NONE);
+  orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_ENABLED);
 
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_RESET, _pstSpawner, orxNULL, orxNULL);
