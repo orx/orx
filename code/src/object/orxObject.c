@@ -1733,8 +1733,10 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
     /* Valid? */
     if(pstBody != orxNULL)
     {
+      orxVECTOR vPos;
+
       /* Updates body position */
-      orxBody_SetPosition(pstBody, _pvPosition);
+      orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
     }
   }
   else
@@ -1782,7 +1784,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
     if(pstBody != orxNULL)
     {
       /* Updates body rotation */
-      orxBody_SetRotation(pstBody, _fRotation);
+      orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
     }
   }
   else
@@ -1830,8 +1832,10 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
     /* Valid? */
     if(pstBody != orxNULL)
     {
+      orxVECTOR vScale;
+
       /* Updates body scale */
-      orxBody_SetScale(pstBody, _pvScale);
+      orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale));
     }
   }
   else

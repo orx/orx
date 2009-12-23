@@ -113,7 +113,9 @@ struct __orxBODY_t
   const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 36 */
   orxU32                  u32DefFlags;                                /**< Definition flags : 40 */
   orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 44 */
-  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 108 */
+  orxVECTOR               vPreviousPosition;                          /**< Previous position : 56 */
+  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 60 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 124 */
 };
 
 /** Static structure
@@ -1055,6 +1057,7 @@ orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, const orxVECTOR *_p
   {
     /* Updates its position */
     eResult = orxPhysics_SetPosition(_pstBody->pstData, _pvPosition);
+    orxVector_Copy(&(_pstBody->vPreviousPosition), _pvPosition);
   }
   else
   {
@@ -1087,6 +1090,7 @@ orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation
   {
     /* Updates its position */
     eResult = orxPhysics_SetRotation(_pstBody->pstData, _fRotation);
+    _pstBody->fPreviousRotation = _fRotation;
   }
   else
   {
@@ -1626,8 +1630,8 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       /* Owner enabled? */
       if(orxObject_IsEnabled(pstOwner) != orxFALSE)
       {
-        orxVECTOR             vPosition, vSpeed;
-        orxFLOAT              fZBackup, fRotation;
+        orxVECTOR             vPosition, vSpeed, vDiff;
+        orxFLOAT              fZBackup, fRotation, fDiff;
         orxFLOAT              fSpeedCoef;
         const orxCLOCK_INFO  *pstClockInfo;
         orxCLOCK             *pstClock;
@@ -1662,17 +1666,37 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
         /* Backups its Z */
         fZBackup = vPosition.fZ;
 
+        /* Global space? */
+        if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
+        {
+          /* Computes diff vector & rotation */
+          orxVector_Set(&vDiff, vPosition.fX - _pstBody->vPreviousPosition.fX, vPosition.fY - _pstBody->vPreviousPosition.fY, orxFLOAT_0);
+          fDiff = orxFrame_GetRotation(pstFrame, eFrameSpace) - _pstBody->fPreviousRotation;
+        }
+
         /* Gets body up-to-date position */
         orxPhysics_GetPosition(_pstBody->pstData, &vPosition);
 
         /* Restores Z */
         vPosition.fZ = fZBackup;
 
-        /* Updates position */
-        orxFrame_SetPosition(pstFrame, eFrameSpace, &vPosition);
-
         /* Gets body up-to-date rotation */
         fRotation = orxPhysics_GetRotation(_pstBody->pstData);
+
+        /* Global space? */
+        if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
+        {
+          /* Updates position & rotation with diffs */
+          orxVector_Add(&vPosition, &vPosition, &vDiff);
+          fRotation += fDiff;
+
+          /* Stores them */
+          orxVector_Copy(&(_pstBody->vPreviousPosition), &vPosition);
+          _pstBody->fPreviousRotation = fRotation;
+        }
+
+        /* Updates position */
+        orxFrame_SetPosition(pstFrame, eFrameSpace, &vPosition);
 
         /* Updates rotation */
         orxFrame_SetRotation(pstFrame, eFrameSpace, fRotation);
