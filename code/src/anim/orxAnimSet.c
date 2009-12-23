@@ -2266,7 +2266,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
           *_pbClearTarget |= (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
 
           /* Stores current result handle */
-          hResult = (orxHANDLE)u32Anim;
+          hResult = (orxHANDLE)u32TargetAnim;
         }
         else
         {
