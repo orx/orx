@@ -11,6 +11,7 @@ orx 1.1 rc0
 * Clocks can now be created from config files and directly from objects. There can be only one clock with a given name (like cameras)
 * IMPORTANT: Renamed spawner's WaveNumber property to WaveSize
 * IMPORTANT: World gravity now use the physics dimension ratio -> update your config files accordingly
+* Added custom events for animations
 * Integrated current Box2D version from its svn repository
 * Added Raycast feature when physics is enabled (+wrappers in body & object modules)
 * Dynamic objects can now have parents and get the cumulated result move from parents + physics simulation!

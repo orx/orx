@@ -2243,7 +2243,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
       fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
 
       /* Next animation? */
-      while(*_pfTime > fLength)
+      if(*_pfTime > fLength)
       {
         /* Get next animation */
         u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_hDstAnim != orxHANDLE_UNDEFINED) ? (orxU32)_hDstAnim : orxU32_UNDEFINED, orxFALSE);
@@ -2265,12 +2265,6 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
           /* Updates target clearing status */
           *_pbClearTarget |= (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
 
-          /* Updates current animation */
-          u32Anim = u32TargetAnim;
-
-          /* Gets new duration */
-          fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
-
           /* Stores current result handle */
           hResult = (orxHANDLE)u32Anim;
         }
@@ -2281,8 +2275,6 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
 
           /* Not found */
           hResult = orxHANDLE_UNDEFINED;
-
-          break;
         }
       }
     }

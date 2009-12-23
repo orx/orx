@@ -56,11 +56,12 @@
 
 #define orxANIM_KU32_FLAG_2D                  0x00000001  /**< 2D type animation ID flag */
 
-#define orxANIM_KU32_MASK_USER_ALL            0x000000FF  /**< User all ID mask */
+#define orxANIM_KU32_MASK_USER_ALL            0x0000000F  /**< User all ID mask */
 
 /** Anim defines
  */
-#define orxANIM_KU32_KEY_MAX_NUMBER           65536       /**< Maximum number of keys for an animation structure */
+#define orxANIM_KU32_KEY_MAX_NUMBER           255         /**< Maximum number of keys for an animation structure */
+#define orxANIM_KU32_EVENT_MAX_NUMBER         15          /**< Maximum number of events for an animation structure */
 
 
 /** Internal Anim structure
@@ -76,6 +77,7 @@ typedef enum __orxANIM_EVENT_t
   orxANIM_EVENT_STOP,                         /**< Event sent when an animation stops */
   orxANIM_EVENT_CUT,                          /**< Event sent when an animation is cut */
   orxANIM_EVENT_LOOP,                         /**< Event sent when an animation has looped */
+  orxANIM_EVENT_CUSTOM_EVENT,                 /**< Event sent when a custom event is reached */
 
   orxANIM_EVENT_NUMBER,
 
@@ -89,8 +91,21 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
 {
   orxANIM  *pstAnim;                          /**< Animation reference : 4 */
   orxSTRING zAnimName;                        /**< Animation name : 8 */
+  orxSTRING zCustomEventName;                 /**< Custom event name : 12 */
+  orxFLOAT  fCustomEventValue;                /**< Custom event value : 16 */
+  orxFLOAT  fCustomEventTime;                 /**< Custom event time : 20 */
 
 } orxANIM_EVENT_PAYLOAD;
+
+/** Anim custom event
+ */
+typedef struct __orxANIM_CUSTOM_EVENT_t
+{
+  orxSTRING     zName;                        /**< Event name : 4 */
+  orxFLOAT      fValue;                       /**< Event value : 8 */
+  orxFLOAT      fTimeStamp;                   /**< Timestamo : 12 */
+
+} orxANIM_CUSTOM_EVENT;
 
 
 /** Anim module setup
@@ -108,10 +123,11 @@ extern orxDLLAPI void orxFASTCALL             orxAnim_Exit();
 
 /** Creates an empty animation
  * @param[in]   _u32Flags       Flags for created animation
- * @param[in]   _u32Size        Number of keys for this animation
+ * @param[in]   _u32KeyNumber   Number of keys for this animation
+ * @param[in]   _u32EventNumber Number of events for this animation
  * @return      Created orxANIM / orxNULL
  */
-extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size);
+extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU32 _u32EventNumber);
 
 /** Creates an animation from config
  * @param[in]   _zConfigID                    Config ID
@@ -146,6 +162,34 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastKey(orxANIM *_ps
 extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllKeys(orxANIM *_pstAnim);
 
 
+/** Adds an event to an animation
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _zEventName     Event name to add
+ * @param[in]   _fTimeStamp     Timestamp for this event
+ * @param[in]   _fValue         Value for this event
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEventName, orxFLOAT _fTimeStamp, orxFLOAT _fValue);
+
+/** Removes last added event from an animation
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastEvent(orxANIM *_pstAnim);
+
+/** Removes all events from an animation
+ * @param[in]   _pstAnim        Concerned animation
+ */
+extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllEvents(orxANIM *_pstAnim);
+
+/** Gets next event after given timestamp
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _fTimeStamp     Time stamp, excluded
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
+
+
 /** Updates anim given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _fTimeStamp     TimeStamp for animation update
@@ -173,6 +217,19 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(const or
  * @return      Anim key counter
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(const orxANIM *_pstAnim);
+
+
+/** Anim event storage size accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Anim event storage size
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventStorageSize(const orxANIM *_pstAnim);
+
+/** Anim event counter accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Anim event counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCounter(const orxANIM *_pstAnim);
 
 
 /** Anim time length accessor

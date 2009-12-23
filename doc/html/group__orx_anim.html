@@ -22,14 +22,18 @@
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxANIM_EVENT_PAYLOAD</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html">orxANIM_CUSTOM_EVENT</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g240c6df3111297726e4b3ef0164ed912">orxANIM_KU32_FLAG_NONE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g350480df9b149d33bd146f6b9ac4cf92">orxANIM_KU32_FLAG_2D</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gdfa002692d137e27aeb6c22cc71882a4">orxANIM_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x000000FF</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gdfa002692d137e27aeb6c22cc71882a4">orxANIM_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x0000000F</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4ea007379c0c16774e2c7db73d68964f">orxANIM_KU32_KEY_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;65536</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4ea007379c0c16774e2c7db73d68964f">orxANIM_KU32_KEY_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;255</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gd06df847b66f6fd8aa654ccf986bb675">orxANIM_KU32_EVENT_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;15</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxANIM_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a></td></tr>
@@ -41,7 +45,8 @@
 <a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e03ad02947e37f6a84a131dba87c132c0c">orxANIM_EVENT_CUT</a>, 
 <a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e083d9ae013834c5fc7bf9990606d2ffc5">orxANIM_EVENT_LOOP</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e0a7b2beb25ff0451d0168e147b24b756d">orxANIM_EVENT_NUMBER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e01d89ac9eb00e961ee1f3e30ff5655707">orxANIM_EVENT_CUSTOM_EVENT</a>, 
+<a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e0a7b2beb25ff0451d0168e147b24b756d">orxANIM_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e0de667583911ba99dbbb2ca87418d1590">orxANIM_EVENT_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
@@ -53,7 +58,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g7eeb4d40ed5926bd87727e9473dbcdbb">orxAnim_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gadcec50b1f2a9b833524af5c83c22089">orxAnim_Create</a> (orxU32 _u32Flags, orxU32 _u32Size)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g905b2501e745a8c5f49b0e8293281d37">orxAnim_Create</a> (orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU32 _u32EventNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gd3d30b5a08f7fa4c6ff73f8deaf4cc5d">orxAnim_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
 
@@ -65,6 +70,16 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g507824bc2f1f7ca266b505503f0a5177">orxAnim_RemoveAllKeys</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4f50f36eafa77217a827b5d6f4e1705e">orxAnim_AddEvent</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, const orxSTRING _zEventName, orxFLOAT _fTimeStamp, orxFLOAT _fValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g024213648a185234bd60311b96c4fb8e">orxAnim_RemoveLastEvent</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g602a39ce6b3c030c19ba21b2d57db11f">orxAnim_RemoveAllEvents</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const <br>
+<a class="el" href="structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html">orxANIM_CUSTOM_EVENT</a> <br>
+*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g40c54d816dd6b4ed0da4c0b967ddbc8e">orxAnim_GetNextEvent</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, orxFLOAT _fTimeStamp)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g5f2181fce48279ff3f34841909cb59ef">orxAnim_Update</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g09b7c42ef668e8b4ab37ef42a4b04ce0">orxAnim_GetKeyData</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, orxU32 _u32Index)</td></tr>
@@ -72,6 +87,10 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#ga10cd82b5d68b0bcfe85787ff3229625">orxAnim_GetKeyStorageSize</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gb54765b761962caaffac0069a2229e75">orxAnim_GetKeyCounter</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g1bfc89cc39b93778b2969e7d4e2353b7">orxAnim_GetEventStorageSize</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gd5357225faaafe2a3e39255f0ca4eed4">orxAnim_GetEventCounter</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g2f5d16d134a708037091d0a64c1f490e">orxAnim_GetLength</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
@@ -83,6 +102,21 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Animation (Data) Module. Allows to creates and handle Animations data. It consists of a structure containing data for a single animation and functions for handling and accessing them. Animations are structures. They thus can be referenced by Animation Sets (orxAnimSet) Module. <hr><h2>Define Documentation</h2>
+<a class="anchor" name="gd06df847b66f6fd8aa654ccf986bb675"></a><!-- doxytag: member="orxAnim.h::orxANIM_KU32_EVENT_MAX_NUMBER" ref="gd06df847b66f6fd8aa654ccf986bb675" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxANIM_KU32_EVENT_MAX_NUMBER&nbsp;&nbsp;&nbsp;15          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Maximum number of events for an animation structure 
+</div>
+</div><p>
 <a class="anchor" name="g350480df9b149d33bd146f6b9ac4cf92"></a><!-- doxytag: member="orxAnim.h::orxANIM_KU32_FLAG_2D" ref="g350480df9b149d33bd146f6b9ac4cf92" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -118,7 +152,7 @@ Anim flags No flags
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxANIM_KU32_KEY_MAX_NUMBER&nbsp;&nbsp;&nbsp;65536          </td>
+          <td class="memname">#define orxANIM_KU32_KEY_MAX_NUMBER&nbsp;&nbsp;&nbsp;255          </td>
         </tr>
       </table>
 </div>
@@ -133,7 +167,7 @@ Anim defines Maximum number of keys for an animation structure
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxANIM_KU32_MASK_USER_ALL&nbsp;&nbsp;&nbsp;0x000000FF          </td>
+          <td class="memname">#define orxANIM_KU32_MASK_USER_ALL&nbsp;&nbsp;&nbsp;0x0000000F          </td>
         </tr>
       </table>
 </div>
@@ -182,6 +216,8 @@ Event sent when an animation stops </td></tr>
 Event sent when an animation is cut </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg35c8d85da4576521adb85018dd46f3e083d9ae013834c5fc7bf9990606d2ffc5"></a><!-- doxytag: member="orxANIM_EVENT_LOOP" ref="gg35c8d85da4576521adb85018dd46f3e083d9ae013834c5fc7bf9990606d2ffc5" args="" -->orxANIM_EVENT_LOOP</em>&nbsp;</td><td>
 Event sent when an animation has looped </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg35c8d85da4576521adb85018dd46f3e01d89ac9eb00e961ee1f3e30ff5655707"></a><!-- doxytag: member="orxANIM_EVENT_CUSTOM_EVENT" ref="gg35c8d85da4576521adb85018dd46f3e01d89ac9eb00e961ee1f3e30ff5655707" args="" -->orxANIM_EVENT_CUSTOM_EVENT</em>&nbsp;</td><td>
+Event sent when a custom event is reached </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg35c8d85da4576521adb85018dd46f3e0a7b2beb25ff0451d0168e147b24b756d"></a><!-- doxytag: member="orxANIM_EVENT_NUMBER" ref="gg35c8d85da4576521adb85018dd46f3e0a7b2beb25ff0451d0168e147b24b756d" args="" -->orxANIM_EVENT_NUMBER</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg35c8d85da4576521adb85018dd46f3e0de667583911ba99dbbb2ca87418d1590"></a><!-- doxytag: member="orxANIM_EVENT_NONE" ref="gg35c8d85da4576521adb85018dd46f3e0de667583911ba99dbbb2ca87418d1590" args="" -->orxANIM_EVENT_NONE</em>&nbsp;</td><td>
@@ -192,6 +228,56 @@ Event sent when an animation has looped </td></tr>
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
+<a class="anchor" name="g4f50f36eafa77217a827b5d6f4e1705e"></a><!-- doxytag: member="orxAnim.h::orxAnim_AddEvent" ref="g4f50f36eafa77217a827b5d6f4e1705e" args="(orxANIM *_pstAnim, const orxSTRING _zEventName, orxFLOAT _fTimeStamp, orxFLOAT _fValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxAnim_AddEvent           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstAnim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zEventName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fTimeStamp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Adds an event to an animation <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zEventName</em>&nbsp;</td><td>Event name to add </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fTimeStamp</em>&nbsp;</td><td>Timestamp for this event </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fValue</em>&nbsp;</td><td>Value for this event </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g34af9e6bbcc1d1b4f65b81cf78f2cef9"></a><!-- doxytag: member="orxAnim.h::orxAnim_AddKey" ref="g34af9e6bbcc1d1b4f65b81cf78f2cef9" args="(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxFLOAT _fTimeStamp)" -->
 <div class="memitem">
 <div class="memproto">
@@ -235,7 +321,7 @@ Adds a key to an animation <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gadcec50b1f2a9b833524af5c83c22089"></a><!-- doxytag: member="orxAnim.h::orxAnim_Create" ref="gadcec50b1f2a9b833524af5c83c22089" args="(orxU32 _u32Flags, orxU32 _u32Size)" -->
+<a class="anchor" name="g905b2501e745a8c5f49b0e8293281d37"></a><!-- doxytag: member="orxAnim.h::orxAnim_Create" ref="g905b2501e745a8c5f49b0e8293281d37" args="(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU32 _u32EventNumber)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -249,7 +335,13 @@ Adds a key to an animation <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxU32&nbsp;</td>
-          <td class="paramname"> <em>_u32Size</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>_u32KeyNumber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32EventNumber</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -264,7 +356,8 @@ Adds a key to an animation <dl compact><dt><b>Parameters:</b></dt><dd>
 Creates an empty animation <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Flags for created animation </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>Number of keys for this animation </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32KeyNumber</em>&nbsp;</td><td>Number of keys for this animation </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32EventNumber</em>&nbsp;</td><td>Number of events for this animation </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Created orxANIM / orxNULL </dd></dl>
@@ -340,6 +433,58 @@ Deletes an animation <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Exits from the Anim module 
+</div>
+</div><p>
+<a class="anchor" name="gd5357225faaafe2a3e39255f0ca4eed4"></a><!-- doxytag: member="orxAnim.h::orxAnim_GetEventCounter" ref="gd5357225faaafe2a3e39255f0ca4eed4" args="(const orxANIM *_pstAnim)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxAnim_GetEventCounter           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstAnim</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Anim event counter accessor <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Anim event counter </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g1bfc89cc39b93778b2969e7d4e2353b7"></a><!-- doxytag: member="orxAnim.h::orxAnim_GetEventStorageSize" ref="g1bfc89cc39b93778b2969e7d4e2353b7" args="(const orxANIM *_pstAnim)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxAnim_GetEventStorageSize           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstAnim</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Anim event storage size accessor <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Anim event storage size </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="gfed8c409573b87bddfbef7ee009792e4"></a><!-- doxytag: member="orxAnim.h::orxAnim_GetID" ref="gfed8c409573b87bddfbef7ee009792e4" args="(const orxANIM *_pstAnim)" -->
@@ -508,6 +653,42 @@ Anim name get accessor <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g40c54d816dd6b4ed0da4c0b967ddbc8e"></a><!-- doxytag: member="orxAnim.h::orxAnim_GetNextEvent" ref="g40c54d816dd6b4ed0da4c0b967ddbc8e" args="(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const <a class="el" href="structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html">orxANIM_CUSTOM_EVENT</a>* orxFASTCALL orxAnim_GetNextEvent           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstAnim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fTimeStamp</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets next event after given timestamp <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fTimeStamp</em>&nbsp;</td><td>Time stamp, excluded </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g3a0ffbc775811de6ce7a771300a54038"></a><!-- doxytag: member="orxAnim.h::orxAnim_Init" ref="g3a0ffbc775811de6ce7a771300a54038" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -525,6 +706,31 @@ Anim name get accessor <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Inits the Anim module 
+</div>
+</div><p>
+<a class="anchor" name="g602a39ce6b3c030c19ba21b2d57db11f"></a><!-- doxytag: member="orxAnim.h::orxAnim_RemoveAllEvents" ref="g602a39ce6b3c030c19ba21b2d57db11f" args="(orxANIM *_pstAnim)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxAnim_RemoveAllEvents           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstAnim</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Removes all events from an animation <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
+  </table>
+</dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g507824bc2f1f7ca266b505503f0a5177"></a><!-- doxytag: member="orxAnim.h::orxAnim_RemoveAllKeys" ref="g507824bc2f1f7ca266b505503f0a5177" args="(orxANIM *_pstAnim)" -->
@@ -549,6 +755,32 @@ Removes all keys from an animation <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
   </table>
 </dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g024213648a185234bd60311b96c4fb8e"></a><!-- doxytag: member="orxAnim.h::orxAnim_RemoveLastEvent" ref="g024213648a185234bd60311b96c4fb8e" args="(orxANIM *_pstAnim)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxAnim_RemoveLastEvent           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstAnim</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Removes last added event from an animation <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstAnim</em>&nbsp;</td><td>Concerned animation </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>

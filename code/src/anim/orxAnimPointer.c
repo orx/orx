@@ -137,6 +137,43 @@ static orxINLINE void orxAnimPointer_DeleteAll()
   return;
 }
 
+/** Sends custom events from an animation between two timestamps
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _pstOwner       Event's owner
+ * @param[in]   _fStartTime     Start time, excluded
+ * @param[in]   _fEndTime       End time, included
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE void orxAnimPointer_SendCustomEvents(orxANIM *_pstAnim, const orxSTRUCTURE *_pstOwner, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
+{
+  const orxANIM_CUSTOM_EVENT *pstCustomEvent;
+  orxANIM_EVENT_PAYLOAD       stPayload;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pstAnim);
+  orxSTRUCTURE_ASSERT(_pstOwner);
+  orxASSERT(_fEndTime >= _fStartTime);
+
+  /* Inits event payload */
+  orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
+  stPayload.pstAnim   = _pstAnim;
+  stPayload.zAnimName = orxAnim_GetName(_pstAnim);
+
+  /* For all events to send */
+  for(pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, _fStartTime);
+      (pstCustomEvent != orxNULL) && (pstCustomEvent->fTimeStamp <= _fEndTime);
+      pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTimeStamp))
+  {
+    /* Updates event payload */
+    stPayload.zCustomEventName  = pstCustomEvent->zName;
+    stPayload.fCustomEventValue = pstCustomEvent->fValue;
+    stPayload.fCustomEventTime  = pstCustomEvent->fTimeStamp;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUSTOM_EVENT, _pstOwner, _pstOwner, &stPayload);
+  }
+}
+
 /** Computes current Anim for the given time
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _fDT                          Delta time
@@ -144,8 +181,6 @@ static orxINLINE void orxAnimPointer_DeleteAll()
  */
 static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fDT)
 {
-  orxHANDLE hNewAnim;
-  orxFLOAT  fTimeBackup;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -158,7 +193,12 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
     /* Has current animation */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
-      orxBOOL bCut, bClearTarget;
+      orxBOOL   bCut, bClearTarget;
+      orxHANDLE hNewAnim;
+      orxFLOAT  fTimeBackup, fEventStartTime;
+
+      /* Gets event start time */
+      fEventStartTime = _pstAnimPointer->fCurrentAnimTime;
 
       /* Updates Times */
       _pstAnimPointer->fTime += _fDT * _pstAnimPointer->fFrequency;
@@ -179,6 +219,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
+
+        /* Sends custom events */
+        orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, orxAnim_GetLength(stPayload.pstAnim));
 
         /* Updates current anim handle */
         _pstAnimPointer->hCurrentAnim = hNewAnim;
@@ -211,6 +254,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           /* Removes it */
           _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
         }
+
+        /* Updates event start time */
+        fEventStartTime = orx2F(-1.0f);
       }
       else
       {
@@ -224,6 +270,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
+          /* Sends custom events */
+          orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, orxAnim_GetLength(stPayload.pstAnim));
+
           /* Sends it */
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
 
@@ -233,14 +282,25 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             /* Removes it */
             _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
           }
+
+          /* Updates event start time */
+          fEventStartTime = orx2F(-1.0f);
         }
       }
 
       /* Has current anim? */
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
       {
+        orxANIM *pstAnim;
+
+        /* Gets current anim */
+        pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+
         /* Updates current anim */
-        eResult = orxAnim_Update(orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim), _pstAnimPointer->fCurrentAnimTime, &(_pstAnimPointer->u32CurrentKey));
+        eResult = orxAnim_Update(pstAnim, _pstAnimPointer->fCurrentAnimTime, &(_pstAnimPointer->u32CurrentKey));
+
+        /* Sends custom events */
+        orxAnimPointer_SendCustomEvents(pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
       }
     }
     else

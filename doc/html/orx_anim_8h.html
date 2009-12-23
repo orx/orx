@@ -24,14 +24,18 @@
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxANIM_EVENT_PAYLOAD</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html">orxANIM_CUSTOM_EVENT</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g240c6df3111297726e4b3ef0164ed912">orxANIM_KU32_FLAG_NONE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g350480df9b149d33bd146f6b9ac4cf92">orxANIM_KU32_FLAG_2D</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gdfa002692d137e27aeb6c22cc71882a4">orxANIM_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x000000FF</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gdfa002692d137e27aeb6c22cc71882a4">orxANIM_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x0000000F</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4ea007379c0c16774e2c7db73d68964f">orxANIM_KU32_KEY_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;65536</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4ea007379c0c16774e2c7db73d68964f">orxANIM_KU32_KEY_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;255</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gd06df847b66f6fd8aa654ccf986bb675">orxANIM_KU32_EVENT_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;15</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxANIM_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a></td></tr>
@@ -43,7 +47,8 @@
 <a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e03ad02947e37f6a84a131dba87c132c0c">orxANIM_EVENT_CUT</a>, 
 <a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e083d9ae013834c5fc7bf9990606d2ffc5">orxANIM_EVENT_LOOP</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e0a7b2beb25ff0451d0168e147b24b756d">orxANIM_EVENT_NUMBER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e01d89ac9eb00e961ee1f3e30ff5655707">orxANIM_EVENT_CUSTOM_EVENT</a>, 
+<a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e0a7b2beb25ff0451d0168e147b24b756d">orxANIM_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_anim.html#gg35c8d85da4576521adb85018dd46f3e0de667583911ba99dbbb2ca87418d1590">orxANIM_EVENT_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
@@ -55,7 +60,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g7eeb4d40ed5926bd87727e9473dbcdbb">orxAnim_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gadcec50b1f2a9b833524af5c83c22089">orxAnim_Create</a> (orxU32 _u32Flags, orxU32 _u32Size)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g905b2501e745a8c5f49b0e8293281d37">orxAnim_Create</a> (orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU32 _u32EventNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gd3d30b5a08f7fa4c6ff73f8deaf4cc5d">orxAnim_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
 
@@ -67,6 +72,16 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g507824bc2f1f7ca266b505503f0a5177">orxAnim_RemoveAllKeys</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g4f50f36eafa77217a827b5d6f4e1705e">orxAnim_AddEvent</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, const orxSTRING _zEventName, orxFLOAT _fTimeStamp, orxFLOAT _fValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g024213648a185234bd60311b96c4fb8e">orxAnim_RemoveLastEvent</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g602a39ce6b3c030c19ba21b2d57db11f">orxAnim_RemoveAllEvents</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const <br>
+<a class="el" href="structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html">orxANIM_CUSTOM_EVENT</a> <br>
+*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g40c54d816dd6b4ed0da4c0b967ddbc8e">orxAnim_GetNextEvent</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, orxFLOAT _fTimeStamp)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g5f2181fce48279ff3f34841909cb59ef">orxAnim_Update</a> (<a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g09b7c42ef668e8b4ab37ef42a4b04ce0">orxAnim_GetKeyData</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim, orxU32 _u32Index)</td></tr>
@@ -74,6 +89,10 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#ga10cd82b5d68b0bcfe85787ff3229625">orxAnim_GetKeyStorageSize</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gb54765b761962caaffac0069a2229e75">orxAnim_GetKeyCounter</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g1bfc89cc39b93778b2969e7d4e2353b7">orxAnim_GetEventStorageSize</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#gd5357225faaafe2a3e39255f0ca4eed4">orxAnim_GetEventCounter</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim.html#g2f5d16d134a708037091d0a64c1f490e">orxAnim_GetLength</a> (const <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *_pstAnim)</td></tr>
 
