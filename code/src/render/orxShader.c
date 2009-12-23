@@ -375,7 +375,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
             }
 
             /* Valid? */
-            if(zTrimmedName != orxSTRING_EMPTY)
+            if((zTrimmedName != orxNULL) && (zTrimmedName != orxSTRING_EMPTY))
             {
               orxVECTOR vValue;
 

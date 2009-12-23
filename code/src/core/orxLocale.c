@@ -209,60 +209,64 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
       *pcEnd = orxCHAR_NULL;
     }
 
-    /* Pushes locale config section */
-    orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
-
-    /* Gets language counter */
-    s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-    /* For all languages */
-    for(i = 0; i < s32LanguageCounter; i++)
+    /* Valid? */
+    if(zTrimmedLanguage != orxNULL)
     {
-      /* Found? */
-      if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), zTrimmedLanguage) != orxNULL)
-      {
-        /* Protects it */
-        eResult = orxConfig_ProtectSection(zTrimmedLanguage, orxTRUE);
+      /* Pushes locale config section */
+      orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
-        /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
+      /* Gets language counter */
+      s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+
+      /* For all languages */
+      for(i = 0; i < s32LanguageCounter; i++)
+      {
+        /* Found? */
+        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), zTrimmedLanguage) != orxNULL)
         {
-          /* Pushes its section */
-          eResult = orxConfig_PushSection(zTrimmedLanguage);
+          /* Protects it */
+          eResult = orxConfig_ProtectSection(zTrimmedLanguage, orxTRUE);
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-            orxLOCALE_EVENT_PAYLOAD stPayload;
+            /* Pushes its section */
+            eResult = orxConfig_PushSection(zTrimmedLanguage);
 
-            /* Has selected language? */
-            if(sstLocale.zCurrentLanguage != orxNULL)
+            /* Success? */
+            if(eResult != orxSTATUS_FAILURE)
             {
-              /* Unprotects its config section */
-              orxConfig_ProtectSection(sstLocale.zCurrentLanguage, orxFALSE);
+              orxLOCALE_EVENT_PAYLOAD stPayload;
+
+              /* Has selected language? */
+              if(sstLocale.zCurrentLanguage != orxNULL)
+              {
+                /* Unprotects its config section */
+                orxConfig_ProtectSection(sstLocale.zCurrentLanguage, orxFALSE);
+              }
+
+              /* Stores its reference */
+              sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
+
+              /* Pops config section */
+              orxConfig_PopSection();
+
+              /* Inits event payload */
+              orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
+              stPayload.zLanguage = sstLocale.zCurrentLanguage;
+
+              /* Sends it */
+              orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
             }
-
-            /* Stores its reference */
-            sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
-
-            /* Pops config section */
-            orxConfig_PopSection();
-
-            /* Inits event payload */
-            orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
-            stPayload.zLanguage = sstLocale.zCurrentLanguage;
-
-            /* Sends it */
-            orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
           }
+
+          break;
         }
-
-        break;
       }
-    }
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
 
     /* Had end pointer? */
     if(pcEnd < pc)
@@ -348,27 +352,31 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
       *pcEnd = orxCHAR_NULL;
     }
 
-    /* Pushes locale config section */
-    orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
-
-    /* Gets language counter */
-    s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-    /* For all languages */
-    for(i = 0; i < s32LanguageCounter; i++)
+    /* Valid? */
+    if(zTrimmedLanguage != orxNULL)
     {
-      /* Found? */
-      if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), zTrimmedLanguage) != orxNULL)
+      /* Pushes locale config section */
+      orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+
+      /* Gets language counter */
+      s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+
+      /* For all languages */
+      for(i = 0; i < s32LanguageCounter; i++)
       {
-        /* Updates result */
-        bResult = orxConfig_HasSection(zTrimmedLanguage);
+        /* Found? */
+        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), zTrimmedLanguage) != orxNULL)
+        {
+          /* Updates result */
+          bResult = orxConfig_HasSection(zTrimmedLanguage);
 
-        break;
+          break;
+        }
       }
-    }
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
 
     /* Had end pointer? */
     if(pcEnd < pc)

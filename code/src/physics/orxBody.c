@@ -1691,6 +1691,8 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
           fRotation += fDiff;
 
           /* Stores them */
+          orxPhysics_SetPosition(_pstBody->pstData, &vPosition);
+          orxPhysics_SetRotation(_pstBody->pstData, fRotation);
           orxVector_Copy(&(_pstBody->vPreviousPosition), &vPosition);
           _pstBody->fPreviousRotation = fRotation;
         }

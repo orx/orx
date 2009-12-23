@@ -551,8 +551,12 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
     *pcEnd = orxCHAR_NULL;
   }
 
-  /* Gets value */
-  pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(zTrimmedKey));
+  /* Valid? */
+  if(zTrimmedKey != orxNULL)
+  {
+    /* Gets value */
+    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(zTrimmedKey));
+  }
 
   /* Had end pointer? */
   if(pcEnd < pc)
@@ -573,8 +577,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
  */
 static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
-  orxCONFIG_ENTRY  *pstEntry;
-  orxSTATUS         eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
@@ -582,99 +585,105 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
   orxASSERT(_zKey != orxSTRING_EMPTY);
   orxASSERT(_zValue != orxNULL);
 
-  /* Creates entry */
-  pstEntry = (orxCONFIG_ENTRY *)orxBank_Allocate(sstConfig.pstCurrentSection->pstEntryBank);
+  orxSTRING zTrimmedKey;
+  orxCHAR  *pc, *pcEnd;
 
-  /* Valid? */
-  if(pstEntry != orxNULL)
+  /* Gets trimmed key */
+  for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = _zKey; *pc != orxCHAR_NULL; pc++)
   {
-    orxSTRING zTrimmedKey;
-    orxCHAR  *pc, *pcEnd;
-
-    /* Gets trimmed key */
-    for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = _zKey; *pc != orxCHAR_NULL; pc++)
+    /* Not a space? */
+    if(*pc != ' ')
     {
-      /* Not a space? */
-      if(*pc != ' ')
+      /* Hasn't found the start of name yet? */
+      if(zTrimmedKey == orxNULL)
       {
-        /* Hasn't found the start of name yet? */
-        if(zTrimmedKey == orxNULL)
-        {
-          /* Stores start of key */
-          zTrimmedKey = (orxSTRING)pc;
-        }
-        else
-        {
-          /* Updates end of key */
-          pcEnd = pc;
-        }
+        /* Stores start of key */
+        zTrimmedKey = (orxSTRING)pc;
+      }
+      else
+      {
+        /* Updates end of key */
+        pcEnd = pc;
       }
     }
+  }
 
-    /* Had trailing spaces? */
-    if((++pcEnd) < pc)
-    {
-      /* Ends name here for now */
-      *pcEnd = orxCHAR_NULL;
-    }
+  /* Had trailing spaces? */
+  if((++pcEnd) < pc)
+  {
+    /* Ends name here for now */
+    *pcEnd = orxCHAR_NULL;
+  }
 
-    /* Stores value */
-    pstEntry->stValue.zValue = orxString_Duplicate(_zValue);
+  /* Valid? */
+  if(zTrimmedKey != orxNULL)
+  {
+    orxCONFIG_ENTRY *pstEntry;
+
+    /* Creates entry */
+    pstEntry = (orxCONFIG_ENTRY *)orxBank_Allocate(sstConfig.pstCurrentSection->pstEntryBank);
 
     /* Valid? */
-    if(pstEntry->stValue.zValue != orxNULL)
+    if(pstEntry != orxNULL)
     {
-      /* Stores key */
-      pstEntry->zKey = orxString_Duplicate(zTrimmedKey);
+      /* Stores value */
+      pstEntry->stValue.zValue = orxString_Duplicate(_zValue);
 
       /* Valid? */
-      if(pstEntry->zKey != orxNULL)
+      if(pstEntry->stValue.zValue != orxNULL)
       {
-        /* Not in block mode? */
-        if(_bBlockMode == orxFALSE)
+        /* Stores key */
+        pstEntry->zKey = orxString_Duplicate(zTrimmedKey);
+
+        /* Valid? */
+        if(pstEntry->zKey != orxNULL)
         {
-          /* Computes working value */
-          orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+          /* Not in block mode? */
+          if(_bBlockMode == orxFALSE)
+          {
+            /* Computes working value */
+            orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+          }
+          else
+          {
+            /* Block mode, no list nor random allowed */
+            pstEntry->stValue.u16Flags      = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
+            pstEntry->stValue.u8ListCounter = 1;
+          }
+
+          /* Adds it to list */
+          orxMemory_Zero(&(pstEntry->stNode), sizeof(orxLINKLIST_NODE));
+          orxLinkList_AddEnd(&(sstConfig.pstCurrentSection->stEntryList), &(pstEntry->stNode));
+
+          /* Sets its ID */
+          pstEntry->u32ID = orxString_ToCRC(pstEntry->zKey);
+
+          /* Inits its type */
+          pstEntry->stValue.eType = orxCONFIG_VALUE_TYPE_STRING;
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
         }
         else
         {
-          /* Block mode, no list nor random allowed */
-          pstEntry->stValue.u16Flags      = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
-          pstEntry->stValue.u8ListCounter = 1;
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", zTrimmedKey);
+
+          /* Deletes allocated string */
+          orxString_Delete(pstEntry->stValue.zValue);
+
+          /* Deletes entry */
+          orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
         }
-
-        /* Adds it to list */
-        orxMemory_Zero(&(pstEntry->stNode), sizeof(orxLINKLIST_NODE));
-        orxLinkList_AddEnd(&(sstConfig.pstCurrentSection->stEntryList), &(pstEntry->stNode));
-
-        /* Sets its ID */
-        pstEntry->u32ID = orxString_ToCRC(pstEntry->zKey);
-
-        /* Inits its type */
-        pstEntry->stValue.eType = orxCONFIG_VALUE_TYPE_STRING;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", zTrimmedKey);
-
-        /* Deletes allocated string */
-        orxString_Delete(pstEntry->stValue.zValue);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate zValue string(%s).", _zValue);
 
         /* Deletes entry */
         orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
       }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate zValue string(%s).", _zValue);
-
-      /* Deletes entry */
-      orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
     }
 
     /* Had end pointer? */
@@ -2974,17 +2983,21 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
     *pcEnd = orxCHAR_NULL;
   }
 
-  /* Gets section name ID */
-  u32ID = orxString_ToCRC(zTrimmedName);
-
-  /* Gets it from table */
-  pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ID);
-
   /* Valid? */
-  if(pstSection != orxNULL)
+  if(zTrimmedName != orxNULL)
   {
-    /* Updates result */
-    bResult = orxTRUE;
+    /* Gets section name ID */
+    u32ID = orxString_ToCRC(zTrimmedName);
+
+    /* Gets it from table */
+    pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ID);
+
+    /* Valid? */
+    if(pstSection != orxNULL)
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+    }
   }
 
   /* Had end pointer? */
