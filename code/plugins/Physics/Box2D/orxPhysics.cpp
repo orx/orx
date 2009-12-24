@@ -268,9 +268,9 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
           orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
 
           /* Inits it */
-          pstEventStorage->eID                                = _eEventID;
-          pstEventStorage->poSource                           = poSource;
-          pstEventStorage->poDestination                      = poDestination;
+          pstEventStorage->eID            = _eEventID;
+          pstEventStorage->poSource       = poSource;
+          pstEventStorage->poDestination  = poDestination;
 
           /* Contact add? */
           if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
