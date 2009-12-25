@@ -214,14 +214,22 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
       {
         orxANIM_EVENT_PAYLOAD stPayload;
+        orxFLOAT              fAnimLength;
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
-        /* Sends custom events */
-        orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, orxAnim_GetLength(stPayload.pstAnim));
+        /* Gets anim length */
+        fAnimLength = orxAnim_GetLength(stPayload.pstAnim);
+
+        /* In scope? */
+        if(fEventStartTime < fAnimLength)
+        {
+          /* Sends custom events */
+          orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, fAnimLength);
+        }
 
         /* Updates current anim handle */
         _pstAnimPointer->hCurrentAnim = hNewAnim;
@@ -264,14 +272,22 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         if(_pstAnimPointer->fCurrentAnimTime < fTimeBackup)
         {
           orxANIM_EVENT_PAYLOAD stPayload;
+          orxFLOAT              fAnimLength;
 
           /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
           stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
-          /* Sends custom events */
-          orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, orxAnim_GetLength(stPayload.pstAnim));
+          /* Gets anim length */
+          fAnimLength = orxAnim_GetLength(stPayload.pstAnim);
+
+          /* In scope? */
+          if(fEventStartTime < fAnimLength)
+          {
+            /* Sends custom events */
+            orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, fAnimLength);
+          }
 
           /* Sends it */
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
