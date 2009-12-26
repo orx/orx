@@ -577,6 +577,8 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
  */
 static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
+  orxSTRING zTrimmedKey;
+  orxCHAR  *pc, *pcEnd;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -584,9 +586,6 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
   orxASSERT(_zValue != orxNULL);
-
-  orxSTRING zTrimmedKey;
-  orxCHAR  *pc, *pcEnd;
 
   /* Gets trimmed key */
   for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = _zKey; *pc != orxCHAR_NULL; pc++)

@@ -129,23 +129,33 @@ extern orxDLLAPI void orxFASTCALL             orxFrame_SetParent(orxFRAME *_pstF
 extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsRootChild(const orxFRAME *_pstFrame);
 
 
+/** Is dirty?
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxTRUE if dirty, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsDirty(const orxFRAME *_pstFrame);
+
+
 /** Sets a frame position
  * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
  * @param[in]   _pvPos          Position to set
  */
-extern orxDLLAPI void orxFASTCALL             orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvPos);
+extern orxDLLAPI void orxFASTCALL             orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, const orxVECTOR *_pvPos);
 
 /** Sets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
  * @param[in]   _fAngle         Angle to set (radians)
  */
-extern orxDLLAPI void orxFASTCALL             orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle);
+extern orxDLLAPI void orxFASTCALL             orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT _fAngle);
 
 /** Sets a frame scale
  * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
  * @param[in]   _pvScale        Scale to set
  */
-extern orxDLLAPI void orxFASTCALL             orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR *_pvScale);
+extern orxDLLAPI void orxFASTCALL             orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, const orxVECTOR *_pvScale);
 
 
 /** Gets a frame position

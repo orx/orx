@@ -60,6 +60,7 @@
   typedef unsigned  long          orxBOOL;
 
   typedef float                   orxFLOAT;
+  typedef double                  orxDOUBLE;
 
   typedef char                    orxCHAR;
   typedef orxCHAR *               orxSTRING;
@@ -87,7 +88,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__)
 
     typedef void *                orxHANDLE;
 
@@ -104,6 +105,7 @@
     typedef unsigned  long        orxBOOL;
 
     typedef float                 orxFLOAT;
+    typedef double                orxDOUBLE;
 
     typedef char                  orxCHAR;
     typedef orxCHAR *             orxSTRING;
@@ -114,7 +116,7 @@
 
     #define orxENUM_NONE          0xFFFFFFFFL
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ */
 
 #endif /* __orxWINDOWS__ */
 

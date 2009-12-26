@@ -46,6 +46,11 @@
 #include "math/orxMath.h"
 
 
+/** Defines
+ */
+#define orxTEXTURE_KZ_SCREEN_NAME         "-=SCREEN=-"
+
+
 /** Internal texture structure */
 typedef struct __orxTEXTURE_t             orxTEXTURE;
 

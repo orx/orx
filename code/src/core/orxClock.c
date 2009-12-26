@@ -666,7 +666,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
     orxLinkList_Remove(&(_pstClock->stNode));
 
     /* Is referenced? */
-    if(orxFLAG_TEST(_pstClock->u32Flags, orxCLOCK_KU32_FLAG_REFERENCED) != orxFALSE)
+    if(orxFLAG_TEST(_pstClock->u32Flags, orxCLOCK_KU32_FLAG_REFERENCED))
     {
       /* Removes it from reference table */
       orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));

@@ -195,6 +195,7 @@ static orxINLINE orxU32 orxMath_GetBitCount(register orxU32 _u32Value)
 /*** Math Definitions ***/
 
 #define orxMATH_KF_SQRT_2         orx2F(1.414213562f)           /**< Sqrt(2) constant */
+#define orxMATH_KF_EPSILON        orx2F(0.0001f)                /**< Epsilon constant */
 #define orxMATH_KF_2_PI           orx2F(6.283185307f)           /**< 2 PI constant */
 #define orxMATH_KF_PI             orx2F(3.141592654f)           /**< PI constant */
 #define orxMATH_KF_PI_BY_2        orx2F(1.570796327f)           /**< PI / 2 constant */

@@ -123,7 +123,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY 
  * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART * orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index);
+
+/** Gets a body part name
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      orxSTRING / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetPartName(const orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Removes a body part
  * @param[in]   _pstBody        Concerned body
@@ -192,38 +199,52 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSpeed(orxBODY *_pstBody
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fVelocity);
 
+/** Sets a body custom gravity
+ * @param[in]   _pstBody          Concerned body
+ * @param[in]   _pvCustomGravity  Custom gravity to set / orxNULL to remove it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCustomGravity(orxBODY *_pstBody, const orxVECTOR *_pvCustomGravity);
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
  * @return      Body position / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetPosition(orxBODY *_pstBody, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetPosition(const orxBODY *_pstBody, orxVECTOR *_pvPosition);
 
 /** Gets a body rotation
  * @param[in]   _pstBody        Concerned body
  * @return      Body rotation (radians)
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetRotation(orxBODY *_pstBody);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetRotation(const orxBODY *_pstBody);
 
 /** Gets a body speed
  * @param[in]   _pstBody        Concerned body
  * @param[out]   _pvSpeed       Speed to get
  * @return      Body speed / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetSpeed(orxBODY *_pstBody, orxVECTOR *_pvSpeed);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetSpeed(const orxBODY *_pstBody, orxVECTOR *_pvSpeed);
 
 /** Gets a body angular velocity
  * @param[in]   _pstBody        Concerned body
  * @return      Body angular velocity (radians/seconds)
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(orxBODY *_pstBody);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(const orxBODY *_pstBody);
+
+/** Gets a body custom gravity
+ * @param[in]   _pstBody          Concerned body
+ * @param[out]  _pvCustomGravity  Custom gravity to get
+ * @return      Body custom gravity / orxNULL is object doesn't have any
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
 /** Gets a body center of mass
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetMassCenter(orxBODY *_pstBody, orxVECTOR *_pvMassCenter);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR *_pvMassCenter);
 
 
 /** Applies a torque
@@ -248,6 +269,25 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
+
+
+/** Issues a raycast to test for potential bodies in the way
+ * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvEnd          End of raycast
+ * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
+ * @return Colliding orxBODY / orxNULL
+ */
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
+
+/** Applies physics simulation result to the Body
+ * @param[in]   _pstBody                      Concerned body
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL             orxBody_ApplySimulationResult(orxBODY *_pstBody);
 
 #endif /* _orxBODY_H_ */
 

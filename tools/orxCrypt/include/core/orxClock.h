@@ -43,6 +43,7 @@
 
 #include "orxInclude.h"
 #include "core/orxSystem.h"
+#include "utils/orxString.h"
 
 
 #define orxCLOCK_KU32_CLOCK_BANK_SIZE                 16          /**< Clock bank size */
@@ -55,7 +56,6 @@
 typedef enum __orxCLOCK_TYPE_t
 {
   orxCLOCK_TYPE_CORE = 0,
-  orxCLOCK_TYPE_PHYSICS,
   orxCLOCK_TYPE_USER,
 
   orxCLOCK_TYPE_SECOND,
@@ -163,6 +163,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Update();
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
+
+/** Creates a clock from config
+ * @param[in]   _zConfigID    Config ID
+ * @ return orxCLOCK / orxNULL
+ */
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
@@ -278,6 +284,12 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(const or
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orxCLOCK *_pstClock);
+
+/** Gets clock given its name
+ * @param[in]   _zName          Clock name
+ * @return      orxCLOCK / orxNULL
+ */
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Get(const orxSTRING _zName);
 
 #endif /* _orxCLOCK_H_ */
 

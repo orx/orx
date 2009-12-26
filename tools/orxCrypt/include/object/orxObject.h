@@ -45,6 +45,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
 #include "display/orxDisplay.h"
@@ -166,6 +167,19 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *
  * @return      Next sibling object / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+
+/** Sets associated clock for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstClock     Clock to associate / orxNULL
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
+
+/** Gets object's clock
+ * @param[in]   _pstObject    Concerned object
+ * @return      Associated clock / orxNULL
+ */
+extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *_pstObject);
 
 
 /** Links a structure to an object
@@ -336,14 +350,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
 /** Is target animation test
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
 
 /** Gets object's bounding box (OBB)
@@ -375,32 +389,46 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativeSpeed(orxOBJECT
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity);
 
+/** Sets an object custom gravity
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pvCustomGravity  Custom gravity to set / orxNULL to remove it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCustomGravity(orxOBJECT *_pstObject, const orxVECTOR *_pvCustomGravity);
+
 /** Gets an object speed
  * @param[in]   _pstObject      Concerned object
  * @param[out]   _pvSpeed       Speed to get
  * @return      Object speed / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(const orxOBJECT *_pstObject, orxVECTOR *_pvSpeed);
 
 /** Gets an object relative speed
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvRelativeSpeed Relative speed to get
  * @return      Object relative speed / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetRelativeSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvRelativeSpeed);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetRelativeSpeed(const orxOBJECT *_pstObject, orxVECTOR *_pvRelativeSpeed);
 
 /** Gets an object angular velocity
  * @param[in]   _pstObject      Concerned object
  * @return      Object angular velocity (radians/seconds)
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJECT *_pstObject);
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(const orxOBJECT *_pstObject);
+
+/** Gets an object custom gravity
+ * @param[in]   _pstObject        Concerned object
+ * @param[out]  _pvCustomGravity  Custom gravity to get
+ * @return      Object custom gravity / orxNULL is object doesn't have any
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetCustomGravity(const orxOBJECT *_pstObject, orxVECTOR *_pvCustomGravity);
 
 /** Gets an object center of mass
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetMassCenter(const orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter);
 
 
 /** Sets object text string, if object is associated to a text
@@ -433,6 +461,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pst
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
+
+
+/** Issues a raycast to test for potential objects in the way
+ * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvEnd          End of raycast
+ * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
+ * @return Colliding orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Sets object color

@@ -48,30 +48,31 @@
 
 /** Body definition flags
  */
-#define orxBODY_DEF_KU32_FLAG_NONE          0x00000000  /**< No flags */
+#define orxBODY_DEF_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxBODY_DEF_KU32_FLAG_2D            0x00000001  /**< 2D type body def flag */
-#define orxBODY_DEF_KU32_FLAG_DYNAMIC       0x00000002  /**< Dynamic type body def flag */
-#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED    0x00000004  /**< High speed type body def flag */
-#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION 0x00000008 /**< Body can't be rotated by physics */
+#define orxBODY_DEF_KU32_FLAG_2D                  0x00000001  /**< 2D type body def flag */
+#define orxBODY_DEF_KU32_FLAG_DYNAMIC             0x00000002  /**< Dynamic type body def flag */
+#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED          0x00000004  /**< High speed type body def flag */
+#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION      0x00000008  /**< Body can't be rotated by physics */
+#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE           0x00000010  /**< Body is allowed to slide */
 
-#define orxBODY_DEF_KU32_MASK_ALL           0xFFFFFFFF  /**< Body def all mask */
+#define orxBODY_DEF_KU32_MASK_ALL                 0xFFFFFFFF  /**< Body def all mask */
 
 /** Body part definition flags
  */
-#define orxBODY_PART_DEF_KU32_FLAG_NONE     0x00000000  /**< No flags */
+#define orxBODY_PART_DEF_KU32_FLAG_NONE           0x00000000  /**< No flags */
 
-#define orxBODY_PART_DEF_KU32_FLAG_SPHERE   0x00000001  /**< Sphere body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_BOX      0x00000002  /**< Box body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_MESH     0x00000004  /**< Mesh body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_SOLID    0x00000010  /**< Solid body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SPHERE         0x00000001  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_BOX            0x00000002  /**< Box body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_MESH           0x00000004  /**< Mesh body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SOLID          0x00000010  /**< Solid body part def flag */
 
-#define orxBODY_PART_DEF_KU32_MASK_ALL      0xFFFFFFFF  /**< Body part def all mask */
+#define orxBODY_PART_DEF_KU32_MASK_ALL            0xFFFFFFFF  /**< Body part def all mask */
 
 
 /** Misc defines
  */
-#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER 8
+#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER  8
 
 
 /** Body definition
@@ -129,7 +130,6 @@ typedef struct __orxBODY_PART_DEF_t
 typedef enum __orxPHYSICS_EVENT_t
 {
   orxPHYSICS_EVENT_CONTACT_ADD = 0,
-  orxPHYSICS_EVENT_CONTACT_PERSIST,
   orxPHYSICS_EVENT_CONTACT_REMOVE,
   orxPHYSICS_EVENT_OUT_OF_WORLD,
 
@@ -145,9 +145,8 @@ typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
   orxVECTOR vPosition;                    /**< Contact position : 12 */
   orxVECTOR vNormal;                      /**< Contact normal : 24 */
-  orxFLOAT  fPenetration;                 /**< Penetration : 28 */
-  orxU32    u32SourcePartIndex;           /**< Source shape index : 32 */
-  orxU32    u32DestinationPartIndex;      /**< Destination shape index : 36 */
+  orxSTRING zSenderPartName;              /**< Sender part name : 28 */
+  orxSTRING zRecipientPartName;           /**< Recipient part name : 32 */
 
 } orxPHYSICS_EVENT_PAYLOAD;
 
@@ -262,38 +261,52 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetSpeed(orxPHY
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity);
 
+/** Sets the custom gravity of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _pvCustomGravity                      Custom gravity multiplier to set / orxNULL to remove it
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity);
+
 /** Gets the position of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvPosition                           Position to get
  * @return Position of the physical body
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition);
 
 /** Gets the rotation of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @return Rotation (radians) of the physical body
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody);
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetRotation(const orxPHYSICS_BODY *_pstBody);
 
 /** Gets the speed of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvSpeed                              Speed to get
  * @return Speed of the physical body
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
 
 /** Gets the angular velocity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @return Angular velocity (radians/seconds) of the physical body
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody);
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody);
+
+/** Gets the custom gravity of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[out]  _pvCustomGravity                      Custom gravity to get
+ * @return      Physical body custom gravity / orxNULL is object doesn't have any
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
 /** Gets the center of mass of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvMassCenter                         Center of mass to get
  * @return Center of mass of the physical body
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
 
 
 /** Applies a torque to a physical body
@@ -318,6 +331,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxP
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
+
+
+/** Issues a raycast to test for potential physics bodies in the way
+ * @param[in]   _pvStart                              Start of raycast
+ * @param[in]   _pvEnd                                End of raycast
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
+ * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
+ * @return Colliding body's user data / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
+
+/** Enables/disables physics simulation
+ * @param[in]   _bEnable                              Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_EnableSimulation(orxBOOL _bEnable);
 
 #endif /* _orxPHYSICS_H_ */
 
