@@ -251,11 +251,9 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
         /* Stores start of name */
         zTrimmedName = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 

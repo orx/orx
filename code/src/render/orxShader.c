@@ -359,11 +359,9 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Stores start of name */
                   zTrimmedName = (orxSTRING)pc;
                 }
-                else
-                {
-                  /* Updates end of name */
-                  pcEnd = pc;
-                }
+
+                /* Updates end of name */
+                pcEnd = pc;
               }
             }
 

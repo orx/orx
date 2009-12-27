@@ -536,11 +536,9 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
         /* Stores start of key */
         zTrimmedKey = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 
@@ -599,11 +597,9 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
         /* Stores start of key */
         zTrimmedKey = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of key */
-        pcEnd = pc;
-      }
+
+      /* Updates end of key */
+      pcEnd = pc;
     }
   }
 
@@ -1784,11 +1780,9 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
         /* Stores start of name */
         zTrimmedName = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 
@@ -2192,11 +2186,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
         /* Stores start of name */
         zTrimmedName = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 
@@ -2742,11 +2734,9 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         /* Stores start of name */
         zFileName = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 
@@ -2967,11 +2957,9 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
         /* Stores start of name */
         zTrimmedName = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 

@@ -194,11 +194,9 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
           /* Stores start of name */
           zTrimmedLanguage = (orxSTRING)pc;
         }
-        else
-        {
-          /* Updates end of name */
-          pcEnd = pc;
-        }
+
+        /* Updates end of name */
+        pcEnd = pc;
       }
     }
 
@@ -337,11 +335,9 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
           /* Stores start of name */
           zTrimmedLanguage = (orxSTRING)pc;
         }
-        else
-        {
-          /* Updates end of name */
-          pcEnd = pc;
-        }
+
+        /* Updates end of name */
+        pcEnd = pc;
       }
     }
 

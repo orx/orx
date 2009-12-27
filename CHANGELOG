@@ -42,6 +42,7 @@ orx 1.1 rc0
 * Updated bounce demo to be able to change resolution on the fly (F1/F2) + ToggleFullScreen on F3
 * Added orx_WinExecute() helper for console-less windows application
 * Added __orxWII__ platform define for future work
+* Misc updates & fixes
 
 orx 1.0 final
 -----

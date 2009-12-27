@@ -1201,11 +1201,9 @@ orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
         /* Stores start of name */
         zTrimmedName = (orxSTRING)pc;
       }
-      else
-      {
-        /* Updates end of name */
-        pcEnd = pc;
-      }
+
+      /* Updates end of name */
+      pcEnd = pc;
     }
   }
 
