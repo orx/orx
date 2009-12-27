@@ -464,7 +464,7 @@ orxBOOL orxFASTCALL orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPo
 orxSTATUS orxFASTCALL orxSoundPointer_Play(orxSOUNDPOINTER *_pstSoundPointer)
 {
   orxU32    i;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
@@ -530,7 +530,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Pause(orxSOUNDPOINTER *_pstSoundPointer)
 orxSTATUS orxFASTCALL orxSoundPointer_Stop(orxSOUNDPOINTER *_pstSoundPointer)
 {
   orxU32    i;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
