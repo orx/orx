@@ -457,6 +457,105 @@ orxBOOL orxFASTCALL orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPo
   return(orxStructure_TestFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_ENABLED));
 }
 
+/** Plays all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_Play(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Plays it */
+      orxSound_Play(pstSound);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Pauses all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_Pause(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Pauses it */
+      orxSound_Pause(pstSound);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Stops all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_Stop(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Stops it */
+      orxSound_Stop(pstSound);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Adds a sound
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _pstSound           Sound to add

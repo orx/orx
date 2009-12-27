@@ -100,6 +100,25 @@ extern orxDLLAPI void orxFASTCALL               orxSoundPointer_Enable(orxSOUNDP
 extern orxDLLAPI orxBOOL orxFASTCALL            orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPointer);
 
 
+/** Plays all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Play(orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Pauses all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Pause(orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Stops all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Stop(orxSOUNDPOINTER *_pstSoundPointer);
+
+
 /** Adds a sound
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _pstSound           Sound to add
