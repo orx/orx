@@ -259,6 +259,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR *_pvPivot);
 
+/** Get object origin
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvOrigin       Object origin
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin);
+
 /** Get object position
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvPosition     Object position

@@ -1872,13 +1872,50 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Gets object pivot */
+    /* Gets its pivot */
      pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
   }
   else
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic object.");
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Get object origin
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvOrigin       Object origin
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin)
+{
+  orxGRAPHIC  *pstGraphic;
+  orxVECTOR   *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvOrigin != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its origin */
+     pvResult = orxGraphic_GetOrigin(pstGraphic, _pvOrigin);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic origin.");
 
     /* Updates result */
     pvResult = orxNULL;
