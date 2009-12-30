@@ -163,6 +163,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetRelativePivot(orxGRA
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(const orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot);
 
 
+/** Sets graphic size
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pvSize         Size to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvSize);
+
 /** Gets graphic size
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[out]  _pvSize         Object's size
@@ -212,17 +219,19 @@ extern orxDLLAPI orxCOLOR *orxFASTCALL        orxGraphic_GetColor(const orxGRAPH
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetRepeat(const orxGRAPHIC *_pstGraphic, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY);
 
-/** Gets graphic top
+/** Sets graphic origin
  * @param[in]   _pstGraphic     Concerned graphic
- * @return      Top coordinate
+ * @param[in]   _pvOrigin       Origin coordinates
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetTop(const orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetOrigin(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvOrigin);
 
-/** Gets graphic left
+/** Gets graphic origin
  * @param[in]   _pstGraphic     Concerned graphic
- * @return      Left coordinate
+ * @param[out]  _pvOrigin       Origin coordinates
+ * @return      Origin coordinates
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetLeft(const orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetOrigin(const orxGRAPHIC *_pstGraphic, orxVECTOR *_pvOrigin);
 
 /** Updates graphic size (recompute)
  * @param[in]   _pstGraphic     Concerned graphic

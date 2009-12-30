@@ -938,6 +938,29 @@ orxVECTOR *orxFASTCALL orxGraphic_GetPivot(const orxGRAPHIC *_pstGraphic, orxVEC
   return pvResult;
 }
 
+/** Sets graphic size
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pvSize         Size to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvSize)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pvSize);
+  orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fX >= orxFLOAT_0));
+
+  /* Stores values */
+  _pstGraphic->fWidth   = _pvSize->fX;
+  _pstGraphic->fHeight  = _pvSize->fY;
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets graphic size
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[out]  _pvSize         Object's size
@@ -1136,42 +1159,46 @@ orxSTATUS orxFASTCALL orxGraphic_GetRepeat(const orxGRAPHIC *_pstGraphic, orxFLO
   return eResult;
 }
 
-/** Gets graphic top
+/** Sets graphic origin
  * @param[in]   _pstGraphic     Concerned graphic
- * @return      Top coordinate
+ * @param[in]   _pvOrigin       Origin coordinates
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxGraphic_GetTop(const orxGRAPHIC *_pstGraphic)
+orxSTATUS orxFASTCALL orxGraphic_SetOrigin(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvOrigin)
 {
-  orxFLOAT fResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pvOrigin);
+  orxASSERT((_pvOrigin->fX >= orxFLOAT_0) && (_pvOrigin->fX >= orxFLOAT_0));
 
-  /* Updates result */
-  fResult = _pstGraphic->fTop;
+  /* Stores values */
+  _pstGraphic->fLeft  = _pvOrigin->fX;
+  _pstGraphic->fTop   = _pvOrigin->fY;
 
   /* Done! */
-  return fResult;
+  return eResult;
 }
 
-/** Gets graphic left
+/** Gets graphic origin
  * @param[in]   _pstGraphic     Concerned graphic
- * @return      Left coordinate
+ * @param[out]  _pvOrigin       Origin coordinates
+ * @return      Origin coordinates
  */
-orxFLOAT orxFASTCALL orxGraphic_GetLeft(const orxGRAPHIC *_pstGraphic)
+orxVECTOR *orxFASTCALL orxGraphic_GetOrigin(const orxGRAPHIC *_pstGraphic, orxVECTOR *_pvOrigin)
 {
-  orxFLOAT fResult;
-
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pvOrigin);
 
   /* Updates result */
-  fResult = _pstGraphic->fLeft;
+  orxVector_Set(_pvOrigin, _pstGraphic->fLeft, _pstGraphic->fTop, orxFLOAT_0);
 
   /* Done! */
-  return fResult;
+  return _pvOrigin;
 }
 
 /** Updates graphic size (recompute)

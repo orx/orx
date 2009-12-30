@@ -138,7 +138,8 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         orxANIMPOINTER *pstAnimPointer;
         orxRGBA         stBackupColor = 0;
         orxBOOL         bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
-        orxFLOAT        fClipTop, fClipLeft, fClipBottom, fClipRight, fRepeatX, fRepeatY;
+        orxVECTOR       vClipTL, vClipBR;
+        orxFLOAT        fRepeatX, fRepeatY;
 
         /* Gets animation pointer */
         pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -174,14 +175,12 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
         /* Gets its clipping corners */
+        orxGraphic_GetOrigin(pstGraphic, &vClipTL);
         orxGraphic_GetSize(pstGraphic, &vSize);
-        fClipTop      = orxGraphic_GetTop(pstGraphic);
-        fClipLeft     = orxGraphic_GetLeft(pstGraphic);
-        fClipBottom   = fClipTop + vSize.fY;
-        fClipRight    = fClipLeft + vSize.fX;
+        orxVector_Add(&vClipBR, &vClipTL, &vSize);
 
         /* Updates its clipping */
-        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
+        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
 
         /* Gets object & graphic flipping */
         orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
@@ -439,7 +438,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                   orxFLOAT fOffsetX, fOffsetY, fPosX = fX;
 
                   /* Updates clipping */
-                  orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(vSize.fX, fRemainderX)), orxF2U(fClipTop + orxMIN(vSize.fY, fRemainderY)));
+                  orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipTL.fX + orxMIN(vSize.fX, fRemainderX)), orxF2U(vClipTL.fY + orxMIN(vSize.fY, fRemainderY)));
 
                   /* Positive scale on X? */
                   if(vScale.fX > orxFLOAT_0)
