@@ -2668,8 +2668,40 @@ orxSTATUS orxFASTCALL orxObject_SetCustomGravity(orxOBJECT *_pstObject, const or
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxVECTOR         vModifiedGravity;
+    const orxVECTOR  *pvGravity;
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Gets modified gravity */
+        orxVector_Mulf(&vModifiedGravity, (_pvCustomGravity != orxNULL) ? _pvCustomGravity : orxPhysics_GetGravity(&vModifiedGravity), pstClockInfo->fModValue);
+
+        /* Uses it */
+        pvGravity = &vModifiedGravity;
+      }
+      else
+      {
+        /* Uses default gravity */
+        pvGravity = _pvCustomGravity;
+      }
+    }
+    else
+    {
+      /* Uses default gravity */
+      pvGravity = _pvCustomGravity;
+    }
+
     /* Updates its custom gravity */
-    eResult = orxBody_SetCustomGravity(pstBody, _pvCustomGravity);
+    eResult = orxBody_SetCustomGravity(pstBody, pvGravity);
   }
   else
   {
@@ -2833,6 +2865,23 @@ orxVECTOR *orxFASTCALL orxObject_GetCustomGravity(const orxOBJECT *_pstObject, o
   {
     /* Updates result */
     pvResult = orxBody_GetCustomGravity(pstBody, _pvCustomGravity);
+
+    /* Has an associated clock? */
+    if(_pstObject->pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+
+      /* Has a modified DT? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates result */
+        orxVector_Divf(_pvCustomGravity, (pvResult != orxNULL) ? pvResult : orxPhysics_GetGravity(_pvCustomGravity), pstClockInfo->fModValue);
+        pvResult = _pvCustomGravity;
+      }
+    }
   }
   else
   {
@@ -3558,13 +3607,8 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      orxCLOCK *pstClock;
-
-      /* Gets associated clock */
-      pstClock = orxObject_GetClock(_pstObject);
-
-      /* Found? */
-      if(pstClock != orxNULL)
+      /* Has associated clock? */
+      if(_pstObject->pstClock != orxNULL)
       {
         const orxCLOCK_INFO *pstClockInfo;
 

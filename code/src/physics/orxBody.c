@@ -1708,6 +1708,22 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
 
         /* Updates its speed */
         orxPhysics_SetSpeed(_pstBody->pstData, orxVector_Mulf(&vSpeed, orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed), fSpeedCoef));
+
+        /* Has speed coef */
+        if(fSpeedCoef != orxFLOAT_1)
+        {
+          orxVECTOR vGravity;
+
+          /* No custom gravity */
+          if(orxBody_GetCustomGravity(_pstBody, &vGravity) == orxNULL)
+          {
+            /* Uses world gravity */
+            orxPhysics_GetGravity(&vGravity);
+          }
+
+          /* Applies modified gravity */
+          orxBody_SetCustomGravity(_pstBody, orxVector_Mulf(&vGravity, &vGravity, fSpeedCoef));
+        }
       }
       else
       {
