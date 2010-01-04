@@ -728,14 +728,30 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               /* Has correction ratio? */
               if(fCorrectionRatio != orxFLOAT_1)
               {
-                orxFLOAT fDelta;
+                /* X axis? */
+                if(fCorrectionRatio < orxFLOAT_1)
+                {
+                  orxFLOAT fDelta;
 
-                /* Gets rendering limit delta using correction ratio */
-                fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+                  /* Gets rendering limit delta using correction ratio */
+                  fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
 
-                /* Updates viewport */
-                stViewportBox.vTL.fX += fDelta;
-                stViewportBox.vBR.fX -= fDelta;
+                  /* Updates viewport */
+                  stViewportBox.vTL.fX += fDelta;
+                  stViewportBox.vBR.fX -= fDelta;
+                }
+                /* Y axis */
+                else
+                {
+                  orxFLOAT fDelta;
+
+                  /* Gets rendering limit delta using correction ratio */
+                  fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+
+                  /* Updates viewport */
+                  stViewportBox.vTL.fY += fDelta;
+                  stViewportBox.vBR.fY -= fDelta;
+                }
               }
 
               /* Sets bitmap clipping */
