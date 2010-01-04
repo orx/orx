@@ -18,6 +18,7 @@ orx 1.1 rc0
 * Added a custom gravity as Body's property
 * Physics simulation is back on main clock to provide a more robust game loop
 * Fixed FixedRotation property to use Box2D feature instead of orx's hacked one
+* Fixed orxVector_FromCartesianToSpherical() not getting the correct Rho when colinear to negative axes
 * Added names of both involved parts in contact events
 * Fixed orxFRAME child calculation when using anisotropic scale on parent
 * Fixed home render plugin camera rotation when the camera has a parent object
