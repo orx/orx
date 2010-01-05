@@ -1181,56 +1181,22 @@ orxCLOCK *orxFASTCALL orxClock_GetNext(const orxCLOCK *_pstClock)
  */
 orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
 {
-  orxSTRING zTrimmedName;
-  orxCHAR  *pc, *pcEnd;
   orxCLOCK *pstResult;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_zName != orxNULL);
 
-  /* Gets trimmed section name */
-  for(pc = _zName, zTrimmedName = orxNULL, pcEnd = _zName; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of name yet? */
-      if(zTrimmedName == orxNULL)
-      {
-        /* Stores start of name */
-        zTrimmedName = (orxSTRING)pc;
-      }
-
-      /* Updates end of name */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
-
   /* Valid name? */
-  if(zTrimmedName != orxNULL)
+  if(_zName != orxSTRING_EMPTY)
   {
     /* Updates result */
-    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_ToCRC(zTrimmedName));
+    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_ToCRC(_zName));
   }
   else
   {
     /* Clears result */
     pstResult = orxNULL;
-  }
-
-  /* Had end pointer? */
-  if(pcEnd < pc)
-  {
-    /* Restores space */
-    *pcEnd = ' ';
   }
 
   /* Done! */

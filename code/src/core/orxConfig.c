@@ -227,6 +227,78 @@ static orxCONFIG_STATIC sstConfig;
  * Private functions                                                       *
  ***************************************************************************/
 
+static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orxBOOL _bBlockMode)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_BUFFER_SIZE);
+
+  /* Not in block mode? */
+  if(_bBlockMode == orxFALSE)
+  {
+    orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcInput, *pcOutput;
+
+    /* For all characters */
+    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
+    {
+      /* Not a space? */
+      if(*pcInput != ' ' && *pcInput != '\t')
+      {
+        /* Copies it */
+        *pcOutput++ = *pcInput++;
+
+        /* Is a list separator? */
+        if(*(pcInput - 1) == orxCONFIG_KC_LIST_SEPARATOR)
+        {
+          /* Skips all trailing and leading spaces */
+          while((*pcInput == ' ') || (*pcInput == '\t'))
+          {
+            pcInput++;
+          }
+        }
+      }
+      else
+      {
+        orxCHAR *pcTest;
+
+        /* Skips all the spaces */
+        for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
+
+        /* Is a list separator or end of string? */
+        if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
+        {
+          /* Skips all trailing spaces */
+          pcInput = pcTest;
+        }
+        else
+        {
+          /* For all spaces */
+          for(pcTest; pcInput < pcTest; pcInput++, pcOutput++)
+          {
+            /* Copies it */
+            *pcOutput = *pcInput;
+          }
+        }
+      }
+    }
+
+    /* Ends string */
+    *pcOutput = orxCHAR_NULL;
+
+    /* Updates result */
+    zResult = orxString_Duplicate(acBuffer);
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxString_Duplicate(_zValue);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Computes a working config value (process random, inheritance and list attributes)
  * @param[in] _pstValue         Concerned config value
  */
@@ -517,50 +589,16 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
  */
 static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 {
-  orxSTRING         zTrimmedKey;
-  orxCHAR          *pc, *pcEnd;
-  orxCONFIG_VALUE  *pstResult = orxNULL;
+  orxCONFIG_VALUE *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
 
-  /* Gets trimmed key */
-  for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = _zKey; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of key yet? */
-      if(zTrimmedKey == orxNULL)
-      {
-        /* Stores start of key */
-        zTrimmedKey = (orxSTRING)pc;
-      }
-
-      /* Updates end of name */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
-
   /* Valid? */
-  if(zTrimmedKey != orxNULL)
+  if((_zKey != orxSTRING_EMPTY) && (_zKey != orxNULL))
   {
     /* Gets value */
-    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(zTrimmedKey));
-  }
-
-  /* Had end pointer? */
-  if(pcEnd < pc)
-  {
-    /* Restores space */
-    *pcEnd = ' ';
+    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey));
   }
 
   /* Done! */
@@ -575,43 +613,15 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
  */
 static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
-  orxSTRING zTrimmedKey;
-  orxCHAR  *pc, *pcEnd;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
   orxASSERT(_zValue != orxNULL);
 
-  /* Gets trimmed key */
-  for(pc = _zKey, zTrimmedKey = orxNULL, pcEnd = _zKey; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of name yet? */
-      if(zTrimmedKey == orxNULL)
-      {
-        /* Stores start of key */
-        zTrimmedKey = (orxSTRING)pc;
-      }
-
-      /* Updates end of key */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
-
   /* Valid? */
-  if(zTrimmedKey != orxNULL)
+  if(_zKey != orxSTRING_EMPTY)
   {
     orxCONFIG_ENTRY *pstEntry;
 
@@ -621,17 +631,17 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
     /* Valid? */
     if(pstEntry != orxNULL)
     {
-      /* Stores value */
-      pstEntry->stValue.zValue = orxString_Duplicate(_zValue);
+      /* Stores key */
+      pstEntry->zKey = orxString_Duplicate(_zKey);
 
       /* Valid? */
-      if(pstEntry->stValue.zValue != orxNULL)
+      if(pstEntry->zKey != orxNULL)
       {
-        /* Stores key */
-        pstEntry->zKey = orxString_Duplicate(zTrimmedKey);
+        /* Stores value */
+        pstEntry->stValue.zValue = orxConfig_DuplicateValue(_zValue, _bBlockMode);
 
         /* Valid? */
-        if(pstEntry->zKey != orxNULL)
+        if(pstEntry->stValue.zValue != orxNULL)
         {
           /* Not in block mode? */
           if(_bBlockMode == orxFALSE)
@@ -662,10 +672,10 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", zTrimmedKey);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", _zKey);
 
           /* Deletes allocated string */
-          orxString_Delete(pstEntry->stValue.zValue);
+          orxString_Delete(pstEntry->zKey);
 
           /* Deletes entry */
           orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
@@ -679,13 +689,6 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
         /* Deletes entry */
         orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
       }
-    }
-
-    /* Had end pointer? */
-    if(pcEnd < pc)
-    {
-      /* Restores space */
-      *pcEnd = ' ';
     }
   }
 
@@ -1760,41 +1763,14 @@ const orxSTRING orxFASTCALL orxConfig_GetMainFileName()
  */
 orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 {
-  orxSTRING   zTrimmedName;
-  orxCHAR    *pc, *pcEnd;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
 
-  /* Gets trimmed section name */
-  for(pc = _zSectionName, zTrimmedName = orxNULL, pcEnd = _zSectionName; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of name yet? */
-      if(zTrimmedName == orxNULL)
-      {
-        /* Stores start of name */
-        zTrimmedName = (orxSTRING)pc;
-      }
-
-      /* Updates end of name */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
-
   /* Valid? */
-  if(zTrimmedName != orxNULL)
+  if(_zSectionName != orxSTRING_EMPTY)
   {
     orxCONFIG_SECTION  *pstSection;
     orxCHAR            *pcNameEnd;
@@ -1802,7 +1778,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     orxS32              s32MarkerIndex;
 
     /* Looks for inheritance index */
-    s32MarkerIndex = orxString_SearchCharIndex(zTrimmedName, orxCONFIG_KC_INHERITANCE_MARKER, 0);
+    s32MarkerIndex = orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_MARKER, 0);
 
     /* Found? */
     if(s32MarkerIndex >= 0)
@@ -1810,13 +1786,13 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       orxSTRING zParent;
 
       /* Cut the name */
-      *(zTrimmedName + s32MarkerIndex) = orxCHAR_NULL;
+      *(_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
 
       /* Gets end of name */
-      for(pcNameEnd = zTrimmedName + s32MarkerIndex - 1; (pcNameEnd > zTrimmedName) && (*pcNameEnd == ' '); pcNameEnd--);
+      for(pcNameEnd = _zSectionName + s32MarkerIndex - 1; (pcNameEnd > _zSectionName) && (*pcNameEnd == ' '); pcNameEnd--);
 
       /* Should trim? */
-      if(((++pcNameEnd) < zTrimmedName + s32MarkerIndex) && (pcNameEnd > zTrimmedName))
+      if(((++pcNameEnd) < _zSectionName + s32MarkerIndex) && (pcNameEnd > _zSectionName))
       {
         /* Ends name here */
         *pcNameEnd = orxCHAR_NULL;
@@ -1828,7 +1804,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       }
 
       /* Gets parent name */
-      for(zParent = zTrimmedName + s32MarkerIndex + 1; *zParent == ' '; zParent++);
+      for(zParent = _zSectionName + s32MarkerIndex + 1; *zParent == ' '; zParent++);
 
       /* Gets its parent ID */
       u32ParentID = orxString_ToCRC(zParent);
@@ -1843,7 +1819,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     }
 
     /* Gets the section ID */
-    u32SectionID = orxString_ToCRC(zTrimmedName);
+    u32SectionID = orxString_ToCRC(_zSectionName);
 
     /* Not already selected? */
     if((sstConfig.pstCurrentSection == orxNULL)
@@ -1869,7 +1845,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     if(pstSection == orxNULL)
     {
       /* Creates it */
-      pstSection = orxConfig_CreateSection(zTrimmedName, u32SectionID, (u32ParentID != orxU32_UNDEFINED) ? u32ParentID : 0);
+      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, (u32ParentID != orxU32_UNDEFINED) ? u32ParentID : 0);
 
       /* Success? */
       if(pstSection != orxNULL)
@@ -1880,7 +1856,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %0X, %0X).", zTrimmedName, u32SectionID, u32ParentID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %0X, %0X).", _zSectionName, u32SectionID, u32ParentID);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -1911,7 +1887,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     if(s32MarkerIndex >= 0)
     {
       /* Restores it */
-      *(zTrimmedName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
+      *(_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
     }
   }
   else
@@ -1921,13 +1897,6 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Had end pointer? */
-  if(pcEnd < pc)
-  {
-    /* Restores space */
-    *pcEnd = ' ';
   }
 
   /* Done! */
@@ -2164,40 +2133,12 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
  */
 orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 {
-  orxSTRING zTrimmedName;
   orxFILE  *pstFile;
-  orxCHAR  *pc, *pcEnd;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
-  orxASSERT(_zFileName != orxSTRING_EMPTY);
-
-  /* Gets trimmed file name */
-  for(pc = _zFileName, zTrimmedName = orxNULL, pcEnd = _zFileName; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of name yet? */
-      if(zTrimmedName == orxNULL)
-      {
-        /* Stores start of name */
-        zTrimmedName = (orxSTRING)pc;
-      }
-
-      /* Updates end of name */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
 
   /* Should keep history? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
@@ -2214,7 +2155,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
       if(pzEntry != orxNULL)
       {
         /* Stores the file name */
-        *pzEntry = orxString_Duplicate(zTrimmedName);
+        *pzEntry = orxString_Duplicate(_zFileName);
       }
     }
   }
@@ -2223,7 +2164,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   sstConfig.u32LoadCounter++;
 
   /* Valid file to open? */
-  if((zTrimmedName != orxNULL) && ((pstFile = orxFile_Open(zTrimmedName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
+  if((_zFileName != orxSTRING_EMPTY) && ((pstFile = orxFile_Open(_zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
@@ -2346,7 +2287,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               }
 
               /* Logs */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, zTrimmedName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
 
               /* Deletes entry */
               orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
@@ -2432,13 +2373,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               *pc = orxCHAR_NULL;
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", zTrimmedName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Loads file */
               orxConfig_Load(pcLineStart + 1);
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", zTrimmedName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Restores current section */
               sstConfig.pstCurrentSection = pstCurrentSection;
@@ -2644,13 +2585,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   /* Updates load counter */
   sstConfig.u32LoadCounter--;
 
-  /* Had end pointer? */
-  if(pcEnd < pc)
-  {
-    /* Restores space */
-    *pcEnd = ' ';
-  }
-
   /* Done! */
   return eResult;
 }
@@ -2718,34 +2652,8 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
   orxFILE  *pstFile;
-  orxCHAR  *pc, *pcEnd;
   orxSTRING zFileName;
   orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Gets trimmed file name */
-  for(pc = _zFileName, zFileName = orxNULL, pcEnd = _zFileName; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of name yet? */
-      if(zFileName == orxNULL)
-      {
-        /* Stores start of name */
-        zFileName = (orxSTRING)pc;
-      }
-
-      /* Updates end of name */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -2754,10 +2662,15 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
     /* Is given file name invalid? */
-    if((zFileName == orxNULL) || (zFileName == orxSTRING_EMPTY))
+    if((_zFileName == orxNULL) || (_zFileName == orxSTRING_EMPTY))
     {
       /* Uses default file */
       zFileName = sstConfig.zBaseFile;
+    }
+    else
+    {
+      /* Uses given one */
+      zFileName = _zFileName;
     }
 
     /* Opens file */
@@ -2897,13 +2810,6 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
   }
 
-  /* Had end pointer? */
-  if(pcEnd < pc)
-  {
-    /* Restores space */
-    *pcEnd = ' ';
-  }
-
   /* Done! */
   return eResult;
 }
@@ -2935,46 +2841,18 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
 orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
-  orxSTRING           zTrimmedName;
-  orxCHAR            *pc, *pcEnd;
   orxU32              u32ID;
   orxBOOL             bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
-  orxASSERT(_zSectionName != orxSTRING_EMPTY);
-
-  /* Gets trimmed section name */
-  for(pc = _zSectionName, zTrimmedName = orxNULL, pcEnd = _zSectionName; *pc != orxCHAR_NULL; pc++)
-  {
-    /* Not a space? */
-    if(*pc != ' ')
-    {
-      /* Hasn't found the start of name yet? */
-      if(zTrimmedName == orxNULL)
-      {
-        /* Stores start of name */
-        zTrimmedName = (orxSTRING)pc;
-      }
-
-      /* Updates end of name */
-      pcEnd = pc;
-    }
-  }
-
-  /* Had trailing spaces? */
-  if((++pcEnd) < pc)
-  {
-    /* Ends name here for now */
-    *pcEnd = orxCHAR_NULL;
-  }
 
   /* Valid? */
-  if(zTrimmedName != orxNULL)
+  if(_zSectionName != orxSTRING_EMPTY)
   {
     /* Gets section name ID */
-    u32ID = orxString_ToCRC(zTrimmedName);
+    u32ID = orxString_ToCRC(_zSectionName);
 
     /* Gets it from table */
     pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ID);
@@ -2985,13 +2863,6 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
       /* Updates result */
       bResult = orxTRUE;
     }
-  }
-
-  /* Had end pointer? */
-  if(pcEnd < pc)
-  {
-    /* Restores space */
-    *pcEnd = ' ';
   }
 
   /* Done! */

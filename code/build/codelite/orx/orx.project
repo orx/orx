@@ -672,10 +672,10 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
   </Settings>
-  <Dependencies Name="Win32 Embedded Dynamic Release">
+  <Dependencies Name="Win32 Embedded Dynamic Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Win32 Embedded Dynamic Debug">
+  <Dependencies Name="Win32 Embedded Dynamic Release">
     <Project Name="orxLIB"/>
   </Dependencies>
 </CodeLite_Project>

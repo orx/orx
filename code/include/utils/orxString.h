@@ -95,11 +95,24 @@ static orxINLINE orxSTRING              orxString_SkipWhiteSpaces(const orxSTRIN
 {
   register orxSTRING zResult;
 
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
+  /* Non null? */
+  if(_zString != orxNULL)
+  {
+    /* Skips all white spaces */
+    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
 
-  /* Skips all white spaces */
-  for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++) ;
+    /* Empty? */
+    if(*zResult == orxCHAR_NULL)
+    {
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxNULL;
+  }
 
   /* Done! */
   return zResult;

@@ -178,37 +178,10 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
   /* Is language valid? */
   if(_zLanguage != orxSTRING_EMPTY)
   {
-    orxS32    i, s32LanguageCounter;
-    orxSTRING zTrimmedLanguage;
-    orxCHAR  *pc, *pcEnd;
-
-    /* Gets trimmed language */
-    for(pc = _zLanguage, zTrimmedLanguage = orxNULL, pcEnd = _zLanguage; *pc != orxCHAR_NULL; pc++)
-    {
-      /* Not a space? */
-      if(*pc != ' ')
-      {
-        /* Hasn't found the start of name yet? */
-        if(zTrimmedLanguage == orxNULL)
-        {
-          /* Stores start of name */
-          zTrimmedLanguage = (orxSTRING)pc;
-        }
-
-        /* Updates end of name */
-        pcEnd = pc;
-      }
-    }
-
-    /* Had trailing spaces? */
-    if((++pcEnd) < pc)
-    {
-      /* Ends name here for now */
-      *pcEnd = orxCHAR_NULL;
-    }
+    orxS32 i, s32LanguageCounter;
 
     /* Valid? */
-    if(zTrimmedLanguage != orxNULL)
+    if(_zLanguage != orxSTRING_EMPTY)
     {
       /* Pushes locale config section */
       orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
@@ -220,16 +193,16 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
       for(i = 0; i < s32LanguageCounter; i++)
       {
         /* Found? */
-        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), zTrimmedLanguage) != orxNULL)
+        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
         {
           /* Protects it */
-          eResult = orxConfig_ProtectSection(zTrimmedLanguage, orxTRUE);
+          eResult = orxConfig_ProtectSection(_zLanguage, orxTRUE);
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
             /* Pushes its section */
-            eResult = orxConfig_PushSection(zTrimmedLanguage);
+            eResult = orxConfig_PushSection(_zLanguage);
 
             /* Success? */
             if(eResult != orxSTATUS_FAILURE)
@@ -264,13 +237,6 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
 
       /* Pops config section */
       orxConfig_PopSection();
-    }
-
-    /* Had end pointer? */
-    if(pcEnd < pc)
-    {
-      /* Restores space */
-      *pcEnd = ' ';
     }
   }
 
@@ -319,37 +285,10 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
   /* Valid? */
   if(_zLanguage != orxSTRING_EMPTY)
   {
-    orxS32    i, s32LanguageCounter;
-    orxSTRING zTrimmedLanguage;
-    orxCHAR  *pc, *pcEnd;
-
-    /* Gets trimmed language */
-    for(pc = _zLanguage, zTrimmedLanguage = orxNULL, pcEnd = _zLanguage; *pc != orxCHAR_NULL; pc++)
-    {
-      /* Not a space? */
-      if(*pc != ' ')
-      {
-        /* Hasn't found the start of name yet? */
-        if(zTrimmedLanguage == orxNULL)
-        {
-          /* Stores start of name */
-          zTrimmedLanguage = (orxSTRING)pc;
-        }
-
-        /* Updates end of name */
-        pcEnd = pc;
-      }
-    }
-
-    /* Had trailing spaces? */
-    if((++pcEnd) < pc)
-    {
-      /* Ends name here for now */
-      *pcEnd = orxCHAR_NULL;
-    }
+    orxS32 i, s32LanguageCounter;
 
     /* Valid? */
-    if(zTrimmedLanguage != orxNULL)
+    if(_zLanguage != orxSTRING_EMPTY)
     {
       /* Pushes locale config section */
       orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
@@ -361,10 +300,10 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
       for(i = 0; i < s32LanguageCounter; i++)
       {
         /* Found? */
-        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), zTrimmedLanguage) != orxNULL)
+        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
         {
           /* Updates result */
-          bResult = orxConfig_HasSection(zTrimmedLanguage);
+          bResult = orxConfig_HasSection(_zLanguage);
 
           break;
         }
@@ -372,13 +311,6 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
 
       /* Pops config section */
       orxConfig_PopSection();
-    }
-
-    /* Had end pointer? */
-    if(pcEnd < pc)
-    {
-      /* Restores space */
-      *pcEnd = ' ';
     }
   }
 
