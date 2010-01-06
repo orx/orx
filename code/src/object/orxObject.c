@@ -63,12 +63,13 @@
 #define orxOBJECT_KU32_FLAG_2D                  0x00000010  /**< 2D flag */
 #define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000020  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
-#define orxOBJECT_KU32_FLAG_RENDERED            0x20000000  /**< Rendered flag */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x40000000  /**< Smoothing on flag  */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x80000000  /**< Smoothing off flag  */
-#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x01000000  /**< Has lifetime flag  */
-#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x02000000  /**< Has child flag */
-#define orxOBJECT_KU32_FLAG_INTERNAL_CLOCK      0x04000000  /**< Internal clock flag */
+#define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
+#define orxOBJECT_KU32_FLAG_RENDERED            0x40000000  /**< Rendered flag */
+#define orxOBJECT_KU32_FLAG_INTERNAL_CLOCK      0x80000000  /**< Internal clock flag */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
+#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x04000000  /**< Has lifetime flag  */
+#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x08000000  /**< Has child flag */
 
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
 
@@ -272,8 +273,8 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
       pstObject != orxNULL;
       pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
   {
-    /* Is object enabled? */
-    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    /* Is object enabled and not paused? */
+    if((orxObject_IsEnabled(pstObject) != orxFALSE) && (orxObject_IsPaused(pstObject) == orxFALSE))
     {
       orxU32                i;
       orxFRAME             *pstFrame;
@@ -1318,7 +1319,7 @@ orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(const orxOBJECT *_pstObject, o
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      enable / disable
  */
-void orxFASTCALL    orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
+void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1351,6 +1352,45 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(const orxOBJECT *_pstObject)
 
   /* Done! */
   return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
+}
+
+/** Pauses/unpauses an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bPause       Pause / unpause
+ */
+void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
+{
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Pause? */
+  if(_bPause != orxFALSE)
+  {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED, orxOBJECT_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_PAUSED);
+  }
+
+  return;
+}
+
+/** Is object paused?
+ * @param[in]   _pstObject    Concerned object
+ * @return      orxTRUE if paused, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxObject_IsPaused(const orxOBJECT *_pstObject)
+{
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Done! */
+  return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED));
 }
 
 /** Sets render status of an object

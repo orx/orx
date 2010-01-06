@@ -49,6 +49,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g848dd5c9c0784efa3eda9638fab26f00">orxObject_IsEnabled</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g4897a87b6d7191e34a0a5f7c0f23d3ac">orxObject_Pause</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bPause)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g34343a4c61fa460cf48647c869059e47">orxObject_IsPaused</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g997d02b18776f1107b8a363f2d07ce15">orxObject_SetRendered</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bRendered)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g4c388ebe4faf86ac195f8e18127959a6">orxObject_IsRendered</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
@@ -1905,6 +1909,32 @@ Is object enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g34343a4c61fa460cf48647c869059e47"></a><!-- doxytag: member="orxObject.h::orxObject_IsPaused" ref="g34343a4c61fa460cf48647c869059e47" args="(const orxOBJECT *_pstObject)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxObject_IsPaused           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is object paused? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if paused, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g4c388ebe4faf86ac195f8e18127959a6"></a><!-- doxytag: member="orxObject.h::orxObject_IsRendered" ref="g4c388ebe4faf86ac195f8e18127959a6" args="(const orxOBJECT *_pstObject)" -->
 <div class="memitem">
 <div class="memproto">
@@ -2026,6 +2056,41 @@ Links a structure to an object <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g4897a87b6d7191e34a0a5f7c0f23d3ac"></a><!-- doxytag: member="orxObject.h::orxObject_Pause" ref="g4897a87b6d7191e34a0a5f7c0f23d3ac" args="(orxOBJECT *_pstObject, orxBOOL _bPause)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxObject_Pause           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bPause</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Pauses/unpauses an object <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bPause</em>&nbsp;</td><td>Pause / unpause </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>

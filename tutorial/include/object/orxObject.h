@@ -117,6 +117,18 @@ extern orxDLLAPI void orxFASTCALL           orxObject_Enable(orxOBJECT *_pstObje
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(const orxOBJECT *_pstObject);
 
+/** Pauses/unpauses an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bPause       Pause / unpause
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause);
+
+/** Is object paused?
+ * @param[in]   _pstObject    Concerned object
+ * @return      orxTRUE if paused, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsPaused(const orxOBJECT *_pstObject);
+
 
 /** Sets render status of an object
  * @param[in]   _pstObject    Concerned object
