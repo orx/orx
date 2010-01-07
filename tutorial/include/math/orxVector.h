@@ -654,28 +654,14 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
       /* X = 0? */
       if(_pvOp->fX == orxFLOAT_0)
       {
-        orxU32           u32Temp;
-        register orxU32 *pu32Temp;
-
         /* Gets absolute value */
-        u32Temp = *(orxU32 *)&(_pvOp->fY) & (orxU32)0x7FFFFFFF;
-
-        /* Sets rho */
-        pu32Temp  = &u32Temp;
-        fRho      = *(orxFLOAT *)pu32Temp;
+        fRho = orxMath_Abs(_pvOp->fY);
       }
       /* X != 0 and Y = 0? */
       else if(_pvOp->fY == orxFLOAT_0)
       {
-        orxU32           u32Temp;
-        register orxU32 *pu32Temp;
-
         /* Gets absolute value */
-        u32Temp = *(orxU32 *)&(_pvOp->fX) & (orxU32)0x7FFFFFFF;
-
-        /* Sets rho */
-        pu32Temp  = &u32Temp;
-        fRho      = *(orxFLOAT *)pu32Temp;
+        fRho = orxMath_Abs(_pvOp->fX);
       }
       /* X != 0 and Y != 0 */
       else
@@ -693,17 +679,10 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
       if((_pvOp->fX == orxFLOAT_0) && (_pvOp->fY == orxFLOAT_0))
       {
         /* Z < 0? */
-        if(*(orxU32 *)&(_pvOp->fZ) & (orxU32)0x80000000)
+        if(_pvOp->fZ < orxFLOAT_0)
         {
-          orxU32           u32Temp;
-          register orxU32 *pu32Temp;
-
           /* Gets absolute value */
-          u32Temp = *(orxU32 *)&(_pvOp->fZ) & (orxU32)0x7FFFFFFF;
-
-          /* Sets rho */
-          pu32Temp  = &u32Temp;
-          fRho      = *(orxFLOAT *)pu32Temp;
+          fRho = orxMath_Abs(_pvOp->fZ);
 
           /* Sets phi */
           fPhi = orxMATH_KF_PI;
