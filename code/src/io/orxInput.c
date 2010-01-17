@@ -346,9 +346,9 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
 
 /** Updates inputs
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
- * @param[in]   _pstContext     Context sent when registering callback to the clock
+ * @param[in]   _pContext     Context sent when registering callback to the clock
  */
-static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   /* Has current set? */
   if(sstInput.pstCurrentSet != orxNULL)

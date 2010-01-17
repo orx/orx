@@ -335,9 +335,9 @@ void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
 
 /** Update (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
- * @param[in]   _pstContext     Context sent when registering callback to the clock
+ * @param[in]   _pContext     Context sent when registering callback to the clock
  */
-static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
   orxBODY                  *pstBody;
@@ -370,7 +370,7 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
     /* Updates world simulation */
-    sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext, (orxU32)_pstContext);
+    sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pContext, (orxU32)_pContext);
 
     /* For all bodies */
     for(pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));

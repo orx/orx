@@ -86,9 +86,9 @@ static volatile orxFPS_STATIC sstFPS;
 
 /** Updates FPS counter
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
- * @param[in] _pstContext         User defined context
+ * @param[in] _pContext         User defined context
  */
-static void orxFASTCALL orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);

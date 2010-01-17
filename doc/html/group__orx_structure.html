@@ -37,6 +37,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g011da4f7705e8d470439b82abce23bfb">orxCAMERA</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, CAMERA)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g8dc56d431e06f7b1a1300eeae5259f4c">orxCLOCK</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, CLOCK)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g87797b60466b73e0eb66e8f998c19e09">orxFRAME</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, FRAME)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g2b7e2eeee13d1530cd38cbe5ed4d4c98">orxFX</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, FX)</td></tr>
@@ -78,30 +80,31 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> { <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a> =  0, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a26fed6e49b5d10e79690f547bbe0fe6">orxSTRUCTURE_ID_BODY</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3207dcf15ce5e61a8542722bd48d4aeedca">orxSTRUCTURE_ID_CLOCK</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a>, 
-<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3200dafce351a48bcb315a9cbb95dc95e6b">orxSTRUCTURE_ID_FXPOINTER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320fa383d690207c69abf6d225a37c59604">orxSTRUCTURE_ID_GRAPHIC</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3200dafce351a48bcb315a9cbb95dc95e6b">orxSTRUCTURE_ID_FXPOINTER</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320fa383d690207c69abf6d225a37c59604">orxSTRUCTURE_ID_GRAPHIC</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3208a08c58c71fccc649559726157b0690e">orxSTRUCTURE_ID_SHADERPOINTER</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320554ee7e66ada830afda6e98c1745acee">orxSTRUCTURE_ID_SOUNDPOINTER</a>, 
-<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32072b4f2d0c5c830bc42126cd2ee998d35">orxSTRUCTURE_ID_SPAWNER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a63d4ded8137b23e0e0c4e2de8ea172f">orxSTRUCTURE_ID_LINKABLE_NUMBER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32072b4f2d0c5c830bc42126cd2ee998d35">orxSTRUCTURE_ID_SPAWNER</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a63d4ded8137b23e0e0c4e2de8ea172f">orxSTRUCTURE_ID_LINKABLE_NUMBER</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320abae8c1918db82057a7faa0cf10a314c">orxSTRUCTURE_ID_ANIM</a> =  orxSTRUCTURE_ID_LINKABLE_NUMBER, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3208e26d5803fc825cfe4c3195098af6d16">orxSTRUCTURE_ID_ANIMSET</a>, 
-<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32027a9cd17907d4b5fede3cf9d33103025">orxSTRUCTURE_ID_CAMERA</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a53088ced29c37f0ec7f975a972efb94">orxSTRUCTURE_ID_FX</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32027a9cd17907d4b5fede3cf9d33103025">orxSTRUCTURE_ID_CAMERA</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a53088ced29c37f0ec7f975a972efb94">orxSTRUCTURE_ID_FX</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b">orxSTRUCTURE_ID_OBJECT</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320f5cbea92c4a1aa14f4fada61c861e42f">orxSTRUCTURE_ID_SHADER</a>, 
-<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e">orxSTRUCTURE_ID_SOUND</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32096a8495780ac77abc0ed48a901ed8744">orxSTRUCTURE_ID_TEXT</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e">orxSTRUCTURE_ID_SOUND</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32096a8495780ac77abc0ed48a901ed8744">orxSTRUCTURE_ID_TEXT</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b">orxSTRUCTURE_ID_TEXTURE</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320675db72a8ad9bb86cd0864f5d421d8ef">orxSTRUCTURE_ID_VIEWPORT</a>, 
-<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3203117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3203117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
@@ -262,6 +265,26 @@ Structure module Allows to creates and handle structures. Structures can be refe
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
           <td>&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, CAMERA)</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="g8dc56d431e06f7b1a1300eeae5259f4c"></a><!-- doxytag: member="orxStructure.h::orxCLOCK" ref="g8dc56d431e06f7b1a1300eeae5259f4c" args="(STRUCTURE)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a>          </td>
+          <td>(</td>
+          <td class="paramtype">STRUCTURE&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td>&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, CLOCK)</td>
         </tr>
       </table>
 </div>
@@ -689,6 +712,8 @@ Structure IDs <dl compact><dt><b>Enumerator: </b></dt><dd>
 <tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320617d8f5d855cadadc71b5536a54ae39d"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIMPOINTER" ref="gg559293f09cd4d21743241cc32350b320617d8f5d855cadadc71b5536a54ae39d" args="" -->orxSTRUCTURE_ID_ANIMPOINTER</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320a26fed6e49b5d10e79690f547bbe0fe6"></a><!-- doxytag: member="orxSTRUCTURE_ID_BODY" ref="gg559293f09cd4d21743241cc32350b320a26fed6e49b5d10e79690f547bbe0fe6" args="" -->orxSTRUCTURE_ID_BODY</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b3207dcf15ce5e61a8542722bd48d4aeedca"></a><!-- doxytag: member="orxSTRUCTURE_ID_CLOCK" ref="gg559293f09cd4d21743241cc32350b3207dcf15ce5e61a8542722bd48d4aeedca" args="" -->orxSTRUCTURE_ID_CLOCK</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320845d86166defbdf540347307a9ec4422"></a><!-- doxytag: member="orxSTRUCTURE_ID_FRAME" ref="gg559293f09cd4d21743241cc32350b320845d86166defbdf540347307a9ec4422" args="" -->orxSTRUCTURE_ID_FRAME</em>&nbsp;</td><td>
 </td></tr>

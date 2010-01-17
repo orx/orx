@@ -47,6 +47,7 @@
 
 
 #define orxCLOCK_KU32_CLOCK_BANK_SIZE                 16          /**< Clock bank size */
+#define orxCLOCK_KU32_TIMER_BANK_SIZE                 32          /**< Timer bank size */
 
 #define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16          /**< Function bank size */
 
@@ -216,6 +217,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(const or
  */
 extern orxDLLAPI const orxCLOCK_INFO *orxFASTCALL     orxClock_GetInfo(const orxCLOCK *_pstClock);
 
+/** Gets clock from its info
+ * @param[in]   _pstClockInfo                         Concerned clock info
+ * @return      orxCLOCK / orxNULL
+ */
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo);
+
 
 /** Sets a clock modifier
  * @param[in]   _pstClock                             Concerned clock
@@ -236,12 +243,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetTickSize(orxCL
 /** Registers a callback function to a clock
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Callback to register
- * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
+ * @param[in]   _pContext                             Context that will be transmitted to the callback when called
  * @param[in]   _eModuleID                            ID of the module related to this callback
  * @param[in]   _ePriority                            Priority for the function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority);
 
 /** Unregisters a callback function from a clock
  * @param[in]   _pstClock                             Concerned clock
@@ -260,10 +267,10 @@ extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const 
 /** Sets a callback function context
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Concerned callback
- * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
+ * @param[in]   _pContext                             Context that will be transmitted to the callback when called
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pstContext);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
 
 
 /** Finds a clock given its tick size and its type
@@ -290,6 +297,42 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orx
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Get(const orxSTRING _zName);
+
+
+/** Adds a timer function to a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned timer callback
+ * @param[in]   _fDelay                               Timer's delay between 2 calls, must be strictly positive
+ * @param[in]   _s32Repetition                        Number of times this timer should be called before removed, -1 for infinite
+ * @param[in]   _pContext                             Context that will be transmitted to the callback when called
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, void *_pContext);
+
+/** Removes a timer function from a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurences regardless of their respective delay
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay);
+
+/** Adds a global timer function (ie. using the main core clock)
+ * @param[in]   _pfnCallback                          Concerned timer callback
+ * @param[in]   _fDelay                               Timer's delay between 2 calls, must be strictly positive
+ * @param[in]   _s32Repetition                        Number of times this timer should be called before removed, -1 for infinite
+ * @param[in]   _pContext                             Context that will be transmitted to the callback when called
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, void *_pContext);
+
+/** Removes a global timer function (ie. from the main core clock)
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurences regardless of their respective delay
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay);
+
 
 #endif /* _orxCLOCK_H_ */
 

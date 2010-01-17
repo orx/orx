@@ -65,11 +65,10 @@
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
 #define orxOBJECT_KU32_FLAG_RENDERED            0x40000000  /**< Rendered flag */
-#define orxOBJECT_KU32_FLAG_INTERNAL_CLOCK      0x80000000  /**< Internal clock flag */
+#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x80000000  /**< Has lifetime flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
-#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x04000000  /**< Has lifetime flag  */
-#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x08000000  /**< Has child flag */
+#define orxOBJECT_KU32_FLAG_HAS_CHILD           0x04000000  /**< Has child flag */
 
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
 
@@ -149,17 +148,16 @@ typedef struct __orxOBJECT_STORAGE_t
 struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
-  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 80 */
-  orxCOLOR          stColor;                    /**< Object color : 96 */
-  orxFLOAT          fRepeatX;                   /**< Object repeat X : 100 */
-  orxFLOAT          fRepeatY;                   /**< Object repeat Y : 104 */
-  void             *pUserData;                  /**< User data : 108 */
-  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 112 */
+  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 88 */
+  orxFLOAT          fRepeatX;                   /**< Object repeat X : 92 */
+  orxFLOAT          fRepeatY;                   /**< Object repeat Y : 96 */
+  void             *pUserData;                  /**< User data : 100 */
+  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 104 */
+  orxFLOAT          fLifeTime;                  /**< Life time : 108 */
+  orxSTRING         zReference;                 /**< Config reference : 112 */
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 116 */
-  orxFLOAT          fLifeTime;                  /**< Life time : 120 */
-  orxSTRING         zReference;                 /**< Config reference : 124 */
-  orxCLOCK         *pstClock;                   /**< Associated clock : 128 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 140 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 128 */
+  orxCOLOR          stColor;                    /**< Object color : 144 */
 };
 
 /** Static structure
@@ -167,7 +165,7 @@ struct __orxOBJECT_t
 typedef struct __orxOBJECT_STATIC_t
 {
   orxCLOCK *pstClock;                           /**< Clock */
-  orxU32 u32Flags;                              /**< Control flags */
+  orxU32    u32Flags;                           /**< Control flags */
 
 } orxOBJECT_STATIC;
 
@@ -262,9 +260,9 @@ static orxINLINE orxFLOAT orxObject_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO
 
 /** Updates all the objects
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
- * @param[in] _pstContext         User defined context
+ * @param[in] _pContext         User defined context
  */
-static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxOBJECT *pstObject;
 
@@ -278,13 +276,17 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
     {
       orxU32                i;
       orxFRAME             *pstFrame;
+      orxCLOCK             *pstClock;
       const orxCLOCK_INFO  *pstClockInfo;
 
-      /* Has associated clock? */
-      if(pstObject->pstClock != orxNULL)
+      /* Gets associated clock */
+      pstClock = orxOBJECT_GET_STRUCTURE(pstObject, CLOCK);
+
+      /* Valid? */
+      if(pstClock != orxNULL)
       {
         /* Uses it */
-        pstClockInfo = orxClock_GetInfo(pstObject->pstClock);
+        pstClockInfo = orxClock_GetInfo(pstClock);
       }
       else
       {
@@ -593,9 +595,6 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
 
     /* Removes owner */
     orxObject_SetOwner(_pstObject, orxNULL);
-
-    /* Removes clock */
-    orxObject_SetClock(_pstObject, orxNULL);
 
     /* Has reference? */
     if(_pstObject->zReference != orxNULL)
@@ -923,10 +922,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstClock != orxNULL)
         {
           /* Links it */
-          if(orxObject_SetClock(pstResult, pstClock) != orxSTATUS_FAILURE)
+          if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstClock)) != orxSTATUS_FAILURE)
           {
             /* Updates flags */
-            orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_INTERNAL_CLOCK, orxOBJECT_KU32_FLAG_NONE);
+            orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_CLOCK].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
           }
         }
       }
@@ -1197,7 +1196,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eStructureID   ID of structure to unlink
  */
-void orxFASTCALL    orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
+void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1221,18 +1220,6 @@ void orxFASTCALL    orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
       /* Depending on structure ID */
       switch(_eStructureID)
       {
-        case orxSTRUCTURE_ID_FRAME:
-        {
-          orxFrame_Delete(orxFRAME(pstStructure));
-          break;
-        }
-
-        case orxSTRUCTURE_ID_GRAPHIC:
-        {
-          orxGraphic_Delete(orxGRAPHIC(pstStructure));
-          break;
-        }
-
         case orxSTRUCTURE_ID_ANIMPOINTER:
         {
           orxAnimPointer_Delete(orxANIMPOINTER(pstStructure));
@@ -1245,9 +1232,27 @@ void orxFASTCALL    orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
           break;
         }
 
+        case orxSTRUCTURE_ID_CLOCK:
+        {
+          orxClock_Delete(orxCLOCK(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_FRAME:
+        {
+          orxFrame_Delete(orxFRAME(pstStructure));
+          break;
+        }
+
         case orxSTRUCTURE_ID_FXPOINTER:
         {
           orxFXPointer_Delete(orxFXPOINTER(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_GRAPHIC:
+        {
+          orxGraphic_Delete(orxGRAPHIC(pstStructure));
           break;
         }
 
@@ -1595,8 +1600,15 @@ orxSTATUS orxFASTCALL orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstCl
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Stores it */
-  _pstObject->pstClock = _pstClock;
+  /* Removes old one */
+  orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_CLOCK);
+
+  /* Has new one? */
+  if(_pstClock != orxNULL)
+  {
+    /* Links it */
+    orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstClock));
+  }
 
   /* Done! */
   return eResult;
@@ -1615,7 +1627,7 @@ orxCLOCK *orxFASTCALL orxObject_GetClock(const orxOBJECT *_pstObject)
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Updates result */
-  pstResult = _pstObject->pstClock;
+  pstResult = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
 
   /* Done! */
   return pstResult;
@@ -2559,15 +2571,19 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, const orxVECTOR 
   if(pstBody != orxNULL)
   {
     orxVECTOR         vModifiedSpeed;
+    orxCLOCK         *pstClock;
     const orxVECTOR  *pvSpeed;
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -2651,18 +2667,22 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxFLOAT fVelocity;
+    orxFLOAT  fVelocity;
+    orxCLOCK *pstClock;
 
     /* Uses default velocity */
     fVelocity = _fVelocity;
 
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
     /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -2710,14 +2730,18 @@ orxSTATUS orxFASTCALL orxObject_SetCustomGravity(orxOBJECT *_pstObject, const or
   {
     orxVECTOR         vModifiedGravity;
     const orxVECTOR  *pvGravity;
+    orxCLOCK         *pstClock;
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -2774,16 +2798,21 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(const orxOBJECT *_pstObject, orxVECTOR
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxCLOCK *pstClock;
+
     /* Gets its speed */
     pvResult = orxBody_GetSpeed(pstBody, _pvSpeed);
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -2853,16 +2882,21 @@ orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(const orxOBJECT *_pstObject)
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxCLOCK *pstClock;
+
     /* Gets its angular velocity */
     fResult = orxBody_GetAngularVelocity(pstBody);
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -2903,16 +2937,21 @@ orxVECTOR *orxFASTCALL orxObject_GetCustomGravity(const orxOBJECT *_pstObject, o
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxCLOCK *pstClock;
+
     /* Updates result */
     pvResult = orxBody_GetCustomGravity(pstBody, _pvCustomGravity);
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -3034,18 +3073,22 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxFLOAT fTorque;
+    orxFLOAT  fTorque;
+    orxCLOCK *pstClock;
 
     /* Uses default torque */
     fTorque = _fTorque;
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -3095,14 +3138,18 @@ orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTO
   {
     orxVECTOR         vModifiedForce;
     const orxVECTOR  *pvForce;
+    orxCLOCK         *pstClock;
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -3165,14 +3212,18 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVEC
   {
     orxVECTOR         vModifiedImpulse;
     const orxVECTOR  *pvImpulse;
+    orxCLOCK         *pstClock;
 
-    /* Has an associated clock? */
-    if(_pstObject->pstClock != orxNULL)
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
       const orxCLOCK_INFO *pstClockInfo;
 
       /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+      pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Has a modified DT? */
       if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
@@ -3647,13 +3698,18 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Has associated clock? */
-      if(_pstObject->pstClock != orxNULL)
+      orxCLOCK *pstClock;
+
+      /* Gets associated clock */
+      pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+      /* Valid? */
+      if(pstClock != orxNULL)
       {
         const orxCLOCK_INFO *pstClockInfo;
 
         /* Gets its info */
-        pstClockInfo = orxClock_GetInfo(_pstObject->pstClock);
+        pstClockInfo = orxClock_GetInfo(pstClock);
 
         /* Has a modified DT? */
         if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)

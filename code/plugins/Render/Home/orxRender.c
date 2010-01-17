@@ -1124,9 +1124,9 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 
 /** Renders all (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
- * @param[in]   _pstContext     Context sent when registering callback to the clock
+ * @param[in]   _pContext     Context sent when registering callback to the clock
  */
-static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxVIEWPORT  *pstViewport;
   orxBOOL       bRender;
