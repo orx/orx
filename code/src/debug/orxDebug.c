@@ -220,8 +220,8 @@ void orxFASTCALL _orxDebug_Exit()
 /** Software break function */
 void orxFASTCALL _orxDebug_Break()
 {
-  /* Windows / Linux / Mac / GP2X / Wii */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__)
+  /* Windows / Linux / Mac / GP2X / Wii / IPhone */
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
 
   /* Compiler specific */
 
@@ -234,6 +234,10 @@ void orxFASTCALL _orxDebug_Break()
     #elif defined(__orxWII__)
 
     //! TODO: Add WII software break code
+
+    #elif defined(__orxIPHONE__)
+
+      __builtin_trap();
 
     #else
 
@@ -255,7 +259,7 @@ void orxFASTCALL _orxDebug_Break()
     __debugbreak();
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
 
   return;
 }

@@ -58,7 +58,7 @@
 /** Platform dependent type & function defines
  */
 
-/* WINDOWS */
+/* Windows */
 #ifdef __orxWINDOWS__
 
   typedef HINSTANCE                                         orxSYSPLUGIN;
@@ -75,12 +75,12 @@
 
   typedef void *                                            orxSYSPLUGIN;
 
-  /* Wii */
-  #ifdef __orxWII__
+  /* Wii / IPhone */
+  #if defined(__orxWII__) || defined(__orxIPHONE__)
 
     #undef __orxPLUGIN_DYNAMIC__
 
-  #else /* __orxWII__ */
+  #else /* __orxWII__ || __orxIPHONE__ */
 
     #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
     #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
@@ -98,7 +98,7 @@
 
     #define __orxPLUGIN_DYNAMIC__
 
-  #endif /* __orxWII__ */
+  #endif /* __orxWII__ || __orxIPHONE__ */
 
 #endif /* __orxWINDOWS__ */
 

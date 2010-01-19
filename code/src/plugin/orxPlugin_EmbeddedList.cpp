@@ -38,7 +38,13 @@
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 
-#else /* __orxWII__ */
+#elif defined(__orxIPHONE__)
+
+//! TODO: Includes all plugins to embed for IPhone
+#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
+
+#else
 
 /** Includes all plugins to embed
  */
@@ -50,6 +56,6 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/SFML/orxSoundSystem.cpp"
 
-#endif /* __orxWII__ */
+#endif
 
 #endif /* __orxEMBEDDED__ */
