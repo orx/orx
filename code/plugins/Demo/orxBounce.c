@@ -180,6 +180,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 {
   orxVECTOR vMousePos;
   orxBOOL   bInViewport;
+  orxAABOX stBox;
+
+  orxAABox_Set(&stBox, &orxVECTOR_1, &orxVECTOR_0);
 
   if(orxInput_IsActive("PreviousResolution") && orxInput_HasNewStatus("PreviousResolution"))
   {

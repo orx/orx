@@ -68,7 +68,7 @@
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
     _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
     _orxDebug_RestoreFlags();                                                                               \
-  } while(orxFALSE)
+  } while(0)
 
 #else /* __orxGCC__ */
   #ifdef __orxMSVC__
@@ -81,7 +81,7 @@
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                               \
       _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
       _orxDebug_RestoreFlags();                                                                             \
-    } while(orxFALSE)
+    } while(0)
 
   #endif /* __orxMSVC__ */
 #endif /* __orcGCC__ */
