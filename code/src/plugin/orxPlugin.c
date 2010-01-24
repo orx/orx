@@ -544,6 +544,8 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
   /* Deletes plugin info */
   orxBank_Free(sstPlugin.pstPluginBank, _pstPluginInfo);
 
+#ifdef __orxPLUGIN_DYNAMIC__
+
   /* Linked to system plugin? */
   if(_pstPluginInfo->pstSysPlugin != orxNULL)
   {
@@ -551,6 +553,8 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
     orxPLUGIN_CLOSE(_pstPluginInfo->pstSysPlugin);
     _pstPluginInfo->pstSysPlugin = orxNULL;
   }
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
 
   /* Done */
   return;
@@ -586,6 +590,8 @@ static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN 
 {
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
 
+#ifdef __orxPLUGIN_DYNAMIC__
+
   /* Checks */
   orxASSERT(_pstSysPlugin != orxHANDLE_UNDEFINED);
   orxASSERT(_zFunctionName != orxNULL);
@@ -599,6 +605,8 @@ static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN 
     /* Logs an error */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "The requested function <%s> couldn't be find.", _zFunctionName);
   }
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
 
   /* Done! */
   return pfnFunction;
