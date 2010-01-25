@@ -41,8 +41,13 @@
 #elif defined(__orxIPHONE__)
 
 //! TODO: Includes all plugins to embed for IPhone
+//#include "../plugins/Display/iPhone/orxDisplay.m"
+#include "../plugins/Joystick/Dummy/orxJoystick.c"
+#include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+//#include "../plugins/Mouse/iPhone/orxMouse.m"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
+//#include "../plugins/Sound/iPhone/orxSoundSystem.m"
 
 #else
 
