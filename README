@@ -3,7 +3,7 @@ Orx - Portable Game Engine  (Version 1.1)
 
 =============================================================================
 
-Email iarwain at orx-project.org to contact the author; or better, check
+Email iarwain [at] orx-project.org to contact the author; or better, check
 orx's homepage at http://orx-project.org for the most up-to-date contact information.
 
 This engine is licensed under the LGPL, see the LICENSE file for details. 
@@ -14,14 +14,14 @@ Intro
 
 Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use.
 
-This is the final release for orx v1.0. If you find any bugs,
+This is the final release for orx v1.1. If you find any bugs,
 please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board.
 
 The current features of orx engine are:
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
 - automatic differential scrolling and depth scaling upon request
-- animation engine (including a chaining graph)
+- animation engine (including a chaining graph & custom animation events for synchronization)
 - fragment (pixel) shader support
 - collision handling and rigid body physics
 - generic input system that abstracts keyboard, mouse and joystick inputs
@@ -29,9 +29,9 @@ The current features of orx engine are:
 - powerful localization module
 - camera/viewport scheme allowing multiple views displayed with camera translation, zoom and rotation
 - visual FXs based on curve combinations
-- spawners (provides an easy particle creation system)
+- spawners (provides an easy way to create particles or projectiles)
 - 3D positioning using "scene nodes"
-- sound and music support
+- music and spatialized sound support
 - clock system that provides time consistency and allows time stretching
 - event manager
 - plugin system
@@ -46,7 +46,10 @@ Supported Platforms
 The engine compiles and is tested for a Linux target (x86 with codelite or makefile), 
 a Win32 target (msvs2005, msvs2008 and mingw32 with code::blocks, codelite or makefile)
 and a MacOS X target (ppc/x86 with xcode).
-The GP2X target is in debug stage and is probably not working as of v1.0.
+
+The iPhone target will be ready for orx v1.2.
+
+The GP2X target is in debug stage and is not currently actively developed/maintained.
 
 
 Versions
@@ -56,7 +59,7 @@ Those are not revision versions but link/run versions.
 Orx library can be compiled as a static or a dynamic library.
 In addition to these modes, orx can be compiled as an embedded version or not.
 
-Orx's core is basically platform-independent. All the platform/OS-dependant features
+Orx's core is basically platform-independent. All the platform/OS-dependent features
 are implemented via plugins. These plugins can be loaded at runtime (hotplug) or
 they can be embedded at linktime.
 
@@ -67,7 +70,8 @@ to choose which plugin to use at runtime, but will also be more compact. This wi
 also make orx run considerably faster.
 
 From the download page you'll find precompiled binaries for Win32, Linux (x86) and MacOS X (ppc/x86)
-using the dynamic embedded versions only. If you want to use the non-embedded versions (to use with your own plugins)
+using the dynamic embedded versions only.
+If you want to use the non-embedded versions (to use with your own plugins)
 or the static ones, you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.
 
@@ -77,7 +81,7 @@ The embedded versions currently use:
 - homemade plugin for 2D rendering
 
 Warning: If you compile the orx library yourself using the source package, you'll find SDL-based plugins
-as SFML-based counterparts, but they are not fully functional (WIP)!
+as SFML-based counterparts, but they are not fully functional yet (WIP)!
 
 
 Packages
@@ -86,36 +90,36 @@ Packages
 You can download all the packages from sourceforge (http://orx.sf.net).
 Here is a list with a small description for each package.
 
-- orx-doc-1.0.zip : orx's API doxygen documentation
+- orx-doc-1.1.zip : orx's API doxygen documentation
 
-- orx-src-1.0.zip : orx's source code including build projects for
+- orx-src-1.1.zip : orx's source code including build projects for
   . code::blocks (Win32 only, non-embedded versions)
   . codelite (Win32 and Linux, all versions)
   . msvs2005 & msvs2008 (Win32 Visual Studio, all versions)
   . xcode (2.4+, for MacOS X, non-static versions)
   . makefiles (Win32 and Linux, non-embedded versions)
 
-- orx-extern-1.0.zip : orx's external dependencies. You will only need these if you
-use orx-src-1.0.zip and you plan on compiling orx yourself. They are not neeeded otherwise.
+- orx-extern-1.1.zip : orx's external dependencies. You will only *NEED* these if you
+use orx-src-1.1.zip and you plan on compiling orx yourself. They are not neeeded otherwise.
 The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
 Warning for slow connections: this package is ~36MB.
 
-- orx-dev-linux-1.0.tar.bz2: orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
-- orx-dev-mac-1.0.zip      : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
-- orx-dev-mingw-1.0.zip    : orx's dynamic embedded precompiled binaries for Win32 (mingw), release and debug.
-- orx-dev-msvs2005-1.0.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2005), release and debug.
-- orx-dev-msvs2008-1.0.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
+- orx-dev-linux-1.1.tar.bz2: orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
+- orx-dev-mac-1.1.zip      : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
+- orx-dev-mingw-1.1.zip    : orx's dynamic embedded precompiled binaries for Win32 (mingw), release and debug.
+- orx-dev-msvs2005-1.1.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2005), release and debug.
+- orx-dev-msvs2008-1.1.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
 
-- orx-tutorial-linux-1.0.tar.bz2 : orx's precompiled tutorial for Linux (x86), release only.
-- orx-tutorial-mac-1.0.zip       : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
-- orx-tutorial-mingw-1.0.zip     : orx's precompiled tutorial for Win32 (mingw), release only.
-- orx-tutorial-msvs2005-1.0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2005), release only.
-- orx-tutorial-msvs2008-1.0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2008), release only.
+- orx-tutorial-linux-1.1.tar.bz2 : orx's precompiled tutorial for Linux (x86), release only.
+- orx-tutorial-mac-1.1.zip       : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
+- orx-tutorial-mingw-1.1.zip     : orx's precompiled tutorial for Win32 (mingw), release only.
+- orx-tutorial-msvs2005-1.1.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2005), release only.
+- orx-tutorial-msvs2008-1.1.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2008), release only.
 
 All the *-dev-* packages above include:
  . orx release/debug libraries used for linking
- . runtime release/debug orx libraries & launchers
+ . runtime release/debug orx libraries, launchers and config en/de-crypting tool
  . external runtime librairies needed on some platforms
  . headers to include at compile time
  . Template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
@@ -163,6 +167,7 @@ However, you might want to specify them manually for cross-compiling or
 use them so that your code will behave differently depending on the architecture
 for which you're compiling. Here's a quick list of these flags:
 - __orxPPC__      : orx is being compiled for a PowerPC architecture
+- __orxX86_64__   : orx is being compiled for a x86-64 architecture
 - __orxGCC__      : orx is being compiled with gcc
 - __orxMSVC__     : orx is being compiled with visual studio C/C++
 - __orxWINDOWS__  : orx is being compiled for Win32
@@ -178,6 +183,6 @@ Comments
 --------
 
 If you have any questions, comments, ideas or reviews, feel free to post them
-on orx's forum (http://forum.orx-project.org) or send them directly by mail to iarwain at orx-project.org
+on orx's forum (http://forum.orx-project.org) or send them directly by mail to iarwain [at] orx-project.org
 
 Enjoy!

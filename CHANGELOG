@@ -3,7 +3,7 @@ Orx - Portable Game Engine  (Version 1.1 rc0)
 
 =============================================================================
 
-orx 1.1 rc0
+orx 1.1
 -----
 * Added orxCrypt command line tool for merging/encrypting/decrypting config files
 * Added owner to spawner structure + all missing accessors for runtime handling
@@ -46,6 +46,7 @@ orx 1.1 rc0
 * Updated bounce demo to be able to change resolution on the fly (F1/F2) + ToggleFullScreen on F3
 * Added orx_WinExecute() helper for console-less windows application
 * Added __orxWII__ platform define for future work
+* Added __orxIPHONE__ platform define for future work
 * Misc updates & fixes
 
 orx 1.0 final

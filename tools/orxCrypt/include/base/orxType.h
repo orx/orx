@@ -88,7 +88,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
 
     typedef void *                orxHANDLE;
 
@@ -116,7 +116,7 @@
 
     #define orxENUM_NONE          0xFFFFFFFFL
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
 
 #endif /* __orxWINDOWS__ */
 

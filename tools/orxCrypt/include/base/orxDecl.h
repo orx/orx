@@ -88,7 +88,7 @@
 
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__) && !defined(__orxIPHONE__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -105,6 +105,11 @@
 
     #define __orxLINUX__
 
+  /* IPhone? */
+  #elif defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+
+    #define __orxIPHONE__
+
   /* Mac? */
   #elif defined(__APPLE__)
 
@@ -117,11 +122,11 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ && !__orxWII__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ && !__orxWII__ && !__orxIPHONE__ */
 
 
 #ifdef __cplusplus
@@ -168,7 +173,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / GP2X / Wii */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
 
     #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__)
 
@@ -200,14 +205,14 @@
     /** The null adress. */
     #define orxNULL             (0)
 
-    #ifdef __orxWII__
+    #if defined(__orxWII__) || defined(__orxIPHONE__)
 
-      /* Wii version can only be embedded due to the lack of dlfcn presence */
+      /* Wii and IPhone versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
-    #endif /* __orxWII__ */
+    #endif /* __orxWII__ || __orxIPHONE__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -284,7 +289,7 @@ do                                                            \
   *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
   *((orxU32 *)&(B)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
   *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-} while(orxFALSE)
+} while(0)
 
 
 /** Tests all flags
@@ -318,7 +323,7 @@ do                            \
 {                             \
   (X) &= ~(R);                \
   (X) |= (A);                 \
-} while(orxFALSE)
+} while(0)
 
 #endif /*_orxDECL_H_*/
 
