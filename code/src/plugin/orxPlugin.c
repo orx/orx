@@ -79,6 +79,9 @@
   #if defined(__orxWII__) || defined(__orxIPHONE__)
 
     #undef __orxPLUGIN_DYNAMIC__
+    #undef orxPLUGIN_OPEN(PLUGIN)
+    #undef orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)
+    #undef orxPLUGIN_CLOSE(PLUGIN)
 
   #else /* __orxWII__ || __orxIPHONE__ */
 
