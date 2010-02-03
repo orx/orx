@@ -172,10 +172,10 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / GP2X / Wii */
+  /* Linux / Mac / GP2X / Wii / iPhone */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
 
-    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__)
+    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__)
 
       #define orxFASTCALL
 
