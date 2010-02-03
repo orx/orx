@@ -175,7 +175,7 @@ typedef struct __orxCONFIG_SECTION_t
   orxLINKLIST_NODE  stNode;                 /**< List node : 12 */
   orxBANK          *pstEntryBank;           /**< Entry bank : 16 */
   orxSTRING         zName;                  /**< Section name : 20 */
-  orxU32            u32ID;                  /**< Section CRC : 24 */
+  orxU32            u32ID;                  /**< Section ID (CRC) : 24 */
   orxU32            u32ParentID;            /**< Parent ID (CRC) : 28 */
   orxS32            s32ProtectionCounter;   /**< Protection counter : 32 */
   orxLINKLIST       stEntryList;            /**< Entry list : 44 */
