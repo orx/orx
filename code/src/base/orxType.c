@@ -30,18 +30,7 @@
 #include "orxInclude.h"
 
 
-/* *** Undefined constants *** */
-const orxU64       orxU64_UNDEFINED    = (orxU64)(-1);
-const orxU32       orxU32_UNDEFINED    = (orxU32)(-1);
-const orxU16       orxU16_UNDEFINED    = (orxU16)(-1);
-const orxU8        orxU8_UNDEFINED     = (orxU8)(-1);
-const orxHANDLE    orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
-
-
 /* *** Misc constants *** */
-const orxBOOL      orxFALSE            = (orxBOOL)(1 != 1);
-const orxBOOL      orxTRUE             = (orxBOOL)(1 == 1);
-
 const orxSTRING    orxSTRING_EMPTY     = "";
 const orxSTRING    orxSTRING_TRUE      = "true";
 const orxSTRING    orxSTRING_FALSE     = "false";
@@ -90,9 +79,3 @@ const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
   #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
 
 #endif /* __orxWINDOWS__ */
-
-
-/* *** Float constants *** */
-
-const orxFLOAT orxFLOAT_0 = orx2F(0.0f);
-const orxFLOAT orxFLOAT_1 = orx2F(1.0f);

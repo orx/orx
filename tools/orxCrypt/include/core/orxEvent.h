@@ -52,7 +52,7 @@ do                                                                  \
   EVENT.hSender     = (orxHANDLE)(SENDER);                          \
   EVENT.hRecipient  = (orxHANDLE)(RECIPIENT);                       \
   EVENT.pstPayload  = (void *)(PAYLOAD);                            \
-} while(0)
+} while(orxFALSE)
 
 #define orxEVENT_SEND(TYPE, ID, SENDER, RECIPIENT, PAYLOAD)         \
 do                                                                  \
@@ -60,7 +60,7 @@ do                                                                  \
   orxEVENT stEvent;                                                 \
   orxEVENT_INIT(stEvent, TYPE, ID, SENDER, RECIPIENT, PAYLOAD);     \
   orxEvent_Send(&stEvent);                                          \
-} while(0)
+} while(orxFALSE)
 
 
 /** Event type enum

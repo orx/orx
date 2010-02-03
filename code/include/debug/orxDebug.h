@@ -87,7 +87,7 @@
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                       \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
     _orxDebug_RestoreFlags();                                                                                     \
-  } while(0)
+  } while(orxFALSE)
 
   #define orxLOG_CONSOLE(STRING, ...)                                                                             \
   do                                                                                                              \
@@ -99,7 +99,7 @@
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                       \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
     _orxDebug_RestoreFlags();                                                                                     \
-  } while(0)
+  } while(orxFALSE)
 
   #define orxLOG_FILE(STRING, ...)                                                                                \
   do                                                                                                              \
@@ -111,13 +111,13 @@
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                       \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
     _orxDebug_RestoreFlags();                                                                                     \
-  } while(0)
+  } while(orxFALSE)
 
   #define orxLOG_RAW(STRING, ...)                                                                                 \
   do                                                                                                              \
   {                                                                                                               \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
-  } while(0)
+  } while(orxFALSE)
 
 #else /* __orxGCC__ */
   #ifdef __orxMSVC__
@@ -133,7 +133,7 @@
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       _orxDebug_RestoreFlags();                                                                                   \
-    } while(0)
+    } while(orxFALSE)
 
     #define orxLOG_CONSOLE(STRING, ...)                                                                           \
     do                                                                                                            \
@@ -145,7 +145,7 @@
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       _orxDebug_RestoreFlags();                                                                                   \
-    } while(0)
+    } while(orxFALSE)
 
     #define orxLOG_FILE(STRING, ...)                                                                              \
     do                                                                                                            \
@@ -157,13 +157,13 @@
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       _orxDebug_RestoreFlags();                                                                                   \
-    } while(0)
+    } while(orxFALSE)
 
     #define orxLOG_RAW(STRING, ...)                                                                               \
     do                                                                                                            \
     {                                                                                                             \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-    } while(0)
+    } while(orxFALSE)
 
   #endif /* __orxMSVC__ */
 #endif /* __orcGCC__ */
@@ -204,7 +204,7 @@
       strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 256);  \
       _orxDebug_SetLogFile(zBuffer);                          \
-    } while(0)
+    } while(orxFALSE)
 
   /* Assert */
   #ifdef __orxGCC__
@@ -240,7 +240,7 @@
       strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 256);  \
       _orxDebug_SetLogFile(zBuffer);                          \
-    } while(0)
+    } while(orxFALSE)
 
   #define orxASSERT(TEST, ...)
 

@@ -100,7 +100,7 @@ do                                              \
   {                                             \
     (V) -= ((MAX) - (MIN));                     \
   }                                             \
-} while(0)
+} while(orxFALSE)
 
 /** Gets circularly clamped (for ring spaces) value between two boundaries ]MIN, MAX]
  * @param[in]   V                               Value to clamp
@@ -119,7 +119,7 @@ do                                              \
   {                                             \
     (V) -= ((MAX) - (MIN));                     \
   }                                             \
-} while(0)
+} while(orxFALSE)
 
 /** Converts an orxFLOAT to an orxU32
  * @param[in]   V                               Value to convert

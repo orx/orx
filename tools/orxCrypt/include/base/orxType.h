@@ -123,16 +123,24 @@
 /* *** Misc constants *** */
 
 /* *** Boolean constants *** */
-extern orxDLLAPI const orxBOOL    orxFALSE;
-extern orxDLLAPI const orxBOOL    orxTRUE;
+#define orxFALSE                  ((orxBOOL)(1 != 1))
+#define orxTRUE                   ((orxBOOL)(1 == 1))
+
+
+/* *** Float constants *** */
+static const orxFLOAT             orxFLOAT_0            = orx2F(0.0f);
+static const orxFLOAT             orxFLOAT_1            = orx2F(1.0f);
+
 
 /* *** Undefined constants *** */
-extern orxDLLAPI const orxU64     orxU64_UNDEFINED;
-extern orxDLLAPI const orxU32     orxU32_UNDEFINED;
-extern orxDLLAPI const orxU16     orxU16_UNDEFINED;
-extern orxDLLAPI const orxU8      orxU8_UNDEFINED;
-extern orxDLLAPI const orxHANDLE  orxHANDLE_UNDEFINED;
+static const orxU64               orxU64_UNDEFINED      = (orxU64)(-1);
+static const orxU32               orxU32_UNDEFINED      = (orxU32)(-1);
+static const orxU16               orxU16_UNDEFINED      = (orxU16)(-1);
+static const orxU8                orxU8_UNDEFINED       = (orxU8)(-1);
+static const orxHANDLE            orxHANDLE_UNDEFINED   = (orxHANDLE)(-1);
 
+
+/* *** String & character constants *** */
 extern orxDLLAPI const orxSTRING  orxSTRING_EMPTY;
 extern orxDLLAPI const orxSTRING  orxSTRING_TRUE;
 extern orxDLLAPI const orxSTRING  orxSTRING_FALSE;
@@ -153,11 +161,6 @@ extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR_LINUX;
 
 extern orxDLLAPI const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR;
 extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
-
-
-/* *** Float constants *** */
-extern orxDLLAPI const orxFLOAT   orxFLOAT_0;
-extern orxDLLAPI const orxFLOAT   orxFLOAT_1;
 
 
 /* *** Status defines *** */

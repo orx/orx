@@ -185,7 +185,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
-    static orxBOOL sbBackSpacePressed = 0, sbF11Pressed = 0, sbF12Pressed = 0;
+    static orxBOOL sbBackSpacePressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
 
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)

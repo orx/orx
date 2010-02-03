@@ -59,7 +59,7 @@
 
 /** Should stop execution by default event handling?
  */
-static orxBOOL sbStopByEvent = 0;
+static orxBOOL sbStopByEvent = orxFALSE;
 
 
 /***************************************************************************
@@ -154,15 +154,15 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
-      orxSTATUS eClockStatus, eMainStatus;
-      orxBOOL   bStop;
-
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
       /* Displays help */
       if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
       {
+        orxSTATUS eClockStatus, eMainStatus;
+        orxBOOL   bStop;
+
         /* Main loop */
         for(bStop = orxFALSE;
             bStop == orxFALSE;
