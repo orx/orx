@@ -1988,8 +1988,12 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
         /* Gets it from table */
         pstParentSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, sstConfig.pstCurrentSection->u32ParentID);
 
-        /* Updates result */
-        zResult = pstParentSection->zName;
+        /* Valid? */
+        if(pstParentSection != orxNULL)
+        {
+          /* Updates result */
+          zResult = pstParentSection->zName;
+        }
       }
     }
 
