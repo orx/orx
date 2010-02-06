@@ -55,6 +55,7 @@ namespace orxPhysics
 {
   static const orxU32   su32DefaultIterations   = 10;
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+  static const orxFLOAT sfDefaultWorldSize      = orx2F(100000.0f);
   static const orxU32   su32MessageBankSize     = 64;
 }
 
@@ -1183,6 +1184,10 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
 
+    /* Sets default world boundaries */
+    orxVector_Set(&vLower, -orxPhysics::sfDefaultWorldSize, -orxPhysics::sfDefaultWorldSize, orxFLOAT_0);
+    orxVector_Set(&vUpper, orxPhysics::sfDefaultWorldSize, orxPhysics::sfDefaultWorldSize, orxFLOAT_0);
+    
     /* Gets gravity & allow sleep from config */
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
     if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)

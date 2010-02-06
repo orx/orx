@@ -120,6 +120,146 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
+#ifdef __orxIPHONE__
+
+#ifndef __orxPLUGIN__
+    
+#import <UIKit/UIKit.h>
+
+static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
+
+@interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
+{
+  UIWindow *Window;
+  UIView   *View;
+}
+
+@property (nonatomic, retain) IBOutlet UIWindow *Window;
+@property (nonatomic, retain) IBOutlet UIView *View;
+
+- (void)MainLoop;
+
+@end
+    
+@implementation orxAppDelegate
+
+@synthesize Window;
+@synthesize View;
+
+- (void) applicationDidFinishLaunching: (UIApplication *)_poApplication
+{
+  /* Assigns main loop to a new thread */
+  [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];  
+
+  /* Activates window */
+  [Window makeKeyAndVisible];
+}
+
+- (void) dealloc
+{
+  [View release];
+  [Window release];
+  [super dealloc];
+}
+
+- (void)MainLoop
+{
+  orxSTATUS eClockStatus, eMainStatus;
+  orxBOOL   bStop;
+
+  /* Registers default event handler */
+  orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+  /* Main loop */
+  for(bStop = orxFALSE;
+      bStop == orxFALSE;
+      bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+  {
+    NSAutoreleasePool *poPool;
+
+    /* Allocates memory pool */
+    poPool = [[NSAutoreleasePool alloc] init];
+
+    /* Runs the engine */
+    eMainStatus = spfnRun();
+
+    /* Updates clock system */
+    eClockStatus = orxClock_Update();
+
+    /* Releases memory pool */
+    [poPool release];
+  }
+
+  /* Removes event handler */
+  orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+  /* Exits from engine */
+  orxModule_Exit(orxMODULE_ID_MAIN);
+
+  /* Exits from all modules */
+  orxModule_ExitAll();
+
+  /* Exits from the Debug system */
+  orxDEBUG_EXIT();
+}
+
+@end
+
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
+
+  /* Checks */
+  orxASSERT(_u32NbParams > 0);
+  orxASSERT(_azParams != orxNULL);
+  orxASSERT(_pfnInit != orxNULL);
+  orxASSERT(_pfnRun != orxNULL);
+  orxASSERT(_pfnExit != orxNULL);
+
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+
+  /* Stores run callback */
+  spfnRun = _pfnRun;
+
+  /* Registers all other modules */
+  orxModule_RegisterAll();
+
+  /* Calls all modules setup */
+  orxModule_SetupAll();
+
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    /* Inits the engine */
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    {      
+      /* Displays help */
+      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      {
+        NSAutoreleasePool *poPool;
+
+        /* Allocates memory pool */
+        poPool = [[NSAutoreleasePool alloc] init];
+
+        /* Launches application */
+        UIApplicationMain(_u32NbParams, _azParams, nil, nil);
+
+        /* Releases memory pool */
+        [poPool release];
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+#endif /* !__orxPLUGIN__ */
+
+#else /* __orxIPHONE__ */
+    
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
  * @param[in]   _azParams                     Main function parameter list (argv)
@@ -190,7 +330,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
 }
-
+    
 #ifdef __orxMSVC__
 
 #include "windows.h"
@@ -237,6 +377,8 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 }
 
 #endif /* __orxMSVC__ */
+    
+#endif /* __orxIPHONE__ */
 
 #endif /*_orx_H_*/
 

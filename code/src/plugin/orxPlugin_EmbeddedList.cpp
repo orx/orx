@@ -48,6 +48,12 @@
 #include "../plugins/Render/Home/orxRender.c"
 //#include "../plugins/Sound/iPhone/orxSoundSystem.m"
 
+
+orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
+orxPLUGIN_USER_CORE_FUNCTION_END();
+orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
+orxPLUGIN_USER_CORE_FUNCTION_END();
+
 #else
 
 /** Includes all plugins to embed
