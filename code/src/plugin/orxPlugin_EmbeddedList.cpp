@@ -40,17 +40,12 @@
 
 #elif defined(__orxIPHONE__)
 
-//#include "../plugins/Display/iPhone/orxDisplay.m"
+/* Display, mouse & sound system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
 #include "../plugins/Joystick/Dummy/orxJoystick.c"
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
-#include "../plugins/Mouse/iPhone/orxMouse.m"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-//#include "../plugins/Sound/iPhone/orxSoundSystem.m"
 
-
-orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
-orxPLUGIN_USER_CORE_FUNCTION_END();
 orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 

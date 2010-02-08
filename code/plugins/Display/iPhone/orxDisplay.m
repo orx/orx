@@ -31,6 +31,10 @@
 
 #include "orxPluginAPI.h"
 
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/ES1/gl.h>
+#import <OpenGLES/ES1/glext.h>
+
 
 /** Module flags
  */
@@ -49,12 +53,27 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Internal bitmap structure
+ */
+typedef struct __orxDISPLAY_BITMAP_t
+{
+  GLuint                uiTexture;
+  orxDISPLAY_SMOOTHING  eSmoothing;
+  orxFLOAT              fWidth, fHeight;
+  orxU32                u32RealWidth, u32RealHeight;
+  orxRGBA               stColor;
+  orxAABOX              stClip;
+
+} orxDISPLAY_BITMAP;
+
 /** Static structure
  */
 typedef struct __orxDISPLAY_STATIC_t
 {
+  orxBANK          *pstBitmapBank;
+  orxBITMAP        *pstScreen;
+  orxU32            u32ScreenWidth, u32ScreenHeight;
   orxU32            u32Flags;
-  orxFLOAT          fScreenWidth, fScreenHeight;
 
 } orxDISPLAY_STATIC;
 
@@ -72,66 +91,35 @@ static orxDISPLAY_STATIC sstDisplay;
  * Private functions                                                       *
  ***************************************************************************/
 
-static void orxFASTCALL orxDisplay_iPhone_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static orxINLINE orxU32 orxDisplay_GetNPOT(orxU32 _u32Value)
 {
-  SDL_Event stSDLEvent;
+  orxU32 u32Result;
 
-  /* Clears event */
-  orxMemory_Zero(&stSDLEvent, sizeof(SDL_Event));
-
-  /* Clears wheel event */
-  orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONDOWN, orxNULL, orxNULL, &stSDLEvent);
-
-  /* Handles all pending events */
-  while(SDL_PollEvent(&stSDLEvent))
+  /* Non-zero? */
+  if(_u32Value != 0)
   {
-    /* Depending on type */
-    switch(stSDLEvent.type)
-    {
-      /* Closing? */
-      case SDL_QUIT:
-      {
-        /* Sends system close event */
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-
-        break;
-      }
-
-      /* Gained/Lost focus? */
-      case SDL_ACTIVEEVENT:
-      {
-        /* Sends system focus gained event */
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST);
-
-        break;
-      }
-
-      case SDL_MOUSEBUTTONDOWN:
-      {
-        /* Not a wheel move? */
-        if((stSDLEvent.button.button != SDL_BUTTON_WHEELDOWN)
-        && (stSDLEvent.button.button != SDL_BUTTON_WHEELUP))
-        {
-          /* Stops */
-          break;
-        }
-      }
-      case SDL_MOUSEMOTION:
-      {
-        /* Sends reserved event */
-        orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + stSDLEvent.type, stSDLEvent.type, orxNULL, orxNULL, &stSDLEvent);
-
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
-    }
+    /* Updates result */
+    u32Result = _u32Value - 1;
+    u32Result = u32Result | (u32Result >> 1);
+    u32Result = u32Result | (u32Result >> 2);
+    u32Result = u32Result | (u32Result >> 4);
+    u32Result = u32Result | (u32Result >> 8);
+    u32Result = u32Result | (u32Result >> 16);
+    u32Result++;
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = 1;
   }
 
-  return;
+  /* Done! */
+  return u32Result;
+}
+
+static void orxFASTCALL orxDisplay_iPhone_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+//! TODO
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreen()
@@ -140,45 +128,29 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreen()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Done! */
-  return((orxBITMAP *)sstDisplay.pstScreen);
+  return sstDisplay.pstScreen;
 }
 
 orxDISPLAY_TEXT *orxFASTCALL orxDisplay_iPhone_CreateText()
 {
   orxDISPLAY_TEXT *pstResult = orxNULL;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-
+//! TODO
+  
   /* Done! */
   return pstResult;
 }
 
 void orxFASTCALL orxDisplay_iPhone_DeleteText(orxDISPLAY_TEXT *_pstText)
 {
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 }
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstDst != orxNULL);
-  orxASSERT(_pstText != orxNULL);
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -188,14 +160,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetTextString(orxDISPLAY_TEXT *_pstText,
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
+  //! TODO
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-
-/* Done! */
   return eResult;
 }
 
@@ -203,12 +169,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetTextFont(orxDISPLAY_TEXT *_pstText, c
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -218,12 +179,7 @@ orxSTRING orxFASTCALL orxDisplay_iPhone_GetTextString(const orxDISPLAY_TEXT *_ps
 {
   orxSTRING zResult = orxNULL;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 
   /* Done! */
   return zResult;
@@ -233,12 +189,7 @@ orxSTRING orxFASTCALL orxDisplay_iPhone_GetTextFont(const orxDISPLAY_TEXT *_pstT
 {
   orxSTRING zResult = orxNULL;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 
   /* Done! */
   return zResult;
@@ -248,14 +199,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetTextSize(const orxDISPLAY_TEXT *_pstT
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-  orxASSERT(_pfWidth != orxNULL);
-  orxASSERT(_pfHeight != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -265,17 +209,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_PrintString(const orxBITMAP *_pstBitmap,
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* TODO :
-   * Write the string onto screen, using char per char pixel writing
-   */
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -283,52 +217,128 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_PrintString(const orxBITMAP *_pstBitmap,
 
 void orxFASTCALL orxDisplay_iPhone_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
+  orxDISPLAY_BITMAP *pstBitmap;
+
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Deletes it */
-  SDL_FreeSurface((SDL_Surface *)_pstBitmap);
+  /* Gets bitmap */
+  pstBitmap = (orxDISPLAY_BITMAP *)_pstBitmap;
 
+  /* Deletes its texture */
+  glDeleteTextures(1, &(pstBitmap->uiTexture));
+
+  /* Deletes it */
+  orxBank_Free(sstDisplay.pstBitmapBank, pstBitmap);
+
+  /* Done! */
   return;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
 {
-  orxU32 u32RMask, u32GMask, u32BMask, u32AMask;
+  orxDISPLAY_BITMAP *pstBitmap;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* SDL interprets each pixel as a 32-bit number, so our masks must depend
-     on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  u32RMask = 0xFF000000;
-  u32GMask = 0x00FF0000;
-  u32BMask = 0x0000FF00;
-  u32AMask = 0x000000FF;
-#else
-  u32RMask = 0x000000FF;
-  u32GMask = 0x0000FF00;
-  u32BMask = 0x00FF0000;
-  u32AMask = 0xFF000000;
-#endif
+  /* Allocates bitmap */
+  pstBitmap = (orxDISPLAY_BITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _u32Width, _u32Height, sstDisplay.pstScreen->format->BitsPerPixel, u32RMask, u32GMask, u32BMask, u32AMask));
+  /* Valid? */
+  if(pstBitmap != orxNULL)
+  {
+    GLint iPreviousTexture;
+
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Inits it */
+    pstBitmap->eSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? orxDISPLAY_SMOOTHING_ON : orxDISPLAY_SMOOTHING_OFF;
+    pstBitmap->fWidth         = orxU2F(_u32Width);
+    pstBitmap->fHeight        = orxU2F(_u32Height);
+    pstBitmap->u32RealWidth   = orxDisplay_GetNPOT(_u32Width);
+    pstBitmap->u32RealHeight  = orxDisplay_GetNPOT(_u32Height);
+    pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
+    orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+    orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+    /* Gets previous texture */
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iPreviousTexture);
+
+    /* Creates new texture */
+    glGenTextures(1, &pstBitmap->uiTexture);
+    glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->eSmoothing == orxDISPLAY_SMOOTHING_ON) ? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->eSmoothing == orxDISPLAY_SMOOTHING_ON) ? GL_LINEAR : GL_NEAREST);
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iPreviousTexture);
+    
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return (orxBITMAP *)pstBitmap;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Updates result */
-  eResult = (SDL_FillRect((SDL_Surface *)_pstBitmap, NULL, _stColor) == 0)
-            ? orxSTATUS_SUCCESS
-            : orxSTATUS_FAILURE;
+  /* Is not screen? */
+  if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    GLint               iPreviousTexture;
+    orxRGBA            *astBuffer, *pstPixel;
+    orxDISPLAY_BITMAP  *pstBitmap;
+
+    /* Gets bitmap */
+    pstBitmap = (orxDISPLAY_BITMAP *)_pstBitmap;
+    
+    /* Allocates buffer */
+    astBuffer = (orxRGBA *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+
+    /* Checks */
+    orxASSERT(astBuffer != orxNULL);
+
+    /* For all pixels */
+    for(pstPixel = astBuffer; pstPixel < astBuffer + (pstBitmap->u32RealWidth * pstBitmap->u32RealHeight); pstPixel++)
+    {
+      /* Sets its value */
+      *pstPixel = _stColor;
+    }
+
+    /* Gets previous texture */
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iPreviousTexture);
+    
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+    
+    /* Updates texture */
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iPreviousTexture);
+    
+    /* Frees buffer */
+    orxMemory_Free(astBuffer);
+  }
+  else
+  {
+    /* Clear the color buffer with given color */
+    glClearColor((1.0f / 255.f) * orxU2F(orxRGBA_R(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_G(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_B(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_A(_stColor)));
+    glClear(GL_COLOR_BUFFER_BIT);
+  }
 
   /* Done! */
   return eResult;
@@ -341,9 +351,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Updates result */
-  eResult = (SDL_Flip(sstDisplay.pstScreen) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
+//! TODO
+  
   /* Done! */
   return eResult;
 }
@@ -352,25 +361,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColorKey(orxBITMAP *_pstBitmap,
 {
   orxSTATUS eResult;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
-
-  /* Enable? */
-  if(_bEnable != orxFALSE)
-  {
-    /* Updates result */
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstBitmap, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstBitmap)->format, orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor))) == 0)
-              ? orxSTATUS_SUCCESS
-              : orxSTATUS_FAILURE;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstBitmap, 0, 0) == 0)
-              ? orxSTATUS_SUCCESS
-              : orxSTATUS_FAILURE;
-  }
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -384,8 +375,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColor(orxBITMAP *_pstBitmap, or
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  /* Stores it */
+  ((orxDISPLAY_BITMAP *)_pstBitmap)->stColor = _stColor;
 
   /* Done! */
   return eResult;
@@ -399,8 +390,8 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  /* Updates result */
+  stResult = ((orxDISPLAY_BITMAP *)_pstBitmap)->stColor;
 
   /* Done! */
   return stResult;
@@ -408,28 +399,14 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  SDL_Rect  stSrcRect, stDstRect;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstDst != orxNULL);
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
 
-  /* Inits blitting rectangles */
-  stSrcRect.x = 0;
-  stSrcRect.y = 0;
-  stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
-  stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-  stDstRect.x = (orxS16)orxF2S(_fPosX);
-  stDstRect.y = (orxS16)orxF2S(_fPosY);
-  stDstRect.w = 0;
-  stDstRect.h = 0;
-
-  /* Updates result */
-  eResult = (SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
-            ? orxSTATUS_SUCCESS
-            : orxSTATUS_FAILURE;
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -437,8 +414,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orx
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  SDL_Surface  *pstSurface;
-  orxSTATUS     eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -446,37 +422,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(orxBITMAP *_pstDst, cons
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
   orxASSERT(_pstTransform != orxNULL);
 
-  /* Creates transformed surface */
-  pstSurface = (SDL_Surface *)_pstSrc;//rotozoomSurface((SDL_Surface *)_pstSrc, -orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, _pstTransform->fScaleX, 0);
-
-  /* Valid? */
-  if(pstSurface != orxNULL)
-  {
-    SDL_Rect stSrcRect, stDstRect;
-
-    /* Inits blitting rectangles */
-    stSrcRect.x = 0;//(orxS16)orxF2S(_pstTransform->fSrcX);
-    stSrcRect.y = 0;//(orxS16)orxF2S(_pstTransform->fSrcX);
-    stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
-    stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-    stDstRect.x = (orxS16)orxF2S(_pstTransform->fDstX);
-    stDstRect.y = (orxS16)orxF2S(_pstTransform->fDstY);
-    stDstRect.w = 0;
-    stDstRect.h = 0;
-
-    /* Updates result */
-    eResult = (SDL_BlitSurface(pstSurface, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
-              ? orxSTATUS_SUCCESS
-              : orxSTATUS_FAILURE;
-
-    /* Deletes transformed surface */
-    //SDL_FreeSurface(pstSurface);
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -484,15 +430,14 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(orxBITMAP *_pstDst, cons
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Updates result */
-  eResult = (SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -505,8 +450,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Loads image */
-  pstResult = (orxBITMAP *)IMG_Load(_zFilename);
+  //! TODO
 
   /* Done! */
   return pstResult;
@@ -523,8 +467,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapSize(const orxBITMAP *_pstBitma
   orxASSERT(_pfHeight != orxNULL);
 
   /* Gets size */
-  *_pfWidth   = orxS2F(((SDL_Surface *)_pstBitmap)->w);
-  *_pfHeight  = orxS2F(((SDL_Surface *)_pstBitmap)->h);
+  *_pfWidth   = ((orxDISPLAY_BITMAP *)_pstBitmap)->fWidth;
+  *_pfHeight  = ((orxDISPLAY_BITMAP *)_pstBitmap)->fHeight;
 
   /* Done! */
   return eResult;
@@ -540,8 +484,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetScreenSize(orxFLOAT *_pfWidth, orxFLO
   orxASSERT(_pfHeight != orxNULL);
 
   /* Gets size */
-  *_pfWidth   = sstDisplay.fScreenWidth;
-  *_pfHeight  = sstDisplay.fScreenHeight;
+  *_pfWidth   = sstDisplay.u32ScreenWidth;
+  *_pfHeight  = sstDisplay.u32ScreenHeight;
 
   /* Done! */
   return eResult;
@@ -549,22 +493,33 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetScreenSize(orxFLOAT *_pfWidth, orxFLO
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
 {
-  SDL_Rect  stClipRect;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Gets SDL clip rectangle */
-  stClipRect.x = (orxS16)_u32TLX;
-  stClipRect.y = (orxS16)_u32TLY;
-  stClipRect.w = (orxS16)(_u32BRX - _u32TLX);
-  stClipRect.h = (orxS16)(_u32BRY - _u32TLY);
+  /* Screen? */
+  if(_pstBitmap == sstDisplay.pstScreen)
+  {
+    /* Stores screen clipping */
+    glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+    
+    /* Enables clipping */
+    glEnable(GL_SCISSOR_TEST);
+  }
+  else
+  {
+    orxDISPLAY_BITMAP *pstBitmap;
 
-  /* Applies it */
-  SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
+    /* Gets bitmap */
+    pstBitmap = (orxDISPLAY_BITMAP *)_pstBitmap;
 
+    /* Stores clip coords */
+    orxVector_Set(&(pstBitmap->stClip.vTL), orxU2F(_u32TLX), orxU2F(_u32TLY), orxFLOAT_0);
+    orxVector_Set(&(pstBitmap->stClip.vBR), orxU2F(_u32BRX), orxU2F(_u32BRY), orxFLOAT_0);
+  }
+  
   /* Done! */
   return eResult;
 }
@@ -604,8 +559,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetFullScreen(orxBOOL _bFullScreen)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -613,13 +568,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetFullScreen(orxBOOL _bFullScreen)
 
 orxBOOL orxFASTCALL orxDisplay_iPhone_IsFullScreen()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxTRUE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return bResult;
@@ -632,8 +587,8 @@ orxU32 orxFASTCALL orxDisplay_iPhone_GetVideoModeCounter()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return u32Result;
@@ -646,8 +601,8 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iPhone_GetVideoMode(orxU32 _u32Ind
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return pstResult;
@@ -655,13 +610,13 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iPhone_GetVideoMode(orxU32 _u32Ind
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -669,13 +624,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetVideoMode(const orxDISPLAY_VIDEO_MODE
 
 orxBOOL orxFASTCALL orxDisplay_iPhone_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxTRUE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return bResult;
@@ -690,118 +645,14 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
-
-    /* Is SDL partly initialized? */
-    if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
-    {
-      /* Inits the video subsystem */
-      eResult = (SDL_InitSubSystem(SDL_INIT_VIDEO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    }
-    else
-    {
-      /* Inits SDL with video */
-      eResult = (SDL_Init(SDL_INIT_VIDEO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    }
-
-    /* Valid? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-#ifdef __orxGP2X__
-
-      /* Inits display using config values? */
-      sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
-
-      /* Stores values */
-      sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-      sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
-
-#else /* __orxGP2X__ */
-
-      {
-        orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags;
-
-        /* Gets resolution from config */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-        u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
-        u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
-        u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
-
-        /* Full screen? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
-        {
-          /* Updates flags */
-          u32Flags = SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
-        }
-        else
-        {
-          /* Updates flags */
-          u32Flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
-        }
-
-        /* Inits display using config values? */
-        if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags)) == orxNULL)
-        {
-          /* Inits display using default parameters */
-          sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
-
-          /* Stores values */
-          sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-          sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
-        }
-        else
-        {
-          /* Stores values */
-          sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
-          sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
-        }
-
-        /* Pops config section */
-        orxConfig_PopSection();
-      }
-
-#endif /* __orxGP2X__ */
-
-      /* Updates result ? */
-      eResult = (sstDisplay.pstScreen != NULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-      /* Valid? */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        orxCLOCK *pstClock;
-
-        /* Gets clock */
-        pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-        /* Valid? */
-        if(pstClock != orxNULL)
-        {
-          /* Registers event update function */
-          eResult = orxClock_Register(pstClock, orxDisplay_iPhone_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
-        }
-
-        /* Decoration? */
-        if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
-        || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
-        {
-          /* Logs message */
-          orxLOG("This plugin can't remove window decorations.");
-        }
-
-        /* Has VSync value? */
-        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
-        {
-          /* Logs message */
-          orxLOG("This plugin can't handle vsync.");
-        }
-
-        /* Updates its title */
-        SDL_WM_SetCaption(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), orxNULL);
-
-        /* Sets module as ready */
-        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
-      }
-    }
+    
+    //! TODO
   }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }  
 
   /* Done! */
   return eResult;
@@ -812,22 +663,13 @@ void orxFASTCALL orxDisplay_iPhone_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Is video the only subsystem initialized? */
-    if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_VIDEO)
-    {
-      /* Exits from SDL */
-      SDL_Quit();
-    }
-    else
-    {
-      /* Exits from video subsystem */
-      SDL_QuitSubSystem(SDL_INIT_VIDEO);
-    }
-
+//! TODO
+    
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
   }
 
+  /* Done! */
   return;
 }
 
@@ -835,8 +677,8 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return hResult;
@@ -844,16 +686,19 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
 
 void orxFASTCALL orxDisplay_iPhone_DeleteShader(orxHANDLE _hShader)
 {
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
+
+  /* Done! */
+  return;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_RenderShader(orxHANDLE _hShader)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -861,10 +706,10 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_RenderShader(orxHANDLE _hShader)
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -872,10 +717,10 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, cons
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -883,10 +728,10 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderFloat(orxHANDLE _hShader, const
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -896,8 +741,8 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_GetApplicationInput()
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  /* Not available */
+  orxLOG("Not available on this platform!");
 
   /* Done! */
   return hResult;
