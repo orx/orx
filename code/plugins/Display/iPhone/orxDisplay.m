@@ -30,10 +30,7 @@
 
 
 #include "orxPluginAPI.h"
-
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
+#import <QuartzCore/QuartzCore.h>
 
 
 /** Module flags
@@ -47,6 +44,24 @@
 #define orxDISPLAY_KU32_SCREEN_WIDTH            320
 #define orxDISPLAY_KU32_SCREEN_HEIGHT           480
 #define orxDISPLAY_KU32_SCREEN_DEPTH            32
+
+
+/**  Misc defines
+ */
+#ifdef __orxDEBUG__
+
+#define glASSERT()                              \
+do                                              \
+{                                               \
+  GLenum eError = glGetError();                 \
+  orxASSERT(eError == GL_NO_ERROR);             \
+} while(orxFALSE)
+
+#else /* __orxDEBUG__ */
+
+#define glASSERT()
+
+#endif /* __orxDEBUG__ */
 
 
 /***************************************************************************
@@ -76,6 +91,19 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32            u32Flags;
 
 } orxDISPLAY_STATIC;
+
+/** orxView class
+ */
+@implementation orxView
+
+@synthesize poContext;
+
++ (Class)layerClass
+{
+  return [CAEAGLLayer class];
+}
+
+@end
 
 
 /***************************************************************************
@@ -228,6 +256,7 @@ void orxFASTCALL orxDisplay_iPhone_DeleteBitmap(orxBITMAP *_pstBitmap)
 
   /* Deletes its texture */
   glDeleteTextures(1, &(pstBitmap->uiTexture));
+  glASSERT();
 
   /* Deletes it */
   orxBank_Free(sstDisplay.pstBitmapBank, pstBitmap);
@@ -249,8 +278,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
   /* Valid? */
   if(pstBitmap != orxNULL)
   {
-    GLint iPreviousTexture;
-
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -264,21 +291,22 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
-    /* Gets previous texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iPreviousTexture);
-
     /* Creates new texture */
     glGenTextures(1, &pstBitmap->uiTexture);
+    glASSERT();
     glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+    glASSERT();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->eSmoothing == orxDISPLAY_SMOOTHING_ON) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->eSmoothing == orxDISPLAY_SMOOTHING_ON) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
 
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iPreviousTexture);
-    
     /* Pops config section */
     orxConfig_PopSection();
   }
@@ -298,7 +326,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   /* Is not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    GLint               iPreviousTexture;
     orxRGBA            *astBuffer, *pstPixel;
     orxDISPLAY_BITMAP  *pstBitmap;
 
@@ -318,18 +345,14 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
       *pstPixel = _stColor;
     }
 
-    /* Gets previous texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iPreviousTexture);
-    
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
-    
+    glASSERT();
+
     /* Updates texture */
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
 
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iPreviousTexture);
-    
     /* Frees buffer */
     orxMemory_Free(astBuffer);
   }
@@ -337,7 +360,9 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   {
     /* Clear the color buffer with given color */
     glClearColor((1.0f / 255.f) * orxU2F(orxRGBA_R(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_G(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_B(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_A(_stColor)));
+    glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
+    glASSERT();
   }
 
   /* Done! */
@@ -504,9 +529,11 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap,
   {
     /* Stores screen clipping */
     glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
-    
+    glASSERT();
+
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
+    glASSERT();
   }
   else
   {
@@ -645,7 +672,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
-    
+
     //! TODO
   }
   else

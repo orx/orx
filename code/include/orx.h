@@ -120,18 +120,29 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
-#ifdef __orxIPHONE__
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
 
-#ifndef __orxPLUGIN__
-    
 #import <UIKit/UIKit.h>
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/ES1/gl.h>
+#import <OpenGLES/ES1/glext.h>
+    
+@interface orxView : UIView
+{
+@private
+  GLint         iWidth, iHeight;
+  EAGLContext  *poContext;
+  GLuint        uiRenderBuffer, uiFrameBuffer;
+}
 
-static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
+@property (nonatomic, retain) EAGLContext *poContext;
+
+@end    
 
 @interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
 {
   UIWindow *Window;
-  UIView   *View;
+  orxView  *View;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *Window;
@@ -140,6 +151,10 @@ static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
 - (void)MainLoop;
 
 @end
+
+#ifndef __orxPLUGIN__
+
+static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
     
 @implementation orxAppDelegate
 
@@ -258,7 +273,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #endif /* !__orxPLUGIN__ */
 
-#else /* __orxIPHONE__ */
+#else /* __orxIPHONE__ && __orxOBJC__ */
     
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
