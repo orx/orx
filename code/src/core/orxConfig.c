@@ -38,11 +38,11 @@
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
-#ifdef __orxMAC__
+#if defined(__orxMAC__) || defined(__orxIPHONE__)
 
   #include <unistd.h>
 
-#endif /* __orxMAC__ */
+#endif /* __orxMAC__ || __orxIPHONE__ */
 
 
 /** Module flags
@@ -1706,8 +1706,8 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   /* Valid? */
   if((_zBaseName != orxNULL) && (_zBaseName != orxSTRING_EMPTY))
   {
-    /* Mac? */
-    #ifdef __orxMAC__
+    /* Mac or iPhone? */
+    #if defined(__orxMAC__) || defined(__orxIPHONE__)
 
       orxS32 s32Index, s32NextIndex;
 
@@ -1729,7 +1729,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
         *(_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
       }
 
-    #endif /* __orxMAC__ */
+    #endif /* __orxMAC__ || __orxIPHONE__ */
 
     /* Copies it */
     orxString_NPrint(sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1, "%s.ini", _zBaseName);
