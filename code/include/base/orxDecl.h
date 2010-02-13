@@ -140,17 +140,17 @@
   #define orxIMPORT
   #undef __orxCPP__
 
-  #ifdef __OBJC__
-
-    #define __orxOBJC__
-
-  #else /* __OBJC__ */
-
-    #undef __orxOBJC__
-
-  #endif /* __OBJC__ */
-
 #endif /* __cplusplus */
+
+#ifdef __OBJC__
+
+  #define __orxOBJC__
+
+#else /* __OBJC__ */
+
+  #undef __orxOBJC__
+
+#endif /* __OBJC__ */
 
 
 /* Windows */

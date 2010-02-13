@@ -137,6 +137,27 @@ typedef struct __orxCOLOR_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+
+#import <UIKit/UIKit.h>
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/ES1/gl.h>
+#import <OpenGLES/ES1/glext.h>
+
+@interface orxView : UIView
+{
+@private
+  EAGLContext  *poContext;
+  GLuint        uiRenderBuffer, uiFrameBuffer;
+}
+
+@property (nonatomic, retain) EAGLContext *poContext;
+
+@end
+
+#endif /* __orxIPHONE__ && __orxOBJC__ */
+
+
 /** Display module setup
  */
 extern orxDLLAPI void orxFASTCALL orxDisplay_Setup();

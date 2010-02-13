@@ -123,21 +123,6 @@ static void orxFASTCALL orx_MainSetup()
 #if defined(__orxIPHONE__) && defined(__orxOBJC__)
 
 #import <UIKit/UIKit.h>
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
-    
-@interface orxView : UIView
-{
-@private
-  GLint         iWidth, iHeight;
-  EAGLContext  *poContext;
-  GLuint        uiRenderBuffer, uiFrameBuffer;
-}
-
-@property (nonatomic, retain) EAGLContext *poContext;
-
-@end    
 
 @interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
 {
@@ -162,7 +147,7 @@ static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
 @synthesize View;
 
 - (void) applicationDidFinishLaunching: (UIApplication *)_poApplication
-{
+{  
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];  
 
@@ -177,39 +162,47 @@ static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
   [super dealloc];
 }
 
-- (void)MainLoop
+- (void) MainLoop
 {
   orxSTATUS eClockStatus, eMainStatus;
   orxBOOL   bStop;
 
-  /* Registers default event handler */
-  orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+  /* Inits the engine */
+  if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+  {      
+    /* Displays help */
+    if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
-  /* Main loop */
-  for(bStop = orxFALSE;
-      bStop == orxFALSE;
-      bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
-  {
-    NSAutoreleasePool *poPool;
+      /* Main loop */
+      for(bStop = orxFALSE;
+          bStop == orxFALSE;
+          bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+      {
+        NSAutoreleasePool *poPool;
 
-    /* Allocates memory pool */
-    poPool = [[NSAutoreleasePool alloc] init];
+        /* Allocates memory pool */
+        poPool = [[NSAutoreleasePool alloc] init];
 
-    /* Runs the engine */
-    eMainStatus = spfnRun();
+        /* Runs the engine */
+        eMainStatus = spfnRun();
 
-    /* Updates clock system */
-    eClockStatus = orxClock_Update();
+        /* Updates clock system */
+        eClockStatus = orxClock_Update();
 
-    /* Releases memory pool */
-    [poPool release];
+        /* Releases memory pool */
+        [poPool release];
+      }
+    
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+    }
+
+    /* Exits from engine */
+    orxModule_Exit(orxMODULE_ID_MAIN);
   }
-
-  /* Removes event handler */
-  orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-  /* Exits from engine */
-  orxModule_Exit(orxMODULE_ID_MAIN);
 
   /* Exits from all modules */
   orxModule_ExitAll();
@@ -247,24 +240,16 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Sends the command line arguments to orxParam module */
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
-    /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-    {      
-      /* Displays help */
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
-      {
-        NSAutoreleasePool *poPool;
+    NSAutoreleasePool *poPool;
 
-        /* Allocates memory pool */
-        poPool = [[NSAutoreleasePool alloc] init];
+    /* Allocates memory pool */
+    poPool = [[NSAutoreleasePool alloc] init];
 
-        /* Launches application */
-        UIApplicationMain(_u32NbParams, _azParams, nil, nil);
+    /* Launches application */
+    UIApplicationMain(_u32NbParams, _azParams, nil, nil);
 
-        /* Releases memory pool */
-        [poPool release];
-      }
-    }
+    /* Releases memory pool */
+    [poPool release];
   }
 
   /* Done! */

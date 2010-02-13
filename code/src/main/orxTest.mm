@@ -39,6 +39,7 @@ void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 
 static orxSTATUS orxFASTCALL Init()
 {
+  orxViewport_CreateFromConfig("Viewport");
   return orxClock_AddGlobalTimer(Log, orxFLOAT_1, -1, orxNULL);
 }
 
