@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@
 
 /**
  * @addtogroup orxMath
- * 
+ *
  * Math module
  * Contains all base math functions
  *
@@ -181,7 +181,7 @@ extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS3
  * @param[in]   _u32Value                       Value to process
  * @return      Number of bits that are set in the value
  */
-static orxINLINE orxU32 orxMath_GetBitCount(register orxU32 _u32Value)
+static orxINLINE orxU32 orxMath_GetBitCount(orxU32 _u32Value)
 {
   _u32Value -= ((_u32Value >> 1) & 0x55555555);
   _u32Value = (((_u32Value >> 2) & 0x33333333) + (_u32Value & 0x33333333));
@@ -215,7 +215,7 @@ static orxINLINE orxFLOAT    orxMath_Cos(orxFLOAT _fOp)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = cosf(_fOp);
 
@@ -239,7 +239,7 @@ static orxINLINE orxFLOAT    orxMath_Sin(orxFLOAT _fOp)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = sinf(_fOp);
 
@@ -263,7 +263,7 @@ static orxINLINE orxFLOAT    orxMath_Tan(orxFLOAT _fOp)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = tanf(_fOp);
 
@@ -287,7 +287,7 @@ static orxINLINE orxFLOAT    orxMath_ACos(orxFLOAT _fOp)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = acosf(_fOp);
 
@@ -311,7 +311,7 @@ static orxINLINE orxFLOAT    orxMath_ASin(orxFLOAT _fOp)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = asinf(_fOp);
 
@@ -336,7 +336,7 @@ static orxINLINE orxFLOAT    orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = atan2f(_fOp1, _fOp2);
 
@@ -408,7 +408,7 @@ static orxINLINE orxFLOAT    orxMath_Round(orxFLOAT _fOp)
   register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
-  
+
   /* Updates result */
   fResult = (fmodf(_fOp, orxFLOAT_1) >= orx2F(0.5f)) ? ceilf(_fOp) : floorf(_fOp);
 

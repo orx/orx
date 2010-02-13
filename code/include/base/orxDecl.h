@@ -156,7 +156,15 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  #define orxFASTCALL           __fastcall
+  #ifdef __orxFREEBASIC__
+
+    #define orxFASTCALL
+
+  #else /* __orxFREEBASIC__ */
+
+    #define orxFASTCALL           __fastcall
+
+  #endif /* __orxFREEBASIC__ */
 
   #define orxSTDCALL            __stdcall
 
@@ -173,13 +181,19 @@
 
   /* *** Compiler specific *** */
   /** The function intend to be inlined. */
-  #ifdef __orxGCC__
-    #define orxINLINE           inline
-  #else /* __orxGCC__ */
-    #ifdef __orxMSVC__
-      #define orxINLINE         __inline
-    #endif /* __orxMSVC__ */
-  #endif /* __orxGCC__ */
+  #if defined(__orxFREEBASIC__)
+
+    #define orxINLINE
+
+  #elif defined(__orxGCC__)
+
+    #define orxINLINE         inline
+
+  #elif defined(__orxMSVC__)
+
+    #define orxINLINE         __inline
+
+  #endif
 
 #else /* __orxWINDOWS__ */
 
@@ -196,7 +210,15 @@
 
     #else /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */
 
-      #define orxFASTCALL       __attribute__ ((fastcall))
+      #ifdef __orxFREEBASIC__
+
+        #define orxFASTCALL
+
+      #else /* __orxFREEBASIC__ */
+
+        #define orxFASTCALL     __attribute__ ((fastcall))
+
+      #endif /* __orxFREEBASIC__ */
 
       #define orxSTDCALL        __attribute__ ((stdcall))
 
@@ -211,7 +233,15 @@
     #define orxDLLIMPORT
 
     /** The function intend to be inlined. */
-    #define orxINLINE           inline
+    #ifdef __orxFREEBASIC__
+
+      #define orxINLINE
+
+    #else /* __orxFREEBASIC__ */
+
+      #define orxINLINE         inline
+
+    #endif /* __orxFREEBASIC__ */
 
     /** The null adress. */
     #define orxNULL             (0)
