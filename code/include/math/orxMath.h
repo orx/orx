@@ -191,6 +191,36 @@ static orxINLINE orxU32 orxMath_GetBitCount(orxU32 _u32Value)
   return(_u32Value & 0x0000003f);
 }
 
+/** Gets next power of two of an orxU32
+ * @param[in]   _u32Value                       Value to process
+ * @return      If _u32Value is already a power of two, returns it, otherwise the next power of two
+ */
+static orxINLINE orxU32 orxMath_GetNextPowerOfTwo(orxU32 _u32Value)
+{
+  orxU32 u32Result;
+
+  /* Non-zero? */
+  if(_u32Value != 0)
+  {
+    /* Updates result */
+    u32Result = _u32Value - 1;
+    u32Result = u32Result | (u32Result >> 1);
+    u32Result = u32Result | (u32Result >> 2);
+    u32Result = u32Result | (u32Result >> 4);
+    u32Result = u32Result | (u32Result >> 8);
+    u32Result = u32Result | (u32Result >> 16);
+    u32Result++;
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = 1;
+  }
+  
+  /* Done! */
+  return u32Result;
+}
+
 
 /*** Math Definitions ***/
 

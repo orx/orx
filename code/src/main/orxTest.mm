@@ -34,13 +34,16 @@
 
 void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
-  orxLOG("Tick!");
+  orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, (void *)!(orxBOOL)_pContext);
+
+  orxLOG("%s (FPS=%ld)", _pContext ? "Tic!" : "Tac!", orxFPS_GetFPS());
 }
 
 static orxSTATUS orxFASTCALL Init()
 {
   orxViewport_CreateFromConfig("Viewport");
-  return orxClock_AddGlobalTimer(Log, orxFLOAT_1, -1, orxNULL);
+  orxObject_CreateFromConfig("Object");
+  return orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, orxNULL);
 }
 
 static orxSTATUS orxFASTCALL Run()

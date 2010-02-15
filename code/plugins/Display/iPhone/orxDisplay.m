@@ -52,11 +52,11 @@
  */
 #ifdef __orxDEBUG__
 
-#define glASSERT()                              \
-do                                              \
-{                                               \
-  GLenum eError = glGetError();                 \
-  orxASSERT(eError == GL_NO_ERROR);             \
+#define glASSERT()                                                      \
+do                                                                      \
+{                                                                       \
+  GLenum eError = glGetError();                                         \
+  orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: %ld", eError); \
 } while(orxFALSE)
 
 #else /* __orxDEBUG__ */
@@ -165,6 +165,14 @@ static orxView *spoInstance;
     {
       /* Inits it */
       glEnable(GL_TEXTURE_2D);
+      glASSERT();
+      glDisable(GL_LIGHTING);
+      glASSERT();
+      glDisable(GL_FOG);
+      glASSERT();
+      glDisable(GL_DEPTH_TEST);
+      glASSERT();
+      glDisable(GL_STENCIL_TEST);
       glASSERT();
 
       /* Stores self */
@@ -299,16 +307,16 @@ static orxView *spoInstance;
   glViewport(0, 0, sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight);
   glASSERT();
 
-  glMatrixMode(GL_PROJECTION);
-  glASSERT();
-  glLoadIdentity();
-  glASSERT();
-  glOrthof(0.0f, sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, 0.0f, -1.0f, 1.0f);
-  glASSERT();
-  glMatrixMode(GL_MODELVIEW);
-  glASSERT();
-  glLoadIdentity();
-  glASSERT();
+//  glMatrixMode(GL_PROJECTION);
+//  glASSERT();
+//  glLoadIdentity();
+//  glASSERT();
+//  glOrthof(0.0f, sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, 0.0f, -1.0f, 1.0f);
+//  glASSERT();
+//  glMatrixMode(GL_MODELVIEW);
+//  glASSERT();
+//  glLoadIdentity();
+//  glASSERT();
 }
 
 - (void) Swap
@@ -325,32 +333,6 @@ static orxView *spoInstance;
 }
 
 @end
-
-static orxINLINE orxU32 orxDisplay_GetNPOT(orxU32 _u32Value)
-{
-  orxU32 u32Result;
-
-  /* Non-zero? */
-  if(_u32Value != 0)
-  {
-    /* Updates result */
-    u32Result = _u32Value - 1;
-    u32Result = u32Result | (u32Result >> 1);
-    u32Result = u32Result | (u32Result >> 2);
-    u32Result = u32Result | (u32Result >> 4);
-    u32Result = u32Result | (u32Result >> 8);
-    u32Result = u32Result | (u32Result >> 16);
-    u32Result++;
-  }
-  else
-  {
-    /* Updates result */
-    u32Result = 1;
-  }
-
-  /* Done! */
-  return u32Result;
-}
 
 static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pstEvent)
 {
@@ -515,8 +497,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     pstBitmap->eSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? orxDISPLAY_SMOOTHING_ON : orxDISPLAY_SMOOTHING_OFF;
     pstBitmap->fWidth         = orxU2F(_u32Width);
     pstBitmap->fHeight        = orxU2F(_u32Height);
-    pstBitmap->u32RealWidth   = orxDisplay_GetNPOT(_u32Width);
-    pstBitmap->u32RealHeight  = orxDisplay_GetNPOT(_u32Height);
+    pstBitmap->u32RealWidth   = orxMath_GetNextPowerOfTwo(_u32Width);
+    pstBitmap->u32RealHeight  = orxMath_GetNextPowerOfTwo(_u32Height);
     pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -711,15 +693,109 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
 
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 {
-  orxBITMAP *pstResult = orxNULL;
-
+  CGImageRef          oImage;
+  NSString           *poName;
+  orxDISPLAY_BITMAP  *pstBitmap = orxNULL;
+  
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Gets NSString */
+  poName = [NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding];
+
+  /* Gets image */
+  oImage = [UIImage imageNamed:poName].CGImage;
+
+  /* Valid? */
+  if(oImage != nil)
+  {
+    GLuint    uiWidth, uiHeight, uiRealWidth, uiRealHeight;
+    GLubyte  *u8ImageBuffer;
+
+    /* Gets its size */
+    uiWidth   = CGImageGetWidth(oImage);
+    uiHeight  = CGImageGetHeight(oImage);
+
+    /* Gets its real size */
+    uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
+    uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
+
+    /* Allocates image buffer */
+    u8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(u8ImageBuffer != orxNULL)
+    {
+      /* Allocates bitmap */
+      pstBitmap = (orxDISPLAY_BITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+      
+      /* Valid? */
+      if(pstBitmap != orxNULL)
+      {
+        CGColorSpaceRef oColorSpace;
+        CGContextRef    oContext;
+
+        /* Creates a device color space */
+        oColorSpace = CGColorSpaceCreateDeviceRGB();
+
+        /* Creates graphic context */
+        oContext = CGBitmapContextCreate(u8ImageBuffer, uiRealWidth, uiRealHeight, 8, 4 * uiRealWidth, oColorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+
+        /* Clears it */
+        CGContextClearRect(oContext, CGRectMake(0, 0, uiRealWidth, uiRealHeight));
+
+        /* Copies image data */
+        CGContextDrawImage(oContext, CGRectMake(0, 0, uiWidth, uiHeight), oImage);
+
+        /* Pushes display section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        
+        /* Inits it */
+        pstBitmap->eSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? orxDISPLAY_SMOOTHING_ON : orxDISPLAY_SMOOTHING_OFF;
+        pstBitmap->fWidth         = orxU2F(uiWidth);
+        pstBitmap->fHeight        = orxU2F(uiHeight);
+        pstBitmap->u32RealWidth   = uiRealWidth;
+        pstBitmap->u32RealHeight  = uiRealHeight;
+        pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
+        orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+        /* Creates new texture */
+        glGenTextures(1, &pstBitmap->uiTexture);
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, u8ImageBuffer);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->eSmoothing == orxDISPLAY_SMOOTHING_ON) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->eSmoothing == orxDISPLAY_SMOOTHING_ON) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Deletes context */
+        CGContextRelease(oContext);
+
+        /* Deletes color space */
+        CGColorSpaceRelease(oColorSpace);
+      }
+
+      /* Frees image buffer */
+      orxMemory_Free(u8ImageBuffer);
+    }
+  }
+
+  /* Releases name */
+  [poName release];
 
   /* Done! */
-  return pstResult;
+  return (orxBITMAP *)pstBitmap;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
