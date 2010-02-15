@@ -38,7 +38,6 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000 /**< No flags */
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_RENDERING   0x00000002 /**< Rendering flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -90,7 +89,7 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxBANK          *pstBitmapBank;
   orxBITMAP        *pstScreen;
-  orxView          *pstView;
+  orxView          *poView;
   orxU32            u32ScreenWidth, u32ScreenHeight;
   orxU32            u32Flags;
 
@@ -118,15 +117,18 @@ static orxView *spoInstance;
 
 + (orxView *) GetInstance;
 
+- (BOOL) CreateThreadContext;
 - (BOOL) CreateFrameBuffer;
 - (void) DeleteFrameBuffer;
+- (void) InitRender;
 - (void) Swap;
 
 @end
 
 @implementation orxView
 
-@synthesize poContext;
+@synthesize poMainContext;
+@synthesize poThreadContext;
 
 + (Class) layerClass
 {
@@ -138,12 +140,12 @@ static orxView *spoInstance;
   return spoInstance;
 }
 
-- (id) initWithCoder:(NSCoder *)coder
+- (id) initWithFrame:(CGRect)_stFrame
 {
   id oResult = nil;
 
   /* Inits parent */
-  if((self = [super initWithCoder:coder]) != nil)
+  if((self = [super initWithFrame:_stFrame]) != nil)
   {
     CAEAGLLayer *poLayer;
 
@@ -155,18 +157,15 @@ static orxView *spoInstance;
     poLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 
-    /* Creates OpenGL context */
-    poContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+    /* Creates main OpenGL context */
+    poMainContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
 
     /* Success? */
-    if((poContext != nil) && ([EAGLContext setCurrentContext:poContext] != 0))
+    if((poMainContext != nil) && ([EAGLContext setCurrentContext:poMainContext] != 0))
     {
       /* Inits it */
       glEnable(GL_TEXTURE_2D);
       glASSERT();
-
-      /* Inits view */
-      [self layoutSubviews];
 
       /* Stores self */
       spoInstance = self;
@@ -188,11 +187,34 @@ static orxView *spoInstance;
 - (void) layoutSubviews
 {
   /* Sets current OpenGL context */
-  [EAGLContext setCurrentContext:poContext];
+  [EAGLContext setCurrentContext:poMainContext];
 
   /* Recreates frame buffer */
   [self DeleteFrameBuffer];
   [self CreateFrameBuffer];
+}
+
+- (BOOL) CreateThreadContext
+{
+  EAGLSharegroup *poGroup;
+  BOOL            bResult = NO;
+
+  /* Gets share group */
+  poGroup = poMainContext.sharegroup;
+
+  /* Valid? */
+  if(poGroup != nil)
+  {
+    /* Creates thread context */
+    poThreadContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 sharegroup:poGroup];
+
+    /* Valid? */
+    if((poThreadContext != nil) && ([EAGLContext setCurrentContext:poThreadContext] != NO))
+    {
+      /* Updates result */
+      bResult = YES;
+    }
+  }
 }
 
 - (BOOL) CreateFrameBuffer
@@ -202,36 +224,53 @@ static orxView *spoInstance;
 
   /* Generates buffer IDs */
   glGenRenderbuffersOES(1, &uiRenderBuffer);
+  glASSERT();
   glGenFramebuffersOES(1, &uiFrameBuffer);
+  glASSERT();
 
   /* Binds them */
   glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
+  glASSERT();
   glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
-
-  /* Links it to the OpenGL context */
-  [poContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer];
-  glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
-
-  /* Stores new screen size */
-  glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
-  glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
-  sstDisplay.u32ScreenWidth   = iWidth;
-  sstDisplay.u32ScreenHeight  = iHeight;
-
-  /* Inits viewport */
-  glViewport(0, 0, iWidth, iHeight);
-
-  /* Resets projection matrix */
-  glMatrixMode(GL_PROJECTION);
-  glASSERT();
-  glLoadIdentity();
-  glASSERT();
-  glOrthof(0.0f, iWidth, iHeight, 0.0f, -1.0f, 1.0f);
   glASSERT();
 
-  /* Updates result */
-  bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
-  glASSERT();
+  /* Links them */
+  if([poMainContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer] != NO)
+  {
+    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
+    glASSERT();
+    glFlush();
+    glASSERT();
+
+    /* Stores new screen size */
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
+    glASSERT();
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
+    glASSERT();
+    sstDisplay.u32ScreenWidth   = iWidth;
+    sstDisplay.u32ScreenHeight  = iHeight;
+
+    /* Inits viewport */
+    glViewport(0, 0, iWidth, iHeight);
+    glASSERT();
+
+    /* Resets projection matrix */
+    glMatrixMode(GL_PROJECTION);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+    glOrthof(0.0f, iWidth, iHeight, 0.0f, -1.0f, 1.0f);
+    glASSERT();
+
+    /* Updates result */
+    bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
+    glASSERT();
+  }
+  else
+  {
+    /* Updates result */
+    bResult = NO;
+  }
 
   /* Done! */
   return bResult;
@@ -250,16 +289,39 @@ static orxView *spoInstance;
   uiRenderBuffer  = 0;
 }
 
+- (void) InitRender
+{
+  /* Sets OpenGL context */
+  [EAGLContext setCurrentContext:poThreadContext];
+
+  glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
+  glASSERT();
+  glViewport(0, 0, sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight);
+  glASSERT();
+
+  glMatrixMode(GL_PROJECTION);
+  glASSERT();
+  glLoadIdentity();
+  glASSERT();
+  glOrthof(0.0f, sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, 0.0f, -1.0f, 1.0f);
+  glASSERT();
+  glMatrixMode(GL_MODELVIEW);
+  glASSERT();
+  glLoadIdentity();
+  glASSERT();
+}
+
 - (void) Swap
 {
+  /* Sets OpenGL context */
+  [EAGLContext setCurrentContext:poThreadContext];
+
   /* Binds render buffer */
   glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+  glASSERT();
 
-//  orxLOG("SWAP BEGIN");
   /* Presents it */
-//  BOOL b = [poContext presentRenderbuffer:GL_RENDERBUFFER_OES];
-  
-//  orxLOG("SWAP END %s", b == YES ? "YES": "NO");
+  [poThreadContext presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
 @end
@@ -290,9 +352,28 @@ static orxINLINE orxU32 orxDisplay_GetNPOT(orxU32 _u32Value)
   return u32Result;
 }
 
-static void orxFASTCALL orxDisplay_iPhone_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pstEvent)
 {
-//! TODO
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Rendering start? */
+  if(_pstEvent->eID == orxRENDER_EVENT_START)
+  {
+    /* Sets OpenGL context */
+    [EAGLContext setCurrentContext:[sstDisplay.poView poThreadContext]];
+  }
+  /* Viewport rendering start? */
+  else if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_START)
+  {
+    /* Checks */
+    orxASSERT(orxViewport_GetTexture(orxVIEWPORT(_pstEvent->hSender)) == orxTexture_GetScreenTexture());
+
+    /* Inits rendering */
+    [sstDisplay.poView InitRender];
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreen()
@@ -526,10 +607,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Swaps */
-  [sstDisplay.pstView Swap];
-
-  /* Updates status */
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_RENDERING);
+  [sstDisplay.poView Swap];
 
   /* Done! */
   return eResult;
@@ -700,13 +778,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap,
   /* Screen? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    /* New frame? */
-    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_RENDERING))
-    {
-      /* Updates status */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_RENDERING, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-    }
-
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
     glASSERT();
@@ -853,28 +924,40 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    /* Creates bitmap bank */
-    sstDisplay.pstBitmapBank = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxDISPLAY_BITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Valid? */
-    if(sstDisplay.pstBitmapBank != orxNULL)
+    /* Adds event handler */
+    if(orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_iPhone_EventHandler) != orxSTATUS_FAILURE)
     {
-      /* Inits default values */
-      sstDisplay.pstScreen        = (orxBITMAP *)-1;
-      sstDisplay.u32ScreenWidth   = orxDISPLAY_KU32_SCREEN_WIDTH;
-      sstDisplay.u32ScreenHeight  = orxDISPLAY_KU32_SCREEN_HEIGHT;
+      /* Creates bitmap bank */
+      sstDisplay.pstBitmapBank = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxDISPLAY_BITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Stores view instance */
-      sstDisplay.pstView = [orxView GetInstance];
+      /* Valid? */
+      if(sstDisplay.pstBitmapBank != orxNULL)
+      {
+        /* Inits default values */
+        sstDisplay.pstScreen        = (orxBITMAP *)-1;
+        sstDisplay.u32ScreenWidth   = orxDISPLAY_KU32_SCREEN_WIDTH;
+        sstDisplay.u32ScreenHeight  = orxDISPLAY_KU32_SCREEN_HEIGHT;
 
-      /* Sets current OpenGL context */
-      [EAGLContext setCurrentContext:[sstDisplay.pstView poContext]];
+        /* Stores view instance */
+        sstDisplay.poView = [orxView GetInstance];
 
-      /* Inits flags */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
+        /* Creates OpenGL thread context */
+        [sstDisplay.poView CreateThreadContext];
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+        /* Inits flags */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iPhone_EventHandler);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
     else
     {
@@ -897,6 +980,9 @@ void orxFASTCALL orxDisplay_iPhone_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iPhone_EventHandler);
+    
     /* Deletes bitmap bank */
     orxBank_Delete(sstDisplay.pstBitmapBank);
     sstDisplay.pstBitmapBank = orxNULL;

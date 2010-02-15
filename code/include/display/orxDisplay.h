@@ -147,11 +147,12 @@ typedef struct __orxCOLOR_t
 @interface orxView : UIView
 {
 @private
-  EAGLContext  *poContext;
+  EAGLContext  *poMainContext, *poThreadContext;
   GLuint        uiRenderBuffer, uiFrameBuffer;
 }
 
-@property (nonatomic, retain) EAGLContext *poContext;
+@property (nonatomic, retain) EAGLContext *poMainContext;
+@property (nonatomic, retain) EAGLContext *poThreadContext;
 
 @end
 

@@ -126,12 +126,12 @@ static void orxFASTCALL orx_MainSetup()
 
 @interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
 {
-  UIWindow *Window;
-  orxView  *View;
+  UIWindow *poWindow;
+  orxView  *poView;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *Window;
-@property (nonatomic, retain) IBOutlet UIView *View;
+@property (nonatomic, retain) UIWindow *poWindow;
+@property (nonatomic, retain) UIView *poView;
 
 - (void)MainLoop;
 
@@ -143,22 +143,37 @@ static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
     
 @implementation orxAppDelegate
 
-@synthesize Window;
-@synthesize View;
+@synthesize poWindow;
+@synthesize poView;
 
 - (void) applicationDidFinishLaunching: (UIApplication *)_poApplication
-{  
+{
+  CGRect stFrame;
+
+  /* Gets application's size */
+  stFrame = [[UIScreen mainScreen] applicationFrame];
+
+  /* Creates main window */
+  self.poWindow = [[UIWindow alloc] initWithFrame:stFrame]; 
+  
+  /* Creates orx view */
+  stFrame.origin.y = 0.0;
+  poView = [[orxView alloc] initWithFrame:stFrame];
+
+  /* Attaches it window */
+  [poWindow addSubview:poView];
+
   /* Assigns main loop to a new thread */
-  [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];  
+  [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
 
   /* Activates window */
-  [Window makeKeyAndVisible];
+  [poWindow makeKeyAndVisible];
 }
 
 - (void) dealloc
 {
-  [View release];
-  [Window release];
+  [poView release];
+  [poWindow release];
   [super dealloc];
 }
 
@@ -246,7 +261,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
     poPool = [[NSAutoreleasePool alloc] init];
 
     /* Launches application */
-    UIApplicationMain(_u32NbParams, _azParams, nil, nil);
+    UIApplicationMain(_u32NbParams, _azParams, nil, @"orxAppDelegate");
 
     /* Releases memory pool */
     [poPool release];
