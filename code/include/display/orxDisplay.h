@@ -455,10 +455,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClippi
  * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
  * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
  * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Saves a bitmap to file

@@ -111,7 +111,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
   {
-    orxDISPLAY_BLEND_MODE           eBlendMode;
     orxVECTOR                       vPivot, vPosition, vScale, vSize;
     orxFLOAT                        fRotation;
     orxEVENT                        stEvent;
@@ -130,6 +129,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
     /* Sends start event */
     if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
     {
+      orxDISPLAY_BLEND_MODE eBlendMode;
+      orxDISPLAY_SMOOTHING  eSmoothing;
+
       /* 2D? */
       if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
       {
@@ -249,6 +251,16 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
         }
 
+        /* Gets graphic smoothing */
+        eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
+
+        /* Default? */
+        if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
+        {
+          /* Gets object smoothing */
+          eSmoothing = orxObject_GetSmoothing(_pstObject);
+        }
+
         /* Gets graphic blend mode */
         eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
 
@@ -265,7 +277,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           orxVector_Sub(&vPosition, &vPosition, &vPivot);
 
           /* Blits bitmap */
-          eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, vPosition.fX, vPosition.fY, eBlendMode);
+          eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, vPosition.fX, vPosition.fY, eSmoothing, eBlendMode);
         }
         else
         {
@@ -273,17 +285,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
           {
             orxDISPLAY_TRANSFORM  stTransform;
-            orxDISPLAY_SMOOTHING  eSmoothing;
-
-            /* Gets graphic smoothing */
-            eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
-
-            /* Default? */
-            if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
-            {
-              /* Gets object smoothing */
-              eSmoothing = orxObject_GetSmoothing(_pstObject);
-            }
 
             /* No repeat? */
             if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))

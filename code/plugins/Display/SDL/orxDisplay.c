@@ -429,7 +429,7 @@ orxRGBA orxFASTCALL orxDisplay_SDL_GetBitmapColor(const orxBITMAP *_pstBitmap)
   return stResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   SDL_Rect  stSrcRect, stDstRect;
   orxSTATUS eResult;

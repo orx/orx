@@ -805,11 +805,12 @@ extern "C" orxRGBA orxFASTCALL orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_
   return stResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite   *poSprite;
   sf::Vector2f  vPosition;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  bool          bSmooth;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -818,55 +819,6 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, 
 
   /* Gets sprite */
   poSprite = (sf::Sprite *)_pstSrc;
-
-  /* Updates its position */
-  vPosition.x = _fPosX;
-  vPosition.y = _fPosY;
-  poSprite->SetPosition(vPosition);
-
-  /* Updates sprite blend mode */
-  poSprite->SetBlendMode(orxDisplay_SFML_GetBlendMode(_eBlendMode));
-
-  /* Draws it */
-  sstDisplay.poRenderWindow->Draw(*poSprite);
-
-  /* Done! */
-  return eResult;
-}
-
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  sf::Sprite *poSprite;
-  bool        bSmooth;
-  orxSTATUS   eResult;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != orxDisplay::spoScreen));
-  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Gets sprite */
-  poSprite = (sf::Sprite *)_pstSrc;
-
-  /* Updates its center */
-  poSprite->SetCenter(_pstTransform->fSrcX, _pstTransform->fSrcY);
-
-  /* Updates its rotation */
-  poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
-
-  /* Updates its flipping */
-  if(_pstTransform->fScaleX < 0.0f)
-  {
-    poSprite->FlipX(true);
-  }
-  if(_pstTransform->fScaleY < 0.0f)
-  {
-    poSprite->FlipY(true);
-  }
-
-  /* Updates its scale */
-  poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
   /* Depending on smoothing type */
   switch(_eSmoothing)
@@ -904,8 +856,56 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(orxBITMAP *_pst
     const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(bSmooth);
   }
 
+  /* Updates its position */
+  vPosition.x = _fPosX;
+  vPosition.y = _fPosY;
+  poSprite->SetPosition(vPosition);
+
+  /* Updates sprite blend mode */
+  poSprite->SetBlendMode(orxDisplay_SFML_GetBlendMode(_eBlendMode));
+
+  /* Draws it */
+  sstDisplay.poRenderWindow->Draw(*poSprite);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  sf::Sprite *poSprite;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != orxDisplay::spoScreen));
+  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Gets sprite */
+  poSprite = (sf::Sprite *)_pstSrc;
+
+  /* Updates its center */
+  poSprite->SetCenter(_pstTransform->fSrcX, _pstTransform->fSrcY);
+
+  /* Updates its rotation */
+  poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
+
+  /* Updates its flipping */
+  if(_pstTransform->fScaleX < 0.0f)
+  {
+    poSprite->FlipX(true);
+  }
+  if(_pstTransform->fScaleY < 0.0f)
+  {
+    poSprite->FlipY(true);
+  }
+
+  /* Updates its scale */
+  poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
+
   /* Blits it */
-  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eBlendMode);
+  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
 
   /* Resets its center */
   poSprite->SetCenter(0.0f, 0.0f);
