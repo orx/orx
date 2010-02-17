@@ -65,7 +65,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g200337a54e068d3ee9f03817d7364bc2">orxMath_GetRandomS32</a> (orxS32 _s32Min, orxS32 _s32Max)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g552db22002c8e00600b9dfe0558b69e0">orxMath_GetBitCount</a> (register orxU32 _u32Value)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gd8ad9cd004390fcc987558ee068a4553">orxMath_GetBitCount</a> (orxU32 _u32Value)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g1dc37dcb2455dfe64f0ede9dd01fe8f9">orxMath_GetNextPowerOfTwo</a> (orxU32 _u32Value)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g37c3776ab28f243435203d961d10ba80">orxMath_Cos</a> (orxFLOAT _fOp)</td></tr>
 
@@ -129,7 +131,7 @@ Math module Contains all base math functions <hr><h2>Define Documentation</h2>
   {                                             \
     (V) -= ((MAX) - (MIN));                     \
   }                                             \
-} <span class="keywordflow">while</span>(0)
+} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#g28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
 </pre></div>Gets circularly clamped (for ring spaces) value between two boundaries ]MIN, MAX] <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>V</em>&nbsp;</td><td>Value to clamp </td></tr>
@@ -174,7 +176,7 @@ Math module Contains all base math functions <hr><h2>Define Documentation</h2>
   {                                             \
     (V) -= ((MAX) - (MIN));                     \
   }                                             \
-} <span class="keywordflow">while</span>(0)
+} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#g28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
 </pre></div>Gets circularly clamped (for ring spaces) value between two boundaries [MIN, MAX[ <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>V</em>&nbsp;</td><td>Value to clamp </td></tr>
@@ -731,14 +733,14 @@ Gets a floored value <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g552db22002c8e00600b9dfe0558b69e0"></a><!-- doxytag: member="orxMath.h::orxMath_GetBitCount" ref="g552db22002c8e00600b9dfe0558b69e0" args="(register orxU32 _u32Value)" -->
+<a class="anchor" name="gd8ad9cd004390fcc987558ee068a4553"></a><!-- doxytag: member="orxMath.h::orxMath_GetBitCount" ref="gd8ad9cd004390fcc987558ee068a4553" args="(orxU32 _u32Value)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">static orxINLINE orxU32 orxMath_GetBitCount           </td>
           <td>(</td>
-          <td class="paramtype">register orxU32&nbsp;</td>
+          <td class="paramtype">orxU32&nbsp;</td>
           <td class="paramname"> <em>_u32Value</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td><code> [static]</code></td>
@@ -754,6 +756,32 @@ Gets the counts of bit in an orxU32 <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of bits that are set in the value </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g1dc37dcb2455dfe64f0ede9dd01fe8f9"></a><!-- doxytag: member="orxMath.h::orxMath_GetNextPowerOfTwo" ref="g1dc37dcb2455dfe64f0ede9dd01fe8f9" args="(orxU32 _u32Value)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxU32 orxMath_GetNextPowerOfTwo           </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Value</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets next power of two of an orxU32 <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Value</em>&nbsp;</td><td>Value to process </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>If _u32Value is already a power of two, returns it, otherwise the next power of two </dd></dl>
 
 </div>
 </div><p>

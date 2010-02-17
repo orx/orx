@@ -116,7 +116,7 @@ Event module Module that handles internal events <hr><h2>Define Documentation</h
   EVENT.hSender     = (orxHANDLE)(SENDER);                          \
   EVENT.hRecipient  = (orxHANDLE)(RECIPIENT);                       \
   EVENT.pstPayload  = (<span class="keywordtype">void</span> *)(PAYLOAD);                            \
-} <span class="keywordflow">while</span>(0)
+} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#g28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
 </pre></div>Helper defines 
 </div>
 </div><p>
@@ -154,7 +154,7 @@ Event module Module that handles internal events <hr><h2>Define Documentation</h
   <a class="code" href="structorx_e_v_e_n_t.html">orxEVENT</a> stEvent;                                                 \
   <a class="code" href="group__orx_event.html#g5a878336878f2e429bc83fda86366fdf">orxEVENT_INIT</a>(stEvent, TYPE, ID, SENDER, RECIPIENT, PAYLOAD);     \
   <a class="code" href="group__orx_event.html#g3435f918d28e1f6f606b6c76f46cdedb">orxEvent_Send</a>(&amp;stEvent);                                          \
-} <span class="keywordflow">while</span>(0)
+} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#g28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
 </pre></div>
 </div>
 </div><p>

@@ -93,8 +93,6 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gfc6d9a5c61ebb87c8e8c41252a09fa97">orxViewport_GetRelativeSize</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g5e44a6c7abd561d4a48396c0f09849d4">orxViewport_GetClipping</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_a_a_b_o_x.html">orxAABOX</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g25a473e0ff95af17b430497c357731f8">orxViewport_GetBox</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, <a class="el" href="structorx_a_a_b_o_x.html">orxAABOX</a> *_pstBox)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g2e76d68db09680dd2c4d9b4568066c1c">orxViewport_GetCorrectionRatio</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
@@ -520,62 +518,6 @@ Gets a viewport camera <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Associated camera / orxNULL </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g5e44a6c7abd561d4a48396c0f09849d4"></a><!-- doxytag: member="orxViewport.h::orxViewport_GetClipping" ref="g5e44a6c7abd561d4a48396c0f09849d4" args="(const orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxFASTCALL orxViewport_GetClipping           </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstViewport</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32 *&nbsp;</td>
-          <td class="paramname"> <em>_pu32TLX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32 *&nbsp;</td>
-          <td class="paramname"> <em>_pu32TLY</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32 *&nbsp;</td>
-          <td class="paramname"> <em>_pu32BRX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32 *&nbsp;</td>
-          <td class="paramname"> <em>_pu32BRY</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets a viewport clipping <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pu32TLX</em>&nbsp;</td><td>X coordinate of top left corner </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pu32TLY</em>&nbsp;</td><td>Y coordinate of top left corner </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pu32BRX</em>&nbsp;</td><td>X coordinate of bottom right corner </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pu32BRY</em>&nbsp;</td><td>Y coordinate of bottom right corner </td></tr>
-  </table>
-</dl>
 
 </div>
 </div><p>

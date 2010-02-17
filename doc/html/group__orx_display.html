@@ -149,7 +149,7 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g6ed6d3266bdcd9baf06f65877c074100">orxDisplay_SetBitmapClipping</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gb259eedc228b104226caa993dda2fa4c">orxDisplay_BlitBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gca5b864f6a044558266168baef515999">orxDisplay_BlitBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, <a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge3acb236a4a537a86ff72091dc556829">orxDisplay_SaveBitmap</a> (const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxSTRING _zFileName)</td></tr>
 
@@ -802,7 +802,7 @@ Gets orxRGBA from an <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> 
 
 </div>
 </div><p>
-<a class="anchor" name="gb259eedc228b104226caa993dda2fa4c"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_BlitBitmap" ref="gb259eedc228b104226caa993dda2fa4c" args="(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
+<a class="anchor" name="gca5b864f6a044558266168baef515999"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_BlitBitmap" ref="gca5b864f6a044558266168baef515999" args="(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -833,6 +833,12 @@ Gets orxRGBA from an <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> 
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a>&nbsp;</td>
+          <td class="paramname"> <em>_eSmoothing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
           <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
         </tr>
@@ -852,6 +858,7 @@ Blits a bitmap (no transformation) <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Bitmap to blit (will begin at top left corner) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPosX</em>&nbsp;</td><td>X-axis value of the position where to blit the source bitmap </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPosY</em>&nbsp;</td><td>Y-axis value of the position where to blit the source bitmap </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eSmoothing</em>&nbsp;</td><td>Bitmap smoothing type </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode </td></tr>
   </table>
 </dl>

@@ -1196,32 +1196,6 @@ void orxFASTCALL orxViewport_GetRelativeSize(const orxVIEWPORT *_pstViewport, or
   return;
 }
 
-/** Gets a viewport clipping
- * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _pu32TLX        X coordinate of top left corner
- * @param[out]  _pu32TLY        Y coordinate of top left corner
- * @param[out]  _pu32BRX        X coordinate of bottom right corner
- * @param[out]  _pu32BRY        Y coordinate of bottom right corner
- */
-void orxFASTCALL orxViewport_GetClipping(const orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY)
-{
-  /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT(_pu32TLX != orxNULL);
-  orxASSERT(_pu32TLY != orxNULL);
-  orxASSERT(_pu32BRX != orxNULL);
-  orxASSERT(_pu32BRY != orxNULL);
-
-  /* Gets corners coordinates */
-  *_pu32TLX = orxF2U(_pstViewport->fX);
-  *_pu32TLY = orxF2U(_pstViewport->fY);
-  *_pu32BRX = orxF2U(_pstViewport->fX + _pstViewport->fWidth);
-  *_pu32BRY = orxF2U(_pstViewport->fY + _pstViewport->fHeight);
-
-  return;
-}
-
 /** Gets an axis aligned box of viewport
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pstBox         Output box

@@ -20,6 +20,11 @@
 <h1>include/base/orxType.h File Reference</h1><code>#include &quot;<a class="el" href="orx_decl_8h.html">base/orxDecl.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Defines</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>&nbsp;&nbsp;&nbsp;((orxBOOL)(1 != 1))</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>&nbsp;&nbsp;&nbsp;((orxBOOL)(1 == 1))</td></tr>
+
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> { <a class="el" href="group__orx_type.html#gg18b11c4d0ed79ac2f8542e3bcfac340dfae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a> =  0, 
 <a class="el" href="group__orx_type.html#gg18b11c4d0ed79ac2f8542e3bcfac340da6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>, 
@@ -28,19 +33,19 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gb65587decc68920707d5876b2775e1a3">orxFALSE</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gd7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a> = orx2F(0.0f)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g347aae9f57a9c32867a0c3944b8a439c">orxTRUE</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a> = orx2F(1.0f)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxU64&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g393d1e135884045c6e7fb0b28923e880">orxU64_UNDEFINED</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxU64&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g80e4595b5e266cac8ff88a26ccfd48d0">orxU64_UNDEFINED</a> = (orxU64)(-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga08475796862b07dbffd761681288766">orxU32_UNDEFINED</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gfc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a> = (orxU32)(-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxU16&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g322faa06c04ca724cfa431727b90195f">orxU16_UNDEFINED</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxU16&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g44b8a4d07838f3c2d4736f878b7da5bf">orxU16_UNDEFINED</a> = (orxU16)(-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxU8&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gf8a70a652069c6050d8ade248adcdb5e">orxU8_UNDEFINED</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxU8&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gf3f0f3d5b7eecdfc747e04a9de35a45a">orxU8_UNDEFINED</a> = (orxU8)(-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxHANDLE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gaba2bf16d1f93642ee7dd79657239833">orxHANDLE_UNDEFINED</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const orxHANDLE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ge4b900add41fedc3497a0f7dd2926136">orxHANDLE_UNDEFINED</a> = (orxHANDLE)(-1)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ge0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a></td></tr>
 
@@ -69,10 +74,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxCHAR&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g1d044c773da1fdda4e412e075fa94281">orxCHAR_DIRECTORY_SEPARATOR</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gc3b1f8524df2eb2b3d89cb5bc84476c6">orxSTRING_DIRECTORY_SEPARATOR</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#g6199a64c6704897f12e79aad8bb85710">orxFLOAT_0</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gbaf4ef5f9486711c5b40b1f7686cb2f5">orxFLOAT_1</a></td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
