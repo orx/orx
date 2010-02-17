@@ -79,7 +79,7 @@ struct __orxBITMAP_t
   orxFLOAT              fWidth, fHeight;
   orxU32                u32RealWidth, u32RealHeight;
   orxFLOAT              fRecRealWidth, fRecRealHeight;
-  orxRGBA               stColor;
+  orxCOLOR              stColor;
   orxAABOX              stClip;
 };
 
@@ -357,6 +357,147 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pst
   return eResult;
 }
 
+static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxBOOL   bSmoothing;
+  orxFLOAT  fWidth, fHeight;
+
+  /* Checks */
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
+
+  /* Binds source's texture */
+  glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+  glASSERT();
+
+  /* Depending on smoothing type */
+  switch(_eSmoothing)
+  {
+    case orxDISPLAY_SMOOTHING_ON:
+    {
+      /* Applies smoothing */
+      bSmoothing = orxTRUE;
+
+      break;
+    }
+
+    case orxDISPLAY_SMOOTHING_OFF:
+    {
+      /* Applies no smoothing */
+      bSmoothing = orxFALSE;
+
+      break;
+    }
+
+    default:
+    case orxDISPLAY_SMOOTHING_DEFAULT:
+    {
+      /* Applies default smoothing */
+      bSmoothing = sstDisplay.bDefaultSmoothing;
+
+      break;
+    }
+  }
+
+  /* Should update smoothing? */
+  if(bSmoothing != _pstBitmap->bSmoothing)
+  {
+    /* Smoothing? */
+    if(bSmoothing != orxFALSE)
+    {
+      /* Updates texture */
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glASSERT();
+
+      /* Updates mode */
+      _pstBitmap->bSmoothing = orxTRUE;
+    }
+    else
+    {
+      /* Updates texture */
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glASSERT();
+
+      /* Updates mode */
+      _pstBitmap->bSmoothing = orxFALSE;
+    }
+  }
+
+  /* Gets bitmap working size */
+  fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
+  fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+
+  /* Defines the vertex list */
+  GLfloat afVertexList[] =
+  {
+    0.0f, fHeight,
+    fWidth, fHeight,
+    0.0f, 0.0f,
+    fWidth, 0.0f
+  };
+
+  /* Defines the texture coord list */
+  GLfloat afTextureCoordList[] =
+  {
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY),
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY)
+  };
+
+  /* Depending on blend mode */
+  switch(_eBlendMode)
+  {
+    case orxDISPLAY_BLEND_MODE_ALPHA:
+    {
+      glEnable(GL_BLEND);
+      glASSERT();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glASSERT();
+      break;
+    }
+    case orxDISPLAY_BLEND_MODE_MULTIPLY:
+    {
+      glEnable(GL_BLEND);
+      glASSERT();
+      glBlendFunc(GL_DST_COLOR, GL_ZERO);
+      glASSERT();
+      break;
+    }
+    case orxDISPLAY_BLEND_MODE_ADD:
+    {
+      glEnable(GL_BLEND);
+      glASSERT();
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+      glASSERT();
+      break;
+    }
+    default:
+    {
+      glDisable(GL_BLEND);
+      glASSERT();
+      break;
+    }
+  }
+
+  /* Applies color */
+  glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
+
+  /* Renders it */
+  glVertexPointer(2, GL_FLOAT, 0, afVertexList);
+  glASSERT();
+  glTexCoordPointer(2, GL_FLOAT, 0, afTextureCoordList);
+  glASSERT();
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glASSERT();
+
+  /* Done! */
+  return;
+}
+
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreen()
 {
   /* Checks */
@@ -495,7 +636,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     pstBitmap->u32RealHeight  = orxMath_GetNextPowerOfTwo(_u32Height);
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-    pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
+    orxColor_Set(&(pstBitmap->stColor), &orxVECTOR_WHITE, orxFLOAT_1);
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -610,7 +751,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColor(orxBITMAP *_pstBitmap, or
   if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Stores it */
-    _pstBitmap->stColor = _stColor;
+    orxColor_SetRGBA(&(_pstBitmap->stColor), _stColor);
   }
 
   /* Done! */
@@ -629,7 +770,7 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
   if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Updates result */
-    stResult = _pstBitmap->stColor;
+    stResult = orxColor_ToRGBA(&(_pstBitmap->stColor));
   }
 
   /* Done! */
@@ -638,8 +779,6 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxBOOL   bSmoothing;
-  orxFLOAT  fWidth, fHeight;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -647,130 +786,15 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orx
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
   orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
 
-  /* Binds source's texture */
-  glBindTexture(GL_TEXTURE_2D, _pstSrc->uiTexture);
+  /* Translates it */
+  glTranslatef(_fPosX, _fPosY, 0.0f);
   glASSERT();
 
-  /* Depending on smoothing type */
-  switch(_eSmoothing)
-  {
-    case orxDISPLAY_SMOOTHING_ON:
-    {
-      /* Applies smoothing */
-      bSmoothing = orxTRUE;
-      
-      break;
-    }
-      
-    case orxDISPLAY_SMOOTHING_OFF:
-    {
-      /* Applies no smoothing */
-      bSmoothing = orxFALSE;
-      
-      break;
-    }
-      
-    default:
-    case orxDISPLAY_SMOOTHING_DEFAULT:
-    {
-      /* Applies default smoothing */
-      bSmoothing = sstDisplay.bDefaultSmoothing;
-      
-      break;
-    }
-  }
-  
-  /* Should update smoothing? */
-  if(bSmoothing != _pstSrc->bSmoothing)
-  {
-    /* Smoothing? */
-    if(bSmoothing != orxFALSE)
-    {
-      /* Updates texture */
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glASSERT();
+  /* Draws it */
+  orxDisplay_iPhone_DrawBitmap((orxBITMAP *)_pstSrc, _eSmoothing, _eBlendMode);
 
-      /* Updates mode */
-      ((orxBITMAP *)_pstSrc)->bSmoothing = orxTRUE;
-    }
-    else
-    {
-      /* Updates texture */
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      glASSERT();
-
-      /* Updates mode */
-      ((orxBITMAP *)_pstSrc)->bSmoothing = orxFALSE;
-    }
-  }
-
-  /* Gets bitmap working size */
-  fWidth  = _pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX;
-  fHeight = _pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY;
-
-  /* Defines the vertex list */
-  GLfloat afVertexList[] =
-  {
-    _fPosX, _fPosY + fHeight,
-    _fPosX + fWidth, _fPosY + fHeight,
-    _fPosX, _fPosY,
-    _fPosX + fWidth, _fPosY
-  };
-
-  /* Defines the texture coord list */
-  GLfloat afTextureCoordList[] =
-  {
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY),
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY),
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY),
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY)
-  };
-
-  /* Depending on blend mode */
-  switch(_eBlendMode)
-  {
-    case orxDISPLAY_BLEND_MODE_ALPHA:
-    {
-      glEnable(GL_BLEND);
-      glASSERT();
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glASSERT();
-      break;
-    }
-    case orxDISPLAY_BLEND_MODE_MULTIPLY:
-    {
-      glEnable(GL_BLEND);
-      glASSERT();
-      glBlendFunc(GL_DST_COLOR, GL_ZERO);
-      glASSERT();
-      break;
-    }
-    case orxDISPLAY_BLEND_MODE_ADD:
-    {
-      glEnable(GL_BLEND);
-      glASSERT();
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-      glASSERT();
-      break;
-    }
-    default:
-    {
-      glDisable(GL_BLEND);
-      glASSERT();
-      break;
-    }
-  }
-
-  /* Renders it */
-  glVertexPointer(2, GL_FLOAT, 0, afVertexList);
-  glASSERT();
-  glTexCoordPointer(2, GL_FLOAT, 0, afTextureCoordList);
-  glASSERT();
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  /* Restores identity */
+  glLoadIdentity();
   glASSERT();
 
   /* Done! */
@@ -779,7 +803,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orx
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -787,12 +811,29 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(orxBITMAP *_pstDst, cons
   orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
   orxASSERT(_pstTransform != orxNULL);
 
-  //! TODO
+  /* Translates it */
+  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
+  glASSERT();
 
-  /* Loads identity */
+  /* Applies rotation */
+  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
+  glASSERT();
+
+  /* Applies scale */
+  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
+  glASSERT();
+
+  /* Applies pivot translation */
+  glTranslatef(-_pstTransform->fSrcX, -_pstTransform->fSrcY, 0.0f);
+  glASSERT();
+
+  /* Draws it */
+  orxDisplay_iPhone_DrawBitmap((orxBITMAP *)_pstSrc, _eSmoothing, _eBlendMode);
+
+  /* Restores identity */
   glLoadIdentity();
   glASSERT();
-  
+
   /* Done! */
   return eResult;
 }
@@ -880,7 +921,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         pstBitmap->u32RealHeight  = uiRealHeight;
         pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
         pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-        pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
+        orxColor_Set(&(pstBitmap->stColor), &orxVECTOR_WHITE, orxFLOAT_1);
         orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
