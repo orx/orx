@@ -77,7 +77,6 @@ struct __orxBITMAP_t
   GLuint                uiTexture;
   orxBOOL               bSmoothing;
   orxFLOAT              fWidth, fHeight;
-  orxFLOAT              fDoubleRecWidth, fDoubleRecHeight;
   orxU32                u32RealWidth, u32RealHeight;
   orxFLOAT              fRecRealWidth, fRecRealHeight;
   orxRGBA               stColor;
@@ -248,8 +247,7 @@ static orxView *spoInstance;
 
 - (BOOL) CreateFrameBuffer
 {
-  GLint iWidth, iHeight;
-  BOOL  bResult;
+  BOOL bResult;
 
   /* Generates buffer IDs */
   glGenRenderbuffersOES(1, &uiRenderBuffer);
@@ -269,28 +267,6 @@ static orxView *spoInstance;
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
     glASSERT();
     glFlush();
-    glASSERT();
-
-    /* Stores new screen size */
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
-    glASSERT();
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
-    glASSERT();
-
-    /* Inits viewport */
-    glViewport(0, 0, iWidth, iHeight);
-    glASSERT();
-
-    /* Resets projection matrix */
-    glMatrixMode(GL_PROJECTION);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
-    glOrthof(0.0f, iWidth, iHeight, 0.0f, -1.0f, 1.0f);
-    glASSERT();
-    glMatrixMode(GL_MODELVIEW);
-    glASSERT();
-    glLoadIdentity();
     glASSERT();
 
     /* Updates result */
@@ -330,16 +306,16 @@ static orxView *spoInstance;
   glViewport(0, 0, sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight);
   glASSERT();
 
-//  glMatrixMode(GL_PROJECTION);
-//  glASSERT();
-//  glLoadIdentity();
-//  glASSERT();
-//  glOrthof(0.0f, sstDisplay.u32ScreenWidth, sstDisplay.u32ScreenHeight, 0.0f, -1.0f, 1.0f);
-//  glASSERT();
-//  glMatrixMode(GL_MODELVIEW);
-//  glASSERT();
-//  glLoadIdentity();
-//  glASSERT();
+  glMatrixMode(GL_PROJECTION);
+  glASSERT();
+  glLoadIdentity();
+  glASSERT();
+  glOrthof(0.0f, sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, 0.0f, -1.0f, 1.0f);
+  glASSERT();
+  glMatrixMode(GL_MODELVIEW);
+  glASSERT();
+  glLoadIdentity();
+  glASSERT();
 }
 
 - (void) Swap
@@ -512,16 +488,14 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Inits it */
-    pstBitmap->bSmoothing       = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-    pstBitmap->fWidth           = orxU2F(_u32Width);
-    pstBitmap->fHeight          = orxU2F(_u32Height);
-    pstBitmap->fDoubleRecWidth  = orx2F(2.0f) / pstBitmap->fWidth;
-    pstBitmap->fDoubleRecHeight = orx2F(2.0f) / pstBitmap->fHeight;
-    pstBitmap->u32RealWidth     = orxMath_GetNextPowerOfTwo(_u32Width);
-    pstBitmap->u32RealHeight    = orxMath_GetNextPowerOfTwo(_u32Height);
-    pstBitmap->fRecRealWidth    = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
-    pstBitmap->fRecRealHeight   = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-    pstBitmap->stColor          = orx2RGBA(255, 255, 255, 255);
+    pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+    pstBitmap->fWidth         = orxU2F(_u32Width);
+    pstBitmap->fHeight        = orxU2F(_u32Height);
+    pstBitmap->u32RealWidth   = orxMath_GetNextPowerOfTwo(_u32Width);
+    pstBitmap->u32RealHeight  = orxMath_GetNextPowerOfTwo(_u32Height);
+    pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+    pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+    pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -665,6 +639,7 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
 orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxBOOL   bSmoothing;
+  orxFLOAT  fWidth, fHeight;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -732,23 +707,27 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orx
       ((orxBITMAP *)_pstSrc)->bSmoothing = orxFALSE;
     }
   }
-  
+
+  /* Gets bitmap working size */
+  fWidth  = _pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX;
+  fHeight = _pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY;
+
   /* Defines the vertex list */
   GLfloat afVertexList[] =
   {
-    _pstDst->fDoubleRecWidth * _fPosX - orxFLOAT_1, orxFLOAT_1 - _pstDst->fDoubleRecHeight * (_fPosY + _pstSrc->fHeight),
-    _pstDst->fDoubleRecWidth * (_fPosX + _pstSrc->fWidth) - orxFLOAT_1, orxFLOAT_1 - _pstDst->fDoubleRecHeight * (_fPosY + _pstSrc->fHeight),
-    _pstDst->fDoubleRecWidth * _fPosX - orxFLOAT_1, orxFLOAT_1 - _pstDst->fDoubleRecHeight * _fPosY,
-    _pstDst->fDoubleRecWidth * (_fPosX + _pstSrc->fWidth) - orxFLOAT_1, orxFLOAT_1 - _pstDst->fDoubleRecHeight * _fPosY
+    _fPosX, _fPosY + fHeight,
+    _fPosX + fWidth, _fPosY + fHeight,
+    _fPosX, _fPosY,
+    _fPosX + fWidth, _fPosY
   };
 
   /* Defines the texture coord list */
   GLfloat afTextureCoordList[] =
   {
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY,
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY,
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY,
-    _pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY
+    _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY),
+    _pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY),
+    _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY),
+    _pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX, orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY)
   };
 
   /* Depending on blend mode */
@@ -894,16 +873,14 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
         
         /* Inits it */
-        pstBitmap->bSmoothing       = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-        pstBitmap->fWidth           = orxU2F(uiWidth);
-        pstBitmap->fHeight          = orxU2F(uiHeight);
-        pstBitmap->fDoubleRecWidth  = orx2F(2.0f) / pstBitmap->fWidth;
-        pstBitmap->fDoubleRecHeight = orx2F(2.0f) / pstBitmap->fHeight;
-        pstBitmap->u32RealWidth     = uiRealWidth;
-        pstBitmap->u32RealHeight    = uiRealHeight;
-        pstBitmap->fRecRealWidth    = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
-        pstBitmap->fRecRealHeight   = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-        pstBitmap->stColor          = orx2RGBA(255, 255, 255, 255);
+        pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+        pstBitmap->fWidth         = orxU2F(uiWidth);
+        pstBitmap->fHeight        = orxU2F(uiHeight);
+        pstBitmap->u32RealWidth   = uiRealWidth;
+        pstBitmap->u32RealHeight  = uiRealHeight;
+        pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+        pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+        pstBitmap->stColor        = orx2RGBA(255, 255, 255, 255);
         orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -941,8 +918,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
   /* Releases name */
   [poName release];
 
-//  orxDisplay_iPhone_ClearBitmap(pstBitmap, 0xFF0000FF);
-  
   /* Done! */
   return pstBitmap;
 }
@@ -1151,10 +1126,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
         sstDisplay.pstScreen          = orxBank_Allocate(sstDisplay.pstBitmapBank);
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-        sstDisplay.pstScreen->fWidth      = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-        sstDisplay.pstScreen->fHeight     = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
-        sstDisplay.pstScreen->fDoubleRecWidth   = orx2F(2.0f) / sstDisplay.pstScreen->fWidth;
-        sstDisplay.pstScreen->fDoubleRecHeight  = orx2F(2.0f) / sstDisplay.pstScreen->fHeight;
+        sstDisplay.pstScreen->fWidth  = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+        sstDisplay.pstScreen->fHeight = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
 
