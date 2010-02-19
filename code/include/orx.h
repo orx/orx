@@ -124,6 +124,32 @@ static void orxFASTCALL orx_MainSetup()
 
 #import <UIKit/UIKit.h>
 
+#define orxEVENT_TYPE_IPHONE          orxEVENT_TYPE_FIRST_RESERVED
+
+/** Event enum
+  */
+typedef enum __orxIPHONE_EVENT_t
+{
+  orxIPHONE_EVENT_TOUCH_BEGIN = 0,
+  orxIPHONE_EVENT_TOUCH_MOVE,
+  orxIPHONE_EVENT_TOUCH_END,
+  orxIPHONE_EVENT_TOUCH_CANCEL,
+
+  orxIPHONE_EVENT_NUMBER,
+
+} orxIPHONE_EVENT;
+
+/** Locale event payload
+ */
+typedef struct __orxIPHONE_EVENT_PAYLOAD_t
+{
+  UIEvent  *poUIEvent;
+  NSSet    *poTouchList;
+
+} orxIPHONE_EVENT_PAYLOAD;
+
+/** Orx application interface
+ */
 @interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
 {
   UIWindow *poWindow;
@@ -131,16 +157,20 @@ static void orxFASTCALL orx_MainSetup()
 }
 
 @property (nonatomic, retain) UIWindow *poWindow;
-@property (nonatomic, retain) UIView *poView;
+@property (nonatomic, retain) UIView   *poView;
 
-- (void)MainLoop;
+- (void)  MainLoop;
 
 @end
 
 #ifndef __orxPLUGIN__
 
-static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
+/** Main function pointer
+ */
+static orxSTATUS (*spfnRun)() = orxNULL;
     
+/** Orx application implementation
+ */
 @implementation orxAppDelegate
 
 @synthesize poWindow;
@@ -172,8 +202,11 @@ static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
 
 - (void) dealloc
 {
+  /* Releases view & window */
   [poView release];
   [poWindow release];
+
+  /* Calls parent method */
   [super dealloc];
 }
 
@@ -228,6 +261,13 @@ static orxSTATUS orxFASTCALL (*spfnRun)() = orxNULL;
 
 @end
 
+/** Orx main execution function
+ * @param[in]   _u32NbParams                  Main function parameters number (argc)
+ * @param[in]   _azParams                     Main function parameter list (argv)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
 static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Inits the Debug System */

@@ -50,9 +50,8 @@
 typedef struct __orxMOUSE_STATIC_t
 {
   orxU32      u32Flags;
-  orxVECTOR   vMouseMove, vMouseBackup;
-  orxFLOAT    fWheelMove;
-  orxBOOL     bClearWheel;
+  orxBOOL     bIsClicked;
+  orxVECTOR   vMouseMove, vMousePosition;
 
 } orxMOUSE_STATIC;
 
@@ -70,6 +69,72 @@ static orxMOUSE_STATIC sstMouse;
  * Private functions                                                       *
  ***************************************************************************/
 
+static orxSTATUS orxFASTCALL orxMouse_iPhone_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Depending on ID */
+  switch(_pstEvent->eID)
+  {
+    /* Touch? */
+    case orxIPHONE_EVENT_TOUCH_BEGIN:
+    case orxIPHONE_EVENT_TOUCH_MOVE:
+    case orxIPHONE_EVENT_TOUCH_END:
+    case orxIPHONE_EVENT_TOUCH_CANCEL:
+    {
+      UITouch                  *poTouch;
+      orxIPHONE_EVENT_PAYLOAD  *pstPayload;
+      orxBOOL                   bActive = orxFALSE;
+      orxVECTOR                 vNewPosition;
+      CGPoint                   vViewPosition;
+
+      /* Gets payload */
+      pstPayload = (orxIPHONE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Gets first touch */
+      poTouch = [[pstPayload->poUIEvent allTouches] anyObject];
+
+      /* Gets its position inside view */
+      vViewPosition = [poTouch locationInView:(orxView *)_pstEvent->hSender];
+
+      /* Gets new position */
+      orxVector_Set(&vNewPosition, orx2F(vViewPosition.x), orx2F(vViewPosition.y), orxFLOAT_0);
+
+      /* Updates mouse move */
+      orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
+      orxVector_Add(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &vNewPosition);
+
+      /* Updates mouse position */
+      orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
+
+      /* For all touches */
+      for(poTouch in [pstPayload->poUIEvent allTouches])
+      {
+        /* Not a touch end? */
+        if([poTouch phase] != UITouchPhaseEnded)
+        {
+          /* Updates status */
+          bActive = orxTRUE;
+          break;
+        }
+      }
+
+      /* Updates click status */
+      sstMouse.bIsClicked = bActive;
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 orxSTATUS orxFASTCALL orxMouse_iPhone_ShowCursor(orxBOOL _bShow)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -77,8 +142,9 @@ orxSTATUS orxFASTCALL orxMouse_iPhone_ShowCursor(orxBOOL _bShow)
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  //! TODO
-  
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
+
   /* Done! */
   return eResult;
 }
@@ -93,19 +159,21 @@ orxSTATUS orxFASTCALL orxMouse_iPhone_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
-    //! TODO
-
-    /* Updates status */
-    sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
-
-    /* Sets config section */
-    orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
-
-    /* Has show cursor value? */
-    if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
+    /* Adds our mouse event handlers */
+    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_IPHONE, orxMouse_iPhone_EventHandler)) != orxSTATUS_FAILURE)
     {
-      /* Updates cursor status */
-      orxMouse_iPhone_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
+      /* Updates status */
+      sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
+
+      /* Sets config section */
+      orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+      /* Has show cursor value? */
+      if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
+      {
+        /* Updates cursor status */
+        orxMouse_iPhone_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
+      }
     }
 
     /* Pops config section */
@@ -121,7 +189,8 @@ void orxFASTCALL orxMouse_iPhone_Exit()
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
-    //! TODO
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_IPHONE, orxMouse_iPhone_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
@@ -137,7 +206,12 @@ orxSTATUS orxFASTCALL orxMouse_iPhone_SetPosition(const orxVECTOR *_pvPosition)
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Updates mouse move */
+  orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
+  orxVector_Add(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), _pvPosition);
+
+  /* Updates position */
+  orxVector_Set(&(sstMouse.vMousePosition), _pvPosition->fX, _pvPosition->fY, orxFLOAT_0);
 
   /* Done! */
   return eResult;
@@ -151,12 +225,8 @@ orxVECTOR *orxFASTCALL orxMouse_iPhone_GetPosition(orxVECTOR *_pvPosition)
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
 
-  //! TODO
-
   /* Updates result */
-  _pvPosition->fX = orxFLOAT_0;
-  _pvPosition->fY = orxFLOAT_0;
-  _pvPosition->fZ = orxFLOAT_0;
+  orxVector_Copy(_pvPosition, &(sstMouse.vMousePosition));
 
   /* Done! */
   return pvResult;
@@ -170,7 +240,12 @@ orxBOOL orxFASTCALL orxMouse_iPhone_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
 
-  //! TODO
+  /* Left button? */
+  if(_eButton == orxMOUSE_BUTTON_LEFT)
+  {
+    /* Updates result */
+    bResult = sstMouse.bIsClicked;
+  }
 
   /* Done! */
   return bResult;
@@ -184,10 +259,11 @@ orxVECTOR *orxFASTCALL orxMouse_iPhone_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvMoveDelta != orxNULL);
 
-  //! TODO
-
   /* Updates result */
-  orxVector_Copy(_pvMoveDelta, &orxVECTOR_0);
+  orxVector_Copy(_pvMoveDelta, &(sstMouse.vMouseMove));
+
+  /* Clears move */
+  orxVector_Copy(&(sstMouse.vMouseMove), &orxVECTOR_0);
 
   /* Done! */
   return pvResult;
@@ -200,7 +276,8 @@ orxFLOAT orxFASTCALL orxMouse_iPhone_GetWheelDelta()
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
   /* Done! */
   return fResult;

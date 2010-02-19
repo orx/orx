@@ -31,6 +31,7 @@
 
 #include "orx.h"
 
+orxOBJECT *spstObject;
 
 void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
@@ -42,13 +43,19 @@ void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 static orxSTATUS orxFASTCALL Init()
 {
   orxViewport_CreateFromConfig("Viewport");
-  orxObject_CreateFromConfig("Object");
+  spstObject = orxObject_CreateFromConfig("Object");
   return orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, orxNULL);
 }
 
 static orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  orxVECTOR vPos;
+
+  orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos);
+  vPos.fZ = orxFLOAT_0;
+  orxObject_SetPosition(spstObject, &vPos);
   
   return eResult;
 }

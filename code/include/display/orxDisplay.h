@@ -144,6 +144,8 @@ typedef struct __orxCOLOR_t
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
+/** Orx view interface
+ */
 @interface orxView : UIView
 {
 @private

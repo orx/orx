@@ -149,6 +149,9 @@ static orxView *spoInstance;
   {
     CAEAGLLayer *poLayer;
 
+    /* Enables multi-touch */
+    self.multipleTouchEnabled = YES;
+
     /* Gets the layer */
     poLayer = (CAEAGLLayer *)self.layer;
 
@@ -331,20 +334,66 @@ static orxView *spoInstance;
   [poThreadContext presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
+- (void) touchesBegan:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
+{
+  orxIPHONE_EVENT_PAYLOAD stPayload;
+
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  stPayload.poUIEvent   = _poEvent;
+  stPayload.poTouchList = _poTouchList;
+
+  /* Sends it */
+  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_BEGIN, self, orxNULL, &stPayload);
+}
+
+- (void) touchesMoved:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
+{
+  orxIPHONE_EVENT_PAYLOAD stPayload;
+  
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  stPayload.poUIEvent   = _poEvent;
+  stPayload.poTouchList = _poTouchList;
+  
+  /* Sends it */
+  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_MOVE, self, orxNULL, &stPayload);
+}
+
+- (void) touchesEnded:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
+{
+  orxIPHONE_EVENT_PAYLOAD stPayload;
+  
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  stPayload.poUIEvent   = _poEvent;
+  stPayload.poTouchList = _poTouchList;
+  
+  /* Sends it */
+  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_END, self, orxNULL, &stPayload);
+}
+
+- (void) touchesCancelled:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
+{
+  orxIPHONE_EVENT_PAYLOAD stPayload;
+  
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  stPayload.poUIEvent   = _poEvent;
+  stPayload.poTouchList = _poTouchList;
+  
+  /* Sends it */
+  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_CANCEL, self, orxNULL, &stPayload);
+}
+
 @end
 
 static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Rendering start? */
-  if(_pstEvent->eID == orxRENDER_EVENT_START)
-  {
-    /* Sets OpenGL context */
-    [EAGLContext setCurrentContext:[sstDisplay.poView poThreadContext]];
-  }
   /* Viewport rendering start? */
-  else if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_START)
+  if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_START)
   {
     /* Checks */
     orxASSERT(orxViewport_GetTexture(orxVIEWPORT(_pstEvent->hSender)) == orxTexture_GetScreenTexture());
@@ -434,9 +483,9 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDIS
   GLfloat afVertexList[] =
   {
     0.0f, fHeight,
-    fWidth, fHeight,
+    fWidth * .5f, fHeight,
     0.0f, 0.0f,
-    fWidth, 0.0f
+    fWidth * .5, 0.0f
   };
 
   /* Defines the texture coord list */
@@ -491,6 +540,14 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDIS
   glASSERT();
   glTexCoordPointer(2, GL_FLOAT, 0, afTextureCoordList);
   glASSERT();
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glASSERT();
+
+  for(int i = 0; i < 8; i+=2)
+  {
+    afVertexList[i] += fWidth * .5f;
+  }
+
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glASSERT();
 
@@ -733,7 +790,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColorKey(orxBITMAP *_pstBitmap,
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
   
   /* Done! */
   return eResult;
@@ -848,7 +905,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
   orxASSERT(_zFilename != orxNULL);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
   
   /* Done! */
   return eResult;
@@ -1037,7 +1094,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_EnableVSync(orxBOOL _bEnable)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1051,7 +1108,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_IsVSyncEnabled()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return bResult;
@@ -1065,7 +1122,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetFullScreen(orxBOOL _bFullScreen)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1079,7 +1136,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_IsFullScreen()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return bResult;
@@ -1093,7 +1150,7 @@ orxU32 orxFASTCALL orxDisplay_iPhone_GetVideoModeCounter()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return u32Result;
@@ -1107,7 +1164,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iPhone_GetVideoMode(orxU32 _u32Ind
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return pstResult;
@@ -1121,7 +1178,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetVideoMode(const orxDISPLAY_VIDEO_MODE
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1135,7 +1192,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_IsVideoModeAvailable(const orxDISPLAY_VIDE
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return bResult;
@@ -1237,7 +1294,7 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return hResult;
@@ -1246,7 +1303,7 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
 void orxFASTCALL orxDisplay_iPhone_DeleteShader(orxHANDLE _hShader)
 {
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return;
@@ -1257,7 +1314,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_RenderShader(orxHANDLE _hShader)
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1268,7 +1325,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, cons
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1279,7 +1336,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderFloat(orxHANDLE _hShader, const
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1290,7 +1347,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderVector(orxHANDLE _hShader, cons
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -1301,7 +1358,7 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_GetApplicationInput()
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
   /* Not available */
-  orxLOG("Not available on this platform!");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return hResult;
