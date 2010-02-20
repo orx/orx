@@ -158,11 +158,11 @@
 
   #ifdef __orxFREEBASIC__
 
-    #define orxFASTCALL
+    #define orxFASTCALL         __stdcall
 
   #else /* __orxFREEBASIC__ */
 
-    #define orxFASTCALL           __fastcall
+    #define orxFASTCALL         __fastcall
 
   #endif /* __orxFREEBASIC__ */
 
@@ -212,7 +212,7 @@
 
       #ifdef __orxFREEBASIC__
 
-        #define orxFASTCALL
+        #define orxFASTCALL     __attribute__ ((stdcall))
 
       #else /* __orxFREEBASIC__ */
 
