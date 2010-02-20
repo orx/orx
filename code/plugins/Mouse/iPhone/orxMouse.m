@@ -153,7 +153,7 @@ orxSTATUS orxFASTCALL orxMouse_iPhone_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Was already initialized. */
+  /* Wasn't already initialized? */
   if(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
@@ -245,6 +245,11 @@ orxBOOL orxFASTCALL orxMouse_iPhone_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   {
     /* Updates result */
     bResult = sstMouse.bIsClicked;
+  }
+  else
+  {
+    /* Not available */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "<%s> is not available on this platform!", orxMouse_GetButtonName(_eButton));
   }
 
   /* Done! */
