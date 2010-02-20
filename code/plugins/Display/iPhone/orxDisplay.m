@@ -173,6 +173,8 @@ static orxView *spoInstance;
       glASSERT();
       glDisable(GL_FOG);
       glASSERT();
+      glDisable(GL_CULL_FACE);
+      glASSERT();
       glDisable(GL_DEPTH_TEST);
       glASSERT();
       glDisable(GL_STENCIL_TEST);
@@ -483,9 +485,9 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDIS
   GLfloat afVertexList[] =
   {
     0.0f, fHeight,
-    fWidth * .5f, fHeight,
+    fWidth, fHeight,
     0.0f, 0.0f,
-    fWidth * .5, 0.0f
+    fWidth, 0.0f
   };
 
   /* Defines the texture coord list */
@@ -540,14 +542,6 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDIS
   glASSERT();
   glTexCoordPointer(2, GL_FLOAT, 0, afTextureCoordList);
   glASSERT();
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-  glASSERT();
-
-  for(int i = 0; i < 8; i+=2)
-  {
-    afVertexList[i] += fWidth * .5f;
-  }
-
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glASSERT();
 

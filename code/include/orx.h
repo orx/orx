@@ -134,6 +134,7 @@ typedef enum __orxIPHONE_EVENT_t
   orxIPHONE_EVENT_TOUCH_MOVE,
   orxIPHONE_EVENT_TOUCH_END,
   orxIPHONE_EVENT_TOUCH_CANCEL,
+  orxIPHONE_EVENT_ACCELERATE,
 
   orxIPHONE_EVENT_NUMBER,
 
@@ -143,8 +144,22 @@ typedef enum __orxIPHONE_EVENT_t
  */
 typedef struct __orxIPHONE_EVENT_PAYLOAD_t
 {
-  UIEvent  *poUIEvent;
-  NSSet    *poTouchList;
+  union
+  {
+    /* Touch event */
+    struct
+    {
+      UIEvent  *poUIEvent;
+      NSSet    *poTouchList;
+    };
+
+    /* Accelerate event */
+    struct
+    {
+      UIAccelerometer *poAccelerometer;
+      UIAcceleration  *poAcceleration;
+    };
+  };
 
 } orxIPHONE_EVENT_PAYLOAD;
 
@@ -208,6 +223,19 @@ static orxSTATUS (*spfnRun)() = orxNULL;
 
   /* Calls parent method */
   [super dealloc];
+}
+
+- (void) accelerometer:(UIAccelerometer *)_poAccelerometer didAccelerate:(UIAcceleration *)_poAcceleration
+{
+  orxIPHONE_EVENT_PAYLOAD stPayload;
+  
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  stPayload.poAccelerometer = _poAccelerometer;
+  stPayload.poAcceleration  = _poAcceleration;
+
+  /* Sends it */
+  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_ACCELERATE, self, orxNULL, &stPayload);
 }
 
 - (void) MainLoop

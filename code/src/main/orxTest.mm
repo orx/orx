@@ -56,6 +56,7 @@ static orxSTATUS orxFASTCALL Run()
   orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos);
   vPos.fZ = orxFLOAT_0;
   orxObject_SetPosition(spstObject, &vPos);
+  orxObject_Enable(spstObject, orxInput_IsActive("Click"));
   
   return eResult;
 }
