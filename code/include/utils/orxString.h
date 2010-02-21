@@ -122,7 +122,7 @@ static orxINLINE orxSTRING              orxString_SkipWhiteSpaces(const orxSTRIN
  * @param[in] _zString  String used for length computation
  * @return Length of the string (doesn't count final orxCHAR_NULL)
  */
-static orxINLINE orxU32                 orxString_GetLength(orxSTRING _zString)
+static orxINLINE orxU32                 orxString_GetLength(const orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -792,7 +792,7 @@ static orxINLINE orxS32                 orxString_SearchCharIndex(const orxSTRIN
  * @param[in]  _zSrcString  Source formated string
  * @return The number of written characters
  */
-static orxINLINE orxS32 orxCDECL        orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+static orxINLINE orxS32 orxCDECL        orxString_Print(orxSTRING _zDstString, const orxSTRING _zSrcString, ...)
 {
   va_list stArgs;
   orxS32  s32Result;
@@ -816,7 +816,7 @@ static orxINLINE orxS32 orxCDECL        orxString_Print(orxSTRING _zDstString, o
  * @param[in]  _u32CharNumber Max number of character to print
  * @return The number of written characters
  */
-static orxINLINE orxS32 orxCDECL        orxString_NPrint(orxSTRING _zDstString, orxU32 _u32CharNumber, orxSTRING _zSrcString, ...)
+static orxINLINE orxS32 orxCDECL        orxString_NPrint(orxSTRING _zDstString, orxU32 _u32CharNumber, const orxSTRING _zSrcString, ...)
 {
   va_list stArgs;
   orxS32  s32Result;
