@@ -91,7 +91,9 @@ static orxSCREENSHOT_STATIC sstScreenshot;
  */
 static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
 {
-  orxSTRING zDirectory, zBaseName, zExtension;
+  const orxSTRING zDirectory;
+  const orxSTRING zBaseName;
+  const orxSTRING zExtension;
   orxU32    u32Digits;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -108,8 +110,8 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
   if((orxConfig_HasSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxFALSE)
   && (orxConfig_PushSection(orxSCREENSHOT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
   {
-    orxSTRING zValue;
-    orxU32    u32Value;
+    const orxSTRING zValue;
+    orxU32          u32Value;
 
     /* Gets directory name */
     zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY);

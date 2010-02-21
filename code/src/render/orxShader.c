@@ -95,11 +95,11 @@ typedef struct __orxSHADER_PARAM_VALUE_t
  */
 struct __orxSHADER_t
 {
-  orxSTRUCTURE  stStructure;                              /**< Public structure, first structure member : 16 */
-  orxLINKLIST   stParamList;                              /**< Parameter list : 28 */
-  orxSTRING     zReference;                               /**< Shader reference : 32 */
-  orxHANDLE     hData;                                    /**< Compiled shader data : 36 */
-  orxBANK      *pstParamBank;                             /**< Parameter bank : 40 */
+  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 16 */
+  orxLINKLIST     stParamList;                            /**< Parameter list : 28 */
+  const orxSTRING zReference;                             /**< Shader reference : 32 */
+  orxHANDLE       hData;                                  /**< Compiled shader data : 36 */
+  orxBANK        *pstParamBank;                           /**< Parameter bank : 40 */
 };
 
 /** Static structure
@@ -335,13 +335,13 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
         /* Adds it to reference table */
         if(orxHashTable_Add(sstShader.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
-          orxS32    i, s32Number;
-          orxSTRING zCode;
+          orxS32          i, s32Number;
+          const orxSTRING zCode;
 
           /* For all parameters */
           for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
           {
-            orxSTRING zParamName;
+            const orxSTRING zParamName;
 
             /* Gets its name */
             zParamName = orxConfig_GetListString(orxSHADER_KZ_CONFIG_PARAM_LIST, i);
@@ -363,7 +363,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                 orxFLOAT  fValue;
 
                 /* Gets its literal value */
-                zValue = orxString_LowerCase(orxConfig_GetString(zParamName));
+                zValue = orxString_LowerCase((orxSTRING)orxConfig_GetString(zParamName));
 
                 /* Is a float? */
                 if(orxString_ToFloat(zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
@@ -502,7 +502,7 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
           pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
       {
         /* Deletes its name */
-        orxString_Delete(pstParam->stParam.zName);
+        orxString_Delete((orxSTRING)pstParam->stParam.zName);
 
         /* Is a texture? */
         if(pstParam->stParam.eType == orxSHADER_PARAM_TYPE_TEXTURE)
@@ -1022,7 +1022,7 @@ orxBOOL orxFASTCALL orxShader_IsEnabled(const orxSHADER *_pstShader)
  */
 const orxSTRING orxFASTCALL orxShader_GetName(const orxSHADER *_pstShader)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);

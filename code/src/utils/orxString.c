@@ -85,8 +85,8 @@ static const orxU32 sau32CRCTable[256] =
  */
 orxU32 orxFASTCALL orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CRC)
 {
-  register orxU32    u32CRC;
-  register orxCHAR  *pc;
+  register orxU32          u32CRC;
+  register const orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -113,9 +113,9 @@ orxU32 orxFASTCALL orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CR
  */
 orxU32 orxFASTCALL orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
 {
-  register orxU32    u32CRC;
-  register orxU32    u32Counter;
-  register orxCHAR  *pc;
+  register orxU32          u32CRC;
+  register orxU32          u32Counter;
+  register const orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);

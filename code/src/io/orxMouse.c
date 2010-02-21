@@ -65,7 +65,7 @@ void orxFASTCALL orxMouse_Setup()
  */
 const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
 #define orxMOUSE_DECLARE_BUTTON_NAME(BUTTON)   case orxMOUSE_BUTTON_##BUTTON: zResult = orxMOUSE_KZ_LITERAL_PREFIX#BUTTON; break
 

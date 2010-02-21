@@ -146,17 +146,10 @@
  */
 typedef struct __orxPLUGIN_FUNCTION_INFO_t
 {
-  /* Function ID */
   orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID : 8 */
-
-  /* Function pointer */
   orxPLUGIN_FUNCTION    pfnFunction;                        /**< Function Address : 4 */
-
-  /* Funtion name */
-  orxSTRING             zFunctionName;                      /**< Function Name : 12 */
-
-  /* Function argument types */
-  orxSTRING             zFunctionArgs;                      /**< Function Argument Types : 16 */
+  const orxSTRING       zFunctionName;                      /**< Function Name : 12 */
+  const orxSTRING       zFunctionArgs;                      /**< Function Argument Types : 16 */
 
 } orxPLUGIN_FUNCTION_INFO;
 
@@ -164,20 +157,11 @@ typedef struct __orxPLUGIN_FUNCTION_INFO_t
  */
 typedef struct __orxPLUGIN_INFO_t
 {
-  /* System plugin access */
-  orxSYSPLUGIN  pstSysPlugin;                               /**< Plugin system pointer : 4 */
-
-  /* Plugin handle */
-  orxHANDLE     hPluginHandle;                              /**< Plugin handle : 8 */
-
-  /* Function bank */
-  orxBANK      *pstFunctionBank;                            /**< Function bank : 12 */
-
-  /* Function hash table */
-  orxHASHTABLE *pstFunctionTable;                           /**< Function hash table : 16 */
-
-  /* Plugin name */
-  orxSTRING     zPluginName;                                /**< Plugin name : 20 */
+  orxSYSPLUGIN    pstSysPlugin;                             /**< Plugin system pointer : 4 */
+  orxHANDLE       hPluginHandle;                            /**< Plugin handle : 8 */
+  orxBANK        *pstFunctionBank;                          /**< Function bank : 12 */
+  orxHASHTABLE   *pstFunctionTable;                         /**< Function hash table : 16 */
+  const orxSTRING zPluginName;                              /**< Plugin name : 20 */
 
   /* Padding */
   orxPAD(20)
@@ -791,8 +775,8 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
   /* For all specified plugin names */
   for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
   {
-    orxSTRING zPluginName;
-    orxS32    s32LastSeparatorIndex, s32SeparatorIndex;
+    const orxSTRING zPluginName;
+    orxS32          s32LastSeparatorIndex, s32SeparatorIndex;
 
     /* Gets last separator index */
     for(s32LastSeparatorIndex = 0, s32SeparatorIndex = orxString_SearchCharIndex(_azParams[i], orxPLUGIN_KC_DIRECTORY_SEPARATOR, 1);
@@ -1254,7 +1238,7 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
  */
 const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
 {
-  orxSTRING zPluginName = orxSTRING_EMPTY;
+  const orxSTRING zPluginName = orxSTRING_EMPTY;
 
 #ifdef __orxPLUGIN_DYNAMIC__
 

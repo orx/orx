@@ -65,17 +65,17 @@ typedef struct __orxPARAM_t
   orxU32                  u32Flags;
   
   /* Short parameter name (ex: "h" for help (will be -h)) */
-  orxSTRING               zShortName;
+  const orxSTRING         zShortName;
 
   /* Long parameter name (ex: "help" for help (will be --help)) */
-  orxSTRING               zLongName;
+  const orxSTRING         zLongName;
 
   /* Short description (ex: "shows params' list") */
-  orxSTRING               zShortDesc;
+  const orxSTRING         zShortDesc;
 
   /* Long description (ex: "Display the list of parameters.
    * -help <param> displays the <param> long description") */
-  orxSTRING               zLongDesc;
+  const orxSTRING         zLongDesc;
   
   /* Function called when the parameter is detected in the command line */
   orxPARAM_INIT_FUNCTION  pfnParser;

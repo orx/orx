@@ -66,9 +66,9 @@ namespace orxDisplay
  */
 typedef struct __orxDISPLAY_TEXT_t
 {
-  sf::String *poString;
-  orxSTRING   zFont;
-  orxSTRING   zString;
+  sf::String     *poString;
+  const orxSTRING zFont;
+  const orxSTRING zString;
 
 } orxDISPLAY_TEXT;
 
@@ -82,7 +82,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBOOL           bDefaultSmooth;
   sf::RenderWindow *poRenderWindow;
   sf::Font         *poDefaultFont;
-  orxSTRING         zDefaultFont;
+  const orxSTRING   zDefaultFont;
 
   orxBANK          *pstTextBank;
   orxBANK          *pstInstantTextBank;
@@ -481,9 +481,9 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_p
   return eResult;
 }
 
-extern "C" orxSTRING orxFASTCALL orxDisplay_SFML_GetTextString(const orxDISPLAY_TEXT *_pstText)
+extern "C" const orxSTRING orxFASTCALL orxDisplay_SFML_GetTextString(const orxDISPLAY_TEXT *_pstText)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -496,9 +496,9 @@ extern "C" orxSTRING orxFASTCALL orxDisplay_SFML_GetTextString(const orxDISPLAY_
   return zResult;
 }
 
-extern "C" orxSTRING orxFASTCALL orxDisplay_SFML_GetTextFont(const orxDISPLAY_TEXT *_pstText)
+extern "C" const orxSTRING orxFASTCALL orxDisplay_SFML_GetTextFont(const orxDISPLAY_TEXT *_pstText)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);

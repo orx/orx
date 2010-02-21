@@ -154,7 +154,7 @@ struct __orxOBJECT_t
   void             *pUserData;                  /**< User data : 100 */
   orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 104 */
   orxFLOAT          fLifeTime;                  /**< Life time : 108 */
-  orxSTRING         zReference;                 /**< Config reference : 112 */
+  const orxSTRING   zReference;                 /**< Config reference : 112 */
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 116 */
   orxVECTOR         vSpeed;                     /**< Object speed : 128 */
   orxCOLOR          stColor;                    /**< Object color : 144 */
@@ -647,7 +647,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zClockName, zSpawnerName, zCameraName;
+      const orxSTRING zGraphicFileName;
+      const orxSTRING zAnimPointerName;
+      const orxSTRING zAutoScrolling;
+      const orxSTRING zFlipping;
+      const orxSTRING zBodyName;
+      const orxSTRING zClockName;
+      const orxSTRING zSpawnerName;
+      const orxSTRING zCameraName;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags, u32Flags;
       orxS32    s32Number;
@@ -666,7 +673,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* *** Frame *** */
 
       /* Gets auto scrolling value */
-      zAutoScrolling = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_AUTO_SCROLL));
+      zAutoScrolling = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxOBJECT_KZ_CONFIG_AUTO_SCROLL));
 
       /* X auto scrolling? */
       if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_X) == 0)
@@ -693,7 +700,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       }
 
       /* Gets flipping value */
-      zFlipping = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP));
+      zFlipping = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP));
 
       /* X flipping? */
       if(orxString_Compare(zFlipping, orxOBJECT_KZ_X) == 0)
@@ -1079,7 +1086,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxSTRING zBlendMode;
 
         /* Gets blend mode value */
-        zBlendMode = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE));
+        zBlendMode = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE));
 
         /* alpha blend mode? */
         if(orxString_Compare(zBlendMode, orxOBJECT_KZ_ALPHA) == 0)
@@ -3932,7 +3939,7 @@ orxBOOL orxFASTCALL orxObject_IsShaderEnabled(const orxOBJECT *_pstObject)
  */
 const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);

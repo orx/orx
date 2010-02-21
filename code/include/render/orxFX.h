@@ -94,8 +94,8 @@ typedef enum __orxFX_EVENT_t
  */
 typedef struct __orxFX_EVENT_PAYLOAD_t
 {
-  orxFX    *pstFX;                              /**< FX reference : 4 */
-  orxSTRING zFXName;                            /**< FX name : 8 */
+  orxFX          *pstFX;                        /**< FX reference : 4 */
+  const orxSTRING zFXName;                      /**< FX name : 8 */
 
 } orxFX_EVENT_PAYLOAD;
 

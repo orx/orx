@@ -183,7 +183,7 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
       orxPARAM_INFO *pstParamInfo;  /* Stored parameter value */
 
       /* Create the full CRC Value */
-      u32Name = orxString_ContinueCRC((const orxSTRING)_azParams[u32Index], u32LongPrefixCRC);
+      u32Name = orxString_ContinueCRC(_azParams[u32Index], u32LongPrefixCRC);
 
       /* Get the parameter info */
       pstParamInfo = (orxPARAM_INFO *)orxParam_Get(u32Name);
@@ -218,8 +218,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
   orxU32      i, u32RemainingNumber = 0;
   orxBOOL     bUseConfig = orxFALSE;
   orxSTRING  *azParamList = orxNULL;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
   orxSTRING   azConfigParamList[orxPARAM_KU32_MAX_CONFIG_PARAM];
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
@@ -255,7 +255,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Not found? */
       if(azParamList == orxNULL)
       {
-        orxSTRING zParamValue;
+        const orxSTRING zParamValue;
 
         /* Pushes config section */
         orxConfig_PushSection(orxPARAM_KZ_CONFIG_SECTION);
@@ -344,7 +344,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
             u32ParamCounter++);
 
         /* Can process it? */
-        if(_pstParamInfo->stParam.pfnParser(u32ParamCounter, azParamList) != orxSTATUS_FAILURE)
+        if(_pstParamInfo->stParam.pfnParser(u32ParamCounter, (const orxSTRING *)azParamList) != orxSTATUS_FAILURE)
         {
           /* Updates status */
           _pstParamInfo->stParam.u32Flags |= orxPARAM_KU32_FLAG_PROCESSED;
@@ -534,7 +534,7 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
 
     /* Creates CRC for the Short Name */
     u32ShortName = orxString_ToCRC(orxPARAM_KZ_MODULE_SHORT_PREFIX);
-    u32ShortName = orxString_ContinueCRC((const orxSTRING)_pstParam->zShortName, u32ShortName);
+    u32ShortName = orxString_ContinueCRC(_pstParam->zShortName, u32ShortName);
 
     /* Check if options with the same name don't have already been registered */
     if(orxParam_Get(u32ShortName) == orxNULL)
@@ -550,7 +550,7 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
 
         /* Create CRC For the long name */
         u32LongName = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
-        u32LongName = orxString_ContinueCRC((const orxSTRING)_pstParam->zLongName, u32LongName);
+        u32LongName = orxString_ContinueCRC(_pstParam->zLongName, u32LongName);
 
         /* Found ? */
         if(orxParam_Get(u32LongName) == orxNULL)

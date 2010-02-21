@@ -69,10 +69,10 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
 /* Structure */
 typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
 {
-  orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID */
-  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address */
-  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types */
-  orxSTRING zFunctionName;                                  /**< Function Name */
+  orxPLUGIN_FUNCTION_ID eFunctionID;        /**< Function ID */
+  orxPLUGIN_FUNCTION    pfnFunction;        /**< Function Address */
+  orxCHAR               zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE]; /**< Function Argument Types */
+  const orxSTRING       zFunctionName;      /**< Function Name */
 
 } orxPLUGIN_USER_FUNCTION_INFO;
 

@@ -89,11 +89,11 @@ typedef enum __orxANIM_EVENT_t
  */
 typedef struct __orxANIM_EVENT_PAYLOAD_t
 {
-  orxANIM  *pstAnim;                          /**< Animation reference : 4 */
-  orxSTRING zAnimName;                        /**< Animation name : 8 */
-  orxSTRING zCustomEventName;                 /**< Custom event name : 12 */
-  orxFLOAT  fCustomEventValue;                /**< Custom event value : 16 */
-  orxFLOAT  fCustomEventTime;                 /**< Custom event time : 20 */
+  orxANIM        *pstAnim;                    /**< Animation reference : 4 */
+  const orxSTRING zAnimName;                  /**< Animation name : 8 */
+  const orxSTRING zCustomEventName;           /**< Custom event name : 12 */
+  orxFLOAT        fCustomEventValue;          /**< Custom event value : 16 */
+  orxFLOAT        fCustomEventTime;           /**< Custom event time : 20 */
 
 } orxANIM_EVENT_PAYLOAD;
 

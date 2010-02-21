@@ -195,10 +195,10 @@ typedef struct __orxFX_SLOT_t
  */
 struct __orxFX_t
 {
-  orxSTRUCTURE  stStructure;                            /**< Public structure, first structure member : 16 */
-  orxSTRING     zReference;                             /**< FX reference : 20 */
-  orxFLOAT      fDuration;                              /**< FX duration : 24 */
-  orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 472 */
+  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 16 */
+  const orxSTRING zReference;                             /**< FX reference : 20 */
+  orxFLOAT        fDuration;                              /**< FX duration : 24 */
+  orxFX_SLOT      astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 472 */
 };
 
 /** Static structure
@@ -288,7 +288,7 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
     orxFX_CURVE eCurve;
 
     /* Gets its curve type */
-    zCurveType = orxString_LowerCase(orxConfig_GetString(orxFX_KZ_CONFIG_CURVE));
+    zCurveType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxFX_KZ_CONFIG_CURVE));
 
     /* Linear curve? */
     if(orxString_Compare(zCurveType, orxFX_KZ_LINEAR) == 0)
@@ -357,7 +357,7 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
       fPow = orxConfig_HasValue(orxFX_KZ_CONFIG_POW) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_POW) : orxFLOAT_1;
 
       /* Gets its type */
-      zType = orxString_LowerCase(orxConfig_GetString(orxFX_KZ_CONFIG_TYPE));
+      zType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxFX_KZ_CONFIG_TYPE));
 
       /* Alpha fade? */
       if(orxString_Compare(zType, orxFX_KZ_ALPHA) == 0)
@@ -725,7 +725,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all slots */
           for(i = 0; i < u32SlotCounter; i++)
           {
-            orxSTRING zSlotName;
+            const orxSTRING zSlotName;
 
             /* Gets its name */
             zSlotName = orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i);
@@ -2154,7 +2154,7 @@ orxFLOAT orxFASTCALL orxFX_GetDuration(const orxFX *_pstFX)
  */
 const orxSTRING orxFASTCALL orxFX_GetName(const orxFX *_pstFX)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);

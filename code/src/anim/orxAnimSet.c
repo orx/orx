@@ -150,7 +150,7 @@ struct __orxANIMSET_t
   orxANIM               **pastAnim;                   /**< Used animation pointer array : 20 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
   orxHASHTABLE           *pstIDTable;                 /**< ID hash table : 28 */
-  orxSTRING               zReference;                 /**< Reference : 32 */
+  const orxSTRING         zReference;                 /**< Reference : 32 */
 };
 
 
@@ -1459,7 +1459,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* For all animations */
         for(i = 0; i < u32AnimCounter; i++)
         {
-          orxSTRING zAnimName;
+          const orxSTRING zAnimName;
 
           /* Gets its name */
           zAnimName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_ANIM_LIST, i);
@@ -1488,7 +1488,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* For all links */
         for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
         {
-          orxSTRING zLinkName;
+          const orxSTRING zLinkName;
 
           /* Gets link name */
           orxConfig_SelectSection(_zConfigID);
@@ -1497,7 +1497,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if((zLinkName != orxNULL) && (zLinkName != orxSTRING_EMPTY))
           {
-            orxSTRING zSrcAnim, zDstAnim;
+            const orxSTRING zSrcAnim;
+            const orxSTRING zDstAnim;
             orxHANDLE hSrcAnim, hDstAnim, hLink;
 
             /* Selects corresponding section */
@@ -1523,7 +1524,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
                 orxSTRING zProperty;
 
                 /* Gets lower case property */
-                zProperty = orxString_LowerCase(orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY));
+                zProperty = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY));
 
                 /* Immediate link? */
                 if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)

@@ -116,7 +116,7 @@ orxSTATUS orxFASTCALL orxMain_Init()
   /* Not already initialized? */
   if(!orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
-    orxSTRING zGameFileName;
+    const orxSTRING zGameFileName;
 
     /* Sets module as initialized */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);

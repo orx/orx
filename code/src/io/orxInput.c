@@ -261,7 +261,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
       for(eType = 0; eType < orxINPUT_TYPE_NUMBER; eType++)
       {
         orxENUM   eID;
-        orxSTRING zBinding = orxNULL;
+        const orxSTRING zBinding = orxNULL;
 
         /* For all bindings */
         for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
@@ -275,7 +275,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
             /* For all defined inputs */
             for(u32Number = orxConfig_GetListCounter(zBinding), i = 0; i < u32Number; i++)
             {
-              orxSTRING zInput;
+              const orxSTRING zInput;
 
               /* Gets bound input */
               zInput = orxConfig_GetListString(zBinding, i);
@@ -970,13 +970,13 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     {
       orxU32        u32Index, u32Counter;
       orxINPUT_SET *pstSet;
-      orxSTRING    *azSetNameList;
+      const orxSTRING    *azSetNameList;
 
       /* Gets set counter */
       u32Counter = orxLinkList_GetCounter(&(sstInput.stSetList));
 
       /* Allocates set name list */
-      azSetNameList = (orxSTRING *)orxMemory_Allocate(u32Counter * sizeof(orxSTRING), orxMEMORY_TYPE_TEMP);
+      azSetNameList = (const orxSTRING *)orxMemory_Allocate(u32Counter * sizeof(orxSTRING), orxMEMORY_TYPE_TEMP);
 
       /* For all sets */
       for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList)), u32Index = 0;
@@ -1124,7 +1124,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
  */
 const orxSTRING orxFASTCALL orxInput_GetCurrentSet()
 {
-  orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -1752,7 +1752,7 @@ orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _
  */
 const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxU32 _u32InputIndex)
 {
-  orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -1932,7 +1932,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
  */
 const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID)
 {
-  orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -2028,7 +2028,7 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
   {
     orxENUM   eID;
-    orxSTRING zBinding = orxNULL;
+    const orxSTRING zBinding = orxNULL;
 
     /* For all bindings */
     for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)

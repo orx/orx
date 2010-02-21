@@ -65,7 +65,7 @@ void orxFASTCALL orxKeyboard_Setup()
  */
 const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
 #define orxKEYBOARD_DECLARE_KEY_NAME(KEY)   case orxKEYBOARD_KEY_##KEY: zResult = orxKEYBOARD_KZ_LITERAL_PREFIX#KEY; break
 

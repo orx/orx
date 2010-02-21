@@ -71,7 +71,7 @@ struct __orxTEXT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxDISPLAY_TEXT  *pstData;                    /**< Data : 20 */
-  orxSTRING         zReference;                 /**< Config reference : 24 */
+  const orxSTRING   zReference;                 /**< Config reference : 24 */
 };
 
 /** Static structure
@@ -100,7 +100,7 @@ static orxTEXT_STATIC sstText;
  */
 static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText)
 {
-  orxSTRING zResult = orxNULL;
+  const orxSTRING zResult = orxNULL;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstText);
@@ -108,7 +108,7 @@ static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText)
   /* Has reference? */
   if(_pstText->zReference != orxNULL)
   {
-    orxSTRING zString;
+    const orxSTRING zString;
 
     /* Pushes its section */
     orxConfig_PushSection(_pstText->zReference);
@@ -162,7 +162,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           pstText != orxNULL;
           pstText = orxTEXT(orxStructure_GetNext(pstText)))
       {
-        orxSTRING zLocaleKey;
+        const orxSTRING zLocaleKey;
 
         /* Gets its corresponding locale key */
         zLocaleKey = orxText_GetLocaleKey(pstText);
@@ -380,7 +380,8 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       orxU32    u32Flags;
-      orxSTRING zString, zTrimmedString;
+      const orxSTRING zString;
+      const orxSTRING zTrimmedString;
 
       /* Inits flags */
       u32Flags = orxTEXT_KU32_FLAG_NONE;
@@ -505,7 +506,7 @@ orxSTATUS orxFASTCALL orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidt
  */
 const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
@@ -524,7 +525,7 @@ const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
  */
 const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_pstText)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
@@ -547,7 +548,7 @@ const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_pstText)
  */
 const orxSTRING orxFASTCALL orxText_GetFont(const orxTEXT *_pstText)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
@@ -594,7 +595,7 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Gets current string */
-  zString = orxDisplay_GetTextString(_pstText->pstData);
+  zString = (orxSTRING)orxDisplay_GetTextString(_pstText->pstData);
 
   /* Valid? */
   if((zString != orxNULL) && (zString != orxSTRING_EMPTY))
@@ -634,7 +635,7 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, const orxSTRING _zFont)
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Gets current font */
-  zFont = orxDisplay_GetTextFont(_pstText->pstData);
+  zFont = (orxSTRING)orxDisplay_GetTextFont(_pstText->pstData);
 
   /* Valid? */
   if(zFont != orxNULL)

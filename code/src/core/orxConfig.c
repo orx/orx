@@ -237,7 +237,8 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
   /* Not in block mode? */
   if(_bBlockMode == orxFALSE)
   {
-    orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcInput, *pcOutput;
+    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
+    const orxCHAR  *pcInput;
 
     /* For all characters */
     for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
@@ -260,7 +261,7 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
       }
       else
       {
-        orxCHAR *pcTest;
+        const orxCHAR *pcTest;
 
         /* Skips all the spaces */
         for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
@@ -930,8 +931,9 @@ static orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, or
   }
   else
   {
-    orxS32    s32Value;
-    orxSTRING zRemainder, zStart;
+    orxS32          s32Value;
+    const orxSTRING zRemainder;
+    const orxSTRING zStart;
 
     /* Gets wanted value */
     zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
@@ -1048,8 +1050,9 @@ static orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, or
   }
   else
   {
-    orxU32    u32Value;
-    orxSTRING zRemainder, zStart;
+    orxU32          u32Value;
+    const orxSTRING zRemainder;
+    const orxSTRING zStart;
 
     /* Gets wanted value */
     zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
@@ -1166,8 +1169,9 @@ static orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue
   }
   else
   {
-    orxFLOAT  fValue;
-    orxSTRING zRemainder, zStart;
+    orxFLOAT        fValue;
+    const orxSTRING zRemainder;
+    const orxSTRING zStart;
 
     /* Gets wanted value */
     zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
@@ -1320,8 +1324,8 @@ static orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue, 
   }
   else
   {
-    orxBOOL   bValue;
-    orxSTRING zStart;
+    orxBOOL         bValue;
+    const orxSTRING zStart;
 
     /* Gets wanted value */
     zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
@@ -1396,7 +1400,8 @@ static orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVa
   }
   else
   {
-    orxSTRING zRemainder, zStart;
+    const orxSTRING zRemainder;
+    const orxSTRING zStart;
 
     /* Gets wanted value */
     zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
@@ -1720,13 +1725,13 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
       if(s32Index > 0)
       {
         /* Removes it */
-        *(_zBaseName + s32Index) = orxCHAR_NULL;
+        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_NULL;
 
         /* Sets current directory */
         chdir(_zBaseName);
 
         /* Restores separator */
-        *(_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
+        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
       }
 
     #endif /* __orxMAC__ || __orxIPHONE__ */
@@ -1783,13 +1788,13 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     /* Found? */
     if(s32MarkerIndex >= 0)
     {
-      orxSTRING zParent;
+      const orxSTRING zParent;
 
       /* Cut the name */
-      *(_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
+      *((orxSTRING)_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
 
       /* Gets end of name */
-      for(pcNameEnd = _zSectionName + s32MarkerIndex - 1; (pcNameEnd > _zSectionName) && (*pcNameEnd == ' '); pcNameEnd--);
+      for(pcNameEnd = (orxSTRING)_zSectionName + s32MarkerIndex - 1; (pcNameEnd > _zSectionName) && (*pcNameEnd == ' '); pcNameEnd--);
 
       /* Should trim? */
       if(((++pcNameEnd) < _zSectionName + s32MarkerIndex) && (pcNameEnd > _zSectionName))
@@ -1887,7 +1892,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     if(s32MarkerIndex >= 0)
     {
       /* Restores it */
-      *(_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
+      *((orxSTRING)_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
     }
   }
   else
@@ -2010,7 +2015,7 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
  */
 const orxSTRING orxFASTCALL orxConfig_GetCurrentSection()
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -2655,9 +2660,9 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
  */
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
-  orxFILE  *pstFile;
-  orxSTRING zFileName;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxFILE        *pstFile;
+  const orxSTRING zFileName;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -3121,7 +3126,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(const orxSTRING _zKey)
 const orxSTRING orxFASTCALL orxConfig_GetString(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxSTRING         zResult;
+  const orxSTRING   zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -3618,7 +3623,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32Li
 const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS32 _s32ListIndex)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxSTRING         zResult = orxSTRING_EMPTY;
+  const orxSTRING   zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -3763,7 +3768,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
     /* For all values */
     for(i = 0, u32Index = 0; i < _u32Number; i++)
     {
-      orxCHAR *pc;
+      const orxCHAR *pc;
 
       /* For all characters */
       for(pc = _azValue[i]; *pc != orxCHAR_NULL; pc++)
@@ -3827,7 +3832,7 @@ orxS32 orxFASTCALL orxConfig_GetKeyCounter()
  */
 const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));

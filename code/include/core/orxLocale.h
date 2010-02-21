@@ -61,9 +61,9 @@ typedef enum __orxLOCALE_EVENT_t
  */
 typedef struct __orxLOCALE_EVENT_PAYLOAD_t
 {
-  orxSTRING zLanguage;                                  /**< Current language : 4 */
-  orxSTRING zStringKey;                                 /**< String key : 8 */
-  orxSTRING zStringValue;                               /**< String value : 12 */
+  const orxSTRING zLanguage;                            /**< Current language : 4 */
+  const orxSTRING zStringKey;                           /**< String key : 8 */
+  const orxSTRING zStringValue;                         /**< String value : 12 */
 
 } orxLOCALE_EVENT_PAYLOAD;
 
@@ -120,7 +120,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxLocale_HasString(const orxSTRING _zKe
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxLocale_GetString(const orxSTRING _zKey);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey);
 
 /** Writes a string in the current language for the given key
  * @param[in] _zKey             Key name

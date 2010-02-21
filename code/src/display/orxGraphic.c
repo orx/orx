@@ -294,8 +294,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zName;
-      orxU32    u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
+      const orxSTRING zName;
+      orxU32          u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
       /* Gets texture name */
       zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
@@ -407,7 +407,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxU32    u32AlignmentFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
 
           /* Gets it */
-          zRelativePos = orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT));
+          zRelativePos = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT));
 
           /* Left? */
           if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
@@ -458,7 +458,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Gets flipping value */
-        zFlipping = orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP));
+        zFlipping = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP));
 
         /* X flipping? */
         if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_X) == 0)
@@ -529,7 +529,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxSTRING zBlendMode;
 
           /* Gets blend mode value */
-          zBlendMode = orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE));
+          zBlendMode = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE));
 
           /* alpha blend mode? */
           if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ALPHA) == 0)

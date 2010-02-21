@@ -64,7 +64,7 @@ void orxFASTCALL orxJoystick_Setup()
  */
 const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
 #define orxJOYSTICK_DECLARE_AXIS_NAME(AXIS) case orxJOYSTICK_##AXIS: zResult = orxJOYSTICK_KZ_LITERAL_PREFIX#AXIS; break
 
@@ -102,7 +102,7 @@ const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
  */
 const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
 #define orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON) case orxJOYSTICK_BUTTON_##BUTTON: zResult = orxJOYSTICK_KZ_LITERAL_PREFIX#BUTTON; break
 

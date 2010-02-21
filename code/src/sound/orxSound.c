@@ -91,7 +91,7 @@ typedef struct __orxSOUND_SAMPLE_t
 struct __orxSOUND_t
 {
   orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 16 */
-  orxSTRING             zReference;                     /**< Sound reference : 20 */
+  const orxSTRING       zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
   orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */
 };
@@ -396,7 +396,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
       /* Is a sound? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_SOUND) != orxFALSE)
       {
-        orxSTRING zSoundName;
+        const orxSTRING zSoundName;
 
         /* Gets sound name */
         zSoundName = orxConfig_GetString(orxSOUND_KZ_CONFIG_SOUND);
@@ -445,7 +445,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
       /* Is a music? */
       else if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_MUSIC) != orxFALSE)
       {
-        orxSTRING zMusicName;
+        const orxSTRING zMusicName;
 
         /* Gets music name */
         zMusicName = orxConfig_GetString(orxSOUND_KZ_CONFIG_MUSIC);
@@ -998,7 +998,7 @@ orxSOUND_STATUS orxFASTCALL orxSound_GetStatus(const orxSOUND *_pstSound)
  */
 const orxSTRING orxFASTCALL orxSound_GetName(const orxSOUND *_pstSound)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);

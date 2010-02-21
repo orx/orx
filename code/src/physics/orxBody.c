@@ -98,7 +98,7 @@
 struct __orxBODY_PART_t
 {
   orxPHYSICS_BODY_PART *pstData;                                      /**< Data structure : 4 */
-  orxSTRING             zReference;                                   /**< Part reference name : 8 */
+  const orxSTRING       zReference;                                   /**< Part reference name : 8 */
 
   orxPAD(8)
 };
@@ -421,7 +421,7 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
       /* For all parts */
       for(i = 0; i < u32SlotCounter; i++)
       {
-        orxSTRING zPartName;
+        const orxSTRING zPartName;
 
         /* Gets its name */
         zPartName = orxConfig_GetListString(orxBODY_KZ_CONFIG_PART_LIST, i);
@@ -679,7 +679,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
     orxMemory_Zero(&stBodyPartDef, sizeof(orxBODY_PART_DEF));
 
     /* Gets body part type */
-    zBodyPartType = orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
+    zBodyPartType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
 
     /* Inits it */
     stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
@@ -699,8 +699,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SPHERE;
       if(((orxConfig_HasValue(orxBODY_KZ_CONFIG_CENTER) == orxFALSE)
        && (orxConfig_HasValue(orxBODY_KZ_CONFIG_RADIUS) == orxFALSE))
-      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS)), orxBODY_KZ_FULL) == 0)
-      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
+      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS)), orxBODY_KZ_FULL) == 0)
+      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
       {
         orxVECTOR vPivot, vSize;
 
@@ -728,8 +728,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_BOX;
       if(((orxConfig_HasValue(orxBODY_KZ_CONFIG_TOP_LEFT) == orxFALSE)
        && (orxConfig_HasValue(orxBODY_KZ_CONFIG_BOTTOM_RIGHT) == orxFALSE))
-      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT)), orxBODY_KZ_FULL) == 0)
-      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT)), orxBODY_KZ_FULL) == 0))
+      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT)), orxBODY_KZ_FULL) == 0)
+      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT)), orxBODY_KZ_FULL) == 0))
       {
         orxVECTOR vPivot, vSize;
 
@@ -854,7 +854,7 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU3
  */
 const orxSTRING orxFASTCALL orxBody_GetPartName(const orxBODY *_pstBody, orxU32 _u32Index)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
@@ -1139,7 +1139,7 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
           /* Has reference? */
           if(_pstBody->astPartList[i].zReference != orxNULL)
           {
-            orxSTRING zReference;
+            const orxSTRING zReference;
 
             /* Stores it locally */
             zReference = _pstBody->astPartList[i].zReference;

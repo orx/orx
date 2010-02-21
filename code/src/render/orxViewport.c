@@ -291,8 +291,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zTextureName, zCameraName;
-      orxS32    s32Number;
+      const orxSTRING zTextureName;
+      const orxSTRING zCameraName;
+      orxS32          s32Number;
 
       /* *** Texture *** */
 
@@ -414,7 +415,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
         /* Gets it */
-        zRelativePos = orxString_LowerCase(orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION));
+        zRelativePos = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION));
 
         /* Left? */
         if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)

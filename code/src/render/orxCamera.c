@@ -75,10 +75,10 @@
  */
 struct __orxCAMERA_t
 {
-  orxSTRUCTURE  stStructure;                  /**< Public structure, first structure member : 16 */
-  orxFRAME     *pstFrame;                     /**< Frame : 20 */
-  orxAABOX      stFrustum;                    /**< Frustum : 44 */
-  orxSTRING     zReference;                   /**< Reference : 48 */
+  orxSTRUCTURE    stStructure;                /**< Public structure, first structure member : 16 */
+  orxFRAME       *pstFrame;                   /**< Frame : 20 */
+  orxAABOX        stFrustum;                  /**< Frustum : 44 */
+  const orxSTRING zReference;                 /**< Reference : 48 */
 };
 
 
@@ -610,7 +610,7 @@ orxFLOAT orxFASTCALL orxCamera_GetZoom(const orxCAMERA *_pstCamera)
  */
 const orxSTRING orxFASTCALL orxCamera_GetName(const orxCAMERA *_pstCamera)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);

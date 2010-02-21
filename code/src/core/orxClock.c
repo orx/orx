@@ -117,7 +117,7 @@ struct __orxCLOCK_t
   orxBANK          *pstFunctionBank;            /**< Function bank : 48 */
   orxLINKLIST       stFunctionList;             /**< Function list : 60 */
   orxLINKLIST       stTimerList;                /**< Timer list : 72 */
-  orxSTRING         zReference;                 /**< Reference : 76 */
+  const orxSTRING   zReference;                 /**< Reference : 76 */
 };
 
 
@@ -656,11 +656,11 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if(fModifierValue > orxFLOAT_0)
           {
-            orxSTRING         zModifierType;
+            const orxSTRING   zModifierType;
             orxCLOCK_MOD_TYPE eModifierType;
 
             /* Gets modifier type */
-            zModifierType = orxString_LowerCase(orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE));
+            zModifierType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE));
 
             /* Capped? */
             if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)

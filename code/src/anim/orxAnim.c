@@ -90,7 +90,7 @@ typedef struct __orxANIM_KEY_t
 struct __orxANIM_t
 {
   orxSTRUCTURE          stStructure;        /**< Public structure, first structure member : 16 */
-  orxSTRING             zName;              /**< Anim name : 20 */
+  const orxSTRING       zName;              /**< Anim name : 20 */
   orxANIM_KEY          *astKeyList;         /**< Key array : 24 */
   orxANIM_CUSTOM_EVENT *astEventList;       /**< Event array : 28 */
 };
@@ -576,7 +576,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
       /* For all keys */
       for(i = 0; i < u32KeyCounter; i++)
       {
-        orxSTRING zDataName;
+        const orxSTRING zDataName;
 
         /* Gets data ID */
         orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
@@ -617,7 +617,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
       /* For all events */
       for(i = 0; i < u32EventCounter; i++)
       {
-        orxSTRING zEventName;
+        const orxSTRING zEventName;
 
         /* Gets event ID */
         orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_EVENT_NAME, i + 1);
@@ -1219,7 +1219,7 @@ orxU32 orxFASTCALL orxAnim_GetID(const orxANIM *_pstAnim)
  */
 const orxSTRING orxFASTCALL orxAnim_GetName(const orxANIM *_pstAnim)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);

@@ -87,7 +87,7 @@ struct __orxSPAWNER_t
 {
   orxSTRUCTURE        stStructure;                /**< Public structure, first structure member : 16 */
   orxVECTOR           vSpeed;                     /**< Speed : 28 */
-  orxSTRING           zReference;                 /**< Spawner reference : 32 */
+  const orxSTRING     zReference;                 /**< Spawner reference : 32 */
   orxU16              u16TotalObjectLimit;        /**< Limit of objects that can be spawned, 0 for unlimited stock : 34 */
   orxU16              u16ActiveObjectLimit;       /**< Limit of active objects at the same time, 0 for unlimited : 36 */
   orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 38 */
@@ -1580,7 +1580,7 @@ orxSTRUCTURE *orxFASTCALL orxSpawner_GetOwner(const orxSPAWNER *_pstSpawner)
  */
 const orxSTRING orxFASTCALL orxSpawner_GetName(const orxSPAWNER *_pstSpawner)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);

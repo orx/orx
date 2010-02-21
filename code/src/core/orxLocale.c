@@ -58,7 +58,7 @@
  */
 typedef struct __orxLOCALE_STATIC_t
 {
-  orxSTRING           zCurrentLanguage;     /**< Current language */
+  const orxSTRING     zCurrentLanguage;     /**< Current language */
   orxU32              u32Flags;             /**< Control flags */
 
 } orxLOCALE_STATIC;
@@ -249,7 +249,7 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
  */
 const orxSTRING orxFASTCALL orxLocale_GetCurrentLanguage()
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
@@ -347,7 +347,7 @@ orxS32 orxFASTCALL orxLocale_GetLanguageCounter()
  */
 const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _s32LanguageIndex)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
@@ -404,9 +404,9 @@ orxBOOL orxFASTCALL orxLocale_HasString(const orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return The value
  */
-orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey)
+const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
@@ -521,7 +521,7 @@ orxS32 orxFASTCALL orxLocale_GetKeyCounter()
  */
 const orxSTRING orxFASTCALL orxLocale_GetKey(orxS32 _s32KeyIndex)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));

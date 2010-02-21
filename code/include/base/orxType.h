@@ -63,7 +63,7 @@
   typedef double                  orxDOUBLE;
 
   typedef char                    orxCHAR;
-  typedef orxCHAR *               orxSTRING;
+  #define orxSTRING               orxCHAR *
 
   typedef orxU32                  orxENUM;
 
@@ -108,7 +108,7 @@
     typedef double                orxDOUBLE;
 
     typedef char                  orxCHAR;
-    typedef orxCHAR *             orxSTRING;
+    #define orxSTRING             orxCHAR *
 
     typedef orxU32                orxENUM;
 
