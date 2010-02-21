@@ -968,9 +968,9 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     if((orxConfig_HasSection(orxINPUT_KZ_CONFIG_SECTION) != orxFALSE)
     && (orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
     {
-      orxU32        u32Index, u32Counter;
-      orxINPUT_SET *pstSet;
-      const orxSTRING    *azSetNameList;
+      orxU32            u32Index, u32Counter;
+      orxINPUT_SET     *pstSet;
+      const orxSTRING  *azSetNameList;
 
       /* Gets set counter */
       u32Counter = orxLinkList_GetCounter(&(sstInput.stSetList));

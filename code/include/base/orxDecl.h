@@ -31,11 +31,6 @@
  * @addtogroup orxDecl
  *
  * Base declarations
- * Allows to creates and handle Sets of Anims.
- * It consists of a structure containing Anims and their relations.
- * It also contains functions for handling and accessing them.
- * AnimSets are structures.
- * They thus can be referenced by Anim Pointers.
  *
  * @{
  */

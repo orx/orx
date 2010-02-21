@@ -730,7 +730,7 @@ static orxINLINE orxU32                 orxString_NToCRC(const orxSTRING _zStrin
  * @param[in] _zString2 String that must be inside _zString1
  * @return The pointer of the first occurence of _zString2, or orxNULL if not found
  */
-static orxINLINE orxSTRING              orxString_SearchString(const orxSTRING _zString1, const orxSTRING _zString2)
+static orxINLINE const orxSTRING        orxString_SearchString(const orxSTRING _zString1, const orxSTRING _zString2)
 {
   /* Checks */
   orxASSERT(_zString1 != orxNULL);
@@ -745,7 +745,7 @@ static orxINLINE orxSTRING              orxString_SearchString(const orxSTRING _
  * @param[in] _cChar   The character to find
  * @return The pointer of the first occurence of _cChar, or orxNULL if not found
  */
-static orxINLINE orxSTRING              orxString_SearchChar(const orxSTRING _zString, orxCHAR _cChar)
+static orxINLINE const orxSTRING        orxString_SearchChar(const orxSTRING _zString, orxCHAR _cChar)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);

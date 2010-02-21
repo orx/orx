@@ -137,6 +137,30 @@ typedef struct __orxCOLOR_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+
+#import <UIKit/UIKit.h>
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/ES1/gl.h>
+#import <OpenGLES/ES1/glext.h>
+
+/** Orx view interface
+ */
+@interface orxView : UIView
+{
+@private
+  EAGLContext  *poMainContext, *poThreadContext;
+  GLuint        uiRenderBuffer, uiFrameBuffer;
+}
+
+@property (nonatomic, retain) EAGLContext *poMainContext;
+@property (nonatomic, retain) EAGLContext *poThreadContext;
+
+@end
+
+#endif /* __orxIPHONE__ && __orxOBJC__ */
+
+
 /** Display module setup
  */
 extern orxDLLAPI void orxFASTCALL orxDisplay_Setup();
@@ -433,10 +457,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClippi
  * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
  * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
  * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Saves a bitmap to file

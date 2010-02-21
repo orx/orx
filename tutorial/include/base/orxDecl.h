@@ -31,11 +31,6 @@
  * @addtogroup orxDecl
  *
  * Base declarations
- * Allows to creates and handle Sets of Anims.
- * It consists of a structure containing Anims and their relations.
- * It also contains functions for handling and accessing them.
- * AnimSets are structures.
- * They thus can be referenced by Anim Pointers.
  *
  * @{
  */
@@ -133,6 +128,7 @@
 
   #define orxIMPORT             "C"
   #define __orxCPP__
+  #undef __orxOBJC__
 
 #else /* __cplusplus */
 
@@ -141,11 +137,29 @@
 
 #endif /* __cplusplus */
 
+#ifdef __OBJC__
+
+  #define __orxOBJC__
+
+#else /* __OBJC__ */
+
+  #undef __orxOBJC__
+
+#endif /* __OBJC__ */
+
 
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  #define orxFASTCALL           __fastcall
+  #ifdef __orxFREEBASIC__
+
+    #define orxFASTCALL         __stdcall
+
+  #else /* __orxFREEBASIC__ */
+
+    #define orxFASTCALL         __fastcall
+
+  #endif /* __orxFREEBASIC__ */
 
   #define orxSTDCALL            __stdcall
 
@@ -162,13 +176,19 @@
 
   /* *** Compiler specific *** */
   /** The function intend to be inlined. */
-  #ifdef __orxGCC__
-    #define orxINLINE           inline
-  #else /* __orxGCC__ */
-    #ifdef __orxMSVC__
-      #define orxINLINE         __inline
-    #endif /* __orxMSVC__ */
-  #endif /* __orxGCC__ */
+  #if defined(__orxFREEBASIC__)
+
+    #define orxINLINE
+
+  #elif defined(__orxGCC__)
+
+    #define orxINLINE         inline
+
+  #elif defined(__orxMSVC__)
+
+    #define orxINLINE         __inline
+
+  #endif
 
 #else /* __orxWINDOWS__ */
 
@@ -185,7 +205,15 @@
 
     #else /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */
 
-      #define orxFASTCALL       __attribute__ ((fastcall))
+      #ifdef __orxFREEBASIC__
+
+        #define orxFASTCALL     __attribute__ ((stdcall))
+
+      #else /* __orxFREEBASIC__ */
+
+        #define orxFASTCALL     __attribute__ ((fastcall))
+
+      #endif /* __orxFREEBASIC__ */
 
       #define orxSTDCALL        __attribute__ ((stdcall))
 
@@ -200,7 +228,15 @@
     #define orxDLLIMPORT
 
     /** The function intend to be inlined. */
-    #define orxINLINE           inline
+    #ifdef __orxFREEBASIC__
+
+      #define orxINLINE
+
+    #else /* __orxFREEBASIC__ */
+
+      #define orxINLINE         inline
+
+    #endif /* __orxFREEBASIC__ */
 
     /** The null adress. */
     #define orxNULL             (0)

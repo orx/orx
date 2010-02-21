@@ -82,8 +82,8 @@ typedef enum __orxSOUND_EVENT_t
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  orxSOUND *pstSound;                         /**< Sound reference : 4 */
-  orxSTRING zSoundName;                       /**< Sound name : 8 */
+  orxSOUND       *pstSound;                   /**< Sound reference : 4 */
+  const orxSTRING zSoundName;                 /**< Sound name : 8 */
 
 } orxSOUND_EVENT_PAYLOAD;
 

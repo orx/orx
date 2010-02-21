@@ -120,6 +120,229 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+
+#import <UIKit/UIKit.h>
+
+#define orxEVENT_TYPE_IPHONE          orxEVENT_TYPE_FIRST_RESERVED
+
+/** Event enum
+  */
+typedef enum __orxIPHONE_EVENT_t
+{
+  orxIPHONE_EVENT_TOUCH_BEGIN = 0,
+  orxIPHONE_EVENT_TOUCH_MOVE,
+  orxIPHONE_EVENT_TOUCH_END,
+  orxIPHONE_EVENT_TOUCH_CANCEL,
+  orxIPHONE_EVENT_ACCELERATE,
+
+  orxIPHONE_EVENT_NUMBER,
+
+} orxIPHONE_EVENT;
+
+/** Locale event payload
+ */
+typedef struct __orxIPHONE_EVENT_PAYLOAD_t
+{
+  union
+  {
+    /* Touch event */
+    struct
+    {
+      UIEvent  *poUIEvent;
+      NSSet    *poTouchList;
+    };
+
+    /* Accelerate event */
+    struct
+    {
+      UIAccelerometer *poAccelerometer;
+      UIAcceleration  *poAcceleration;
+    };
+  };
+
+} orxIPHONE_EVENT_PAYLOAD;
+
+/** Orx application interface
+ */
+@interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
+{
+  UIWindow *poWindow;
+  orxView  *poView;
+}
+
+@property (nonatomic, retain) UIWindow *poWindow;
+@property (nonatomic, retain) UIView   *poView;
+
+- (void)  MainLoop;
+
+@end
+
+#ifndef __orxPLUGIN__
+
+/** Main function pointer
+ */
+static orxSTATUS (*spfnRun)() = orxNULL;
+    
+/** Orx application implementation
+ */
+@implementation orxAppDelegate
+
+@synthesize poWindow;
+@synthesize poView;
+
+- (void) applicationDidFinishLaunching: (UIApplication *)_poApplication
+{
+  CGRect stFrame;
+
+  /* Gets application's size */
+  stFrame = [[UIScreen mainScreen] applicationFrame];
+
+  /* Creates main window */
+  self.poWindow = [[UIWindow alloc] initWithFrame:stFrame]; 
+  
+  /* Creates orx view */
+  stFrame.origin.y = 0.0;
+  poView = [[orxView alloc] initWithFrame:stFrame];
+
+  /* Attaches it window */
+  [poWindow addSubview:poView];
+
+  /* Assigns main loop to a new thread */
+  [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
+
+  /* Activates window */
+  [poWindow makeKeyAndVisible];
+}
+
+- (void) dealloc
+{
+  /* Releases view & window */
+  [poView release];
+  [poWindow release];
+
+  /* Calls parent method */
+  [super dealloc];
+}
+
+- (void) accelerometer:(UIAccelerometer *)_poAccelerometer didAccelerate:(UIAcceleration *)_poAcceleration
+{
+  orxIPHONE_EVENT_PAYLOAD stPayload;
+  
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  stPayload.poAccelerometer = _poAccelerometer;
+  stPayload.poAcceleration  = _poAcceleration;
+
+  /* Sends it */
+  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_ACCELERATE, self, orxNULL, &stPayload);
+}
+
+- (void) MainLoop
+{
+  orxSTATUS eClockStatus, eMainStatus;
+  orxBOOL   bStop;
+
+  /* Inits the engine */
+  if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+  {      
+    /* Displays help */
+    if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Main loop */
+      for(bStop = orxFALSE;
+          bStop == orxFALSE;
+          bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+      {
+        NSAutoreleasePool *poPool;
+
+        /* Allocates memory pool */
+        poPool = [[NSAutoreleasePool alloc] init];
+
+        /* Runs the engine */
+        eMainStatus = spfnRun();
+
+        /* Updates clock system */
+        eClockStatus = orxClock_Update();
+
+        /* Releases memory pool */
+        [poPool release];
+      }
+    
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+    }
+
+    /* Exits from engine */
+    orxModule_Exit(orxMODULE_ID_MAIN);
+  }
+
+  /* Exits from all modules */
+  orxModule_ExitAll();
+
+  /* Exits from the Debug system */
+  orxDEBUG_EXIT();
+}
+
+@end
+
+/** Orx main execution function
+ * @param[in]   _u32NbParams                  Main function parameters number (argc)
+ * @param[in]   _azParams                     Main function parameter list (argv)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
+
+  /* Checks */
+  orxASSERT(_u32NbParams > 0);
+  orxASSERT(_azParams != orxNULL);
+  orxASSERT(_pfnInit != orxNULL);
+  orxASSERT(_pfnRun != orxNULL);
+  orxASSERT(_pfnExit != orxNULL);
+
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+
+  /* Stores run callback */
+  spfnRun = _pfnRun;
+
+  /* Registers all other modules */
+  orxModule_RegisterAll();
+
+  /* Calls all modules setup */
+  orxModule_SetupAll();
+
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    NSAutoreleasePool *poPool;
+
+    /* Allocates memory pool */
+    poPool = [[NSAutoreleasePool alloc] init];
+
+    /* Launches application */
+    UIApplicationMain(_u32NbParams, _azParams, nil, @"orxAppDelegate");
+
+    /* Releases memory pool */
+    [poPool release];
+  }
+
+  /* Done! */
+  return;
+}
+
+#endif /* !__orxPLUGIN__ */
+
+#else /* __orxIPHONE__ && __orxOBJC__ */
+    
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
  * @param[in]   _azParams                     Main function parameter list (argv)
@@ -190,7 +413,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
 }
-
+    
 #ifdef __orxMSVC__
 
 #include "windows.h"
@@ -237,6 +460,8 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 }
 
 #endif /* __orxMSVC__ */
+    
+#endif /* __orxIPHONE__ */
 
 #endif /*_orx_H_*/
 

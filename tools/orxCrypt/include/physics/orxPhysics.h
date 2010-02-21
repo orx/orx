@@ -143,10 +143,10 @@ typedef enum __orxPHYSICS_EVENT_t
  */
 typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
-  orxVECTOR vPosition;                    /**< Contact position : 12 */
-  orxVECTOR vNormal;                      /**< Contact normal : 24 */
-  orxSTRING zSenderPartName;              /**< Sender part name : 28 */
-  orxSTRING zRecipientPartName;           /**< Recipient part name : 32 */
+  orxVECTOR       vPosition;              /**< Contact position : 12 */
+  orxVECTOR       vNormal;                /**< Contact normal : 24 */
+  const orxSTRING zSenderPartName;        /**< Sender part name : 28 */
+  const orxSTRING zRecipientPartName;     /**< Recipient part name : 32 */
 
 } orxPHYSICS_EVENT_PAYLOAD;
 

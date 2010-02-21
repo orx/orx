@@ -69,7 +69,7 @@ typedef struct __orxSHADER_PARAM_t
 {
   orxLINKLIST_NODE      stNode;                 /**< Linklist node : 12 */
   orxSHADER_PARAM_TYPE  eType;                  /**< Parameter type : 16 */
-  orxSTRING             zName;                  /**< Parameter literal name : 20 */
+  const orxSTRING       zName;                  /**< Parameter literal name : 20 */
 
 } orxSHADER_PARAM;
 
@@ -96,10 +96,10 @@ typedef enum __orxSHADER_EVENT_t
 typedef struct __orxSHADER_EVENT_PARAM_PAYLOAD_t
 {
   const orxSHADER      *pstShader;              /**< Shader reference : 4 */
-  orxSTRING             zShaderName;            /**< Shader name : 8 */
+  const orxSTRING       zShaderName;            /**< Shader name : 8 */
 
   orxSHADER_PARAM_TYPE  eParamType;             /**< Parameter type : 12 */
-  orxSTRING             zParamName;             /**< Parameter name : 16 */
+  const orxSTRING       zParamName;             /**< Parameter name : 16 */
 
   union
   {

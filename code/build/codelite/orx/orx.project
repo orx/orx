@@ -25,12 +25,6 @@
   <Dependencies Name="Win32 Dynamic Release">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Static Release">
-    <Project Name="orxLIB"/>
-  </Dependencies>
   <Dependencies Name="Win32 Dynamic Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
@@ -676,6 +670,12 @@
     <Project Name="orxLIB"/>
   </Dependencies>
   <Dependencies Name="Win32 Embedded Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
 </CodeLite_Project>

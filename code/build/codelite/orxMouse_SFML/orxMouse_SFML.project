@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="orxMouse_SFML">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00090001N0019Linux Dynamic Debug0000000000000001N0021Linux Dynamic Release0000000000000001N0018Linux Static Debug0000000000000001N0020Linux Static Release0000000000000001N0012Not compiled0000000000000001N0019Win32 Dynamic Debug0000000000000001N0021Win32 Dynamic Release0000000000000001N0018Win32 Static Debug0000000000000001N0020Win32 Static Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <VirtualDirectory Name="src">
     <File Name="../../../plugins/Mouse/SFML/orxMouse.cpp"/>
@@ -24,15 +29,7 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Win32 Dynamic Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
   <Dependencies Name="Win32 Dynamic Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
@@ -40,9 +37,13 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Settings Type="Executable">
+  <Dependencies Name="Win32 Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes">
+      <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -82,7 +83,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
@@ -121,7 +122,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes">
+      <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -161,7 +162,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
@@ -200,7 +201,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Not compiled" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="no">
+      <Compiler Options="-g" Required="no" PreCompiledHeader="">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="-O0" Required="no">
@@ -231,8 +232,8 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -268,8 +269,8 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
@@ -304,8 +305,8 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -341,8 +342,8 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include/"/>
       </Compiler>
@@ -387,4 +388,8 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
   </Settings>
+  <Dependencies Name="Win32 Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
 </CodeLite_Project>

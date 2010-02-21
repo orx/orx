@@ -250,15 +250,6 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_GetSize(const orxVIEWP
  */
 extern orxDLLAPI void orxFASTCALL             orxViewport_GetRelativeSize(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-/** Gets a viewport clipping
- * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _pu32TLX        X coordinate of top left corner
- * @param[out]  _pu32TLY        Y coordinate of top left corner
- * @param[out]  _pu32BRX        X coordinate of bottom right corner
- * @param[out]  _pu32BRY        Y coordinate of bottom right corner
- */
-extern orxDLLAPI void orxFASTCALL             orxViewport_GetClipping(const orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY);
-
 /** Gets an axis aligned box of viewport
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pstBox         Output box
