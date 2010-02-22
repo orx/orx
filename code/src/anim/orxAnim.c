@@ -932,7 +932,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastEvent(orxANIM *_pstAnim)
     orxAnim_DecreaseEventCounter(_pstAnim);
 
     /* Deletes event name */
-    orxString_Delete(pstEvent->zName);
+    orxString_Delete((orxSTRING)pstEvent->zName);
 
     /* Cleans the event info */
     orxMemory_Zero(pstEvent, sizeof(orxANIM_CUSTOM_EVENT));
