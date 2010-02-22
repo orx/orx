@@ -388,6 +388,27 @@ static orxView *spoInstance;
   orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_CANCEL, self, orxNULL, &stPayload);
 }
 
+#ifdef __IPHONE_3_0
+
+- (void) motionEnded:(UIEventSubtype)_eMotion withEvent:(UIEvent *)_poEvent
+{
+  /* Shake? */
+  if(_eMotion == UIEventSubtypeMotionShake)
+  {
+    orxIPHONE_EVENT_PAYLOAD stPayload;
+    
+    /* Inits event's payload */
+    orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+    stPayload.poUIEvent = _poEvent;
+    stPayload.eMotion   = _eMotion;
+    
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_MOTION_SHAKE, self, orxNULL, &stPayload);
+  }
+}
+
+#endif
+
 @end
 
 static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pstEvent)

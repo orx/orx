@@ -135,6 +135,7 @@ typedef enum __orxIPHONE_EVENT_t
   orxIPHONE_EVENT_TOUCH_END,
   orxIPHONE_EVENT_TOUCH_CANCEL,
   orxIPHONE_EVENT_ACCELERATE,
+  orxIPHONE_EVENT_MOTION_SHAKE,
 
   orxIPHONE_EVENT_NUMBER,
 
@@ -146,11 +147,19 @@ typedef struct __orxIPHONE_EVENT_PAYLOAD_t
 {
   union
   {
-    /* Touch event */
+    /* UI event */
     struct
     {
-      UIEvent  *poUIEvent;
-      NSSet    *poTouchList;
+      UIEvent *poUIEvent;
+
+      union
+      {
+        /* Touch event */
+        NSSet          *poTouchList;
+
+        /* Motion event */
+        UIEventSubtype  eMotion;
+      };
     };
 
     /* Accelerate event */
