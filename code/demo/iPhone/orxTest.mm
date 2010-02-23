@@ -31,34 +31,91 @@
 
 #include "orx.h"
 
-orxOBJECT *spstObject;
+static orxOBJECT *spstGenerator;
 
-void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
+
+  /* Going out of world? */
+  if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
+  {
+    /* Asks for corresponding object deletion */
+    orxObject_SetLifeTime(orxOBJECT(_pstEvent->hSender), orxFLOAT_0);
+  }
+  /* Colliding? */
+  else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+  {
+    /* Adds bump FX on both objects */
+    orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
+    orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+  }
+  
+  /* Done! */
+  return eResult;
+}
+
+static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+{
+  /* Has Generator? */
+  if(spstGenerator)
+  {
+    orxVECTOR vMousePos;
+
+    /* Gets mouse position in world space */
+    if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
+    {
+      /* Updates its Z coord */
+      vMousePos.fZ += orxFLOAT_1;
+
+      /* Updates its position */
+      orxObject_SetPosition(spstGenerator, &vMousePos);
+
+      /* Updates its status */
+      orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
+    }
+  }
+}
+
+static void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  /* Addes a new timer */
   orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, (void *)!(orxBOOL)_pContext);
 
-  orxLOG("%s (FPS=%ld)", _pContext ? "Tic!" : "Tac!", orxFPS_GetFPS());
+  /* Tic/Tac */
+  orxLOG("%s (FPS = %ld)", _pContext ? "Tic!" : "Tac!", orxFPS_GetFPS());
 }
 
 static orxSTATUS orxFASTCALL Init()
 {
+  /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
-  spstObject = orxObject_CreateFromConfig("Object");
-  return orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, orxNULL);
+
+  /* Creates generator */
+  spstGenerator = orxObject_CreateFromConfig("Generator");
+
+  /* Creates walls */
+  orxObject_CreateFromConfig("Walls");
+
+  /* Adds a timer */
+  orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, orxNULL);
+
+  /* Registers callback */
+  orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+  /* Registers event handler */
+  orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 static orxSTATUS orxFASTCALL Run()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  orxVECTOR vPos;
-
-  orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos);
-  vPos.fZ = orxFLOAT_0;
-  orxObject_SetPosition(spstObject, &vPos);
-  orxObject_Enable(spstObject, orxInput_IsActive("Click"));
-  
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 static void orxFASTCALL Exit()
