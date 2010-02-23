@@ -30,6 +30,7 @@
 #include "orxInclude.h"
 
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
 #include "math/orxMath.h"
@@ -86,7 +87,7 @@
 #define orxCONFIG_KC_BLOCK                        '"'         /**< Block delimiter character */
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
-#define orxCONFIG_KZ_CONFIG_HISTORY               "History"   /**< History config entry name */
+#define orxCONFIG_KZ_CONFIG_HISTORY               "History"   /**< Keep config history */
 
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
@@ -998,6 +999,11 @@ static orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, or
         s32Result = s32Value;
       }
     }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
+    }
   }
 
   /* Done! */
@@ -1116,6 +1122,11 @@ static orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, or
         /* Updates result */
         u32Result = u32Value;
       }
+    }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
     }
   }
 
@@ -1236,6 +1247,11 @@ static orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue
         fResult = fValue;
       }
     }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
+    }
   }
 
   /* Done! */
@@ -1340,6 +1356,11 @@ static orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue, 
 
       /* Updates result */
       bResult = bValue;
+    }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
     }
   }
 
@@ -1465,6 +1486,11 @@ static orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVa
       /* Updates result */
       pvResult = _pvVector;
     }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
+    }
   }
 
   /* Done! */
@@ -1484,6 +1510,7 @@ void orxFASTCALL orxConfig_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);
 
   return;
 }
@@ -2612,6 +2639,9 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   /* Has history? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
   {
+    /* Sends event */
+    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_START);
+
     /* Removes history flag */
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
 
@@ -2638,6 +2668,9 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 
     /* Restores history flag */
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+    /* Sends event */
+    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_END);
   }
   else
   {

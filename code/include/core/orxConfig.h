@@ -47,6 +47,21 @@
 #include "math/orxVector.h"
 
 
+/** Event enum
+ */
+typedef enum __orxCONFIG_EVENT_t
+{
+  orxCONFIG_EVENT_RELOAD_START = 0,                     /**< Event sent when reloading config starts */
+  orxCONFIG_EVENT_RELOAD_END,                           /**< Event sent when reloading config starts */
+  orxCONFIG_EVENT_INVALID_TYPE_ACCESS,                  /**< Event sent when accessing a value with an invalid type getter */
+
+  orxCONFIG_EVENT_NUMBER,
+
+  orxCONFIG_EVENT_NONE = orxENUM_NONE
+
+} orxCONFIG_EVENT;
+
+
 /** Config callback function type to use with save function */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption);
 
