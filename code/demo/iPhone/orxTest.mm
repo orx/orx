@@ -24,7 +24,7 @@
  * @date 28/01/2010
  * @author iarwain@orx-project.org
  *
- * iPhone test executable
+ * iPhone test
  *
  */
 
@@ -52,8 +52,11 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     /* Adds bump FX on both objects */
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+
+    /* Adds bip sound one one of them */
+    orxObject_AddSound(orxOBJECT(_pstEvent->hSender), "Bip");
   }
-  
+
   /* Done! */
   return eResult;
 }
@@ -68,8 +71,13 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
     /* Gets mouse position in world space */
     if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
     {
-      /* Updates its Z coord */
-      vMousePos.fZ += orxFLOAT_1;
+      orxVECTOR vGeneratorPos;
+
+      /* Gets generator position */
+      orxObject_GetPosition(spstGenerator, &vGeneratorPos);
+
+      /* Updates mouse position's Z coord */
+      vMousePos.fZ = vGeneratorPos.fZ;
 
       /* Updates its position */
       orxObject_SetPosition(spstGenerator, &vMousePos);

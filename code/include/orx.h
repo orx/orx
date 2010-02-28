@@ -249,8 +249,12 @@ static orxSTATUS (*spfnRun)() = orxNULL;
 
 - (void) MainLoop
 {
-  orxSTATUS eClockStatus, eMainStatus;
-  orxBOOL   bStop;
+  orxSTATUS           eClockStatus, eMainStatus;
+  orxBOOL             bStop;
+  NSAutoreleasePool  *poMainPool;
+  
+  /* Allocates main memory pool */
+  poMainPool = [[NSAutoreleasePool alloc] init];
 
   /* Inits the engine */
   if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
@@ -291,6 +295,9 @@ static orxSTATUS (*spfnRun)() = orxNULL;
 
   /* Exits from all modules */
   orxModule_ExitAll();
+
+  /* Releases main pool */
+  [poMainPool release];
 
   /* Exits from the Debug system */
   orxDEBUG_EXIT();

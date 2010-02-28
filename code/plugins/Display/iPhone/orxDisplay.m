@@ -1028,9 +1028,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
     }
   }
 
-  /* Releases name */
-  [poName release];
-
   /* Done! */
   return pstBitmap;
 }

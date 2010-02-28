@@ -93,7 +93,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Was already initialized. */
+  /* Was already initialized? */
   if(!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY))
   {
     orxFLOAT fRatio;
@@ -448,12 +448,12 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetAttenuation(orxSOUNDSYST
   if(_pstSound->bIsMusic != false)
   {
     /* Sets its volume */
-    _pstSound->poMusic->SetAttenuation(_fAttenuation);
+    _pstSound->poMusic->SetAttenuation(sstSoundSystem.fDimensionRatio * _fAttenuation);
   }
   else
   {
     /* Sets its volume */
-    _pstSound->poSound->SetAttenuation(_fAttenuation);
+    _pstSound->poSound->SetAttenuation(sstSoundSystem.fDimensionRatio * _fAttenuation);
   }
 
   /* Done! */
@@ -472,12 +472,12 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetReferenceDistance(orxSOU
   if(_pstSound->bIsMusic != false)
   {
     /* Sets its volume */
-    _pstSound->poMusic->SetMinDistance(_fDistance);
+    _pstSound->poMusic->SetMinDistance(sstSoundSystem.fDimensionRatio * _fDistance);
   }
   else
   {
     /* Sets its volume */
-    _pstSound->poSound->SetMinDistance(_fDistance);
+    _pstSound->poSound->SetMinDistance(sstSoundSystem.fDimensionRatio * _fDistance);
   }
 
   /* Done! */
@@ -597,12 +597,12 @@ extern "C" orxFLOAT orxFASTCALL orxSoundSystem_SFML_GetAttenuation(const orxSOUN
   if(_pstSound->bIsMusic != false)
   {
     /* Gets its volume */
-    fResult = orx2F(_pstSound->poMusic->GetAttenuation());
+    fResult = sstSoundSystem.fRecDimensionRatio * orx2F(_pstSound->poMusic->GetAttenuation());
   }
   else
   {
     /* Gets its volume */
-    fResult = orx2F(_pstSound->poSound->GetAttenuation());
+    fResult = sstSoundSystem.fRecDimensionRatio * orx2F(_pstSound->poSound->GetAttenuation());
   }
 
   /* Done! */
@@ -621,12 +621,12 @@ extern "C" orxFLOAT orxFASTCALL orxSoundSystem_SFML_GetReferenceDistance(const o
   if(_pstSound->bIsMusic != false)
   {
     /* Gets its volume */
-    fResult = orx2F(_pstSound->poMusic->GetMinDistance());
+    fResult = sstSoundSystem.fRecDimensionRatio * orx2F(_pstSound->poMusic->GetMinDistance());
   }
   else
   {
     /* Gets its volume */
-    fResult = orx2F(_pstSound->poSound->GetMinDistance());
+    fResult = sstSoundSystem.fRecDimensionRatio * orx2F(_pstSound->poSound->GetMinDistance());
   }
 
   /* Done! */
@@ -779,7 +779,7 @@ extern "C" orxFLOAT orxFASTCALL orxSoundSystem_SFML_GetGlobalVolume()
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets listener volume */
-  fResult = orx2F(sf::Listener::GetGlobalVolume());
+  fResult = orx2F(0.01f * sf::Listener::GetGlobalVolume());
 
   /* Done! */
   return fResult;

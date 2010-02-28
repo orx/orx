@@ -45,9 +45,6 @@
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 
-orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
-orxPLUGIN_USER_CORE_FUNCTION_END();
-
 #else
 
 /** Includes all plugins to embed
