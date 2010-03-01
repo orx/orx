@@ -101,9 +101,6 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderBitmap, orxSTATUS, orxHANDLE,
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderFloat, orxSTATUS, orxHANDLE, const orxSTRING, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderVector, orxSTATUS, orxHANDLE, const orxSTRING, const orxVECTOR *);
 
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE, void);
-
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
 
@@ -162,8 +159,6 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_TEXT_FONT, orxDisplay_GetTextFont
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_TEXT_SIZE, orxDisplay_GetTextSize)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, PRINT_STRING, orxDisplay_PrintString)
-
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_APPLICATION_INPUT, orxDisplay_GetApplicationInput)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, ENABLE_VSYNC, orxDisplay_EnableVSync)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VSYNC_ENABLED, orxDisplay_IsVSyncEnabled)
@@ -339,11 +334,6 @@ orxSTATUS orxFASTCALL orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTR
 orxSTATUS orxFASTCALL orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderVector)(_hShader, _zParam, _pvValue);
-}
-
-orxHANDLE orxFASTCALL orxDisplay_GetApplicationInput()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetApplicationInput)();
 }
 
 orxSTATUS orxFASTCALL orxDisplay_EnableVSync(orxBOOL _bEnable)

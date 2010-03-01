@@ -1365,17 +1365,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderVector(orxHANDLE _hShader, cons
   return eResult;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_iPhone_GetApplicationInput()
-{
-  orxHANDLE hResult = orxHANDLE_UNDEFINED;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
-
-  /* Done! */
-  return hResult;
-}
-
 
 /***************************************************************************
  * Plugin Related                                                          *
@@ -1414,7 +1403,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_RenderShader, DISPLAY, RENDER
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

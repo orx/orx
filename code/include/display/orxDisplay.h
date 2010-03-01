@@ -536,12 +536,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue);
 
 
-/** Gets application input manager (if embedded with display)
- * @return orxHANDLE / orxHANDLE_UNDEFINED
- */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_GetApplicationInput();
-
-
 /** Enables / disables vertical synchro
  * @param[in]   _bEnable                              Enable / disable
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

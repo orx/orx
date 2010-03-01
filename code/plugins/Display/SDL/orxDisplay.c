@@ -915,17 +915,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderVector(orxHANDLE _hShader, const o
   return eResult;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_SDL_GetApplicationInput()
-{
-  orxHANDLE hResult = orxHANDLE_UNDEFINED;
-
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
-
-  /* Done! */
-  return hResult;
-}
-
 
 /***************************************************************************
  * Plugin Related                                                          *
@@ -964,7 +953,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_RenderShader, DISPLAY, RENDER_SH
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

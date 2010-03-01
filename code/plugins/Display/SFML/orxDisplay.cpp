@@ -194,8 +194,15 @@ static orxSTATUS orxFASTCALL orxDisplay_SFML_EventHandler(const orxEVENT *_pstEv
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Is an input request? */
+  if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED)
+  && (_pstEvent->eID == orxEVENT_TYPE_FIRST_RESERVED))
+  {
+    /* Sends input back */
+    *((const sf::Input **)_pstEvent->pstPayload) = &sstDisplay.poRenderWindow->GetInput();
+  }
   /* Is a cursor set position? */
-  if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved)
+  else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved)
   && (_pstEvent->eID == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved))
   {
     orxVECTOR *pvPosition;
@@ -1350,9 +1357,11 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
     /* Registers our mouse event handler */
     if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxDisplay_SFML_EventHandler) != orxSTATUS_FAILURE)
     {
-      /* Registers our mouse wheell event handler */
+      /* Registers our mouse wheel event handler */
       if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxDisplay_SFML_EventHandler) != orxSTATUS_FAILURE)
       {
+        orxEvent_AddHandler((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_SFML_EventHandler);
+
         /* Creates font table */
         sstDisplay.pstFontTable = orxHashTable_Create(orxDisplay::su32FontTableSize, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -1749,14 +1758,6 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderVector(orxHANDLE _hSha
   return eResult;
 }
 
-extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_GetApplicationInput()
-{
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  return((orxHANDLE)&(sstDisplay.poRenderWindow->GetInput()));
-}
-
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -1795,7 +1796,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_RenderShader, DISPLAY, RENDER_S
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

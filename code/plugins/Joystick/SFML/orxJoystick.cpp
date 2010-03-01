@@ -114,8 +114,13 @@ extern "C" orxSTATUS orxFASTCALL orxJoystick_SFML_Init()
     if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler) != orxSTATUS_FAILURE)
     && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler) != orxSTATUS_FAILURE))
     {
-      /* Terrible hack : gets application input from display SFML plugin */
-      sstJoystick.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
+      orxEVENT stEvent;
+
+      /* Inits event for getting SFML input */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED, orxEVENT_TYPE_FIRST_RESERVED, orxNULL, orxNULL, &(sstJoystick.poInput));
+
+      /* Sends it */
+      orxEvent_Send(&stEvent);
 
       /* Valid? */
       if(sstJoystick.poInput != orxNULL)
