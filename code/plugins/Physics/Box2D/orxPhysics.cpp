@@ -1192,7 +1192,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
     if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)
     {
-        orxVector_Copy(&vGravity, &orxVECTOR_0);
+      orxVector_Copy(&vGravity, &orxVECTOR_0);
     }
     bAllowSleep = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) : orxTRUE;
 

@@ -47,6 +47,8 @@
 /** Misc defines
  */
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE             32
+#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER  3
+#define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY      orx2F(0.1f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO orx2F(0.01f)
 
 #ifdef __orxDEBUG__
@@ -81,8 +83,27 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
-  ALuint                  uiSource;
-  orxSOUNDSYSTEM_SAMPLE  *pstSample;
+  ALuint    uiSource;
+  orxBOOL   bIsStream;
+  orxFLOAT  fDuration;
+
+  union
+  {
+    /* Sample */
+    struct
+    {
+      orxSOUNDSYSTEM_SAMPLE *pstSample;
+    };
+
+    /* Stream */
+    struct
+    {
+      ALuint                      auiBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
+      orxBOOL                     bLoop;
+      ExtAudioFileRef             oFileRef;
+      AudioStreamBasicDescription stFileInfo;
+    };
+  };
 };
 
 /** Static structure
@@ -112,6 +133,121 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static void orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  ALint                 iProcessedBufferNumber;
+  orxBOOL               bContinue = orxTRUE;
+  orxSOUNDSYSTEM_SOUND *pstSound;
+
+  /* Checks */
+  orxASSERT(_pContext != orxNULL);
+
+  /* Gets associated sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Gets number of processed buffers */
+  alGetSourcei(pstSound->uiSource, AL_BUFFERS_PROCESSED, &iProcessedBufferNumber);
+  alASSERT();
+
+  /* Needs processing? */
+  if(iProcessedBufferNumber > 0)
+  {
+    orxU32  u32BufferFrameNumber;
+    void   *pBuffer;
+
+    /* Gets Buffer frame number */
+    u32BufferFrameNumber = pstSound->stFileInfo.mSampleRate;
+
+    /* Allocates buffer */
+    pBuffer = orxMemory_Allocate(u32BufferFrameNumber * pstSound->stFileInfo.mBytesPerFrame, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(pBuffer != orxNULL)
+    {
+      AudioBufferList stBufferInfo;
+
+      /* Inits buffer info */
+      stBufferInfo.mNumberBuffers               = 1;
+      stBufferInfo.mBuffers[0].mDataByteSize    = u32BufferFrameNumber * pstSound->stFileInfo.mBytesPerFrame;
+      stBufferInfo.mBuffers[0].mNumberChannels  = pstSound->stFileInfo.mChannelsPerFrame;
+      stBufferInfo.mBuffers[0].mData            = pBuffer;
+
+      /* For all processed buffers */
+      for(orxU32 i = iProcessedBufferNumber, u32FrameNumber = u32BufferFrameNumber; i > 0; i--)
+      {
+        /* Fills buffer */
+        if(ExtAudioFileRead(pstSound->oFileRef, &u32FrameNumber, &stBufferInfo) == 0)
+        {
+          /* Has data? */
+          if(u32FrameNumber > 0)
+          {
+            ALuint uiBuffer;
+
+            /* Unqueues buffer */
+            alSourceUnqueueBuffers(pstSound->uiSource, 1, &uiBuffer);
+            alASSERT();
+
+            /* Transfers its data */
+            alBufferData(uiBuffer, (pstSound->stFileInfo.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)(u32FrameNumber * pstSound->stFileInfo.mBytesPerFrame), (ALsizei)pstSound->stFileInfo.mSampleRate);
+            alASSERT();
+
+            /* Queues it */
+            alSourceQueueBuffers(pstSound->uiSource, 1, &uiBuffer);
+            alASSERT();
+          }
+
+          /* End of file? */
+          if(u32FrameNumber < u32BufferFrameNumber)
+          {
+            /* Should loop? */
+            if(pstSound->bLoop != orxFALSE)
+            {
+              /* Go back to the beginning of file */
+              ExtAudioFileSeek(pstSound->oFileRef, 0);
+
+              /* Resets frame number */
+              u32FrameNumber = u32BufferFrameNumber;
+            }
+            else
+            {
+              /* Stops */
+              bContinue = orxFALSE;
+              break;
+            }
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't continue streaming: can't read data from file.");
+
+          /* Stops processing */
+          bContinue = orxFALSE;
+          break;
+        }
+      }
+
+      /* Frees buffer */
+      orxMemory_Free(pBuffer);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't continue streaming: can't allocate memory for data.");
+
+      /* Stops processing */
+      bContinue = orxFALSE;
+    }
+  }
+
+  /* Should continue */
+  if(bContinue != orxFALSE)
+  {
+    /* Adds a new timer for streaming */
+    orxClock_AddGlobalTimer(orxSoundSystem_iPhone_FillStream, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, 1, pstSound);
+  }
+}
 
 static orxINLINE orxSTATUS orxSoundSystem_iPhone_OpenFile(const orxSTRING _zFilename, ExtAudioFileRef *_poFileRef, AudioStreamBasicDescription *_pstFileInfo, orxU32 *_pu32FrameNumber)
 {
@@ -175,31 +311,31 @@ static orxINLINE orxSTATUS orxSoundSystem_iPhone_OpenFile(const orxSTRING _zFile
           }
           else
           {
-            /* Outputs log */
+            /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't get file size.", _zFilename);
           }
         }
         else
         {
-          /* Outputs log */
+          /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't convert to 16bit PCM.", _zFilename);
         }
       }
       else
       {
-        /* Outputs log */
+        /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: too many channels.", _zFilename);
       }
     }
     else
     {
-      /* Outputs log */
+      /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid format.", _zFilename);
     }
   }
   else
   {
-    /* Outputs log */
+    /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't find/load the file.", _zFilename);
   }
 
@@ -323,6 +459,9 @@ void orxFASTCALL orxSoundSystem_iPhone_Exit()
     orxBank_Delete(sstSoundSystem.pstSampleBank);
     orxBank_Delete(sstSoundSystem.pstSoundBank);
 
+    /* Removes current context */
+    alcMakeContextCurrent(NULL);
+
     /* Deletes context */
     alcDestroyContext(sstSoundSystem.poContext);
     alASSERT();
@@ -387,7 +526,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_LoadSample(const orxSTR
           alASSERT();
 
           /* Stores duration */
-          pstResult->fDuration = orxU2F(u32BufferSize) / orx2F(stFileInfo.mSampleRate);
+          pstResult->fDuration = orxU2F(u32FrameNumber) / orx2F(stFileInfo.mSampleRate);
         }
         else
         {
@@ -397,7 +536,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_LoadSample(const orxSTR
           /* Updates result */
           pstResult = orxNULL;
 
-          /* Outputs log */
+          /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't read data from file.", _zFilename);
         }
 
@@ -412,7 +551,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_LoadSample(const orxSTR
         /* Updates result */
         pstResult = orxNULL;
 
-        /* Outputs log */
+        /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't allocate memory for data.", _zFilename);
       }
     }
@@ -470,6 +609,12 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateFromSample(const o
 
     /* Links sample */
     pstResult->pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pstSample;
+
+    /* Updates duration */
+    pstResult->fDuration = _pstSample->fDuration;
+
+    /* Updates status */
+    pstResult->bIsStream = orxFALSE;
   }
   else
   {
@@ -489,8 +634,147 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStreamFromFile(con
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
 
-//! TODO
+  /* Allocates sound */
+  pstResult = (orxSOUNDSYSTEM_SOUND *)orxBank_Allocate(sstSoundSystem.pstSoundBank);
 
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    orxU32 u32TotalFrameNumber;
+
+    /* Clears it */
+    orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
+
+    /* Generates openAL source */
+    alGenSources(1, &(pstResult->uiSource));
+    alASSERT();
+
+    /* Opens file */
+    if(orxSoundSystem_iPhone_OpenFile(_zFilename, &(pstResult->oFileRef), &(pstResult->stFileInfo), &u32TotalFrameNumber) != orxSTATUS_FAILURE)
+    {
+      orxU32  u32BufferFrameNumber;
+      void   *pBuffer;
+
+      /* Gets Buffer frame number */
+      u32BufferFrameNumber = pstResult->stFileInfo.mSampleRate;
+
+      /* Allocates buffer */
+      pBuffer = orxMemory_Allocate(u32BufferFrameNumber * pstResult->stFileInfo.mBytesPerFrame, orxMEMORY_TYPE_MAIN);
+
+      /* Valid? */
+      if(pBuffer != orxNULL)
+      {
+        AudioBufferList stBufferInfo;
+        orxSTATUS       eStatus = orxSTATUS_SUCCESS;
+
+        /* Inits buffer info */
+        stBufferInfo.mNumberBuffers               = 1;
+        stBufferInfo.mBuffers[0].mDataByteSize    = u32BufferFrameNumber * pstResult->stFileInfo.mBytesPerFrame;
+        stBufferInfo.mBuffers[0].mNumberChannels  = pstResult->stFileInfo.mChannelsPerFrame;
+        stBufferInfo.mBuffers[0].mData            = pBuffer;
+
+        /* Generates all openAL buffers */
+        alGenBuffers(orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER, pstResult->auiBufferList);
+        alASSERT();
+
+        /* For all buffers (till end of file)  */
+        for(orxU32 i = 0, u32FrameNumber = u32BufferFrameNumber; (u32FrameNumber == u32BufferFrameNumber) && (i < orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER); i++)
+        {
+          /* Fills it */
+          if(ExtAudioFileRead(pstResult->oFileRef, &u32FrameNumber, &stBufferInfo) == 0)
+          {
+            /* Has data? */
+            if(u32FrameNumber > 0)
+            {
+              /* Transfers its data */
+              alBufferData(pstResult->auiBufferList[i], (pstResult->stFileInfo.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)(u32FrameNumber * pstResult->stFileInfo.mBytesPerFrame), (ALsizei)pstResult->stFileInfo.mSampleRate);
+              alASSERT();
+
+              /* Queues it */
+              alSourceQueueBuffers(pstResult->uiSource, 1, &(pstResult->auiBufferList[i]));
+              alASSERT();
+            }
+          }
+          else
+          {
+            /* Fails */
+            eStatus = orxSTATUS_FAILURE;
+            break;
+          }
+        }
+
+        /* Success? */
+        if(eStatus != orxSTATUS_FAILURE)
+        {
+          /* Stores duration */
+          pstResult->fDuration = orxU2F(u32TotalFrameNumber) / orx2F(pstResult->stFileInfo.mSampleRate);
+
+          /* Updates status */
+          pstResult->bIsStream = orxTRUE;
+
+          /* Adds a timer for streaming */
+          orxClock_AddGlobalTimer(orxSoundSystem_iPhone_FillStream, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, 1, pstResult);
+        }
+        else
+        {
+          /* Disposes audio file */
+          ExtAudioFileDispose(pstResult->oFileRef);
+
+          /* Deletes openAL source */
+          alDeleteBuffers(1, &(pstResult->uiSource));
+          
+          /* Deletes openAL buffers */
+          alDeleteBuffers(orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER, pstResult->auiBufferList);
+
+          /* Deletes sound */
+          orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
+
+          /* Updates result */
+          pstResult = orxNULL;
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't read data from file.", _zFilename);
+        }
+
+        /* Deletes buffer */
+        orxMemory_Free(pBuffer);
+      }
+      else
+      {
+        /* Disposes audio file */
+        ExtAudioFileDispose(pstResult->oFileRef);
+
+        /* Deletes openAL source */
+        alDeleteBuffers(1, &(pstResult->uiSource));
+
+        /* Deletes sound */
+        orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't allocate buffer.", _zFilename);
+      }
+    }
+    else
+    {
+      /* Deletes openAL source */
+      alDeleteBuffers(1, &(pstResult->uiSource));
+
+      /* Deletes sound */
+      orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't sound structure.", _zFilename);
+  }
+  
   /* Done! */
   return pstResult;
 }
@@ -506,6 +790,17 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Delete(orxSOUNDSYSTEM_SOUND *_pstSou
   /* Deletes source */
   alDeleteSources(1, &(_pstSound->uiSource));
   alASSERT();
+
+  /* Stream? */
+  if(_pstSound->bIsStream != orxFALSE)
+  {
+    /* Dispose audio file */
+    ExtAudioFileDispose(_pstSound->oFileRef);
+
+    /* Clears buffers */
+    alDeleteBuffers(orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER, _pstSound->auiBufferList);
+    alASSERT();
+  }
 
   /* Deletes sound */
   orxBank_Free(sstSoundSystem.pstSoundBank, _pstSound);
@@ -646,8 +941,17 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Loop(orxSOUNDSYSTEM_SOUND *_pstSound
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Updates source */
-  alSourcei(_pstSound->uiSource, AL_LOOPING, (_bLoop != orxFALSE) ? AL_TRUE : AL_FALSE);
+  /* Stream? */
+  if(_pstSound->bIsStream != orxFALSE)
+  {
+    /* Updates status */
+    _pstSound->bLoop = _bLoop;
+  }
+  else
+  {
+    /* Updates source */
+    alSourcei(_pstSound->uiSource, AL_LOOPING, (_bLoop != orxFALSE) ? AL_TRUE : AL_FALSE);
+  }
 
   /* Done! */
   return eResult;
@@ -747,11 +1051,20 @@ orxBOOL orxFASTCALL orxSoundSystem_iPhone_IsLooping(const orxSOUNDSYSTEM_SOUND *
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Gets looping property */
-  alGetSourcei(_pstSound->uiSource, AL_LOOPING, &iLooping);
+  /* Stream? */
+  if(_pstSound->bIsStream != orxFALSE)
+  {
+    /* Updates result */
+    bResult = _pstSound->bLoop;
+  }
+  else
+  {
+    /* Gets looping property */
+    alGetSourcei(_pstSound->uiSource, AL_LOOPING, &iLooping);
 
-  /* Updates result */
-  bResult = (iLooping == AL_FALSE) ? orxFALSE : orxTRUE;
+    /* Updates result */
+    bResult = (iLooping == AL_FALSE) ? orxFALSE : orxTRUE;
+  }
 
   /* Done! */
   return bResult;
@@ -766,7 +1079,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_iPhone_GetDuration(const orxSOUNDSYSTEM_SOUN
   orxASSERT(_pstSound != orxNULL);
 
   /* Updates result */
-  fResult = _pstSound->pstSample->fDuration;
+  fResult = _pstSound->fDuration;
 
   /* Done! */
   return fResult;
