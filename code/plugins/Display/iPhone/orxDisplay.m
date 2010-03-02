@@ -122,7 +122,7 @@ static orxView *spoInstance;
 
 - (BOOL) CreateThreadContext;
 - (BOOL) CreateFrameBuffer;
-- (void) DeleteFrameBuffer;
+- (BOOL) CreateRenderTarget: (orxBITMAP *)_pstBitmap;
 - (void) InitRender: (orxBITMAP *)_pstBitmap;
 - (void) Swap;
 
@@ -237,6 +237,9 @@ static orxView *spoInstance;
       glEnableClientState(GL_TEXTURE_COORD_ARRAY);
       glASSERT();
 
+      /* Creates frame buffer */
+      [self CreateFrameBuffer];
+
       /* Updates result */
       bResult = YES;
     }
@@ -245,96 +248,120 @@ static orxView *spoInstance;
 
 - (BOOL) CreateFrameBuffer
 {
-  BOOL bResult;
+  BOOL bResult = YES;
 
-  /* Generates buffer IDs */
-  glGenRenderbuffersOES(1, &uiRenderBuffer);
-  glASSERT();
+  /* Generates frame buffer */
   glGenFramebuffersOES(1, &uiFrameBuffer);
   glASSERT();
 
-  /* Binds them */
+  /* Binds it */
   glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
   glASSERT();
-  glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
-  glASSERT();
 
-  /* Links them */
-  if([poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer] != NO)
+  /* Done! */
+  return bResult;
+}
+
+- (BOOL) CreateRenderTarget: (orxBITMAP *)_pstBitmap
+{
+  BOOL bResult = NO;
+
+  /* Checks */
+  orxASSERT((_pstBitmap == sstDisplay.pstScreen) && "This plugin can only render to screen.");
+
+  /* Had a render buffer? */
+  if(uiRenderBuffer != 0)
   {
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
+    /* Deletes it */
+    glDeleteRenderbuffersOES(1, &uiRenderBuffer);
     glASSERT();
-    glFlush();
+
+    /* Updates references */
+    uiRenderBuffer = 0;
+  }
+
+  /* Screen? */
+  if(_pstBitmap == sstDisplay.pstScreen)
+  {
+    /* Generates render buffer */
+    glGenRenderbuffersOES(1, &uiRenderBuffer);
+    glASSERT();
+
+    /* Binds it */
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+    glASSERT();
+
+    /* Links it to layer */
+    if([poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer] != NO)
+    {
+      /* Binds it to frame buffer */
+      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
+      glASSERT();
+      glFlush();
+      glASSERT();
+
+      /* Updates result */
+      bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
+      glASSERT();
+    }
+    else
+    {
+      /* Updates result */
+      bResult = NO;
+    }
+  }
+  else
+  {
+    /* Binds corresponding texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Links it to frame buffer */
+    glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
     glASSERT();
 
     /* Updates result */
     bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
     glASSERT();
   }
-  else
-  {
-    /* Updates result */
-    bResult = NO;
-  }
 
   /* Done! */
   return bResult;
 }
 
-- (void) DeleteFrameBuffer
-{
-  /* Deletes both buffers */
-  glDeleteRenderbuffersOES(1, &uiRenderBuffer);
-  glASSERT();
-  glDeleteFramebuffersOES(1, &uiFrameBuffer);
-  glASSERT();
-
-  /* Updates references */
-  uiFrameBuffer   = 0;
-  uiRenderBuffer  = 0;
-}
-
 - (void) InitRender: (orxBITMAP *)_pstBitmap
 {
-  /* Checks */
-  orxASSERT((_pstBitmap == sstDisplay.pstScreen) && "This plugin accept only rendering to screen.");
-
   /* Different destination bitmap? */
   if(_pstBitmap != sstDisplay.pstDestinationBitmap)
   {
-    /* Screen? */
-    if(_pstBitmap == sstDisplay.pstScreen)
-    {
-      /* Stores it */
-      sstDisplay.pstDestinationBitmap = _pstBitmap;
+    /* Stores it */
+    sstDisplay.pstDestinationBitmap = _pstBitmap;
 
-      /* Sets OpenGL context */
-      [EAGLContext setCurrentContext:poThreadContext];
+    /* Sets OpenGL context */
+    [EAGLContext setCurrentContext:poThreadContext];
 
-      /* Recreates frame buffer */
-      [self DeleteFrameBuffer];
-      [self CreateFrameBuffer];
+    /* Recreates render target */
+    [self CreateRenderTarget:_pstBitmap];
 
-      /* Inits viewport */
-      glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
-      glASSERT();
+    /* Inits viewport */
+    glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
+    glASSERT();
 
-      /* Inits matrices */
-      glMatrixMode(GL_PROJECTION);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-      glOrthof(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
-      glASSERT();
-      glMatrixMode(GL_MODELVIEW);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-    }
-    else
-    {
-      //! TODO: non-screen texture destination
-    }
+    /* Inits matrices */
+    glMatrixMode(GL_PROJECTION);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+    glOrthof(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+    glASSERT();
+    glMatrixMode(GL_MODELVIEW);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+  }
+  else
+  {
+    //! TODO: non-screen texture destination
   }
 }
 
