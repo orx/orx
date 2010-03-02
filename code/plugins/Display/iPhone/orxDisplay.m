@@ -90,6 +90,8 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBANK    *pstBitmapBank;
   orxBOOL     bDefaultSmoothing;
   orxBITMAP  *pstScreen;
+  orxBITMAP  *pstDestinationBitmap;
+  orxBITMAP  *pstLastBitmap;
   orxView    *poView;
   orxU32      u32Flags;
 
@@ -120,7 +122,7 @@ static orxView *spoInstance;
 - (BOOL) CreateThreadContext;
 - (BOOL) CreateFrameBuffer;
 - (void) DeleteFrameBuffer;
-- (void) InitRender;
+- (void) InitRender: (orxBITMAP *)_pstBitmap;
 - (void) Swap;
 
 @end
@@ -201,16 +203,6 @@ static orxView *spoInstance;
   return oResult;
 }
 
-- (void) layoutSubviews
-{
-  /* Sets current OpenGL context */
-  [EAGLContext setCurrentContext:poMainContext];
-
-  /* Recreates frame buffer */
-  [self DeleteFrameBuffer];
-  [self CreateFrameBuffer];
-}
-
 - (BOOL) CreateThreadContext
 {
   EAGLSharegroup *poGroup;
@@ -267,7 +259,7 @@ static orxView *spoInstance;
   glASSERT();
 
   /* Links them */
-  if([poMainContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer] != NO)
+  if([poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer] != NO)
   {
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
     glASSERT();
@@ -301,33 +293,54 @@ static orxView *spoInstance;
   uiRenderBuffer  = 0;
 }
 
-- (void) InitRender
+- (void) InitRender: (orxBITMAP *)_pstBitmap
 {
-  /* Sets OpenGL context */
-  [EAGLContext setCurrentContext:poThreadContext];
+  /* Checks */
+  orxASSERT((_pstBitmap == sstDisplay.pstScreen) && "This plugin accept only rendering to screen.");
 
-  glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
-  glASSERT();
-  glViewport(0, 0, sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight);
-  glASSERT();
+  /* Different destination bitmap? */
+  if(_pstBitmap != sstDisplay.pstDestinationBitmap)
+  {
+    /* Screen? */
+    if(_pstBitmap == sstDisplay.pstScreen)
+    {
+      /* Stores it */
+      sstDisplay.pstDestinationBitmap = _pstBitmap;
 
-  glMatrixMode(GL_PROJECTION);
-  glASSERT();
-  glLoadIdentity();
-  glASSERT();
-  glOrthof(0.0f, sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, 0.0f, -1.0f, 1.0f);
-  glASSERT();
-  glMatrixMode(GL_MODELVIEW);
-  glASSERT();
-  glLoadIdentity();
-  glASSERT();
+      /* Sets OpenGL context */
+      [EAGLContext setCurrentContext:poThreadContext];
+
+      /* Recreates frame buffer */
+      [self DeleteFrameBuffer];
+      [self CreateFrameBuffer];
+
+      /* Inits frame buffer & viewport */
+      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
+      glASSERT();
+      glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
+      glASSERT();
+
+      /* Inits matrices */
+      glMatrixMode(GL_PROJECTION);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
+      glOrthof(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+      glASSERT();
+      glMatrixMode(GL_MODELVIEW);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
+    }
+    else
+    {
+      //! TODO: non-screen texture destination
+    }
+  }
 }
 
 - (void) Swap
 {
-  /* Sets OpenGL context */
-  [EAGLContext setCurrentContext:poThreadContext];
-
   /* Binds render buffer */
   glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
   glASSERT();
@@ -418,11 +431,8 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pst
   /* Viewport rendering start? */
   if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_START)
   {
-    /* Checks */
-    orxASSERT(orxViewport_GetTexture(orxVIEWPORT(_pstEvent->hSender)) == orxTexture_GetScreenTexture());
-
     /* Inits rendering */
-    [sstDisplay.poView InitRender];
+    [sstDisplay.poView InitRender:orxTexture_GetBitmap(orxViewport_GetTexture(orxVIEWPORT(_pstEvent->hSender)))];
   }
 
   /* Done! */
@@ -437,9 +447,16 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDIS
   /* Checks */
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
 
-  /* Binds source's texture */
-  glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-  glASSERT();
+  /* New bitmap? */
+  if(_pstBitmap != sstDisplay.pstLastBitmap)
+  {
+    /* Binds source's texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Stores it */
+    sstDisplay.pstLastBitmap = _pstBitmap;
+  }
 
   /* Depending on smoothing type */
   switch(_eSmoothing)
@@ -775,7 +792,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   }
   else
   {
-    /* Clear the color buffer with given color */
+    /* Clears the color buffer with given color */
     glClearColor((1.0f / 255.f) * orxU2F(orxRGBA_R(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_G(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_B(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_A(_stColor)));
     glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
@@ -817,7 +834,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColor(orxBITMAP *_pstBitmap, or
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
+  orxASSERT(_pstBitmap != orxNULL);
 
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
@@ -836,7 +853,7 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
+  orxASSERT(_pstBitmap != orxNULL);
 
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
@@ -1083,8 +1100,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap,
     glASSERT();
 
     /* Stores screen clipping */
-    glScissor(_u32TLX, orxF2U(sstDisplay.pstScreen->fHeight)
-              - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+    glScissor(_u32TLX, orxF2U(sstDisplay.pstScreen->fHeight) - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
     glASSERT();
   }
   else
