@@ -87,13 +87,14 @@ struct __orxBITMAP_t
  */
 typedef struct __orxDISPLAY_STATIC_t
 {
-  orxBANK    *pstBitmapBank;
-  orxBOOL     bDefaultSmoothing;
-  orxBITMAP  *pstScreen;
-  orxBITMAP  *pstDestinationBitmap;
-  orxBITMAP  *pstLastBitmap;
-  orxView    *poView;
-  orxU32      u32Flags;
+  orxBANK              *pstBitmapBank;
+  orxBOOL               bDefaultSmoothing;
+  orxBITMAP            *pstScreen;
+  orxBITMAP            *pstDestinationBitmap;
+  orxBITMAP            *pstLastBitmap;
+  orxDISPLAY_BLEND_MODE eLastBlendMode;
+  orxView              *poView;
+  orxU32                u32Flags;
 
 } orxDISPLAY_STATIC;
 
@@ -314,9 +315,7 @@ static orxView *spoInstance;
       [self DeleteFrameBuffer];
       [self CreateFrameBuffer];
 
-      /* Inits frame buffer & viewport */
-      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
-      glASSERT();
+      /* Inits viewport */
       glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
       glASSERT();
 
@@ -341,11 +340,7 @@ static orxView *spoInstance;
 
 - (void) Swap
 {
-  /* Binds render buffer */
-  glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
-  glASSERT();
-
-  /* Presents it */
+  /* Presents render buffer */
   [poThreadContext presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
@@ -537,38 +532,45 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDIS
     _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY)
   };
 
-  /* Depending on blend mode */
-  switch(_eBlendMode)
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
   {
-    case orxDISPLAY_BLEND_MODE_ALPHA:
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
     {
-      glEnable(GL_BLEND);
-      glASSERT();
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glASSERT();
-      break;
-    }
-    case orxDISPLAY_BLEND_MODE_MULTIPLY:
-    {
-      glEnable(GL_BLEND);
-      glASSERT();
-      glBlendFunc(GL_DST_COLOR, GL_ZERO);
-      glASSERT();
-      break;
-    }
-    case orxDISPLAY_BLEND_MODE_ADD:
-    {
-      glEnable(GL_BLEND);
-      glASSERT();
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-      glASSERT();
-      break;
-    }
-    default:
-    {
-      glDisable(GL_BLEND);
-      glASSERT();
-      break;
+      case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+        break;
+      }
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+        break;
+      }
+      case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+        break;
+      }
+      default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+        break;
+      }
     }
   }
 
@@ -1256,6 +1258,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         sstDisplay.pstScreen->fHeight = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
+        sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
 
         /* Pops config section */
         orxConfig_PopSection();
