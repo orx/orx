@@ -220,6 +220,9 @@ static orxSTATUS (*spfnRun)() = orxNULL;
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
 
+  /* Binds accelerometer */
+  [UIAccelerometer sharedAccelerometer].delegate = self;
+
   /* Activates window */
   [poWindow makeKeyAndVisible];
 }

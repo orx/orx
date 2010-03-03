@@ -66,7 +66,7 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
   /* Has Generator? */
   if(spstGenerator)
   {
-    orxVECTOR vMousePos;
+    orxVECTOR vMousePos, vGravity;
 
     /* Gets mouse position in world space */
     if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
@@ -84,6 +84,16 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
 
       /* Updates its status */
       orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
+    }
+
+    /* Gets first joystick's axes values (from accelerometer) */
+    orxVector_Set(&vGravity, orxJoystick_GetAxisValue(0, orxJOYSTICK_AXIS_X), -orxJoystick_GetAxisValue(0, orxJOYSTICK_AXIS_Y), orxFLOAT_0);
+
+    /* Non null? */
+    if(!orxVector_IsNull(&vGravity))
+    {
+      /* Updates gravity's strength and applies it */
+      orxPhysics_SetGravity(orxVector_Mulf(&vGravity, orxVector_Normalize(&vGravity, &vGravity), orx2F(1000.0f)));
     }
   }
 }
