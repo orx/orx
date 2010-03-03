@@ -53,7 +53,7 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
 
-    /* Adds bip sound one one of them */
+    /* Adds bip sound on one of them */
     orxObject_AddSound(orxOBJECT(_pstEvent->hSender), "Bip");
   }
 
