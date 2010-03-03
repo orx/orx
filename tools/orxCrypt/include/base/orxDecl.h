@@ -39,6 +39,10 @@
 #ifndef _orxDECL_H_
 #define _orxDECL_H_
 
+#ifdef __APPLE__
+  #include "TargetConditionals.h"
+#endif /* __APPLE__ */
+
 
 /* *** Platform dependent base declarations */
 
@@ -101,7 +105,7 @@
     #define __orxLINUX__
 
   /* IPhone? */
-  #elif defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+  #elif defined(TARGET_OS_IPHONE)
 
     #define __orxIPHONE__
 
@@ -128,7 +132,6 @@
 
   #define orxIMPORT             "C"
   #define __orxCPP__
-  #undef __orxOBJC__
 
 #else /* __cplusplus */
 

@@ -101,9 +101,9 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
  */
 typedef struct __orxANIM_CUSTOM_EVENT_t
 {
-  orxSTRING     zName;                        /**< Event name : 4 */
-  orxFLOAT      fValue;                       /**< Event value : 8 */
-  orxFLOAT      fTimeStamp;                   /**< Timestamo : 12 */
+  const orxSTRING zName;                      /**< Event name : 4 */
+  orxFLOAT        fValue;                     /**< Event value : 8 */
+  orxFLOAT        fTimeStamp;                 /**< Timestamo : 12 */
 
 } orxANIM_CUSTOM_EVENT;
 

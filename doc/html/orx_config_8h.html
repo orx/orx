@@ -24,6 +24,17 @@
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxBOOL(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gf674028c51a7667169a85d34ace5734d">orxCONFIG_SAVE_FUNCTION</a> )(const orxSTRING _zSectionName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)</td></tr>
 
+<tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gd70a5ee64ac35b8fdd9cdaf3e4a1d267">orxCONFIG_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_config.html#ggd70a5ee64ac35b8fdd9cdaf3e4a1d267ce45d5a2a874a2b0c4daf9744b323c5f">orxCONFIG_EVENT_RELOAD_START</a> =  0, 
+<a class="el" href="group__orx_config.html#ggd70a5ee64ac35b8fdd9cdaf3e4a1d267d96d0686abd8e988b94f67b74e41de44">orxCONFIG_EVENT_RELOAD_END</a>, 
+<a class="el" href="group__orx_config.html#ggd70a5ee64ac35b8fdd9cdaf3e4a1d2679e125de47cea79b01b38dd5804fcc9b8">orxCONFIG_EVENT_INVALID_TYPE_ACCESS</a>, 
+<a class="el" href="group__orx_config.html#ggd70a5ee64ac35b8fdd9cdaf3e4a1d267d0606fb3b2c94f49ee8f7a502a6af6a5">orxCONFIG_EVENT_NUMBER</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_config.html#ggd70a5ee64ac35b8fdd9cdaf3e4a1d267d9ae2558aad3b328688ae5fd9bf16230">orxCONFIG_EVENT_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gac7aef3439efd74032ebedf83d9bc830">orxConfig_Setup</a> ()</td></tr>
 
@@ -62,6 +73,11 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gf974a34a8848238975665df234042c0c">orxConfig_ProtectSection</a> (const orxSTRING _zSectionName, orxBOOL _bProtect)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g5d6afc37488e6fffdb6d4c12be6239d7">orxConfig_GetSectionCounter</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gf7e3ecdd10608757dfe219698df4f021">orxConfig_GetSection</a> (orxS32 _s32SectionIndex)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g7526b75f27415d1eff396fbaea6a3f97">orxConfig_Clear</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g0ef471810ad2d2ed9ff5e0726cacc545">orxConfig_ClearSection</a> (const orxSTRING _zSectionName)</td></tr>
@@ -82,6 +98,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g020eac8fa22c7e5b650ecd730f8b3f92">orxConfig_GetBool</a> (const orxSTRING _zKey)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gc3044aadb03cf07112eff4a60e553191">orxConfig_GetVector</a> (const orxSTRING _zKey, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvVector)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g71d5a6dcd9e8c5d835e4b480716a8ac9">orxConfig_DuplicateRawValue</a> (const orxSTRING _zKey)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g63e87a86f8f9228bfd43f549fe8d0fcc">orxConfig_SetS32</a> (const orxSTRING _zKey, orxS32 _s32Value)</td></tr>
 

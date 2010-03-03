@@ -2950,6 +2950,58 @@ orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, or
   return eResult;
 }
 
+/** Gets section counter
+ * @return Section counter
+ */
+orxS32 orxFASTCALL orxConfig_GetSectionCounter()
+{
+  orxS32 s32Result;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  s32Result = orxLinkList_GetCounter(&(sstConfig.stSectionList));
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Gets section at the given index
+ * @param[in] _s32SectionIndex  Index of the desired section
+ * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
+ */
+const orxSTRING orxFASTCALL orxConfig_GetSection(orxS32 _s32SectionIndex)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if(_s32SectionIndex < orxConfig_GetSectionCounter())
+  {
+    orxCONFIG_SECTION  *pstSection;
+    orxS32              i;
+
+    /* Finds correct entry */
+    for(i = _s32SectionIndex, pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+        i > 0;
+        i--, pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)));
+
+    /* Updates result */
+    zResult = pstSection->zName;
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Clears all config data
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -3251,6 +3303,54 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pv
 
   /* Done! */
   return pvResult;
+}
+
+/** Duplicates a raw value (string) from config
+ * @param[in] _zKey             Key name
+ * @return The value
+ */
+orxSTRING orxFASTCALL orxConfig_DuplicateRawValue(const orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTRING         zResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Not in block mode? */
+    if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+    {
+      /* Restores string */
+      orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+
+      /* Duplicates its content */
+      zResult = orxString_Duplicate(pstEntry->stValue.zValue);
+
+      /* Computes working value */
+      orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+    }
+    else
+    {
+      /* Duplicates its content */
+      zResult = orxString_Duplicate(pstEntry->stValue.zValue);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxNULL;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Writes an integer value to config

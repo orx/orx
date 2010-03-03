@@ -163,6 +163,17 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(const orxSTRING _zS
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect);
 
+/** Gets section counter
+ * @return Section counter
+ */
+extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetSectionCounter();
+
+/** Gets section at the given index
+ * @param[in] _s32SectionIndex  Index of the desired section
+ * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetSection(orxS32 _s32SectionIndex);
+
 /** Clears all config info
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -222,6 +233,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(const orxSTRING _zKey)
  * @return The value
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector);
+
+/** Duplicates a raw value (string) from config
+ * @param[in] _zKey             Key name
+ * @return The value. If non-null, needs to be deleted by the caller with orxString_Delete()
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL orxConfig_DuplicateRawValue(const orxSTRING _zKey);
 
 
 /** Writes a signed integer value to config
@@ -330,8 +347,8 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
 
-/** Gets key counter for the current section
- * @return Key counter the current section if valid, 0 otherwise
+/** Gets key counter of the current section
+ * @return Key counter of the current section if valid, 0 otherwise
  */
 extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetKeyCounter();
 

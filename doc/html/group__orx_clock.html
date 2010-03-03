@@ -135,11 +135,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gd1d377c0cfe953d16d614b44bae42e6c">orxClock_AddTimer</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, const <a class="el" href="group__orx_clock.html#gc7e3bed26af64a3b844f0e0ba0500032">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, void *_pContext)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g50dd38a927a67e65020b3cec3ad18242">orxClock_RemoveTimer</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, const <a class="el" href="group__orx_clock.html#gc7e3bed26af64a3b844f0e0ba0500032">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g91ec6432930cb6e82aece88db328d2ab">orxClock_RemoveTimer</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, const <a class="el" href="group__orx_clock.html#gc7e3bed26af64a3b844f0e0ba0500032">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay, void *_pContext)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g153e90a40237dabd7a1e5025ec4b8e33">orxClock_AddGlobalTimer</a> (const <a class="el" href="group__orx_clock.html#gc7e3bed26af64a3b844f0e0ba0500032">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, void *_pContext)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gd8e19db6815b2748525e92b885b0af45">orxClock_RemoveGlobalTimer</a> (const <a class="el" href="group__orx_clock.html#gc7e3bed26af64a3b844f0e0ba0500032">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g7dbc62f47c69c28a34d697766bde8c5d">orxClock_RemoveGlobalTimer</a> (const <a class="el" href="group__orx_clock.html#gc7e3bed26af64a3b844f0e0ba0500032">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay, void *_pContext)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -892,7 +892,7 @@ Registers a callback function to a clock <dl compact><dt><b>Parameters:</b></dt>
 
 </div>
 </div><p>
-<a class="anchor" name="gd8e19db6815b2748525e92b885b0af45"></a><!-- doxytag: member="orxClock.h::orxClock_RemoveGlobalTimer" ref="gd8e19db6815b2748525e92b885b0af45" args="(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay)" -->
+<a class="anchor" name="g7dbc62f47c69c28a34d697766bde8c5d"></a><!-- doxytag: member="orxClock.h::orxClock_RemoveGlobalTimer" ref="g7dbc62f47c69c28a34d697766bde8c5d" args="(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -906,7 +906,13 @@ Registers a callback function to a clock <dl compact><dt><b>Parameters:</b></dt>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxFLOAT&nbsp;</td>
-          <td class="paramname"> <em>_fDelay</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>_fDelay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>_pContext</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -922,13 +928,14 @@ Removes a global timer function (ie. from the main core clock) <dl compact><dt><
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnCallback</em>&nbsp;</td><td>Concerned timer callback to remove </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fDelay</em>&nbsp;</td><td>Delay between 2 calls of the timer to remove, -1.0f for removing all occurences regardless of their respective delay </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pContext</em>&nbsp;</td><td>Context of the timer to remove, orxNULL for removing all occurrences regardless of their context </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
-<a class="anchor" name="g50dd38a927a67e65020b3cec3ad18242"></a><!-- doxytag: member="orxClock.h::orxClock_RemoveTimer" ref="g50dd38a927a67e65020b3cec3ad18242" args="(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay)" -->
+<a class="anchor" name="g91ec6432930cb6e82aece88db328d2ab"></a><!-- doxytag: member="orxClock.h::orxClock_RemoveTimer" ref="g91ec6432930cb6e82aece88db328d2ab" args="(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -948,7 +955,13 @@ Removes a global timer function (ie. from the main core clock) <dl compact><dt><
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxFLOAT&nbsp;</td>
-          <td class="paramname"> <em>_fDelay</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>_fDelay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>_pContext</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -965,6 +978,7 @@ Removes a timer function from a clock <dl compact><dt><b>Parameters:</b></dt><dd
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstClock</em>&nbsp;</td><td>Concerned clock </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnCallback</em>&nbsp;</td><td>Concerned timer callback to remove </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fDelay</em>&nbsp;</td><td>Delay between 2 calls of the timer to remove, -1.0f for removing all occurences regardless of their respective delay </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pContext</em>&nbsp;</td><td>Context of the timer to remove, orxNULL for removing all occurrences regardless of their context </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

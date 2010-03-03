@@ -44,7 +44,7 @@
 typedef struct __orxBANK_SEGMENT_t
 {
   orxU32                     *pu32FreeElemBits; /**< List of bits that represents free and used elements in the segment */
-  void                    *pSegmentData;      /**< Pointer address on the head of the segment data cells */
+  void                       *pSegmentData;     /**< Pointer address on the head of the segment data cells */
   struct __orxBANK_SEGMENT_t *pstNext;          /**< Pointer on the next segment */
   orxU16                      u16NbFree;        /**< Number of free elements in the segment */
 

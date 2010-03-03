@@ -69,6 +69,7 @@ typedef enum __orxEVENT_TYPE_t
 {
   orxEVENT_TYPE_ANIM = 0,
   orxEVENT_TYPE_CLOCK,
+  orxEVENT_TYPE_CONFIG,
   orxEVENT_TYPE_FX,
   orxEVENT_TYPE_INPUT,
   orxEVENT_TYPE_JOYSTICK,
