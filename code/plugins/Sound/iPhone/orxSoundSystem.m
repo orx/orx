@@ -49,7 +49,7 @@
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE             32
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER  4
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE    16384
-#define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY      orx2F(0.05f)
+#define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY      orx2F(0.1f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO orx2F(0.01f)
 
 #ifdef __orxDEBUG__
@@ -173,6 +173,7 @@ static void orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_pstInfo, void
     else
     {
       /* Gets number of processed buffers */
+      iBufferNumber = 0;
       alGetSourcei(pstSound->uiSource, AL_BUFFERS_PROCESSED, &iBufferNumber);
       alASSERT();
 
@@ -183,7 +184,7 @@ static void orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_pstInfo, void
         puiBufferList = auiLocalBufferList;
 
         /* Unqueues them all */
-        alSourceUnqueueBuffers(pstSound->uiSource, iBufferNumber, puiBufferList);
+        alSourceUnqueueBuffers(pstSound->uiSource, orxMIN(iBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), puiBufferList);
         alASSERT();
       }
     }
@@ -301,7 +302,7 @@ static void orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_pstInfo, void
         ALuint auiDummy[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
 
         /* Unqueues them */
-        alSourceUnqueueBuffers(pstSound->uiSource, iQueuedBufferNumber, auiDummy);
+        alSourceUnqueueBuffers(pstSound->uiSource, orxMIN(iQueuedBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), auiDummy);
         alASSERT();
       }
     }
