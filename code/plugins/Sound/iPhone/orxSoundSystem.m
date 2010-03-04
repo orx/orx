@@ -916,7 +916,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetAttenuation(orxSOUNDSYSTEM_SOUND 
   orxASSERT(_pstSound != orxNULL);
 
   /* Set source's roll off factor */
-  alSourcef(_pstSound->uiSource, AL_ROLLOFF_FACTOR, sstSoundSystem.fDimensionRatio * _fAttenuation);
+  alSourcef(_pstSound->uiSource, AL_ROLLOFF_FACTOR, sstSoundSystem.fRecDimensionRatio * _fAttenuation);
   alASSERT();
 
   /* Done! */
@@ -1029,7 +1029,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_iPhone_GetAttenuation(const orxSOUNDSYSTEM_S
   alASSERT();
 
   /* Updates result */
-  fResult *= sstSoundSystem.fRecDimensionRatio;
+  fResult *= sstSoundSystem.fDimensionRatio;
 
   /* Done! */
   return fResult;
