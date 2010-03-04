@@ -63,6 +63,7 @@
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_FAR       "FrustumFar"
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH     "FrustumWidth"
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT    "FrustumHeight"
+#define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
 
 #define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   8           /**< Reference table size */
 
@@ -320,8 +321,9 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
-        orxVECTOR vPosition;
-        orxFLOAT  fNear, fFar, fWidth, fHeight;
+        orxVECTOR       vPosition;
+        const orxSTRING zParentName;
+        orxFLOAT        fNear, fFar, fWidth, fHeight;
 
         /* Gets frustum info */
         fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
@@ -331,6 +333,25 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* Applies it */
         orxCamera_SetFrustum(pstResult, fWidth, fHeight, fNear, fFar);
+
+        /* Gets parent name */
+        zParentName = orxConfig_GetString(orxCAMERA_KZ_CONFIG_PARENT_CAMERA);
+
+        /* Valid? */
+        if((zParentName != orxNULL) && (zParentName != orxSTRING_EMPTY))
+        {
+          orxCAMERA *pstCamera;
+
+          /* Gets camera */
+          pstCamera = orxCamera_CreateFromConfig(zParentName);
+
+          /* Valid? */
+          if(pstCamera != orxNULL)
+          {
+            /* Sets it as parent */
+            orxCamera_SetParent(pstResult, pstCamera);
+          }
+        }
 
         /* Has zoom? */
         if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_ZOOM) != orxFALSE)
