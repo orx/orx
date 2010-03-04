@@ -851,6 +851,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         && ((orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
          || (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)))
         {
+          orxVECTOR vSize;
+
+          /* Has size? */
+          if(orxObject_GetSize(pstResult, &vSize) != orxNULL)
+          {
+            /* Gets relative value */
+            orxVector_Div(&vValue, &vValue, &vSize);
+          }
+
           /* Gets world space values */
           orxVector_Mul(&vValue, &vValue, &vParentSize);
         }
