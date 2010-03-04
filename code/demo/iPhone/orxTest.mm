@@ -31,7 +31,10 @@
 
 #include "orx.h"
 
-static orxOBJECT *spstGenerator;
+
+static orxOBJECT   *spstGenerator;
+static orxVIEWPORT *spstViewport;
+
 
 static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
@@ -86,14 +89,22 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
       orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
     }
 
-    /* Gets first joystick's axes values (from accelerometer) */
-    orxVector_Set(&vGravity, orxJoystick_GetAxisValue(0, orxJOYSTICK_AXIS_X), -orxJoystick_GetAxisValue(0, orxJOYSTICK_AXIS_Y), orxFLOAT_0);
+    /* Gets gravity vector from input */
+    orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
 
-    /* Non null? */
-    if(!orxVector_IsNull(&vGravity))
+    /* Significant enough? */
+    if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
     {
-      /* Updates gravity's strength and applies it */
-      orxPhysics_SetGravity(orxVector_Mulf(&vGravity, orxVector_Normalize(&vGravity, &vGravity), orx2F(1000.0f)));
+      static orxVECTOR svSmoothedGravity =
+      {
+        orxFLOAT_0, -orxFLOAT_1, orxFLOAT_0
+      };
+
+      /* Gets smoothed gravity from new value (low-pass filter) */
+      orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.1f));
+
+      /* Updates camera rotation */
+      orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
     }
   }
 }
@@ -110,7 +121,7 @@ static void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 static orxSTATUS orxFASTCALL Init()
 {
   /* Creates viewport */
-  orxViewport_CreateFromConfig("Viewport");
+  spstViewport = orxViewport_CreateFromConfig("Viewport");
 
   /* Creates generator */
   spstGenerator = orxObject_CreateFromConfig("Generator");

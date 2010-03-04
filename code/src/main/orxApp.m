@@ -68,8 +68,9 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
   
-  /* Binds accelerometer */
-  [UIAccelerometer sharedAccelerometer].delegate = self;
+  /* Inits and binds accelerometer */
+  [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / 60.0f];
+  [[UIAccelerometer sharedAccelerometer] setDelegate: self];
   
   /* Activates window */
   [poWindow makeKeyAndVisible];
