@@ -52,6 +52,7 @@
 
 #define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
 #define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
+#define orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH    0x00000004  /**< Ignore path flag */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
@@ -88,6 +89,7 @@
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_HISTORY               "History"   /**< Keep config history */
+#define orxCONFIG_KZ_CONFIG_IGNORE_PATH           "IgnorePath"/**< Ignore paths in config */
 
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
@@ -240,6 +242,13 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
   {
     orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
     const orxCHAR  *pcInput;
+
+    /* Should ignore path? */
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH))
+    {
+      /* Updates value */
+      _zValue = orxString_SkipPath(_zValue);
+    }
 
     /* For all characters */
     for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
@@ -1571,6 +1580,8 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     /* Valid? */
     if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
+      orxBOOL bReload = orxFALSE;
+
       /* Inits Flags */
       orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY, orxCONFIG_KU32_STATIC_MASK_ALL);
 
@@ -1583,6 +1594,16 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       /* Pushes config section */
       orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION);
 
+      /* Shoulds ignore path? */
+      if(orxConfig_GetBool(orxCONFIG_KZ_CONFIG_IGNORE_PATH) != orxFALSE)
+      {
+        /* Updates status */
+        orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+        /* Asks for reload */
+        bReload = orxTRUE;
+      }
+
       /* Should keep history? */
       if(orxConfig_GetBool(orxCONFIG_KZ_CONFIG_HISTORY) != orxFALSE)
       {
@@ -1594,6 +1615,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
         {
           /* Updates flags */
           orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+          /* Asks for reload */
+          bReload = orxTRUE;
         }
         else
         {
@@ -1615,6 +1639,16 @@ orxSTATUS orxFASTCALL orxConfig_Init()
 
       /* Pops section */
       orxConfig_PopSection();
+
+      /* Should reload? */
+      if(bReload != orxFALSE)
+      {
+        /* Clears config */
+        orxConfig_Clear();
+
+        /* Reloads default config file */
+        orxConfig_Load(sstConfig.zBaseFile);
+      }
     }
     else
     {
@@ -2196,6 +2230,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     }
   }
 
+  /* Should ignore path? */
+  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH))
+  {
+    /* Updates file name */
+    _zFileName = orxString_SkipPath(_zFileName);
+  }
+
   /* Updates load counter */
   sstConfig.u32LoadCounter++;
 
@@ -2713,6 +2754,13 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     {
       /* Uses given one */
       zFileName = _zFileName;
+    }
+
+    /* Should ignore path? */
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH))
+    {
+      /* Updates file name */
+      zFileName = orxString_SkipPath(zFileName);
     }
 
     /* Opens file */
