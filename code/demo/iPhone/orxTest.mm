@@ -64,60 +64,6 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
-{
-  /* Has Generator? */
-  if(spstGenerator)
-  {
-    orxVECTOR vMousePos, vGravity;
-
-    /* Gets mouse position in world space */
-    if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
-    {
-      orxVECTOR vGeneratorPos;
-
-      /* Gets generator position */
-      orxObject_GetPosition(spstGenerator, &vGeneratorPos);
-
-      /* Updates mouse position's Z coord */
-      vMousePos.fZ = vGeneratorPos.fZ;
-
-      /* Updates its position */
-      orxObject_SetPosition(spstGenerator, &vMousePos);
-
-      /* Updates its status */
-      orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
-    }
-
-    /* Gets gravity vector from input */
-    orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
-
-    /* Significant enough? */
-    if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
-    {
-      static orxVECTOR svSmoothedGravity =
-      {
-        orxFLOAT_0, -orxFLOAT_1, orxFLOAT_0
-      };
-
-      /* Gets smoothed gravity from new value (low-pass filter) */
-      orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
-
-      /* Updates camera rotation */
-      orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
-    }
-  }
-}
-
-static void orxFASTCALL Log(const orxCLOCK_INFO *_pstInfo, void *_pContext)
-{
-  /* Addes a new timer */
-  orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, (void *)!(orxBOOL)_pContext);
-
-  /* Tic/Tac */
-  orxLOG("%s (FPS = %ld)", _pContext ? "Tic!" : "Tac!", orxFPS_GetFPS());
-}
-
 static orxSTATUS orxFASTCALL Init()
 {
   /* Creates viewport */
@@ -129,21 +75,53 @@ static orxSTATUS orxFASTCALL Init()
   /* Creates walls */
   orxObject_CreateFromConfig("Walls");
 
-  /* Adds a timer */
-  orxClock_AddGlobalTimer(Log, orxFLOAT_1, 1, orxNULL);
-
-  /* Registers callback */
-  orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
-
   /* Registers event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
 
 static orxSTATUS orxFASTCALL Run()
 {
+  orxVECTOR vMousePos, vGravity;
+
+  /* Gets mouse position in world space */
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
+  {
+    orxVECTOR vGeneratorPos;
+
+    /* Gets generator position */
+    orxObject_GetPosition(spstGenerator, &vGeneratorPos);
+
+    /* Updates mouse position's Z coord */
+    vMousePos.fZ = vGeneratorPos.fZ;
+
+    /* Updates its position */
+    orxObject_SetPosition(spstGenerator, &vMousePos);
+
+    /* Updates its status */
+    orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
+  }
+
+  /* Gets gravity vector from input */
+  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
+
+  /* Significant enough? */
+  if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
+  {
+    static orxVECTOR svSmoothedGravity =
+    {
+      orxFLOAT_0, -orxFLOAT_1, orxFLOAT_0
+    };
+
+    /* Gets smoothed gravity from new value (low-pass filter) */
+    orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
+
+    /* Updates camera rotation */
+    orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
+  }
+
   return orxSTATUS_SUCCESS;
 }
 
