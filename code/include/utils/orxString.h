@@ -129,11 +129,13 @@ static orxINLINE const orxSTRING        orxString_SkipPath(const orxSTRING _zStr
   /* Non null? */
   if(_zString != orxNULL)
   {
+    const orxCHAR *pc;
+
     /* Updates result */
     zResult = _zString;
 
     /* For all characters */
-    for(const orxCHAR *pc = _zString; *pc != orxCHAR_NULL; pc++)
+    for(pc = _zString; *pc != orxCHAR_NULL; pc++)
     {
       /* Is a directory separator? */
       if((*pc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS))
