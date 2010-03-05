@@ -20,11 +20,11 @@
  */
 
 /**
- * @file orxMain.c
+ * @file orxiPhone.m
  * @date 03/03/2010
  * @author iarwain@orx-project.org
  *
- * iPhone orx application
+ * iPhone orx main application
  *
  */
 
@@ -35,6 +35,10 @@
 
 
 #if defined(__orxIPHONE__) && defined(__orxOBJC__)
+
+#define orxIPHONE_KZ_CONFIG_SECTION                   "iPhone"
+#define orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY   "AccelerometerFrequency"
+
 
 /** Main function pointer
  */
@@ -68,8 +72,7 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
   
-  /* Inits and binds accelerometer */
-  [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / 60.0f];
+  /* Binds accelerometer */
   [[UIAccelerometer sharedAccelerometer] setDelegate: self];
   
   /* Activates window */
@@ -104,50 +107,64 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
   orxSTATUS           eClockStatus, eMainStatus;
   orxBOOL             bStop;
   NSAutoreleasePool  *poMainPool;
-  
+
   /* Allocates main memory pool */
   poMainPool = [[NSAutoreleasePool alloc] init];
-  
+
   /* Inits the engine */
   if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-  {      
+  {
     /* Displays help */
     if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
     {
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-      
+
+      /* Pushes config section */
+      orxConfig_PushSection(orxIPHONE_KZ_CONFIG_SECTION);
+
+      /* Has valid accelerometer frequency? */
+      if((orxConfig_HasValue(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
+      && (orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) > orxFLOAT_0))
+      {
+        /* Applies it */
+        [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY)];
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
+
       /* Main loop */
       for(bStop = orxFALSE;
           bStop == orxFALSE;
           bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
       {
         NSAutoreleasePool *poPool;
-        
+
         /* Allocates memory pool */
         poPool = [[NSAutoreleasePool alloc] init];
-        
+
         /* Runs the engine */
         eMainStatus = spfnRun();
-        
+
         /* Updates clock system */
         eClockStatus = orxClock_Update();
-        
+
         /* Releases memory pool */
         [poPool release];
       }
-      
+
       /* Removes event handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
     }
-    
+
     /* Exits from engine */
     orxModule_Exit(orxMODULE_ID_MAIN);
   }
-  
+
   /* Exits from all modules */
   orxModule_ExitAll();
-  
+
   /* Releases main pool */
   [poMainPool release];
 

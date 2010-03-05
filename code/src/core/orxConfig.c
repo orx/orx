@@ -89,7 +89,7 @@
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_HISTORY               "History"   /**< Keep config history */
-#define orxCONFIG_KZ_CONFIG_IGNORE_PATH           "IgnorePath"/**< Ignore paths in config */
+#define orxCONFIG_KZ_CONFIG_IGNORE_PATH           "IgnorePath"/**< Ignore paths in config values */
 
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
@@ -2230,13 +2230,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     }
   }
 
-  /* Should ignore path? */
-  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH))
-  {
-    /* Updates file name */
-    _zFileName = orxString_SkipPath(_zFileName);
-  }
-
   /* Updates load counter */
   sstConfig.u32LoadCounter++;
 
@@ -2756,13 +2749,6 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
       zFileName = _zFileName;
     }
 
-    /* Should ignore path? */
-    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH))
-    {
-      /* Updates file name */
-      zFileName = orxString_SkipPath(zFileName);
-    }
-
     /* Opens file */
     pstFile = orxFile_Open(zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
@@ -2892,6 +2878,11 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         /* Restores previous encryption character */
         sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
       }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s>: can't open file!", _zFileName);
     }
   }
   else
