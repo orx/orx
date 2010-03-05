@@ -137,14 +137,17 @@ void orxFASTCALL orxJoystick_iPhone_Exit()
   return;
 }
 
-orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
   /* Depending on axis */
   switch(_eAxis)
   {
-    case orxJOYSTICK_AXIS_X:
+    case orxJOYSTICK_AXIS_X_1:
+    case orxJOYSTICK_AXIS_X_2:
+    case orxJOYSTICK_AXIS_X_3:
+    case orxJOYSTICK_AXIS_X_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fX;
@@ -152,7 +155,10 @@ orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_
       break;
     }
 
-    case orxJOYSTICK_AXIS_Y:
+    case orxJOYSTICK_AXIS_Y_1:
+    case orxJOYSTICK_AXIS_Y_2:
+    case orxJOYSTICK_AXIS_Y_3:
+    case orxJOYSTICK_AXIS_Y_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fY;
@@ -160,7 +166,10 @@ orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_
       break;
     }
 
-    case orxJOYSTICK_AXIS_Z:
+    case orxJOYSTICK_AXIS_Z_1:
+    case orxJOYSTICK_AXIS_Z_2:
+    case orxJOYSTICK_AXIS_Z_3:
+    case orxJOYSTICK_AXIS_Z_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fZ;
@@ -181,7 +190,7 @@ orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_
   return fResult;
 }
 
-orxBOOL orxFASTCALL orxJoystick_iPhone_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+orxBOOL orxFASTCALL orxJoystick_iPhone_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
 {
   orxBOOL bResult = orxFALSE;
 

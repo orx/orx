@@ -204,7 +204,7 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
     case orxINPUT_TYPE_JOYSTICK_BUTTON:
     {
       /* Updates result */
-      fResult = (orxJoystick_IsButtonPressed(0, (orxJOYSTICK_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+      fResult = (orxJoystick_IsButtonPressed((orxJOYSTICK_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
 
       break;
     }
@@ -212,7 +212,7 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
     case orxINPUT_TYPE_JOYSTICK_AXIS:
     {
       /* Updates result */
-      fResult = orxJoystick_GetAxisValue(0, (orxJOYSTICK_AXIS)_eID);
+      fResult = orxJoystick_GetAxisValue((orxJOYSTICK_AXIS)_eID);
 
       break;
     }

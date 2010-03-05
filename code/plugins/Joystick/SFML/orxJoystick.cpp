@@ -160,61 +160,86 @@ extern "C" void orxFASTCALL orxJoystick_SFML_Exit()
   return;
 }
 
-extern "C" orxFLOAT orxFASTCALL orxJoystick_SFML_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+extern "C" orxFLOAT orxFASTCALL orxJoystick_SFML_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 {
   sf::Joy::Axis eSFMLAxis;
   orxFLOAT      fResult;
+  orxU32        u32ID;
 
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
   orxASSERT(_eAxis < orxJOYSTICK_AXIS_NUMBER);
 
+  /* Gets ID */
+  u32ID = (orxU32)_eAxis / orxJOYSTICK_AXIS_SINGLE_NUMBER;
+
   /* Depending on axis */
   switch(_eAxis)
   {
-    case orxJOYSTICK_AXIS_X:
+    case orxJOYSTICK_AXIS_X_1:
+    case orxJOYSTICK_AXIS_X_2:
+    case orxJOYSTICK_AXIS_X_3:
+    case orxJOYSTICK_AXIS_X_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisX;
       break;
     }
 
-    case orxJOYSTICK_AXIS_Y:
+    case orxJOYSTICK_AXIS_Y_1:
+    case orxJOYSTICK_AXIS_Y_2:
+    case orxJOYSTICK_AXIS_Y_3:
+    case orxJOYSTICK_AXIS_Y_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisY;
       break;
     }
 
-    case orxJOYSTICK_AXIS_Z:
+    case orxJOYSTICK_AXIS_Z_1:
+    case orxJOYSTICK_AXIS_Z_2:
+    case orxJOYSTICK_AXIS_Z_3:
+    case orxJOYSTICK_AXIS_Z_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisZ;
       break;
     }
 
-    case orxJOYSTICK_AXIS_R:
+    case orxJOYSTICK_AXIS_R_1:
+    case orxJOYSTICK_AXIS_R_2:
+    case orxJOYSTICK_AXIS_R_3:
+    case orxJOYSTICK_AXIS_R_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisR;
       break;
     }
 
-    case orxJOYSTICK_AXIS_U:
+    case orxJOYSTICK_AXIS_U_1:
+    case orxJOYSTICK_AXIS_U_2:
+    case orxJOYSTICK_AXIS_U_3:
+    case orxJOYSTICK_AXIS_U_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisU;
       break;
     }
 
-    case orxJOYSTICK_AXIS_V:
+    case orxJOYSTICK_AXIS_V_1:
+    case orxJOYSTICK_AXIS_V_2:
+    case orxJOYSTICK_AXIS_V_3:
+    case orxJOYSTICK_AXIS_V_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisV;
       break;
     }
 
-    case orxJOYSTICK_AXIS_POV:
+    case orxJOYSTICK_AXIS_POV_1:
+    case orxJOYSTICK_AXIS_POV_2:
+    case orxJOYSTICK_AXIS_POV_3:
+    case orxJOYSTICK_AXIS_POV_4:
     {
       /* Gets SFML axis */
       eSFMLAxis = sf::Joy::AxisPOV;
@@ -233,7 +258,7 @@ extern "C" orxFLOAT orxFASTCALL orxJoystick_SFML_GetAxisValue(orxU32 _u32ID, orx
   if(eSFMLAxis < sf::Joy::Count)
   {
     /* Updates result */
-    fResult = sstJoystick.poInput->GetJoystickAxis(_u32ID, eSFMLAxis);
+    fResult = sstJoystick.poInput->GetJoystickAxis(u32ID, eSFMLAxis);
   }
   else
   {
@@ -245,7 +270,7 @@ extern "C" orxFLOAT orxFASTCALL orxJoystick_SFML_GetAxisValue(orxU32 _u32ID, orx
   return fResult;
 }
 
-extern "C" orxBOOL orxFASTCALL orxJoystick_SFML_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+extern "C" orxBOOL orxFASTCALL orxJoystick_SFML_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
 {
   orxBOOL bResult;
 
@@ -254,7 +279,7 @@ extern "C" orxBOOL orxFASTCALL orxJoystick_SFML_IsButtonPressed(orxU32 _u32ID, o
   orxASSERT(_eButton < orxJOYSTICK_BUTTON_NUMBER);
 
   /* Updates result */
-  bResult = sstJoystick.poInput->IsJoystickButtonDown(_u32ID, _eButton) ? orxTRUE : orxFALSE;
+  bResult = sstJoystick.poInput->IsJoystickButtonDown((orxU32)_eButton / orxJOYSTICK_BUTTON_SINGLE_NUMBER, (orxU32)_eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;

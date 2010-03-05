@@ -61,7 +61,7 @@ void orxFASTCALL orxJoystick_Dummy_Exit()
   return;
 }
 
-orxFLOAT orxFASTCALL orxJoystick_Dummy_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+orxFLOAT orxFASTCALL orxJoystick_Dummy_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -69,7 +69,7 @@ orxFLOAT orxFASTCALL orxJoystick_Dummy_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_A
   return fResult;
 }
 
-orxBOOL orxFASTCALL orxJoystick_Dummy_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+orxBOOL orxFASTCALL orxJoystick_Dummy_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
 {
   orxBOOL bResult = orxFALSE;
 

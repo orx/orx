@@ -193,27 +193,36 @@ void orxFASTCALL orxJoystick_SDL_Exit()
   return;
 }
 
-orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 {
-  orxFLOAT fResult;
+  orxU32    u32ID;
+  orxFLOAT  fResult;
 
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
   orxASSERT(_eAxis < orxJOYSTICK_AXIS_NUMBER);
 
+  /* Gets ID */
+  u32ID = (orxU32)_eAxis / orxJOYSTICK_AXIS_SINGLE_NUMBER;
+
   /* Is ID valid? */
-  if(_u32ID < sstJoystick.u32JoystickNumber)
+  if(u32ID < sstJoystick.u32JoystickNumber)
   {
+    orxU32 u32Axis;
+
+    /* Gets axis */
+    u32Axis = _eAxis % orxJOYSTICK_AXIS_SINGLE_NUMBER;
+  
     /* Is axis valid? */
-    if(_eAxis < SDL_JoystickNumAxes(sstJoystick.apstJoystickList[_u32ID]))
+    if(u32Axis < SDL_JoystickNumAxes(sstJoystick.apstJoystickList[u32ID]))
     {
       /* Updates result */
-      fResult = orxS2F(SDL_JoystickGetAxis(sstJoystick.apstJoystickList[_u32ID], _eAxis));
+      fResult = orxS2F(SDL_JoystickGetAxis(sstJoystick.apstJoystickList[u32ID], u32Axis));
     }
     else
     {
       /* Logs message */
-      orxLOG("Requested axis <%s> for joystick ID <%ld> is out of range.", orxJoystick_GetAxisName(_eAxis), _u32ID);
+      orxLOG("Requested axis <%s> (joystick ID <%ld>) is out of range.", orxJoystick_GetAxisName(_eAxis), u32ID);
 
       /* Updates result */
       fResult = orxFLOAT_0;
@@ -222,7 +231,7 @@ orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXI
   else
   {
     /* Logs message */
-    orxLOG("Requested joystick ID <%ld> is invalid.", _u32ID);
+    orxLOG("Requested joystick ID <%ld> is out of range.", u32ID);
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -232,27 +241,36 @@ orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXI
   return fResult;
 }
 
-orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
 {
+  orxU32  u32ID;
   orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
   orxASSERT(_eButton < orxJOYSTICK_BUTTON_NUMBER);
 
+  /* Gets ID */
+  u32ID = (orxU32)_eButton / orxJOYSTICK_BUTTON_SINGLE_NUMBER;
+
   /* Is ID valid? */
-  if(_u32ID < sstJoystick.u32JoystickNumber)
+  if(u32ID < sstJoystick.u32JoystickNumber)
   {
+    orxU32 u32Button;
+
+    /* Gets button */
+    u32Button = (orxU32)_eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER;
+
     /* Is button valid? */
-    if(_eButton < SDL_JoystickNumButtons(sstJoystick.apstJoystickList[_u32ID]))
+    if(u32Button < SDL_JoystickNumButtons(sstJoystick.apstJoystickList[u32ID]))
     {
       /* Updates result */
-      bResult = SDL_JoystickGetButton(sstJoystick.apstJoystickList[_u32ID], _eButton) ? orxTRUE : orxFALSE;
+      bResult = SDL_JoystickGetButton(sstJoystick.apstJoystickList[u32ID], u32Button) ? orxTRUE : orxFALSE;
     }
     else
     {
       /* Logs message */
-      orxLOG("Requested button <%s> for joystick ID <%ld> is out of range.", orxJoystick_GetButtonName(_eButton), _u32ID);
+      orxLOG("Requested button <%s> (joystick ID <%ld>) is out of range.", orxJoystick_GetButtonName(_eButton), u32ID);
 
       /* Updates result */
       bResult = orxFALSE;
@@ -261,7 +279,7 @@ orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_B
   else
   {
     /* Logs message */
-    orxLOG("Requested joystick ID <%ld> is invalid.", _u32ID);
+    orxLOG("Requested joystick ID <%ld> is out of range.", u32ID);
 
     /* Updates result */
     bResult = orxFALSE;
