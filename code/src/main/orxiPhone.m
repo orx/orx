@@ -72,9 +72,6 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
   
-  /* Binds accelerometer */
-  [[UIAccelerometer sharedAccelerometer] setDelegate: self];
-  
   /* Activates window */
   [poWindow makeKeyAndVisible];
 }
@@ -124,11 +121,22 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
       orxConfig_PushSection(orxIPHONE_KZ_CONFIG_SECTION);
 
       /* Has valid accelerometer frequency? */
-      if((orxConfig_HasValue(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
-      && (orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) > orxFLOAT_0))
+      if(orxConfig_HasValue(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
       {
-        /* Applies it */
-        [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY)];
+        /* Valid? */
+        if(orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) > orxFLOAT_0)
+        {
+          /* Applies it */
+          [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY)];
+
+          /* Binds accelerometer */
+          [[UIAccelerometer sharedAccelerometer] setDelegate: (orxAppDelegate *)[[UIApplication sharedApplication] delegate]];
+        }
+      }
+      else
+      {
+        /* Binds accelerometer */
+        [[UIAccelerometer sharedAccelerometer] setDelegate: (orxAppDelegate *)[[UIApplication sharedApplication] delegate]];
       }
 
       /* Pops config section */
