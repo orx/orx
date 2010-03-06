@@ -94,10 +94,10 @@ static orxSTATUS orxFASTCALL Run()
     /* Gets generator position */
     orxObject_GetPosition(spstGenerator, &vGeneratorPos);
 
-    /* Updates mouse position's Z coord */
+    /* Keeps generator's Z coord */
     vMousePos.fZ = vGeneratorPos.fZ;
 
-    /* Updates its position */
+    /* Updates generator's position */
     orxObject_SetPosition(spstGenerator, &vMousePos);
 
     /* Updates its status */
