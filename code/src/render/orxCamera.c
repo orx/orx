@@ -65,7 +65,7 @@
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT    "FrustumHeight"
 #define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
 
-#define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   8           /**< Reference table size */
+#define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   4           /**< Reference table size */
 
 
 /***************************************************************************
@@ -186,8 +186,16 @@ orxSTATUS orxFASTCALL orxCamera_Init()
   }
   else
   {
+    /* Has reference table? */
+    if(sstCamera.pstReferenceTable != orxNULL)
+    {
+      /* Deletes it */
+      orxHashTable_Delete(sstCamera.pstReferenceTable);
+      sstCamera.pstReferenceTable = orxNULL;
+    }
+
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register link list storage structure.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Initializing camera module failed.");
   }
 
   /* Done! */
@@ -209,6 +217,7 @@ void orxFASTCALL orxCamera_Exit()
 
     /* Deletes reference table */
     orxHashTable_Delete(sstCamera.pstReferenceTable);
+    sstCamera.pstReferenceTable = orxNULL;
 
     /* Updates flags */
     sstCamera.u32Flags &= ~orxCAMERA_KU32_STATIC_FLAG_READY;

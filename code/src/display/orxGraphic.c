@@ -210,7 +210,7 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed registering link list structure.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing graphic module failed.");
   }
 
   /* Done! */
@@ -323,9 +323,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             {
               orxVECTOR vTextureCorner, vTextureSize;
 
-              /* Gets both corners */
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &(vTextureCorner));
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &(vTextureSize));
+              /* Gets both values */
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vTextureCorner);
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
 
               /* Stores them */
               pstResult->fLeft    = vTextureCorner.fX;
@@ -629,7 +629,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
-  /* Had previously data? */
+  /* Had previous data? */
   if(_pstGraphic->pstData != orxNULL)
   {
     /* Updates structure reference counter */
@@ -658,6 +658,9 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
       }
+
+      /* Updates flags */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_INTERNAL);
     }
 
     /* Cleans reference */
@@ -696,6 +699,11 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
+  }
+  else
+  {
+    /* Updates flags */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);
   }
 
   /* Done! */

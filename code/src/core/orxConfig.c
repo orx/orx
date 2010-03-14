@@ -254,7 +254,7 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
     for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
     {
       /* Not a space? */
-      if(*pcInput != ' ' && *pcInput != '\t')
+      if((*pcInput != ' ') && (*pcInput != '\t'))
       {
         /* Copies it */
         *pcOutput++ = *pcInput++;
@@ -302,8 +302,28 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
   }
   else
   {
+    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
+    const orxCHAR  *pcInput;
+
+    /* For all characters */
+    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
+    {
+      /* Copies it */
+      *pcOutput++ = *pcInput++;
+
+      /* First block character? */
+      if(*pcInput == orxCONFIG_KC_BLOCK)
+      {
+        /* Skips it */
+        pcInput++;
+      }
+    }
+
+    /* Ends string */
+    *pcOutput = orxCHAR_NULL;
+
     /* Updates result */
-    zResult = orxString_Duplicate(_zValue);
+    zResult = orxString_Duplicate(acBuffer);
   }
 
   /* Done! */
@@ -873,6 +893,9 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
       /* Deselects it */
       sstConfig.pstCurrentSection = orxNULL;
     }
+
+    /* Deletes its entry bank */
+    orxBank_Delete(_pstSection->pstEntryBank);
 
     /* Deletes its name */
     orxString_Delete(_pstSection->zName);
@@ -2315,6 +2338,26 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
         || ((bBlockMode != orxFALSE)
          && (*pc == orxCONFIG_KC_BLOCK)))
         {
+          /* Block mode? */
+          if(bBlockMode != orxFALSE)
+          {
+            /* Not enough buffer? */
+            if(pc + 1 >= acBuffer + u32Size)
+            {
+              /* Continues */
+              continue;
+            }
+            /* Double block character? */
+            else if(*(pc + 1) == orxCONFIG_KC_BLOCK)
+            {
+              /* Skips next character */
+              pc++;
+
+              /* Continues */
+              continue;
+            }
+          }
+              
           /* Has key & value? */
           if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
           {

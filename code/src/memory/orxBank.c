@@ -263,7 +263,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
     pstBank->u32Counter               = 0;
 
     /* Compute the necessary number of 32 bits packs */
-    pstBank->u16SizeSegmentBitField   = (orxU16)orxMemory_GetAlign(_u16NbElem, 32) >> 5;
+    pstBank->u16SizeSegmentBitField   = orxALIGN32(_u16NbElem) >> 5;
 
     /* Allocate the first segment, and select it as current */
     pstBank->pstFirstSegment    = orxBank_SegmentCreate(pstBank);

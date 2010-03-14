@@ -34,9 +34,6 @@
 const orxSTRING    orxSTRING_EMPTY     = "";
 const orxSTRING    orxSTRING_TRUE      = "true";
 const orxSTRING    orxSTRING_FALSE     = "false";
-const orxCHAR      orxCHAR_NULL        = '\0';
-const orxCHAR      orxCHAR_CR          = '\r';
-const orxCHAR      orxCHAR_LF          = '\n';
 
 #ifdef __orxWINDOWS__
 

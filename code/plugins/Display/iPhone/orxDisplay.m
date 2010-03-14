@@ -446,21 +446,6 @@ static orxView *spoInstance;
 
 @end
 
-static orxSTATUS orxFASTCALL orxDisplay_iPhone_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Viewport rendering start? */
-  if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_START)
-  {
-    /* Inits rendering */
-    [sstDisplay.poView InitRender:orxTexture_GetBitmap(orxViewport_GetTexture(orxVIEWPORT(_pstEvent->hSender)))];
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 static orxINLINE void orxDisplay_iPhone_DrawBitmap(orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxBOOL   bSmoothing;
@@ -625,81 +610,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreen()
   return sstDisplay.pstScreen;
 }
 
-orxDISPLAY_TEXT *orxFASTCALL orxDisplay_iPhone_CreateText()
-{
-  orxDISPLAY_TEXT *pstResult = orxNULL;
-
-//! TODO
-  
-  /* Done! */
-  return pstResult;
-}
-
-void orxFASTCALL orxDisplay_iPhone_DeleteText(orxDISPLAY_TEXT *_pstText)
-{
-  //! TODO
-}
-
-orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  //! TODO
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  //! TODO
-
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  //! TODO
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTRING orxFASTCALL orxDisplay_iPhone_GetTextString(const orxDISPLAY_TEXT *_pstText)
-{
-  orxSTRING zResult = orxNULL;
-
-  //! TODO
-
-  /* Done! */
-  return zResult;
-}
-
-orxSTRING orxFASTCALL orxDisplay_iPhone_GetTextFont(const orxDISPLAY_TEXT *_pstText)
-{
-  orxSTRING zResult = orxNULL;
-
-  //! TODO
-
-  /* Done! */
-  return zResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_iPhone_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  //! TODO
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_iPhone_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -895,14 +806,28 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
   return stResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstDst)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
+
+  /* Inits rendering */
+  [sstDisplay.poView InitRender:_pstDst];
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
-  orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
 
   /* Translates it */
   glTranslatef(_fPosX, _fPosY, 0.0f);
@@ -919,14 +844,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(orxBITMAP *_pstDst, const orx
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
-  orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
   orxASSERT(_pstTransform != orxNULL);
 
   /* Translates it */
@@ -1265,51 +1189,39 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    /* Adds event handler */
-    if(orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_iPhone_EventHandler) != orxSTATUS_FAILURE)
+    /* Creates bitmap bank */
+    sstDisplay.pstBitmapBank = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(sstDisplay.pstBitmapBank != orxNULL)
     {
-      /* Creates bitmap bank */
-      sstDisplay.pstBitmapBank = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      /* Pushes display section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-      /* Valid? */
-      if(sstDisplay.pstBitmapBank != orxNULL)
-      {
-        /* Pushes display section */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      /* Inits default values */
+      sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+      sstDisplay.pstScreen          = orxBank_Allocate(sstDisplay.pstBitmapBank);
+      orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
+      sstDisplay.pstScreen->fWidth  = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+      sstDisplay.pstScreen->fHeight = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+      orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
+      orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
+      sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
 
-        /* Inits default values */
-        sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-        sstDisplay.pstScreen          = orxBank_Allocate(sstDisplay.pstBitmapBank);
-        orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-        sstDisplay.pstScreen->fWidth  = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-        sstDisplay.pstScreen->fHeight = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
-        orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
-        orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
-        sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
+      /* Pops config section */
+      orxConfig_PopSection();
 
-        /* Pops config section */
-        orxConfig_PopSection();
+      /* Stores view instance */
+      sstDisplay.poView = [orxView GetInstance];
 
-        /* Stores view instance */
-        sstDisplay.poView = [orxView GetInstance];
+      /* Creates OpenGL thread context */
+      [sstDisplay.poView CreateThreadContext];
 
-        /* Creates OpenGL thread context */
-        [sstDisplay.poView CreateThreadContext];
+      /* Inits flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
 
-        /* Inits flags */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* Removes event handler */
-        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iPhone_EventHandler);
-
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-      }
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
@@ -1332,9 +1244,6 @@ void orxFASTCALL orxDisplay_iPhone_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iPhone_EventHandler);
-    
     /* Deletes bitmap bank */
     orxBank_Delete(sstDisplay.pstBitmapBank);
     sstDisplay.pstBitmapBank = orxNULL;
@@ -1423,7 +1332,9 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
@@ -1434,15 +1345,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_BlitBitmap, DISPLAY, BLIT_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_CreateText, DISPLAY, CREATE_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DeleteText, DISPLAY, DELETE_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformText, DISPLAY, TRANSFORM_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetTextString, DISPLAY, SET_TEXT_STRING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetTextFont, DISPLAY, SET_TEXT_FONT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetTextString, DISPLAY, GET_TEXT_STRING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetTextFont, DISPLAY, GET_TEXT_FONT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetTextSize, DISPLAY, GET_TEXT_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_PrintString, DISPLAY, PRINT_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DeleteShader, DISPLAY, DELETE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_RenderShader, DISPLAY, RENDER_SHADER);

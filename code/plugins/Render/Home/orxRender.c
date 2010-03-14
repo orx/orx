@@ -132,6 +132,26 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
       orxDISPLAY_BLEND_MODE eBlendMode;
       orxDISPLAY_SMOOTHING  eSmoothing;
 
+      /* Gets graphic smoothing */
+      eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
+
+      /* Default? */
+      if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
+      {
+        /* Gets object smoothing */
+        eSmoothing = orxObject_GetSmoothing(_pstObject);
+      }
+
+      /* Gets graphic blend mode */
+      eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
+
+      /* None? */
+      if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
+      {
+        /* Gets object blend mode */
+        eBlendMode = orxObject_GetBlendMode(_pstObject);
+      }
+
       /* 2D? */
       if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
       {
@@ -251,25 +271,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
         }
 
-        /* Gets graphic smoothing */
-        eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
-
-        /* Default? */
-        if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
-        {
-          /* Gets object smoothing */
-          eSmoothing = orxObject_GetSmoothing(_pstObject);
-        }
-
-        /* Gets graphic blend mode */
-        eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
-
-        /* None? */
-        if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
-        {
-          /* Gets object blend mode */
-          eBlendMode = orxObject_GetBlendMode(_pstObject);
-        }
         /* No scale nor rotation nor repeat? */
         if((bFlipX == orxFALSE) && (bFlipY == orxFALSE) && (fRotation == orxFLOAT_0) && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
         {
@@ -277,7 +278,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           orxVector_Sub(&vPosition, &vPosition, &vPivot);
 
           /* Blits bitmap */
-          eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, vPosition.fX, vPosition.fY, eSmoothing, eBlendMode);
+          eResult = orxDisplay_BlitBitmap(pstBitmap, vPosition.fX, vPosition.fY, eSmoothing, eBlendMode);
         }
         else
         {
@@ -290,8 +291,8 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))
             {
               /* Sets transformation values */
-              stTransform.fSrcX     = ((vScale.fX < orxFLOAT_0) ^ (bFlipX != orxFALSE)) ? vSize.fX - vPivot.fX : vPivot.fX;
-              stTransform.fSrcY     = ((vScale.fY < orxFLOAT_0) ^ (bFlipY != orxFALSE)) ? vSize.fY - vPivot.fY : vPivot.fY;
+              stTransform.fSrcX     = vPivot.fX;
+              stTransform.fSrcY     = vPivot.fY;
               stTransform.fDstX     = vPosition.fX;
               stTransform.fDstY     = vPosition.fY;
               stTransform.fScaleX   = vScale.fX;
@@ -299,7 +300,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               stTransform.fRotation = fRotation;
 
               /* Blits bitmap */
-              eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing, eBlendMode);
+              eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, eSmoothing, eBlendMode);
             }
             else
             {
@@ -396,9 +397,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                     /* Gets adjusted position */
                     fPosY -= fInitRemainderY;
                   }
-
-                  /* Sets Y source */
-                  stTransform.fSrcY = vPivot.fY;
                 }
                 else
                 {
@@ -426,10 +424,10 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                       fPosY += fInitRemainderY + fAbsScaleY * (vSize.fY - fRemainderY);
                     }
                   }
-
-                  /* Sets Y source */
-                  stTransform.fSrcY = vSize.fY - vPivot.fY;
                 }
+
+                /* Sets Y source */
+                stTransform.fSrcY = vPivot.fY;
 
                 /* For all columns */
                 for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = fRepeatX * vSize.fX, fAbsScaleX = orxMath_Abs(vScale.fX);
@@ -450,9 +448,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                       /* Gets adjusted position */
                       fPosX -= fInitRemainderX;
                     }
-
-                    /* Sets X source */
-                    stTransform.fSrcX = vPivot.fX;
                   }
                   else
                   {
@@ -480,10 +475,10 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                         fPosX += fInitRemainderX + fAbsScaleX * (vSize.fX - fRemainderX);
                       }
                     }
-
-                    /* Sets X source */
-                    stTransform.fSrcX = vSize.fX - vPivot.fX;
                   }
+
+                  /* Sets X source */
+                  stTransform.fSrcX = vPivot.fX;
 
                   /* Computes offsets */
                   fOffsetX = (fCos * fPosX) + (fSin * fPosY);
@@ -497,7 +492,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                   stTransform.fRotation = fRotation;
 
                   /* Blits bitmap */
-                  eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing, eBlendMode);
+                  eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, eSmoothing, eBlendMode);
                 }
               }
             }
@@ -522,102 +517,115 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
       }
       else
       {
-        orxTEXT  *pstText;
-        orxRGBA   stRGBA;
-        orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
+        orxTEXT *pstText;
 
-        /* Gets its pivot & size*/
-        orxGraphic_GetPivot(pstGraphic, &vPivot);
-        orxGraphic_GetSize(pstGraphic, &vSize);
-
-        /* Gets its text */
+        /* Gets text */
         pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
 
-        /* Gets rendering frame's position, rotation & scale */
-        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-        orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-        orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-        /* Gets object & graphic flipping */
-        orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
-        orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
-
-        /* Updates using combined flipping */
-        if(bObjectFlipX ^ bGraphicFlipX)
+        /* Valid? */
+        if(pstText != orxNULL)
         {
-          bFlipX = orxTRUE;
-          vScale.fX = -vScale.fX;
-        }
-        else
-        {
-          bFlipX = orxFALSE;
-        }
-        if(bObjectFlipY ^ bGraphicFlipY)
-        {
-          bFlipY = orxTRUE;
-          vScale.fY = -vScale.fY;
-        }
-        else
-        {
-          bFlipY = orxFALSE;
-        }
+          orxFONT *pstFont;
 
-        /* Has object color? */
-        if(orxObject_HasColor(_pstObject) != orxFALSE)
-        {
-          orxCOLOR stColor;
+          /* Gets its font */
+          pstFont = orxText_GetFont(pstText);
 
-          /* Gets it */
-          stRGBA = orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor));
-        }
-        /* Has graphic color? */
-        else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
-        {
-          orxCOLOR stColor;
+          /* Valid? */
+          if(pstFont != orxNULL)
+          {
+            orxTEXTURE *pstTexture;
 
-          /* Gets it */
-          stRGBA = orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor));
-        }
-        else
-        {
-          /* Uses default color */
-          stRGBA = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-        }
+            /* Gets its texture */
+            pstTexture = orxFont_GetTexture(pstFont);
 
-        /* Gets graphic blend mode */
-        eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
+            /* Valid? */
+            if(pstTexture != orxNULL)
+            {
+              orxRGBA stRGBA;
+              orxBOOL bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
 
-        /* None? */
-        if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
-        {
-          /* Gets object blend mode */
-          eBlendMode = orxObject_GetBlendMode(_pstObject);
-        }
+              /* Gets graphic's pivot & size*/
+              orxGraphic_GetPivot(pstGraphic, &vPivot);
+              orxGraphic_GetSize(pstGraphic, &vSize);
 
-        /* Valid scale? */
-        if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
-        {
-          orxDISPLAY_TRANSFORM stTransform;
+              /* Gets rendering frame's position, rotation & scale */
+              fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
+              orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+              orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
-          /* Sets transformation values */
-          stTransform.fSrcX     = ((vScale.fX < orxFLOAT_0) ^ (bFlipX != orxFALSE)) ? vSize.fX - vPivot.fX : vPivot.fX;
-          stTransform.fSrcY     = ((vScale.fY < orxFLOAT_0) ^ (bFlipY != orxFALSE)) ? vSize.fY - vPivot.fY : vPivot.fY;
-          stTransform.fDstX     = vPosition.fX;
-          stTransform.fDstY     = vPosition.fY;
-          stTransform.fScaleX   = vScale.fX;
-          stTransform.fScaleY   = vScale.fY;
-          stTransform.fRotation = fRotation;
+              /* Gets object & graphic flipping */
+              orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
+              orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
 
-          /* Draws text */
-          eResult = orxDisplay_TransformText(_pstRenderBitmap, orxText_GetData(pstText), &stTransform, stRGBA, eBlendMode);
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", vScale.fX, vScale.fY);
+              /* Updates using combined flipping */
+              if(bObjectFlipX ^ bGraphicFlipX)
+              {
+                bFlipX = orxTRUE;
+                vScale.fX = -vScale.fX;
+              }
+              else
+              {
+                bFlipX = orxFALSE;
+              }
+              if(bObjectFlipY ^ bGraphicFlipY)
+              {
+                bFlipY = orxTRUE;
+                vScale.fY = -vScale.fY;
+              }
+              else
+              {
+                bFlipY = orxFALSE;
+              }
 
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
+              /* Has object color? */
+              if(orxObject_HasColor(_pstObject) != orxFALSE)
+              {
+                orxCOLOR stColor;
+
+                /* Gets it */
+                stRGBA = orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor));
+              }
+              /* Has graphic color? */
+              else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+              {
+                orxCOLOR stColor;
+
+                /* Gets it */
+                stRGBA = orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor));
+              }
+              else
+              {
+                /* Uses default color */
+                stRGBA = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+              }
+
+              /* Valid scale? */
+              if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
+              {
+                orxDISPLAY_TRANSFORM stTransform;
+
+                /* Sets transformation values */
+                stTransform.fSrcX     = vPivot.fX;
+                stTransform.fSrcY     = vPivot.fY;
+                stTransform.fDstX     = vPosition.fX;
+                stTransform.fDstY     = vPosition.fY;
+                stTransform.fScaleX   = vScale.fX;
+                stTransform.fScaleY   = vScale.fY;
+                stTransform.fRotation = fRotation;
+
+                /* Draws text */
+                eResult = orxDisplay_TransformText(orxText_GetString(pstText), orxTexture_GetBitmap(pstTexture), orxFont_GetMap(pstFont), &stTransform, stRGBA, eSmoothing, eBlendMode);
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", vScale.fX, vScale.fY);
+
+                /* Updates result */
+                eResult = orxSTATUS_SUCCESS;
+              }
+            }
+          }
         }
       }
     }
@@ -687,6 +695,9 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
         if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
         {
           orxFRAME *pstRenderFrame;
+
+          /* Sets destination bitmap */
+          orxDisplay_SetDestinationBitmap(pstBitmap);
 
           /* Creates rendering frame */
           pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
@@ -1067,7 +1078,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   else
                   {
                     /* Prints error message */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p/%s -> orxBITMAP %p] couldn't be rendered.", pstObject, orxObject_GetName(pstObject), pstBitmap);
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s -> orxBITMAP %p] couldn't be rendered.", pstObject, orxObject_GetName(pstObject), pstBitmap);
                   }
                 }
 
@@ -1181,7 +1192,7 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       orxString_NPrint(acText, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
 
       /* Display FPS */
-      orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
+//! TODO      orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
     }
 
     /* Pops previous section */
