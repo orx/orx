@@ -51,11 +51,24 @@
 /** Misc defines
  */
 typedef orxU32                      orxRGBA;
-#define orx2RGBA(R, G, B, A)        ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
-#define orxRGBA_R(RGBA)             (orxU8)(((RGBA) >> 24) & 0xFF)
-#define orxRGBA_G(RGBA)             (orxU8)(((RGBA) >> 16) & 0xFF)
-#define orxRGBA_B(RGBA)             (orxU8)(((RGBA) >> 8) & 0xFF)
-#define orxRGBA_A(RGBA)             (orxU8)((RGBA) & 0xFF)
+
+#ifdef __orxLITTLE_ENDIAN__
+
+  #define orx2RGBA(R, G, B, A)      ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
+  #define orxRGBA_R(RGBA)           (orxU8)(((RGBA) >> 24) & 0xFF)
+  #define orxRGBA_G(RGBA)           (orxU8)(((RGBA) >> 16) & 0xFF)
+  #define orxRGBA_B(RGBA)           (orxU8)(((RGBA) >> 8) & 0xFF)
+  #define orxRGBA_A(RGBA)           (orxU8)((RGBA) & 0xFF)
+
+#else /* __orxLITTLE_ENDIAN__ */
+
+  #define orx2RGBA(R, G, B, A)      ((((A) & 0xFF) << 24) | (((B) & 0xFF) << 16) | (((G) & 0xFF) << 8) | ((R) & 0xFF))
+  #define orxRGBA_R(RGBA)           (orxU8)((RGBA) & 0xFF)
+  #define orxRGBA_G(RGBA)           (orxU8)(((RGBA) >> 8) & 0xFF)
+  #define orxRGBA_B(RGBA)           (orxU8)(((RGBA) >> 16) & 0xFF)
+  #define orxRGBA_A(RGBA)           (orxU8)(((RGBA) >> 24) & 0xFF)
+
+#endif /* __orxLITTLE_ENDIAN__ */
 
 #define orxCOLOR_NORMALIZER         (orx2F(1.0f / 255.0f))
 #define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
@@ -389,6 +402,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationB
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
+
+/** Sets a bitmap data
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _au8Data                              Data (4 channels)
+ * @param[in]   _u32ByteNumber                        Number of bytes
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
 /** Sets a bitmap color key (used with non alpha transparency)
  * @param[in]   _pstBitmap                            Concerned bitmap

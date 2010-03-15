@@ -381,40 +381,48 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_CreateBitmap(orxU32 _u32Width,
 
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  sf::Color oColor;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Gets color */
-  oColor = sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor));
-
   /* Is not screen? */
   if(_pstBitmap != orxDisplay::spoScreen)
   {
     sf::Image  *poImage;
-    orxU32     *pu32Cursor, *pu32End, u32Color;
-
-    /* Gets flat color */
-    u32Color = orx2RGBA(oColor.r, oColor.g, oColor.b, oColor.a);
+    orxU8      *au8Buffer;
 
     /* Gets image */
     poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
 
-    /* For all pixels */
-    for(pu32Cursor = (orxU32 *)poImage->GetPixelsPtr(), pu32End = pu32Cursor + (poImage->GetWidth() * poImage->GetHeight());
-        pu32Cursor < pu32End; pu32Cursor++)
+    /* Allocates buffer */
+    au8Buffer = (orxU8 *)orxMemory_Allocate(poImage->GetWidth() * poImage->GetHeight() * 4, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(au8Buffer != orxNULL)
     {
-      /* Updates pixel */
-      *pu32Cursor = u32Color;
+      orxRGBA *pstPixel;
+      orxU32  i;
+
+      /* Fills it */
+      for(pstPixel = (orxRGBA *)au8Buffer, i = poImage->GetWidth() * poImage->GetHeight(); i > 0 ; i--, pstPixel++)
+      {
+        /* Copies pixel */
+        *pstPixel = _stColor;
+      }
+
+      /* Sets image's data */
+      eResult = poImage->LoadFromPixels(poImage->GetWidth(), poImage->GetHeight(), au8Buffer) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Frees buffer */
+      orxMemory_Free(au8Buffer);
     }
   }
   else
   {
     /* Clear the color buffer with given color */
-    glClearColor((1.0f / 255.f) * oColor.r, (1.0f / 255.f) * oColor.g, (1.0f / 255.f) * oColor.b, (1.0f / 255.f) * oColor.a);
+    glClearColor(orxCOLOR_NORMALIZER * orxRGBA_R(_stColor), orxCOLOR_NORMALIZER * orxRGBA_G(_stColor), orxCOLOR_NORMALIZER * orxRGBA_B(_stColor), orxCOLOR_NORMALIZER * orxRGBA_A(_stColor));
     glClear(GL_COLOR_BUFFER_BIT);
   }
 
@@ -432,6 +440,35 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Swap()
   /* Displays render window */
   sstDisplay.poRenderWindow->Display();
 
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_au8Data != orxNULL);
+
+  /* Not screen? */
+  if(_pstBitmap != orxDisplay::spoScreen)
+  {
+    sf::Image *poImage;
+
+    /* Gets image */
+    poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
+
+    /* Valid number of bytes? */
+    if(_u32ByteNumber == poImage->GetWidth() * poImage->GetHeight() * 4)
+    {
+      /* Updates pixels */
+      eResult = poImage->LoadFromPixels(poImage->GetWidth(), poImage->GetHeight(), _au8Data) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+  }
+  
   /* Done! */
   return eResult;
 }
@@ -1596,6 +1633,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreen, DISPLAY, GET_SCREEN_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);

@@ -757,6 +757,71 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
   return eResult;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapData(orxBITMAP *_pstBitmap, const orxRGBA *_astPixelList, orxU32 _u32PixelNumber)
+{
+  orxU32    u32Width, u32Height;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_astPixelList != orxNULL);
+
+  /* Gets bitmap's size */
+  u32Width  = orxF2U(_pstBitmap->fWidth);
+  u32Height = orxF2U(_pstBitmap->fHeight);
+
+  /* Valid? */
+  if((_pstBitmap != sstDisplay.pstScreen) && (_u32PixelNumber == u32Width * u32Height))
+  {
+    orxRGBA        *astBuffer, *pstDst;
+    const orxRGBA  *pstSrc;
+    orxU32          i, j, u32Offset;
+
+    /* Allocates buffer */
+    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+
+    /* Checks */
+    orxASSERT(astBuffer != orxNULL);
+      
+    /* For all visible rows */
+    for(i = 0, u32Offset = _pstBitmap->u32RealWidth - u32Width, pstSrc = _astPixelList, pstDst = astBuffer; i < u32Height; i++)
+    {
+      /* For all visible columns */
+      for(j = 0; j < u32Width; j++)
+      {
+        /* Copies pixel */
+        *pstDst++ == *pstSrc++;
+      }
+
+      /* Skips unvisible pixels */
+      pstDst += u32Offset;
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Updates texture */
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
+
+    /* Frees buffer */
+    orxMemory_Free(astBuffer);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1342,6 +1407,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetScreen, DISPLAY, GET_SCREE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);

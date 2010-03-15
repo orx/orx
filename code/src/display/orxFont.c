@@ -31,6 +31,7 @@
 
 #include "memory/orxBank.h"
 #include "core/orxConfig.h"
+#include "display/orxDisplay.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 
@@ -57,6 +58,8 @@
  */
 #define orxFONT_KU32_MAP_BANK_SIZE              2           /**< Map bank size */
 #define orxFONT_KU32_REFERENCE_TABLE_SIZE       4           /**< Reference table size */
+
+#define orxFONT_KZ_DEFAULT_FONT_NAME            "OrxDefaultFont"
 
 #define orxFONT_KZ_CONFIG_TEXTURE_NAME          "Texture"
 #define orxFONT_KZ_CONFIG_CHARACTER_LIST        "CharacterList"
@@ -91,7 +94,8 @@ typedef struct __orxFONT_STATIC_t
 {
   orxBANK          *pstMapBank;                 /**< Map bank : 4 */
   orxHASHTABLE     *pstReferenceTable;          /**< Reference table : 8 */
-  orxU32            u32Flags;                   /**< Control flags : 12 */
+  orxFONT          *pstDefaultFont;             /**< Default font : 12 */
+  orxU32            u32Flags;                   /**< Control flags : 16 */
 
 } orxFONT_STATIC;
 
@@ -102,32 +106,12 @@ typedef struct __orxFONT_STATIC_t
 
 static orxFONT_STATIC sstFont;
 
+#include "../src/display/orxDefaultFont.c"
+
 
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-/** Deletes all fonts
- */
-static orxINLINE void orxFont_DeleteAll()
-{
-  orxFONT *pstFont;
-
-  /* Gets first font */
-  pstFont = orxFONT(orxStructure_GetFirst(orxSTRUCTURE_ID_FONT));
-
-  /* Non empty? */
-  while(pstFont != orxNULL)
-  {
-    /* Deletes font */
-    orxFont_Delete(pstFont);
-
-    /* Gets first font */
-    pstFont = orxFONT(orxStructure_GetFirst(orxSTRUCTURE_ID_FONT));
-  }
-
-  return;
-}
 
 /** Updates font's map
  * @param[in]   _pstFont       Concerned font
@@ -193,6 +177,152 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
   return;
 }
 
+/* Creates default font
+ */
+static orxINLINE void orxFont_CreateDefaultFont()
+{
+  orxTEXTURE *pstTexture;
+
+  /* Creates texture */
+  pstTexture = orxTexture_Create();
+
+  /* Success? */
+  if(pstTexture != orxNULL)
+  {
+    orxBITMAP *pstBitmap;
+
+    /* Creates bitmap */
+    pstBitmap = orxDisplay_CreateBitmap(sstDefaultFont.u32Width, sstDefaultFont.u32Height);
+
+    /* Success? */
+    if(pstBitmap != orxNULL)
+    {
+      /* Sets it data */
+      if(orxDisplay_SetBitmapData(pstBitmap, sstDefaultFont.au8Data, sstDefaultFont.u32Width * sstDefaultFont.u32Height * 4) != orxSTATUS_FAILURE)
+      {
+        /* Links it to texture */
+        if(orxTexture_LinkBitmap(pstTexture, pstBitmap, orxFONT_KZ_DEFAULT_FONT_NAME) != orxSTATUS_FAILURE)
+        {
+          /* Creates default font */
+          sstFont.pstDefaultFont = orxFont_Create();
+
+          /* Success? */
+          if(sstFont.pstDefaultFont != orxNULL)
+          {
+            /* Sets its texture */
+            if(orxFont_SetTexture(sstFont.pstDefaultFont, pstTexture) != orxSTATUS_FAILURE)
+            {
+              orxVECTOR vSize;
+
+              /* Inits it */
+              orxFont_SetCharacterList(sstFont.pstDefaultFont, sstDefaultFont.zCharacterList);
+              orxFont_SetCharacterSize(sstFont.pstDefaultFont, orxVector_Set(&vSize, sstDefaultFont.u32CharacterWidth, sstDefaultFont.u32CharacterHeight, orxFLOAT_0));
+
+              /* Stores its reference key */
+              sstFont.pstDefaultFont->zReference = orxFONT_KZ_DEFAULT_FONT_NAME;
+
+              /* Adds it to reference table */
+              orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(sstFont.pstDefaultFont->zReference), sstFont.pstDefaultFont);
+
+              /* Updates its flags */
+              orxStructure_SetFlags(sstFont.pstDefaultFont, orxFONT_KU32_FLAG_REFERENCED | orxFONT_KU32_FLAG_INTERNAL, orxFONT_KU32_FLAG_NONE);
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set default font's texture.");
+
+              /* Deletes font */
+              orxFont_Delete(sstFont.pstDefaultFont);
+              sstFont.pstDefaultFont = orxNULL;
+
+              /* Unlinks bitmap */
+              orxTexture_UnlinkBitmap(pstTexture);
+
+              /* Deletes bitmap */
+              orxDisplay_DeleteBitmap(pstBitmap);
+
+              /* Deletes texture */
+              orxTexture_Delete(pstTexture);
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't create default font.");
+
+            /* Unlinks bitmap */
+            orxTexture_UnlinkBitmap(pstTexture);
+            
+            /* Deletes bitmap */
+            orxDisplay_DeleteBitmap(pstBitmap);
+            
+            /* Deletes texture */
+            orxTexture_Delete(pstTexture);
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't link default font's bitmap to texture.");
+
+          /* Deletes bitmap */
+          orxDisplay_DeleteBitmap(pstBitmap);
+          
+          /* Deletes texture */
+          orxTexture_Delete(pstTexture);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set default font's bitmap's data.");
+
+        /* Deletes bitmap */
+        orxDisplay_DeleteBitmap(pstBitmap);
+        
+        /* Deletes texture */
+        orxTexture_Delete(pstTexture);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't create default font's bitmap.");
+
+      /* Deletes texture */
+      orxTexture_Delete(pstTexture);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't create default font's texture.");
+  }
+}
+
+/** Deletes all fonts
+ */
+static orxINLINE void orxFont_DeleteAll()
+{
+  orxFONT *pstFont;
+
+  /* Gets first font */
+  pstFont = orxFONT(orxStructure_GetFirst(orxSTRUCTURE_ID_FONT));
+
+  /* Non empty? */
+  while(pstFont != orxNULL)
+  {
+    /* Deletes font */
+    orxFont_Delete(pstFont);
+
+    /* Gets first font */
+    pstFont = orxFONT(orxStructure_GetFirst(orxSTRUCTURE_ID_FONT));
+  }
+
+  return;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -224,7 +354,7 @@ orxSTATUS orxFASTCALL orxFont_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstFont, sizeof(orxFONT_STATIC));
-
+    
     /* Creates reference table */
     sstFont.pstReferenceTable = orxHashTable_Create(orxFONT_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -256,6 +386,9 @@ orxSTATUS orxFASTCALL orxFont_Init()
   {
     /* Inits Flags */
     sstFont.u32Flags = orxFONT_KU32_STATIC_FLAG_READY;
+
+    /* Creates default font */
+    orxFont_CreateDefaultFont();
   }
   else
   {
@@ -598,6 +731,23 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets default font
+ * @return      Default font / orxNULL
+ */
+const orxFONT *orxFASTCALL orxFont_GetDefaultFont()
+{
+  orxFONT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  pstResult = sstFont.pstDefaultFont;
+
+  /* Done ! */
+  return pstResult;
 }
 
 /** Sets font's texture

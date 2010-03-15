@@ -44,7 +44,7 @@
 /** Defines
  */
 #define orxRENDER_KF_TICK_SIZE                orx2F(1.0f / 60.0f)
-#define orxRENDER_KU32_ORDER_BANK_SIZE        128
+#define orxRENDER_KU32_ORDER_BANK_SIZE        256
 #define orxRENDER_KST_DEFAULT_COLOR           orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT               "FPS: %ld"
 
@@ -57,8 +57,8 @@ typedef struct __orxRENDER_RENDER_NODE_t
 {
   orxLINKLIST_NODE  stNode;                       /**< Linklist node : 12 */
   orxOBJECT        *pstObject;                    /**< Object pointer : 16 */
-  orxVECTOR         vPosition;                    /**< Object position : 32 */
-  orxFLOAT          fDepthCoef;                   /**< Depth coef : 36 */
+  orxVECTOR         vPosition;                    /**< Object position : 28 */
+  orxFLOAT          fDepthCoef;                   /**< Depth coef : 32 */
 
 } orxRENDER_NODE;
 
@@ -525,7 +525,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         /* Valid? */
         if(pstText != orxNULL)
         {
-          orxFONT *pstFont;
+          const orxFONT *pstFont;
 
           /* Gets its font */
           pstFont = orxText_GetFont(pstText);
@@ -1178,21 +1178,57 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Should display FPS? */
     if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
     {
-      orxDISPLAY_TRANSFORM stTextTransform;
-      orxCHAR             acText[16];
+      const orxFONT *pstFont;
 
-      /* Clears text transform */
-      orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
+      /* Gets default font */
+      pstFont = orxFont_GetDefaultFont();
 
-      /* Inits it */
-      stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
-      stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
+      /* Valid? */
+      if(pstFont != orxNULL)
+      {
+        orxVIEWPORT          *pstViewport;
+        orxDISPLAY_TRANSFORM  stTextTransform;
+        orxCHAR               acBuffer[16];
 
-      /* Writes text */
-      orxString_NPrint(acText, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+        /* Clears text transform */
+        orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
-      /* Display FPS */
-//! TODO      orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
+        /* Gets first viewport */
+        pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+
+        /* Valid? */
+        if(pstViewport != orxNULL)
+        {
+          orxAABOX  stBox;
+          orxFLOAT  fWidth, fHeight;
+
+          /* Gets its box & size */
+          orxViewport_GetBox(pstViewport, &stBox);
+          orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
+
+          /* Inits transform's scale */
+          stTextTransform.fScaleX = orx2F(2.0f) * fWidth;
+          stTextTransform.fScaleY = orx2F(2.0f) * fHeight;
+
+          /* Inits transform's destination */
+          stTextTransform.fDstX = stBox.vTL.fX + orx2F(10.0f);
+          stTextTransform.fDstY = stBox.vTL.fY + orx2F(10.0f);
+        }
+        else
+        {
+          /* Inits transform's scale */
+          stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(2.0f);
+
+          /* Inits transform's position */
+          stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
+        }
+
+        /* Writes string */
+        orxString_NPrint(acBuffer, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+
+        /* Displays it */
+        orxDisplay_TransformText(acBuffer, orxTexture_GetBitmap(orxFont_GetTexture(pstFont)), orxFont_GetMap(pstFont), &stTextTransform, orxRENDER_KST_DEFAULT_COLOR, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
+      }
     }
 
     /* Pops previous section */

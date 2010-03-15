@@ -455,6 +455,9 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
       /* Inits flags */
       u32Flags = orxTEXT_KU32_FLAG_NONE;
 
+      /* Sets default font */
+      orxText_SetFont(pstResult, orxFONT(orxFont_GetDefaultFont())); 
+
       /* Gets its string */
       zString = orxConfig_GetString(orxTEXT_KZ_CONFIG_STRING);
 

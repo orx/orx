@@ -63,6 +63,18 @@
 
 #endif /* !__orxPPC__ && !__orxX86_64__ */
 
+/* Power PC? */
+#ifdef __orxPPC__
+
+  #define __orxBIG_ENDIAN__
+  #undef __orxLITTLE_ENDIAN__
+
+#else /* __orxPPC__ */
+
+  #define __orxLITTLE_ENDIAN__
+  #undef __orxBIG_ENDIAN__
+
+#endif /* __orxPPC__ */
 
 /* No compiler defines? */
 #if !defined(__orxGCC__) && !defined(__orxMSVC__)
