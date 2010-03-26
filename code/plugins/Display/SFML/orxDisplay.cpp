@@ -621,7 +621,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmap(orxBITMAP 
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite     *poSprite;
   const orxCHAR  *pc;
@@ -641,9 +641,6 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
 
   /* Updates its rotation */
   poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
-
-  /* Updates its color */
-  poSprite->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
 
   /* Gets spacing */
   orxVector_Neg(&vSpacing, &(_pstMap->vCharacterSize));
@@ -718,7 +715,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
           eResult = orxDisplay_SFML_BlitBitmap(_pstFont, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
         }
 
-        /* Displays a space */
+        /* Updates X position */
         fX += vSpacing.fX;
 
         break;

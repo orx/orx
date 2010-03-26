@@ -346,12 +346,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_Swap();
  * @param[in]   _pstFont                              Font bitmap
  * @param[in]   _pstMap                               Character map
  * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
- * @param[in]   _stColor                              Color to use
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Creates a bitmap
