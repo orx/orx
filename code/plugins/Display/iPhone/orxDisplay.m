@@ -1112,24 +1112,161 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxBOOL   bPNG = orxFALSE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
-  
+  /* Screen capture? */
+  if(_pstBitmap == sstDisplay.pstScreen)
+  {
+    /* PNG? */
+    if(orxString_SearchString(_zFilename, ".png") != orxNULL)
+    {
+      /* Updates status */
+      bPNG = orxTRUE;
+    }
+    /* JPG? */
+    else if(orxString_SearchString(_zFilename, ".jpg") != orxNULL)
+    {
+      /* Updates status */
+      bPNG = orxFALSE;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: only PNG and JPG supported.", _zFilename);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap tp <%s>: only screen can be saved to file.", _zFilename);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    GLubyte  *au8Buffer;
+    orxU8    *au8ImageBuffer;
+    orxU32    u32BufferSize;
+
+    /* Gets buffer size */
+    u32BufferSize = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(GLubyte);
+
+    /* Allocates both buffers */
+    au8Buffer       = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
+    au8ImageBuffer  = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if((au8Buffer != orxNULL) && (au8ImageBuffer != orxNULL))
+    {
+      CGDataProviderRef oProvider;
+      CGColorSpaceRef   oColorSpace;
+      CGContextRef      oContext;
+      CGImageRef        oImage;
+
+      /* Reads OpenGL data */
+      glReadPixels(0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+      glASSERT();
+
+      /* Creates data provider */
+      oProvider = CGDataProviderCreateWithData(NULL, au8Buffer, u32BufferSize, NULL);
+
+      /* Creates a device color space */
+      oColorSpace = CGColorSpaceCreateDeviceRGB();
+
+      /* Gets image reference */
+      oImage = CGImageCreate(sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 8, 32, 4 * sstDisplay.pstScreen->u32RealWidth, oColorSpace, kCGBitmapByteOrderDefault, oProvider, nil, NO, kCGRenderingIntentDefault);
+
+      /* Creates graphic context */
+      oContext = CGBitmapContextCreate(au8ImageBuffer, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 8, 4 * sstDisplay.pstScreen->u32RealWidth, CGImageGetColorSpace(oImage), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+
+      /* Valid? */
+      if(oContext)
+      {
+        UIImage *poImage;
+
+        /* Applies vertical flip for OpenGL/bitmap reordering */
+        CGContextTranslateCTM(oContext, 0, sstDisplay.pstScreen->u32RealHeight);
+        CGContextScaleCTM(oContext, 1.0f, -1.0f);
+
+        /* Draws image */
+        CGContextDrawImage(oContext, CGRectMake(0.0f, 0.0f, sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight), oImage);
+
+        /* Gets UIImage */
+        poImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(oContext)];
+
+        /* PNG? */
+        if(bPNG != orxFALSE)
+        {
+          /* Updates result */
+          eResult = [UIImagePNGRepresentation(poImage) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        }
+        else
+        {
+          /* Updates result */
+          eResult = [UIImageJPEGRepresentation(poImage, 1.0f) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        }
+
+        /* Deletes context */
+        CGContextRelease(oContext);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't grab screen data.", _zFilename);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+
+      /* Deletes image */
+      CGImageRelease(oImage);
+
+      /* Deletes color space */
+      CGColorSpaceRelease(oColorSpace);
+
+      /* Deletes provider */
+      CGDataProviderRelease(oProvider);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't allocate memory buffers.", _zFilename);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+
+    /* Deletes buffers */
+    if(au8Buffer != orxNULL)
+    {
+      orxMemory_Free(au8Buffer);
+    }
+    if(au8ImageBuffer != orxNULL)
+    {
+      orxMemory_Free(au8ImageBuffer);
+    }
+  }
+
   /* Done! */
   return eResult;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 {
-  CGImageRef          oImage;
-  NSString           *poName;
+  CGImageRef  oImage;
+  NSString   *poName;
   orxBITMAP  *pstBitmap = orxNULL;
   
   /* Checks */
@@ -1313,7 +1450,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_EnableVSync(orxBOOL _bEnable)
 
 orxBOOL orxFASTCALL orxDisplay_iPhone_IsVSyncEnabled()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxTRUE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1429,14 +1566,16 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
       /* Inits default values */
-      sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-      sstDisplay.pstScreen          = orxBank_Allocate(sstDisplay.pstBitmapBank);
+      sstDisplay.bDefaultSmoothing        = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+      sstDisplay.pstScreen                = orxBank_Allocate(sstDisplay.pstBitmapBank);
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-      sstDisplay.pstScreen->fWidth  = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-      sstDisplay.pstScreen->fHeight = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+      sstDisplay.pstScreen->fWidth        = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+      sstDisplay.pstScreen->fHeight       = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+      sstDisplay.pstScreen->u32RealWidth  = orxDISPLAY_KU32_SCREEN_WIDTH;
+      sstDisplay.pstScreen->u32RealHeight = orxDISPLAY_KU32_SCREEN_HEIGHT;
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
-      sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
+      sstDisplay.eLastBlendMode           = orxDISPLAY_BLEND_MODE_NUMBER;
 
       /* Pops config section */
       orxConfig_PopSection();
