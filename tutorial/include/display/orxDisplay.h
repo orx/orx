@@ -51,18 +51,30 @@
 /** Misc defines
  */
 typedef orxU32                      orxRGBA;
-#define orx2RGBA(R, G, B, A)        ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
-#define orxRGBA_R(RGBA)             (orxU8)(((RGBA) >> 24) & 0xFF)
-#define orxRGBA_G(RGBA)             (orxU8)(((RGBA) >> 16) & 0xFF)
-#define orxRGBA_B(RGBA)             (orxU8)(((RGBA) >> 8) & 0xFF)
-#define orxRGBA_A(RGBA)             (orxU8)((RGBA) & 0xFF)
+
+#ifdef __orxLITTLE_ENDIAN__
+
+  #define orx2RGBA(R, G, B, A)      ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
+  #define orxRGBA_R(RGBA)           (orxU8)(((RGBA) >> 24) & 0xFF)
+  #define orxRGBA_G(RGBA)           (orxU8)(((RGBA) >> 16) & 0xFF)
+  #define orxRGBA_B(RGBA)           (orxU8)(((RGBA) >> 8) & 0xFF)
+  #define orxRGBA_A(RGBA)           (orxU8)((RGBA) & 0xFF)
+
+#else /* __orxLITTLE_ENDIAN__ */
+
+  #define orx2RGBA(R, G, B, A)      ((((A) & 0xFF) << 24) | (((B) & 0xFF) << 16) | (((G) & 0xFF) << 8) | ((R) & 0xFF))
+  #define orxRGBA_R(RGBA)           (orxU8)((RGBA) & 0xFF)
+  #define orxRGBA_G(RGBA)           (orxU8)(((RGBA) >> 8) & 0xFF)
+  #define orxRGBA_B(RGBA)           (orxU8)(((RGBA) >> 16) & 0xFF)
+  #define orxRGBA_A(RGBA)           (orxU8)(((RGBA) >> 24) & 0xFF)
+
+#endif /* __orxLITTLE_ENDIAN__ */
 
 #define orxCOLOR_NORMALIZER         (orx2F(1.0f / 255.0f))
 #define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
 
 
 typedef struct __orxBITMAP_t        orxBITMAP;
-typedef struct __orxDISPLAY_TEXT_t  orxDISPLAY_TEXT;
 
 /** Transform structure
  */
@@ -82,6 +94,20 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
   orxU32  u32Width, u32Height, u32Depth;
 
 } orxDISPLAY_VIDEO_MODE;
+
+/** Character map structure
+ */
+typedef struct __orxCHARACTER_MAP_t
+{
+  orxVECTOR vCharacterSize;
+
+  struct
+  {
+    orxFLOAT fX, fY;
+
+  } astCharacterList[orxCHAR_NUMBER];
+
+} orxCHARACTER_MAP;
 
 /** Bitmap smoothing enum
  */
@@ -127,7 +153,6 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_DEPTH      "ScreenDepth"
 #define orxDISPLAY_KZ_CONFIG_FULLSCREEN "FullScreen"
 #define orxDISPLAY_KZ_CONFIG_DECORATION "Decoration"
-#define orxDISPLAY_KZ_CONFIG_FONT       "Font"
 #define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
 #define orxDISPLAY_KZ_CONFIG_SMOOTH     "Smoothing"
 #define orxDISPLAY_KZ_CONFIG_VSYNC      "VSync"
@@ -316,70 +341,16 @@ extern orxDLLAPI void orxFASTCALL                     orxDisplay_Exit();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_Swap();
 
-
-/** Creates an empty text
- * @return orxDISPLAY_TEXT / orxNULL
- */
-extern orxDLLAPI orxDISPLAY_TEXT *orxFASTCALL         orxDisplay_CreateText();
-
-/** Deletes a text
- * @param[in]   _pstText                              Concerned text
- */
-extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText);
-
 /** Transforms a text (on a bitmap)
- * @param[in]   _pstDst                               Destination bitmap
- * @param[in]   _pstText                              Text to transform (display)
- * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
- * @param[in]   _stColor                              Color to use
+ * @param[in]   _zString                              String to display
+ * @param[in]   _pstFont                              Font bitmap
+ * @param[in]   _pstMap                               Character map
+ * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
-
-/** Sets a text string
- * @param[in]   _pstText                              Concerned text
- * @param[in]   _zString                              String to set
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString);
-
-/** Sets a text font
- * @param[in]   _pstText                              Concerned text
- * @param[in]   _zFont                                Font to set
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont);
-
-/** Gets a text string
- * @param[in]   _pstText                              Concerned text
- * @return orxSTRING / orxNULL
- */
-extern orxDLLAPI const orxSTRING orxFASTCALL          orxDisplay_GetTextString(const orxDISPLAY_TEXT *_pstText);
-
-/** Gets a text font
- * @param[in]   _pstText                              Concerned text
- * @return orxSTRING / orxNULL
- */
-extern orxDLLAPI const orxSTRING orxFASTCALL          orxDisplay_GetTextFont(const orxDISPLAY_TEXT *_pstText);
-
-/** Gets a text size
- * @param[in]   _pstText                              Concerned text
- * @param[out]  _pfWidth                              Text's width
- * @param[out]  _pfHeight                             Text's height
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
-
-
-/** Prints a string
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _zString                              String to display
- * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
- * @param[in]   _stColor                              Color to use for the text
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Creates a bitmap
@@ -415,16 +386,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetScreenSize(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
+/** Sets destination bitmap
+ * @param[in]   _pstDst                               Destination bitmap
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmap(orxBITMAP *_pstDst);
+
 /** Transforms (and blits onto another) a bitmap
- * @param[in]   _pstDst                               Bitmap where to blit the result, can be screen
  * @param[in]   _pstSrc                               Bitmap to transform and draw
- * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
+ * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
+
+/** Sets a bitmap data
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _au8Data                              Data (4 channels)
+ * @param[in]   _u32ByteNumber                        Number of bytes
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
 /** Sets a bitmap color key (used with non alpha transparency)
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -453,7 +437,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClippi
 
 
 /** Blits a bitmap (no transformation)
- * @param[in]   _pstDst                               Bitmap where to blit
  * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
  * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
  * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
@@ -461,7 +444,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClippi
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Saves a bitmap to file

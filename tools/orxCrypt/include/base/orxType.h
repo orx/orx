@@ -144,9 +144,10 @@ static const orxHANDLE            orxHANDLE_UNDEFINED   = (orxHANDLE)(-1);
 extern orxDLLAPI const orxSTRING  orxSTRING_EMPTY;
 extern orxDLLAPI const orxSTRING  orxSTRING_TRUE;
 extern orxDLLAPI const orxSTRING  orxSTRING_FALSE;
-extern orxDLLAPI const orxCHAR    orxCHAR_NULL;
-extern orxDLLAPI const orxCHAR    orxCHAR_CR;
-extern orxDLLAPI const orxCHAR    orxCHAR_LF;
+#define orxCHAR_NULL              '\0'
+#define orxCHAR_CR                '\r'
+#define orxCHAR_LF                '\n'
+#define orxCHAR_NUMBER            256
 
 extern orxDLLAPI const orxCHAR    orxCHAR_EOL;
 extern orxDLLAPI const orxSTRING  orxSTRING_EOL;

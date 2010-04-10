@@ -42,7 +42,7 @@
 
 #include "orxInclude.h"
 
-#include "display/orxDisplay.h"
+#include "display/orxFont.h"
 
 
 /** Internal text structure */
@@ -106,15 +106,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_p
  * @param[in]   _pstText      Concerned text
  * @return      Text font / orxNULL
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetFont(const orxTEXT *_pstText);
+extern orxDLLAPI orxFONT *orxFASTCALL orxText_GetFont(const orxTEXT *_pstText);
 
-/** Gets text data
- * @param[in]   _pstText      Concerned text
- * @return      orxDISPLAY_TEXT / orxNULL
- */
-extern orxDLLAPI orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(const orxTEXT *_pstText);
 
-/** Sets text string 
+/** Sets text string
  * @param[in]   _pstText      Concerned text
  * @param[in]   _zString      String to contain
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -123,10 +118,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetString(orxTEXT *_pstText, c
 
 /** Sets text font
  * @param[in]   _pstText      Concerned text
- * @param[in]   _zFont        Font name / orxNULL to use default
+ * @param[in]   _pstFont      Font / orxNULL to use default
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetFont(orxTEXT *_pstText, const orxSTRING _zFont);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont);
 
 #endif /* _orxTEXT_H_ */
 

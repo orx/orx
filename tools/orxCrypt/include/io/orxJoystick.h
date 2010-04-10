@@ -44,49 +44,88 @@
 #include "plugin/orxPluginCore.h"
 
 
+/** Helpers
+ */
+#define orxJOYSTICK_GET_AXIS_FOR_PLAYER(AXIS, PLAYER)     (((AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
+#define orxJOYSTICK_GET_BUTTON_FOR_PLAYER(BUTTON, PLAYER) (((BUTTON) % orxJOYSTICK_BUTTON_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_BUTTON_SINGLE_NUMBER))
+
+#define orxJOYSTICK_GET_PLAYER_FROM_AXIS(AXIS)            (((AXIS) / orxJOYSTICK_AXIS_SINGLE_NUMBER) + 1)
+#define orxJOYSTICK_GET_PLAYER_FROM_BUTTON(BUTTON)        (((BUTTON) / orxJOYSTICK_BUTTON_SINGLE_NUMBER) + 1)
+
+
 /** Button enum
  */
 typedef enum __orxJOYSTICK_BUTTON_t
 {
-  #ifdef __orxGP2X__
+  orxJOYSTICK_BUTTON_1_1 = 0,
+  orxJOYSTICK_BUTTON_2_1,
+  orxJOYSTICK_BUTTON_3_1,
+  orxJOYSTICK_BUTTON_4_1,
+  orxJOYSTICK_BUTTON_5_1,
+  orxJOYSTICK_BUTTON_6_1,
+  orxJOYSTICK_BUTTON_7_1,
+  orxJOYSTICK_BUTTON_8_1,
+  orxJOYSTICK_BUTTON_9_1,
+  orxJOYSTICK_BUTTON_10_1,
+  orxJOYSTICK_BUTTON_11_1,
+  orxJOYSTICK_BUTTON_12_1,
+  orxJOYSTICK_BUTTON_13_1,
+  orxJOYSTICK_BUTTON_14_1,
+  orxJOYSTICK_BUTTON_15_1,
+  orxJOYSTICK_BUTTON_16_1,
 
-    orxJOYSTICK_BUTTON_1 = 0,
-    orxJOYSTICK_BUTTON_2,
-    orxJOYSTICK_BUTTON_3,
-    orxJOYSTICK_BUTTON_4,
-    orxJOYSTICK_BUTTON_5,
-    orxJOYSTICK_BUTTON_6,
-    orxJOYSTICK_BUTTON_7,
-    orxJOYSTICK_BUTTON_8,
-    orxJOYSTICK_BUTTON_9,
-    orxJOYSTICK_BUTTON_10,
-    orxJOYSTICK_BUTTON_11,
-    orxJOYSTICK_BUTTON_12,
-    orxJOYSTICK_BUTTON_13,
-    orxJOYSTICK_BUTTON_14,
-    orxJOYSTICK_BUTTON_15,
-    orxJOYSTICK_BUTTON_16,
+  orxJOYSTICK_BUTTON_SINGLE_NUMBER,
+  
+  orxJOYSTICK_BUTTON_1_2 = orxJOYSTICK_BUTTON_SINGLE_NUMBER,
+  orxJOYSTICK_BUTTON_2_2,
+  orxJOYSTICK_BUTTON_3_2,
+  orxJOYSTICK_BUTTON_4_2,
+  orxJOYSTICK_BUTTON_5_2,
+  orxJOYSTICK_BUTTON_6_2,
+  orxJOYSTICK_BUTTON_7_2,
+  orxJOYSTICK_BUTTON_8_2,
+  orxJOYSTICK_BUTTON_9_2,
+  orxJOYSTICK_BUTTON_10_2,
+  orxJOYSTICK_BUTTON_11_2,
+  orxJOYSTICK_BUTTON_12_2,
+  orxJOYSTICK_BUTTON_13_2,
+  orxJOYSTICK_BUTTON_14_2,
+  orxJOYSTICK_BUTTON_15_2,
+  orxJOYSTICK_BUTTON_16_2,
 
-  #else /* __orxGP2X__ */
+  orxJOYSTICK_BUTTON_1_3,
+  orxJOYSTICK_BUTTON_2_3,
+  orxJOYSTICK_BUTTON_3_3,
+  orxJOYSTICK_BUTTON_4_3,
+  orxJOYSTICK_BUTTON_5_3,
+  orxJOYSTICK_BUTTON_6_3,
+  orxJOYSTICK_BUTTON_7_3,
+  orxJOYSTICK_BUTTON_8_3,
+  orxJOYSTICK_BUTTON_9_3,
+  orxJOYSTICK_BUTTON_10_3,
+  orxJOYSTICK_BUTTON_11_3,
+  orxJOYSTICK_BUTTON_12_3,
+  orxJOYSTICK_BUTTON_13_3,
+  orxJOYSTICK_BUTTON_14_3,
+  orxJOYSTICK_BUTTON_15_3,
+  orxJOYSTICK_BUTTON_16_3,
 
-    orxJOYSTICK_BUTTON_1 = 0,
-    orxJOYSTICK_BUTTON_2,
-    orxJOYSTICK_BUTTON_3,
-    orxJOYSTICK_BUTTON_4,
-    orxJOYSTICK_BUTTON_5,
-    orxJOYSTICK_BUTTON_6,
-    orxJOYSTICK_BUTTON_7,
-    orxJOYSTICK_BUTTON_8,
-    orxJOYSTICK_BUTTON_9,
-    orxJOYSTICK_BUTTON_10,
-    orxJOYSTICK_BUTTON_11,
-    orxJOYSTICK_BUTTON_12,
-    orxJOYSTICK_BUTTON_13,
-    orxJOYSTICK_BUTTON_14,
-    orxJOYSTICK_BUTTON_15,
-    orxJOYSTICK_BUTTON_16,
-
-  #endif /* __orxGP2X__ */
+  orxJOYSTICK_BUTTON_1_4,
+  orxJOYSTICK_BUTTON_2_4,
+  orxJOYSTICK_BUTTON_3_4,
+  orxJOYSTICK_BUTTON_4_4,
+  orxJOYSTICK_BUTTON_5_4,
+  orxJOYSTICK_BUTTON_6_4,
+  orxJOYSTICK_BUTTON_7_4,
+  orxJOYSTICK_BUTTON_8_4,
+  orxJOYSTICK_BUTTON_9_4,
+  orxJOYSTICK_BUTTON_10_4,
+  orxJOYSTICK_BUTTON_11_4,
+  orxJOYSTICK_BUTTON_12_4,
+  orxJOYSTICK_BUTTON_13_4,
+  orxJOYSTICK_BUTTON_14_4,
+  orxJOYSTICK_BUTTON_15_4,
+  orxJOYSTICK_BUTTON_16_4,
 
   orxJOYSTICK_BUTTON_NUMBER,
 
@@ -99,27 +138,39 @@ typedef enum __orxJOYSTICK_BUTTON_t
  */
 typedef enum __orxJOYSTICK_AXIS_t
 {
-  #ifdef __orxGP2X__
+  orxJOYSTICK_AXIS_X_1 = 0,
+  orxJOYSTICK_AXIS_Y_1,
+  orxJOYSTICK_AXIS_Z_1,
+  orxJOYSTICK_AXIS_R_1,
+  orxJOYSTICK_AXIS_U_1,
+  orxJOYSTICK_AXIS_V_1,
+  orxJOYSTICK_AXIS_POV_1,
 
-    orxJOYSTICK_AXIS_X = 0,
-    orxJOYSTICK_AXIS_Y,
-    orxJOYSTICK_AXIS_Z,
-    orxJOYSTICK_AXIS_R,
-    orxJOYSTICK_AXIS_U,
-    orxJOYSTICK_AXIS_V,
-    orxJOYSTICK_AXIS_POV,
+  orxJOYSTICK_AXIS_SINGLE_NUMBER,
 
-  #else /* __orxGP2X__ */
+  orxJOYSTICK_AXIS_X_2 = orxJOYSTICK_AXIS_SINGLE_NUMBER,
+  orxJOYSTICK_AXIS_Y_2,
+  orxJOYSTICK_AXIS_Z_2,
+  orxJOYSTICK_AXIS_R_2,
+  orxJOYSTICK_AXIS_U_2,
+  orxJOYSTICK_AXIS_V_2,
+  orxJOYSTICK_AXIS_POV_2,
+  
+  orxJOYSTICK_AXIS_X_3,
+  orxJOYSTICK_AXIS_Y_3,
+  orxJOYSTICK_AXIS_Z_3,
+  orxJOYSTICK_AXIS_R_3,
+  orxJOYSTICK_AXIS_U_3,
+  orxJOYSTICK_AXIS_V_3,
+  orxJOYSTICK_AXIS_POV_3,
 
-    orxJOYSTICK_AXIS_X = 0,
-    orxJOYSTICK_AXIS_Y,
-    orxJOYSTICK_AXIS_Z,
-    orxJOYSTICK_AXIS_R,
-    orxJOYSTICK_AXIS_U,
-    orxJOYSTICK_AXIS_V,
-    orxJOYSTICK_AXIS_POV,
-
-  #endif /* __orxGP2X__ */
+  orxJOYSTICK_AXIS_X_4,
+  orxJOYSTICK_AXIS_Y_4,
+  orxJOYSTICK_AXIS_Z_4,
+  orxJOYSTICK_AXIS_R_4,
+  orxJOYSTICK_AXIS_U_4,
+  orxJOYSTICK_AXIS_V_4,
+  orxJOYSTICK_AXIS_POV_4,
 
   orxJOYSTICK_AXIS_NUMBER,
 
@@ -174,19 +225,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxJoystick_Init();
  */
 extern orxDLLAPI void orxFASTCALL             orxJoystick_Exit();
 
-/** Gets JOYSTICK on screen position
- * @param[in] _u32ID        ID of the joystick to test
+/** Gets joystick axis value
  * @param[in] _eAxis        Joystick axis to check
  * @return Value of the axis
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxJoystick_GetAxisValue(orxJOYSTICK_AXIS _eAxis);
 
 /** Is joystick button pressed?
- * @param[in] _u32ID        ID of the joystick to test
  * @param[in] _eButton      Joystick button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON _eButton);
 
 /** Gets axis literal name
  * @param[in] _eAxis        Concerned axis

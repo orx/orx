@@ -118,6 +118,49 @@ static orxINLINE const orxSTRING        orxString_SkipWhiteSpaces(const orxSTRIN
   return zResult;
 }
 
+/** Skips path
+ * @param[in] _zString        Concerned string
+ * @return    Sub string located after all non-terminal directory separators
+ */
+static orxINLINE const orxSTRING        orxString_SkipPath(const orxSTRING _zString)
+{
+  register const orxSTRING zResult;
+
+  /* Non null? */
+  if(_zString != orxNULL)
+  {
+    const orxCHAR *pc;
+
+    /* Updates result */
+    zResult = _zString;
+
+    /* For all characters */
+    for(pc = _zString; *pc != orxCHAR_NULL; pc++)
+    {
+      /* Is a directory separator? */
+      if((*pc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS))
+      {
+        orxCHAR cNextChar = *(pc + 1);
+
+        /* Non terminal and not a directory separator? */
+        if((cNextChar != orxCHAR_NULL) && (cNextChar != orxCHAR_DIRECTORY_SEPARATOR_LINUX) && (cNextChar != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS))
+        {
+          /* Updates result */
+          zResult = pc + 1;
+        }
+      }
+    }
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxNULL;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Returns the number of character in the string
  * @param[in] _zString  String used for length computation
  * @return Length of the string (doesn't count final orxCHAR_NULL)

@@ -92,13 +92,6 @@ extern orxDLLAPI void *orxFASTCALL      orxMemory_Allocate(orxU32 _u32Size, orxM
  */
 extern orxDLLAPI void orxFASTCALL       orxMemory_Free(void *_pMem);
 
-/** Gets the an aligned data size
- * @param[in]  _u32OriginalValue Original value (ex: 70)
- * @param[in]  _u32AlignValue    Align size (The value has to be a power of 2 and > 0) (ex : 32)
- * @return the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values)
- */
-extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue);
-
 /** Copies a portion of memory into another one
  * @param[out] _pDest    Destination pointer
  * @param[in]  _pSrc     Pointer of memory from where data are read
@@ -108,7 +101,7 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetAlign(orxU32 _u32OriginalVa
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size);
 
-/** Copies a portion of memory into another one
+/** Moves a portion of memory into another one
  * @param[out] _pDest   Destination pointer
  * @param[in]  _pSrc    Pointer of memory from where data are read
  * @param[in]  _u32Size Size of data
@@ -116,7 +109,7 @@ extern orxDLLAPI void *orxFASTCALL      orxMemory_Copy(void *_pDest, const void 
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size);
 
-/** Compares two portion of memory
+/** Compares two portions of memory
  * @param[in]  _pMem1   First potion to test
  * @param[in]  _pMem2   Second portion to test
  * @param[in]  _u32Size Size of data to test
@@ -139,7 +132,7 @@ extern orxDLLAPI void *orxFASTCALL      orxMemory_Set(void *_pDest, orxU8 _u8Dat
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Zero(void *_pDest, orxU32 _u32Size);
 
-/** Reallocs a portion of memory if the already allocated memory is not suffisant.
+/** Reallocates a portion of memory if the already allocated memory is not suffisant.
  * @param[in] _pMem	   Memory to reallocate.
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.

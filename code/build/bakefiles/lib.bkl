@@ -88,14 +88,17 @@
         </sources>
 
         <headers>
-            include/display/orxGraphic.h
             include/display/orxDisplay.h
+            include/display/orxFont.h
+            include/display/orxGraphic.h
             include/display/orxText.h
             include/display/orxTexture.h
         </headers>
         <sources>
-            src/display/orxGraphic.c
+            src/display/orxDefaultFont.c
             src/display/orxDisplay.c
+            src/display/orxFont.c
+            src/display/orxGraphic.c
             src/display/orxText.c
             src/display/orxTexture.c
         </sources>

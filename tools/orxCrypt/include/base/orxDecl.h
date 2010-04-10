@@ -63,6 +63,18 @@
 
 #endif /* !__orxPPC__ && !__orxX86_64__ */
 
+/* Power PC? */
+#ifdef __orxPPC__
+
+  #define __orxBIG_ENDIAN__
+  #undef __orxLITTLE_ENDIAN__
+
+#else /* __orxPPC__ */
+
+  #define __orxLITTLE_ENDIAN__
+  #undef __orxBIG_ENDIAN__
+
+#endif /* __orxPPC__ */
 
 /* No compiler defines? */
 #if !defined(__orxGCC__) && !defined(__orxMSVC__)
@@ -291,11 +303,11 @@
 
 
 /** Memory alignment macros */
-#define _orxALIGN(ADDRESS, BLOCK_SIZE)  ((ADDRESS + (BLOCK_SIZE - 1)) & (~(BLOCK_SIZE - 1)))
+#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((ADDRESS) + ((BLOCK_SIZE) - 1)) & (~((BLOCK_SIZE) - 1)))
 
-#define orxALIGN16(ADDRESS)             _orxALIGN(ADRESS, 16)
-#define orxALIGN32(ADDRESS)             _orxALIGN(ADRESS, 32)
-#define orxALIGN64(ADDRESS)             _orxALIGN(ADRESS, 64)
+#define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)
+#define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)
+#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)
 
 
 /* Padding macro */
@@ -303,7 +315,7 @@
 
   #ifdef orxPADDING_SIZE                /* Padding size defined */
 
-    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
+    #define orxPAD(SIZE)                orxU8 au8Pad[orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
 
   #else /* orxPADDING_SIZE */           /* Padding size not defined */
 

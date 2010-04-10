@@ -61,6 +61,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_EVENT,
   orxMODULE_ID_FILE,
   orxMODULE_ID_FILESYSTEM,
+  orxMODULE_ID_FONT,
   orxMODULE_ID_FPS,
   orxMODULE_ID_FRAME,
   orxMODULE_ID_FX,

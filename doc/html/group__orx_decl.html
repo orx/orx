@@ -20,17 +20,19 @@
 <h1>OrxDecl</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g96482e65a36cc89edf91aae3315de27f">__orxLITTLE_ENDIAN__</a></td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gb970a40e167e4b5346aec7ae059d8929">orxIMPORT</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a>&nbsp;&nbsp;&nbsp;orxIMPORT orxDLLEXPORT</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gda960cd8b0f47042ca5f70576e821188">_orxALIGN</a>(ADDRESS, BLOCK_SIZE)&nbsp;&nbsp;&nbsp;((ADDRESS + (BLOCK_SIZE - 1)) &amp; (~(BLOCK_SIZE - 1)))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g92c478fc93993c0ff07093dd9f69ec83">orxALIGN</a>(ADDRESS, BLOCK_SIZE)&nbsp;&nbsp;&nbsp;(((ADDRESS) + ((BLOCK_SIZE) - 1)) &amp; (~((BLOCK_SIZE) - 1)))</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gd568d895c9d5dd496b0d720750b4429f">orxALIGN16</a>(ADDRESS)&nbsp;&nbsp;&nbsp;_orxALIGN(ADRESS, 16)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gd568d895c9d5dd496b0d720750b4429f">orxALIGN16</a>(ADDRESS)&nbsp;&nbsp;&nbsp;orxALIGN(ADDRESS, 16)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g7f7f410f595812b1c9c36c21ef1c3480">orxALIGN32</a>(ADDRESS)&nbsp;&nbsp;&nbsp;_orxALIGN(ADRESS, 32)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g7f7f410f595812b1c9c36c21ef1c3480">orxALIGN32</a>(ADDRESS)&nbsp;&nbsp;&nbsp;orxALIGN(ADDRESS, 32)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g9108596dcc7bb4203fee1d30fd1db504">orxALIGN64</a>(ADDRESS)&nbsp;&nbsp;&nbsp;_orxALIGN(ADRESS, 64)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g9108596dcc7bb4203fee1d30fd1db504">orxALIGN64</a>(ADDRESS)&nbsp;&nbsp;&nbsp;orxALIGN(ADDRESS, 64)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g79cbb8761a42b816df3c0e4655108b55">orxPAD</a>(SIZE)</td></tr>
 
@@ -47,12 +49,27 @@
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Base declarations <hr><h2>Define Documentation</h2>
-<a class="anchor" name="gda960cd8b0f47042ca5f70576e821188"></a><!-- doxytag: member="orxDecl.h::_orxALIGN" ref="gda960cd8b0f47042ca5f70576e821188" args="(ADDRESS, BLOCK_SIZE)" -->
+<a class="anchor" name="g96482e65a36cc89edf91aae3315de27f"></a><!-- doxytag: member="orxDecl.h::__orxLITTLE_ENDIAN__" ref="g96482e65a36cc89edf91aae3315de27f" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _orxALIGN          </td>
+          <td class="memname">#define __orxLITTLE_ENDIAN__          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="g92c478fc93993c0ff07093dd9f69ec83"></a><!-- doxytag: member="orxDecl.h::orxALIGN" ref="g92c478fc93993c0ff07093dd9f69ec83" args="(ADDRESS, BLOCK_SIZE)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxALIGN          </td>
           <td>(</td>
           <td class="paramtype">ADDRESS,         <tr>
           <td class="paramkey"></td>
@@ -60,7 +77,7 @@ Base declarations <hr><h2>Define Documentation</h2>
           <td class="paramtype">BLOCK_SIZE&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;((ADDRESS + (BLOCK_SIZE - 1)) &amp; (~(BLOCK_SIZE - 1)))</td>
+          <td>&nbsp;&nbsp;&nbsp;(((ADDRESS) + ((BLOCK_SIZE) - 1)) &amp; (~((BLOCK_SIZE) - 1)))</td>
         </tr>
       </table>
 </div>
@@ -80,7 +97,7 @@ Memory alignment macros
           <td class="paramtype">ADDRESS&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;_orxALIGN(ADRESS, 16)</td>
+          <td>&nbsp;&nbsp;&nbsp;orxALIGN(ADDRESS, 16)</td>
         </tr>
       </table>
 </div>
@@ -100,7 +117,7 @@ Memory alignment macros
           <td class="paramtype">ADDRESS&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;_orxALIGN(ADRESS, 32)</td>
+          <td>&nbsp;&nbsp;&nbsp;orxALIGN(ADDRESS, 32)</td>
         </tr>
       </table>
 </div>
@@ -120,7 +137,7 @@ Memory alignment macros
           <td class="paramtype">ADDRESS&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;_orxALIGN(ADRESS, 64)</td>
+          <td>&nbsp;&nbsp;&nbsp;orxALIGN(ADDRESS, 64)</td>
         </tr>
       </table>
 </div>

@@ -47,8 +47,6 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g46afc4965b86e4aa25fc3ddf1befa02d">orxMemory_Free</a> (void *_pMem)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gddc546d75aed51d5b875582d5e3bb00b">orxMemory_GetAlign</a> (orxU32 _u32OriginalValue, orxU32 _u32AlignValue)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g685c30e74ee37efb499e8fb220308a0c">orxMemory_Copy</a> (void *_pDest, const void *_pSrc, orxU32 _u32Size)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g7e90efa0eef145702488f1d76719dda3">orxMemory_Move</a> (void *_pDest, void *_pSrc, orxU32 _u32Size)</td></tr>
@@ -172,7 +170,7 @@ Allocates a portion of memory in the system and returns a pointer on it <dl comp
 <div class="memdoc">
 
 <p>
-Compares two portion of memory <dl compact><dt><b>Parameters:</b></dt><dd>
+Compares two portions of memory <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pMem1</em>&nbsp;</td><td>First potion to test </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pMem2</em>&nbsp;</td><td>Second portion to test </td></tr>
@@ -271,42 +269,6 @@ Frees a portion of memory allocated with orxMemory_Allocate <dl compact><dt><b>P
 
 </div>
 </div><p>
-<a class="anchor" name="gddc546d75aed51d5b875582d5e3bb00b"></a><!-- doxytag: member="orxMemory.h::orxMemory_GetAlign" ref="gddc546d75aed51d5b875582d5e3bb00b" args="(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxMemory_GetAlign           </td>
-          <td>(</td>
-          <td class="paramtype">orxU32&nbsp;</td>
-          <td class="paramname"> <em>_u32OriginalValue</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&nbsp;</td>
-          <td class="paramname"> <em>_u32AlignValue</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets the an aligned data size <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32OriginalValue</em>&nbsp;</td><td>Original value (ex: 70) </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32AlignValue</em>&nbsp;</td><td>Align size (The value has to be a power of 2 and &gt; 0) (ex : 32) </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values) </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="g9f26236adad8a0a4d07aa6212280b379"></a><!-- doxytag: member="orxMemory.h::orxMemory_Init" ref="g9f26236adad8a0a4d07aa6212280b379" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -359,7 +321,7 @@ Inits the memory module <dl class="return" compact><dt><b>Returns:</b></dt><dd>o
 <div class="memdoc">
 
 <p>
-Copies a portion of memory into another one <dl compact><dt><b>Parameters:</b></dt><dd>
+Moves a portion of memory into another one <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pDest</em>&nbsp;</td><td>Destination pointer </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pSrc</em>&nbsp;</td><td>Pointer of memory from where data are read </td></tr>
@@ -396,7 +358,7 @@ Copies a portion of memory into another one <dl compact><dt><b>Parameters:</b></
 <div class="memdoc">
 
 <p>
-Reallocs a portion of memory if the already allocated memory is not suffisant. <dl compact><dt><b>Parameters:</b></dt><dd>
+Reallocates a portion of memory if the already allocated memory is not suffisant. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pMem</em>&nbsp;</td><td>Memory to reallocate. </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>Wanted size. </td></tr>

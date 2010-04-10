@@ -97,6 +97,7 @@
 		<Unit filename="..\..\..\include\debug\orxDebug.h" />
 		<Unit filename="..\..\..\include\debug\orxFPS.h" />
 		<Unit filename="..\..\..\include\display\orxDisplay.h" />
+		<Unit filename="..\..\..\include\display\orxFont.h" />
 		<Unit filename="..\..\..\include\display\orxGraphic.h" />
 		<Unit filename="..\..\..\include\display\orxText.h" />
 		<Unit filename="..\..\..\include\display\orxTexture.h" />
@@ -189,6 +190,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\display\orxDisplay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\display\orxFont.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\display\orxGraphic.c">

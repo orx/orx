@@ -24,6 +24,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="display">
       <File Name="../../../src/display/orxDisplay.c"/>
+      <File Name="../../../src/display/orxFont.c"/>
       <File Name="../../../src/display/orxGraphic.c"/>
       <File Name="../../../src/display/orxText.c"/>
       <File Name="../../../src/display/orxTexture.c"/>
@@ -112,6 +113,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="display">
       <File Name="../../../include/display/orxDisplay.h"/>
+      <File Name="../../../include/display/orxFont.h"/>
       <File Name="../../../include/display/orxGraphic.h"/>
       <File Name="../../../include/display/orxText.h"/>
       <File Name="../../../include/display/orxTexture.h"/>

@@ -706,7 +706,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
         if(_pstMap->astCharacterList[*pc].fX >= orxFLOAT_0)
         {
           /* Sets sub rectangle for sprite */
-          poSprite->SetSubRect(sf::IntRect(_pstMap->astCharacterList[*pc].fX, _pstMap->astCharacterList[*pc].fY, _pstMap->astCharacterList[*pc].fX + _pstMap->vCharacterSize.fX, _pstMap->astCharacterList[*pc].fY + _pstMap->vCharacterSize.fY));
+          poSprite->SetSubRect(sf::IntRect(orxF2S(_pstMap->astCharacterList[*pc].fX), orxF2S(_pstMap->astCharacterList[*pc].fY), orxF2S(_pstMap->astCharacterList[*pc].fX + _pstMap->vCharacterSize.fX), orxF2S(_pstMap->astCharacterList[*pc].fY + _pstMap->vCharacterSize.fY)));
 
           /* Updates its center */
           poSprite->SetCenter(fX, fY);

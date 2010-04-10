@@ -37,6 +37,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a> (const orxSTRING _zString)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gece5f2c89893b93ba77d21a85149017d">orxString_SkipPath</a> (const orxSTRING _zString)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a> (const orxSTRING _zString)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g79b5537709b17a25daaa794769112723">orxString_NCopy</a> (orxSTRING _zDstString, const orxSTRING _zSrcString, orxU32 _u32CharNumber)</td></tr>
@@ -741,6 +743,32 @@ Returns the first occurence of _zString2 in _zString1 <dl compact><dt><b>Paramet
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The pointer of the first occurence of _zString2, or orxNULL if not found </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gece5f2c89893b93ba77d21a85149017d"></a><!-- doxytag: member="orxString.h::orxString_SkipPath" ref="gece5f2c89893b93ba77d21a85149017d" args="(const orxSTRING _zString)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE const orxSTRING orxString_SkipPath           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zString</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Skips path <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>Concerned string </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Sub string located after all non-terminal directory separators </dd></dl>
 
 </div>
 </div><p>
