@@ -5,12 +5,21 @@ Orx - Portable Game Engine  (Version 1.1 rc0)
 
 orx 1.2
 -----
-* *** Added new platform support: iPhone ***
+* *** Added new platform with full support: iPhone ***
+* IMPORTANT: Added custom bitmap font support in orx with Jørgen 'Jibs' Ibsen's Dina font as default
 * Added __orxFREEBASIC__ define for free basic friendly build of orx
+* Fixed wrong LICENSE file (GPL->LGPL)
+* Added ParentCamera property for cameras (useful for cascading cameras or Fixed/UI camera trick for portrait<->landscape adaptation)
 * Fixed constness of all orxSTRING related code
 * Removed a couple of warnings from external library Box2D
 * Fixed some minor issues in SFML-based sound plugin
 * orxClock_RemoveTimer() can now filter using the registered context
+* Added events orxCONFIG_EVENT_RELOAD_START, orxCONFIG_EVENT_RELOAD_END & orxCONFIG_EVENT_INVALID_TYPE_ACCESS
+* Config raw sections/values can now be accessed at runtime (used in EyeCreate's orx config editor Pey)
+* Fixed sound attenuation ratio in SFML plugin
+* Fixed incorrectly names joystick axes
+* IMPORTANT: Joystick buttons/axes are now suffixed with the corresponding joystick's ID (JOY_X_1, JOY_1_2, ...)
+* Added Config::IgnorePath parameter to ignore all paths when loading resources (useful for iPhone bundles were all files are in the root folder)
 * Some optims / cleaning
 
 orx 1.1

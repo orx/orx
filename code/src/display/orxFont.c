@@ -216,7 +216,7 @@ static orxINLINE void orxFont_CreateDefaultFont()
 
               /* Inits it */
               orxFont_SetCharacterList(sstFont.pstDefaultFont, sstDefaultFont.zCharacterList);
-              orxFont_SetCharacterSize(sstFont.pstDefaultFont, orxVector_Set(&vSize, sstDefaultFont.u32CharacterWidth, sstDefaultFont.u32CharacterHeight, orxFLOAT_0));
+              orxFont_SetCharacterSize(sstFont.pstDefaultFont, orxVector_Set(&vSize, orxU2F(sstDefaultFont.u32CharacterWidth), orxU2F(sstDefaultFont.u32CharacterHeight), orxFLOAT_0));
 
               /* Stores its reference key */
               sstFont.pstDefaultFont->zReference = orxFONT_KZ_DEFAULT_FONT_NAME;

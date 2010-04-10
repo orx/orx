@@ -427,7 +427,7 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   orxBANK_SEGMENT *pstSegment;  /* Segment associated to the cell */
   orxU32 u32Index32Bits;        /* Index of 32 the bits data */
   orxU32 u32IndexBit;           /* Index of the bit in u32Index32Bits */
-  orxU32 u32CellIndex;          /* Difference in pointers adress */
+  orxU32 u32CellIndex;          /* Difference in pointers address */
 
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
@@ -440,10 +440,10 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   pstSegment = orxBank_GetSegment(_pstBank, _pCell);
   orxASSERT(pstSegment != orxNULL);
 
-  /* (The adress of _pCell can not be smaller than the adress of pstSegment->pSegmentData */
+  /* (The address of _pCell can not be smaller than the adress of pstSegment->pSegmentData */
   orxASSERT(_pCell >= pstSegment->pSegmentData);
 
-  /* Retrieve the cell index in the bitfield computing position with cell adress */
+  /* Retrieve the cell index in the bitfield computing position with cell address */
   u32CellIndex    = (orxU32)((orxU8 *)_pCell - (orxU8 *)pstSegment->pSegmentData) / _pstBank->u32ElemSize;
   u32Index32Bits  = u32CellIndex >> 5;
   u32IndexBit     = u32CellIndex & 31;
@@ -488,7 +488,7 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
   orxBANK_SEGMENT *pstSegment;  /* Segment associated to the cell */
   orxU32 u32Index32Bits;        /* Index of 32 the bits data */
   orxS32 s32IndexBit;           /* Index of the bit in u32Index32Bits */
-  orxU32 u32CellIndex;          /* Difference in pointers adress */
+  orxU32 u32CellIndex;          /* Difference in pointers address */
 
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
