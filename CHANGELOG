@@ -14,6 +14,7 @@ orx 1.2
 * Added __orxFREEBASIC__ define for free basic friendly build of orx
 * orxClock_RemoveTimer() can now filter using the registered context
 * Added events orxCONFIG_EVENT_RELOAD_START, orxCONFIG_EVENT_RELOAD_END & orxCONFIG_EVENT_INVALID_TYPE_ACCESS
+* Working directory is set to executable's one for all platforms (was done only for Mac OS X before)
 * Fixed constness of all orxSTRING related code
 * Fixed FPS display position when aspect ratio is not 1:1
 * Removed a couple of warnings from external library Box2D

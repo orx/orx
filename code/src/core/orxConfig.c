@@ -39,11 +39,15 @@
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
-#if defined(__orxMAC__) || defined(__orxIPHONE__)
+#ifdef __orxMSVC__
+
+#include <direct.h>
+
+#else /* __orxMSVC__ */
 
   #include <unistd.h>
 
-#endif /* __orxMAC__ || __orxIPHONE__ */
+#endif /* __orxMSVC__ */
 
 
 /** Module flags
@@ -1795,33 +1799,42 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   /* Valid? */
   if((_zBaseName != orxNULL) && (_zBaseName != orxSTRING_EMPTY))
   {
-    /* Mac or iPhone? */
-    #if defined(__orxMAC__) || defined(__orxIPHONE__)
+    orxS32 s32Index, s32NextIndex;
 
-      orxS32 s32Index, s32NextIndex;
+    /* Finds last directory separator */
+    for(s32Index = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, 0);
+        (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1)) > 0);
+        s32Index = s32NextIndex);
 
-      /* Finds last directory separator */
-      for(s32Index = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, 0);
-          (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1)) > 0);
-          s32Index = s32NextIndex);
+    /* Found? */
+    if(s32Index > 0)
+    {
+      /* Removes it */
+      *((orxSTRING)_zBaseName + s32Index) = orxCHAR_NULL;
 
-      /* Found? */
-      if(s32Index > 0)
-      {
-        /* Removes it */
-        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_NULL;
+#ifdef __orxMSVC__
 
-        /* Sets current directory */
-        chdir(_zBaseName);
+      /* Sets current directory */
+      _chdir(_zBaseName);
 
-        /* Restores separator */
-        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
-      }
+#else /* __orxMSVC__ */
 
-    #endif /* __orxMAC__ || __orxIPHONE__ */
+      /* Sets current directory */
+      chdir(_zBaseName);
 
-    /* Copies it */
-    orxString_NPrint(sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1, "%s.ini", _zBaseName);
+#endif /* __orxMSVC__ */
+
+      /* Restores separator */
+      *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
+    }
+    else
+    {
+      /* Clears index */
+      s32Index = -1;
+    }
+
+    /* Gets config base file */
+    orxString_NPrint(sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1, "%s.ini", _zBaseName + s32Index + 1);
     sstConfig.zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1] = orxCHAR_NULL;
   }
   else
