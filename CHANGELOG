@@ -15,6 +15,7 @@ orx 1.2
 * orxClock_RemoveTimer() can now filter using the registered context
 * Added events orxCONFIG_EVENT_RELOAD_START, orxCONFIG_EVENT_RELOAD_END & orxCONFIG_EVENT_INVALID_TYPE_ACCESS
 * Fixed constness of all orxSTRING related code
+* Fixed FPS display position when aspect ratio is not 1:1
 * Removed a couple of warnings from external library Box2D
 * Fixed some minor issues in SFML-based sound plugin
 * Config raw sections/values can now be accessed at runtime (used in EyeCreate's orx config editor Pey)

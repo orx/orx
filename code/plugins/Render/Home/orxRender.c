@@ -1218,11 +1218,43 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
         if(pstViewport != orxNULL)
         {
           orxAABOX  stBox;
-          orxFLOAT  fWidth, fHeight;
+          orxFLOAT  fWidth, fHeight, fCorrectionRatio;
 
           /* Gets its box & size */
           orxViewport_GetBox(pstViewport, &stBox);
           orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
+
+          /* Gets current correction ratio */
+          fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+
+          /* Has correction ratio? */
+          if(fCorrectionRatio != orxFLOAT_1)
+          {
+            /* X axis? */
+            if(fCorrectionRatio < orxFLOAT_1)
+            {
+              orxFLOAT fDelta;
+
+              /* Gets rendering limit delta using correction ratio */
+              fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stBox.vBR.fX - stBox.vTL.fX);
+
+              /* Updates viewport */
+              stBox.vTL.fX += fDelta;
+              stBox.vBR.fX -= fDelta;
+            }
+            /* Y axis */
+            else
+            {
+              orxFLOAT fDelta;
+
+              /* Gets rendering limit delta using correction ratio */
+              fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
+
+              /* Updates viewport */
+              stBox.vTL.fY += fDelta;
+              stBox.vBR.fY -= fDelta;
+            }
+          }
 
           /* Inits transform's scale */
           stTextTransform.fScaleX = orx2F(2.0f) * fWidth;
