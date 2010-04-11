@@ -102,6 +102,14 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g2c078f35bc8fff38d26d8fcbe834e4ac">orxColor_Copy</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g44134e96cc6e61f388f0e1e64a97d6ba">orxColor_FromRGBToHSL</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga74639192f83c7f27eb6d6767ac18230">orxColor_FromHSLToRGB</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g40588b372dcab4f3f4f62815e5e0fa18">orxColor_FromRGBToHSV</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g3c706a4ae3c73bebdedb83422d64c565">orxColor_FromHSVToRGB</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#geaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0af5c24229c1176913296242dfa2d4da">orxDisplay_Exit</a> ()</td></tr>
@@ -567,6 +575,150 @@ Bitmap smoothing enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 
 <p>
 Copies an <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> into another one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstDst</em>&nbsp;</td><td>Destination color </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Source color </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ga74639192f83c7f27eb6d6767ac18230"></a><!-- doxytag: member="orxDisplay.h::orxColor_FromHSLToRGB" ref="ga74639192f83c7f27eb6d6767ac18230" args="(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a>* orxFASTCALL orxColor_FromHSLToRGB           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstDst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSrc</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Converts from HSL color space to RGB one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstDst</em>&nbsp;</td><td>Destination color </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Source color </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g3c706a4ae3c73bebdedb83422d64c565"></a><!-- doxytag: member="orxDisplay.h::orxColor_FromHSVToRGB" ref="g3c706a4ae3c73bebdedb83422d64c565" args="(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a>* orxFASTCALL orxColor_FromHSVToRGB           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstDst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSrc</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Converts from HSV color space to RGB one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstDst</em>&nbsp;</td><td>Destination color </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Source color </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g44134e96cc6e61f388f0e1e64a97d6ba"></a><!-- doxytag: member="orxDisplay.h::orxColor_FromRGBToHSL" ref="g44134e96cc6e61f388f0e1e64a97d6ba" args="(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a>* orxFASTCALL orxColor_FromRGBToHSL           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstDst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSrc</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Converts from RGB color space to HSL one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstDst</em>&nbsp;</td><td>Destination color </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Source color </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g40588b372dcab4f3f4f62815e5e0fa18"></a><!-- doxytag: member="orxDisplay.h::orxColor_FromRGBToHSV" ref="g40588b372dcab4f3f4f62815e5e0fa18" args="(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a>* orxFASTCALL orxColor_FromRGBToHSV           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstDst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstSrc</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Converts from RGB color space to HSV one <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstDst</em>&nbsp;</td><td>Destination color </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Source color </td></tr>

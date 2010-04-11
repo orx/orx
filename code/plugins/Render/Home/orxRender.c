@@ -34,19 +34,19 @@
 
 /** Module flags
  */
-#define orxRENDER_KU32_STATIC_FLAG_NONE       0x00000000 /**< No flags */
+#define orxRENDER_KU32_STATIC_FLAG_NONE           0x00000000 /**< No flags */
 
-#define orxRENDER_KU32_STATIC_FLAG_READY      0x00000001 /**< Ready flag */
+#define orxRENDER_KU32_STATIC_FLAG_READY          0x00000001 /**< Ready flag */
 
-#define orxRENDER_KU32_STATIC_MASK_ALL        0xFFFFFFFF /**< All mask */
+#define orxRENDER_KU32_STATIC_MASK_ALL            0xFFFFFFFF /**< All mask */
 
 
 /** Defines
  */
-#define orxRENDER_KF_TICK_SIZE                orx2F(1.0f / 60.0f)
-#define orxRENDER_KU32_ORDER_BANK_SIZE        256
-#define orxRENDER_KST_DEFAULT_COLOR           orx2RGBA(255, 0, 0, 255)
-#define orxRENDER_KZ_FPS_FORMAT               "FPS: %ld"
+#define orxRENDER_KF_TICK_SIZE                    orx2F(1.0f / 60.0f)
+#define orxRENDER_KU32_ORDER_BANK_SIZE            256
+#define orxRENDER_KST_DEFAULT_COLOR               orx2RGBA(255, 0, 0, 255)
+#define orxRENDER_KZ_FPS_FORMAT                   "FPS: %ld"
 
 
 /***************************************************************************

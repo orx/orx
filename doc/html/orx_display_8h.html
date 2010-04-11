@@ -66,6 +66,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gb0f0452283708c385e761db3ee37e189">orxDISPLAY_KZ_CONFIG_VSYNC</a>&nbsp;&nbsp;&nbsp;&quot;VSync&quot;</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="orx_display_8h.html#39fb6fe2eb922c1b9f6d4434cd4f7d0a">orxCOLOR_GET_RGB_COMPONENT</a>(RESULT, ALT, CHROMA, HUE)</td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a></td></tr>
 
@@ -106,6 +108,14 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="group__orx_display.html#g4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g3a2b947697a399f021b75c94d7cfd1b6">orxColor_ToRGBA</a> (const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g2c078f35bc8fff38d26d8fcbe834e4ac">orxColor_Copy</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g44134e96cc6e61f388f0e1e64a97d6ba">orxColor_FromRGBToHSL</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga74639192f83c7f27eb6d6767ac18230">orxColor_FromHSLToRGB</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g40588b372dcab4f3f4f62815e5e0fa18">orxColor_FromRGBToHSV</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g3c706a4ae3c73bebdedb83422d64c565">orxColor_FromHSVToRGB</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstDst, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstSrc)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#geaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay_Init</a> ()</td></tr>
 
@@ -182,6 +192,64 @@
 <dl class="date" compact><dt><b>Date:</b></dt><dd>23/04/2003 </dd></dl>
 <dl class="author" compact><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
 <dl compact><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd></dd></dl>
+<hr><h2>Define Documentation</h2>
+<a class="anchor" name="39fb6fe2eb922c1b9f6d4434cd4f7d0a"></a><!-- doxytag: member="orxDisplay.h::orxCOLOR_GET_RGB_COMPONENT" ref="39fb6fe2eb922c1b9f6d4434cd4f7d0a" args="(RESULT, ALT, CHROMA, HUE)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCOLOR_GET_RGB_COMPONENT          </td>
+          <td>(</td>
+          <td class="paramtype">RESULT,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ALT,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CHROMA,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">HUE&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keywordflow">do</span>                                                                                \
+{                                                                                 \
+  <span class="keywordflow">if</span>(HUE &lt; orx2F(1.0f / 6.0f))                                                    \
+  {                                                                               \
+    RESULT = ALT + (orx2F(6.0f) * HUE * (CHROMA - ALT));                          \
+  }                                                                               \
+  <span class="keywordflow">else</span> <span class="keywordflow">if</span>(HUE &lt; orx2F(1.0f / 2.0f))                                               \
+  {                                                                               \
+    RESULT = CHROMA;                                                              \
+  }                                                                               \
+  <span class="keywordflow">else</span> <span class="keywordflow">if</span>(HUE &lt; orx2F(2.0f / 3.0f))                                               \
+  {                                                                               \
+    RESULT = ALT + (orx2F(6.0f) * (CHROMA - ALT) * (orx2F(2.0f / 3.0f) - HUE));   \
+  }                                                                               \
+  <span class="keywordflow">else</span>                                                                            \
+  {                                                                               \
+    RESULT = ALT;                                                                 \
+  }                                                                               \
+  <span class="keywordflow">if</span>((RESULT &lt; <a class="code" href="group__orx_type.html#gd7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) || (RESULT &lt; <a class="code" href="group__orx_math.html#g64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>))                      \
+  {                                                                               \
+    RESULT = <a class="code" href="group__orx_type.html#gd7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;                                                          \
+  }                                                                               \
+  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((RESULT &gt; <a class="code" href="group__orx_type.html#g90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a>) || (RESULT &gt; <a class="code" href="group__orx_type.html#g90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a> - <a class="code" href="group__orx_math.html#g64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>))    \
+  {                                                                               \
+    RESULT = <a class="code" href="group__orx_type.html#g90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a>;                                                          \
+  }                                                                               \
+}                                                                                 \
+<span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#g28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
+</pre></div>
+</div>
+</div><p>
 </div>
 <hr size="1"><address style="text-align: right;"><small>
 Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
