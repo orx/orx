@@ -31,6 +31,7 @@ The current features of orx engine are:
 - visual FXs based on curve combinations
 - spawners (provides an easy way to create particles or projectiles)
 - 3D positioning using "scene nodes"
+- custom bitmap font support
 - music and spatialized sound support
 - clock system that provides time consistency and allows time stretching
 - event manager
@@ -43,13 +44,15 @@ See ./doc/html directory for the doxygen documentation of orx's API.
 Supported Platforms
 -------------------
 
-The engine compiles and is tested for a Linux target (x86 with codelite or makefile), 
-a Win32 target (msvs2005, msvs2008 and mingw32 with code::blocks, codelite or makefile)
-and a MacOS X target (ppc/x86 with xcode).
-
-The iPhone target will be ready for orx v1.2.
+The engine compiles and is tested for:
+- Linux (x86/x86-64 with codelite)
+- Win32 (msvs2005, msvs2008, msvs2010 and mingw32 with code::blocks or codelite)
+- MacOS X (ppc/x86 with xcode).
+- iPhone/iPod Touch (simulator & device with xcode)
 
 The GP2X target is in debug stage and is not currently actively developed/maintained.
+
+NB: The makefiles (mingw32 & linux) should work for non-embedded versions but are deprecated!
 
 
 Versions
@@ -76,12 +79,16 @@ or the static ones, you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
-- SFML-based plugins for display, joystick, keyboard, mouse, sound and system
+- SFML-based plugins for display, joystick, keyboard, mouse and sound for all non-iPhone platforms
 - Box2D-based plugin for physics
 - homemade plugin for 2D rendering
 
+- OpenGL/OpenAL-based plugins for display and sound on iPhone
+- Touch/MultiTouch-based plugin for mouse on iPhone
+- Accelerometer-based plugin for joystick on iPhone
+
 Warning: If you compile the orx library yourself using the source package, you'll find SDL-based plugins
-as SFML-based counterparts, but they are not fully functional yet (WIP)!
+as SFML-based counterparts, but they are not yet fully functional (WIP)!
 
 
 Packages
