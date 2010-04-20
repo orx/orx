@@ -52,7 +52,7 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
 @synthesize poWindow;
 @synthesize poView;
 
-- (void) applicationDidFinishLaunching: (UIApplication *)_poApplication
+- (void) applicationDidFinishLaunching:(UIApplication *)_poApplication
 {
   CGRect stFrame;
   
@@ -84,6 +84,35 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
   
   /* Calls parent method */
   [super dealloc];
+}
+
+- (void) applicationWillTerminate:(UIApplication *)_poApplication
+{
+  /* Sends event */
+  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+}
+
+- (void) applicationWillResignActive:(UIApplication *)_poApplication
+{
+  /* Sends event */
+  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+}
+
+- (void) applicationDidBecomeActive:(UIApplication *)_poApplication
+{
+  static orxBOOL sbFirstActivation = orxTRUE;
+
+  /* First activation? */
+  if(sbFirstActivation != orxFALSE)
+  {
+    /* Updates status */
+    sbFirstActivation = orxFALSE;
+  }
+  else
+  {
+    /* Sends event */
+    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+  }
 }
 
 - (void) accelerometer:(UIAccelerometer *)_poAccelerometer didAccelerate:(UIAcceleration *)_poAcceleration

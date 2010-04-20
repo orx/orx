@@ -126,8 +126,8 @@ static orxView *spoInstance;
 
 - (BOOL) CreateThreadContext;
 - (BOOL) CreateFrameBuffer;
-- (BOOL) CreateRenderTarget: (orxBITMAP *)_pstBitmap;
-- (void) InitRender: (orxBITMAP *)_pstBitmap;
+- (BOOL) CreateRenderTarget:(orxBITMAP *)_pstBitmap;
+- (void) InitRender:(orxBITMAP *)_pstBitmap;
 - (void) Swap;
 
 @end
@@ -269,7 +269,7 @@ static orxView *spoInstance;
   return bResult;
 }
 
-- (BOOL) CreateRenderTarget: (orxBITMAP *)_pstBitmap
+- (BOOL) CreateRenderTarget:(orxBITMAP *)_pstBitmap
 {
   BOOL bResult = NO;
 
@@ -336,7 +336,7 @@ static orxView *spoInstance;
   return bResult;
 }
 
-- (void) InitRender: (orxBITMAP *)_pstBitmap
+- (void) InitRender:(orxBITMAP *)_pstBitmap
 {
   /* Different destination bitmap? */
   if(_pstBitmap != sstDisplay.pstDestinationBitmap)
