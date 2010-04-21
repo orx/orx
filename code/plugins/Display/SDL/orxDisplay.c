@@ -40,6 +40,7 @@
 
   #include <SDL.h>
   #include <SDL_image.h>
+  #include <SDL_opengl.h>
 
 #endif /* __orxGP2X__ */
 
@@ -66,18 +67,59 @@
 
 #endif /* __orxGP2X__ */
 
+#define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
+
+#define orxDISPLAY_KU32_BUFFER_SIZE             (12 * 1024)
+
+
+/**  Misc defines
+ */
+#ifdef __orxDEBUG__
+
+#define glASSERT()                                                      \
+do                                                                      \
+{                                                                       \
+  GLenum eError = glGetError();                                         \
+  orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: %ld", eError); \
+} while(orxFALSE)
+
+#else /* __orxDEBUG__ */
+
+#define glASSERT()
+
+#endif /* __orxDEBUG__ */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Internal bitmap structure
+ */
+struct __orxBITMAP_t
+{
+  GLuint                uiTexture;
+  orxBOOL               bSmoothing;
+  orxFLOAT              fWidth, fHeight;
+  orxU32                u32RealWidth, u32RealHeight;
+  orxFLOAT              fRecRealWidth, fRecRealHeight;
+  orxCOLOR              stColor;
+  orxAABOX              stClip;
+};
+
 /** Static structure
  */
 typedef struct __orxDISPLAY_STATIC_t
 {
-  orxU32            u32Flags;
-  orxFLOAT          fScreenWidth, fScreenHeight;
-  SDL_Surface *     pstScreen;
+  orxBANK              *pstBitmapBank;
+  orxBOOL               bDefaultSmoothing;
+  orxBITMAP            *pstScreen;
+  orxBITMAP            *pstDestinationBitmap;
+  const orxBITMAP      *pstLastBitmap;
+  orxDISPLAY_BLEND_MODE eLastBlendMode;
+  orxU32                u32Flags;
+  GLfloat               afVertexList[orxDISPLAY_KU32_BUFFER_SIZE];
+  GLfloat               afTextureCoordList[orxDISPLAY_KU32_BUFFER_SIZE];
 
 } orxDISPLAY_STATIC;
 
@@ -157,148 +199,311 @@ static void orxFASTCALL orxDisplay_SDL_EventUpdate(const orxCLOCK_INFO *_pstCloc
   return;
 }
 
+static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxBOOL bSmoothing;
+
+  /* Checks */
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
+
+  /* New bitmap? */
+  if(_pstBitmap != sstDisplay.pstLastBitmap)
+  {
+    /* Binds source's texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Stores it */
+    sstDisplay.pstLastBitmap = _pstBitmap;
+  }
+
+  /* Depending on smoothing type */
+  switch(_eSmoothing)
+  {
+  case orxDISPLAY_SMOOTHING_ON:
+    {
+      /* Applies smoothing */
+      bSmoothing = orxTRUE;
+
+      break;
+    }
+
+  case orxDISPLAY_SMOOTHING_OFF:
+    {
+      /* Applies no smoothing */
+      bSmoothing = orxFALSE;
+
+      break;
+    }
+
+  default:
+  case orxDISPLAY_SMOOTHING_DEFAULT:
+    {
+      /* Applies default smoothing */
+      bSmoothing = sstDisplay.bDefaultSmoothing;
+
+      break;
+    }
+  }
+
+  /* Should update smoothing? */
+  if(bSmoothing != _pstBitmap->bSmoothing)
+  {
+    /* Smoothing? */
+    if(bSmoothing != orxFALSE)
+    {
+      /* Updates texture */
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glASSERT();
+
+      /* Updates mode */
+      ((orxBITMAP *)_pstBitmap)->bSmoothing = orxTRUE;
+    }
+    else
+    {
+      /* Updates texture */
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glASSERT();
+
+      /* Updates mode */
+      ((orxBITMAP *)_pstBitmap)->bSmoothing = orxFALSE;
+    }
+  }
+
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
+  {
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
+    {
+    case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+        break;
+      }
+    case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+        break;
+      }
+    case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+        break;
+      }
+    default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+        break;
+      }
+    }
+  }
+
+  /* Applies color */
+  glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
+
+  /* Done! */
+  return;
+}
+
+static orxINLINE void orxDisplay_SDL_DrawBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxFLOAT fWidth, fHeight;
+
+  /* Prepares bitmap for drawing */
+  orxDisplay_SDL_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode);
+
+  /* Gets bitmap working size */
+  fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
+  fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+
+  /* Defines the vertex list */
+  GLfloat afVertexList[] =
+  {
+    0.0f, fHeight,
+    0.0f, 0.0f,
+    fWidth, fHeight,
+    fWidth, 0.0f
+  };
+
+  /* Defines the texture coord list */
+  GLfloat afTextureCoordList[] =
+  {
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY),
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
+    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY)
+  };
+
+  /* Renders it */
+  glVertexPointer(2, GL_FLOAT, 0, afVertexList);
+  glASSERT();
+  glTexCoordPointer(2, GL_FLOAT, 0, afTextureCoordList);
+  glASSERT();
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glASSERT();
+
+  /* Done! */
+  return;
+}
+
 orxBITMAP *orxFASTCALL orxDisplay_SDL_GetScreen()
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Done! */
-  return((orxBITMAP *)sstDisplay.pstScreen);
+  return sstDisplay.pstScreen;
 }
 
-orxDISPLAY_TEXT *orxFASTCALL orxDisplay_SDL_CreateText()
+orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxDISPLAY_TEXT *pstResult = orxNULL;
+  const orxCHAR  *pc;
+  orxU32          u32Counter;
+  GLfloat         fX, fY, fWidth, fHeight;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-
-  /* Done! */
-  return pstResult;
-}
-
-void orxFASTCALL orxDisplay_SDL_DeleteText(orxDISPLAY_TEXT *_pstText)
-{
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstDst != orxNULL);
-  orxASSERT(_pstText != orxNULL);
+  orxASSERT(_zString != orxNULL);
+  orxASSERT(_pstFont != orxNULL);
+  orxASSERT(_pstMap != orxNULL);
   orxASSERT(_pstTransform != orxNULL);
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  /* Translates it */
+  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
+  glASSERT();
 
-  /* Done! */
-  return eResult;
-}
+  /* Applies rotation */
+  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
+  glASSERT();
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  /* Applies scale */
+  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
+  glASSERT();
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
+  /* Applies pivot translation */
+  glTranslatef(-_pstTransform->fSrcX, -_pstTransform->fSrcY, 0.0f);
+  glASSERT();
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  /* Gets character's size */
+  fWidth  = _pstMap->vCharacterSize.fX;
+  fHeight = _pstMap->vCharacterSize.fY;
 
-/* Done! */
-  return eResult;
-}
+  /* Prepares font for drawing */
+  orxDisplay_SDL_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  /* For all characters */
+  for(pc = _zString, u32Counter = 0, fX = fY = 0.0f; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Depending on character */
+    switch(*pc)
+    {
+      case orxCHAR_CR:
+      {
+        /* Half EOL? */
+        if(*(pc + 1) == orxCHAR_LF)
+        {
+          /* Updates pointer */
+          pc++;
+        }
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
+        /* Fall through */
+      }
+  
+      case orxCHAR_LF:
+      {
+        /* Updates Y position */
+        fY += fHeight;
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+        /* Resets X position */
+        fX = 0.0f;
 
-  /* Done! */
-  return eResult;
-}
+        break;
+      }
 
-orxSTRING orxFASTCALL orxDisplay_SDL_GetTextString(const orxDISPLAY_TEXT *_pstText)
-{
-  orxSTRING zResult = orxNULL;
+      default:
+      {
+        /* Is defined? */
+        if(_pstMap->astCharacterList[*pc].fX >= orxFLOAT_0)
+        {
+          /* Outputs vertices and texture coordinates */
+          sstDisplay.afVertexList[u32Counter]       =
+          sstDisplay.afVertexList[u32Counter + 2]   =
+          sstDisplay.afVertexList[u32Counter + 4]   = fX;
+          sstDisplay.afVertexList[u32Counter + 6]   =
+          sstDisplay.afVertexList[u32Counter + 8]   =
+          sstDisplay.afVertexList[u32Counter + 10]  = fX + fWidth;
+          sstDisplay.afVertexList[u32Counter + 5]   =
+          sstDisplay.afVertexList[u32Counter + 9]   =
+          sstDisplay.afVertexList[u32Counter + 11]  = fY;
+          sstDisplay.afVertexList[u32Counter + 1]   =
+          sstDisplay.afVertexList[u32Counter + 3]   =
+          sstDisplay.afVertexList[u32Counter + 7]   = fY + fHeight;
+          
+          sstDisplay.afTextureCoordList[u32Counter]       =
+          sstDisplay.afTextureCoordList[u32Counter + 2]   =
+          sstDisplay.afTextureCoordList[u32Counter + 4]   = _pstFont->fRecRealWidth * _pstMap->astCharacterList[*pc].fX;
+          sstDisplay.afTextureCoordList[u32Counter + 6]   =
+          sstDisplay.afTextureCoordList[u32Counter + 8]   =
+          sstDisplay.afTextureCoordList[u32Counter + 10]  = _pstFont->fRecRealWidth * (_pstMap->astCharacterList[*pc].fX + fWidth);
+          sstDisplay.afTextureCoordList[u32Counter + 5]   =
+          sstDisplay.afTextureCoordList[u32Counter + 9]   =
+          sstDisplay.afTextureCoordList[u32Counter + 11]  = orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstFont->fHeight - _pstMap->astCharacterList[*pc].fY);
+          sstDisplay.afTextureCoordList[u32Counter + 1]   =
+          sstDisplay.afTextureCoordList[u32Counter + 3]   =
+          sstDisplay.afTextureCoordList[u32Counter + 7]   = orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstFont->fHeight - _pstMap->astCharacterList[*pc].fY - fHeight);
+          
+          /* Updates counter */
+          u32Counter += 12;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
+          /* End of buffer? */
+          if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
+          {
+            /* Renders them */
+            glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+            glASSERT();
+            glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+            glASSERT();
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+            glASSERT();
+          }
+        }
+      }
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+      /* Updates X position */
+      fX += fWidth;
+    }
+  }
 
-  /* Done! */
-  return zResult;
-}
+  /* Renders last data */
+  glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+  glASSERT();
+  glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+  glASSERT();
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+  glASSERT();
 
-orxSTRING orxFASTCALL orxDisplay_SDL_GetTextFont(const orxDISPLAY_TEXT *_pstText)
-{
-  orxSTRING zResult = orxNULL;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-
-  /* Done! */
-  return zResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstText != orxNULL);
-  orxASSERT(_pfWidth != orxNULL);
-  orxASSERT(_pfHeight != orxNULL);
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* TODO :
-   * Write the string onto screen, using char per char pixel writing
-   */
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  /* Restores identity */
+  glLoadIdentity();
+  glASSERT();
 
   /* Done! */
   return eResult;
@@ -310,48 +515,117 @@ void orxFASTCALL orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Deletes it */
-  SDL_FreeSurface((SDL_Surface *)_pstBitmap);
+  /* Not screen? */
+  if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    /* Deletes its texture */
+    glDeleteTextures(1, &(_pstBitmap->uiTexture));
+    glASSERT();
+
+    /* Deletes it */
+    orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
+  }
 
   return;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_SDL_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
 {
-  orxU32 u32RMask, u32GMask, u32BMask, u32AMask;
+  orxBITMAP *pstBitmap;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* SDL interprets each pixel as a 32-bit number, so our masks must depend
-     on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  u32RMask = 0xFF000000;
-  u32GMask = 0x00FF0000;
-  u32BMask = 0x0000FF00;
-  u32AMask = 0x000000FF;
-#else
-  u32RMask = 0x000000FF;
-  u32GMask = 0x0000FF00;
-  u32BMask = 0x00FF0000;
-  u32AMask = 0xFF000000;
-#endif
+  /* Allocates bitmap */
+  pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _u32Width, _u32Height, sstDisplay.pstScreen->format->BitsPerPixel, u32RMask, u32GMask, u32BMask, u32AMask));
+  /* Valid? */
+  if(pstBitmap != orxNULL)
+  {
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Inits it */
+    pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+    pstBitmap->fWidth         = orxU2F(_u32Width);
+    pstBitmap->fHeight        = orxU2F(_u32Height);
+    pstBitmap->u32RealWidth   = orxMath_GetNextPowerOfTwo(_u32Width);
+    pstBitmap->u32RealHeight  = orxMath_GetNextPowerOfTwo(_u32Height);
+    pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+    pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+    orxColor_Set(&(pstBitmap->stColor), &orxVECTOR_WHITE, orxFLOAT_1);
+    orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+    orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+    /* Creates new texture */
+    glGenTextures(1, &pstBitmap->uiTexture);
+    glASSERT();
+    glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+    glASSERT();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return pstBitmap;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Updates result */
-  eResult = (SDL_FillRect((SDL_Surface *)_pstBitmap, NULL, _stColor) == 0)
-            ? orxSTATUS_SUCCESS
-            : orxSTATUS_FAILURE;
+  /* Is not screen? */
+  if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    orxRGBA *astBuffer, *pstPixel;
+
+    /* Allocates buffer */
+    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+
+    /* Checks */
+    orxASSERT(astBuffer != orxNULL);
+
+    /* For all pixels */
+    for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+    {
+      /* Sets its value */
+      *pstPixel = _stColor;
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Updates texture */
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
+
+    /* Frees buffer */
+    orxMemory_Free(astBuffer);
+  }
+  else
+  {
+    /* Clears the color buffer with given color */
+    glClearColor((1.0f / 255.f) * orxU2F(orxRGBA_R(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_G(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_B(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_A(_stColor)));
+    glASSERT();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glASSERT();
+  }
 
   /* Done! */
   return eResult;
@@ -359,141 +633,77 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_Swap()
 {
-  orxSTATUS eResult;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  /* Updates result */
-  eResult = (SDL_Flip(sstDisplay.pstScreen) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
-{
-  orxSTATUS eResult;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
-
-  /* Enable? */
-  if(_bEnable != orxFALSE)
-  {
-    /* Updates result */
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstBitmap, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstBitmap)->format, orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor))) == 0)
-              ? orxSTATUS_SUCCESS
-              : orxSTATUS_FAILURE;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstBitmap, 0, 0) == 0)
-              ? orxSTATUS_SUCCESS
-              : orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
-{
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
 
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
+  /* Swap buffers */
+  SDL_GL_SwapBuffers();
 
   /* Done! */
   return eResult;
 }
 
-orxRGBA orxFASTCALL orxDisplay_SDL_GetBitmapColor(const orxBITMAP *_pstBitmap)
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
-  orxRGBA stResult = 0;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
-
-  /* Not yet implemented */
-  orxLOG("Not yet implemented!");
-
-  /* Done! */
-  return stResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  SDL_Rect  stSrcRect, stDstRect;
+  orxU32    u32Width, u32Height;
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstDst != orxNULL);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_au8Data != orxNULL);
 
-  /* Inits blitting rectangles */
-  stSrcRect.x = 0;
-  stSrcRect.y = 0;
-  stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
-  stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-  stDstRect.x = (orxS16)orxF2S(_fPosX);
-  stDstRect.y = (orxS16)orxF2S(_fPosY);
-  stDstRect.w = 0;
-  stDstRect.h = 0;
-
-  /* Updates result */
-  eResult = (SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
-            ? orxSTATUS_SUCCESS
-            : orxSTATUS_FAILURE;
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  SDL_Surface  *pstSurface;
-  orxSTATUS     eResult;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstDst != orxNULL);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Creates transformed surface */
-  pstSurface = (SDL_Surface *)_pstSrc;//rotozoomSurface((SDL_Surface *)_pstSrc, -orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, _pstTransform->fScaleX, 0);
+  /* Gets bitmap's size */
+  u32Width  = orxF2U(_pstBitmap->fWidth);
+  u32Height = orxF2U(_pstBitmap->fHeight);
 
   /* Valid? */
-  if(pstSurface != orxNULL)
+  if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * 4))
   {
-    SDL_Rect stSrcRect, stDstRect;
+    orxU8        *au8Buffer, *pu8Dst;
+    const orxU8  *pu8Src;
+    orxU32        i, u32Offset;
 
-    /* Inits blitting rectangles */
-    stSrcRect.x = 0;//(orxS16)orxF2S(_pstTransform->fSrcX);
-    stSrcRect.y = 0;//(orxS16)orxF2S(_pstTransform->fSrcX);
-    stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
-    stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-    stDstRect.x = (orxS16)orxF2S(_pstTransform->fDstX);
-    stDstRect.y = (orxS16)orxF2S(_pstTransform->fDstY);
-    stDstRect.w = 0;
-    stDstRect.h = 0;
+    /* Allocates buffer */
+    au8Buffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+    /* Checks */
+    orxASSERT(au8Buffer != orxNULL);
+
+    /* For all visible rows */
+    for(i = 0, u32Offset = (_pstBitmap->u32RealWidth - u32Width) * 4, pu8Src = _au8Data, pu8Dst = au8Buffer + ((_pstBitmap->u32RealHeight - u32Height) * _pstBitmap->u32RealWidth * 4); i < u32Height; i++)
+    {
+      orxU32 j;
+
+      /* For all visible columns */
+      for(j = 0; j < u32Width; j++, pu8Src += 4, pu8Dst += 4)
+      {
+        /* Copies pixel data */
+        pu8Dst[0] = pu8Src[0];
+        pu8Dst[1] = pu8Src[1];
+        pu8Dst[2] = pu8Src[2];
+        pu8Dst[3] = pu8Src[3];
+      }
+
+      /* Skips unvisible pixels */
+      pu8Dst += u32Offset;
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Updates its content */
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+    glASSERT();
+
+    /* Frees buffer */
+    orxMemory_Free(au8Buffer);
 
     /* Updates result */
-    eResult = (SDL_BlitSurface(pstSurface, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
-              ? orxSTATUS_SUCCESS
-              : orxSTATUS_FAILURE;
-
-    /* Deletes transformed surface */
-    //SDL_FreeSurface(pstSurface);
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -505,17 +715,136 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, const o
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT(_zFilename != orxNULL);
 
-  /* Updates result */
-  eResult = (SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  /* Not screen? */
+  if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    /* Stores it */
+    orxColor_SetRGBA(&(_pstBitmap->stColor), _stColor);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxRGBA orxFASTCALL orxDisplay_SDL_GetBitmapColor(const orxBITMAP *_pstBitmap)
+{
+  orxRGBA stResult = 0;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+
+  /* Not screen? */
+  if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    /* Updates result */
+    stResult = orxColor_ToRGBA(&(_pstBitmap->stColor));
+  }
+
+  /* Done! */
+  return stResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP *_pstDst)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
+
+  /* Inits rendering */
+  //! [sstDisplay.poView InitRender:_pstDst];
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_BlitBitmap(const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
+
+  /* Translates it */
+  glTranslatef(_fPosX, _fPosY, 0.0f);
+  glASSERT();
+
+  /* Draws it */
+  orxDisplay_SDL_DrawBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+
+  /* Restores identity */
+  glLoadIdentity();
+  glASSERT();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Translates it */
+  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
+  glASSERT();
+
+  /* Applies rotation */
+  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
+  glASSERT();
+
+  /* Applies scale */
+  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
+  glASSERT();
+
+  /* Applies pivot translation */
+  glTranslatef(-_pstTransform->fSrcX, -_pstTransform->fSrcY, 0.0f);
+  glASSERT();
+
+  /* Draws it */
+  orxDisplay_SDL_DrawBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+
+  /* Restores identity */
+  glLoadIdentity();
+  glASSERT();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -523,13 +852,105 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
 
 orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
 {
-  orxBITMAP *pstResult = orxNULL;
+  SDL_Surface  *pstSurface;
+  orxBITMAP    *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Loads image */
-  pstResult = (orxBITMAP *)IMG_Load(_zFilename);
+  pstSurface = IMG_Load(_zFilename);
+
+  /* Valid? */
+  if(pstSurface != NULL)
+  {
+    /* Allocates bitmap */
+    pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      GLuint  uiWidth, uiHeight, uiRealWidth, uiRealHeight;
+      GLenum  eFormat;
+
+      /* Gets image's size */
+      uiWidth   = pstSurface->w;
+      uiHeight  = pstSurface->h;
+
+      /* Gets its real size */
+      uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
+      uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
+   
+      /* Depending on the number of channels */
+      switch(pstSurface->format->BytesPerPixel)
+      {
+        case 3:
+        {
+          /* Updates format */
+          eFormat = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGB : GL_BGR;
+
+          break;
+        }
+
+        case 4:
+        {
+          /* Updates format */
+          eFormat = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGBA : GL_BGRA;
+
+          break;
+        }
+
+        default:
+        {
+          /* Updates format */
+          eFormat = GL_INVALID_ENUM;
+
+          break;
+        }
+      }
+
+      /* Valid? */
+      if(eFormat != GL_INVALID_ENUM)
+      {
+        /* Pushes display section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+        /* Inits bitmap */
+        pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+        pstResult->fWidth         = orxU2F(uiWidth);
+        pstResult->fHeight        = orxU2F(uiHeight);
+        pstResult->u32RealWidth   = uiRealWidth;
+        pstResult->u32RealHeight  = uiRealHeight;
+        pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
+        pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
+        orxColor_Set(&(pstResult->stColor), &orxVECTOR_WHITE, orxFLOAT_1);
+        orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
+   
+        /* Creates new texture */
+        glGenTextures(1, &pstResult->uiTexture);
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, eFormat, GL_UNSIGNED_BYTE, pstSurface->pixels);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
+    }
+
+    /* Deletes surface */
+    SDL_FreeSurface(pstSurface);
+  }
 
   /* Done! */
   return pstResult;
@@ -546,8 +967,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_GetBitmapSize(const orxBITMAP *_pstBitmap, 
   orxASSERT(_pfHeight != orxNULL);
 
   /* Gets size */
-  *_pfWidth   = orxS2F(((SDL_Surface *)_pstBitmap)->w);
-  *_pfHeight  = orxS2F(((SDL_Surface *)_pstBitmap)->h);
+  *_pfWidth   = _pstBitmap->fWidth;
+  *_pfHeight  = _pstBitmap->fHeight;
 
   /* Done! */
   return eResult;
@@ -563,8 +984,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT 
   orxASSERT(_pfHeight != orxNULL);
 
   /* Gets size */
-  *_pfWidth   = sstDisplay.fScreenWidth;
-  *_pfHeight  = sstDisplay.fScreenHeight;
+  *_pfWidth   = sstDisplay.pstScreen->fWidth;
+  *_pfHeight  = sstDisplay.pstScreen->fHeight;
 
   /* Done! */
   return eResult;
@@ -572,21 +993,27 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT 
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
 {
-  SDL_Rect  stClipRect;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Gets SDL clip rectangle */
-  stClipRect.x = (orxS16)_u32TLX;
-  stClipRect.y = (orxS16)_u32TLY;
-  stClipRect.w = (orxS16)(_u32BRX - _u32TLX);
-  stClipRect.h = (orxS16)(_u32BRY - _u32TLY);
+  /* Screen? */
+  if(_pstBitmap == sstDisplay.pstScreen)
+  {
+    /* Enables clipping */
+    glEnable(GL_SCISSOR_TEST);
+    glASSERT();
 
-  /* Applies it */
-  SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
+    /* Stores screen clipping */
+    glScissor(_u32TLX, orxF2U(sstDisplay.pstScreen->fHeight) - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+    glASSERT();
+  }
+
+  /* Stores clip coords */
+  orxVector_Set(&(_pstBitmap->stClip.vTL), orxU2F(_u32TLX), orxU2F(_u32TLY), orxFLOAT_0);
+  orxVector_Set(&(_pstBitmap->stClip.vBR), orxU2F(_u32BRX), orxU2F(_u32BRY), orxFLOAT_0);
 
   /* Done! */
   return eResult;
@@ -599,8 +1026,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  //! TODO
 
   /* Done! */
   return eResult;
@@ -613,8 +1039,7 @@ orxBOOL orxFASTCALL orxDisplay_SDL_IsVSyncEnabled()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxLOG("Not implemented yet!");
+  //! TODO
 
   /* Done! */
   return bResult;
@@ -627,6 +1052,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -641,6 +1067,7 @@ orxBOOL orxFASTCALL orxDisplay_SDL_IsFullScreen()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -655,6 +1082,7 @@ orxU32 orxFASTCALL orxDisplay_SDL_GetVideoModeCounter()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -669,6 +1097,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -683,6 +1112,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -697,6 +1127,7 @@ orxBOOL orxFASTCALL orxDisplay_SDL_IsVideoModeAvailable(const orxDISPLAY_VIDEO_M
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -740,47 +1171,70 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
 
 #else /* __orxGP2X__ */
 
-      {
-        orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags;
+      /* Enables double buffer for OpenGL */
+      SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-        /* Gets resolution from config */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-        u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
-        u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
-        u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
+      //! TODO: Init SDL + OpenGL
 
-        /* Full screen? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
-        {
-          /* Updates flags */
-          u32Flags = SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
-        }
-        else
-        {
-          /* Updates flags */
-          u32Flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
-        }
+      //SDL_Surface* screen = SDL_SetVideoMode( 640, 480, 16, SDL_OPENGL | SDL_FULLSCREEN ); // *changed* 
+      //{
+      /* Inits it */
+      glEnable(GL_TEXTURE_2D);
+      glASSERT();
+      glDisable(GL_LIGHTING);
+      glASSERT();
+      glDisable(GL_FOG);
+      glASSERT();
+      glDisable(GL_CULL_FACE);
+      glASSERT();
+      glDisable(GL_DEPTH_TEST);
+      glASSERT();
+      glDisable(GL_STENCIL_TEST);
+      glASSERT();
+      glEnableClientState(GL_VERTEX_ARRAY);
+      glASSERT();
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glASSERT();
+      //  orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags;
 
-        /* Inits display using config values? */
-        if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags)) == orxNULL)
-        {
-          /* Inits display using default parameters */
-          sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+      //  /* Gets resolution from config */
+      //  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      //  u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
+      //  u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
+      //  u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
 
-          /* Stores values */
-          sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-          sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
-        }
-        else
-        {
-          /* Stores values */
-          sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
-          sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
-        }
+      //  /* Full screen? */
+      //  if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+      //  {
+      //    /* Updates flags */
+      //    u32Flags = SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
+      //  }
+      //  else
+      //  {
+      //    /* Updates flags */
+      //    u32Flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
+      //  }
 
-        /* Pops config section */
-        orxConfig_PopSection();
-      }
+      //  /* Inits display using config values? */
+      //  if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags)) == orxNULL)
+      //  {
+      //    /* Inits display using default parameters */
+      //    sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+
+      //    /* Stores values */
+      //    sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+      //    sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+      //  }
+      //  else
+      //  {
+      //    /* Stores values */
+      //    sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
+      //    sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
+      //  }
+
+      //  /* Pops config section */
+      //  orxConfig_PopSection();
+      //}
 
 #endif /* __orxGP2X__ */
 
@@ -847,6 +1301,9 @@ void orxFASTCALL orxDisplay_SDL_Exit()
       SDL_QuitSubSystem(SDL_INIT_VIDEO);
     }
 
+    /* Deletes bank */
+    orxBank_Delete(sstDisplay.pstBitmapBank);
+
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
   }
@@ -858,6 +1315,7 @@ orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const 
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -867,6 +1325,7 @@ orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const 
 
 void orxFASTCALL orxDisplay_SDL_DeleteShader(orxHANDLE _hShader)
 {
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 }
@@ -875,6 +1334,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_RenderShader(orxHANDLE _hShader)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -886,6 +1346,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderBitmap(orxHANDLE _hShader, const o
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -897,6 +1358,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderFloat(orxHANDLE _hShader, const or
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -908,6 +1370,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderVector(orxHANDLE _hShader, const o
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  //! TODO
   /* Not yet implemented */
   orxLOG("Not implemented yet!");
 
@@ -927,7 +1390,9 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
@@ -935,18 +1400,10 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreen, DISPLAY, GET_SCREEN_B
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateText, DISPLAY, CREATE_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteText, DISPLAY, DELETE_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformText, DISPLAY, TRANSFORM_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetTextString, DISPLAY, SET_TEXT_STRING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetTextFont, DISPLAY, SET_TEXT_FONT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextString, DISPLAY, GET_TEXT_STRING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextFont, DISPLAY, GET_TEXT_FONT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextSize, DISPLAY, GET_TEXT_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_PrintString, DISPLAY, PRINT_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteShader, DISPLAY, DELETE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_RenderShader, DISPLAY, RENDER_SHADER);
