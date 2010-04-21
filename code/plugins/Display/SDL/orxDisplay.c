@@ -772,8 +772,31 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP *_pstDst)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
 
-  /* Inits rendering */
-  //! [sstDisplay.poView InitRender:_pstDst];
+  /* Different destination bitmap? */
+  if(_pstDst != sstDisplay.pstDestinationBitmap)
+  {
+    /* Stores it */
+    sstDisplay.pstDestinationBitmap = _pstDst;
+
+//!    /* Recreates render target */
+//    [self CreateRenderTarget:_pstBitmap];
+
+    /* Inits viewport */
+    glViewport(0, 0, (GLsizei)sstDisplay.pstDestinationBitmap->fWidth, (GLsizei)sstDisplay.pstDestinationBitmap->fHeight);
+    glASSERT();
+
+    /* Inits matrices */
+    glMatrixMode(GL_PROJECTION);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+    glOrtho(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+    glASSERT();
+    glMatrixMode(GL_MODELVIEW);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+  }
 
   /* Done! */
   return eResult;
