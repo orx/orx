@@ -40,7 +40,9 @@
 #define _orxDECL_H_
 
 #ifdef __APPLE__
+
   #include "TargetConditionals.h"
+
 #endif /* __APPLE__ */
 
 
@@ -186,7 +188,7 @@
   /** The function will be imported (exe compilation) */
   #define orxDLLIMPORT          __declspec(dllimport)
 
-  /** The null adress. */
+  /** The null address */
   #define orxNULL               (0)
 
   /* *** Compiler specific *** */
@@ -253,7 +255,7 @@
 
     #endif /* __orxFREEBASIC__ */
 
-    /** The null adress. */
+    /** The null address */
     #define orxNULL             (0)
 
     #if defined(__orxWII__) || defined(__orxIPHONE__)

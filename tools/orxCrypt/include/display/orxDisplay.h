@@ -141,7 +141,12 @@ typedef enum __orxDISPLAY_BLEND_MODE_t
  */
 typedef struct __orxCOLOR_t
 {
-  orxVECTOR vRGB;                       /**< RGB components: 12 */
+  union
+  {
+    orxVECTOR vRGB;                     /**< RGB components: 12 */
+    orxVECTOR vHSL;                     /**< HSL components: 12 */
+    orxVECTOR vHSV;                     /**< HSV components: 12 */
+  };
   orxFLOAT  fAlpha;                     /**< Alpha component: 16 */
 
 } orxCOLOR;
@@ -319,6 +324,361 @@ static orxINLINE orxCOLOR *       orxColor_Copy(orxCOLOR *_pstDst, const orxCOLO
 
   /* Done! */
   return _pstDst;
+}
+
+/** Converts from RGB color space to HSL one
+ * @param[in]   _pstDst         Destination color
+ * @param[in]   _pstSrc         Source color
+ * @return      orxCOLOR
+ */
+static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSL(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)
+{
+  orxCOLOR *pstResult = _pstDst;
+  orxFLOAT  fMin, fMax, fDelta, fR, fG, fB;
+
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Gets source red, blue and green components */
+  fR = _pstSrc->vRGB.fR;
+  fG = _pstSrc->vRGB.fG;
+  fB = _pstSrc->vRGB.fB;
+
+  /* Gets min, max & delta values */
+  fMin    = orxMIN(fR, orxMIN(fG, fB));
+  fMax    = orxMAX(fR, orxMAX(fG, fB));
+  fDelta  = fMax - fMin;
+
+  /* Stores lightness */
+  pstResult->vHSL.fL = orx2F(0.5f) * (fMax + fMin);
+
+  /* Gray? */
+  if(fDelta == orxFLOAT_0)
+  {
+    /* Gets hue & saturation */
+    pstResult->vHSL.fH = pstResult->vHSL.fS = orxFLOAT_0;
+  }
+  else
+  {
+    /* Updates saturation */
+    pstResult->vHSL.fS = (pstResult->vHSL.fL < orx2F(0.5f))
+                       ? fDelta / (fMax + fMin)
+                       : fDelta / (orx2F(2.0f) - fMax - fMin);
+
+    /* Red tone? */
+    if(fR == fMax)
+    {
+      /* Updates hue */
+      pstResult->vHSL.fH = orx2F(1.0f / 6.0f) * (fG - fB) / fDelta;
+    }
+    /* Green tone? */
+    else if(fG == fMax)
+    {
+      /* Updates hue */
+      pstResult->vHSL.fH = orx2F(1.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fB - fR) / fDelta);
+    }
+    /* Blue tone */
+    else
+    {
+      /* Updates hue */
+      pstResult->vHSL.fH = orx2F(2.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fR - fG) / fDelta);
+    }
+
+    /* Clamps hue */
+    if(pstResult->vHSL.fH < orxFLOAT_0)
+    {
+      pstResult->vHSL.fH += orxFLOAT_1;
+    }
+    else if(pstResult->vHSL.fH > orxFLOAT_1)
+    {
+      pstResult->vHSL.fH -= orxFLOAT_1;
+    }
+  }
+
+  /* Updates alpha */
+  pstResult->fAlpha = _pstSrc->fAlpha;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Converts from HSL color space to RGB one
+ * @param[in]   _pstDst         Destination color
+ * @param[in]   _pstSrc         Source color
+ * @return      orxCOLOR
+ */
+static orxCOLOR *orxFASTCALL      orxColor_FromHSLToRGB(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)
+{
+  orxCOLOR *pstResult = _pstDst;
+  orxFLOAT  fH, fS, fL;
+
+#define orxCOLOR_GET_RGB_COMPONENT(RESULT, ALT, CHROMA, HUE)                      \
+do                                                                                \
+{                                                                                 \
+  if(HUE < orx2F(1.0f / 6.0f))                                                    \
+  {                                                                               \
+    RESULT = ALT + (orx2F(6.0f) * HUE * (CHROMA - ALT));                          \
+  }                                                                               \
+  else if(HUE < orx2F(1.0f / 2.0f))                                               \
+  {                                                                               \
+    RESULT = CHROMA;                                                              \
+  }                                                                               \
+  else if(HUE < orx2F(2.0f / 3.0f))                                               \
+  {                                                                               \
+    RESULT = ALT + (orx2F(6.0f) * (CHROMA - ALT) * (orx2F(2.0f / 3.0f) - HUE));   \
+  }                                                                               \
+  else                                                                            \
+  {                                                                               \
+    RESULT = ALT;                                                                 \
+  }                                                                               \
+  if((RESULT < orxFLOAT_0) || (RESULT < orxMATH_KF_EPSILON))                      \
+  {                                                                               \
+    RESULT = orxFLOAT_0;                                                          \
+  }                                                                               \
+  else if((RESULT > orxFLOAT_1) || (RESULT > orxFLOAT_1 - orxMATH_KF_EPSILON))    \
+  {                                                                               \
+    RESULT = orxFLOAT_1;                                                          \
+  }                                                                               \
+}                                                                                 \
+while(orxFALSE)
+
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Gets source hue, saturation and lightness components */
+  fH = _pstSrc->vRGB.fH;
+  fS = _pstSrc->vRGB.fS;
+  fL = _pstSrc->vRGB.fL;
+
+  /* Gray? */
+  if(fS == orxFLOAT_0)
+  {
+    /* Updates result */
+    orxVector_SetAll(&(pstResult->vRGB), fL);
+  }
+  else
+  {
+    orxFLOAT fChroma, fIntermediate;
+
+    /* Gets chroma */
+    fChroma = (fL < orx2F(0.5f))
+            ? fL + (fL * fS)
+            : fL + fS - (fL * fS);
+
+    /* Gets intermediate value */
+    fIntermediate = (orx2F(2.0f) * fL) - fChroma;
+
+    /* Gets RGB components */
+    if(fH > orx2F(2.0f / 3.0f))
+    {
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fR, fIntermediate, fChroma, (fH - orx2F(2.0f / 3.0f)));
+    }
+    else
+    {
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fR, fIntermediate, fChroma, (fH + orx2F(1.0f / 3.0f)));
+    }
+    orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fG, fIntermediate, fChroma, fH);
+    if(fH < orx2F(1.0f / 3.0f))
+    {
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fB, fIntermediate, fChroma, (fH + orx2F(2.0f / 3.0f)));
+    }
+    else
+    {
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fB, fIntermediate, fChroma, (fH - orx2F(1.0f / 3.0f)));
+    }
+  }
+
+  /* Updates alpha */
+  pstResult->fAlpha = _pstSrc->fAlpha;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Converts from RGB color space to HSV one
+ * @param[in]   _pstDst         Destination color
+ * @param[in]   _pstSrc         Source color
+ * @return      orxCOLOR
+ */
+static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSV(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)
+{
+  orxCOLOR *pstResult = _pstDst;
+  orxFLOAT  fMin, fMax, fDelta, fR, fG, fB;
+
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Gets source red, blue and green components */
+  fR = _pstSrc->vRGB.fR;
+  fG = _pstSrc->vRGB.fG;
+  fB = _pstSrc->vRGB.fB;
+
+  /* Gets min, max & delta values */
+  fMin    = orxMIN(fR, orxMIN(fG, fB));
+  fMax    = orxMAX(fR, orxMAX(fG, fB));
+  fDelta  = fMax - fMin;
+
+  /* Stores value */
+  pstResult->vHSL.fV = fMax;
+
+  /* Gray? */
+  if(fDelta == orxFLOAT_0)
+  {
+    /* Gets hue & saturation */
+    pstResult->vHSL.fH = pstResult->vHSL.fS = orxFLOAT_0;
+  }
+  else
+  {
+    /* Updates saturation */
+    pstResult->vHSL.fS = fDelta / fMax;
+
+    /* Red tone? */
+    if(fR == fMax)
+    {
+      /* Updates hue */
+      pstResult->vHSL.fH = orx2F(1.0f / 6.0f) * (fG - fB) / fDelta;
+    }
+    /* Green tone? */
+    else if(fG == fMax)
+    {
+      /* Updates hue */
+      pstResult->vHSL.fH = orx2F(1.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fB - fR) / fDelta);
+    }
+    /* Blue tone */
+    else
+    {
+      /* Updates hue */
+      pstResult->vHSL.fH = orx2F(2.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fR - fG) / fDelta);
+    }
+
+    /* Clamps hue */
+    if(pstResult->vHSL.fH < orxFLOAT_0)
+    {
+      pstResult->vHSL.fH += orxFLOAT_1;
+    }
+    else if(pstResult->vHSL.fH > orxFLOAT_1)
+    {
+      pstResult->vHSL.fH -= orxFLOAT_1;
+    }
+  }
+
+  /* Updates alpha */
+  pstResult->fAlpha = _pstSrc->fAlpha;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Converts from HSV color space to RGB one
+ * @param[in]   _pstDst         Destination color
+ * @param[in]   _pstSrc         Source color
+ * @return      orxCOLOR
+ */
+static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)
+{
+  orxCOLOR *pstResult = _pstDst;
+  orxFLOAT  fH, fS, fV;
+
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Gets source hue, saturation and value components */
+  fH = _pstSrc->vRGB.fH;
+  fS = _pstSrc->vRGB.fS;
+  fV = _pstSrc->vRGB.fV;
+
+  /* Gray? */
+  if(fS == orxFLOAT_0)
+  {
+    /* Updates result */
+    orxVector_SetAll(&(pstResult->vRGB), fV);
+  }
+  else
+  {
+    orxFLOAT fFullHue, fSector, fIntermediate;
+
+    /* Gets intermediate value */
+    fIntermediate = fV * fS;
+
+    /* Gets full hue & sector */
+    fFullHue  = orx2F(6.0f) * fH;
+    fSector   = orxMath_Floor(fFullHue);
+
+    /* Depending on sector */
+    switch(orxF2U(fSector))
+    {
+      default:
+      case 0:
+      {
+        /* Updates RGB components */
+        pstResult->vRGB.fR = fV;
+        pstResult->vRGB.fG = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
+        pstResult->vRGB.fB = fV - fIntermediate;
+
+        break;
+      }
+
+      case 1:
+      {
+        /* Updates RGB components */
+        pstResult->vRGB.fR = fV - (fIntermediate * (fFullHue - fSector));
+        pstResult->vRGB.fG = fV;
+        pstResult->vRGB.fB = fV - fIntermediate;
+
+        break;
+      }
+
+      case 2:
+      {
+        /* Updates RGB components */
+        pstResult->vRGB.fR = fV - fIntermediate;
+        pstResult->vRGB.fG = fV;
+        pstResult->vRGB.fB = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
+
+        break;
+      }
+
+      case 3:
+      {
+        /* Updates RGB components */
+        pstResult->vRGB.fR = fV - fIntermediate;
+        pstResult->vRGB.fG = fV - (fIntermediate * (fFullHue - fSector));
+        pstResult->vRGB.fB = fV;
+
+        break;
+      }
+
+      case 4:
+      {
+        /* Updates RGB components */
+        pstResult->vRGB.fR = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
+        pstResult->vRGB.fG = fV - fIntermediate;
+        pstResult->vRGB.fB = fV;
+
+        break;
+      }
+
+      case 5:
+      {
+        /* Updates RGB components */
+        pstResult->vRGB.fR = fV;
+        pstResult->vRGB.fG = fV - fIntermediate;
+        pstResult->vRGB.fB = fV - (fIntermediate * (fFullHue - fSector));
+
+        break;
+      }
+    }
+  }
+
+  /* Updates alpha */
+  pstResult->fAlpha = _pstSrc->fAlpha;
+
+  /* Done! */
+  return pstResult;
 }
 
 

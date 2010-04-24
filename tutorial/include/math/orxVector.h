@@ -58,6 +58,7 @@ typedef struct __orxVECTOR_t
     orxFLOAT fX;              /**< First coordinate in the cartesian space */
     orxFLOAT fRho;            /**< First coordinate in the spherical space */
     orxFLOAT fR;              /**< First coordinate in the RGB color space */
+    orxFLOAT fH;              /**< First coordinate in the HSL/HSV color spaces */
   };
 
   union
@@ -65,6 +66,7 @@ typedef struct __orxVECTOR_t
     orxFLOAT fY;              /**< Second coordinate in the cartesian space */
     orxFLOAT fTheta;          /**< Second coordinate in the spherical space */
     orxFLOAT fG;              /**< Second coordinate in the RGB color space */
+    orxFLOAT fS;              /**< Second coordinate in the HSL/HSV color spaces */
   };
 
   union
@@ -72,6 +74,8 @@ typedef struct __orxVECTOR_t
     orxFLOAT fZ;              /**< Third coordinate in the cartesian space */
     orxFLOAT fPhi;            /**< Third coordinate in the spherical space */
     orxFLOAT fB;              /**< Third coordinate in the RGB color space */
+    orxFLOAT fL;              /**< Third coordinate in the HSL color space */
+    orxFLOAT fV;              /**< Third coordinate in the HSV color space */
   };
 
 } orxVECTOR;

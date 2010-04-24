@@ -119,7 +119,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
  * Used to pass over all elements of the hashtable.
  * @{ */
 /** Find a the first item of the hashtable and return the iterator corresponding to the search.
- * @param[in] _pstHashTable Adress of the HashTable.
+ * @param[in] _pstHashTable Address of the HashTable.
  * @param[in] _pu32Key Address where store the key, NULL to not store it.
  * @param[in] _ppData Address where store the data, NULL to not store it.
  * @return iterator of HashTable traversing. orxHANDLE_UNDEFINED if no element.
@@ -127,7 +127,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
 extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData);
 
 /** Find a the next item of the hashtable and return the iterator corresponding to the search.
- * @param[in] _pstHashTable Adress of the HashTable.
+ * @param[in] _pstHashTable Address of the HashTable.
  * @param[in] _pu32Key Address where store the key, NULL to not store it.
  * @param[in] _ppData Address where store the data, NULL to not store it.
  * @param[in] _hIterator Iterator to continue the search.
