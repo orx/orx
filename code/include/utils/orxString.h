@@ -250,7 +250,7 @@ static orxINLINE orxSTATUS              orxString_Delete(orxSTRING _zString)
   return orxSTATUS_SUCCESS;
 }
 
-/** Compare two strings. If the first one is smaller than the second, it returns -1,
+/** Compare two strings, case sensitive. If the first one is smaller than the second, it returns -1,
  * If the second one is bigger than the first, and 0 if they are equals
  * @param[in] _zString1    First String to compare
  * @param[in] _zString2    Second string to compare
@@ -266,7 +266,7 @@ static orxINLINE orxS32                 orxString_Compare(const orxSTRING _zStri
   return(strcmp(_zString1, _zString2));
 }
 
-/** Compare N first character from two strings. If the first one is smaller
+/** Compare N first character from two strings, case sensitive. If the first one is smaller
  * than the second, it returns -1, If the second one is bigger than the first,
  * and 0 if they are equals.
  * @param[in] _zString1       First String to compare
@@ -282,6 +282,40 @@ static orxINLINE orxS32                 orxString_NCompare(const orxSTRING _zStr
 
   /* Done! */
   return strncmp(_zString1, _zString2, _u32CharNumber);
+}
+
+/** Compare two strings, case insensitive. If the first one is smaller than the second, it returns -1,
+ * If the second one is bigger than the first, and 0 if they are equals
+ * @param[in] _zString1    First String to compare
+ * @param[in] _zString2    Second string to compare
+ * @return -1, 0 or 1 as indicated in the description.
+ */
+static orxINLINE orxS32                 orxString_ICompare(const orxSTRING _zString1, const orxSTRING _zString2)
+{
+  /* Checks */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+
+  /* Done! */
+  return(stricmp(_zString1, _zString2));
+}
+
+/** Compare N first character from two strings, case insensitive. If the first one is smaller
+ * than the second, it returns -1, If the second one is bigger than the first,
+ * and 0 if they are equals.
+ * @param[in] _zString1       First String to compare
+ * @param[in] _zString2       Second string to compare
+ * @param[in] _u32CharNumber  Number of character to compare
+ * @return -1, 0 or 1 as indicated in the description.
+ */
+static orxINLINE orxS32                 orxString_NICompare(const orxSTRING _zString1, const orxSTRING _zString2, orxU32 _u32CharNumber)
+{
+  /* Checks */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+
+  /* Done! */
+  return strnicmp(_zString1, _zString2, _u32CharNumber);
 }
 
 /** Converts a String to a signed int value using the given base
@@ -648,7 +682,7 @@ static orxINLINE orxSTATUS              orxString_ToBool(const orxSTRING _zStrin
     u32Length = orxString_GetLength(orxSTRING_FALSE);
 
     /* Is false? */
-    if(orxString_NCompare(_zString, orxSTRING_FALSE, u32Length) == 0)
+    if(orxString_NICompare(_zString, orxSTRING_FALSE, u32Length) == 0)
     {
       /* Updates boolean */
       *_pbOutValue = orxFALSE;
@@ -669,7 +703,7 @@ static orxINLINE orxSTATUS              orxString_ToBool(const orxSTRING _zStrin
       u32Length = orxString_GetLength(orxSTRING_TRUE);
 
       /* Is true? */
-      if(orxString_NCompare(_zString, orxSTRING_TRUE, u32Length) == 0)
+      if(orxString_NICompare(_zString, orxSTRING_TRUE, u32Length) == 0)
       {
         /* Updates boolean */
         *_pbOutValue = orxTRUE;
