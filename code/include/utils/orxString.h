@@ -296,8 +296,17 @@ static orxINLINE orxS32                 orxString_ICompare(const orxSTRING _zStr
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
 
+#ifdef __orxWINDOWS__
+
   /* Done! */
   return(stricmp(_zString1, _zString2));
+
+#else /* __orxWINDOWS__ */
+
+  /* Done! */
+  return strcasecmp(_zString1, _zString2);
+
+#endif /* __orxWINDOWS__ */
 }
 
 /** Compare N first character from two strings, case insensitive. If the first one is smaller
@@ -314,8 +323,17 @@ static orxINLINE orxS32                 orxString_NICompare(const orxSTRING _zSt
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
 
+#ifdef __orxWINDOWS__
+
   /* Done! */
   return strnicmp(_zString1, _zString2, _u32CharNumber);
+
+#else /* __orxWINDOWS__ */
+
+  /* Done! */
+  return strncasecmp(_zString1, _zString2, _u32CharNumber);
+
+#endif /* __orxWINDOWS__ */
 }
 
 /** Converts a String to a signed int value using the given base
