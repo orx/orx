@@ -95,6 +95,7 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxBANK              *pstBitmapBank;
   orxBOOL               bDefaultSmoothing;
+  SDL_Surface          *pstScreenSurface;
   orxBITMAP            *pstScreen;
   orxBITMAP            *pstDestinationBitmap;
   const orxBITMAP      *pstLastBitmap;
@@ -103,6 +104,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                u32Flags;
   GLfloat               afVertexList[orxDISPLAY_KU32_BUFFER_SIZE];
   GLfloat               afTextureCoordList[orxDISPLAY_KU32_BUFFER_SIZE];
+
 
 } orxDISPLAY_STATIC;
 
@@ -361,7 +363,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
   const orxCHAR  *pc;
   orxU32          u32Counter;
   GLfloat         fX, fY, fWidth, fHeight;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -762,9 +764,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP *_pstDst)
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _pstDst;
 
-//!    /* Recreates render target */
-//    [self CreateRenderTarget:_pstBitmap];
-
     /* Inits viewport */
     glViewport(0, 0, (GLsizei)sstDisplay.pstDestinationBitmap->fWidth, (GLsizei)sstDisplay.pstDestinationBitmap->fHeight);
     glASSERT();
@@ -1108,20 +1107,24 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  SDL_Surface  *pstScreen;
-  orxSTATUS     eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Enables double buffer for OpenGL */
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
   /* Updates video mode */
-  pstScreen = SDL_SetVideoMode(_pstVideoMode->u32Width, _pstVideoMode->u32Height, _pstVideoMode->u32Depth, sstDisplay.u32SDLFlags);
+  sstDisplay.pstScreenSurface = SDL_SetVideoMode(_pstVideoMode->u32Width, _pstVideoMode->u32Height, _pstVideoMode->u32Depth, sstDisplay.u32SDLFlags);
 
   /* Success? */
-  if(pstScreen != NULL)
+  if(sstDisplay.pstScreenSurface != NULL)
   {
     /* Inits it */
     glEnable(GL_TEXTURE_2D);
@@ -1140,6 +1143,26 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glASSERT();
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glASSERT();
+
+    /* Has destination bitmap? */
+    if(sstDisplay.pstDestinationBitmap != orxNULL)
+    {
+      /* Inits viewport */
+      glViewport(0, 0, (GLsizei)sstDisplay.pstDestinationBitmap->fWidth, (GLsizei)sstDisplay.pstDestinationBitmap->fHeight);
+      glASSERT();
+
+      /* Inits matrices */
+      glMatrixMode(GL_PROJECTION);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
+      glOrtho(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+      glASSERT();
+      glMatrixMode(GL_MODELVIEW);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1176,13 +1199,31 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+#ifdef __orxWINDOWS__
+
+  static BOOL (WINAPI *pfnWGLSwapIntervalEXT)(int) = NULL;
+
+  /* Not initialized? */
+  if(pfnWGLSwapIntervalEXT == NULL)
+  {
+    /* Inits it */
+    pfnWGLSwapIntervalEXT = (BOOL (WINAPI *)(int))wglGetProcAddress("wglSwapIntervalEXT");
+  }
+
+  /* Valid? */
+  if(pfnWGLSwapIntervalEXT != NULL)
+  {
+    /* Updates VSync status */
+    pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? 1 : 0);
+  }
+
+#endif /* __orxWINDOWS__ */
 
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
     /* Enables vertical sync */
-//    sstDisplay.poRenderWindow->UseVerticalSync(true);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
@@ -1190,7 +1231,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
   else
   {
     /* Disables vertical Sync */
-//    sstDisplay.poRenderWindow->UseVerticalSync(false);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
 
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VSYNC);
@@ -1353,6 +1394,21 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
         /* Sets module as ready */
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
 
+        /* Has VSync value? */
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+        {
+          /* Updates vertical sync */
+          orxDisplay_SDL_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
+        }
+        else
+        {
+          /* Enables vertical sync */
+          orxDisplay_SDL_EnableVSync(orxTRUE);
+        }
+
+        /* Updates its title */
+        SDL_WM_SetCaption(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), orxNULL);
+
         /* Sets video mode? */
         if((eResult = orxDisplay_SDL_SetVideoMode(&stVideoMode)) == orxSTATUS_FAILURE)
         {
@@ -1395,21 +1451,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
             /* Registers event update function */
             eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
           }
-
-          /* Has VSync value? */
-          if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
-          {
-            /* Updates vertical sync */
-            orxDisplay_SDL_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
-          }
-          else
-          {
-            /* Enables vertical sync */
-            orxDisplay_SDL_EnableVSync(orxTRUE);
-          }
-
-          /* Updates its title */
-          SDL_WM_SetCaption(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), orxNULL);
 
           /* Shows mouse cursor */
           SDL_ShowCursor(orxTRUE);

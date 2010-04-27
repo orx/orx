@@ -649,7 +649,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   const orxCHAR  *pc;
   orxU32          u32Counter;
   GLfloat         fX, fY, fWidth, fHeight;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
