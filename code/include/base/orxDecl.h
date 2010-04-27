@@ -378,6 +378,12 @@ do                            \
   (X) |= (A);                 \
 } while(orxFALSE)
 
+/** Swaps flags
+ * @param[in] X Flag container
+ * @param[in] S Flags to swap
+ */
+#define orxFLAG_SWAP(X, S) ((X) ^= (S))
+
 #endif /*_orxDECL_H_*/
 
 /** @} */

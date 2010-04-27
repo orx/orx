@@ -46,6 +46,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#g88b2b45c15bf1250aeb1ac6d1ed24c99">orxFLAG_SET</a>(X, A, R)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gb05629baa4da4ecca103047729ad7b5e">orxFLAG_SWAP</a>(X, S)&nbsp;&nbsp;&nbsp;((X) ^= (S))</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Base declarations <hr><h2>Define Documentation</h2>
@@ -225,6 +227,35 @@ Gets flags <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>X</em>&nbsp;</td><td>Flag container </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>A</em>&nbsp;</td><td>Flags to add </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>R</em>&nbsp;</td><td>Flags to remove </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gb05629baa4da4ecca103047729ad7b5e"></a><!-- doxytag: member="orxDecl.h::orxFLAG_SWAP" ref="gb05629baa4da4ecca103047729ad7b5e" args="(X, S)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFLAG_SWAP          </td>
+          <td>(</td>
+          <td class="paramtype">X,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">S&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td>&nbsp;&nbsp;&nbsp;((X) ^= (S))</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Swaps flags <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>X</em>&nbsp;</td><td>Flag container </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>S</em>&nbsp;</td><td>Flags to swap </td></tr>
   </table>
 </dl>
 

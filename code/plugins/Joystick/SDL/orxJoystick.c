@@ -208,16 +208,16 @@ orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Is ID valid? */
   if(u32ID < sstJoystick.u32JoystickNumber)
   {
-    orxU32 u32Axis;
+    orxS32 s32Axis;
 
     /* Gets axis */
-    u32Axis = _eAxis % orxJOYSTICK_AXIS_SINGLE_NUMBER;
+    s32Axis = _eAxis % orxJOYSTICK_AXIS_SINGLE_NUMBER;
   
     /* Is axis valid? */
-    if(u32Axis < SDL_JoystickNumAxes(sstJoystick.apstJoystickList[u32ID]))
+    if(s32Axis < SDL_JoystickNumAxes(sstJoystick.apstJoystickList[u32ID]))
     {
       /* Updates result */
-      fResult = orxS2F(SDL_JoystickGetAxis(sstJoystick.apstJoystickList[u32ID], u32Axis));
+      fResult = orxS2F(SDL_JoystickGetAxis(sstJoystick.apstJoystickList[u32ID], s32Axis));
     }
     else
     {
@@ -256,16 +256,16 @@ orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
   /* Is ID valid? */
   if(u32ID < sstJoystick.u32JoystickNumber)
   {
-    orxU32 u32Button;
+    orxS32 s32Button;
 
     /* Gets button */
-    u32Button = (orxU32)_eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER;
+    s32Button = (orxU32)_eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER;
 
     /* Is button valid? */
-    if(u32Button < SDL_JoystickNumButtons(sstJoystick.apstJoystickList[u32ID]))
+    if(s32Button < SDL_JoystickNumButtons(sstJoystick.apstJoystickList[u32ID]))
     {
       /* Updates result */
-      bResult = SDL_JoystickGetButton(sstJoystick.apstJoystickList[u32ID], u32Button) ? orxTRUE : orxFALSE;
+      bResult = SDL_JoystickGetButton(sstJoystick.apstJoystickList[u32ID], s32Button) ? orxTRUE : orxFALSE;
     }
     else
     {

@@ -254,8 +254,13 @@ orxBOOL orxFASTCALL orxKeyboard_SDL_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   /* Valid? */
   if(eSDLKey != SDLK_LAST)
   {
+    int iKeyNumber;
+
     /* Gets key state */
-    pu8KeyState = SDL_GetKeyState(orxNULL);
+    pu8KeyState = SDL_GetKeyState(&iKeyNumber);
+
+    /* Checks */
+    orxASSERT(iKeyNumber <= SDLK_LAST);
 
     /* Updates result */
     bResult = pu8KeyState[eSDLKey] ? orxTRUE : orxFALSE;
@@ -277,13 +282,17 @@ orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SDL_Read()
 {
   orxU8          *pu8KeyState;
   orxU32          i;
+  int             iKeyNumber;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
   /* Gets key state */
-  pu8KeyState = SDL_GetKeyState(orxNULL);
+  pu8KeyState = SDL_GetKeyState(&iKeyNumber);
+
+  /* Checks */
+  orxASSERT(iKeyNumber <= SDLK_LAST);
 
   /* For all keys */
   for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
@@ -291,7 +300,7 @@ orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SDL_Read()
     SDLKey eSDLKey;
 
     /* Gets SDL key enum */
-    eSDLKey = orxKeyboard_SDL_GetSDLKey(i);
+    eSDLKey = orxKeyboard_SDL_GetSDLKey((orxKEYBOARD_KEY)i);
 
     /* Is pressed? */
     if(pu8KeyState[eSDLKey])

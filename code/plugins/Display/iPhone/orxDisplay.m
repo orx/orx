@@ -1293,7 +1293,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
     uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
 
     /* Allocates image buffer */
-    au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_MAIN);
+    au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_VIDEO);
 
     /* Valid? */
     if(au8ImageBuffer != orxNULL)
@@ -1567,7 +1567,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
 
       /* Inits default values */
       sstDisplay.bDefaultSmoothing        = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-      sstDisplay.pstScreen                = orxBank_Allocate(sstDisplay.pstBitmapBank);
+      sstDisplay.pstScreen                = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
       sstDisplay.pstScreen->fWidth        = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
       sstDisplay.pstScreen->fHeight       = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);

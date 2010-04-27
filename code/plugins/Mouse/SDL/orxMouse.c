@@ -247,7 +247,7 @@ orxVECTOR *orxFASTCALL orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets mouse position */
-  SDL_GetMouseState(&s32X, &s32Y);
+  SDL_GetMouseState((int *)&s32X, (int *)&s32Y);
 
   /* Updates result */
   _pvPosition->fX = orxS2F(s32X);
@@ -269,7 +269,7 @@ orxBOOL orxFASTCALL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
 
   /* Gets mouse state */
-  u8State = SDL_GetMouseState(&s32X, &s32Y);
+  u8State = SDL_GetMouseState((int *)&s32X, (int *)&s32Y);
 
   /* Depending on button */
   switch(_eButton)

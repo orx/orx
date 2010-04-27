@@ -296,11 +296,8 @@ static orxSTATUS orxBounce_Init()
       orxObject_SetParent(pstParticleSource, spoBallSpawner);
     }
 
-    /* Should hide cursor */
-    if(orxConfig_GetBool("ShowCursor") == orxFALSE)
-    {
-      orxMouse_ShowCursor(orxFALSE);
-    }
+    /* Updates cursor */
+    orxMouse_ShowCursor(orxConfig_GetBool("ShowCursor"));
 
     /* Creates walls */
     orxObject_CreateFromConfig("Walls");
