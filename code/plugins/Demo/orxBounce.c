@@ -202,8 +202,16 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   }
   if(orxInput_IsActive("ToggleFullScreen") && orxInput_HasNewStatus("ToggleFullScreen"))
   {
+    orxFLOAT fWidth, fHeight;
+
+    /* Gets current viewport relative size */
+    orxViewport_GetRelativeSize(spstViewport, &fWidth, &fHeight);
+
     /* Toggles full screen display */
     orxDisplay_SetFullScreen(!orxDisplay_IsFullScreen());
+
+    /* Updates viewport to its previous relative size */
+    orxViewport_SetRelativeSize(spstViewport, fWidth, fHeight);
   }
 
   /* Gets mouse world position */

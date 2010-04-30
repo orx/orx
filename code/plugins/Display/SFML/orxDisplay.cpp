@@ -1138,7 +1138,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
     }
     /* Decoration? */
     else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
-    || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
+         || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
     {
       /* Updates flags */
       sstDisplay.ulWindowStyle = sf::Style::Close | sf::Style::Titlebar;
