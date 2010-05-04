@@ -550,12 +550,12 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
   return eResult;
 }
 
-/** Renders a shader
+/** Starts a shader
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT / orxNULL)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner)
+orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner)
 {
   orxSTATUS eResult;
 
@@ -570,191 +570,231 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
   /* Valid & enabled? */
   if((_pstShader->hData != orxHANDLE_UNDEFINED) && (orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED)))
   {
-    orxTEXTURE            *pstOwnerTexture = orxNULL;
-    orxSHADER_PARAM_VALUE *pstParam;
+    /* Starts it */
+    eResult = orxDisplay_StopShader(_pstShader->hData);
 
-    /* Has owner? */
-    if(_pstOwner != orxNULL)
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Depending on its type */
-      switch(orxStructure_GetID(_pstOwner))
+      orxTEXTURE            *pstOwnerTexture = orxNULL;
+      orxSHADER_PARAM_VALUE *pstParam;
+
+      /* Has owner? */
+      if(_pstOwner != orxNULL)
       {
-        case orxSTRUCTURE_ID_OBJECT:
+        /* Depending on its type */
+        switch(orxStructure_GetID(_pstOwner))
         {
-          orxGRAPHIC *pstGraphic;
+          case orxSTRUCTURE_ID_OBJECT:
+          {
+            orxGRAPHIC *pstGraphic;
 
-          /* Gets its graphic */
-          pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstOwner), GRAPHIC);
+            /* Gets its graphic */
+            pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstOwner), GRAPHIC);
 
-          /* Valid? */
-          if(pstGraphic != orxNULL)
+            /* Valid? */
+            if(pstGraphic != orxNULL)
+            {
+              /* Updates owner texture */
+              pstOwnerTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+            }
+
+            break;
+          }
+
+          case orxSTRUCTURE_ID_VIEWPORT:
           {
             /* Updates owner texture */
-            pstOwnerTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+            pstOwnerTexture = orxViewport_GetTexture(orxVIEWPORT(_pstOwner));
+
+            break;
           }
 
-          break;
+          default:
+          {
+            break;
+          }
         }
+      }
 
-        case orxSTRUCTURE_ID_VIEWPORT:
+      /* For all parameters */
+      for(pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamList));
+          pstParam != orxNULL;
+          pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
+      {
+        /* No custom param? */
+        if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
         {
-          /* Updates owner texture */
-          pstOwnerTexture = orxViewport_GetTexture(orxVIEWPORT(_pstOwner));
+          /* Depending on parameter type */
+          switch(pstParam->stParam.eType)
+          {
+            case orxSHADER_PARAM_TYPE_FLOAT:
+            {
+              /* Sets it */
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParam->stParam.zName, pstParam->fValue);
 
-          break;
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_TEXTURE:
+            {
+              orxBITMAP *pstBitmap;
+
+              /* Has default texture? */
+              if(pstParam->pstValue != orxNULL)
+              {
+                /* Gets its bitmap */
+                pstBitmap = orxTexture_GetBitmap(pstParam->pstValue);
+              }
+              /* Has an owner texture? */
+              else if(pstOwnerTexture != orxNULL)
+              {
+                /* Gets its bitmap */
+                pstBitmap = orxTexture_GetBitmap(pstOwnerTexture);
+              }
+              else
+              {
+                /* No bitmap specified */
+                pstBitmap = orxNULL;
+              }
+
+              /* Sets it */
+              orxDisplay_SetShaderBitmap(_pstShader->hData, pstParam->stParam.zName, pstBitmap);
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_VECTOR:
+            {
+              /* Sets it */
+              orxDisplay_SetShaderVector(_pstShader->hData, pstParam->stParam.zName, &(pstParam->vValue));
+
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
         }
-
-        default:
+        else
         {
-          break;
+          orxSHADER_EVENT_PARAM_PAYLOAD stPayload;
+
+          /* Inits payload */
+          stPayload.pstShader   = _pstShader;
+          stPayload.zShaderName = _pstShader->zReference;
+          stPayload.zParamName  = pstParam->stParam.zName;
+          stPayload.eParamType  = pstParam->stParam.eType;
+
+          /* Depending on type */
+          switch(stPayload.eParamType)
+          {
+            case orxSHADER_PARAM_TYPE_FLOAT:
+            {
+              /* Updates value */
+              stPayload.fValue = pstParam->fValue;
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_TEXTURE:
+            {
+              /* Updates value */
+              stPayload.pstValue = (pstParam->pstValue != orxNULL) ? pstParam->pstValue : pstOwnerTexture;
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_VECTOR:
+            {
+              /* Updates value */
+              orxVector_Copy(&(stPayload.vValue), &(pstParam->vValue));
+
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
+
+          /* Depending on parameter type */
+          switch(stPayload.eParamType)
+          {
+            case orxSHADER_PARAM_TYPE_FLOAT:
+            {
+              /* Sets it */
+              orxDisplay_SetShaderFloat(_pstShader->hData, stPayload.zParamName, stPayload.fValue);
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_TEXTURE:
+            {
+              /* Sets it */
+              orxDisplay_SetShaderBitmap(_pstShader->hData, stPayload.zParamName, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_VECTOR:
+            {
+              /* Sets it */
+              orxDisplay_SetShaderVector(_pstShader->hData, stPayload.zParamName, &(stPayload.vValue));
+
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
         }
       }
     }
-
-    /* For all parameters */
-    for(pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-        pstParam != orxNULL;
-        pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
+    else
     {
-      /* No custom param? */
-      if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
-      {
-        /* Depending on parameter type */
-        switch(pstParam->stParam.eType)
-        {
-          case orxSHADER_PARAM_TYPE_FLOAT:
-          {
-            /* Sets it */
-            orxDisplay_SetShaderFloat(_pstShader->hData, pstParam->stParam.zName, pstParam->fValue);
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't start Shader [%s/%x].", _pstShader->zReference, _pstShader);
 
-            break;
-          }
-
-          case orxSHADER_PARAM_TYPE_TEXTURE:
-          {
-            orxBITMAP *pstBitmap;
-
-            /* Has default texture? */
-            if(pstParam->pstValue != orxNULL)
-            {
-              /* Gets its bitmap */
-              pstBitmap = orxTexture_GetBitmap(pstParam->pstValue);
-            }
-            /* Has an owner texture? */
-            else if(pstOwnerTexture != orxNULL)
-            {
-              /* Gets its bitmap */
-              pstBitmap = orxTexture_GetBitmap(pstOwnerTexture);
-            }
-            else
-            {
-              /* No bitmap specified */
-              pstBitmap = orxNULL;
-            }
-
-            /* Sets it */
-            orxDisplay_SetShaderBitmap(_pstShader->hData, pstParam->stParam.zName, pstBitmap);
-
-            break;
-          }
-
-          case orxSHADER_PARAM_TYPE_VECTOR:
-          {
-            /* Sets it */
-            orxDisplay_SetShaderVector(_pstShader->hData, pstParam->stParam.zName, &(pstParam->vValue));
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
-        }
-      }
-      else
-      {
-        orxSHADER_EVENT_PARAM_PAYLOAD stPayload;
-
-        /* Inits payload */
-        stPayload.pstShader   = _pstShader;
-        stPayload.zShaderName = _pstShader->zReference;
-        stPayload.zParamName  = pstParam->stParam.zName;
-        stPayload.eParamType  = pstParam->stParam.eType;
-
-        /* Depending on type */
-        switch(stPayload.eParamType)
-        {
-          case orxSHADER_PARAM_TYPE_FLOAT:
-          {
-            /* Updates value */
-            stPayload.fValue = pstParam->fValue;
-
-            break;
-          }
-
-          case orxSHADER_PARAM_TYPE_TEXTURE:
-          {
-            /* Updates value */
-            stPayload.pstValue = (pstParam->pstValue != orxNULL) ? pstParam->pstValue : pstOwnerTexture;
-
-            break;
-          }
-
-          case orxSHADER_PARAM_TYPE_VECTOR:
-          {
-            /* Updates value */
-            orxVector_Copy(&(stPayload.vValue), &(pstParam->vValue));
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
-        }
-
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
-
-        /* Depending on parameter type */
-        switch(stPayload.eParamType)
-        {
-          case orxSHADER_PARAM_TYPE_FLOAT:
-          {
-            /* Sets it */
-            orxDisplay_SetShaderFloat(_pstShader->hData, stPayload.zParamName, stPayload.fValue);
-
-            break;
-          }
-
-          case orxSHADER_PARAM_TYPE_TEXTURE:
-          {
-            /* Sets it */
-            orxDisplay_SetShaderBitmap(_pstShader->hData, stPayload.zParamName, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
-
-            break;
-          }
-
-          case orxSHADER_PARAM_TYPE_VECTOR:
-          {
-            /* Sets it */
-            orxDisplay_SetShaderVector(_pstShader->hData, stPayload.zParamName, &(stPayload.vValue));
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
-        }
-      }
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
 
-    /* Renders it */
-    eResult = orxDisplay_RenderShader(_pstShader->hData);
+  /* Done! */
+  return eResult;
+}
+
+/** Stops a shader
+ * @param[in] _pstShader              Concerned Shader
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShader_Stop(const orxSHADER *_pstShader)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+
+  /* Valid & enabled? */
+  if((_pstShader->hData != orxHANDLE_UNDEFINED) && (orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED)))
+  {
+    /* Stops it */
+    eResult = orxDisplay_StopShader(_pstShader->hData);
   }
   else
   {

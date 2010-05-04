@@ -81,9 +81,10 @@ typedef struct __orxBITMAP_t        orxBITMAP;
 typedef struct __orxDISPLAY_TRANSFORM_t
 {
   orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
-  orxFLOAT  fRotation;
+  orxFLOAT  fRepeatX, fRepeatY;
   orxFLOAT  fScaleX;
   orxFLOAT  fScaleY;
+  orxFLOAT  fRotation;
 
 } orxDISPLAY_TRANSFORM;
 
@@ -848,11 +849,17 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(co
  */
 extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteShader(orxHANDLE _hShader);
 
-/** Renders a shader
- * @param[in]   _hShader                              Shader to render
+/** Starts a shader rendering
+ * @param[in]   _hShader                              Shader to start
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_RenderShader(const orxHANDLE _hShader);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StartShader(const orxHANDLE _hShader);
+
+/** Stops a shader rendering
+ * @param[in]   _hShader                              Shader to stop
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StopShader(const orxHANDLE _hShader);
 
 /** Sets a shader parameter (orxBITMAP)
  * @param[in]   _hShader                              Concerned shader

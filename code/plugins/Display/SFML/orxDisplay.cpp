@@ -701,6 +701,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(const orxBITMAP
 {
   sf::Sprite *poSprite;
   orxFLOAT    fCenterX, fCenterY;
+  orxBOOL     bFlipX, bFlipY;
   orxSTATUS   eResult;
 
   /* Checks */
@@ -719,30 +720,234 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(const orxBITMAP
   {
     poSprite->FlipX(true);
     fCenterX = poSprite->GetSize().x - _pstTransform->fSrcX;
+    bFlipX = true;
   }
   else
   {
     fCenterX = _pstTransform->fSrcX;
+    bFlipX = false;
   }
 
   if(_pstTransform->fScaleY < 0.0f)
   {
     poSprite->FlipY(true);
     fCenterY = poSprite->GetSize().y - _pstTransform->fSrcY;
+    bFlipY = true;
   }
   else
   {
     fCenterY = _pstTransform->fSrcY;
+    bFlipY = false;
   }
 
   /* Updates its center */
   poSprite->SetCenter(fCenterX, fCenterY);
 
-  /* Updates its scale */
-  poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
+  /* Has repeat? */
+  if((_pstTransform->fRepeatX != orxFLOAT_1) || (_pstTransform->fRepeatY != orxFLOAT_1))
+  {
+    orxFLOAT    fIncX, fIncY, fCos, fSin, fX, fY, fSizeX, fSizeY, fScaleX, fScaleY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY, fAbsScaleX, fAbsScaleY;
+    sf::IntRect stClip;
 
-  /* Blits it */
-  eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
+    /* Gets sprite's size */
+    fSizeX = (orxFLOAT)poSprite->GetImage()->GetWidth();
+    fSizeY = (orxFLOAT)poSprite->GetImage()->GetHeight();
+
+    /* Gets sprite's clipping */
+    stClip = poSprite->GetSubRect();
+
+    /* Has no rotation */
+    if(_pstTransform->fRotation == orxFLOAT_0)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxFLOAT_1;
+      fSin = orxFLOAT_0;
+    }
+    /* 90°? */
+    else if(_pstTransform->fRotation == orxMATH_KF_PI_BY_2)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxFLOAT_0;
+      fSin = -orxFLOAT_1;
+    }
+    /* 180°? */
+    else if(_pstTransform->fRotation == orxMATH_KF_PI)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = -orxFLOAT_1;
+      fSin = orxFLOAT_0;
+    }
+    /* 180°? */
+    else if(_pstTransform->fRotation == -orxMATH_KF_PI_BY_2)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxFLOAT_0;
+      fSin = orxFLOAT_1;
+    }
+    else
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxMath_Cos(-_pstTransform->fRotation);
+      fSin = orxMath_Sin(-_pstTransform->fRotation);
+    }
+
+    /* Tiling on X? */
+    if(_pstTransform->fRepeatX == _pstTransform->fScaleX)
+    {
+      /* Updates scale */
+      fScaleX = orxFLOAT_1;
+
+      /* Updates increment */
+      fIncX = fSizeX;
+    }
+    else
+    {
+      /* Updates scale */
+      fScaleX = _pstTransform->fScaleX / _pstTransform->fRepeatX;
+
+      /* Updates increment */
+      fIncX = fSizeX * fScaleX;
+    }
+
+    /* Tiling on Y? */
+    if(_pstTransform->fRepeatY == _pstTransform->fScaleY)
+    {
+      /* Updates scale */
+      fScaleY = orxFLOAT_1;
+
+      /* Updates increment */
+      fIncY = fSizeY;
+    }
+    else
+    {
+      /* Updates scale */
+      fScaleY = _pstTransform->fScaleY / _pstTransform->fRepeatY;
+
+      /* Updates increment */
+      fIncY = fSizeY * fScaleY;
+    }
+
+    /* Gets relative pivot */
+    fRelativePivotX = _pstTransform->fSrcX / fSizeX;
+    fRelativePivotY = _pstTransform->fSrcY / fSizeY;
+
+    /* For all lines */
+    for(fY = -fRelativePivotY * fIncY * (_pstTransform->fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = _pstTransform->fRepeatY * fSizeY, fAbsScaleY = orxMath_Abs(fScaleY);
+      fRemainderY > orxFLOAT_0;
+      fY += fIncY, fRemainderY -= fSizeY)
+    {
+      orxFLOAT fPosY = fY;
+
+      /* Positive scale on Y? */
+      if(fScaleY > orxFLOAT_0)
+      {
+        /* Flipped? */
+        if(bFlipY != orxFALSE)
+        {
+          /* Gets adjusted position */
+          fPosY -= fInitRemainderY;
+        }
+      }
+      else
+      {
+        /* Not flipped? */
+        if(bFlipY == orxFALSE)
+        {
+          /* Last line? */
+          if(fRemainderY < fSizeY)
+          {
+            /* Gets adjusted position */
+            fPosY += fAbsScaleY * (fSizeY - fRemainderY);
+          }
+        }
+        else
+        {
+          /* Not last line? */
+          if(fRemainderY >= fSizeY)
+          {
+            /* Gets adjusted position */
+            fPosY += fInitRemainderY;
+          }
+          else
+          {
+            /* Gets adjusted position */
+            fPosY += fInitRemainderY + fAbsScaleY * (fSizeY - fRemainderY);
+          }
+        }
+      }
+
+      /* For all columns */
+      for(fX = -fRelativePivotX * fIncX * (_pstTransform->fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = _pstTransform->fRepeatX * fSizeX, fAbsScaleX = orxMath_Abs(fScaleX);
+        fRemainderX > orxFLOAT_0;
+        fX += fIncX, fRemainderX -= fSizeX)
+      {
+        orxFLOAT fOffsetX, fOffsetY, fPosX = fX;
+
+        /* Updates clip info */
+        stClip.Right  = stClip.Left + orxF2U(orxMIN(fSizeX, fRemainderX));
+        stClip.Bottom = stClip.Top + orxF2U(orxMIN(fSizeY, fRemainderY));
+
+        /* Sets sub rectangle for sprite */
+        poSprite->SetSubRect(stClip);
+
+        /* Positive scale on X? */
+        if(fScaleX > orxFLOAT_0)
+        {
+          /* Flipped? */
+          if(bFlipX != orxFALSE)
+          {
+            /* Gets adjusted position */
+            fPosX -= fInitRemainderX;
+          }
+        }
+        else
+        {
+          /* Not flipped? */
+          if(bFlipX == orxFALSE)
+          {
+            /* Last line? */
+            if(fRemainderX < fSizeX)
+            {
+              /* Gets adjusted position */
+              fPosX += fAbsScaleX * (fSizeX - fRemainderX);
+            }
+          }
+          else
+          {
+            /* Not last line? */
+            if(fRemainderX >= fSizeX)
+            {
+              /* Gets adjusted position */
+              fPosX += fInitRemainderX;
+            }
+            else
+            {
+              /* Gets adjusted position */
+              fPosX += fInitRemainderX + fAbsScaleX * (fSizeX - fRemainderX);
+            }
+          }
+        }
+
+        /* Computes offsets */
+        fOffsetX = (fCos * fPosX) + (fSin * fPosY);
+        fOffsetY = (-fSin * fPosX) + (fCos * fPosY);
+
+        /* Updates its scale */
+        poSprite->SetScale(orxMath_Abs(fScaleX), orxMath_Abs(fScaleY));
+
+        /* Blits bitmap */
+        eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX + fOffsetX, _pstTransform->fDstY + fOffsetY, _eSmoothing, _eBlendMode);
+      }
+    }
+  }
+  else
+  {
+    /* Updates its scale */
+    poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
+
+    /* Blits it */
+    eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
+  }
 
   /* Resets its center */
   poSprite->SetCenter(0.0f, 0.0f);
@@ -1438,7 +1643,18 @@ extern "C" void orxFASTCALL orxDisplay_SFML_DeleteShader(orxHANDLE _hShader)
   delete poFX;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_RenderShader(orxHANDLE _hShader)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_StartShader(orxHANDLE _hShader)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_StopShader(orxHANDLE _hShader)
 {
   const sf::PostFX *poFX;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -1565,7 +1781,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteShader, DISPLAY, DELETE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_RenderShader, DISPLAY, RENDER_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_StartShader, DISPLAY, START_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_StopShader, DISPLAY, STOP_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);

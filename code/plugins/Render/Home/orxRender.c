@@ -272,7 +272,10 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         }
 
         /* No scale nor rotation nor repeat? */
-        if((bFlipX == orxFALSE) && (bFlipY == orxFALSE) && (fRotation == orxFLOAT_0) && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
+        if((bFlipX == orxFALSE) && (bFlipY == orxFALSE)
+        && (fRotation == orxFLOAT_0)
+        && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1)
+        && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
         {
           /* Updates position with pivot */
           orxVector_Sub(&vPosition, &vPosition, &vPivot);
@@ -285,217 +288,21 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           /* Valid scale? */
           if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
           {
-            orxDISPLAY_TRANSFORM  stTransform;
+            orxDISPLAY_TRANSFORM stTransform;
 
-            /* No repeat? */
-            if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))
-            {
-              /* Sets transformation values */
-              stTransform.fSrcX     = vPivot.fX;
-              stTransform.fSrcY     = vPivot.fY;
-              stTransform.fDstX     = vPosition.fX;
-              stTransform.fDstY     = vPosition.fY;
-              stTransform.fScaleX   = vScale.fX;
-              stTransform.fScaleY   = vScale.fY;
-              stTransform.fRotation = fRotation;
+            /* Sets transformation values */
+            stTransform.fSrcX     = vPivot.fX;
+            stTransform.fSrcY     = vPivot.fY;
+            stTransform.fDstX     = vPosition.fX;
+            stTransform.fDstY     = vPosition.fY;
+            stTransform.fRepeatX  = fRepeatX;
+            stTransform.fRepeatY  = fRepeatY;
+            stTransform.fScaleX   = vScale.fX;
+            stTransform.fScaleY   = vScale.fY;
+            stTransform.fRotation = fRotation;
 
-              /* Blits bitmap */
-              eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, eSmoothing, eBlendMode);
-            }
-            else
-            {
-              orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY, fAbsScaleX, fAbsScaleY;
-
-              /* Has no rotation */
-              if(fRotation == orxFLOAT_0)
-              {
-                /* Gets cosine and sine of the object angle */
-                fCos = orxFLOAT_1;
-                fSin = orxFLOAT_0;
-              }
-              /* 90°? */
-              else if(fRotation == orxMATH_KF_PI_BY_2)
-              {
-                /* Gets cosine and sine of the object angle */
-                fCos = orxFLOAT_0;
-                fSin = -orxFLOAT_1;
-              }
-              /* 180°? */
-              else if(fRotation == orxMATH_KF_PI)
-              {
-                /* Gets cosine and sine of the object angle */
-                fCos = -orxFLOAT_1;
-                fSin = orxFLOAT_0;
-              }
-              /* 180°? */
-              else if(fRotation == -orxMATH_KF_PI_BY_2)
-              {
-                /* Gets cosine and sine of the object angle */
-                fCos = orxFLOAT_0;
-                fSin = orxFLOAT_1;
-              }
-              else
-              {
-                /* Gets cosine and sine of the object angle */
-                fCos = orxMath_Cos(-fRotation);
-                fSin = orxMath_Sin(-fRotation);
-              }
-
-              /* Tiling on X? */
-              if(fRepeatX == vScale.fX)
-              {
-                /* Updates scale */
-                vScale.fX = orxFLOAT_1;
-
-                /* Updates increment */
-                fIncX = vSize.fX;
-              }
-              else
-              {
-                /* Updates scale */
-                vScale.fX /= fRepeatX;
-
-                /* Updates increment */
-                fIncX = vSize.fX * vScale.fX;
-              }
-
-              /* Tiling on Y? */
-              if(fRepeatY == vScale.fY)
-              {
-                /* Updates scale */
-                vScale.fY = orxFLOAT_1;
-
-                /* Updates increment */
-                fIncY = vSize.fY;
-              }
-              else
-              {
-                /* Updates scale */
-                vScale.fY /= fRepeatY;
-
-                /* Updates increment */
-                fIncY = vSize.fY * vScale.fY;
-              }
-
-              /* Gets relative pivot */
-              fRelativePivotX = vPivot.fX / vSize.fX;
-              fRelativePivotY = vPivot.fY / vSize.fY;
-
-              /* For all lines */
-              for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = fRepeatY * vSize.fY, fAbsScaleY = orxMath_Abs(vScale.fY);
-                  fRemainderY > orxFLOAT_0;
-                  fY += fIncY, fRemainderY -= vSize.fY)
-              {
-                orxFLOAT fPosY = fY;
-
-                /* Positive scale on Y? */
-                if(vScale.fY > orxFLOAT_0)
-                {
-                  /* Flipped? */
-                  if(bFlipY != orxFALSE)
-                  {
-                    /* Gets adjusted position */
-                    fPosY -= fInitRemainderY;
-                  }
-                }
-                else
-                {
-                  /* Not flipped? */
-                  if(bFlipY == orxFALSE)
-                  {
-                    /* Last line? */
-                    if(fRemainderY < vSize.fY)
-                    {
-                      /* Gets adjusted position */
-                      fPosY += fAbsScaleY * (vSize.fY - fRemainderY);
-                    }
-                  }
-                  else
-                  {
-                    /* Not last line? */
-                    if(fRemainderY >= vSize.fY)
-                    {
-                      /* Gets adjusted position */
-                      fPosY += fInitRemainderY;
-                    }
-                    else
-                    {
-                      /* Gets adjusted position */
-                      fPosY += fInitRemainderY + fAbsScaleY * (vSize.fY - fRemainderY);
-                    }
-                  }
-                }
-
-                /* Sets Y source */
-                stTransform.fSrcY = vPivot.fY;
-
-                /* For all columns */
-                for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = fRepeatX * vSize.fX, fAbsScaleX = orxMath_Abs(vScale.fX);
-                    fRemainderX > orxFLOAT_0;
-                    fX += fIncX, fRemainderX -= vSize.fX)
-                {
-                  orxFLOAT fOffsetX, fOffsetY, fPosX = fX;
-
-                  /* Updates clipping */
-                  orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipTL.fX + orxMIN(vSize.fX, fRemainderX)), orxF2U(vClipTL.fY + orxMIN(vSize.fY, fRemainderY)));
-
-                  /* Positive scale on X? */
-                  if(vScale.fX > orxFLOAT_0)
-                  {
-                    /* Flipped? */
-                    if(bFlipX != orxFALSE)
-                    {
-                      /* Gets adjusted position */
-                      fPosX -= fInitRemainderX;
-                    }
-                  }
-                  else
-                  {
-                    /* Not flipped? */
-                    if(bFlipX == orxFALSE)
-                    {
-                      /* Last line? */
-                      if(fRemainderX < vSize.fX)
-                      {
-                        /* Gets adjusted position */
-                        fPosX += fAbsScaleX * (vSize.fX - fRemainderX);
-                      }
-                    }
-                    else
-                    {
-                      /* Not last line? */
-                      if(fRemainderX >= vSize.fX)
-                      {
-                        /* Gets adjusted position */
-                        fPosX += fInitRemainderX;
-                      }
-                      else
-                      {
-                        /* Gets adjusted position */
-                        fPosX += fInitRemainderX + fAbsScaleX * (vSize.fX - fRemainderX);
-                      }
-                    }
-                  }
-
-                  /* Sets X source */
-                  stTransform.fSrcX = vPivot.fX;
-
-                  /* Computes offsets */
-                  fOffsetX = (fCos * fPosX) + (fSin * fPosY);
-                  fOffsetY = (-fSin * fPosX) + (fCos * fPosY);
-
-                  /* Sets transformation values */
-                  stTransform.fDstX     = vPosition.fX + fOffsetX;
-                  stTransform.fDstY     = vPosition.fY + fOffsetY;
-                  stTransform.fScaleX   = vScale.fX;
-                  stTransform.fScaleY   = vScale.fY;
-                  stTransform.fRotation = fRotation;
-
-                  /* Blits bitmap */
-                  eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, eSmoothing, eBlendMode);
-                }
-              }
-            }
+            /* Transforms bitmap */
+            eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, eSmoothing, eBlendMode);
           }
           else
           {

@@ -141,12 +141,18 @@ extern orxDLLAPI orxSHADER *orxFASTCALL         orxShader_CreateFromConfig(const
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Delete(orxSHADER *_pstShader);
 
-/** Renders a shader
+/** Starts a shader
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT / orxNULL)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Render(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Start(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner);
+
+/** Stops a shader
+ * @param[in] _pstShader              Concerned Shader
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Stop(const orxSHADER *_pstShader);
 
 
 /** Adds a float parameter definition to a shader (parameters need to be set before compiling the shader code)

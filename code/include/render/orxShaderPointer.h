@@ -81,11 +81,17 @@ extern orxDLLAPI orxSHADERPOINTER *orxFASTCALL  orxShaderPointer_Create(const or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointer);
 
-/** Renders a ShaderPointer
+/** Starts a ShaderPointer
  * @param[in] _pstShaderPointer     Concerned ShaderPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Render(const orxSHADERPOINTER *_pstShaderPointer);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderPointer);
+
+/** Stops a ShaderPointer
+ * @param[in] _pstShaderPointer     Concerned ShaderPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPointer);
 
 /** Gets an ShaderPointer owner
  * @param[in]   _pstShaderPointer   Concerned ShaderPointer

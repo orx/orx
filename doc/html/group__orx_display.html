@@ -154,7 +154,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g37a6f1e12616eca46dac46f8ff81a9d2">orxDisplay_DeleteShader</a> (orxHANDLE _hShader)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g8a03a3dae9883c009add9ed45994f1de">orxDisplay_RenderShader</a> (const orxHANDLE _hShader)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaca19838576b060931165457e0cd31b4">orxDisplay_StartShader</a> (const orxHANDLE _hShader)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gdf48952815832df78cd7a8a12d0b7959">orxDisplay_StopShader</a> (const orxHANDLE _hShader)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4db0337264656df33302f70d0bef6c7f">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
 
@@ -1458,32 +1460,6 @@ Loads a bitmap from file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g8a03a3dae9883c009add9ed45994f1de"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_RenderShader" ref="g8a03a3dae9883c009add9ed45994f1de" args="(const orxHANDLE _hShader)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_RenderShader           </td>
-          <td>(</td>
-          <td class="paramtype">const orxHANDLE&nbsp;</td>
-          <td class="paramname"> <em>_hShader</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Renders a shader <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Shader to render </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="ge3acb236a4a537a86ff72091dc556829"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SaveBitmap" ref="ge3acb236a4a537a86ff72091dc556829" args="(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1919,6 +1895,58 @@ Display module setup
 Gets an available video mode <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstVideoMode</em>&nbsp;</td><td>Video mode to set </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gaca19838576b060931165457e0cd31b4"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_StartShader" ref="gaca19838576b060931165457e0cd31b4" args="(const orxHANDLE _hShader)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_StartShader           </td>
+          <td>(</td>
+          <td class="paramtype">const orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Starts a shader rendering <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Shader to start </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gdf48952815832df78cd7a8a12d0b7959"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_StopShader" ref="gdf48952815832df78cd7a8a12d0b7959" args="(const orxHANDLE _hShader)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_StopShader           </td>
+          <td>(</td>
+          <td class="paramtype">const orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Stops a shader rendering <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Shader to stop </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

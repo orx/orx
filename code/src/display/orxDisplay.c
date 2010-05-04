@@ -90,7 +90,8 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBIT
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteShader, void, orxHANDLE);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_RenderShader, orxSTATUS, const orxHANDLE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StartShader, orxSTATUS, const orxHANDLE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StopShader, orxSTATUS, const orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderBitmap, orxSTATUS, orxHANDLE, const orxSTRING, orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderFloat, orxSTATUS, orxHANDLE, const orxSTRING, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderVector, orxSTATUS, orxHANDLE, const orxSTRING, const orxVECTOR *);
@@ -140,7 +141,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_SIZE, orxDisplay_GetScreen
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_SHADER, orxDisplay_CreateShader)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_SHADER, orxDisplay_DeleteShader)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, RENDER_SHADER, orxDisplay_RenderShader)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, START_SHADER, orxDisplay_StartShader)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, STOP_SHADER, orxDisplay_StopShader)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_BITMAP, orxDisplay_SetShaderBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_FLOAT, orxDisplay_SetShaderFloat)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_VECTOR, orxDisplay_SetShaderVector)
@@ -273,9 +275,14 @@ void orxFASTCALL orxDisplay_DeleteShader(orxHANDLE _hShader)
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DeleteShader)(_hShader);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_RenderShader(const orxHANDLE _hShader)
+orxSTATUS orxFASTCALL orxDisplay_StartShader(const orxHANDLE _hShader)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_RenderShader)(_hShader);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_StartShader)(_hShader);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_StopShader(const orxHANDLE _hShader)
+{
+    return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_StopShader)(_hShader);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)

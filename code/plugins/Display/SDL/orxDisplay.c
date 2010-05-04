@@ -846,11 +846,57 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
-  //! TODO
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_zFilename != orxNULL);
+
+  /* Screen capture? */
+  if(_pstBitmap == sstDisplay.pstScreen)
+  {
+    GLubyte  *au8Buffer;
+    orxU32    u32BufferSize;
+
+    /* Gets buffer size */
+    u32BufferSize = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(GLubyte);
+
+    /* Allocates buffer */
+    au8Buffer = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+
+    /* Valid? */
+    if(au8Buffer != orxNULL)
+    {
+      /* Reads OpenGL data */
+      glReadPixels(0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+      glASSERT();
+
+      //! TODO
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't allocate memory buffers.", _zFilename);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+
+    /* Deletes buffer */
+    orxMemory_Free(au8Buffer);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap tp <%s>: only screen can be saved to file.", _zFilename);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -1687,7 +1733,7 @@ void orxFASTCALL orxDisplay_SDL_DeleteShader(orxHANDLE _hShader)
   orxLOG("Not implemented yet!");
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_RenderShader(orxHANDLE _hShader)
+orxSTATUS orxFASTCALL orxDisplay_SDL_StartShader(orxHANDLE _hShader)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1697,6 +1743,18 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_RenderShader(orxHANDLE _hShader)
 
   /* Done! */
   return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_StopShader(orxHANDLE _hShader)
+{
+    orxSTATUS eResult = orxSTATUS_FAILURE;
+
+    //! TODO
+    /* Not yet implemented */
+    orxLOG("Not implemented yet!");
+
+    /* Done! */
+    return eResult;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
@@ -1763,7 +1821,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColor, DISPLAY, SET_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteShader, DISPLAY, DELETE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_RenderShader, DISPLAY, RENDER_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_StartShader, DISPLAY, START_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_StopShader, DISPLAY, STOP_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
