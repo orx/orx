@@ -1110,7 +1110,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
   if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
   {
     /* Draws it */
-    orxDisplay_SDL_DrawBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+    orxDisplay_iPhone_DrawBitmap(_pstSrc, _eSmoothing, _eBlendMode);
   }
   else
   {
@@ -1119,7 +1119,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
     orxU32    u32Counter;
 
     /* Prepares bitmap for drawing */
-    orxDisplay_SDL_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+    orxDisplay_iPhone_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
 
     /* Inits bitmap height */
     fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
@@ -1767,13 +1767,24 @@ void orxFASTCALL orxDisplay_iPhone_DeleteShader(orxHANDLE _hShader)
   return;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_RenderShader(orxHANDLE _hShader)
+orxSTATUS orxFASTCALL orxDisplay_iPhone_StartShader(orxHANDLE _hShader)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not available */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+  
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  
   /* Done! */
   return eResult;
 }
@@ -1839,7 +1850,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColor, DISPLAY, SET_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DeleteShader, DISPLAY, DELETE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_RenderShader, DISPLAY, RENDER_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_StartShader, DISPLAY, START_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_StopShader, DISPLAY, STOP_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
