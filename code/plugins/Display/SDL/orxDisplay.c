@@ -205,7 +205,7 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
   /* Depending on smoothing type */
   switch(_eSmoothing)
   {
-  case orxDISPLAY_SMOOTHING_ON:
+    case orxDISPLAY_SMOOTHING_ON:
     {
       /* Applies smoothing */
       bSmoothing = orxTRUE;
@@ -213,7 +213,7 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
       break;
     }
 
-  case orxDISPLAY_SMOOTHING_OFF:
+    case orxDISPLAY_SMOOTHING_OFF:
     {
       /* Applies no smoothing */
       bSmoothing = orxFALSE;
@@ -221,8 +221,8 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
       break;
     }
 
-  default:
-  case orxDISPLAY_SMOOTHING_DEFAULT:
+    default:
+    case orxDISPLAY_SMOOTHING_DEFAULT:
     {
       /* Applies default smoothing */
       bSmoothing = sstDisplay.bDefaultSmoothing;
@@ -268,34 +268,41 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     /* Depending on blend mode */
     switch(_eBlendMode)
     {
-    case orxDISPLAY_BLEND_MODE_ALPHA:
+      case orxDISPLAY_BLEND_MODE_ALPHA:
       {
         glEnable(GL_BLEND);
         glASSERT();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glASSERT();
+
         break;
       }
-    case orxDISPLAY_BLEND_MODE_MULTIPLY:
+
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
       {
         glEnable(GL_BLEND);
         glASSERT();
         glBlendFunc(GL_DST_COLOR, GL_ZERO);
         glASSERT();
+
         break;
       }
-    case orxDISPLAY_BLEND_MODE_ADD:
+
+      case orxDISPLAY_BLEND_MODE_ADD:
       {
         glEnable(GL_BLEND);
         glASSERT();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glASSERT();
+
         break;
       }
-    default:
+
+      default:
       {
         glDisable(GL_BLEND);
         glASSERT();
+
         break;
       }
     }
@@ -429,6 +436,21 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
         /* Is defined? */
         if(_pstMap->astCharacterList[*pc].fX >= orxFLOAT_0)
         {
+          /* End of buffer? */
+          if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
+          {
+            /* Renders them */
+            glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+            glASSERT();
+            glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+            glASSERT();
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+            glASSERT();
+
+            /* Resets counter */
+            u32Counter = 0;
+          }
+
           /* Outputs vertices and texture coordinates */
           sstDisplay.afVertexList[u32Counter]       =
           sstDisplay.afVertexList[u32Counter + 2]   =
@@ -458,18 +480,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
           
           /* Updates counter */
           u32Counter += 12;
-
-          /* End of buffer? */
-          if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
-          {
-            /* Renders them */
-            glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
-            glASSERT();
-            glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
-            glASSERT();
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-            glASSERT();
-          }
         }
       }
 
@@ -478,13 +488,17 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
     }
   }
 
-  /* Renders last data */
-  glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
-  glASSERT();
-  glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
-  glASSERT();
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-  glASSERT();
+  /* Has remaining data? */
+  if(u32Counter != 0)
+  {
+    /* Renders them */
+    glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+    glASSERT();
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+    glASSERT();
+  }
 
   /* Restores identity */
   glLoadIdentity();
@@ -833,8 +847,123 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
   glTranslatef(-_pstTransform->fSrcX, -_pstTransform->fSrcY, 0.0f);
   glASSERT();
 
-  /* Draws it */
-  orxDisplay_SDL_DrawBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+  /* No repeat? */
+  if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
+  {
+    /* Draws it */
+    orxDisplay_SDL_DrawBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+  }
+  else
+  {
+    orxFLOAT  i, j, fRecRepeatX;
+    GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
+    orxU32    u32Counter;
+
+    /* Prepares bitmap for drawing */
+    orxDisplay_SDL_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+
+    /* Inits bitmap height */
+    fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
+
+    /* Inits texture coords */
+    fLeft = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
+    fTop  = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY);
+
+    /* For all lines */
+    for(fY = 0.0f, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
+    {
+      /* Partial line? */
+      if(i < orxFLOAT_1)
+      {
+        /* Updates height */
+        fHeight *= (GLfloat)i;
+
+        /* Resets texture coords */
+        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)))));
+      }
+      else
+      {
+        /* Resets texture coords */
+        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY));
+      }
+
+      /* Resets bitmap width */
+      fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
+
+      /* For all columns */
+      for(fX = 0.0f, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
+      {
+        /* End of buffer? */
+        if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
+        {
+          /* Renders them */
+          glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+          glASSERT();
+          glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+          glASSERT();
+          glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+          glASSERT();
+
+          /* Resets counter */
+          u32Counter = 0;
+        }
+
+        /* Partial column? */
+        if(j < orxFLOAT_1)
+        {
+          /* Updates width */
+          fWidth *= (GLfloat)j;
+
+          /* Updates texture right coord */
+          fRight = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + (j * (_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX))));
+        }
+
+        /* Outputs vertices and texture coordinates */
+        sstDisplay.afVertexList[u32Counter]       =
+        sstDisplay.afVertexList[u32Counter + 2]   =
+        sstDisplay.afVertexList[u32Counter + 4]   = fX;
+        sstDisplay.afVertexList[u32Counter + 6]   =
+        sstDisplay.afVertexList[u32Counter + 8]   =
+        sstDisplay.afVertexList[u32Counter + 10]  = fX + fWidth;
+        sstDisplay.afVertexList[u32Counter + 5]   =
+        sstDisplay.afVertexList[u32Counter + 9]   =
+        sstDisplay.afVertexList[u32Counter + 11]  = fY;
+        sstDisplay.afVertexList[u32Counter + 1]   =
+        sstDisplay.afVertexList[u32Counter + 3]   =
+        sstDisplay.afVertexList[u32Counter + 7]   = fY + fHeight;
+
+        sstDisplay.afTextureCoordList[u32Counter]       =
+        sstDisplay.afTextureCoordList[u32Counter + 2]   =
+        sstDisplay.afTextureCoordList[u32Counter + 4]   = fLeft;
+        sstDisplay.afTextureCoordList[u32Counter + 6]   =
+        sstDisplay.afTextureCoordList[u32Counter + 8]   =
+        sstDisplay.afTextureCoordList[u32Counter + 10]  = fRight;
+        sstDisplay.afTextureCoordList[u32Counter + 5]   =
+        sstDisplay.afTextureCoordList[u32Counter + 9]   =
+        sstDisplay.afTextureCoordList[u32Counter + 11]  = fTop;
+        sstDisplay.afTextureCoordList[u32Counter + 1]   =
+        sstDisplay.afTextureCoordList[u32Counter + 3]   =
+        sstDisplay.afTextureCoordList[u32Counter + 7]   = fBottom;
+
+        /* Updates counter */
+        u32Counter += 12;
+      }
+    }
+
+    /* Has remaining data? */
+    if(u32Counter != 0)
+    {
+      /* Renders them */
+      glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+      glASSERT();
+      glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+      glASSERT();
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+      glASSERT();
+    }
+  }
 
   /* Restores identity */
   glLoadIdentity();
