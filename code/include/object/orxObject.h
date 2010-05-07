@@ -691,6 +691,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJEC
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition);
 
+/** Picks the first active object with graphic in contact with the given box
+ * @param[in]   _pstBox         Box to use for picking
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox);
+
 #endif /* _orxOBJECT_H_ */
 
 /** @} */

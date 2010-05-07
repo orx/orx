@@ -3983,7 +3983,7 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
       if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
       {
         /* Is intersecting? */
-        if(orxOBox_2DTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
+        if(orxOBox_ZAlignedTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
         {
           orxOBJECT **ppstObject;
 
@@ -4371,6 +4371,64 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
                 /* Updates selected position */
                 fSelectedZ = vObjectPos.fZ;
               }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Picks the first active object with graphic in contact with the given box
+ * @param[in]   _pstBox         Box to use for picking
+ * @return      orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox)
+{
+  orxFLOAT    fSelectedZ;
+  orxOBJECT  *pstResult = orxNULL, *pstObject;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_stZoneBox != orxNULL);
+
+  /* For all objects */
+  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), fSelectedZ = _pstBox->vPosition.fZ;
+      pstObject != orxNULL;
+      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+  {
+    /* Is enabled? */
+    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    {
+      orxGRAPHIC *pstGraphic;
+
+      /* Has graphic? */
+      if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != orxNULL)
+      {
+        orxVECTOR vObjectPos;
+
+        /* Gets object position */
+        orxObject_GetWorldPosition(pstObject, &vObjectPos);
+
+        /* No selection or above it? */
+        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+        {
+          orxOBOX stObjectBox;
+
+          /* Gets its bounding box */
+          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+          {
+            /* Does it intersect with box? */
+            if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
+            {
+              /* Updates result */
+              pstResult = pstObject;
+
+              /* Updates selected position */
+              fSelectedZ = vObjectPos.fZ;
             }
           }
         }

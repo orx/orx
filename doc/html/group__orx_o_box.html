@@ -37,7 +37,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_o_box.html#gb1e89423c8ad01b76aa9ea7c3425d633">orxOBox_2DIsInside</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_o_box.html#g9eec8d18495ca5018ab1403b253539d7">orxOBox_2DTestIntersection</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox1, const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox2)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_o_box.html#gdb5a7a411d0213b95613ef31bf0bffed">orxOBox_ZAlignedTestIntersection</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox1, const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox2)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -175,42 +175,6 @@ Sets 2D oriented box values <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> / orxNULL </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g9eec8d18495ca5018ab1403b253539d7"></a><!-- doxytag: member="orxOBox.h::orxOBox_2DTestIntersection" ref="g9eec8d18495ca5018ab1403b253539d7" args="(const orxOBOX *_pstBox1, const orxOBOX *_pstBox2)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">static orxINLINE orxBOOL orxOBox_2DTestIntersection           </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstBox1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstBox2</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td><code> [static]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Tests oriented 2D box intersection (simple Z-axis test, to use with Z-axis aligned <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a>) <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBox1</em>&nbsp;</td><td>First box operand </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBox2</em>&nbsp;</td><td>Second box operand </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if boxes intersect, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>
@@ -362,6 +326,42 @@ Moves an OBox <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Moved OBox </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gdb5a7a411d0213b95613ef31bf0bffed"></a><!-- doxytag: member="orxOBox.h::orxOBox_ZAlignedTestIntersection" ref="gdb5a7a411d0213b95613ef31bf0bffed" args="(const orxOBOX *_pstBox1, const orxOBOX *_pstBox2)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxBOOL orxOBox_ZAlignedTestIntersection           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBox1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBox2</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Tests oriented box intersection (simple Z-axis test, to use with Z-axis aligned <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a>) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBox1</em>&nbsp;</td><td>First box operand </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBox2</em>&nbsp;</td><td>Second box operand </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if boxes intersect, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>

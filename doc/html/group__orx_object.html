@@ -213,6 +213,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gfa2c2c03e15a0aaabde7d3ef42c68cdf">orxObject_Pick</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g2eccd4a07e7ceef241b6401dcc7009e2">orxObject_BoxPick</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Object module Allows to creates and handle objects Objects are structures containers that can refer to many other structures such as frames, graphics, etc... <hr><h2>Define Documentation</h2>
@@ -669,6 +671,32 @@ Applies a torque <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g2eccd4a07e7ceef241b6401dcc7009e2"></a><!-- doxytag: member="orxObject.h::orxObject_BoxPick" ref="g2eccd4a07e7ceef241b6401dcc7009e2" args="(const orxOBOX *_pstBox)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_BoxPick           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBox</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Picks the first active object with graphic in contact with the given box <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBox</em>&nbsp;</td><td>Box to use for picking </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxOBJECT / orxNULL </dd></dl>
 
 </div>
 </div><p>

@@ -259,12 +259,12 @@ static orxINLINE orxBOOL                      orxOBox_2DIsInside(const orxOBOX *
   return bResult;
 }
 
-/** Tests oriented 2D box intersection (simple Z-axis test, to use with Z-axis aligned orxOBOX)
+/** Tests oriented box intersection (simple Z-axis test, to use with Z-axis aligned orxOBOX)
  * @param[in]   _pstBox1                      First box operand
  * @param[in]   _pstBox2                      Second box operand
  * @return      orxTRUE if boxes intersect, orxFALSE otherwise
  */
-static orxINLINE orxBOOL                      orxOBox_2DTestIntersection(const orxOBOX *_pstBox1, const orxOBOX *_pstBox2)
+static orxINLINE orxBOOL                      orxOBox_ZAlignedTestIntersection(const orxOBOX *_pstBox1, const orxOBOX *_pstBox2)
 {
   register orxBOOL bResult;
 
