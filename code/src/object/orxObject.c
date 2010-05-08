@@ -4393,7 +4393,7 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox)
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_stZoneBox != orxNULL);
+  orxASSERT(_pstBox != orxNULL);
 
   /* For all objects */
   for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), fSelectedZ = _pstBox->vPosition.fZ;
