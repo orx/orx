@@ -115,69 +115,6 @@ static orxSTATUS orxFASTCALL orxMouse_SFML_EventHandler(const orxEVENT *_pstEven
 
     /* Updates wheel move */
     sstMouse.fWheelMove += orxS2F(poEvent->MouseWheel.Delta);
-
-    /* Has delta? */
-    if(poEvent->MouseWheel.Delta != 0)
-    {
-      orxMOUSE_EVENT_PAYLOAD stPayload;
-
-      /* Inits payload */
-      stPayload.eButton = (poEvent->MouseWheel.Delta > 0) ? orxMOUSE_BUTTON_WHEEL_UP : orxMOUSE_BUTTON_WHEEL_DOWN;
-
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_MOUSE, orxMOUSE_EVENT_BUTTON_PRESSED, orxNULL, orxNULL, &stPayload);
-    }
-  }
-  /* Is a mouse button pressed or released? */
-  else if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
-        && (_pstEvent->eID == sf::Event::MouseButtonPressed))
-       || ((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased)
-        && (_pstEvent->eID == sf::Event::MouseButtonReleased)))
-  {
-    orxMOUSE_EVENT_PAYLOAD  stPayload;
-    sf::Event              *poEvent;
-
-    /* Gets SFML event */
-    poEvent = (sf::Event *)(_pstEvent->pstPayload);
-
-    /* Depending on button */
-    switch(poEvent->MouseButton.Button)
-    {
-      default:
-      case sf::Mouse::Left:
-      {
-        /* Inits payload */
-        stPayload.eButton = orxMOUSE_BUTTON_LEFT;
-        break;
-      }
-      case sf::Mouse::Middle:
-      {
-        /* Inits payload */
-        stPayload.eButton = orxMOUSE_BUTTON_MIDDLE;
-        break;
-      }
-      case sf::Mouse::Right:
-      {
-        /* Inits payload */
-        stPayload.eButton = orxMOUSE_BUTTON_RIGHT;
-        break;
-      }
-      case sf::Mouse::XButton1:
-      {
-        /* Inits payload */
-        stPayload.eButton = orxMOUSE_BUTTON_EXTRA_1;
-        break;
-      }
-      case sf::Mouse::XButton2:
-      {
-        /* Inits payload */
-        stPayload.eButton = orxMOUSE_BUTTON_EXTRA_2;
-        break;
-      }
-    }
-
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_MOUSE, (_pstEvent->eID == sf::Event::MouseButtonPressed) ? orxMOUSE_EVENT_BUTTON_PRESSED : orxMOUSE_EVENT_BUTTON_RELEASED, orxNULL, orxNULL, &stPayload);
   }
 
   /* Done! */
@@ -214,9 +151,7 @@ extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
 
     /* Registers our mouse event handlers */
     if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxMouse_SFML_EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), orxMouse_SFML_EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxMouse_SFML_EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), orxMouse_SFML_EventHandler) != orxSTATUS_FAILURE))
+    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), orxMouse_SFML_EventHandler) != orxSTATUS_FAILURE))
     {
       orxEVENT stEvent;
 
@@ -253,8 +188,6 @@ extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
         /* Removes event handlers */
         orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxMouse_SFML_EventHandler);
         orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), orxMouse_SFML_EventHandler);
-        orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxMouse_SFML_EventHandler);
-        orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), orxMouse_SFML_EventHandler);
       }
     }
     else
@@ -262,8 +195,6 @@ extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
       /* Removes event handlers */
       orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxMouse_SFML_EventHandler);
       orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), orxMouse_SFML_EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxMouse_SFML_EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), orxMouse_SFML_EventHandler);
     }
   }
 
@@ -279,8 +210,6 @@ extern "C" void orxFASTCALL orxMouse_SFML_Exit()
     /* Unregisters event handlers */
     orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved), orxMouse_SFML_EventHandler);
     orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved), orxMouse_SFML_EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), orxMouse_SFML_EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonReleased), orxMouse_SFML_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));

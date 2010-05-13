@@ -21,9 +21,6 @@
 <code>#include &quot;<a class="el" href="orx_plugin_core_8h.html">plugin/orxPluginCore.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
-<tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_j_o_y_s_t_i_c_k___e_v_e_n_t___p_a_y_l_o_a_d.html">orxJOYSTICK_EVENT_PAYLOAD</a></td></tr>
-
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gba48214ed8a0a4c7601d68d4bdd75be8">orxJOYSTICK_GET_AXIS_FOR_PLAYER</a>(AXIS, PLAYER)&nbsp;&nbsp;&nbsp;(((AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))</td></tr>
 
@@ -163,12 +160,6 @@
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g435d9de3610c3cb1a15050f11faee2b7">orxJOYSTICK_EVENT</a> { <a class="el" href="group__orx_joystick.html#gg435d9de3610c3cb1a15050f11faee2b756708e7fae93998cc4465697ba830593">orxJOYSTICK_EVENT_BUTTON_PRESSED</a> =  0, 
-<a class="el" href="group__orx_joystick.html#gg435d9de3610c3cb1a15050f11faee2b77bd9179622e3ffa132b79aa78bfe88e1">orxJOYSTICK_EVENT_BUTTON_RELEASED</a>, 
-<a class="el" href="group__orx_joystick.html#gg435d9de3610c3cb1a15050f11faee2b71c48aeaff48910d21612021ec5ced69e">orxJOYSTICK_EVENT_NUMBER</a>, 
-<a class="el" href="group__orx_joystick.html#gg435d9de3610c3cb1a15050f11faee2b7a82754e3a4233c64e33872f38ae2d597">orxJOYSTICK_EVENT_NONE</a> =  orxENUM_NONE
- }</td></tr>
-
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g303b00feabf090588da3658e3fa3fd84">orxJoystick_Setup</a> ()</td></tr>
 
@@ -181,10 +172,10 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g3b060fab3b7afd5484d9a29e3af826b4">orxJoystick_IsButtonPressed</a> (<a class="el" href="group__orx_joystick.html#gb6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a> _eButton)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
-orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g137528edc23d5323209804688dbe6f7f">orxJoystick_GetAxisName</a> (<a class="el" href="group__orx_joystick.html#gac676f97aec33fc1dad588ae845d5642">orxJOYSTICK_AXIS</a> _eAxis)</td></tr>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g9fa9d45b47c18a7b1730eece66c7e398">orxJoystick_GetButtonName</a> (<a class="el" href="group__orx_joystick.html#gb6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a> _eButton)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
-orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g9fa9d45b47c18a7b1730eece66c7e398">orxJoystick_GetButtonName</a> (<a class="el" href="group__orx_joystick.html#gb6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a> _eButton)</td></tr>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g137528edc23d5323209804688dbe6f7f">orxJoystick_GetAxisName</a> (<a class="el" href="group__orx_joystick.html#gac676f97aec33fc1dad588ae845d5642">orxJOYSTICK_AXIS</a> _eAxis)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>

@@ -299,53 +299,6 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_GetKeyID(sf::Key::Code _eKey
   return eResult;
 }
 
-/** Event handler
- */
-static orxSTATUS orxFASTCALL orxKeyboard_SFML_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Is a key pressed or released? */
-  if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed)
-   && (_pstEvent->eID == sf::Event::KeyPressed))
-  || ((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased)
-   && (_pstEvent->eID == sf::Event::KeyReleased)))
-  {
-    orxKEYBOARD_EVENT_PAYLOAD stPayload;
-    sf::Event                *poEvent;
-
-    /* Gets SFML event */
-    poEvent = (sf::Event *)(_pstEvent->pstPayload);
-
-    /* Inits payload */
-    stPayload.eKey        = orxKeyboard_SFML_GetKeyID(poEvent->Key.Code);
-    stPayload.u32Unicode  = 0;
-
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, (_pstEvent->eID == sf::Event::KeyPressed) ? orxKEYBOARD_EVENT_KEY_PRESSED : orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stPayload);
-  }
-  /* Is a text entered? */
-  else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered)
-       && (_pstEvent->eID == sf::Event::TextEntered))
-  {
-    orxKEYBOARD_EVENT_PAYLOAD stPayload;
-    sf::Event                *poEvent;
-
-    /* Gets SFML event */
-    poEvent = (sf::Event *)(_pstEvent->pstPayload);
-
-    /* Inits payload */
-    stPayload.eKey        = orxKEYBOARD_KEY_NONE;
-    stPayload.u32Unicode  = poEvent->Text.Unicode;
-
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stPayload);
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -353,38 +306,25 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Init()
   /* Wasn't already initialized? */
   if(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY))
   {
+    orxEVENT stEvent;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
-    /* Registers our keyboard event handlers */
-    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), orxKeyboard_SFML_EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), orxKeyboard_SFML_EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), orxKeyboard_SFML_EventHandler) != orxSTATUS_FAILURE))
+    /* Inits event for getting SFML input */
+    orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED, orxEVENT_TYPE_FIRST_RESERVED, orxNULL, orxNULL, &(sstKeyboard.poInput));
+
+    /* Sends it */
+    orxEvent_Send(&stEvent);
+
+    /* Valid? */
+    if(sstKeyboard.poInput != orxNULL)
     {
-      orxEVENT stEvent;
+      /* Updates status */
+      sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
 
-      /* Inits event for getting SFML input */
-      orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED, orxEVENT_TYPE_FIRST_RESERVED, orxNULL, orxNULL, &(sstKeyboard.poInput));
-
-      /* Sends it */
-      orxEvent_Send(&stEvent);
-
-      /* Valid? */
-      if(sstKeyboard.poInput != orxNULL)
-      {
-        /* Updates status */
-        sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-    }
-    else
-    {
-      /* Removes event handlers */
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), orxKeyboard_SFML_EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), orxKeyboard_SFML_EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), orxKeyboard_SFML_EventHandler);
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -397,11 +337,6 @@ extern "C" void orxFASTCALL orxKeyboard_SFML_Exit()
   /* Was initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handlers */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyPressed), orxKeyboard_SFML_EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::KeyReleased), orxKeyboard_SFML_EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::TextEntered), orxKeyboard_SFML_EventHandler);
-
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
   }

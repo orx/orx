@@ -19,9 +19,6 @@
 <div class="contents">
 <h1>OrxMouse</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
-<tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_m_o_u_s_e___e_v_e_n_t___p_a_y_l_o_a_d.html">orxMOUSE_EVENT_PAYLOAD</a></td></tr>
-
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#gc8dec019d5aeb23f02b5caedf73270b9">orxMOUSE_KZ_CONFIG_SECTION</a>&nbsp;&nbsp;&nbsp;&quot;Mouse&quot;</td></tr>
 
@@ -43,10 +40,10 @@
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#g767307dcbfabe4122b9652b4ecf572f4">orxMOUSE_EVENT</a> { <a class="el" href="group__orx_mouse.html#gg767307dcbfabe4122b9652b4ecf572f4be1081323fbe4eb94371aba1460291bb">orxMOUSE_EVENT_BUTTON_PRESSED</a> =  0, 
-<a class="el" href="group__orx_mouse.html#gg767307dcbfabe4122b9652b4ecf572f4888b985040b1b166a44d621d207b22e3">orxMOUSE_EVENT_BUTTON_RELEASED</a>, 
-<a class="el" href="group__orx_mouse.html#gg767307dcbfabe4122b9652b4ecf572f41c41f39146a5a3328d5cbe90c2336da1">orxMOUSE_EVENT_NUMBER</a>, 
-<a class="el" href="group__orx_mouse.html#gg767307dcbfabe4122b9652b4ecf572f4423c44e78ce4aaf83485200cc772317b">orxMOUSE_EVENT_NONE</a> =  orxENUM_NONE
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#ga0f43e289f6e13f24f218386c8d30960">orxMOUSE_AXIS</a> { <a class="el" href="group__orx_mouse.html#gga0f43e289f6e13f24f218386c8d30960f0d06db946f7523af467354d7616e2e5">orxMOUSE_AXIS_X</a> =  0, 
+<a class="el" href="group__orx_mouse.html#gga0f43e289f6e13f24f218386c8d3096073efd0b3675443828b155c29a85c3229">orxMOUSE_AXIS_Y</a>, 
+<a class="el" href="group__orx_mouse.html#gga0f43e289f6e13f24f218386c8d3096094dc3fedfeac1b2d5073baa472ce0085">orxMOUSE_AXIS_NUMBER</a>, 
+<a class="el" href="group__orx_mouse.html#gga0f43e289f6e13f24f218386c8d30960d31bd6cc918a6b1823f6a043077585a6">orxMOUSE_AXIS_NONE</a> =  orxENUM_NONE
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
@@ -70,6 +67,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#g0bb5b51feb069120d3b59e1f1cedd41d">orxMouse_GetButtonName</a> (<a class="el" href="group__orx_mouse.html#g4aa7e7ce639a01898aac250b3a910181">orxMOUSE_BUTTON</a> _eButton)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#gd6eb69bc822eb4d9001ae85c052d62cb">orxMouse_GetAxisName</a> (<a class="el" href="group__orx_mouse.html#ga0f43e289f6e13f24f218386c8d30960">orxMOUSE_AXIS</a> _eAxis)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -105,6 +105,33 @@ Mouse plugin module Plugin module that handles mouse-like peripherals <hr><h2>De
 </div>
 </div><p>
 <hr><h2>Enumeration Type Documentation</h2>
+<a class="anchor" name="ga0f43e289f6e13f24f218386c8d30960"></a><!-- doxytag: member="orxMouse.h::orxMOUSE_AXIS" ref="ga0f43e289f6e13f24f218386c8d30960" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_mouse.html#ga0f43e289f6e13f24f218386c8d30960">orxMOUSE_AXIS</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="gga0f43e289f6e13f24f218386c8d30960f0d06db946f7523af467354d7616e2e5"></a><!-- doxytag: member="orxMOUSE_AXIS_X" ref="gga0f43e289f6e13f24f218386c8d30960f0d06db946f7523af467354d7616e2e5" args="" -->orxMOUSE_AXIS_X</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gga0f43e289f6e13f24f218386c8d3096073efd0b3675443828b155c29a85c3229"></a><!-- doxytag: member="orxMOUSE_AXIS_Y" ref="gga0f43e289f6e13f24f218386c8d3096073efd0b3675443828b155c29a85c3229" args="" -->orxMOUSE_AXIS_Y</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gga0f43e289f6e13f24f218386c8d3096094dc3fedfeac1b2d5073baa472ce0085"></a><!-- doxytag: member="orxMOUSE_AXIS_NUMBER" ref="gga0f43e289f6e13f24f218386c8d3096094dc3fedfeac1b2d5073baa472ce0085" args="" -->orxMOUSE_AXIS_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gga0f43e289f6e13f24f218386c8d30960d31bd6cc918a6b1823f6a043077585a6"></a><!-- doxytag: member="orxMOUSE_AXIS_NONE" ref="gga0f43e289f6e13f24f218386c8d30960d31bd6cc918a6b1823f6a043077585a6" args="" -->orxMOUSE_AXIS_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g4aa7e7ce639a01898aac250b3a910181"></a><!-- doxytag: member="orxMouse.h::orxMOUSE_BUTTON" ref="g4aa7e7ce639a01898aac250b3a910181" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -142,33 +169,6 @@ Button enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g767307dcbfabe4122b9652b4ecf572f4"></a><!-- doxytag: member="orxMouse.h::orxMOUSE_EVENT" ref="g767307dcbfabe4122b9652b4ecf572f4" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__orx_mouse.html#g767307dcbfabe4122b9652b4ecf572f4">orxMOUSE_EVENT</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
-<table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg767307dcbfabe4122b9652b4ecf572f4be1081323fbe4eb94371aba1460291bb"></a><!-- doxytag: member="orxMOUSE_EVENT_BUTTON_PRESSED" ref="gg767307dcbfabe4122b9652b4ecf572f4be1081323fbe4eb94371aba1460291bb" args="" -->orxMOUSE_EVENT_BUTTON_PRESSED</em>&nbsp;</td><td>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg767307dcbfabe4122b9652b4ecf572f4888b985040b1b166a44d621d207b22e3"></a><!-- doxytag: member="orxMOUSE_EVENT_BUTTON_RELEASED" ref="gg767307dcbfabe4122b9652b4ecf572f4888b985040b1b166a44d621d207b22e3" args="" -->orxMOUSE_EVENT_BUTTON_RELEASED</em>&nbsp;</td><td>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg767307dcbfabe4122b9652b4ecf572f41c41f39146a5a3328d5cbe90c2336da1"></a><!-- doxytag: member="orxMOUSE_EVENT_NUMBER" ref="gg767307dcbfabe4122b9652b4ecf572f41c41f39146a5a3328d5cbe90c2336da1" args="" -->orxMOUSE_EVENT_NUMBER</em>&nbsp;</td><td>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg767307dcbfabe4122b9652b4ecf572f4423c44e78ce4aaf83485200cc772317b"></a><!-- doxytag: member="orxMOUSE_EVENT_NONE" ref="gg767307dcbfabe4122b9652b4ecf572f4423c44e78ce4aaf83485200cc772317b" args="" -->orxMOUSE_EVENT_NONE</em>&nbsp;</td><td>
-</td></tr>
-</table>
-</dl>
-
-</div>
-</div><p>
 <hr><h2>Function Documentation</h2>
 <a class="anchor" name="ge5e3d2a70f56bf6cf913738a2dc8e843"></a><!-- doxytag: member="orxMouse.h::orxMouse_Exit" ref="ge5e3d2a70f56bf6cf913738a2dc8e843" args="()" -->
 <div class="memitem">
@@ -187,6 +187,32 @@ Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 
 <p>
 Exits from the mouse module 
+</div>
+</div><p>
+<a class="anchor" name="gd6eb69bc822eb4d9001ae85c052d62cb"></a><!-- doxytag: member="orxMouse.h::orxMouse_GetAxisName" ref="gd6eb69bc822eb4d9001ae85c052d62cb" args="(orxMOUSE_AXIS _eAxis)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const orxSTRING orxFASTCALL orxMouse_GetAxisName           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_mouse.html#ga0f43e289f6e13f24f218386c8d30960">orxMOUSE_AXIS</a>&nbsp;</td>
+          <td class="paramname"> <em>_eAxis</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets axis literal name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eAxis</em>&nbsp;</td><td>Concerned axis </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Axis's name </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g0bb5b51feb069120d3b59e1f1cedd41d"></a><!-- doxytag: member="orxMouse.h::orxMouse_GetButtonName" ref="g0bb5b51feb069120d3b59e1f1cedd41d" args="(orxMOUSE_BUTTON _eButton)" -->

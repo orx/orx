@@ -763,9 +763,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationB
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
-/** Sets a bitmap data
+/** Sets a bitmap data (RGBA format)
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _au8Data                              Data (4 channels)
+ * @param[in]   _au8Data                              Data (4 channels, RGBA)
  * @param[in]   _u32ByteNumber                        Number of bytes
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

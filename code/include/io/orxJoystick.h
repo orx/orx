@@ -179,30 +179,6 @@ typedef enum __orxJOYSTICK_AXIS_t
 } orxJOYSTICK_AXIS;
 
 
-/** Event enum
- */
-typedef enum __orxJOYSTICK_EVENT_t
-{
-  orxJOYSTICK_EVENT_BUTTON_PRESSED = 0,
-  orxJOYSTICK_EVENT_BUTTON_RELEASED,
-
-  orxJOYSTICK_EVENT_NUMBER,
-
-  orxJOYSTICK_EVENT_NONE = orxENUM_NONE
-
-} orxJOYSTICK_EVENT;
-
-
-/** Joystick event payload
- */
-typedef struct __orxJOYSTICK_EVENT_PAYLOAD_t
-{
-  orxU32              u32JoystickID;  /**< Joystick ID : 4 */
-  orxJOYSTICK_BUTTON  eButton;        /**< Joystick button : 8 */
-
-} orxJOYSTICK_EVENT_PAYLOAD;
-
-
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/
@@ -237,17 +213,17 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxJoystick_GetAxisValue(orxJOYSTI
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON _eButton);
 
-/** Gets axis literal name
- * @param[in] _eAxis        Concerned axis
- * @return Axis's name
- */
-extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
-
 /** Gets button literal name
  * @param[in] _eButton      Concerned button
  * @return Button's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton);
+
+/** Gets axis literal name
+ * @param[in] _eAxis        Concerned axis
+ * @return Axis's name
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
 
 #endif /* _orxJOYSTICK_H_ */
 

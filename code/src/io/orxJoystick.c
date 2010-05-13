@@ -58,68 +58,6 @@ void orxFASTCALL orxJoystick_Setup()
   return;
 }
 
-/** Gets axis literal name
- * @param[in] _eAxis        Concerned axis
- * @return Axis's name
- */
-const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
-{
-  const orxSTRING zResult;
-
-#define orxJOYSTICK_DECLARE_AXIS_NAME(AXIS) case orxJOYSTICK_AXIS_##AXIS: zResult = orxJOYSTICK_KZ_LITERAL_PREFIX#AXIS; break
-
-  /* Checks */
-  orxASSERT(_eAxis < orxJOYSTICK_AXIS_NUMBER);
-
-  /* Depending on axis */
-  switch(_eAxis)
-  {
-    orxJOYSTICK_DECLARE_AXIS_NAME(X_1);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Y_1);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Z_1);
-    orxJOYSTICK_DECLARE_AXIS_NAME(R_1);
-    orxJOYSTICK_DECLARE_AXIS_NAME(U_1);
-    orxJOYSTICK_DECLARE_AXIS_NAME(V_1);
-    orxJOYSTICK_DECLARE_AXIS_NAME(POV_1);
-
-    orxJOYSTICK_DECLARE_AXIS_NAME(X_2);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Y_2);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Z_2);
-    orxJOYSTICK_DECLARE_AXIS_NAME(R_2);
-    orxJOYSTICK_DECLARE_AXIS_NAME(U_2);
-    orxJOYSTICK_DECLARE_AXIS_NAME(V_2);
-    orxJOYSTICK_DECLARE_AXIS_NAME(POV_2);
-
-    orxJOYSTICK_DECLARE_AXIS_NAME(X_3);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Y_3);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Z_3);
-    orxJOYSTICK_DECLARE_AXIS_NAME(R_3);
-    orxJOYSTICK_DECLARE_AXIS_NAME(U_3);
-    orxJOYSTICK_DECLARE_AXIS_NAME(V_3);
-    orxJOYSTICK_DECLARE_AXIS_NAME(POV_3);
-
-    orxJOYSTICK_DECLARE_AXIS_NAME(X_4);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Y_4);
-    orxJOYSTICK_DECLARE_AXIS_NAME(Z_4);
-    orxJOYSTICK_DECLARE_AXIS_NAME(R_4);
-    orxJOYSTICK_DECLARE_AXIS_NAME(U_4);
-    orxJOYSTICK_DECLARE_AXIS_NAME(V_4);
-    orxJOYSTICK_DECLARE_AXIS_NAME(POV_4);
-
-    default:
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for axis #%ld.", _eAxis);
-
-      /* Updates result */
-      zResult = orxSTRING_EMPTY;
-    }
-  }
-
-  /* Done! */
-  return zResult;
-}
-
 /** Gets button literal name
  * @param[in] _eButton      Concerned button
  * @return Button's name
@@ -208,6 +146,68 @@ const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButto
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for button #%ld.", _eButton);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets axis literal name
+ * @param[in] _eAxis        Concerned axis
+ * @return Axis's name
+ */
+const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
+{
+  const orxSTRING zResult;
+
+#define orxJOYSTICK_DECLARE_AXIS_NAME(AXIS) case orxJOYSTICK_AXIS_##AXIS: zResult = orxJOYSTICK_KZ_LITERAL_PREFIX#AXIS; break
+
+  /* Checks */
+  orxASSERT(_eAxis < orxJOYSTICK_AXIS_NUMBER);
+
+  /* Depending on axis */
+  switch(_eAxis)
+  {
+    orxJOYSTICK_DECLARE_AXIS_NAME(X_1);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Y_1);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Z_1);
+    orxJOYSTICK_DECLARE_AXIS_NAME(R_1);
+    orxJOYSTICK_DECLARE_AXIS_NAME(U_1);
+    orxJOYSTICK_DECLARE_AXIS_NAME(V_1);
+    orxJOYSTICK_DECLARE_AXIS_NAME(POV_1);
+
+    orxJOYSTICK_DECLARE_AXIS_NAME(X_2);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Y_2);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Z_2);
+    orxJOYSTICK_DECLARE_AXIS_NAME(R_2);
+    orxJOYSTICK_DECLARE_AXIS_NAME(U_2);
+    orxJOYSTICK_DECLARE_AXIS_NAME(V_2);
+    orxJOYSTICK_DECLARE_AXIS_NAME(POV_2);
+
+    orxJOYSTICK_DECLARE_AXIS_NAME(X_3);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Y_3);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Z_3);
+    orxJOYSTICK_DECLARE_AXIS_NAME(R_3);
+    orxJOYSTICK_DECLARE_AXIS_NAME(U_3);
+    orxJOYSTICK_DECLARE_AXIS_NAME(V_3);
+    orxJOYSTICK_DECLARE_AXIS_NAME(POV_3);
+
+    orxJOYSTICK_DECLARE_AXIS_NAME(X_4);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Y_4);
+    orxJOYSTICK_DECLARE_AXIS_NAME(Z_4);
+    orxJOYSTICK_DECLARE_AXIS_NAME(R_4);
+    orxJOYSTICK_DECLARE_AXIS_NAME(U_4);
+    orxJOYSTICK_DECLARE_AXIS_NAME(V_4);
+    orxJOYSTICK_DECLARE_AXIS_NAME(POV_4);
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for axis #%ld.", _eAxis);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;

@@ -109,7 +109,7 @@ typedef struct __orxINPUT_ENTRY_t
 
   orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 92 */
 
-  orxPAD(88)
+  orxPAD(92)
 
 } orxINPUT_ENTRY;
 
@@ -134,6 +134,8 @@ typedef struct __orxINPUT_STATIC_t
   orxFLOAT      fJoystickAxisThreshold;                           /**< Joystick axis threshold */
   orxU32        u32Flags;                                         /**< Control flags */
   orxLINKLIST   stSetList;                                        /**< Set list */
+  orxVECTOR     vCurrentMousePosition;                            /**< Current mouse position */
+  orxVECTOR     vPreviousMousePosition;                           /**< Previous mouse position */
 
 } orxINPUT_STATIC;
 
@@ -197,6 +199,18 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
           break;
         }
       }
+
+      break;
+    }
+
+    case orxINPUT_TYPE_MOUSE_AXIS:
+    {
+      /* Updates result */
+      fResult = (_eID == (orxMOUSE_AXIS_X))
+              ? sstInput.vCurrentMousePosition.fX - sstInput.vPreviousMousePosition.fX
+              : (_eID == (orxMOUSE_AXIS_Y))
+              ?  sstInput.vCurrentMousePosition.fY - sstInput.vPreviousMousePosition.fY
+              : orxFLOAT_0;
 
       break;
     }
@@ -354,6 +368,12 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   if(sstInput.pstCurrentSet != orxNULL)
   {
     orxINPUT_ENTRY *pstEntry;
+
+    /* Updates previous mouse position */
+    orxVector_Copy(&(sstInput.vPreviousMousePosition), &(sstInput.vCurrentMousePosition));
+
+    /* Updates current mouse position */
+    orxMouse_GetPosition(&(sstInput.vCurrentMousePosition));
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -994,7 +1014,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
       orxConfig_SetStringList(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);
 
       /* Frees set name list memory */
-      orxMemory_Free(azSetNameList);
+      orxMemory_Free((void *)azSetNameList);
 
       /* Adds joystick threshold */
       orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
@@ -1959,6 +1979,18 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
       {
         /* Gets its name */
         zResult = orxMouse_GetButtonName((orxMOUSE_BUTTON)_eID);
+      }
+
+      break;
+    }
+
+    case orxINPUT_TYPE_MOUSE_AXIS:
+    {
+      /* Is ID valid? */
+      if(_eID < orxMOUSE_AXIS_NUMBER)
+      {
+        /* Gets its name */
+        zResult = orxMouse_GetAxisName((orxMOUSE_AXIS)_eID);
       }
 
       break;

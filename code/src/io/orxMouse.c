@@ -67,7 +67,7 @@ const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
 {
   const orxSTRING zResult;
 
-#define orxMOUSE_DECLARE_BUTTON_NAME(BUTTON)   case orxMOUSE_BUTTON_##BUTTON: zResult = orxMOUSE_KZ_LITERAL_PREFIX#BUTTON; break
+#define orxMOUSE_DECLARE_BUTTON_NAME(BUTTON)  case orxMOUSE_BUTTON_##BUTTON: zResult = orxMOUSE_KZ_LITERAL_PREFIX#BUTTON; break
 
   /* Checks */
   orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
@@ -87,6 +87,39 @@ const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "No name defined for button #%ld.", _eButton);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets axis literal name
+ * @param[in] _eAxis            Concerned axis
+ * @return Axis's name
+ */
+const orxSTRING orxFASTCALL orxMouse_GetAxisName(orxMOUSE_AXIS _eAxis)
+{
+  const orxSTRING zResult;
+
+#define orxMOUSE_DECLARE_AXIS_NAME(AXIS)  case orxMOUSE_AXIS_##AXIS: zResult = orxMOUSE_KZ_LITERAL_PREFIX#AXIS; break
+
+  /* Checks */
+  orxASSERT(_eAxis < orxMOUSE_AXIS_NUMBER);
+
+  /* Depending on button */
+  switch(_eAxis)
+  {
+    orxMOUSE_DECLARE_AXIS_NAME(X);
+    orxMOUSE_DECLARE_AXIS_NAME(Y);
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "No name defined for axis #%ld.", _eAxis);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;

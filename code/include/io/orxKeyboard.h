@@ -156,30 +156,6 @@ typedef enum __orxKEYBOARD_KEY_t
 } orxKEYBOARD_KEY;
 
 
-/** Event enum
- */
-typedef enum __orxKEYBOARD_EVENT_t
-{
-  orxKEYBOARD_EVENT_KEY_PRESSED = 0,
-  orxKEYBOARD_EVENT_KEY_RELEASED,
-
-  orxKEYBOARD_EVENT_NUMBER,
-
-  orxKEYBOARD_EVENT_NONE = orxENUM_NONE
-
-} orxKEYBOARD_EVENT;
-
-
-/** Keyboard event payload
- */
-typedef struct __orxKEYBOARD_EVENT_PAYLOAD_t
-{
-  orxKEYBOARD_KEY eKey;         /**< Keyboard key : 4 */
-  orxU32          u32Unicode;   /**< Key unicode : 8 */
-
-} orxKEYBOARD_EVENT_PAYLOAD;
-
-
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/

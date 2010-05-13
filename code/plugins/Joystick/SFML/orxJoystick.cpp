@@ -70,36 +70,6 @@ static orxJOYSTICK_STATIC sstJoystick;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Event handler
- */
-static orxSTATUS orxFASTCALL orxJoystick_SFML_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Is a button pressed or released? */
-  if(((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed)
-   && (_pstEvent->eID == sf::Event::JoyButtonPressed))
-  || ((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased)
-   && (_pstEvent->eID == sf::Event::JoyButtonReleased)))
-  {
-    orxJOYSTICK_EVENT_PAYLOAD stPayload;
-    sf::Event                *poEvent;
-
-    /* Gets SFML event */
-    poEvent = (sf::Event *)(_pstEvent->pstPayload);
-
-    /* Inits payload */
-    stPayload.u32JoystickID = poEvent->JoyButton.JoystickId;
-    stPayload.eButton       = (orxJOYSTICK_BUTTON)poEvent->JoyButton.Button;
-
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_JOYSTICK, (_pstEvent->eID == sf::Event::JoyButtonPressed) ? orxJOYSTICK_EVENT_BUTTON_PRESSED : orxJOYSTICK_EVENT_BUTTON_RELEASED, orxNULL, orxNULL, &stPayload);
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 extern "C" orxSTATUS orxFASTCALL orxJoystick_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -107,36 +77,25 @@ extern "C" orxSTATUS orxFASTCALL orxJoystick_SFML_Init()
   /* Wasn't already initialized? */
   if(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
   {
+    orxEVENT stEvent;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
-    /* Registers our keyboard event handlers */
-    if((orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler) != orxSTATUS_FAILURE)
-    && (orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler) != orxSTATUS_FAILURE))
+    /* Inits event for getting SFML input */
+    orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED, orxEVENT_TYPE_FIRST_RESERVED, orxNULL, orxNULL, &(sstJoystick.poInput));
+
+    /* Sends it */
+    orxEvent_Send(&stEvent);
+
+    /* Valid? */
+    if(sstJoystick.poInput != orxNULL)
     {
-      orxEVENT stEvent;
+      /* Updates status */
+      sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
 
-      /* Inits event for getting SFML input */
-      orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED, orxEVENT_TYPE_FIRST_RESERVED, orxNULL, orxNULL, &(sstJoystick.poInput));
-
-      /* Sends it */
-      orxEvent_Send(&stEvent);
-
-      /* Valid? */
-      if(sstJoystick.poInput != orxNULL)
-      {
-        /* Updates status */
-        sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-    }
-    else
-    {
-      /* Removes event handlers */
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler);
-      orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler);
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -149,10 +108,6 @@ extern "C" void orxFASTCALL orxJoystick_SFML_Exit()
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handlers */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonPressed), orxJoystick_SFML_EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::JoyButtonReleased), orxJoystick_SFML_EventHandler);
-
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }

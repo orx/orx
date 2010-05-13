@@ -62,29 +62,15 @@ typedef enum __orxMOUSE_BUTTON_t
 
 } orxMOUSE_BUTTON;
 
-
-/** Event enum
- */
-typedef enum __orxMOUSE_EVENT_t
+typedef enum __orxMOUSE_AXIS_t
 {
-  orxMOUSE_EVENT_BUTTON_PRESSED = 0,
-  orxMOUSE_EVENT_BUTTON_RELEASED,
+  orxMOUSE_AXIS_X = 0,
+  orxMOUSE_AXIS_Y,
+  orxMOUSE_AXIS_NUMBER,
 
-  orxMOUSE_EVENT_NUMBER,
+  orxMOUSE_AXIS_NONE = orxENUM_NONE
 
-  orxMOUSE_EVENT_NONE = orxENUM_NONE
-
-} orxMOUSE_EVENT;
-
-
-/** Mouse event payload
- */
-typedef struct __orxMOUSE_EVENT_PAYLOAD_t
-{
-  orxMOUSE_BUTTON eButton;        /**< Mouse button : 4 */
-
-} orxMOUSE_EVENT_PAYLOAD;
-
+} orxMOUSE_AXIS;
 
 #define orxMOUSE_KZ_CONFIG_SECTION      "Mouse"
 #define orxMOUSE_KZ_CONFIG_SHOW_CURSOR  "ShowCursor"
@@ -151,6 +137,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_ShowCursor(orxBOOL _bShow
  * @return Button's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton);
+
+/** Gets axis literal name
+ * @param[in] _eAxis            Concerned axis
+ * @return Axis's name
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxMouse_GetAxisName(orxMOUSE_AXIS _eAxis);
 
 #endif /* _orxMOUSE_H_ */
 
