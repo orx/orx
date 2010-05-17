@@ -33,7 +33,9 @@
 #include "memory/orxMemory.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
+#include "display/orxFont.h"
 #include "display/orxGraphic.h"
+#include "display/orxText.h"
 #include "object/orxStructure.h"
 #include "render/orxViewport.h"
 #include "utils/orxHashTable.h"
@@ -571,7 +573,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
   if((_pstShader->hData != orxHANDLE_UNDEFINED) && (orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED)))
   {
     /* Starts it */
-    eResult = orxDisplay_StopShader(_pstShader->hData);
+    eResult = orxDisplay_StartShader(_pstShader->hData);
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
@@ -595,8 +597,17 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             /* Valid? */
             if(pstGraphic != orxNULL)
             {
-              /* Updates owner texture */
-              pstOwnerTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+              /* Text? */
+              if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+              {
+                /* Updates owner texture */
+                pstOwnerTexture = orxFont_GetTexture(orxText_GetFont(orxTEXT(orxGraphic_GetData(pstGraphic))));
+              }
+              else
+              {
+                /* Updates owner texture */
+                pstOwnerTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+              }
             }
 
             break;
@@ -696,6 +707,12 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               /* Updates value */
               stPayload.fValue = pstParam->fValue;
 
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
+
+              /* Sets it */
+              orxDisplay_SetShaderFloat(_pstShader->hData, stPayload.zParamName, stPayload.fValue);
+
               break;
             }
 
@@ -703,6 +720,12 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             {
               /* Updates value */
               stPayload.pstValue = (pstParam->pstValue != orxNULL) ? pstParam->pstValue : pstOwnerTexture;
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
+
+              /* Sets it */
+              orxDisplay_SetShaderBitmap(_pstShader->hData, stPayload.zParamName, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
 
               break;
             }
@@ -712,39 +735,9 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               /* Updates value */
               orxVector_Copy(&(stPayload.vValue), &(pstParam->vValue));
 
-              break;
-            }
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
 
-            default:
-            {
-              break;
-            }
-          }
-
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
-
-          /* Depending on parameter type */
-          switch(stPayload.eParamType)
-          {
-            case orxSHADER_PARAM_TYPE_FLOAT:
-            {
-              /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, stPayload.zParamName, stPayload.fValue);
-
-              break;
-            }
-
-            case orxSHADER_PARAM_TYPE_TEXTURE:
-            {
-              /* Sets it */
-              orxDisplay_SetShaderBitmap(_pstShader->hData, stPayload.zParamName, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
-
-              break;
-            }
-
-            case orxSHADER_PARAM_TYPE_VECTOR:
-            {
               /* Sets it */
               orxDisplay_SetShaderVector(_pstShader->hData, stPayload.zParamName, &(stPayload.vValue));
 
