@@ -55,23 +55,23 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
 - (void) applicationDidFinishLaunching:(UIApplication *)_poApplication
 {
   CGRect stFrame;
-  
+
   /* Gets application's size */
   stFrame = [[UIScreen mainScreen] applicationFrame];
-  
+
   /* Creates main window */
   self.poWindow = [[UIWindow alloc] initWithFrame:stFrame]; 
-  
+
   /* Creates orx view */
   stFrame.origin.y = 0.0;
   poView = [[orxView alloc] initWithFrame:stFrame];
-  
+
   /* Attaches it window */
   [poWindow addSubview:poView];
-  
+
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
-  
+
   /* Activates window */
   [poWindow makeKeyAndVisible];
 }

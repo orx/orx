@@ -41,10 +41,6 @@
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-#define orxDISPLAY_KU32_SCREEN_WIDTH            320
-#define orxDISPLAY_KU32_SCREEN_HEIGHT           480
-#define orxDISPLAY_KU32_SCREEN_DEPTH            32
-
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
 
 #define orxDISPLAY_KU32_BUFFER_SIZE             (12 * 1024)
@@ -1687,23 +1683,25 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
+      /* Stores view instance */
+      sstDisplay.poView = [orxView GetInstance];
+      
       /* Inits default values */
-      sstDisplay.bDefaultSmoothing        = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-      sstDisplay.pstScreen                = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+      sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+      sstDisplay.pstScreen                  = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-      sstDisplay.pstScreen->fWidth        = orx2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-      sstDisplay.pstScreen->fHeight       = orx2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
-      sstDisplay.pstScreen->u32RealWidth  = orxDISPLAY_KU32_SCREEN_WIDTH;
-      sstDisplay.pstScreen->u32RealHeight = orxDISPLAY_KU32_SCREEN_HEIGHT;
+      sstDisplay.pstScreen->fWidth          = [sstDisplay.poView frame].size.width;
+      sstDisplay.pstScreen->fHeight         = [sstDisplay.poView frame].size.height;
+      sstDisplay.pstScreen->u32RealWidth    = orxF2U(sstDisplay.pstScreen->fWidth);
+      sstDisplay.pstScreen->u32RealHeight   = orxF2U(sstDisplay.pstScreen->fHeight);
+      sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / sstDisplay.pstScreen->fWidth;
+      sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / sstDisplay.pstScreen->fHeight;
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
-      sstDisplay.eLastBlendMode           = orxDISPLAY_BLEND_MODE_NUMBER;
+      sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
 
       /* Pops config section */
       orxConfig_PopSection();
-
-      /* Stores view instance */
-      sstDisplay.poView = [orxView GetInstance];
 
       /* Creates OpenGL thread context */
       [sstDisplay.poView CreateThreadContext];
