@@ -1820,7 +1820,8 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
 #else /* __orxMSVC__ */
 
       /* Sets current directory */
-      chdir(_zBaseName);
+	  if( chdir(_zBaseName) < 0 )
+	    s32Index = -1;
 
 #endif /* __orxMSVC__ */
 

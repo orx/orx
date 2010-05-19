@@ -373,7 +373,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Valid? */
     if(pstFile != orxNULL)
     {
-      fprintf(pstFile, zBuffer);
+      fprintf(pstFile, "%s", zBuffer);
       fflush(pstFile);
       fclose(pstFile);
     }
@@ -391,7 +391,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       pstFile = stderr;
     }
 
-    fprintf(pstFile, zBuffer);
+    fprintf(pstFile, "%s", zBuffer);
     fflush(pstFile);
   }
 
