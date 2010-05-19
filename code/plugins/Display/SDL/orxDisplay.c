@@ -1,22 +1,25 @@
 /* Orx - Portable Game Engine
  *
- * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed
- * with this source distribution.
+ * Copyright (c) 2010 Orx-Project
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
-
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
-
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ *
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
  */
 
 /**
@@ -50,6 +53,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002 /**< VSync flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000004 /**< Shader support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FOCUS       0x00000008 /**< Focus flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -182,12 +186,42 @@ PFNGLACTIVETEXTUREARBPROC         glActiveTextureARB        = NULL;
 static void orxFASTCALL orxDisplay_SDL_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   SDL_Event stSDLEvent;
+  Uint8     u8State;
 
   /* Clears event */
   orxMemory_Zero(&stSDLEvent, sizeof(SDL_Event));
 
   /* Clears wheel event */
   orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONDOWN, orxNULL, orxNULL, &stSDLEvent);
+
+  /* Gets application state */
+  u8State = SDL_GetAppState();
+
+  /* Has focus? */
+  if(u8State & (SDL_APPINPUTFOCUS | SDL_APPMOUSEFOCUS))
+  {
+    /* Didn't have focus before? */
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
+    {
+      /* Sends focus gained event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+
+      /* Updates focus status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+  }
+  else
+  {
+    /* Had focus before? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
+    {
+      /* Sends focus lost event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+
+      /* Updates focus status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FOCUS);
+    }
+  }
 
   /* Handles all pending events */
   while(SDL_PollEvent(&stSDLEvent))

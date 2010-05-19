@@ -6,6 +6,7 @@ Orx - Portable Game Engine  (Version 1.1 rc0)
 orx 1.2
 -----
 * *** Added new platform with full support: iPhone ***
+* *** Orx is now published under the zlib license, please see the LICENSE file ***
 * IMPORTANT: Added custom bitmap font support in orx with Jørgen 'Jibs' Ibsen's Dina font as default
 * IMPORTANT: Joystick buttons/axes are now suffixed with the corresponding joystick's ID (JOY_X_1, JOY_1_2, ...)
 * Fixed incorrectly names joystick axes

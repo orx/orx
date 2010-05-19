@@ -52,8 +52,6 @@ The engine compiles and is tested for:
 
 The GP2X target is in debug stage and is not currently actively developed/maintained.
 
-NB: The makefiles (mingw32 & linux) should work for non-embedded versions but are deprecated!
-
 
 Versions
 --------
@@ -104,7 +102,6 @@ Here is a list with a small description for each package.
   . codelite (Win32 and Linux, all versions)
   . msvs2005, msvs2008 & msvs2010 (Win32 Visual Studio, all versions)
   . xcode (2.4+, for MacOS X, non-static versions, for iPhone/iPod Touch, static embedded versions)
-  . makefiles (Win32 and Linux, non-embedded versions, deprecated)
 NB: You'll need orx-extern-1.2.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
 
 - orx-extern-1.2.zip : orx's external dependencies. You will only *NEED* these if you

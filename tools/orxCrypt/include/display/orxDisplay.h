@@ -1,22 +1,25 @@
 /* Orx - Portable Game Engine
  *
- * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
- * with this source distribution.
+ * Copyright (c) 2010 Orx-Project
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
-
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
-
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ *
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
  */
 
 /**
@@ -81,9 +84,10 @@ typedef struct __orxBITMAP_t        orxBITMAP;
 typedef struct __orxDISPLAY_TRANSFORM_t
 {
   orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
-  orxFLOAT  fRotation;
+  orxFLOAT  fRepeatX, fRepeatY;
   orxFLOAT  fScaleX;
   orxFLOAT  fScaleY;
+  orxFLOAT  fRotation;
 
 } orxDISPLAY_TRANSFORM;
 
@@ -762,9 +766,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationB
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
-/** Sets a bitmap data
+/** Sets a bitmap data (RGBA format)
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _au8Data                              Data (4 channels)
+ * @param[in]   _au8Data                              Data (4 channels, RGBA)
  * @param[in]   _u32ByteNumber                        Number of bytes
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -848,11 +852,17 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(co
  */
 extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteShader(orxHANDLE _hShader);
 
-/** Renders a shader
- * @param[in]   _hShader                              Shader to render
+/** Starts a shader rendering
+ * @param[in]   _hShader                              Shader to start
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_RenderShader(const orxHANDLE _hShader);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StartShader(const orxHANDLE _hShader);
+
+/** Stops a shader rendering
+ * @param[in]   _hShader                              Shader to stop
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StopShader(const orxHANDLE _hShader);
 
 /** Sets a shader parameter (orxBITMAP)
  * @param[in]   _hShader                              Concerned shader
