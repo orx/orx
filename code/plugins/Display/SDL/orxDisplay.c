@@ -485,7 +485,6 @@ static orxINLINE void orxDisplay_SDL_InitShader(const orxDISPLAY_SHADER *_pstSha
     /* Screen? */
     if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
     {
-      //! TODO: Fix the rotation of the texture
       //! Add viewport & full screen support with external rendering call
       /* Copies screen content */
       glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
@@ -637,14 +636,14 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
 
 static orxINLINE void orxDisplay_SDL_DrawBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxFLOAT fWidth, fHeight;
+  GLfloat fWidth, fHeight;
 
   /* Prepares bitmap for drawing */
   orxDisplay_SDL_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode);
 
   /* Gets bitmap working size */
-  fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
-  fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+  fWidth  = (GLfloat)(_pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX);
+  fHeight = (GLfloat)(_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
   /* Defines the vertex list */
   GLfloat afVertexList[] =
@@ -658,10 +657,10 @@ static orxINLINE void orxDisplay_SDL_DrawBitmap(const orxBITMAP *_pstBitmap, orx
   /* Defines the texture coord list */
   GLfloat afTextureCoordList[] =
   {
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY),
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY)
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX), (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY),
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX), (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY),
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX), (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY),
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX), (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY)
   };
 
   /* Selects arrays */
@@ -841,17 +840,17 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
           
           sstDisplay.afTextureCoordList[u32Counter]       =
           sstDisplay.afTextureCoordList[u32Counter + 2]   =
-          sstDisplay.afTextureCoordList[u32Counter + 4]   = _pstFont->fRecRealWidth * _pstMap->astCharacterList[*pc].fX;
+          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * _pstMap->astCharacterList[*pc].fX);
           sstDisplay.afTextureCoordList[u32Counter + 6]   =
           sstDisplay.afTextureCoordList[u32Counter + 8]   =
-          sstDisplay.afTextureCoordList[u32Counter + 10]  = _pstFont->fRecRealWidth * (_pstMap->astCharacterList[*pc].fX + fWidth);
+          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (_pstMap->astCharacterList[*pc].fX + fWidth));
           sstDisplay.afTextureCoordList[u32Counter + 5]   =
           sstDisplay.afTextureCoordList[u32Counter + 9]   =
-          sstDisplay.afTextureCoordList[u32Counter + 11]  = orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstFont->fHeight - _pstMap->astCharacterList[*pc].fY);
+          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * _pstMap->astCharacterList[*pc].fY);
           sstDisplay.afTextureCoordList[u32Counter + 1]   =
           sstDisplay.afTextureCoordList[u32Counter + 3]   =
-          sstDisplay.afTextureCoordList[u32Counter + 7]   = orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstFont->fHeight - _pstMap->astCharacterList[*pc].fY - fHeight);
-          
+          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstMap->astCharacterList[*pc].fY + fHeight));
+
           /* Updates counter */
           u32Counter += 12;
         }
@@ -1061,37 +1060,31 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapData(orxBITMAP *_pstBitmap, const 
   u32Height = orxF2U(_pstBitmap->fHeight);
 
   /* Valid? */
-  if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * 4))
+  if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
   {
-    orxU8        *au8Buffer, *pu8Dst;
-    const orxU8  *pu8Src;
-    orxU32        i, u32Offset;
+    orxU8        *pu8ImageBuffer;
+    orxU32        i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
     /* Allocates buffer */
-    au8Buffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+    pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
 
-    /* Checks */
-    orxASSERT(au8Buffer != orxNULL);
+    /* Gets line sizes */
+    u32LineSize     = orxF2U(_pstBitmap->fWidth) * sizeof(orxRGBA);
+    u32RealLineSize = _pstBitmap->u32RealWidth * sizeof(orxRGBA);
 
-    /* For all visible rows */
-    for(i = 0, u32Offset = (_pstBitmap->u32RealWidth - u32Width) * 4, pu8Src = _au8Data, pu8Dst = au8Buffer + ((_pstBitmap->u32RealHeight - u32Height) * _pstBitmap->u32RealWidth * 4);
+    /* Clears padding */
+    orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
+
+    /* For all lines */
+    for(i = 0, u32SrcOffset = 0, u32DstOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - 1);
         i < u32Height;
-        i++)
+        i++, u32SrcOffset += u32LineSize, u32DstOffset -= u32RealLineSize)
     {
-      orxU32 j;
+      /* Copies data */
+      orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
 
-      /* For all visible columns */
-      for(j = 0; j < u32Width; j++, pu8Src += 4, pu8Dst += 4)
-      {
-        /* Copies pixel data */
-        pu8Dst[0] = pu8Src[0];
-        pu8Dst[1] = pu8Src[1];
-        pu8Dst[2] = pu8Src[2];
-        pu8Dst[3] = pu8Src[3];
-      }
-
-      /* Skips unvisible pixels */
-      pu8Dst += u32Offset;
+      /* Adds padding */
+      orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
     }
 
     /* Binds texture */
@@ -1099,17 +1092,29 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapData(orxBITMAP *_pstBitmap, const 
     glASSERT();
 
     /* Updates its content */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
     glASSERT();
 
     /* Frees buffer */
-    orxMemory_Free(au8Buffer);
+    orxMemory_Free(pu8ImageBuffer);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
   else
   {
+    /* Screen? */
+    if(_pstBitmap == sstDisplay.pstScreen)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: can't use screen as destination bitmap.");
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: format needs to be RGBA.");
+    }
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -1269,8 +1274,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
     fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
 
     /* Inits texture coords */
-    fLeft = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
-    fTop  = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY);
+    fLeft   = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
+    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY;
 
     /* For all lines */
     for(fY = 0.0f, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -1283,13 +1288,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
 
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)))));
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY))));
       }
       else
       {
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY));
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY);
       }
 
       /* Resets bitmap width */
@@ -1508,7 +1513,7 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      GLuint  uiWidth, uiHeight, uiRealWidth, uiRealHeight;
+      GLuint  uiWidth, uiHeight, uiRealWidth, uiRealHeight, uiBytePerPixels;
       GLenum  eFormat;
 
       /* Gets image's size */
@@ -1525,7 +1530,8 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
         case 3:
         {
           /* Updates format */
-          eFormat = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGB : GL_BGR;
+          eFormat         = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGB : GL_BGR;
+          uiBytePerPixels = 3;
 
           break;
         }
@@ -1533,7 +1539,8 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
         case 4:
         {
           /* Updates format */
-          eFormat = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGBA : GL_BGRA;
+          eFormat         = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGBA : GL_BGRA;
+          uiBytePerPixels = 4;
 
           break;
         }
@@ -1541,7 +1548,8 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
         default:
         {
           /* Updates format */
-          eFormat = GL_INVALID_ENUM;
+          eFormat         = GL_INVALID_ENUM;
+          uiBytePerPixels = 0;
 
           break;
         }
@@ -1550,8 +1558,8 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
       /* Valid? */
       if(eFormat != GL_INVALID_ENUM)
       {
+        GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
         orxU8  *pu8ImageBuffer;
-        orxBOOL bNPOT = orxFALSE;
 
         /* Pushes display section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -1569,43 +1577,29 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
         orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
    
-        /* NPOT texture? */
-        if((uiRealWidth != uiWidth) || (uiRealHeight != uiHeight))
+        /* Allocates buffer */
+        pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * uiBytePerPixels, orxMEMORY_TYPE_VIDEO);
+
+        /* Checks? */
+        orxASSERT(pu8ImageBuffer != orxNULL);
+
+        /* Gets line sizes */
+        uiLineSize      = uiWidth * uiBytePerPixels;
+        uiRealLineSize  = uiRealWidth * uiBytePerPixels;
+
+        /* Clears padding */
+        orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
+
+        /* For all lines */
+        for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
+            i < uiHeight;
+            i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
         {
-          GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
-
-          /* Allocates buffer */
-          pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_VIDEO);
-
-          /* Checks? */
-          orxASSERT(pu8ImageBuffer != orxNULL);
-
-          /* Gets line sizes */
-          uiLineSize      = uiWidth * sizeof(GLuint);
-          uiRealLineSize  = uiRealWidth * sizeof(GLuint);
+          /* Copies data */
+          orxMemory_Copy(pu8ImageBuffer + uiDstOffset, (orxU8 *)pstSurface->pixels + uiSrcOffset, uiLineSize);
 
           /* Adds padding */
-          orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
-
-          /* For all lines */
-          for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - uiHeight);
-              i < uiHeight;
-              i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
-          {
-            /* Copies data */
-            orxMemory_Copy(pu8ImageBuffer + uiDstOffset, (orxU8 *)pstSurface->pixels + uiSrcOffset, uiLineSize);
-
-            /* Adds padding */
-            orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
-          }
-
-          /* Updates status */
-          bNPOT = orxTRUE;
-        }
-        else
-        {
-          /* Uses current buffer */
-          pu8ImageBuffer = (orxU8 *)pstSurface->pixels;
+          orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
         }
 
         /* Creates new texture */
@@ -1624,12 +1618,8 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
         glASSERT();
 
-        /* NPOT texture? */
-        if(bNPOT != orxFALSE)
-        {
-          /* Frees image buffer */
-          orxMemory_Free(pu8ImageBuffer);
-        }
+        /* Frees image buffer */
+        orxMemory_Free(pu8ImageBuffer);
 
         /* Pops config section */
         orxConfig_PopSection();
@@ -1909,11 +1899,11 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glASSERT();
 
-    /* Updates screen info */
+    /* Updates screen info (using square texture for multi-resolution screen shader support) */
     sstDisplay.pstScreen->fWidth          = orx2F(_pstVideoMode->u32Width);
     sstDisplay.pstScreen->fHeight         = orx2F(_pstVideoMode->u32Height);
-    sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Width);
-    sstDisplay.pstScreen->u32RealHeight   = orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Height);
+    sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(orxMAX(_pstVideoMode->u32Width, _pstVideoMode->u32Height));
+    sstDisplay.pstScreen->u32RealHeight   = sstDisplay.pstScreen->u32RealWidth;
     sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
     sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
     sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
@@ -1937,25 +1927,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
     glASSERT();
 
-    /* Has destination bitmap? */
-    if(sstDisplay.pstDestinationBitmap != orxNULL)
-    {
-      /* Inits viewport */
-      glViewport(0, 0, (GLsizei)sstDisplay.pstDestinationBitmap->fWidth, (GLsizei)sstDisplay.pstDestinationBitmap->fHeight);
-      glASSERT();
-
-      /* Inits matrices */
-      glMatrixMode(GL_PROJECTION);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-      glOrtho(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
-      glASSERT();
-      glMatrixMode(GL_MODELVIEW);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-    }
+    /* Clears destination bitmap */
+    sstDisplay.pstDestinationBitmap = orxNULL;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

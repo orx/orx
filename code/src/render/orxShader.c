@@ -368,7 +368,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                 orxFLOAT  fValue;
 
                 /* Gets its literal value */
-                zValue = orxString_LowerCase((orxSTRING)orxConfig_GetString(zParamName));
+                zValue = (orxSTRING)orxConfig_GetString(zParamName);
 
                 /* Is a float? */
                 if(orxString_ToFloat(zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
@@ -384,7 +384,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                   if(zValue != orxSTRING_EMPTY)
                   {
                     /* Is screen? */
-                    if(!orxString_Compare(zValue, orxSHADER_KZ_SCREEN))
+                    if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
                     {
                       /* Gets its texture */
                       pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
