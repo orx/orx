@@ -595,14 +595,14 @@ static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitma
 
 static orxINLINE void orxDisplay_iPhone_DrawBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxFLOAT fWidth, fHeight;
+  GLfloat fWidth, fHeight;
 
   /* Prepares bitmap for drawing */
   orxDisplay_iPhone_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode);
   
   /* Gets bitmap working size */
-  fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
-  fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+  fWidth  = (GLfloat)(_pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX);
+  fHeight = (GLfloat)(_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
   /* Defines the vertex list */
   GLfloat afVertexList[] =
@@ -616,10 +616,10 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(const orxBITMAP *_pstBitmap, 
   /* Defines the texture coord list */
   GLfloat afTextureCoordList[] =
   {
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY),
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vBR.fY),
-    _pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX, orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->fHeight - _pstBitmap->stClip.vTL.fY)
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX), (GLfloat)(orxFLOAT_1 - (_pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY)),
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX), (GLfloat)(orxFLOAT_1 - (_pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY)),
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX), (GLfloat)(orxFLOAT_1 - (_pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY)),
+    (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX), (GLfloat)(orxFLOAT_1 - (_pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY))
   };
 
   /* Renders it */
@@ -751,10 +751,10 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
           sstDisplay.afTextureCoordList[u32Counter + 10]  = _pstFont->fRecRealWidth * (_pstMap->astCharacterList[*pc].fX + fWidth);
           sstDisplay.afTextureCoordList[u32Counter + 5]   =
           sstDisplay.afTextureCoordList[u32Counter + 9]   =
-          sstDisplay.afTextureCoordList[u32Counter + 11]  = orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstFont->fHeight - _pstMap->astCharacterList[*pc].fY);
+          sstDisplay.afTextureCoordList[u32Counter + 11]  = orxFLOAT_1 - (_pstFont->fRecRealHeight * _pstMap->astCharacterList[*pc].fY);
           sstDisplay.afTextureCoordList[u32Counter + 1]   =
           sstDisplay.afTextureCoordList[u32Counter + 3]   =
-          sstDisplay.afTextureCoordList[u32Counter + 7]   = orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstFont->fHeight - _pstMap->astCharacterList[*pc].fY - fHeight);
+          sstDisplay.afTextureCoordList[u32Counter + 7]   = orxFLOAT_1 - (_pstFont->fRecRealHeight * (_pstMap->astCharacterList[*pc].fY + fHeight));
           
           /* Updates counter */
           u32Counter += 12;
@@ -927,64 +927,72 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapData(orxBITMAP *_pstBitmap, con
 {
   orxU32    u32Width, u32Height;
   orxSTATUS eResult;
-
+  
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_au8Data != orxNULL);
-
+  
   /* Gets bitmap's size */
   u32Width  = orxF2U(_pstBitmap->fWidth);
   u32Height = orxF2U(_pstBitmap->fHeight);
-
+  
   /* Valid? */
-  if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * 4))
+  if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
   {
-    orxU8        *au8Buffer, *pu8Dst;
-    const orxU8  *pu8Src;
-    orxU32        i, u32Offset;
-
+    orxU8        *pu8ImageBuffer;
+    orxU32        i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
+    
     /* Allocates buffer */
-    au8Buffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
-
-    /* Checks */
-    orxASSERT(au8Buffer != orxNULL);
-
-    /* For all visible rows */
-    for(i = 0, u32Offset = (_pstBitmap->u32RealWidth - u32Width) * 4, pu8Src = _au8Data, pu8Dst = au8Buffer + ((_pstBitmap->u32RealHeight - u32Height) * _pstBitmap->u32RealWidth * 4); i < u32Height; i++)
+    pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
+    
+    /* Gets line sizes */
+    u32LineSize     = orxF2U(_pstBitmap->fWidth) * sizeof(orxRGBA);
+    u32RealLineSize = _pstBitmap->u32RealWidth * sizeof(orxRGBA);
+    
+    /* Clears padding */
+    orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
+    
+    /* For all lines */
+    for(i = 0, u32SrcOffset = 0, u32DstOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - 1);
+        i < u32Height;
+        i++, u32SrcOffset += u32LineSize, u32DstOffset -= u32RealLineSize)
     {
-      orxU32 j;
-
-      /* For all visible columns */
-      for(j = 0; j < u32Width; j++, pu8Src += 4, pu8Dst += 4)
-      {
-        /* Copies pixel data */
-        pu8Dst[0] = pu8Src[0];
-        pu8Dst[1] = pu8Src[1];
-        pu8Dst[2] = pu8Src[2];
-        pu8Dst[3] = pu8Src[3];
-      }
-
-      /* Skips unvisible pixels */
-      pu8Dst += u32Offset;
+      /* Copies data */
+      orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
+      
+      /* Adds padding */
+      orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
     }
-
+    
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
-
+    
     /* Updates its content */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
     glASSERT();
-
+    
     /* Frees buffer */
-    orxMemory_Free(au8Buffer);
-
+    orxMemory_Free(pu8ImageBuffer);
+    
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
   else
   {
+    /* Screen? */
+    if(_pstBitmap == sstDisplay.pstScreen)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: can't use screen as destination bitmap.");
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: format needs to be RGBA.");
+    }
+    
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -1125,7 +1133,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
 
     /* Inits texture coords */
     fLeft = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
-    fTop  = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vTL.fY);
+    fTop  = orxFLOAT_1 - (_pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY);
 
     /* For all lines */
     for(fY = 0.0f, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -1138,13 +1146,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
 
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)))));
+        fBottom = (GLfloat)(orxFLOAT_1 - (_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)))));
       }
       else
       {
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->fHeight - _pstSrc->stClip.vBR.fY));
+        fBottom = (GLfloat)(orxFLOAT_1 - (_pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY));
       }
 
       /* Resets bitmap width */
@@ -1436,6 +1444,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 
         /* Clears it */
         CGContextClearRect(oContext, CGRectMake(0, 0, uiRealWidth, uiRealHeight));
+
+        /* Inits it */
+        CGContextTranslateCTM(oContext, 0.0f, uiHeight);
+        CGContextScaleCTM(oContext, 1.0f, -1.0f);
 
         /* Copies image data */
         CGContextDrawImage(oContext, CGRectMake(0, 0, uiWidth, uiHeight), oImage);
