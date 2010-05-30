@@ -964,6 +964,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxVIEWPORT  *pstViewport;
+  orxFLOAT      fWidth, fHeight;
   orxBOOL       bRender;
 
   /* Checks */
@@ -985,6 +986,10 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       orxRender_RenderViewport(pstViewport);
     }
   }
+
+  /* Restores screen bitmap clipping */
+  orxDisplay_GetScreenSize(&fWidth, &fHeight);
+  orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
 
   /* Sends render stop event */
   orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);

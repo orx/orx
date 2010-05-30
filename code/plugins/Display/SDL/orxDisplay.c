@@ -119,6 +119,7 @@ typedef struct __orxDISPLAY_SHADER_t
   GLhandleARB               hProgram;
   GLint                     iTextureCounter;
   orxBOOL                   bActive;
+  orxBOOL                   bInitialized;
   orxSTRING                 zCode;
   orxDISPLAY_TEXTURE_INFO  *astTextureInfoList;
 
@@ -463,7 +464,7 @@ static orxSTATUS orxFASTCALL orxDisplay_SDL_CompileShader(orxDISPLAY_SHADER *_ps
   return eResult;
 }
 
-static orxINLINE void orxDisplay_SDL_InitShader(const orxDISPLAY_SHADER *_pstShader)
+static orxINLINE void orxDisplay_SDL_InitShader(orxDISPLAY_SHADER *_pstShader)
 {
   GLint i;
 
@@ -485,12 +486,17 @@ static orxINLINE void orxDisplay_SDL_InitShader(const orxDISPLAY_SHADER *_pstSha
     /* Screen? */
     if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
     {
-      //! Add viewport & full screen support with external rendering call
       /* Copies screen content */
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
       glASSERT();
     }
   }
+
+  /* Updates its status */
+  _pstShader->bInitialized = orxTRUE;
+
+  /* Done! */
+  return;
 }
 
 static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
@@ -1899,11 +1905,11 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glASSERT();
 
-    /* Updates screen info (using square texture for multi-resolution screen shader support) */
+    /* Updates screen info */
     sstDisplay.pstScreen->fWidth          = orx2F(_pstVideoMode->u32Width);
     sstDisplay.pstScreen->fHeight         = orx2F(_pstVideoMode->u32Height);
-    sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(orxMAX(_pstVideoMode->u32Width, _pstVideoMode->u32Height));
-    sstDisplay.pstScreen->u32RealHeight   = sstDisplay.pstScreen->u32RealWidth;
+    sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Width);
+    sstDisplay.pstScreen->u32RealHeight   = orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Height);
     sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
     sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
     sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
@@ -2459,6 +2465,7 @@ orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const 
         pstShader->hProgram               = (GLhandleARB)orxHANDLE_UNDEFINED;
         pstShader->iTextureCounter        = 0;
         pstShader->bActive                = orxFALSE;
+        pstShader->bInitialized           = orxFALSE;
         pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
         pstShader->astTextureInfoList     = (orxDISPLAY_TEXTURE_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO), orxMEMORY_TYPE_MAIN);
         orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -2532,7 +2539,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_StartShader(orxHANDLE _hShader)
   glASSERT();
 
   /* Updates its status */
-  pstShader->bActive = orxTRUE;
+  pstShader->bActive      = orxTRUE;
+  pstShader->bInitialized = orxFALSE;
 
   /* Updates active shader counter */
   sstDisplay.s32ActiveShaderCounter++;
@@ -2553,7 +2561,42 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_StopShader(orxHANDLE _hShader)
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
-  /* Uses program */
+  /* Wasn't initialized? */
+  if(pstShader->bInitialized == orxFALSE)
+  {
+    /* Inits it */
+    orxDisplay_SDL_InitShader(pstShader);
+
+    /* Defines the vertex list */
+    GLfloat afVertexList[] =
+    {
+      sstDisplay.pstScreen->stClip.vTL.fX, sstDisplay.pstScreen->stClip.vBR.fY,
+      sstDisplay.pstScreen->stClip.vTL.fX, sstDisplay.pstScreen->stClip.vTL.fY,
+      sstDisplay.pstScreen->stClip.vBR.fX, sstDisplay.pstScreen->stClip.vBR.fY,
+      sstDisplay.pstScreen->stClip.vBR.fX, sstDisplay.pstScreen->stClip.vTL.fY
+    };
+
+    /* Defines the texture coord list */
+    GLfloat afTextureCoordList[] =
+    {
+      (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX), (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY),
+      (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX), (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY),
+      (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX), (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY),
+      (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX), (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY)
+    };
+
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, 0, afVertexList);
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, 0, afTextureCoordList);
+    glASSERT();
+
+    /* Draws arrays */
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glASSERT();
+  }
+
+  /* Uses default program */
   glUseProgramObjectARB(0);
   glASSERT();
 
