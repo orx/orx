@@ -35,7 +35,7 @@
 #include "orxPluginAPI.h"
 
 #include <SDL.h>
-#include <SDL_image.h>
+#include <SOIL.h>
 
 #ifdef __orxMAC__
 
@@ -1453,38 +1453,40 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
   /* Screen capture? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    GLubyte  *au8Buffer;
-    orxU32    u32BufferSize;
+    int             iFormat;
+    orxU32          u32Length;
+    const orxCHAR  *zExtension;
 
-    /* Gets buffer size */
-    u32BufferSize = orxF2U(sstDisplay.pstScreen->fWidth * sstDisplay.pstScreen->fHeight) * 4 * sizeof(GLubyte);
+    /* Gets file name's length */
+    u32Length = orxString_GetLength(_zFilename);
 
-    /* Allocates buffer */
-    au8Buffer = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+    /* Gets extension */
+    zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
 
-    /* Valid? */
-    if(au8Buffer != orxNULL)
+    /* DDS? */
+    if(orxString_ICompare(zExtension, "dds") == 0)
     {
-      /* Reads OpenGL data */
-      glReadPixels(0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
-      glASSERT();
-
-      //! TODO
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Updates format */
+      iFormat = SOIL_SAVE_TYPE_DDS;
     }
+    /* BMP? */
+    else if(orxString_ICompare(zExtension, "bmp") == 0)
+    {
+      /* Updates format */
+      iFormat = SOIL_SAVE_TYPE_BMP;
+    }
+    /* TGA */
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't allocate memory buffers.", _zFilename);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      /* Updates format */
+      iFormat = SOIL_SAVE_TYPE_TGA;
     }
 
-    /* Deletes buffer */
-    orxMemory_Free(au8Buffer);
+    /* Saves screenshot */
+    SOIL_save_screenshot(_zFilename, iFormat, 0, 0, orxF2U(sstDisplay.pstScreen->fWidth), orxF2U(sstDisplay.pstScreen->fHeight));
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -1501,17 +1503,18 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
 
 orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
 {
-  SDL_Surface  *pstSurface;
-  orxBITMAP    *pstResult = orxNULL;
+  unsigned char  *pu8ImageData;
+  GLuint          uiWidth, uiHeight, uiBytesPerPixel;
+  orxBITMAP      *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Loads image */
-  pstSurface = IMG_Load(_zFilename);
+  pu8ImageData = SOIL_load_image(_zFilename, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
 
   /* Valid? */
-  if(pstSurface != NULL)
+  if(pu8ImageData != NULL)
   {
     /* Allocates bitmap */
     pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -1519,121 +1522,80 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      GLuint  uiWidth, uiHeight, uiRealWidth, uiRealHeight, uiBytePerPixels;
-      GLenum  eFormat;
-
-      /* Gets image's size */
-      uiWidth   = pstSurface->w;
-      uiHeight  = pstSurface->h;
+      GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
+      orxU8  *pu8ImageBuffer;
+      GLuint  uiRealWidth, uiRealHeight;
 
       /* Gets its real size */
       uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
       uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
    
-      /* Depending on the number of channels */
-      switch(pstSurface->format->BytesPerPixel)
+      /* Pushes display section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+      /* Inits bitmap */
+      pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+      pstResult->fWidth         = orxU2F(uiWidth);
+      pstResult->fHeight        = orxU2F(uiHeight);
+      pstResult->u32RealWidth   = uiRealWidth;
+      pstResult->u32RealHeight  = uiRealHeight;
+      pstResult->u32Depth       = 32;
+      pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
+      pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
+      orxColor_Set(&(pstResult->stColor), &orxVECTOR_WHITE, orxFLOAT_1);
+      orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
+      orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
+ 
+      /* Allocates buffer */
+      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
+
+      /* Checks? */
+      orxASSERT(pu8ImageBuffer != orxNULL);
+
+      /* Gets line sizes */
+      uiLineSize      = uiWidth * sizeof(orxRGBA);
+      uiRealLineSize  = uiRealWidth * sizeof(orxRGBA);
+
+      /* Clears padding */
+      orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
+
+      /* For all lines */
+      for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
+          i < uiHeight;
+          i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
       {
-        case 3:
-        {
-          /* Updates format */
-          eFormat         = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGB : GL_BGR;
-          uiBytePerPixels = 3;
+        /* Copies data */
+        orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
 
-          break;
-        }
-
-        case 4:
-        {
-          /* Updates format */
-          eFormat         = (pstSurface->format->Rmask == 0x000000FF) ? GL_RGBA : GL_BGRA;
-          uiBytePerPixels = 4;
-
-          break;
-        }
-
-        default:
-        {
-          /* Updates format */
-          eFormat         = GL_INVALID_ENUM;
-          uiBytePerPixels = 0;
-
-          break;
-        }
+        /* Adds padding */
+        orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
       }
 
-      /* Valid? */
-      if(eFormat != GL_INVALID_ENUM)
-      {
-        GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
-        orxU8  *pu8ImageBuffer;
+      /* Creates new texture */
+      glGenTextures(1, &pstResult->uiTexture);
+      glASSERT();
+      glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
+      glASSERT();
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
 
-        /* Pushes display section */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      /* Frees image buffer */
+      orxMemory_Free(pu8ImageBuffer);
 
-        /* Inits bitmap */
-        pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-        pstResult->fWidth         = orxU2F(uiWidth);
-        pstResult->fHeight        = orxU2F(uiHeight);
-        pstResult->u32RealWidth   = uiRealWidth;
-        pstResult->u32RealHeight  = uiRealHeight;
-        pstResult->u32Depth       = 32;
-        pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
-        pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
-        orxColor_Set(&(pstResult->stColor), &orxVECTOR_WHITE, orxFLOAT_1);
-        orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
-        orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
-   
-        /* Allocates buffer */
-        pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * uiBytePerPixels, orxMEMORY_TYPE_VIDEO);
-
-        /* Checks? */
-        orxASSERT(pu8ImageBuffer != orxNULL);
-
-        /* Gets line sizes */
-        uiLineSize      = uiWidth * uiBytePerPixels;
-        uiRealLineSize  = uiRealWidth * uiBytePerPixels;
-
-        /* Clears padding */
-        orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
-
-        /* For all lines */
-        for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
-            i < uiHeight;
-            i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
-        {
-          /* Copies data */
-          orxMemory_Copy(pu8ImageBuffer + uiDstOffset, (orxU8 *)pstSurface->pixels + uiSrcOffset, uiLineSize);
-
-          /* Adds padding */
-          orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
-        }
-
-        /* Creates new texture */
-        glGenTextures(1, &pstResult->uiTexture);
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, eFormat, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-
-        /* Frees image buffer */
-        orxMemory_Free(pu8ImageBuffer);
-
-        /* Pops config section */
-        orxConfig_PopSection();
-      }
+      /* Pops config section */
+      orxConfig_PopSection();
     }
 
     /* Deletes surface */
-    SDL_FreeSurface(pstSurface);
+    SOIL_free_image_data(pu8ImageData);
   }
 
   /* Done! */
