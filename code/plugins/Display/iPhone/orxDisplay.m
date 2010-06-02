@@ -1252,14 +1252,23 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
   /* Screen capture? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    /* PNG? */
-    if(orxString_SearchString(_zFilename, ".png") != orxNULL)
+    orxU32          u32Length;
+    const orxCHAR  *zExtension;
+
+    /* Gets file name's length */
+    u32Length = orxString_GetLength(_zFilename);
+
+    /* Gets extension */
+    zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+    /* DDS? */
+    if(orxString_ICompare(zExtension, "png") == 0)
     {
       /* Updates status */
       bPNG = orxTRUE;
     }
-    /* JPG? */
-    else if(orxString_SearchString(_zFilename, ".jpg") != orxNULL)
+    /* BMP? */
+    else if(orxString_ICompare(zExtension, "jpg") == 0)
     {
       /* Updates status */
       bPNG = orxFALSE;
@@ -1267,7 +1276,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: only PNG and JPG supported.", _zFilename);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: only PNG and JPG formats are supported.", _zFilename);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
