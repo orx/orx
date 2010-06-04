@@ -69,6 +69,8 @@ struct __orxSOUNDSYSTEM_SOUND_t
   orxFLOAT  fReferenceDistance;
   orxFLOAT  fAttenuation;
   orxFLOAT  fVolume;
+  orxS16    s16RelativeAngle;
+  orxS8     s8RelativeDistance;
 
   union
   {
@@ -360,7 +362,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_SDL_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
     /* Is music? */
     if(_pstSound->bIsMusic != orxFALSE)
     {
-      /* Pauses it */
+      /* Updates its volume */
       Mix_VolumeMusic(orxF2S(orx2F(128.0f) * _pstSound->fVolume));
     }
     else
@@ -444,6 +446,18 @@ orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSou
   /* Stores it */
   _pstSound->fVolume = _fVolume;
 
+  /* Is music? */
+  if(_pstSound->bIsMusic != orxFALSE)
+  {
+      /* Updates its volume */
+      Mix_VolumeMusic(orxF2S(orx2F(128.0f) * _fVolume));
+  }
+  else
+  {
+      /* Updates its volume */
+      Mix_Volume(_pstSound->s32Channel, orxF2S(orx2F(128.0f) * _fVolume));
+  }
+
   /* Done! */
   return eResult;
 }
@@ -489,8 +503,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetPosition(orxSOUNDSYSTEM_SOUND *_pstS
     /* Gets relaitve distance */
     fRelativeDistance = (vRelativePosition.fPhi - _pstSound->fReferenceDistance) * _pstSound->fAttenuation;
 
+    /* Stores angle */
+    _pstSound->s16RelativeAngle = (orxS16)orxF2S(fRelativeAngle);
+
+    /* Stores distance */
+    _pstSound->s8RelativeDistance = (orxU8)orxF2U(orxCLAMP(fRelativeDistance, orxFLOAT_0, orx2F(255.0f)));
+
     /* Updates sound position */
-    eResult = (Mix_SetPosition(_pstSound->s32Channel, (orxS16)orxF2S(fRelativeAngle), (orxU8)orxF2U(orxCLAMP(fRelativeDistance, orxFLOAT_0, orx2F(255.0f)))) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = (Mix_SetPosition(_pstSound->s32Channel, _pstSound->s16RelativeAngle, _pstSound->s8RelativeDistance) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   else
   {
@@ -549,14 +569,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_SDL_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, o
 
 orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Logs message */
-  orxLOG("This sound plugin doesn't handle GetVolume.");
+  /* Updates result */
+  fResult = _pstSound->fVolume;
 
   /* Done! */
   return fResult;

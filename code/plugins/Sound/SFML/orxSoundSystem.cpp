@@ -677,7 +677,7 @@ extern "C" orxFLOAT orxFASTCALL orxSoundSystem_SFML_GetDuration(const orxSOUNDSY
   else
   {
     /* Updates result */
-    fResult = orxFLOAT_0;
+    fResult = _pstSound->poSound->GetBuffer()->GetDuration();
   }
 
   /* Done! */

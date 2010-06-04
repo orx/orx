@@ -643,15 +643,7 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
 static orxINLINE void orxDisplay_SDL_DrawBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   GLfloat fWidth, fHeight;
-
-  /* Defines the vertex list */
-  GLfloat afVertexList[8] =
-  {
-	  0.0f, 0.0f, 0.0f, 0.0f,
-	  0.0f, 0.0f, 0.0f, 0.0f
-  };
-
-  /* Defines the texture coord list */
+  GLfloat afVertexList[8];
   GLfloat afTextureCoordList[8];
 
   /* Prepares bitmap for drawing */
@@ -2527,9 +2519,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_StopShader(orxHANDLE _hShader)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxSTATUS           eResult = orxSTATUS_SUCCESS;
-  GLfloat afVertexList[8];
-  GLfloat afTextureCoordList[8];
-
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -2541,28 +2530,31 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_StopShader(orxHANDLE _hShader)
   /* Wasn't initialized? */
   if(pstShader->bInitialized == orxFALSE)
   {
+    GLfloat afVertexList[8];
+    GLfloat afTextureCoordList[8];
+
     /* Inits it */
     orxDisplay_SDL_InitShader(pstShader);
 
     /* Defines the vertex list */
     afVertexList[0] = sstDisplay.pstScreen->stClip.vTL.fX;
-	afVertexList[1] = sstDisplay.pstScreen->stClip.vBR.fY;
+    afVertexList[1] = sstDisplay.pstScreen->stClip.vBR.fY;
     afVertexList[2] = sstDisplay.pstScreen->stClip.vTL.fX;
-	afVertexList[3] = sstDisplay.pstScreen->stClip.vTL.fY;
+    afVertexList[3] = sstDisplay.pstScreen->stClip.vTL.fY;
     afVertexList[4] = sstDisplay.pstScreen->stClip.vBR.fX;
-	afVertexList[5] = sstDisplay.pstScreen->stClip.vBR.fY;
+    afVertexList[5] = sstDisplay.pstScreen->stClip.vBR.fY;
     afVertexList[6] = sstDisplay.pstScreen->stClip.vBR.fX;
-	afVertexList[7] = sstDisplay.pstScreen->stClip.vTL.fY;
+    afVertexList[7] = sstDisplay.pstScreen->stClip.vTL.fY;
 
     /* Defines the texture coord list */
     afTextureCoordList[0] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
-	afTextureCoordList[1] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
-	afTextureCoordList[2] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
-	afTextureCoordList[3] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
-	afTextureCoordList[4] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
-	afTextureCoordList[5] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
-	afTextureCoordList[6] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
-	afTextureCoordList[7] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+    afTextureCoordList[1] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
+    afTextureCoordList[2] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
+    afTextureCoordList[3] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+    afTextureCoordList[4] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
+    afTextureCoordList[5] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
+    afTextureCoordList[6] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
+    afTextureCoordList[7] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
 
     /* Selects arrays */
     glVertexPointer(2, GL_FLOAT, 0, afVertexList);
