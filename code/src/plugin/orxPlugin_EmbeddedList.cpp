@@ -52,6 +52,8 @@
 
 /** Includes all plugins to embed
  */
+
+/* SDL, SDL_Mixer, SOIL & Box2D */
 //#include "../plugins/Display/SDL/orxDisplay.c"
 //#include "../plugins/Joystick/SDL/orxJoystick.c"
 //#include "../plugins/Keyboard/SDL/orxKeyboard.c"
@@ -60,6 +62,7 @@
 //#include "../plugins/Render/Home/orxRender.c"
 //#include "../plugins/Sound/SDL/orxSoundSystem.c"
 
+/* SFML & Box2D */
 #include "../plugins/Display/SFML/orxDisplay.cpp"
 #include "../plugins/Joystick/SFML/orxJoystick.cpp"
 #include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
