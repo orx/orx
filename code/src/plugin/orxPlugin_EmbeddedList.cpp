@@ -35,12 +35,14 @@
 
 #ifdef __orxEMBEDDED__
 
-#ifdef __orxWII__
+/* Wii? */
+#if defined(__orxWII__)
 
 //! TODO: Includes all plugins to embed for Wii
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 
+/* iPhone? */
 #elif defined(__orxIPHONE__)
 
 /* Display, joystick, mouse & sound system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
@@ -48,6 +50,7 @@
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 
+/* Others */
 #else
 
 /** Includes all plugins to embed
