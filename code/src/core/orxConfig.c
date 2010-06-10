@@ -102,6 +102,9 @@
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
 #define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH      4           /**< Encryption file tag length */
 
+#define orxCONFIG_KZ_UTF8_BOM                     "\xEF\xBB\xBF" /**< UTF-8 BOM */
+#define orxCONFIG_KU32_UTF8_BOM_LENGTH            3           /**< UTF-8 BON length */
+
 #ifdef __orxDEBUG__
 
   #define orxCONFIG_KZ_DEFAULT_FILE               "orxd.ini"  /**< Default config file name */
@@ -2327,6 +2330,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
           /* Updates start of line */
           pcLineStart = acBuffer;
+        }
+
+        /* Has UTF-8 BOM? */
+        if(orxString_NCompare(pcLineStart, orxCONFIG_KZ_UTF8_BOM, orxCONFIG_KU32_UTF8_BOM_LENGTH) == 0)
+        {
+          /* Skips it */
+          pcLineStart += orxCONFIG_KU32_UTF8_BOM_LENGTH;
         }
       }
       else

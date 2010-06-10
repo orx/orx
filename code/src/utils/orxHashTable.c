@@ -248,7 +248,7 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
  */
 orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
-  orxU32 u32Index;                    /* Hash table index */
+  orxU32 u32Index;                      /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
 
   /* Checks */
@@ -423,11 +423,11 @@ orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32
 	/* Checks */
 	orxASSERT(_pstHashTable != orxNULL);
 
-	for(u16Cell=0; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
+	for(u16Cell = 0; u16Cell < orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
 	{
-		if(_pstHashTable->apstCell[u16Cell]!=orxNULL)
+		if(_pstHashTable->apstCell[u16Cell] != orxNULL)
 		{
-			if(_pu32Key!=orxNULL)
+			if(_pu32Key != orxNULL)
 			{
 				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
 			}

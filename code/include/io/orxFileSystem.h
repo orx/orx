@@ -117,38 +117,6 @@ extern orxDLLAPI void orxFASTCALL       orxFileSystem_FindClose(orxFILESYSTEM_IN
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxFileSystem_Info(const orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo);
 
-/** Copies a file
- * @param[in] _zSource             Source file's name
- * @param[in] _zDest               Destination file's name
- * @return The status of the operation
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFileSystem_Copy(const orxSTRING _zSource, const orxSTRING _zDest);
-
-/** Renames a file
- * @param[in] _zSource             Source file's name
- * @param[in] _zDest               Destination file's name
- * @return The status of the operation
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFileSystem_Rename(const orxSTRING _zSource, const orxSTRING _zDest);
-
-/** Deletes a file
- * @param[in] _zFileName           File's name to delete
- * @return The status of the operation
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFileSystem_Delete(const orxSTRING _zFileName);
-
-/** Creates a directory
- * @param[in] _zDirName            New directory's name
- * @return The status of the operation
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFileSystem_CreateDir(const orxSTRING _zDirName);
-
-/** Removes an empty directory
- * @param[in] _zDirName            Directory's name to delete
- * @return The status of the operation
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFileSystem_DeleteDir(const orxSTRING _zDirName);
-
 #endif /* _orxFILESYSTEM_H_ */
 
 /** @} */

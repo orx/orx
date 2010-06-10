@@ -164,7 +164,7 @@ static orxINLINE const orxSTRING        orxString_SkipPath(const orxSTRING _zStr
   return zResult;
 }
 
-/** Returns the number of character in the string
+/** Returns the number of orxCHAR in the string (for UTF-8 it won't be the real number of unicode characters for non-ASCII strings)
  * @param[in] _zString  String used for length computation
  * @return Length of the string (doesn't count final orxCHAR_NULL)
  */
