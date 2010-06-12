@@ -59,8 +59,10 @@
 
 /** Misc defines
  */
-#define orxFONT_KU32_MAP_BANK_SIZE              2           /**< Map bank size */
+#define orxFONT_KU32_MAP_BANK_SIZE              4           /**< Map bank size */
 #define orxFONT_KU32_REFERENCE_TABLE_SIZE       4           /**< Reference table size */
+#define orxFONT_KU32_CHARACTER_BANK_SIZE        128         /**< Character bank size */
+#define orxFONT_KU32_CHARACTER_TABLE_SIZE       128         /**< Character table size */
 
 #define orxFONT_KZ_DEFAULT_FONT_NAME            "OrxDefaultFont"
 
@@ -126,12 +128,18 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
   /* Check */
   orxSTRUCTURE_ASSERT(_pstFont);
 
-  /* For all entries */
-  for(i = 0; i < orxCHAR_NUMBER; i++)
+  /* Clears UTF-8 table */
+  orxHashTable_Clear(_pstFont->pstMap->pstUTF8CharacterTable);
+
+  /* Clears UTF-8 bank */
+  orxBank_Clear(_pstFont->pstMap->pstUTF8CharacterBank);
+
+  /* For all ASCII entries */
+  for(i = 0; i < orxCHAR_ASCII_NUMBER; i++)
   {
     /* Cleans it */
-    _pstFont->pstMap->astCharacterList[i].fX = -orxFLOAT_1;
-    _pstFont->pstMap->astCharacterList[i].fY = -orxFLOAT_1;
+    _pstFont->pstMap->astASCIICharacterList[i].fX = -orxFLOAT_1;
+    _pstFont->pstMap->astASCIICharacterList[i].fY = -orxFLOAT_1;
   }
 
   /* Has texture, texture size, character size and character list? */
@@ -143,14 +151,42 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
   && (_pstFont->zCharacterList != orxSTRING_EMPTY))
   {
     const orxCHAR  *pc;
+    orxU32          u32CharacterID;
     orxVECTOR       vOrigin;
 
     /* For all defined characters */
-    for(pc = _pstFont->zCharacterList, orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0); (*pc != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight); pc++)
+    for(u32CharacterID = orxString_GetFirstCharacterID(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
+        (u32CharacterID != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
+        u32CharacterID = orxString_GetFirstCharacterID(pc, &pc))
     {
-      /* Stores its origin */
-      _pstFont->pstMap->astCharacterList[*pc].fX = vOrigin.fX;
-      _pstFont->pstMap->astCharacterList[*pc].fY = vOrigin.fY;
+      /* ASCII? */
+      if(orxString_IsCharacterASCII(u32CharacterID) != orxFALSE)
+      {
+        /* Stores its origin */
+        _pstFont->pstMap->astASCIICharacterList[u32CharacterID].fX = vOrigin.fX;
+        _pstFont->pstMap->astASCIICharacterList[u32CharacterID].fY = vOrigin.fY;
+      }
+      else
+      {
+        orxCHARACTER_GLYPH *pstGlyph;
+
+        /* Not already defined? */
+        if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstUTF8CharacterTable, u32CharacterID)) == orxNULL)
+        {
+          /* Allocates it */
+          pstGlyph = (orxCHARACTER_GLYPH *)orxBank_Allocate(_pstFont->pstMap->pstUTF8CharacterBank);
+
+          /* Checks */
+          orxASSERT(pstGlyph != orxNULL);
+
+          /* Adds it to table */
+          orxHashTable_Add(_pstFont->pstMap->pstUTF8CharacterTable, u32CharacterID, pstGlyph);
+        }
+
+        /* Stores its origin */
+        pstGlyph->fX = vOrigin.fX;
+        pstGlyph->fY = vOrigin.fY;
+      }
 
       /* Updates current origin X value */
       vOrigin.fX += _pstFont->vCharacterSize.fX;
@@ -477,8 +513,53 @@ orxFONT *orxFASTCALL orxFont_Create()
     /* Valid? */
     if(pstResult->pstMap != orxNULL)
     {
-      /* Clears its character list */
-      pstResult->zCharacterList = orxSTRING_EMPTY;
+      /* Creates its character bank */
+      pstResult->pstMap->pstUTF8CharacterBank = orxBank_Create(orxFONT_KU32_CHARACTER_BANK_SIZE, sizeof(orxCHARACTER_GLYPH), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Valid? */
+      if(pstResult->pstMap->pstUTF8CharacterBank != orxNULL)
+      {
+        /* Creates its character table */
+        pstResult->pstMap->pstUTF8CharacterTable = orxHashTable_Create(orxFONT_KU32_CHARACTER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+        /* Valid? */
+        if(pstResult->pstMap->pstUTF8CharacterTable != orxNULL)
+        {
+          /* Clears its character list */
+          pstResult->zCharacterList = orxSTRING_EMPTY;
+        }
+        else
+        {
+          /* Deletes character bank */
+          orxBank_Delete(pstResult->pstMap->pstUTF8CharacterBank);
+
+          /* Deletes maps */
+          orxBank_Free(sstFont.pstMapBank, pstResult->pstMap);
+
+          /* Deletes structure */
+          orxStructure_Delete(pstResult);
+
+          /* Updates result */
+          pstResult = orxNULL;
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't allocate font's character table.");
+        }
+      }
+      else
+      {
+        /* Deletes map */
+        orxBank_Free(sstFont.pstMapBank, pstResult->pstMap);
+
+        /* Deletes structure */
+        orxStructure_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't allocate font's character bank.");
+      }
     }
     else
     {
@@ -702,6 +783,12 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
   {
     /* Removes texture */
     orxFont_SetTexture(_pstFont, orxNULL);
+
+    /* Deletes character table */
+    orxHashTable_Delete(_pstFont->pstMap->pstUTF8CharacterTable);
+
+    /* Deletes character bank */
+    orxBank_Delete(_pstFont->pstMap->pstUTF8CharacterBank);
 
     /* Deletes map */
     orxBank_Free(sstFont.pstMapBank, _pstFont->pstMap);

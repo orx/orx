@@ -724,7 +724,7 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_GetScreen()
 orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   const orxCHAR  *pc;
-  orxU32          u32Counter;
+  orxU32          u32CharacterID, u32Counter;
   GLfloat         fX, fY, fWidth, fHeight;
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
@@ -759,15 +759,17 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
   orxDisplay_SDL_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
 
   /* For all characters */
-  for(pc = _zString, u32Counter = 0, fX = fY = 0.0f; *pc != orxCHAR_NULL; pc++)
+  for(u32CharacterID = orxString_GetFirstCharacterID(_zString, &pc), u32Counter = 0, fX = fY = 0.0f;
+      u32CharacterID != orxCHAR_NULL;
+      u32CharacterID = orxString_GetFirstCharacterID(pc, &pc))
   {
     /* Depending on character */
-    switch(*pc)
+    switch(u32CharacterID)
     {
       case orxCHAR_CR:
       {
         /* Half EOL? */
-        if(*(pc + 1) == orxCHAR_LF)
+        if(*pc == orxCHAR_LF)
         {
           /* Updates pointer */
           pc++;
@@ -789,8 +791,31 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
 
       default:
       {
-        /* Is defined? */
-        if(_pstMap->astCharacterList[*pc].fX >= orxFLOAT_0)
+        const orxCHARACTER_GLYPH *pstGlyph;
+
+        /* Is ASCII? */
+        if(orxString_IsCharacterASCII(u32CharacterID) != orxFALSE)
+        {
+          /* Is defined? */
+          if(_pstMap->astASCIICharacterList[u32CharacterID].fX >= orxFLOAT_0)
+          {
+            /* Updates glyph */
+            pstGlyph = &_pstMap->astASCIICharacterList[u32CharacterID];
+          }
+          else
+          {
+            /* Clears glyph */
+            pstGlyph = orxNULL;
+          }
+        }
+        else
+        {
+          /* Gets glyph from UTF-8 table */
+          pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstUTF8CharacterTable, u32CharacterID);
+        }
+
+        /* Valid? */
+        if(pstGlyph != orxNULL)
         {
           /* End of buffer? */
           if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
@@ -850,16 +875,16 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
           
           sstDisplay.afTextureCoordList[u32Counter]       =
           sstDisplay.afTextureCoordList[u32Counter + 2]   =
-          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * _pstMap->astCharacterList[*pc].fX);
+          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * pstGlyph->fX);
           sstDisplay.afTextureCoordList[u32Counter + 6]   =
           sstDisplay.afTextureCoordList[u32Counter + 8]   =
-          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (_pstMap->astCharacterList[*pc].fX + fWidth));
+          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth));
           sstDisplay.afTextureCoordList[u32Counter + 5]   =
           sstDisplay.afTextureCoordList[u32Counter + 9]   =
-          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * _pstMap->astCharacterList[*pc].fY);
+          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * pstGlyph->fY);
           sstDisplay.afTextureCoordList[u32Counter + 1]   =
           sstDisplay.afTextureCoordList[u32Counter + 3]   =
-          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (_pstMap->astCharacterList[*pc].fY + fHeight));
+          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight));
 
           /* Updates counter */
           u32Counter += 12;

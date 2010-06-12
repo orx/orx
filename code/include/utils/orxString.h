@@ -164,9 +164,9 @@ static orxINLINE const orxSTRING        orxString_SkipPath(const orxSTRING _zStr
   return zResult;
 }
 
-/** Returns the number of orxCHAR in the string (for UTF-8 it won't be the real number of unicode characters for non-ASCII strings)
- * @param[in] _zString  String used for length computation
- * @return Length of the string (doesn't count final orxCHAR_NULL)
+/** Returns the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won't be the actual number of unicode characters)
+ * @param[in] _zString                  String used for length computation
+ * @return                              Length of the string (doesn't count final orxCHAR_NULL)
  */
 static orxINLINE orxU32                 orxString_GetLength(const orxSTRING _zString)
 {
@@ -175,6 +175,164 @@ static orxINLINE orxU32                 orxString_GetLength(const orxSTRING _zSt
 
   /* Done! */
   return((orxU32)strlen(_zString));
+}
+
+/** Tells if a character is ASCII from its ID
+ * @param[in] _u32CharacterID           Concerned character ID
+ * @return                              orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise
+ */
+static orxINLINE orxBOOL                orxString_IsCharacterASCII(orxU32 _u32CharacterID)
+{
+  return((_u32CharacterID < 0x80) ? orxTRUE : orxFALSE);
+}
+
+/** Returns the ID of the first character of the UTF-8 string
+ * @param[in] _zString                  Concerned string
+ * @param[out]  _pzRemaining            If non null, will contain the remaining string after the first UTF-8 character
+ * @return                              ID of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid UTF-8 character
+ */
+static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxSTRING _zString, const orxSTRING *_pzRemaining)
+{
+  orxU8  *pu8Byte;
+  orxU32  u32Result;
+
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* Gets the first byte */
+  pu8Byte = (orxU8 *)_zString;
+
+  /* ASCII? */
+  if(*pu8Byte < 0x80)
+  {
+    /* Updates result */
+    u32Result = *pu8Byte;
+  }
+  /* Invalid UTF-8 byte sequence:  */
+  else if(*pu8Byte < 0xC0)
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: multi-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+    /* Updates result */
+    u32Result = orxU32_UNDEFINED;
+  }
+  /* Overlong UTF-8 2-byte sequence */
+  else if(*pu8Byte < 0xC2)
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: overlong 2-byte sequence starting with byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+    /* Updates result */
+    u32Result = orxU32_UNDEFINED;
+  }
+  /* 2-byte sequence */
+  else if(*pu8Byte < 0xE0)
+  {
+    /* Valid sequence? */
+    if((*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0))
+    {
+      /* Updates result */
+      u32Result = *pu8Byte + (*(pu8Byte - 1) << 8);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: 2-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+      /* Updates result */
+      u32Result = orxU32_UNDEFINED;
+    }
+  }
+  /* 3-byte sequence */
+  else if(*pu8Byte < 0xF0)
+  {
+    /* Valid sequence? */
+    if((*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0)
+    && (*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0))
+    {
+      /* Updates result */
+      u32Result = *pu8Byte + (*(pu8Byte - 1) << 8) + (*(pu8Byte - 2) << 16);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: 3-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+      /* Updates result */
+      u32Result = orxU32_UNDEFINED;
+    }
+  }
+  /* 4-byte sequence */
+  else if(*pu8Byte < 0xF5)
+  {
+    /* Valid sequence? */
+    if((*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0)
+    && (*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0)
+    && (*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0))
+    {
+      /* Updates result */
+      u32Result = *pu8Byte + (*(pu8Byte - 1) << 8) + (*(pu8Byte - 2) << 16) + (*(pu8Byte - 3) << 24);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: 4-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+      /* Updates result */
+      u32Result = orxU32_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: invalid out-of-bound byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+    /* Updates result */
+    u32Result = orxU32_UNDEFINED;
+  }
+
+  /* Asks for remaining string? */
+  if(_pzRemaining != orxNULL)
+  {
+    /* Stores it */
+    *_pzRemaining = (orxSTRING)++pu8Byte;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Returns the number of valid unicode characters (UTF-8) in the string (for ASCII string, it will be the same result as orxString_GetLength())
+ * @param[in] _zString                  Concerned string
+ * @return                              Number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string
+ */
+static orxINLINE orxU32                 orxString_GetCharacterCounter(const orxSTRING _zString)
+{
+  const orxCHAR  *pc;
+  orxU32          u32Result;
+
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* For all characters */
+  for(pc = _zString, u32Result = 0; *pc != orxCHAR_NULL; u32Result++)
+  {
+    /* Invalid current character ID */
+    if(orxString_GetFirstCharacterID(pc, &pc) == orxU32_UNDEFINED)
+    {
+      /* Updates result */
+      u32Result = orxU32_UNDEFINED;
+
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF8 string <%s>, can't count characters.", _zString);
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Copies N characters from a string

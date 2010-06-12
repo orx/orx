@@ -577,6 +577,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmap(orxBITMAP 
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite     *poSprite;
+  orxU32          u32CharacterID;
   const orxCHAR  *pc;
   orxFLOAT        fX, fY, fStartX, fStartY;
   orxVECTOR       vSpacing;
@@ -625,15 +626,17 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
   poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
   /* For all characters */
-  for(pc = _zString, fX = fStartX, fY = fStartY; *pc != orxCHAR_NULL; pc++)
+  for(u32CharacterID = orxString_GetFirstCharacterID(_zString, &pc), fX = fStartX, fY = fStartY;
+      u32CharacterID != orxCHAR_NULL;
+      u32CharacterID = orxString_GetFirstCharacterID(pc, &pc))
   {
     /* Depending on character */
-    switch(*pc)
+    switch(u32CharacterID)
     {
       case orxCHAR_CR:
       {
         /* Half EOL? */
-        if(*(pc + 1) == orxCHAR_LF)
+        if(*pc == orxCHAR_LF)
         {
           /* Updates pointer */
           pc++;
@@ -655,11 +658,34 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
 
       default:
       {
-        /* Has mapping? */
-        if(_pstMap->astCharacterList[*pc].fX >= orxFLOAT_0)
+        const orxCHARACTER_GLYPH *pstGlyph;
+
+        /* Is ASCII? */
+        if(orxString_IsCharacterASCII(u32CharacterID) != orxFALSE)
+        {
+          /* Is defined? */
+          if(_pstMap->astASCIICharacterList[u32CharacterID].fX >= orxFLOAT_0)
+          {
+            /* Updates glyph */
+            pstGlyph = &_pstMap->astASCIICharacterList[u32CharacterID];
+          }
+          else
+          {
+            /* Clears glyph */
+            pstGlyph = orxNULL;
+          }
+        }
+        else
+        {
+          /* Gets glyph from UTF-8 table */
+          pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstUTF8CharacterTable, u32CharacterID);
+        }
+
+        /* Valid? */
+        if(pstGlyph != orxNULL)
         {
           /* Sets sub rectangle for sprite */
-          poSprite->SetSubRect(sf::IntRect(orxF2S(_pstMap->astCharacterList[*pc].fX), orxF2S(_pstMap->astCharacterList[*pc].fY), orxF2S(_pstMap->astCharacterList[*pc].fX + _pstMap->vCharacterSize.fX), orxF2S(_pstMap->astCharacterList[*pc].fY + _pstMap->vCharacterSize.fY)));
+          poSprite->SetSubRect(sf::IntRect(orxF2S(pstGlyph->fX), orxF2S(pstGlyph->fY), orxF2S(pstGlyph->fX + _pstMap->vCharacterSize.fX), orxF2S(pstGlyph->fY + _pstMap->vCharacterSize.fY)));
 
           /* Updates its center */
           poSprite->SetCenter(fX, fY);

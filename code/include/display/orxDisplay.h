@@ -47,6 +47,8 @@
 #include "plugin/orxPluginCore.h"
 
 #include "math/orxVector.h"
+#include "memory/orxBank.h"
+#include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 #include "utils/orxLinkList.h"
 
@@ -99,17 +101,24 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
 
 } orxDISPLAY_VIDEO_MODE;
 
+/** Character glyph structure
+ */
+typedef struct __orxCHARACTER_GLYPH_t
+{
+  orxFLOAT fX, fY;
+
+} orxCHARACTER_GLYPH;
+
 /** Character map structure
  */
 typedef struct __orxCHARACTER_MAP_t
 {
-  orxVECTOR vCharacterSize;
+  orxVECTOR           vCharacterSize;
 
-  struct
-  {
-    orxFLOAT fX, fY;
+  orxBANK            *pstUTF8CharacterBank;
+  orxHASHTABLE       *pstUTF8CharacterTable;
 
-  } astCharacterList[orxCHAR_NUMBER];
+  orxCHARACTER_GLYPH  astASCIICharacterList[orxCHAR_ASCII_NUMBER];
 
 } orxCHARACTER_MAP;
 

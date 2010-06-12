@@ -209,21 +209,24 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
   {
     orxFLOAT        fWidth, fMaxWidth, fHeight;
     orxVECTOR       vCharacterSize;
+    orxU32          u32CharacterID;
     const orxCHAR  *pc;
 
     /* Gets font's character size */
     orxFont_GetCharacterSize(_pstText->pstFont, &vCharacterSize);
 
     /* For all characters */
-    for(pc = _pstText->zString, fHeight = vCharacterSize.fY, fWidth = fMaxWidth = orxFLOAT_0; *pc != orxCHAR_NULL; pc++)
+    for(u32CharacterID = orxString_GetFirstCharacterID(_pstText->zString, &pc), fHeight = vCharacterSize.fY, fWidth = fMaxWidth = orxFLOAT_0;
+        u32CharacterID != orxCHAR_NULL;
+        u32CharacterID = orxString_GetFirstCharacterID(pc, &pc))
     {
       /* Depending on character */
-      switch(*pc)
+      switch(u32CharacterID)
       {
         case orxCHAR_CR:
         {
           /* Half EOL? */
-          if(*(pc + 1) == orxCHAR_LF)
+          if(*pc == orxCHAR_LF)
           {
             /* Updates pointer */
             pc++;
