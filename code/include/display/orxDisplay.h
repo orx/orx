@@ -115,10 +115,8 @@ typedef struct __orxCHARACTER_MAP_t
 {
   orxVECTOR           vCharacterSize;
 
-  orxBANK            *pstUTF8CharacterBank;
-  orxHASHTABLE       *pstUTF8CharacterTable;
-
-  orxCHARACTER_GLYPH  astASCIICharacterList[orxCHAR_ASCII_NUMBER];
+  orxBANK            *pstCharacterBank;
+  orxHASHTABLE       *pstCharacterTable;
 
 } orxCHARACTER_MAP;
 

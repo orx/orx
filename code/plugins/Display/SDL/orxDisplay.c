@@ -793,26 +793,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
       {
         const orxCHARACTER_GLYPH *pstGlyph;
 
-        /* Is ASCII? */
-        if(orxString_IsCharacterASCII(u32CharacterID) != orxFALSE)
-        {
-          /* Is defined? */
-          if(_pstMap->astASCIICharacterList[u32CharacterID].fX >= orxFLOAT_0)
-          {
-            /* Updates glyph */
-            pstGlyph = &_pstMap->astASCIICharacterList[u32CharacterID];
-          }
-          else
-          {
-            /* Clears glyph */
-            pstGlyph = orxNULL;
-          }
-        }
-        else
-        {
-          /* Gets glyph from UTF-8 table */
-          pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstUTF8CharacterTable, u32CharacterID);
-        }
+        /* Gets glyph from UTF-8 table */
+        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterID);
 
         /* Valid? */
         if(pstGlyph != orxNULL)
