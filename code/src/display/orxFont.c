@@ -123,8 +123,6 @@ static orxFONT_STATIC sstFont;
  */
 static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
 {
-  orxU32 i;
-
   /* Check */
   orxSTRUCTURE_ASSERT(_pstFont);
 

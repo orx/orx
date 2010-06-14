@@ -229,11 +229,14 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   /* 2-byte sequence */
   else if(*pu8Byte < 0xE0)
   {
-    /* Valid sequence? */
-    if((*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0))
+    /* Updates result with first character */
+    u32Result = *pu8Byte++ ^ 0xC0;
+
+    /* Valid second character? */
+    if((*pu8Byte & 0xC0) == 0x80)
     {
       /* Updates result */
-      u32Result = *pu8Byte + (*(pu8Byte - 1) << 8);
+      u32Result = (u32Result << 6) | (*pu8Byte ^ 0x80);
     }
     else
     {
@@ -247,12 +250,29 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   /* 3-byte sequence */
   else if(*pu8Byte < 0xF0)
   {
-    /* Valid sequence? */
-    if((*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0)
-    && (*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0))
+    /* Updates result with first character */
+    u32Result = *pu8Byte++ ^ 0xE0;
+
+    /* Valid second character? */
+    if((*pu8Byte & 0xC0) == 0x80)
     {
       /* Updates result */
-      u32Result = *pu8Byte + (*(pu8Byte - 1) << 8) + (*(pu8Byte - 2) << 16);
+      u32Result = (u32Result << 6) | (*pu8Byte++ ^ 0x80);
+
+      /* Valid third character? */
+      if((*pu8Byte & 0xC0) == 0x80)
+      {
+        /* Updates result */
+        u32Result = (u32Result << 6) | (*pu8Byte ^ 0x80);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: 3-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+        /* Updates result */
+        u32Result = orxU32_UNDEFINED;
+      }
     }
     else
     {
@@ -266,13 +286,44 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   /* 4-byte sequence */
   else if(*pu8Byte < 0xF5)
   {
-    /* Valid sequence? */
-    if((*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0)
-    && (*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0)
-    && (*(++pu8Byte) >= 0x80) && (*pu8Byte < 0xC0))
+    /* Updates result with first character */
+    u32Result = *pu8Byte++ ^ 0xE0;
+
+    /* Valid second character? */
+    if((*pu8Byte & 0xC0) == 0x80)
     {
       /* Updates result */
-      u32Result = *pu8Byte + (*(pu8Byte - 1) << 8) + (*(pu8Byte - 2) << 16) + (*(pu8Byte - 3) << 24);
+      u32Result = (u32Result << 6) | (*pu8Byte++ ^ 0x80);
+
+      /* Valid third character? */
+      if((*pu8Byte & 0xC0) == 0x80)
+      {
+        /* Updates result */
+        u32Result = (u32Result << 6) | (*pu8Byte++ ^ 0x80);
+
+        /* Valid fourth character? */
+        if((*pu8Byte & 0xC0) == 0x80)
+        {
+          /* Updates result */
+          u32Result = (u32Result << 6) | (*pu8Byte ^ 0x80);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: 4-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+          /* Updates result */
+          u32Result = orxU32_UNDEFINED;
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string <%s>: 4-byte sequence non-leading byte '%c' at index %ld.", _zString, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+
+        /* Updates result */
+        u32Result = orxU32_UNDEFINED;
+      }
     }
     else
     {
@@ -296,7 +347,7 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   if(_pzRemaining != orxNULL)
   {
     /* Stores it */
-    *_pzRemaining = (orxSTRING)++pu8Byte;
+    *_pzRemaining = (orxSTRING)(pu8Byte + 1);
   }
 
   /* Done! */
