@@ -287,7 +287,7 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   else if(*pu8Byte < 0xF5)
   {
     /* Updates result with first character */
-    u32Result = *pu8Byte++ ^ 0xE0;
+    u32Result = *pu8Byte++ ^ 0xF0;
 
     /* Valid second character? */
     if((*pu8Byte & 0xC0) == 0x80)
