@@ -1454,59 +1454,96 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxSTATUS eResult;
+  int             iFormat;
+  orxU32          u32Length, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
+  const orxCHAR  *zExtension;
+  orxU8          *pu8ImageBuffer, *pu8ImageData;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
+  /* Gets file name's length */
+  u32Length = orxString_GetLength(_zFilename);
+
+  /* Gets extension */
+  zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+  /* DDS? */
+  if(orxString_ICompare(zExtension, "dds") == 0)
+  {
+    /* Updates format */
+    iFormat = SOIL_SAVE_TYPE_DDS;
+  }
+  /* BMP? */
+  else if(orxString_ICompare(zExtension, "bmp") == 0)
+  {
+    /* Updates format */
+    iFormat = SOIL_SAVE_TYPE_BMP;
+  }
+  /* TGA */
+  else
+  {
+    /* Updates format */
+    iFormat = SOIL_SAVE_TYPE_TGA;
+  }
+
+  /* Allocates buffers */
+  pu8ImageData    = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
+  pu8ImageBuffer  = (orxU8 *)orxMemory_Allocate(orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
+
+  /* Checks */
+  orxASSERT(pu8ImageData != orxNULL);
+  orxASSERT(pu8ImageBuffer != orxNULL);
+
   /* Screen capture? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    int             iFormat;
-    orxU32          u32Length;
-    const orxCHAR  *zExtension;
+    /* Binds its backup texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
 
-    /* Gets file name's length */
-    u32Length = orxString_GetLength(_zFilename);
-
-    /* Gets extension */
-    zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
-
-    /* DDS? */
-    if(orxString_ICompare(zExtension, "dds") == 0)
-    {
-      /* Updates format */
-      iFormat = SOIL_SAVE_TYPE_DDS;
-    }
-    /* BMP? */
-    else if(orxString_ICompare(zExtension, "bmp") == 0)
-    {
-      /* Updates format */
-      iFormat = SOIL_SAVE_TYPE_BMP;
-    }
-    /* TGA */
-    else
-    {
-      /* Updates format */
-      iFormat = SOIL_SAVE_TYPE_TGA;
-    }
-
-    /* Saves screenshot */
-    SOIL_save_screenshot(_zFilename, iFormat, 0, 0, orxF2U(sstDisplay.pstScreen->fWidth), orxF2U(sstDisplay.pstScreen->fHeight));
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    /* Copies screen content */
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
+    glASSERT();
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
+    glASSERT();
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap tp <%s>: only screen can be saved to file.", _zFilename);
+    /* Binds bitmap */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    /* Copies bitmap data */
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
+    glASSERT();
   }
+
+  /* Gets line sizes */
+  u32LineSize     = orxF2U(_pstBitmap->fWidth) * sizeof(orxRGBA);
+  u32RealLineSize = _pstBitmap->u32RealWidth * sizeof(orxRGBA);
+
+  /* Clears padding */
+  orxMemory_Zero(pu8ImageBuffer, u32LineSize * orxF2U(_pstBitmap->fHeight));
+
+  /* For all lines */
+  for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+    i < orxF2U(_pstBitmap->fHeight);
+    i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+  {
+    /* Copies data */
+    orxMemory_Copy(pu8ImageBuffer + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
+  }
+
+  /* Saves screenshot */
+  eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageBuffer) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Frees buffers */
+  orxMemory_Free(pu8ImageBuffer);
+  orxMemory_Free(pu8ImageData);
 
   /* Done! */
   return eResult;
@@ -1560,7 +1597,7 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
       /* Allocates buffer */
       pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
 
-      /* Checks? */
+      /* Checks */
       orxASSERT(pu8ImageBuffer != orxNULL);
 
       /* Gets line sizes */
@@ -1785,7 +1822,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
       if(pstBitmap != sstDisplay.pstScreen)
       {
         /* Allocates its buffer */
-        aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+        aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
 
         /* Checks */
         orxASSERT(aau8BufferArray[u32Index] != orxNULL);
@@ -1984,12 +2021,12 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
 #if defined(__orxWINDOWS__)
 
   static BOOL (WINAPI *pfnWGLSwapIntervalEXT)(int) = NULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not initialized? */
   if(pfnWGLSwapIntervalEXT == NULL)
@@ -2013,6 +2050,9 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
 #elif defined(__orxLINUX__)
 
   static int (__stdcall *pfnglXSwapIntervalSGI)(int) = NULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not initialized? */
   if(pfnglXSwapIntervalSGI == NULL)

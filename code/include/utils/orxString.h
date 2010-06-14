@@ -230,13 +230,13 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   else if(*pu8Byte < 0xE0)
   {
     /* Updates result with first character */
-    u32Result = *pu8Byte++ ^ 0xC0;
+    u32Result = *pu8Byte++ & 0x1F;
 
     /* Valid second character? */
     if((*pu8Byte & 0xC0) == 0x80)
     {
       /* Updates result */
-      u32Result = (u32Result << 6) | (*pu8Byte ^ 0x80);
+      u32Result = (u32Result << 6) | (*pu8Byte & 0x3F);
     }
     else
     {
@@ -251,19 +251,19 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   else if(*pu8Byte < 0xF0)
   {
     /* Updates result with first character */
-    u32Result = *pu8Byte++ ^ 0xE0;
+    u32Result = *pu8Byte++ & 0x0F;
 
     /* Valid second character? */
     if((*pu8Byte & 0xC0) == 0x80)
     {
       /* Updates result */
-      u32Result = (u32Result << 6) | (*pu8Byte++ ^ 0x80);
+      u32Result = (u32Result << 6) | (*pu8Byte++ & 0x3F);
 
       /* Valid third character? */
       if((*pu8Byte & 0xC0) == 0x80)
       {
         /* Updates result */
-        u32Result = (u32Result << 6) | (*pu8Byte ^ 0x80);
+        u32Result = (u32Result << 6) | (*pu8Byte & 0x3F);
       }
       else
       {
@@ -287,25 +287,25 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
   else if(*pu8Byte < 0xF5)
   {
     /* Updates result with first character */
-    u32Result = *pu8Byte++ ^ 0xF0;
+    u32Result = *pu8Byte++ & 0x07;
 
     /* Valid second character? */
     if((*pu8Byte & 0xC0) == 0x80)
     {
       /* Updates result */
-      u32Result = (u32Result << 6) | (*pu8Byte++ ^ 0x80);
+      u32Result = (u32Result << 6) | (*pu8Byte++ & 0x3F);
 
       /* Valid third character? */
       if((*pu8Byte & 0xC0) == 0x80)
       {
         /* Updates result */
-        u32Result = (u32Result << 6) | (*pu8Byte++ ^ 0x80);
+        u32Result = (u32Result << 6) | (*pu8Byte++ & 0x3F);
 
         /* Valid fourth character? */
         if((*pu8Byte & 0xC0) == 0x80)
         {
           /* Updates result */
-          u32Result = (u32Result << 6) | (*pu8Byte ^ 0x80);
+          u32Result = (u32Result << 6) | (*pu8Byte & 0x3F);
         }
         else
         {
