@@ -660,7 +660,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
       {
         const orxCHARACTER_GLYPH *pstGlyph;
 
-        /* Gets glyph from UTF-8 table */
+        /* Gets glyph from table */
         pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterID);
 
         /* Valid? */

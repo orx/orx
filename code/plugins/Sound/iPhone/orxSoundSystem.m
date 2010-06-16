@@ -105,6 +105,7 @@ struct __orxSOUNDSYSTEM_SOUND_t
       ALuint                      auiBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
       orxBOOL                     bLoop;
       orxBOOL                     bStop;
+      orxBOOL                     bPause;
       ExtAudioFileRef             oFileRef;
       AudioStreamBasicDescription stFileInfo;
     };
@@ -254,7 +255,8 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_p
           else
           {
             /* Stops */
-            pstSound->bStop = orxTRUE;
+            pstSound->bStop   = orxTRUE;
+            pstSound->bPause  = orxFALSE;
             break;
           }
         }
@@ -729,6 +731,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStreamFromFile(con
       /* Updates status */
       pstResult->bIsStream  = orxTRUE;
       pstResult->bStop      = orxTRUE;
+      pstResult->bPause     = orxFALSE;
 
       /* Adds timer for this stream */
       orxClock_AddGlobalTimer(orxSoundSystem_iPhone_FillStream, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, pstResult);
@@ -809,6 +812,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Play(orxSOUNDSYSTEM_SOUND *_pstSound
       /* Fills stream */
       orxSoundSystem_iPhone_FillStream(orxNULL, _pstSound);
     }
+
+    /* Updates status */
+    _pstSound->bPause = orxFALSE;
   }
 
   /* Plays source */
@@ -830,6 +836,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Pause(orxSOUNDSYSTEM_SOUND *_pstSoun
   /* Pauses source */
   alSourcePause(_pstSound->uiSource);
   alASSERT();
+
+  /* Is stream? */
+  if(_pstSound->bIsStream != orxFALSE)
+  {
+    /* Updates status */
+    _pstSound->bPause = orxTRUE;
+  }
 
   /* Done! */
   return eResult;
@@ -854,7 +867,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
     ExtAudioFileSeek(_pstSound->oFileRef, 0);
 
     /* Updates status */
-    _pstSound->bStop = orxTRUE;
+    _pstSound->bStop  = orxTRUE;
+    _pstSound->bPause = orxFALSE;
   }
 
   /* Done! */
@@ -1120,8 +1134,17 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_iPhone_GetStatus(const orxSOUND
     case AL_INITIAL:
     case AL_STOPPED:
     {
-      /* Updates result */
-      eResult = orxSOUNDSYSTEM_STATUS_STOP;
+      /* Is stream? */
+      if(_pstSound->bIsStream != orxFALSE)
+      {
+        /* Updates result */
+        eResult = (_pstSound->bStop != orxFALSE) ? orxSOUNDSYSTEM_STATUS_STOP : (_pstSound->bPause != orxFALSE) ? orxSOUNDSYSTEM_STATUS_PAUSE : orxSOUNDSYSTEM_STATUS_PLAY;
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSOUNDSYSTEM_STATUS_STOP;
+      }
 
       break;
     }
