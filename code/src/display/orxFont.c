@@ -186,7 +186,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
     orxVector_Copy(&(_pstFont->pstMap->vCharacterSize), &(_pstFont->vCharacterSize));
 
     /* Had more defined characters? */
-    if(*pc != orxCHAR_NULL)
+    if(u32CharacterID != orxCHAR_NULL)
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Too many characters defined for font <%s>: couldn't map characters [%s].", _pstFont->zReference, pc);

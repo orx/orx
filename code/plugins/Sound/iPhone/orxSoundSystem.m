@@ -140,7 +140,7 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
-static void orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static void orxFASTCALL orxSoundSystem_iPhone_FillStream(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
 
