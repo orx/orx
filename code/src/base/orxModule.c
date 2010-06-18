@@ -322,7 +322,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
           sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_TEMP;
 
           /* Calls module init function */
-          eResult = sstModule.astModuleInfo[_eModuleID].pfnInit();
+          eResult = (sstModule.astModuleInfo[_eModuleID].pfnInit != orxNULL) ? sstModule.astModuleInfo[_eModuleID].pfnInit() : orxSTATUS_SUCCESS;
 
           /* Successful? */
           if(eResult == orxSTATUS_SUCCESS)
@@ -467,8 +467,12 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       }
     }
 
-    /* Calls module exit function */
-    sstModule.astModuleInfo[_eModuleID].pfnExit();
+    /* Has module exit function? */
+    if(sstModule.astModuleInfo[_eModuleID].pfnExit != orxNULL)
+    {
+      /* Calls it */
+      sstModule.astModuleInfo[_eModuleID].pfnExit();
+    }
   }
 
   return;
