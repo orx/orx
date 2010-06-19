@@ -52,7 +52,7 @@
 
 #endif /* __orxMSVC__ */
 
-#include <stb_vorbis.c>
+#include "stb_vorbis.c"
 
 
 /** Module flags
@@ -83,7 +83,11 @@ do                                                                      \
 
 #else /* __orxDEBUG__ */
 
-#define alASSERT()
+#define alASSERT()                                                      \
+do                                                                      \
+{                                                                       \
+  alGetError();                                                         \
+} while(orxFALSE)
 
 #endif /* __orxDEBUG__ */
 
