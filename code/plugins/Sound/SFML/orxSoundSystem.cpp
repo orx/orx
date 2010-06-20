@@ -451,12 +451,12 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetAttenuation(orxSOUNDSYST
   if(_pstSound->bIsMusic != false)
   {
     /* Sets its attenuation */
-    _pstSound->poMusic->SetAttenuation(sstSoundSystem.fRecDimensionRatio * _fAttenuation);
+    _pstSound->poMusic->SetAttenuation(sstSoundSystem.fDimensionRatio * _fAttenuation);
   }
   else
   {
     /* Sets its attenuation */
-    _pstSound->poSound->SetAttenuation(sstSoundSystem.fRecDimensionRatio * _fAttenuation);
+    _pstSound->poSound->SetAttenuation(sstSoundSystem.fDimensionRatio * _fAttenuation);
   }
 
   /* Done! */
@@ -600,12 +600,12 @@ extern "C" orxFLOAT orxFASTCALL orxSoundSystem_SFML_GetAttenuation(const orxSOUN
   if(_pstSound->bIsMusic != false)
   {
     /* Gets its attenuation */
-    fResult = sstSoundSystem.fDimensionRatio * orx2F(_pstSound->poMusic->GetAttenuation());
+    fResult = sstSoundSystem.fRecDimensionRatio * orx2F(_pstSound->poMusic->GetAttenuation());
   }
   else
   {
     /* Gets its attenuation */
-    fResult = sstSoundSystem.fDimensionRatio * orx2F(_pstSound->poSound->GetAttenuation());
+    fResult = sstSoundSystem.fRecDimensionRatio * orx2F(_pstSound->poSound->GetAttenuation());
   }
 
   /* Done! */

@@ -76,7 +76,7 @@
 do                                                                      \
 {                                                                       \
   GLenum eError = glGetError();                                         \
-  orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: %ld", eError); \
+  orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
 } while(orxFALSE)
 
 #else /* __orxDEBUG__ */

@@ -61,12 +61,16 @@
 do                                                                      \
 {                                                                       \
   ALenum eError = alGetError();                                         \
-  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: %ld", eError); \
+  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
 } while(orxFALSE)
 
 #else /* __orxDEBUG__ */
 
-#define alASSERT()
+#define alASSERT()                                                      \
+do                                                                      \
+{                                                                       \
+  alGetError();                                                         \
+} while(orxFALSE)
 
 #endif /* __orxDEBUG__ */
 
@@ -933,7 +937,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetAttenuation(orxSOUNDSYSTEM_SOUND 
   orxASSERT(_pstSound != orxNULL);
 
   /* Set source's roll off factor */
-  alSourcef(_pstSound->uiSource, AL_ROLLOFF_FACTOR, sstSoundSystem.fRecDimensionRatio * _fAttenuation);
+  alSourcef(_pstSound->uiSource, AL_ROLLOFF_FACTOR, sstSoundSystem.fDimensionRatio * _fAttenuation);
   alASSERT();
 
   /* Done! */
@@ -1046,7 +1050,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_iPhone_GetAttenuation(const orxSOUNDSYSTEM_S
   alASSERT();
 
   /* Updates result */
-  fResult *= sstSoundSystem.fDimensionRatio;
+  fResult *= sstSoundSystem.fRecDimensionRatio;
 
   /* Done! */
   return fResult;
