@@ -56,14 +56,14 @@
 /** Includes all plugins to embed
  */
 
-/* SDL, SDL_Mixer, SOIL & Box2D */
+/* SDL, SOIL, OpenAL, libsndfile, stb_vorbis & Box2D */
 //#include "../plugins/Display/SDL/orxDisplay.c"
 //#include "../plugins/Joystick/SDL/orxJoystick.c"
 //#include "../plugins/Keyboard/SDL/orxKeyboard.c"
 //#include "../plugins/Mouse/SDL/orxMouse.c"
 //#include "../plugins/Physics/Box2D/orxPhysics.cpp"
 //#include "../plugins/Render/Home/orxRender.c"
-//#include "../plugins/Sound/SDL/orxSoundSystem.c"
+//#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
 /* SFML & Box2D */
 #include "../plugins/Display/SFML/orxDisplay.cpp"
