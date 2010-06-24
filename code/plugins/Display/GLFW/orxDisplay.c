@@ -2226,7 +2226,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           /* Valid? */
           if(pstClock != orxNULL)
           {
-            /* Registers event update function */
+            /* Registers update function */
             eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
           }
 
@@ -2293,6 +2293,9 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
   {
     /* Exits from GLFW */
     glfwTerminate();
+
+    /* Unregisters update function */
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_GLFW_Update);
 
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);

@@ -209,7 +209,8 @@ void orxFASTCALL orxMouse_GLFW_Exit()
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
-    //! TODO
+    /* Unregisters update function */
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxMouse_GLFW_Update);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
