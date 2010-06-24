@@ -140,7 +140,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
   }
   else
   {
-    //! TODO glfwDisable(GLFW_MOUSE_CURSOR);
+    glfwDisable(GLFW_MOUSE_CURSOR);
   }
 
   /* Done! */
