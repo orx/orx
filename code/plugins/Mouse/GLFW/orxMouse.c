@@ -24,17 +24,17 @@
 
 /**
  * @file orxMouse.c
- * @date 06/01/2009
+ * @date 24/06/2010
  * @author iarwain@orx-project.org
  *
- * SDL mouse plugin implementation
+ * GLFW mouse plugin implementation
  *
  */
 
 
 #include "orxPluginAPI.h"
 
-#include <SDL.h>
+#include "GL/glfw.h"
 
 
 /** Module flags
@@ -54,10 +54,11 @@
  */
 typedef struct __orxMOUSE_STATIC_t
 {
-  orxU32      u32Flags;
   orxVECTOR   vMouseMove, vMouseBackup;
-  orxFLOAT    fWheelMove;
+  orxU32      u32Flags;
+  orxFLOAT    fWheelMove, fInternalWheelMove;
   orxBOOL     bClearWheel;
+  orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
 
@@ -77,68 +78,76 @@ static orxMOUSE_STATIC sstMouse;
 
 /** Event handler
  */
-static orxSTATUS orxFASTCALL orxMouse_SDL_EventHandler(const orxEVENT *_pstEvent)
+static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Is a mouse move? */
-  if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION)
-  && (_pstEvent->eID == SDL_MOUSEMOTION))
+  /* Should clear wheel? */
+  if(sstMouse.bClearWheel != orxFALSE)
   {
-    SDL_Event *pstEvent;
-
-    /* Gets SDL event */
-    pstEvent = (SDL_Event *)(_pstEvent->pstPayload);
-
-    /* Updates mouse move */
-    sstMouse.vMouseMove.fX += orxS2F(pstEvent->motion.xrel) - sstMouse.vMouseBackup.fX;
-    sstMouse.vMouseMove.fY += orxS2F(pstEvent->motion.yrel) - sstMouse.vMouseBackup.fY;
-
-    /* Stores last mouse position */
-    sstMouse.vMouseBackup.fX = orxS2F(pstEvent->motion.xrel);
-    sstMouse.vMouseBackup.fY = orxS2F(pstEvent->motion.yrel);
+    /* Clears it */
+    sstMouse.fWheelMove   = orxFLOAT_0;
+    sstMouse.bClearWheel  = orxFALSE;
   }
 
-  /* Is a mouse wheel? */
-  if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN)
-  && (_pstEvent->eID == SDL_MOUSEBUTTONDOWN))
-  {
-    SDL_Event *pstEvent;
-
-    /* Gets SDL event */
-    pstEvent = (SDL_Event *)(_pstEvent->pstPayload);
-
-    /* Should clear? */
-    if(sstMouse.bClearWheel != orxFALSE)
-    {
-      /* Clears it */
-      sstMouse.fWheelMove = orxFLOAT_0;
-      sstMouse.bClearWheel = orxFALSE;
-    }
-
-    /* Updates wheel move */
-    sstMouse.fWheelMove += (pstEvent->button.button == SDL_BUTTON_WHEELDOWN) ? 1 : -1;
-  }
+  /* Clears internal wheel move */
+  sstMouse.fInternalWheelMove = orxFLOAT_0;
 
   /* Done! */
-  return eResult;
+  return;
 }
 
-orxSTATUS orxFASTCALL orxMouse_SDL_ShowCursor(orxBOOL _bShow)
+/** Position callback
+ */
+static void GLFWCALL orxMouse_GLFW_MousePositionCallback(int _iX, int _iY)
+{
+  /* Updates mouse move */
+  sstMouse.vMouseMove.fX += orxS2F(_iX) - sstMouse.vMouseBackup.fX;
+  sstMouse.vMouseMove.fY += orxS2F(_iY) - sstMouse.vMouseBackup.fY;
+
+  /* Stores last mouse position */
+  sstMouse.vMouseBackup.fX = orxS2F(_iX);
+  sstMouse.vMouseBackup.fY = orxS2F(_iY);
+
+  /* Done! */
+  return;
+}
+
+/** Wheel callback
+ */
+static void GLFWCALL orxMouse_GLFW_MouseWheelCallback(int _iWheel)
+{
+  /* Updates wheel moves */
+  sstMouse.fWheelMove         += orxS2F(_iWheel - sstMouse.s32WheelPos);
+  sstMouse.fInternalWheelMove += orxS2F(_iWheel - sstMouse.s32WheelPos);
+
+  /* Stores last wheel position */
+  sstMouse.s32WheelPos = _iWheel;
+
+  /* Done! */
+  return;
+}
+
+orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  /* Shows cursor */
-  SDL_ShowCursor(_bShow);
+  /* Show cursor? */
+  if(_bShow != orxFALSE)
+  {
+    glfwEnable(GLFW_MOUSE_CURSOR);
+  }
+  else
+  {
+    //! TODO glfwDisable(GLFW_MOUSE_CURSOR);
+  }
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxMouse_SDL_Init()
+orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -148,60 +157,45 @@ orxSTATUS orxFASTCALL orxMouse_SDL_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
-    /* Is SDL partly initialized? */
-    if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
+    /* Is GLFW window opened? */
+    if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
     {
-      /* Not already initialized? */
-      if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
+      orxCLOCK *pstClock;
+
+      /* Gets core clock */
+      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+      /* Valid? */
+      if(pstClock != orxNULL)
       {
-        /* Inits the mouse subsystem */
-        eResult = (SDL_InitSubSystem(SDL_INIT_VIDEO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        /* Registers event update function */
+        eResult = orxClock_Register(pstClock, orxMouse_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWEST);
       }
-      else
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-    }
-    else
-    {
-      /* Inits SDL with video */
-      eResult = (SDL_Init(SDL_INIT_VIDEO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    }
+        /* Registers mouse position callback */
+        glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
 
-    /* Valid? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      /* Registers our mouse event handler */
-      if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), orxMouse_SDL_EventHandler) != orxSTATUS_FAILURE)
-      {
-        /* Registers our mouse wheel event handler */
-        if(orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN), orxMouse_SDL_EventHandler) != orxSTATUS_FAILURE)
+        /* Registers mouse wheel callback */
+        glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
+
+        /* Pushes config section */
+        orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+        /* Has show cursor value? */
+        if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
         {
-          /* Updates status */
-          sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
-
-          /* Sets config section */
-          orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
-
-          /* Has show cursor value? */
-          if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
-          {
-            /* Updates cursor status */
-            orxMouse_SDL_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
-          }
-
-          /* Pops config section */
-          orxConfig_PopSection();
+          /* Updates cursor status */
+          orxMouse_GLFW_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
         }
-        else
-        {
-          /* Removes event handler */
-          orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), orxMouse_SDL_EventHandler);
 
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
-        }
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Updates status */
+        sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
       }
     }
   }
@@ -210,14 +204,12 @@ orxSTATUS orxFASTCALL orxMouse_SDL_Init()
   return eResult;
 }
 
-void orxFASTCALL orxMouse_SDL_Exit()
+void orxFASTCALL orxMouse_GLFW_Exit()
 {
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
-    /* Unregisters event handlers */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), orxMouse_SDL_EventHandler);
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN), orxMouse_SDL_EventHandler);
+    //! TODO
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
@@ -226,7 +218,7 @@ void orxFASTCALL orxMouse_SDL_Exit()
   return;
 }
 
-orxSTATUS orxFASTCALL orxMouse_SDL_SetPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxMouse_GLFW_SetPosition(const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -234,13 +226,13 @@ orxSTATUS orxFASTCALL orxMouse_SDL_SetPosition(const orxVECTOR *_pvPosition)
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
   /* Moves mouse */
-  SDL_WarpMouse((orxS16)orxF2S(_pvPosition->fX), (orxS16)orxF2S(_pvPosition->fY));
+  glfwSetMousePos((int)orxF2S(_pvPosition->fX), (int)orxF2S(_pvPosition->fY));
 
   /* Done! */
   return eResult;
 }
 
-orxVECTOR *orxFASTCALL orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxMouse_GLFW_GetPosition(orxVECTOR *_pvPosition)
 {
   orxS32      s32X, s32Y;
   orxVECTOR  *pvResult = _pvPosition;
@@ -250,7 +242,7 @@ orxVECTOR *orxFASTCALL orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets mouse position */
-  SDL_GetMouseState((int *)&s32X, (int *)&s32Y);
+  glfwGetMousePos((int *)&s32X, (int *)&s32Y);
 
   /* Updates result */
   _pvPosition->fX = orxS2F(s32X);
@@ -261,18 +253,13 @@ orxVECTOR *orxFASTCALL orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
   return pvResult;
 }
 
-orxBOOL orxFASTCALL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
+orxBOOL orxFASTCALL orxMouse_GLFW_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 {
-  orxU8   u8State;
-  orxS32  s32X, s32Y;
   orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
-
-  /* Gets mouse state */
-  u8State = SDL_GetMouseState((int *)&s32X, (int *)&s32Y);
 
   /* Depending on button */
   switch(_eButton)
@@ -280,49 +267,49 @@ orxBOOL orxFASTCALL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
     case orxMOUSE_BUTTON_LEFT:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_LEFT)) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_RIGHT:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_RIGHT)) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_MIDDLE:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_MIDDLE)) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_MIDDLE) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_1:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_X1)) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_4) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_2:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_X2)) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_5) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_WHEEL_UP:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_WHEELUP)) ? orxTRUE : orxFALSE;
+      bResult = (sstMouse.fInternalWheelMove > orxFLOAT_0) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_WHEEL_DOWN:
     {
       /* Updates result */
-      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_WHEELDOWN)) ? orxTRUE : orxFALSE;
+      bResult = (sstMouse.fInternalWheelMove < orxFLOAT_0) ? orxTRUE : orxFALSE;
       break;
     }
 
@@ -338,7 +325,7 @@ orxBOOL orxFASTCALL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   return bResult;
 }
 
-orxVECTOR *orxFASTCALL orxMouse_SDL_GetMoveDelta(orxVECTOR *_pvMoveDelta)
+orxVECTOR *orxFASTCALL orxMouse_GLFW_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 {
   orxVECTOR *pvResult = _pvMoveDelta;
 
@@ -356,7 +343,7 @@ orxVECTOR *orxFASTCALL orxMouse_SDL_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   return pvResult;
 }
 
-orxFLOAT orxFASTCALL orxMouse_SDL_GetWheelDelta()
+orxFLOAT orxFASTCALL orxMouse_GLFW_GetWheelDelta()
 {
   orxFLOAT fResult;
 
@@ -379,12 +366,12 @@ orxFLOAT orxFASTCALL orxMouse_SDL_GetWheelDelta()
  ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(MOUSE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_Init, MOUSE, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_Exit, MOUSE, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_SetPosition, MOUSE, SET_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_GetPosition, MOUSE, GET_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_IsButtonPressed, MOUSE, IS_BUTTON_PRESSED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SDL_ShowCursor, MOUSE, SHOW_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_Init, MOUSE, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_Exit, MOUSE, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_SetPosition, MOUSE, SET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_GetPosition, MOUSE, GET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_IsButtonPressed, MOUSE, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_ShowCursor, MOUSE, SHOW_CURSOR);
 orxPLUGIN_USER_CORE_FUNCTION_END();

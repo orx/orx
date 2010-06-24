@@ -56,11 +56,11 @@
 /** Includes all plugins to embed
  */
 
-/* SDL, SOIL, OpenAL, libsndfile, stb_vorbis & Box2D */
-//#include "../plugins/Display/SDL/orxDisplay.c"
-//#include "../plugins/Joystick/SDL/orxJoystick.c"
-//#include "../plugins/Keyboard/SDL/orxKeyboard.c"
-//#include "../plugins/Mouse/SDL/orxMouse.c"
+/* GLFW, OpenAL, SOIL, libsndfile, stb_vorbis & Box2D */
+//#include "../plugins/Display/GLFW/orxDisplay.c"
+//#include "../plugins/Joystick/GLFW/orxJoystick.c"
+//#include "../plugins/Keyboard/GLFW/orxKeyboard.c"
+//#include "../plugins/Mouse/GLFW/orxMouse.c"
 //#include "../plugins/Physics/Box2D/orxPhysics.cpp"
 //#include "../plugins/Render/Home/orxRender.c"
 //#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
@@ -73,6 +73,19 @@
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/SFML/orxSoundSystem.cpp"
+
+#ifndef __orxMAC__
+
+/* SDL, OpenAL, SOIL, libsndfile, stb_vorbis & Box2D */
+//#include "../plugins/Display/SDL/orxDisplay.c"
+//#include "../plugins/Joystick/SDL/orxJoystick.c"
+//#include "../plugins/Keyboard/SDL/orxKeyboard.c"
+//#include "../plugins/Mouse/SDL/orxMouse.c"
+//#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+//#include "../plugins/Render/Home/orxRender.c"
+//#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
+
+#endif /* __orxMAC__ */
 
 #endif
 
