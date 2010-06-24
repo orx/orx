@@ -34,8 +34,8 @@
 
 #include "orxPluginAPI.h"
 
-#include <SDL.h>
-#include <SOIL.h>
+#include "SDL.h"
+#include "SOIL.h"
 
 #ifdef __orxMAC__
 
@@ -43,7 +43,7 @@
 
 #endif /* __orxMAC__ */
 
-#include <SDL_opengl.h>
+#include "SDL_opengl.h"
 
 
 /** Module flags
