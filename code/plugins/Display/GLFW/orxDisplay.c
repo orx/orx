@@ -44,6 +44,14 @@
 #include "GL/glext.h"
 #include "SOIL.h"
 
+#ifndef __orxEMBEDDED__
+  #ifdef __orxMSVC__
+    #pragma message("!!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of GLFW!")
+  #else /* __orxMSVC__ */
+    #warning !!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of SDL!
+  #endif /* __orxMSVC__ */
+#endif /* __orxEMBEDDED__ */
+
 
 /** Module flags
  */
