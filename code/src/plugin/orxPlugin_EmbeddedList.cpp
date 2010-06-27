@@ -57,22 +57,22 @@
  */
 
 /* GLFW, Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
-//#include "../plugins/Display/GLFW/orxDisplay.c"
-//#include "../plugins/Joystick/GLFW/orxJoystick.c"
-//#include "../plugins/Keyboard/GLFW/orxKeyboard.c"
-//#include "../plugins/Mouse/GLFW/orxMouse.c"
-//#include "../plugins/Physics/Box2D/orxPhysics.cpp"
-//#include "../plugins/Render/Home/orxRender.c"
-//#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
-
-/* SFML & Box2D */
-#include "../plugins/Display/SFML/orxDisplay.cpp"
-#include "../plugins/Joystick/SFML/orxJoystick.cpp"
-#include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
-#include "../plugins/Mouse/SFML/orxMouse.cpp"
+#include "../plugins/Display/GLFW/orxDisplay.c"
+#include "../plugins/Joystick/GLFW/orxJoystick.c"
+#include "../plugins/Keyboard/GLFW/orxKeyboard.c"
+#include "../plugins/Mouse/GLFW/orxMouse.c"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/SFML/orxSoundSystem.cpp"
+#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
+
+/* SFML & Box2D */
+//#include "../plugins/Display/SFML/orxDisplay.cpp"
+//#include "../plugins/Joystick/SFML/orxJoystick.cpp"
+//#include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
+//#include "../plugins/Mouse/SFML/orxMouse.cpp"
+//#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+//#include "../plugins/Render/Home/orxRender.c"
+//#include "../plugins/Sound/SFML/orxSoundSystem.cpp"
 
 #ifndef __orxMAC__
 
