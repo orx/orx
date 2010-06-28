@@ -1840,15 +1840,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     /* Closes window */
     glfwCloseWindow();
   }
-  else
-  {
-    /* Clears counters */
-    sstDisplay.s32BitmapCounter = sstDisplay.s32ShaderCounter = 0;
-
-    /* Checks */
-    orxASSERT(orxBank_GetCounter(sstDisplay.pstBitmapBank) == 1);
-    orxASSERT(orxBank_GetCounter(sstDisplay.pstShaderBank) == 0);
-  }
 
   /* Updates window hint */
   glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
@@ -2005,6 +1996,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxDisplay_GLFW_CompileShader(pstShader);
       }
     }
+
+    /* Clears counters */
+    sstDisplay.s32BitmapCounter = sstDisplay.s32ShaderCounter = 0;
   }
 
   /* Clears last blend mode & last bitmap */
@@ -2070,10 +2064,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   if(_bFullScreen != orxFALSE)
   {
     /* Wasn't already full screen? */
-    if(!orxFLAG_TEST(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
     {
       /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN, 0);
+      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN, GLFW_WINDOW);
 
       /* Asks for update */
       bUpdate = orxTRUE;
@@ -2082,10 +2076,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   else
   {
     /* Was full screen? */
-    if(orxFLAG_TEST(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
     {
       /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32GLFWFlags, 0, GLFW_FULLSCREEN);
+      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_WINDOW, GLFW_FULLSCREEN);
 
       /* Asks for update */
       bUpdate = orxTRUE;
@@ -2128,7 +2122,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsFullScreen()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  bResult = orxFLAG_TEST(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+  bResult = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
