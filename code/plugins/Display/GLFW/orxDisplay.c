@@ -1705,7 +1705,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
   {
     /* Stores info */
     _pstVideoMode->u32Width   = astModeList[_u32Index].Width;
-    _pstVideoMode->u32Height  = astModeList[_u32Index].Width;
+    _pstVideoMode->u32Height  = astModeList[_u32Index].Height;
     _pstVideoMode->u32Depth   = astModeList[_u32Index].RedBits + astModeList[_u32Index].GreenBits + astModeList[_u32Index].BlueBits;
 
     /* 24-bit? */
@@ -1745,9 +1745,9 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
   for(i = 0; i < u32Counter; i++)
   {
     /* Matches? */
-    if((_pstVideoMode->u32Width == astModeList[i].Width)
-    && (_pstVideoMode->u32Height == astModeList[i].Height)
-    && (_pstVideoMode->u32Depth == astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits)
+    if((_pstVideoMode->u32Width == (orxU32)astModeList[i].Width)
+    && (_pstVideoMode->u32Height == (orxU32)astModeList[i].Height)
+    && (_pstVideoMode->u32Depth == (orxU32)(astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits))
     || ((_pstVideoMode->u32Depth == 32)
      && (astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits == 24)))
     {
@@ -1945,6 +1945,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
     /* Clears destination bitmap */
     sstDisplay.pstDestinationBitmap = orxNULL;
+
+    /* Clears new display surface */
+    glScissor(0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+    glASSERT();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glASSERT();
 
     /* Had bitmaps? */
     if(sstDisplay.s32BitmapCounter > 0)
