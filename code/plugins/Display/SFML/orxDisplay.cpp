@@ -70,6 +70,7 @@ typedef struct __orxDISPLAY_STATIC_t
   unsigned long     ulWindowStyle;
   orxBOOL           bDefaultSmooth;
   sf::RenderWindow *poRenderWindow;
+  orxAABOX          stScreenClip;
 
 } orxDISPLAY_STATIC;
 
@@ -1116,6 +1117,10 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_p
 
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
+
+    /* Stores clip coords */
+    orxVector_Set(&(sstDisplay.stScreenClip.vTL), orxU2F(_u32TLX), orxU2F(_u32TLY), orxFLOAT_0);
+    orxVector_Set(&(sstDisplay.stScreenClip.vBR), orxU2F(_u32BRX), orxU2F(_u32BRY), orxFLOAT_0);
   }
   else
   {
@@ -1582,8 +1587,8 @@ extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _z
             {
               orxS32 s32Offset;
 
-              /* Adds its literal value */
-              s32Offset = orxString_NPrint(pc, s32Free, "texture %s\n", pstParam->zName);
+              /* Adds its literal value and automated coordinates */
+              s32Offset = orxString_NPrint(pc, s32Free, "texture %s\nfloat %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"\nfloat %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"\nfloat %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"\nfloat %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
 
@@ -1679,6 +1684,8 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_StopShader(orxHANDLE _hShader)
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
 {
   sf::PostFX *poFX;
+  orxCHAR     acBuffer[256];
+  float       fRecWidth, fRecHeight;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1693,6 +1700,26 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
   {
     /* Sets texture */
     poFX->SetTexture(_zParam, NULL);
+
+    /* Get's image rec width & rec height */
+    fRecWidth = 1.0f / (float)sstDisplay.u32ScreenWidth;
+    fRecHeight = 1.0f / (float)sstDisplay.u32ScreenHeight;
+
+    /* Gets top parameter location */
+    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+    poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * sstDisplay.stScreenClip.vTL.fY));
+
+    /* Gets left parameter location */
+    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+    poFX->SetParameter(acBuffer, fRecWidth * sstDisplay.stScreenClip.vTL.fX);
+
+    /* Gets bottom parameter location */
+    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+    poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * sstDisplay.stScreenClip.vBR.fY));
+
+    /* Gets right parameter location */
+    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+    poFX->SetParameter(acBuffer, fRecWidth * sstDisplay.stScreenClip.vBR.fX);
   }
   else
   {
@@ -1705,8 +1732,33 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
     /* Has image? */
     if((poImage = const_cast<sf::Image *>(poSprite->GetImage())) != orxNULL)
     {
+      sf::IntRect stClip;
+
       /* Sets texture */
       poFX->SetTexture(_zParam, poImage);
+
+      /* Gets sprite's clipping */
+      stClip = poSprite->GetSubRect();
+
+      /* Get's image rec width & rec height */
+      fRecWidth = 1.0f / (float)poImage->GetWidth();
+      fRecHeight = 1.0f / (float)poImage->GetHeight();
+
+      /* Gets top parameter location */
+      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * stClip.Top));
+
+      /* Gets left parameter location */
+      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      poFX->SetParameter(acBuffer, fRecWidth * stClip.Left);
+
+      /* Gets bottom parameter location */
+      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * stClip.Bottom));
+
+      /* Gets right parameter location */
+      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      poFX->SetParameter(acBuffer, fRecWidth * stClip.Right);
     }
     else
     {

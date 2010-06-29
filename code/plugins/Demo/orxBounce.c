@@ -217,20 +217,20 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxViewport_SetRelativeSize(spstViewport, fWidth, fHeight);
   }
 
+  /* Pushes config section */
+  orxConfig_PushSection("Bounce");
+
+  /* Updates shader values */
+  sfShaderPhase    += orxConfig_GetFloat("ShaderPhaseSpeed") * _pstClockInfo->fDT;
+  sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
+  sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
+
   /* Gets mouse world position */
   bInViewport = (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos) != orxNULL) ? orxTRUE : orxFALSE;
 
   /* Is mouse in a viewport? */
   if(bInViewport != orxFALSE)
   {
-    /* Selects config section */
-    orxConfig_SelectSection("Bounce");
-
-    /* Updates shader values */
-    sfShaderPhase    += orxConfig_GetFloat("ShaderPhaseSpeed") * _pstClockInfo->fDT;
-    sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
-    sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
-
     /* Updates position */
     vMousePos.fZ += orx2F(0.5f);
 
@@ -266,6 +266,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
       }
     }
   }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Toggle shader? */
   if(orxInput_IsActive("ToggleShader") && (orxInput_HasNewStatus("ToggleShader")))

@@ -163,6 +163,8 @@ typedef struct __orxCOLOR_t
 } orxCOLOR;
 
 
+/** Config parameters
+ */
 #define orxDISPLAY_KZ_CONFIG_SECTION    "Display"
 #define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
 #define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
@@ -172,6 +174,14 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
 #define orxDISPLAY_KZ_CONFIG_SMOOTH     "Smoothing"
 #define orxDISPLAY_KZ_CONFIG_VSYNC      "VSync"
+
+
+/** Shader texture suffixes
+ */
+#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP     "_top"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT    "_left"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM  "_bottom"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT   "_right"
 
 
 /***************************************************************************

@@ -208,62 +208,9 @@ static orxINLINE void orxObject_DeleteAll()
   return;
 }
 
-/** Computes DT according to modifier
- * @param[in]   _fDT                                  Real DT
- * @param[in]   _pstClockInfo                         Concerned clock info
- * @return      Modified DT
- */
-static orxINLINE orxFLOAT orxObject_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
-{
-  orxFLOAT fResult;
-
-  /* Depending on modifier type */
-  switch(_pstClockInfo->eModType)
-  {
-    case orxCLOCK_MOD_TYPE_FIXED:
-    {
-      /* Fixed DT value */
-      fResult = _pstClockInfo->fModValue;
-      break;
-    }
-
-    case orxCLOCK_MOD_TYPE_MULTIPLY:
-    {
-      /* Multiplied DT value */
-      fResult = _pstClockInfo->fModValue * _fDT;
-      break;
-    }
-
-    case orxCLOCK_MOD_TYPE_MAXED:
-    {
-      /* Updates DT value */
-      fResult = orxMIN(_pstClockInfo->fModValue, _fDT);
-      break;
-    }
-
-    default:
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%ld).", _pstClockInfo->eModType);
-
-      /* Falls through */
-    }
-
-    case orxCLOCK_MOD_TYPE_NONE:
-    {
-      /* Keeps DT */
-      fResult = _fDT;
-      break;
-    }
-  }
-
-  /* Done! */
-  return fResult;
-}
-
 /** Updates all the objects
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
- * @param[in] _pContext         User defined context
+ * @param[in] _pContext           User defined context
  */
 static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
