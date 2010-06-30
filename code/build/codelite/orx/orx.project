@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="orx">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00040001N0019Win32 Dynamic Debug0000000000000001N0028Win32 Embedded Dynamic Debug0000000000000001N0027Win32 Embedded Static Debug0000000000000001N0029Win32 Embedded Static Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <VirtualDirectory Name="src">
     <File Name="../../../src/main/orxMain.c"/>
@@ -46,9 +51,21 @@
   <Dependencies Name="Linux Embedded Dynamic Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
+  <Dependencies Name="Win32 Embedded Dynamic Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Embedded Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
   <Settings Type="Executable">
     <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -68,6 +85,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -82,7 +100,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="_REENTRANT"/>
@@ -101,6 +119,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -115,7 +134,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -134,6 +153,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -148,7 +168,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
@@ -166,6 +186,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -180,7 +201,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -197,6 +218,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -211,7 +233,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
@@ -227,6 +249,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -241,7 +264,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -Wno-write-strings" Required="yes">
+      <Compiler Options="-g -Wno-write-strings" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -274,6 +297,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -288,7 +312,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings" Required="yes">
+      <Compiler Options="-O2 -Wno-write-strings" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
@@ -320,6 +344,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -334,7 +359,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -353,6 +378,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -367,7 +393,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
@@ -385,6 +411,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -399,7 +426,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -415,6 +442,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -429,7 +457,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic ../../../lib/dynamic/liborx.a -Wl,--export-all-symbols" Required="yes">
@@ -444,6 +472,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -458,7 +487,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -475,6 +504,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -489,7 +519,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s" Required="yes">
@@ -505,6 +535,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -519,16 +550,26 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--out-implib,../../../lib/static/libimporxd.a" Required="yes">
-        <LibraryPath Value="../../../lib/static"/>
+        <LibraryPath Value="../../../lib/static/"/>
+        <LibraryPath Value="../../../../extern/glfw-2.7/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib.mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="orxd"/>
+        <Library Value="glfw"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal32"/>
+        <Library Value="SOIL"/>
+        <Library Value="SDL"/>
         <Library Value="sfml-graphics-d"/>
         <Library Value="sfml-window-d"/>
         <Library Value="sfml-audio-d"/>
@@ -544,6 +585,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -558,15 +600,25 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Options="-s -Wl,--out-implib,../../../lib/static/libimporx.a" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
+        <LibraryPath Value="../../../../extern/glfw-2.7/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib.mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="orx"/>
+        <Library Value="glfw"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal32"/>
+        <Library Value="SOIL"/>
+        <Library Value="SDL"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-audio"/>
@@ -582,6 +634,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -596,7 +649,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -613,6 +666,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -627,7 +681,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
@@ -643,6 +697,7 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
         <PreprocessFileCommand/>
@@ -666,16 +721,4 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
   </Settings>
-  <Dependencies Name="Win32 Embedded Dynamic Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Embedded Dynamic Release">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Static Release">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
 </CodeLite_Project>
