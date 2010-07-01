@@ -2019,6 +2019,99 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
   return eResult;
 }
 
+/** Renames a section
+ * @param[in] _zSectionName     Section to rename
+ * @param[in] _zNewSectionName  New name for the section
+ */
+orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, const orxSTRING _zNewSectionName)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+  orxASSERT(_zNewSectionName != orxNULL);
+
+  /* Valid? */
+  if((_zSectionName != orxSTRING_EMPTY) && (_zNewSectionName != orxSTRING_EMPTY))
+  {
+    /* No inheritance markers? */
+    if((orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_MARKER, 0) < 0)
+    && (orxString_SearchCharIndex(_zNewSectionName, orxCONFIG_KC_INHERITANCE_MARKER, 0) < 0))
+    {
+      orxCONFIG_SECTION  *pstSection;
+      orxU32              u32ID;
+
+      /* Gets section name ID */
+      u32ID = orxString_ToCRC(_zSectionName);
+
+      /* Gets it from table */
+      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ID);
+
+      /* Valid? */
+      if(pstSection != orxNULL)
+      {
+        orxU32 u32NewID;
+
+        /* Get new ID */
+        u32NewID = orxString_ToCRC(_zNewSectionName);
+
+        /* Stores it */
+        pstSection->u32ID = u32NewID;
+
+        /* Deletes previous name */
+        orxString_Delete(pstSection->zName);
+
+        /* Stores new name */
+        pstSection->zName = orxString_Duplicate(_zNewSectionName);
+
+        /* For all sections */
+        for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+            pstSection != orxNULL;
+            pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
+        {
+          /* Is its parent the renamed section? */
+          if(pstSection->u32ParentID == u32ID)
+          {
+            /* Updates it */
+            pstSection->u32ParentID = u32NewID;
+          }
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't rename section <%s> -> <%s>: section not found.", _zSectionName, _zNewSectionName);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't rename section <%s> -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't rename section <%s> -> <%s>: empty name.", _zSectionName, _zNewSectionName);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
  * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased

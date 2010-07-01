@@ -71,46 +71,46 @@ typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSection
 
 /** Config module setup
  */
-extern orxDLLAPI void orxFASTCALL       orxConfig_Setup();
+extern orxDLLAPI void orxFASTCALL             orxConfig_Setup();
 
 /** Initializes the Config Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Init();
 
 /** Exits from the Config Module
  */
-extern orxDLLAPI void orxFASTCALL       orxConfig_Exit();
+extern orxDLLAPI void orxFASTCALL             orxConfig_Exit();
 
 
 /** Sets encryption key
  * @param[in] _zEncryptionKey  Encryption key to use, orxNULL to clear
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey);
 
 /** Sets config base name
  * @param[in] _zBaseName        Base name used for default config file
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBaseName(const orxSTRING _zBaseName);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetBaseName(const orxSTRING _zBaseName);
 
 /** Gets config main file name
  * @return Config main file name / orxSTRING_EMPTY
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetMainFileName();
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetMainFileName();
 
 
 /** Loads config file from source
  * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Load(const orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Load(const orxSTRING _zFileName);
 
 /** Reloads config files from history
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ReloadHistory();
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
@@ -118,130 +118,136 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
  * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SelectSection(const orxSTRING _zSectionName);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SelectSection(const orxSTRING _zSectionName);
+
+/** Renames a section
+ * @param[in] _zSectionName     Section to rename
+ * @param[in] _zNewSectionName  New name for the section
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_RenameSection(const orxSTRING _zSectionName, const orxSTRING _zNewSectionName);
 
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
  * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName);
 
 /** Gets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
  * @return Section's parent name / orxNULL
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
 
 /** Gets current working section
  * @return Current selected section
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetCurrentSection();
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetCurrentSection();
 
 /** Pushes a section (storing the current one on section stack)
  * @param[in] _zSectionName     Section name to push
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_PushSection(const orxSTRING _zSectionName);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_PushSection(const orxSTRING _zSectionName);
 
 /** Pops last section from section stack
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_PopSection();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_PopSection();
 
 /** Has section for the given section name?
  * @param[in] _zSectionName     Section name
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(const orxSTRING _zSectionName);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasSection(const orxSTRING _zSectionName);
 
 /** Protects/unprotects a section from deletion (content might still be changed or deleted, but the section itself will resist delete/clear calls)
  * @param[in] _zSectionName     Section name to protect
  * @param[in] _bProtect         orxTRUE for protecting the section, orxFALSE to remove the protection
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect);
 
 /** Gets section counter
  * @return Section counter
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetSectionCounter();
+extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetSectionCounter();
 
 /** Gets section at the given index
  * @param[in] _s32SectionIndex  Index of the desired section
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetSection(orxS32 _s32SectionIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSection(orxS32 _s32SectionIndex);
 
 /** Clears all config info
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Clear();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Clear();
 
 /** Clears section
  * @param[in] _zSectionName     Section name to clear
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ClearSection(const orxSTRING _zSectionName);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearSection(const orxSTRING _zSectionName);
 
 /** Clears a value from current selected section
  * @param[in] _zKey             Key name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ClearValue(const orxSTRING _zKey);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearValue(const orxSTRING _zKey);
 
 
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasValue(const orxSTRING _zKey);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasValue(const orxSTRING _zKey);
 
 /** Reads a signed integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetS32(const orxSTRING _zKey);
+extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetS32(const orxSTRING _zKey);
 
 /** Reads an unsigned integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxConfig_GetU32(const orxSTRING _zKey);
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetU32(const orxSTRING _zKey);
 
 /** Reads a float value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetFloat(const orxSTRING _zKey);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxConfig_GetFloat(const orxSTRING _zKey);
 
 /** Reads a string value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetString(const orxSTRING _zKey);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetString(const orxSTRING _zKey);
 
 /** Reads a boolean value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(const orxSTRING _zKey);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetBool(const orxSTRING _zKey);
 
 /** Reads a vector value from config (will take a random value if a list is provided for this key)
  * @param[in]   _zKey             Key name
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector);
 
 /** Duplicates a raw value (string) from config
  * @param[in] _zKey             Key name
  * @return The value. If non-null, needs to be deleted by the caller with orxString_Delete()
  */
-extern orxDLLAPI orxSTRING orxFASTCALL orxConfig_DuplicateRawValue(const orxSTRING _zKey);
+extern orxDLLAPI orxSTRING orxFASTCALL        orxConfig_DuplicateRawValue(const orxSTRING _zKey);
 
 
 /** Writes a signed integer value to config
@@ -249,90 +255,90 @@ extern orxDLLAPI orxSTRING orxFASTCALL orxConfig_DuplicateRawValue(const orxSTRI
  * @param[in] _s32Value         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value);
 
 /** Writes an unsigned integer value to config
  * @param[in] _zKey             Key name
  * @param[in] _u32Value         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value);
 
 /** Writes a float value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue);
 
 /** Writes a string value to config
  * @param[in] _zKey             Key name
  * @param[in] _zValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
 
 /** Writes a boolean value to config
  * @param[in] _zKey             Key name
  * @param[in] _bValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue);
 
 /** Writes a vector value to config
  * @param[in] _zKey             Key name
  * @param[in] _pvValue          Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR *_pvValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR *_pvValue);
 
 
 /** Is value a list for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_IsList(const orxSTRING _zKey);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsList(const orxSTRING _zKey);
 
 /** Gets list counter for a given key
  * @param[in] _zKey             Key name
  * @return List counter if it's a valid list, 0 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetListCounter(const orxSTRING _zKey);
+extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetListCounter(const orxSTRING _zKey);
 
 /** Reads a signed integer value from config list
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIndex);
+extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads an unsigned integer value from config list
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIndex);
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads a float value from config list
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32ListIndex);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads a string value from config list
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS32 _s32ListIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetListString(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads a boolean value from config list
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32ListIndex);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads a vector value from config list
  * @param[in]   _zKey             Key name
@@ -340,7 +346,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetListBool(const orxSTRING _z
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
 
 /** Writes a list of string values to config
  * @param[in] _zKey             Key name
@@ -348,18 +354,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING 
  * @param[in] _u32Number        Number of values
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
 
 /** Gets key counter of the current section
  * @return Key counter of the current section if valid, 0 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetKeyCounter();
+extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetKeyCounter();
 
 /** Gets key for the current section at the given index
  * @param[in] _s32KeyIndex      Index of the desired key
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetKey(orxS32 _s32KeyIndex);
 
 #endif /*_orxCONFIG_H_*/
 
