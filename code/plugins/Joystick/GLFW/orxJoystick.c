@@ -63,9 +63,10 @@
  */
 typedef struct __orxJOYSTICK_INFO_t
 {
-  float             afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
-  orxBOOL           bIsConnected;
-  unsigned char     au8ButtonInfoList[orxJOYSTICK_BUTTON_SINGLE_NUMBER];
+  float                 afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
+  orxBOOL               bIsConnected;
+  orxFLOAT              fTimeStamp;
+  unsigned char         au8ButtonInfoList[orxJOYSTICK_BUTTON_SINGLE_NUMBER];
 
 } orxJOYSTICK_INFO;
 
@@ -73,8 +74,9 @@ typedef struct __orxJOYSTICK_INFO_t
  */
 typedef struct __orxJOYSTICK_STATIC_t
 {
-  orxU32            u32Flags;
-  orxJOYSTICK_INFO  astJoyInfoList[GLFW_JOYSTICK_LAST + 1];
+  orxU32                u32Flags;
+  const orxCLOCK_INFO  *pstClockInfo;
+  orxJOYSTICK_INFO      astJoyInfoList[GLFW_JOYSTICK_LAST + 1];
 
 } orxJOYSTICK_STATIC;
 
@@ -94,30 +96,34 @@ static orxJOYSTICK_STATIC sstJoystick;
 
 /** Event handler
  */
-static void orxFASTCALL orxJoystick_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 {
-  int i;
+  /* Checks */
+  orxASSERT(_u32ID <= GLFW_JOYSTICK_LAST);
 
-  /* For all joysticks */
-  for(i = 0; i <= GLFW_JOYSTICK_LAST; i++)
+  /* Needs update? */
+  if(sstJoystick.astJoyInfoList[_u32ID].fTimeStamp != sstJoystick.pstClockInfo->fTime)
   {
     /* Is connected? */
-    if(glfwGetJoystickParam(i, GLFW_PRESENT) != GL_FALSE)
+    if(glfwGetJoystickParam((int)_u32ID, GLFW_PRESENT) != GL_FALSE)
     {
       /* Gets axes values */
-      glfwGetJoystickPos(i, sstJoystick.astJoyInfoList[i].afAxisInfoList, orxJOYSTICK_AXIS_SINGLE_NUMBER);
+      glfwGetJoystickPos((int)_u32ID, sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, orxJOYSTICK_AXIS_SINGLE_NUMBER);
 
       /* Updates connection status */
-      sstJoystick.astJoyInfoList[i].bIsConnected = orxTRUE;
+      sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
 
       /* Gets button values */
-      glfwGetJoystickButtons(i, sstJoystick.astJoyInfoList[i].au8ButtonInfoList, orxJOYSTICK_BUTTON_SINGLE_NUMBER);
+      glfwGetJoystickButtons((int)_u32ID, sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, orxJOYSTICK_BUTTON_SINGLE_NUMBER);
     }
     else
     {
       /* Clears info */
-      orxMemory_Zero(sstJoystick.astJoyInfoList, (GLFW_JOYSTICK_LAST + 1) * sizeof(orxJOYSTICK_INFO));
+      orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
     }
+
+    /* Updates time stamp */
+    sstJoystick.astJoyInfoList[_u32ID].fTimeStamp = sstJoystick.pstClockInfo->fTime;
   }
 
   /* Done! */
@@ -137,23 +143,17 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
     /* Is GLFW window opened? */
     if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
     {
-      orxCLOCK *pstClock;
-
-      /* Gets core clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-      /* Valid? */
-      if(pstClock != orxNULL)
-      {
-        /* Registers event update function */
-        eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWEST);
-      }
+      /* Gets core clock's info */
+      sstJoystick.pstClockInfo = orxClock_GetInfo(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE));
 
       /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
+      if(sstJoystick.pstClockInfo != orxNULL)
       {
         /* Updates status */
         sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
     }
   }
@@ -167,9 +167,6 @@ void orxFASTCALL orxJoystick_GLFW_Exit()
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
-    /* Unregisters update function */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxJoystick_GLFW_Update);
-
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }
@@ -192,6 +189,9 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
+    /* Updates its info */
+    orxJoystick_GLFW_UpdateInfo(u32ID);
+
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
     {
@@ -206,7 +206,7 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
     else
     {
       /* Logs message */
-      orxLOG("Requested joystick ID <%ld> is not connected.", u32ID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%ld> is not connected.", u32ID);
 
       /* Updates result */
       fResult = orxFLOAT_0;
@@ -215,7 +215,7 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   else
   {
     /* Logs message */
-    orxLOG("Requested joystick ID <%ld> is out of range.", u32ID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%ld> is out of range.", u32ID);
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -240,6 +240,9 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
+    /* Updates its info */
+    orxJoystick_GLFW_UpdateInfo(u32ID);
+
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
     {
@@ -254,7 +257,7 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
     else
     {
       /* Logs message */
-      orxLOG("Requested joystick ID <%ld> is not connected.", u32ID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%ld> is not connected.", u32ID);
 
       /* Updates result */
       bResult = orxFALSE;
@@ -263,7 +266,7 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
   else
   {
     /* Logs message */
-    orxLOG("Requested joystick ID <%ld> is out of range.", u32ID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%ld> is out of range.", u32ID);
 
     /* Updates result */
     bResult = orxFALSE;
