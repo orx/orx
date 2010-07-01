@@ -212,7 +212,7 @@
   <Dependencies Name="Win32 Embedded Static Debug"/>
   <Dependencies Name="Linux Embedded Dynamic Debug"/>
   <Dependencies Name="Win32 Embedded Dynamic Debug"/>
-  <Settings Type="Static Library">
+  <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
@@ -634,7 +634,7 @@
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
         <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib.mingw"/>
+        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="glfw"/>
@@ -691,7 +691,7 @@
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
         <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib.mingw"/>
+        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="glfw"/>
