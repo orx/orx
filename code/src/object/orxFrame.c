@@ -69,14 +69,14 @@
  */
 typedef struct __orxFRAME_DATA_2D_t
 {
-  orxVECTOR vGlobalPos;                     /**< Global 2D coordinates : 16 */
-  orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 32 */
-  orxFLOAT  fGlobalAngle;                   /**< Global 2D rotation angle : 36 */
-  orxFLOAT  fGlobalScaleX;                  /**< Global 2D isometric X scale : 40 */
-  orxFLOAT  fGlobalScaleY;                  /**< Global 2D isometric Y scale : 44 */
-  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 48 */
-  orxFLOAT  fLocalScaleX;                   /**< Local 2D isometric X scale : 52 */
-  orxFLOAT  fLocalScaleY;                   /**< Local 2D isometric Y scale : 56 */
+  orxVECTOR vGlobalPos;                     /**< Global 2D coordinates : 12 */
+  orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 24 */
+  orxFLOAT  fGlobalAngle;                   /**< Global 2D rotation angle : 28 */
+  orxFLOAT  fGlobalScaleX;                  /**< Global 2D isometric X scale : 32 */
+  orxFLOAT  fGlobalScaleY;                  /**< Global 2D isometric Y scale : 36 */
+  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 40 */
+  orxFLOAT  fLocalScaleX;                   /**< Local 2D isometric X scale : 44 */
+  orxFLOAT  fLocalScaleY;                   /**< Local 2D isometric Y scale : 48 */
 
 } orxFRAME_DATA_2D;
 
@@ -86,7 +86,7 @@ typedef struct __orxFRAME_DATA_2D_t
 struct __orxFRAME_t
 {
   orxSTRUCTURE      stStructure;            /**< Public structure, first structure member : 16 */
-  orxFRAME_DATA_2D  stData;                 /**< Frame data : 76 */
+  orxFRAME_DATA_2D  stData;                 /**< Frame data : 64 */
 };
 
 /** Static structure
