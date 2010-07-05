@@ -79,6 +79,8 @@
 #define orxDISPLAY_KU32_BUFFER_SIZE             (12 * 1024)
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      65536
 
+#define orxDISPLAY_KF_BORDER_FIX                0.1f
+
 
 /**  Misc defines
  */
@@ -124,7 +126,7 @@ struct __orxBITMAP_t
 typedef struct __orxDISPLAY_TEXTURE_INFO_t
 {
   GLint                     iLocation;
-  orxBITMAP                *pstBitmap;
+  const orxBITMAP          *pstBitmap;
 
 } orxDISPLAY_TEXTURE_INFO;
 
@@ -680,14 +682,14 @@ static orxINLINE void orxDisplay_SDL_DrawBitmap(const orxBITMAP *_pstBitmap, orx
   afVertexList[7] = 0.0f;
   
   /* Fill the texture coord list */
-  afTextureCoordList[0] = (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX);
-  afTextureCoordList[1] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY);
-  afTextureCoordList[2] = (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX);
-  afTextureCoordList[3] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY);
-  afTextureCoordList[4] = (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX);
-  afTextureCoordList[5] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY);
-  afTextureCoordList[6] = (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX);
-  afTextureCoordList[7] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY);
+  afTextureCoordList[0] = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[1] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[2] = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[3] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[4] = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[5] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[6] = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+  afTextureCoordList[7] = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
 
   /* Selects arrays */
   glVertexPointer(2, GL_FLOAT, 0, afVertexList);
@@ -873,16 +875,16 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
           
           sstDisplay.afTextureCoordList[u32Counter]       =
           sstDisplay.afTextureCoordList[u32Counter + 2]   =
-          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * pstGlyph->fX);
+          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.afTextureCoordList[u32Counter + 6]   =
           sstDisplay.afTextureCoordList[u32Counter + 8]   =
-          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth));
+          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.afTextureCoordList[u32Counter + 5]   =
           sstDisplay.afTextureCoordList[u32Counter + 9]   =
-          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * pstGlyph->fY);
+          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.afTextureCoordList[u32Counter + 1]   =
           sstDisplay.afTextureCoordList[u32Counter + 3]   =
-          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight));
+          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
 
           /* Updates counter */
           u32Counter += 12;
@@ -1307,8 +1309,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
     fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
 
     /* Inits texture coords */
-    fLeft   = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
-    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY;
+    fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
+    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
 
     /* For all lines */
     for(fY = 0.0f, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -1320,14 +1322,14 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, c
         fHeight *= (GLfloat)i;
 
         /* Resets texture coords */
-        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY))));
+        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
       }
       else
       {
         /* Resets texture coords */
-        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY);
+        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
       }
 
       /* Resets bitmap width */
@@ -2610,14 +2612,14 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_StopShader(orxHANDLE _hShader)
     afVertexList[7] = sstDisplay.pstScreen->stClip.vTL.fY;
 
     /* Defines the texture coord list */
-    afTextureCoordList[0] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
-    afTextureCoordList[1] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
-    afTextureCoordList[2] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
-    afTextureCoordList[3] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
-    afTextureCoordList[4] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
-    afTextureCoordList[5] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
-    afTextureCoordList[6] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
-    afTextureCoordList[7] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+    afTextureCoordList[0] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * (sstDisplay.pstScreen->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[1] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * (sstDisplay.pstScreen->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[2] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * (sstDisplay.pstScreen->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[3] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * (sstDisplay.pstScreen->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[4] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * (sstDisplay.pstScreen->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[5] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * (sstDisplay.pstScreen->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[6] = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * (sstDisplay.pstScreen->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+    afTextureCoordList[7] = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * (sstDisplay.pstScreen->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
 
     /* Selects arrays */
     glVertexPointer(2, GL_FLOAT, 0, afVertexList);
@@ -2654,7 +2656,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_StopShader(orxHANDLE _hShader)
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxCHAR             acBuffer[256];
@@ -2681,6 +2683,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetShaderBitmap(orxHANDLE _hShader, const o
     /* Valid? */
     if(iLocation != -1)
     {
+      /* No bitmap? */
+      if(_pstValue == orxNULL)
+      {
+        /* Uses screen bitmap */
+        _pstValue = sstDisplay.pstScreen;
+      }
+
       /* Updates texture info */
       pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = iLocation;
       pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;

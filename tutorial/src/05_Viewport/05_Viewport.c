@@ -239,10 +239,20 @@ orxSTATUS Init()
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputCameraLeft, zInputCameraRight, zInputCameraUp, zInputCameraDown;
-  orxSTRING       zInputCameraRotateLeft, zInputCameraRotateRight, zInputCameraZoomIn, zInputCameraZoomOut;
-  orxSTRING       zInputViewportLeft, zInputViewportRight, zInputViewportUp, zInputViewportDown;
-  orxSTRING       zInputViewportScaleUp, zInputViewportScaleDown;
+  const orxSTRING zInputCameraLeft;
+  const orxSTRING zInputCameraRight;
+  const orxSTRING zInputCameraUp;
+  const orxSTRING zInputCameraDown;
+  const orxSTRING zInputCameraRotateLeft;
+  const orxSTRING zInputCameraRotateRight;
+  const orxSTRING zInputCameraZoomIn;
+  const orxSTRING zInputCameraZoomOut;
+  const orxSTRING zInputViewportLeft;
+  const orxSTRING zInputViewportRight;
+  const orxSTRING zInputViewportUp;
+  const orxSTRING zInputViewportDown;
+  const orxSTRING zInputViewportScaleUp;
+  const orxSTRING zInputViewportScaleDown;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../05_Viewport.ini");

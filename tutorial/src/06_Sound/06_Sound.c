@@ -228,8 +228,13 @@ orxSTATUS Init()
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputVolumeUp, zInputVolumeDown, zInputPitchUp, zInputPitchDown;
-  orxSTRING       zInputToggleMusic, zInputRandomSFX, zInputDefaultSFX;
+  const orxSTRING zInputVolumeUp;
+  const orxSTRING zInputVolumeDown;
+  const orxSTRING zInputPitchUp;
+  const orxSTRING zInputPitchDown;
+  const orxSTRING zInputToggleMusic;
+  const orxSTRING zInputRandomSFX;
+  const orxSTRING zInputDefaultSFX;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../06_Sound.ini");

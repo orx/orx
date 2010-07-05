@@ -129,7 +129,10 @@ orxSTATUS Init()
   orxOBJECT      *pstObject;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputRotateLeft, zInputRotateRight, zInputScaleUp, zInputScaleDown;
+  const orxSTRING zInputRotateLeft;
+  const orxSTRING zInputRotateRight;
+  const orxSTRING zInputScaleUp;
+  const orxSTRING zInputScaleDown;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../03_Frame.ini");

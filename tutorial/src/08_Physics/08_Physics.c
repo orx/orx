@@ -168,12 +168,13 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
  */
 orxSTATUS Init()
 {
-  orxCLOCK     *pstClock;
-  orxVIEWPORT  *pstViewport;
-  orxU32        i;
-  orxINPUT_TYPE eType;
-  orxENUM       eID;
-  orxSTRING     zInputRotateLeft, zInputRotateRight;
+  orxCLOCK       *pstClock;
+  orxVIEWPORT    *pstViewport;
+  orxU32          i;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  const orxSTRING zInputRotateLeft;
+  const orxSTRING zInputRotateRight;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../08_Physics.ini");

@@ -20,6 +20,8 @@
 <h1>include/display/orxDisplay.h File Reference</h1><code>#include &quot;<a class="el" href="orx_include_8h.html">orxInclude.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_plugin_core_8h.html">plugin/orxPluginCore.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="orx_bank_8h.html">memory/orxBank.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="orx_hash_table_8h.html">utils/orxHashTable.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_string_8h.html">utils/orxString.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_link_list_8h.html">utils/orxLinkList.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
@@ -28,6 +30,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_h_a_r_a_c_t_e_r___g_l_y_p_h.html">orxCHARACTER_GLYPH</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_h_a_r_a_c_t_e_r___m_a_p.html">orxCHARACTER_MAP</a></td></tr>
 
@@ -65,6 +69,14 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g638cb8650bf097c243c44a9dd57bb863">orxDISPLAY_KZ_CONFIG_SMOOTH</a>&nbsp;&nbsp;&nbsp;&quot;Smoothing&quot;</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gb0f0452283708c385e761db3ee37e189">orxDISPLAY_KZ_CONFIG_VSYNC</a>&nbsp;&nbsp;&nbsp;&quot;VSync&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0d9a06196c1582c71d23acc93e1fd0c2">orxDISPLAY_KZ_SHADER_SUFFIX_TOP</a>&nbsp;&nbsp;&nbsp;&quot;_top&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g98c23e98dd889ded3df024dba4f4b136">orxDISPLAY_KZ_SHADER_SUFFIX_LEFT</a>&nbsp;&nbsp;&nbsp;&quot;_left&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4c005e85e55a1e5096ef3fdaa5d890e1">orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM</a>&nbsp;&nbsp;&nbsp;&quot;_bottom&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gc7c00862a44ea6807d9cb3ae2daed091">orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT</a>&nbsp;&nbsp;&nbsp;&quot;_right&quot;</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="orx_display_8h.html#39fb6fe2eb922c1b9f6d4434cd4f7d0a">orxCOLOR_GET_RGB_COMPONENT</a>(RESULT, ALT, CHROMA, HUE)</td></tr>
 
@@ -165,7 +177,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gdf48952815832df78cd7a8a12d0b7959">orxDisplay_StopShader</a> (const orxHANDLE _hShader)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4db0337264656df33302f70d0bef6c7f">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge4fadb5057ddccfb2d4eee3a5343d094">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g8411f4a23ff79e6e803fd6adc064a069">orxDisplay_SetShaderFloat</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)</td></tr>
 

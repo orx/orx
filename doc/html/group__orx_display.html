@@ -24,6 +24,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_h_a_r_a_c_t_e_r___g_l_y_p_h.html">orxCHARACTER_GLYPH</a></td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_h_a_r_a_c_t_e_r___m_a_p.html">orxCHARACTER_MAP</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a></td></tr>
@@ -60,6 +62,14 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g638cb8650bf097c243c44a9dd57bb863">orxDISPLAY_KZ_CONFIG_SMOOTH</a>&nbsp;&nbsp;&nbsp;&quot;Smoothing&quot;</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gb0f0452283708c385e761db3ee37e189">orxDISPLAY_KZ_CONFIG_VSYNC</a>&nbsp;&nbsp;&nbsp;&quot;VSync&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0d9a06196c1582c71d23acc93e1fd0c2">orxDISPLAY_KZ_SHADER_SUFFIX_TOP</a>&nbsp;&nbsp;&nbsp;&quot;_top&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g98c23e98dd889ded3df024dba4f4b136">orxDISPLAY_KZ_SHADER_SUFFIX_LEFT</a>&nbsp;&nbsp;&nbsp;&quot;_left&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4c005e85e55a1e5096ef3fdaa5d890e1">orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM</a>&nbsp;&nbsp;&nbsp;&quot;_bottom&quot;</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gc7c00862a44ea6807d9cb3ae2daed091">orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT</a>&nbsp;&nbsp;&nbsp;&quot;_right&quot;</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a></td></tr>
@@ -158,7 +168,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gdf48952815832df78cd7a8a12d0b7959">orxDisplay_StopShader</a> (const orxHANDLE _hShader)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4db0337264656df33302f70d0bef6c7f">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge4fadb5057ddccfb2d4eee3a5343d094">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g8411f4a23ff79e6e803fd6adc064a069">orxDisplay_SetShaderFloat</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)</td></tr>
 
@@ -316,7 +326,7 @@ Display plugin module Module that handles display <hr><h2>Define Documentation</
 <div class="memdoc">
 
 <p>
-
+Config parameters 
 </div>
 </div><p>
 <a class="anchor" name="g638cb8650bf097c243c44a9dd57bb863"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_CONFIG_SMOOTH" ref="g638cb8650bf097c243c44a9dd57bb863" args="" -->
@@ -377,6 +387,66 @@ Display plugin module Module that handles display <hr><h2>Define Documentation</
 
 <p>
 
+</div>
+</div><p>
+<a class="anchor" name="g4c005e85e55a1e5096ef3fdaa5d890e1"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM" ref="g4c005e85e55a1e5096ef3fdaa5d890e1" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM&nbsp;&nbsp;&nbsp;&quot;_bottom&quot;          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="g98c23e98dd889ded3df024dba4f4b136"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_SHADER_SUFFIX_LEFT" ref="g98c23e98dd889ded3df024dba4f4b136" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT&nbsp;&nbsp;&nbsp;&quot;_left&quot;          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="gc7c00862a44ea6807d9cb3ae2daed091"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT" ref="gc7c00862a44ea6807d9cb3ae2daed091" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT&nbsp;&nbsp;&nbsp;&quot;_right&quot;          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="g0d9a06196c1582c71d23acc93e1fd0c2"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_SHADER_SUFFIX_TOP" ref="g0d9a06196c1582c71d23acc93e1fd0c2" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP&nbsp;&nbsp;&nbsp;&quot;_top&quot;          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Shader texture suffixes 
 </div>
 </div><p>
 <a class="anchor" name="g7fa359660d9c77056030146c0fa7dd98"></a><!-- doxytag: member="orxDisplay.h::orxRGBA_A" ref="g7fa359660d9c77056030146c0fa7dd98" args="(RGBA)" -->
@@ -1727,7 +1797,7 @@ Sets full screen mode <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g4db0337264656df33302f70d0bef6c7f"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetShaderBitmap" ref="g4db0337264656df33302f70d0bef6c7f" args="(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)" -->
+<a class="anchor" name="ge4fadb5057ddccfb2d4eee3a5343d094"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetShaderBitmap" ref="ge4fadb5057ddccfb2d4eee3a5343d094" args="(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1746,7 +1816,7 @@ Sets full screen mode <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstValue</em></td><td>&nbsp;</td>
         </tr>
         <tr>

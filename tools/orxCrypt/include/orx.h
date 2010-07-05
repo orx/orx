@@ -207,9 +207,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Checks */
   orxASSERT(_u32NbParams > 0);
   orxASSERT(_azParams != orxNULL);
-  orxASSERT(_pfnInit != orxNULL);
   orxASSERT(_pfnRun != orxNULL);
-  orxASSERT(_pfnExit != orxNULL);
 
   /* Registers main module */
   orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
@@ -259,9 +257,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Checks */
   orxASSERT(_u32NbParams > 0);
   orxASSERT(_azParams != orxNULL);
-  orxASSERT(_pfnInit != orxNULL);
   orxASSERT(_pfnRun != orxNULL);
-  orxASSERT(_pfnExit != orxNULL);
 
   /* Registers main module */
   orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);

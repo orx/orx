@@ -41,6 +41,12 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a> (const orxSTRING _zString)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g7c73298a5f3f7824dc0901523391b333">orxString_IsCharacterASCII</a> (orxU32 _u32CharacterID)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga488e2caf2ea1c7330c2f3da2da0da7d">orxString_GetFirstCharacterID</a> (const orxSTRING _zString, const orxSTRING *_pzRemaining)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g08c8a06ad01a11f54df7ebc604dfa998">orxString_GetCharacterCounter</a> (const orxSTRING _zString)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g79b5537709b17a25daaa794769112723">orxString_NCopy</a> (orxSTRING _zDstString, const orxSTRING _zSrcString, orxU32 _u32CharNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gfde2f0e71190db970d0c6337eeceaf16">orxString_Copy</a> (orxSTRING _zDstString, const orxSTRING _zSrcString)</td></tr>
@@ -327,6 +333,68 @@ Duplicate a string. <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g08c8a06ad01a11f54df7ebc604dfa998"></a><!-- doxytag: member="orxString.h::orxString_GetCharacterCounter" ref="g08c8a06ad01a11f54df7ebc604dfa998" args="(const orxSTRING _zString)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxU32 orxString_GetCharacterCounter           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zString</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Returns the number of valid unicode characters (UTF-8) in the string (for ASCII string, it will be the same result as <a class="el" href="group__orx_string.html#g5dd29b1e41db0845ef80863df67f5670">orxString_GetLength()</a>) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>Concerned string </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ga488e2caf2ea1c7330c2f3da2da0da7d"></a><!-- doxytag: member="orxString.h::orxString_GetFirstCharacterID" ref="ga488e2caf2ea1c7330c2f3da2da0da7d" args="(const orxSTRING _zString, const orxSTRING *_pzRemaining)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxU32 orxString_GetFirstCharacterID           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING *&nbsp;</td>
+          <td class="paramname"> <em>_pzRemaining</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Returns the ID of the first character of the UTF-8 string <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>Concerned string </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pzRemaining</em>&nbsp;</td><td>If non null, will contain the remaining string after the first UTF-8 character </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>ID of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid UTF-8 character </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g5dd29b1e41db0845ef80863df67f5670"></a><!-- doxytag: member="orxString.h::orxString_GetLength" ref="g5dd29b1e41db0845ef80863df67f5670" args="(const orxSTRING _zString)" -->
 <div class="memitem">
 <div class="memproto">
@@ -344,7 +412,7 @@ Duplicate a string. <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Returns the number of character in the string <dl compact><dt><b>Parameters:</b></dt><dd>
+Returns the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won't be the actual number of unicode characters) <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String used for length computation </td></tr>
   </table>
@@ -386,6 +454,32 @@ Compare two strings, case insensitive. If the first one is smaller than the seco
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g7c73298a5f3f7824dc0901523391b333"></a><!-- doxytag: member="orxString.h::orxString_IsCharacterASCII" ref="g7c73298a5f3f7824dc0901523391b333" args="(orxU32 _u32CharacterID)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxBOOL orxString_IsCharacterASCII           </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32CharacterID</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Tells if a character is ASCII from its ID <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32CharacterID</em>&nbsp;</td><td>Concerned character ID </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>

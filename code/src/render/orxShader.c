@@ -426,7 +426,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           }
 
           /* Use custom param? */
-          if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE)
+          if((orxConfig_HasValue(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) == orxFALSE) || (orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE))
           {
             /* Updates status */
             orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);

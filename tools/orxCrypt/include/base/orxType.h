@@ -150,7 +150,7 @@ extern orxDLLAPI const orxSTRING  orxSTRING_FALSE;
 #define orxCHAR_NULL              '\0'
 #define orxCHAR_CR                '\r'
 #define orxCHAR_LF                '\n'
-#define orxCHAR_NUMBER            256
+#define orxCHAR_ASCII_NUMBER      128
 
 extern orxDLLAPI const orxCHAR    orxCHAR_EOL;
 extern orxDLLAPI const orxSTRING  orxSTRING_EOL;

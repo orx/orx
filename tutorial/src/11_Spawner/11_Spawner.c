@@ -101,7 +101,7 @@ static orxINLINE orxSTATUS LoadConfig()
   /* Is current ID valid? */
   if(ss32ConfigID < orxConfig_GetListCounter("ConfigList"))
   {
-    orxSTRING zConfigFile;
+    const orxSTRING zConfigFile;
 
     /* Gets config file */
     zConfigFile = orxConfig_GetListString("ConfigList", ss32ConfigID);
@@ -127,7 +127,8 @@ orxSTATUS orxFASTCALL Init()
 {
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputNextConfig, zInputPreviousConfig;
+  const orxSTRING zInputNextConfig;
+  const orxSTRING zInputPreviousConfig;
 
   /* Gets binding names */
   orxInput_GetBinding("NextConfig", 0, &eType, &eID);

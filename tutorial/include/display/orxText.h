@@ -109,7 +109,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_p
  * @param[in]   _pstText      Concerned text
  * @return      Text font / orxNULL
  */
-extern orxDLLAPI orxFONT *orxFASTCALL orxText_GetFont(const orxTEXT *_pstText);
+extern orxDLLAPI orxFONT *orxFASTCALL     orxText_GetFont(const orxTEXT *_pstText);
 
 
 /** Sets text string

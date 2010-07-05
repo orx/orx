@@ -252,8 +252,14 @@ orxSTATUS Init()
   MyObject       *pstMyObject;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputSelectWobble, zInputSelectCircle, zInputSelectFade, zInputSelectFlash, zInputSelectMove, zInputSelectFlip;
-  orxSTRING       zInputSelectMultiFX, zInputApplyFX;
+  const orxSTRING zInputSelectWobble;
+  const orxSTRING zInputSelectCircle;
+  const orxSTRING zInputSelectFade;
+  const orxSTRING zInputSelectFlash;
+  const orxSTRING zInputSelectMove;
+  const orxSTRING zInputSelectFlip;
+  const orxSTRING zInputSelectMultiFX;
+  const orxSTRING zInputApplyFX;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../07_FX.ini");

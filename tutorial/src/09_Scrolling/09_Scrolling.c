@@ -154,14 +154,18 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
  */
 orxSTATUS Init()
 {
-  orxVIEWPORT  *pstViewport;
-  orxCLOCK     *pstClock;
-  orxOBJECT    *pstSky;
-  orxU32        i;
-  orxINPUT_TYPE eType;
-  orxENUM       eID;
-  orxSTRING     zInputCameraLeft, zInputCameraRight, zInputCameraUp, zInputCameraDown;
-  orxSTRING     zInputCameraZoomIn, zInputCameraZoomOut;
+  orxVIEWPORT    *pstViewport;
+  orxCLOCK       *pstClock;
+  orxOBJECT      *pstSky;
+  orxU32          i;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  const orxSTRING zInputCameraLeft;
+  const orxSTRING zInputCameraRight;
+  const orxSTRING zInputCameraUp;
+  const orxSTRING zInputCameraDown;
+  const orxSTRING zInputCameraZoomIn;
+  const orxSTRING zInputCameraZoomOut;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../09_Scrolling.ini");

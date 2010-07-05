@@ -249,10 +249,11 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
 // Init function
 orxSTATUS StandAlone::Init()
 {
-  orxSTATUS     eResult;
-  orxINPUT_TYPE eType;
-  orxENUM       eID;
-  orxSTRING     zInputQuit, zInputCycle;
+  orxSTATUS       eResult;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  const orxSTRING zInputQuit;
+  const orxSTRING zInputCycle;
 
   /* Gets input binding names */
   orxInput_GetBinding("Quit", 0, &eType, &eID);

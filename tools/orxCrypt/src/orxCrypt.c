@@ -207,7 +207,7 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
   // Has a valid key parameter?
   if(_u32ParamCount > 1)
   {
-    orxSTRING zKey = orxNULL;
+    const orxSTRING zKey = orxNULL;
 
     // More than one parameter?
     if(_u32ParamCount > 2)

@@ -47,6 +47,8 @@
 #include "plugin/orxPluginCore.h"
 
 #include "math/orxVector.h"
+#include "memory/orxBank.h"
+#include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 #include "utils/orxLinkList.h"
 
@@ -99,17 +101,22 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
 
 } orxDISPLAY_VIDEO_MODE;
 
+/** Character glyph structure
+ */
+typedef struct __orxCHARACTER_GLYPH_t
+{
+  orxFLOAT fX, fY;
+
+} orxCHARACTER_GLYPH;
+
 /** Character map structure
  */
 typedef struct __orxCHARACTER_MAP_t
 {
-  orxVECTOR vCharacterSize;
+  orxVECTOR           vCharacterSize;
 
-  struct
-  {
-    orxFLOAT fX, fY;
-
-  } astCharacterList[orxCHAR_NUMBER];
+  orxBANK            *pstCharacterBank;
+  orxHASHTABLE       *pstCharacterTable;
 
 } orxCHARACTER_MAP;
 
@@ -156,6 +163,8 @@ typedef struct __orxCOLOR_t
 } orxCOLOR;
 
 
+/** Config parameters
+ */
 #define orxDISPLAY_KZ_CONFIG_SECTION    "Display"
 #define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
 #define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
@@ -165,6 +174,14 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
 #define orxDISPLAY_KZ_CONFIG_SMOOTH     "Smoothing"
 #define orxDISPLAY_KZ_CONFIG_VSYNC      "VSync"
+
+
+/** Shader texture suffixes
+ */
+#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP     "_top"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT    "_left"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM  "_bottom"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT   "_right"
 
 
 /***************************************************************************
@@ -870,7 +887,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StopShader(cons
  * @param[in]   _pstValue                             Value (orxBITMAP) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue);
 
 /** Sets a shader parameter (orxFLOAT)
  * @param[in]   _hShader                              Concerned shader

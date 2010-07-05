@@ -1190,9 +1190,11 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
     /* Sets default world boundaries */
     orxVector_Set(&vLower, -orxPhysics::sfDefaultWorldSize, -orxPhysics::sfDefaultWorldSize, orxFLOAT_0);
     orxVector_Set(&vUpper, orxPhysics::sfDefaultWorldSize, orxPhysics::sfDefaultWorldSize, orxFLOAT_0);
-    
-    /* Gets gravity & allow sleep from config */
+
+    /* Pushes config section */
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Gets gravity & allow sleep from config */
     if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)
     {
       orxVector_Copy(&vGravity, &orxVECTOR_0);

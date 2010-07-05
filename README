@@ -6,16 +6,17 @@ Orx - Portable Game Engine  (Version 1.2)
 Email iarwain [at] orx-project.org to contact the author; or better, check
 orx's homepage at http://orx-project.org for the most up-to-date contact information.
 
-This engine is licensed under the LGPL, see the LICENSE file for details. 
+This engine is licensed under the zlib license, see the LICENSE file for details. 
 
 
 Intro
 -----
 
-Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use.
+Orx is a 2D-oriented, data-driven, portable game engine focused primarily on extreme ease of use.
 
 This is the final release for orx v1.2. If you find any bugs,
-please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board.
+please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board,
+or via orx's SourceForge page/tracker.
 
 The current features of orx engine are:
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
@@ -33,12 +34,18 @@ The current features of orx engine are:
 - 3D positioning using "scene nodes"
 - custom bitmap font support
 - music and spatialized sound support
-- clock system that provides time consistency and allows time stretching
+- clock system that provides time consistency and allows time stretching + high precision timers
 - event manager
+- unicode support with UTF-8 encoding
 - plugin system
 - screenshot capture tool (supports bmp, png, jpg, tga and dds)
 
 See ./doc/html directory for the doxygen documentation of orx's API.
+
+You can find details about the tutorials (as well as community-made ones) and the data-driven side of orx
+(ie. how to use the config system) on orx's wiki at: http://wiki.orx-project.org
+
+The English version is the most complete one, Chinese and Spanish translations are being written by community members.
 
 
 Supported Platforms
@@ -47,8 +54,8 @@ Supported Platforms
 The engine compiles and is tested for:
 - Linux (x86/x86-64 with codelite)
 - Win32 (msvs2005, msvs2008, msvs2010 and mingw32 with code::blocks or codelite)
-- MacOS X (ppc/x86 with xcode).
-- iPhone/iPod Touch (simulator & device with xcode)
+- MacOS X (ppc/x86 with xcode), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
+- iPhone/iPod Touch/iPad (simulator & device with xcode)
 
 The GP2X target is in debug stage and is not currently actively developed/maintained.
 
@@ -77,16 +84,14 @@ or the static ones, you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
-- SFML-based plugins for display, joystick, keyboard, mouse and sound for all non-iPhone platforms
+- GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iPhone platforms
+- OpenAL-based (+libsndfile/stb_vorbis) plugins for sound
 - Box2D-based plugin for physics
 - homemade plugin for 2D rendering
 
 - OpenGL/OpenAL-based plugins for display and sound on iPhone
 - Touch/MultiTouch-based plugin for mouse on iPhone
 - Accelerometer-based plugin for joystick on iPhone
-
-Warning: If you compile the orx library yourself using the source package, you'll find SDL-based plugins
-as SFML-based counterparts, but they are not yet fully functional (WIP)!
 
 
 Packages
@@ -95,7 +100,7 @@ Packages
 You can download all the packages from sourceforge (http://orx.sf.net).
 Here is a list with a small description for each package.
 
-- orx-doc-1.2.zip : orx's API doxygen documentation
+- orx-doc-1.2.zip : orx's API doxygen documentation + PDF version of the English wiki (detailed tutorials and config system)
 
 - orx-src-1.2.zip : orx's source code including build projects for
   . code::blocks (Win32 only, non-embedded versions)
@@ -116,7 +121,7 @@ Warning for slow connections: this package is ~36MB.
 - orx-dev-msvs2005-1.2.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2005), release and debug.
 - orx-dev-msvs2008-1.2.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
 - orx-dev-msvs2010-1.2.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2010), release and debug.
-- orx-dev-iphone-1.2.zip   : orx's static embedded precompiled binaries for iPhone/iPod Touch, release and debug, simulator and device.
+- orx-dev-iphone-1.2.zip   : orx's static embedded precompiled binaries for iPhone/iPod Touch/iPad, release and debug, simulator and device.
 
 - orx-tutorial-linux-1.2.tar.bz2 : orx's precompiled tutorial for Linux (x86), release only.
 - orx-tutorial-mac-1.2.zip       : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
@@ -139,7 +144,7 @@ All the *-tutorial-* packages above include:
  . Template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
  . project files (xcode (MacOS X), codelite (Win32 mingw & Linux x86), msvs2005 & msvs2008)
 
-NB: All the binaries have been packed using UPX (http://upx.sf.net) for the sake of bandwidth.
+NB: Most of the binaries have been packed using UPX (http://upx.sf.net) for the sake of bandwidth.
 You can unpack them (upx -d) if you feel like it, but it shouldn't affect their execution anyway.
 
 
@@ -168,6 +173,9 @@ Here's a quick list of the available compile preprocessor flags:
 - __orxEMBEDDED__ : used to compile the embedded versions of orx library.
                     NB: this flag is *ONLY* needed when compiling orx library, not when linking
                     against it.
+
+- __orxFREEBASIC__: used to compile and link the freebasic version of orx, still WIP.
+
 
 There are other preprocessor flags used when compiling the orx library,
 but those should be easy enough to decipher.

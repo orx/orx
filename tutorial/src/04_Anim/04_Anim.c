@@ -170,7 +170,10 @@ orxSTATUS Init()
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputWalkLeft, zInputWalkRight, zInputScaleUp, zInputScaleDown;
+  const orxSTRING zInputWalkLeft;
+  const orxSTRING zInputWalkRight;
+  const orxSTRING zInputScaleUp;
+  const orxSTRING zInputScaleDown;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../04_Anim.ini");

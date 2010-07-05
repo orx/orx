@@ -141,7 +141,10 @@ orxSTATUS Init()
   orxOBJECT      *pstObject1, *pstObject2;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
-  orxSTRING       zInputLog, zInputFaster, zInputSlower, zInputNormal;
+  const orxSTRING zInputLog;
+  const orxSTRING zInputFaster;
+  const orxSTRING zInputSlower;
+  const orxSTRING zInputNormal;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../02_Clock.ini");

@@ -57,16 +57,6 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g246bfe06eb3f812f67ce5f1abffcdcab">orxFileSystem_Info</a> (const orxSTRING _zFileName, <a class="el" href="structorx_f_i_l_e_s_y_s_t_e_m___i_n_f_o.html">orxFILESYSTEM_INFO</a> *_pstFileInfo)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g7f67a4cc566730754c40bee46645a3d1">orxFileSystem_Copy</a> (const orxSTRING _zSource, const orxSTRING _zDest)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#gdfcdddf2741a43603531043eed284ff3">orxFileSystem_Rename</a> (const orxSTRING _zSource, const orxSTRING _zDest)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g967ff280adbcc0659aa5799103a292f3">orxFileSystem_Delete</a> (const orxSTRING _zFileName)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#gdbd984c1c4c3f4b93c9e01cad7906eca">orxFileSystem_CreateDir</a> (const orxSTRING _zDirName)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g057a98cdae7df7389efa8187285ffbe2">orxFileSystem_DeleteDir</a> (const orxSTRING _zDirName)</td></tr>
-
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 File system module Module that handles file system access <hr><h2>Define Documentation</h2>
@@ -192,120 +182,6 @@ Internal FileSystem structure
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g7f67a4cc566730754c40bee46645a3d1"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Copy" ref="g7f67a4cc566730754c40bee46645a3d1" args="(const orxSTRING _zSource, const orxSTRING _zDest)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFileSystem_Copy           </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zSource</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zDest</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Copies a file <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSource</em>&nbsp;</td><td>Source file's name </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDest</em>&nbsp;</td><td>Destination file's name </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="gdbd984c1c4c3f4b93c9e01cad7906eca"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_CreateDir" ref="gdbd984c1c4c3f4b93c9e01cad7906eca" args="(const orxSTRING _zDirName)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFileSystem_CreateDir           </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zDirName</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Creates a directory <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDirName</em>&nbsp;</td><td>New directory's name </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g967ff280adbcc0659aa5799103a292f3"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Delete" ref="g967ff280adbcc0659aa5799103a292f3" args="(const orxSTRING _zFileName)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFileSystem_Delete           </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zFileName</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Deletes a file <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>File's name to delete </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g057a98cdae7df7389efa8187285ffbe2"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_DeleteDir" ref="g057a98cdae7df7389efa8187285ffbe2" args="(const orxSTRING _zDirName)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFileSystem_DeleteDir           </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zDirName</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Removes an empty directory <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDirName</em>&nbsp;</td><td>Directory's name to delete </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="gd6a6a2aef29ead7db27e065e60ab7c09"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Exists" ref="gd6a6a2aef29ead7db27e065e60ab7c09" args="(const orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -491,42 +367,6 @@ Retrieves informations about a file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Inits the FileSystem Module 
-</div>
-</div><p>
-<a class="anchor" name="gdfcdddf2741a43603531043eed284ff3"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Rename" ref="gdfcdddf2741a43603531043eed284ff3" args="(const orxSTRING _zSource, const orxSTRING _zDest)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFileSystem_Rename           </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zSource</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zDest</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Renames a file <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSource</em>&nbsp;</td><td>Source file's name </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDest</em>&nbsp;</td><td>Destination file's name </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
-
 </div>
 </div><p>
 <a class="anchor" name="gbb9f3b675d586afa505e941e7b7cbc53"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Setup" ref="gbb9f3b675d586afa505e941e7b7cbc53" args="()" -->

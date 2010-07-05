@@ -34,13 +34,13 @@ static const struct
 {
   orxU32    u32Width;
   orxU32    u32Height;
-  orxU32    u32CharacterWidth;
-  orxU32    u32CharacterHeight;
+  orxFLOAT  fCharacterWidth;
+  orxFLOAT  fCharacterHeight;
   orxSTRING zCharacterList;
   orxU8     au8Data[224 * 42 * 4];
 } sstDefaultFont =
 {
-  224, 42, 7, 13,
+  224, 42, 7.0f, 12.5f,
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ 12345abcdefghijklmnopqrstuvwxyz 67890{}[]()<>$*-+=/#_%^@\\&|~?'\" !,.;:",
   "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
   "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"

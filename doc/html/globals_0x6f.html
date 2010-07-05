@@ -444,6 +444,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_camera.html#gb97f47ec6d51aaf9cc3f6dbc2c2cf6e4">orxCamera.h</a>
 <li>orxCamera_SetZoom()
 : <a class="el" href="group__orx_camera.html#g6bce51066ff3cb3109ed01961d4c8a5e">orxCamera.h</a>
+<li>orxCHAR_ASCII_NUMBER
+: <a class="el" href="group__orx_type.html#g4d349445a40afddcddc979ae95d18a91">orxType.h</a>
 <li>orxCHAR_CR
 : <a class="el" href="group__orx_type.html#g3c6a34e6acad7009dda01358aa90d2c0">orxType.h</a>
 <li>orxCHAR_DIRECTORY_SEPARATOR
@@ -458,8 +460,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_type.html#gb6ea2000756d61485e55aa1031d8cf73">orxType.h</a>
 <li>orxCHAR_NULL
 : <a class="el" href="group__orx_type.html#gd58b3d9f4ca60582629662f36c5a7b6c">orxType.h</a>
-<li>orxCHAR_NUMBER
-: <a class="el" href="group__orx_type.html#g524c1ec11638c7dcd230a276256dc2e9">orxType.h</a>
 <li>orxCIRCULAR_CLAMP_INC_MAX
 : <a class="el" href="group__orx_math.html#g5f0dbc4f5e99c3d49f1ae7c1de21b9a5">orxMath.h</a>
 <li>orxCIRCULAR_CLAMP_INC_MIN
@@ -699,6 +699,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_config.html#gc1e65aaecdc7d8349ca76bee0d54f38d">orxConfig.h</a>
 <li>orxConfig_ReloadHistory()
 : <a class="el" href="group__orx_config.html#g562bf302ede01bd632e5676cc9fef764">orxConfig.h</a>
+<li>orxConfig_RenameSection()
+: <a class="el" href="group__orx_config.html#g5726d4058a6f7b9f9004314c6b7f21d3">orxConfig.h</a>
 <li>orxConfig_Save()
 : <a class="el" href="group__orx_config.html#gfa91f263f305b66045e0ec603a640463">orxConfig.h</a>
 <li>orxCONFIG_SAVE_FUNCTION
@@ -899,6 +901,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#gb0f0452283708c385e761db3ee37e189">orxDisplay.h</a>
 <li>orxDISPLAY_KZ_CONFIG_WIDTH
 : <a class="el" href="group__orx_display.html#g2502cdfab86fac5177c9e88567451067">orxDisplay.h</a>
+<li>orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM
+: <a class="el" href="group__orx_display.html#g4c005e85e55a1e5096ef3fdaa5d890e1">orxDisplay.h</a>
+<li>orxDISPLAY_KZ_SHADER_SUFFIX_LEFT
+: <a class="el" href="group__orx_display.html#g98c23e98dd889ded3df024dba4f4b136">orxDisplay.h</a>
+<li>orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT
+: <a class="el" href="group__orx_display.html#gc7c00862a44ea6807d9cb3ae2daed091">orxDisplay.h</a>
+<li>orxDISPLAY_KZ_SHADER_SUFFIX_TOP
+: <a class="el" href="group__orx_display.html#g0d9a06196c1582c71d23acc93e1fd0c2">orxDisplay.h</a>
 <li>orxDisplay_LoadBitmap()
 : <a class="el" href="group__orx_display.html#g9ab637c5b295fdd11024c270327db5e4">orxDisplay.h</a>
 <li>orxDisplay_SaveBitmap()
@@ -916,7 +926,7 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxDisplay_SetFullScreen()
 : <a class="el" href="group__orx_display.html#g26e2f135b978a2dc39e53a8465940e42">orxDisplay.h</a>
 <li>orxDisplay_SetShaderBitmap()
-: <a class="el" href="group__orx_display.html#g4db0337264656df33302f70d0bef6c7f">orxDisplay.h</a>
+: <a class="el" href="group__orx_display.html#ge4fadb5057ddccfb2d4eee3a5343d094">orxDisplay.h</a>
 <li>orxDisplay_SetShaderFloat()
 : <a class="el" href="group__orx_display.html#g8411f4a23ff79e6e803fd6adc064a069">orxDisplay.h</a>
 <li>orxDisplay_SetShaderVector()
@@ -1043,14 +1053,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_file.html#g179d964e4e74c7266468f7f6c54dc1ad">orxFile.h</a>
 <li>orxFILESYSTEM
 : <a class="el" href="group__orx_file_system.html#gfea53a7b8ccfc211512fb60ba27628f7">orxFileSystem.h</a>
-<li>orxFileSystem_Copy()
-: <a class="el" href="group__orx_file_system.html#g7f67a4cc566730754c40bee46645a3d1">orxFileSystem.h</a>
-<li>orxFileSystem_CreateDir()
-: <a class="el" href="group__orx_file_system.html#gdbd984c1c4c3f4b93c9e01cad7906eca">orxFileSystem.h</a>
-<li>orxFileSystem_Delete()
-: <a class="el" href="group__orx_file_system.html#g967ff280adbcc0659aa5799103a292f3">orxFileSystem.h</a>
-<li>orxFileSystem_DeleteDir()
-: <a class="el" href="group__orx_file_system.html#g057a98cdae7df7389efa8187285ffbe2">orxFileSystem.h</a>
 <li>orxFileSystem_Exists()
 : <a class="el" href="group__orx_file_system.html#gd6a6a2aef29ead7db27e065e60ab7c09">orxFileSystem.h</a>
 <li>orxFileSystem_Exit()
@@ -1079,8 +1081,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_file_system.html#gc21e6c58a65b35f40032ab32c21b7933">orxFileSystem.h</a>
 <li>orxFILESYSTEM_KU32_FLAG_OPEN_WRITE
 : <a class="el" href="group__orx_file_system.html#g6a6d8e6011dce0ad4b8143ac1a9832a3">orxFileSystem.h</a>
-<li>orxFileSystem_Rename()
-: <a class="el" href="group__orx_file_system.html#gdfcdddf2741a43603531043eed284ff3">orxFileSystem.h</a>
 <li>orxFileSystem_Setup()
 : <a class="el" href="group__orx_file_system.html#gbb9f3b675d586afa505e941e7b7cbc53">orxFileSystem.h</a>
 <li>orxFLAG_GET
@@ -1784,6 +1784,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe5801f22be51388cb761bea4421e3b93c">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_C
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe4eef1b53ef53c6d64f2438ecfd71a664">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_CAPS_LOCK
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233feb9322a438970815213facd92924703d6">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_COMMA
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fec6708722775455a3a3a65096dcd187ff">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_D
@@ -1874,28 +1876,34 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe412a4096fabed5b8d7a9f4b8171e725b">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_NONE
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe725387db4e5ab1cb06111eca89c7d164">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUM_LOCK
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe557f7338be95d0c1d9a7709e7e13a756">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_NUMBER
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe01bfff170c6773d41ca6cc627ab599c4">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD0
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233feb887ee7e026248abc2d2e3abf3b42e68">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD1
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe5e2b7b11460529406061078119c43ef0">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD2
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe5aa418858035976c5550eff24c0ca936">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD3
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe79a5a7f09049cbd710fd0f48ab15ce13">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD4
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe83272dd9042dfdc6ec18a37d5b082576">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD5
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe351c2aee03245907a65970ca358415c7">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD6
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe2a32fb227f2aa9ed374b6969535c0f06">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD7
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe61cbf9b6e9469fb0f9dea653d019950e">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD8
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233febe6c13d58b86e26b6ca439db32bd944e">orxKeyboard.h</a>
-<li>orxKEYBOARD_KEY_NUMPAD9
-: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe1b698a42335b22edf343bf5aeb8ed54f">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_0
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe1b3825dd90da5e13fa13c829de71120d">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_1
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fea56c79ba799db968da4468a840adf77a">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_2
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fed35668f4bc5047aff132a8e25b0a09a0">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_3
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe220b071af61ec8064ac8d633549e87cd">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_4
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe727b01ede333902edc09b4a7b6d248c4">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_5
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fec28af41a1df9020715ba4b3ed949c0c3">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_6
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe3034e510ee9559a413a2b63619832db7">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_7
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe6f8e1352446466dc2c401eabc20c9266">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_8
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fee86bb635a73fdfa68d2c7f71c2e17b21">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_9
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe488c4bc96a26baf5ede2087a10ab998a">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_DECIMAL
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe8114f2aaed795888a39230bc39e8f7aa">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_NUMPAD_RETURN
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe529ea22c2aaf531303b3018c19805ad0">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_O
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fec11d524a2fc8d9aa4cd17312bda7d8b6">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_P
@@ -1930,6 +1938,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe23d24f8631a15e97ed72cb7fd81c9d24">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_S
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe62b117912a0bb139840210df611383fc">orxKeyboard.h</a>
+<li>orxKEYBOARD_KEY_SCROLL_LOCK
+: <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233feb4a1211e5971f4ad7bf2db7597be93af">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_SEMICOLON
 : <a class="el" href="group__orx_keyboard.html#gg50a25da712297bb6cbbd47e66ac233fe826b748ddc42673de0ed12d049ef3c72">orxKeyboard.h</a>
 <li>orxKEYBOARD_KEY_SLASH
@@ -3034,8 +3044,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxScreenshot_Setup()
 : <a class="el" href="group__orx_screenshot.html#g1f9631ae57b99d820a23b66a9cc515de">orxScreenshot.h</a>
 <li>orxSHADER
-: <a class="el" href="group__orx_structure.html#g4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
-, <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+: <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+, <a class="el" href="group__orx_structure.html#g4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
 <li>orxShader_AddFloatParam()
 : <a class="el" href="group__orx_shader.html#g93a5dd89f3185227563de422def889b6">orxShader.h</a>
 <li>orxShader_AddTextureParam()
@@ -3089,8 +3099,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxShader_Stop()
 : <a class="el" href="group__orx_shader.html#g650247fe0da8917b20b7f8c9e01e762d">orxShader.h</a>
 <li>orxSHADERPOINTER
-: <a class="el" href="group__orx_structure.html#g0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
-, <a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
+: <a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
+, <a class="el" href="group__orx_structure.html#g0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
 <li>orxShaderPointer_AddShader()
 : <a class="el" href="group__orx_shader_pointer.html#g74ad326fadbef929e1ebf41429674782">orxShaderPointer.h</a>
 <li>orxShaderPointer_AddShaderFromConfig()
@@ -3308,8 +3318,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundSystem_UnloadSample()
 : <a class="el" href="group__orx_sound_system.html#gecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem.h</a>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
-, <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+: <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+, <a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#g23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>
 <li>orxSpawner_CreateFromConfig()
@@ -3449,10 +3459,16 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_type.html#g4a31f472b61a07c2b79005543d7d0480">orxType.h</a>
 <li>orxSTRING_FALSE
 : <a class="el" href="group__orx_type.html#g4b202020a2ed51c9dc7de93352888bfb">orxType.h</a>
+<li>orxString_GetCharacterCounter()
+: <a class="el" href="group__orx_string.html#g08c8a06ad01a11f54df7ebc604dfa998">orxString.h</a>
+<li>orxString_GetFirstCharacterID()
+: <a class="el" href="group__orx_string.html#ga488e2caf2ea1c7330c2f3da2da0da7d">orxString.h</a>
 <li>orxString_GetLength()
 : <a class="el" href="group__orx_string.html#g5dd29b1e41db0845ef80863df67f5670">orxString.h</a>
 <li>orxString_ICompare()
 : <a class="el" href="group__orx_string.html#g981c39a82ad021ec08f84a8cb074a695">orxString.h</a>
+<li>orxString_IsCharacterASCII()
+: <a class="el" href="group__orx_string.html#g7c73298a5f3f7824dc0901523391b333">orxString.h</a>
 <li>orxSTRING_KC_VECTOR_END
 : <a class="el" href="group__orx_string.html#gc8646f825bc6df7e387d877970d56e91">orxString.h</a>
 <li>orxSTRING_KC_VECTOR_END_ALT
@@ -3603,10 +3619,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxStructure.h</a>
 <li>orxSTRUCTURE_MAGIC_TAG_DELETED
 : <a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxStructure.h</a>
-<li>orxSTRUCTURE_REGISTER
-: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_Register()
 : <a class="el" href="group__orx_structure.html#ga56cb39392bd2ec50767317b4f7603fa">orxStructure.h</a>
+<li>orxSTRUCTURE_REGISTER
+: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#g95058db32c35e47042cf42e560bda596">orxStructure.h</a>
 <li>orxStructure_SetParent()
@@ -3691,8 +3707,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxText_Setup()
 : <a class="el" href="group__orx_text.html#gbaf8ba36746f278176c2efec5a0a14d4">orxText.h</a>
 <li>orxTEXTURE
-: <a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
-, <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
+: <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
+, <a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
 <li>orxTexture_Create()
 : <a class="el" href="group__orx_texture.html#g0234c4923d3a53bd299c36bc9a96c60b">orxTexture.h</a>
 <li>orxTexture_CreateFromFile()
@@ -3838,8 +3854,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxVECTOR_Z
 : <a class="el" href="group__orx_vector.html#gfb49da17b1f47004004b7bdfb803fda1">orxVector.h</a>
 <li>orxVIEWPORT
-: <a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
-, <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+: <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+, <a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
 <li>orxViewport_AddShader()
 : <a class="el" href="group__orx_viewport.html#gfae98230b6e33fb16c5827b48db78b4b">orxViewport.h</a>
 <li>orxViewport_Create()
