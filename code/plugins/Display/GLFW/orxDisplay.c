@@ -685,7 +685,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreen()
 orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   const orxCHAR  *pc;
-  orxU32          u32CharacterID, u32Counter;
+  orxU32          u32CharacterCode, u32Counter;
   GLfloat         fX, fY, fWidth, fHeight;
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
@@ -720,12 +720,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
   orxDisplay_GLFW_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
 
   /* For all characters */
-  for(u32CharacterID = orxString_GetFirstCharacterID(_zString, &pc), u32Counter = 0, fX = fY = 0.0f;
-      u32CharacterID != orxCHAR_NULL;
-      u32CharacterID = orxString_GetFirstCharacterID(pc, &pc))
+  for(u32CharacterCode = orxString_GetFirstCharacterCode(_zString, &pc), u32Counter = 0, fX = fY = 0.0f;
+      u32CharacterCode != orxCHAR_NULL;
+      u32CharacterCode = orxString_GetFirstCharacterCode(pc, &pc))
   {
     /* Depending on character */
-    switch(u32CharacterID)
+    switch(u32CharacterCode)
     {
       case orxCHAR_CR:
       {
@@ -755,7 +755,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
         const orxCHARACTER_GLYPH *pstGlyph;
 
         /* Gets glyph from UTF-8 table */
-        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterID);
+        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCode);
 
         /* Valid? */
         if(pstGlyph != orxNULL)

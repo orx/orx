@@ -178,20 +178,20 @@ static orxINLINE orxU32                 orxString_GetLength(const orxSTRING _zSt
 }
 
 /** Tells if a character is ASCII from its ID
- * @param[in] _u32CharacterID           Concerned character ID
+ * @param[in] _u32CharacterCode           Concerned character ID
  * @return                              orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise
  */
-static orxINLINE orxBOOL                orxString_IsCharacterASCII(orxU32 _u32CharacterID)
+static orxINLINE orxBOOL                orxString_IsCharacterASCII(orxU32 _u32CharacterCode)
 {
-  return((_u32CharacterID < 0x80) ? orxTRUE : orxFALSE);
+  return((_u32CharacterCode < 0x80) ? orxTRUE : orxFALSE);
 }
 
-/** Returns the ID of the first character of the UTF-8 string
+/** Returns the code of the first character of the UTF-8 string
  * @param[in] _zString                  Concerned string
  * @param[out]  _pzRemaining            If non null, will contain the remaining string after the first UTF-8 character
- * @return                              ID of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid UTF-8 character
+ * @return                              Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character
  */
-static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxSTRING _zString, const orxSTRING *_pzRemaining)
+static orxU32 orxFASTCALL               orxString_GetFirstCharacterCode(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
   orxU8  *pu8Byte;
   orxU32  u32Result;
@@ -208,7 +208,7 @@ static orxINLINE orxU32                 orxString_GetFirstCharacterID(const orxS
     /* Updates result */
     u32Result = *pu8Byte;
   }
-  /* Invalid UTF-8 byte sequence:  */
+  /* Invalid UTF-8 byte sequence */
   else if(*pu8Byte < 0xC0)
   {
     /* Logs message */
@@ -370,7 +370,7 @@ static orxINLINE orxU32                 orxString_GetCharacterCounter(const orxS
   for(pc = _zString, u32Result = 0; *pc != orxCHAR_NULL; u32Result++)
   {
     /* Invalid current character ID */
-    if(orxString_GetFirstCharacterID(pc, &pc) == orxU32_UNDEFINED)
+    if(orxString_GetFirstCharacterCode(pc, &pc) == orxU32_UNDEFINED)
     {
       /* Updates result */
       u32Result = orxU32_UNDEFINED;
