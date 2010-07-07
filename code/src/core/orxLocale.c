@@ -474,7 +474,7 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
     stPayload.zStringValue  = _zValue;
 
     /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
+    orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SET_STRING, orxNULL, orxNULL, &stPayload);
   }
   else
   {

@@ -127,9 +127,6 @@ static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText)
     /* Valid? */
     if(zString != orxNULL)
     {
-      /* Skips white space */
-      zString = orxString_SkipWhiteSpaces(zString);
-
       /* Begins with locale marker? */
       if(*zString == orxTEXT_KC_LOCALE_MARKER)
       {
@@ -338,7 +335,7 @@ orxSTATUS orxFASTCALL orxText_Init()
       eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
       /* Success? */
-      if(eResult == orxSTATUS_SUCCESS)
+      if(eResult != orxSTATUS_FAILURE)
       {
         /* Updates flags for screen text creation */
         sstText.u32Flags = orxTEXT_KU32_STATIC_FLAG_READY;
@@ -382,6 +379,9 @@ void orxFASTCALL orxText_Exit()
   {
     /* Deletes text list */
     orxText_DeleteAll();
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxText_EventHandler);
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_TEXT);

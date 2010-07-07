@@ -35,6 +35,8 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "core/orxLocale.h"
 #include "display/orxText.h"
 #include "display/orxTexture.h"
 
@@ -139,6 +141,51 @@ static orxGRAPHIC_STATIC sstGraphic;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Select language event */
+    case orxLOCALE_EVENT_SELECT_LANGUAGE:
+    {
+      orxGRAPHIC *pstGraphic;
+
+      /* For all graphics */
+      for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
+          pstGraphic != orxNULL;
+          pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
+      {
+        /* Is data a text? */
+        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+        {
+          /* Updates graphic's size */
+          orxGraphic_UpdateSize(pstGraphic);
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Deletes all graphics
  */
 static orxINLINE void orxGraphic_DeleteAll()
@@ -174,8 +221,10 @@ void orxFASTCALL orxGraphic_Setup()
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXT);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXTURE);
+  orxModule_AddOptionalDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_LOCALE);
 
   return;
 }
@@ -192,8 +241,30 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstGraphic, sizeof(orxGRAPHIC_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    /* Registers event handler */
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+
+    /* Valid? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Inits Flags */
+        sstGraphic.u32Flags = orxGRAPHIC_KU32_STATIC_FLAG_READY;
+      }
+      else
+      {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing graphic module failed.");
+      }
+    }
   }
   else
   {
@@ -204,16 +275,14 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
-  {
-    /* Inits Flags */
-    sstGraphic.u32Flags = orxGRAPHIC_KU32_STATIC_FLAG_READY;
-  }
-  else
+  /* Not initialized? */
+  if(eResult != orxSTATUS_SUCCESS)
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing graphic module failed.");
+
+    /* Updates Flags */
+    sstGraphic.u32Flags &= ~orxGRAPHIC_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
@@ -229,6 +298,9 @@ void orxFASTCALL orxGraphic_Exit()
   {
     /* Deletes graphic list */
     orxGraphic_DeleteAll();
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_GRAPHIC);
@@ -694,7 +766,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Data given is not a texture.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Data given is not a texture nor a text.");
 
       /* Updates flags */
       orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);

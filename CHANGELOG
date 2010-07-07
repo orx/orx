@@ -21,6 +21,7 @@ orx 1.2
 * Added orxMOUSE_X and orxMOUSE_Y as valid inputs for the generic input system
 * Added HSL/HSV color space support with HSL<->RGB & HSV<->RGB conversion functions
 * Added ParentCamera property for cameras (useful for cascading cameras or Fixed/UI camera trick for portrait<->landscape adaptation)
+* When selecting a new locale language at runtime, graphics containing localized text will now resize accordingly to the text's new size
 * Added __orxFREEBASIC__ define for free basic friendly build of orx
 * orxClock_RemoveTimer() can now filter using the registered context
 * Added events orxCONFIG_EVENT_RELOAD_START, orxCONFIG_EVENT_RELOAD_END & orxCONFIG_EVENT_INVALID_TYPE_ACCESS
@@ -35,6 +36,7 @@ orx 1.2
 * Added Config::IgnorePath parameter to ignore all paths when loading resources (useful for iPhone bundles were all files easily end up in the root folder)
 * Modules' Init & Exit functions are now optional (ie. stand alone application don't have to define them if not needed).
 * Default minimal frequency for the home made renderer plugin is now 10Hz (was 60Hz).
+* Fixed orxLOCALE_EVENT_SET_STRING not sent
 * Some optims / fixes / cleaning
 
 orx 1.1
