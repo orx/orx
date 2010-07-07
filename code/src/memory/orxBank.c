@@ -114,7 +114,7 @@ static orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(const orxBANK *_pstBank)
   return pstSegment;
 }
 
-/** Free a segment of memory (and recursivly all next segments)
+/** Free a segment of memory (and recursively all next segments)
  * @param[in] _pstSegment  Allocated segment of memory
  */
 static orxINLINE void orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
@@ -466,7 +466,7 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
  */
 void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
 {
-  void *pstCell = orxNULL;
+  orxBANK_SEGMENT *pstSegment;
 
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
@@ -474,11 +474,18 @@ void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
 
-  /* Free all elements */
-  while((pstCell = orxBank_GetNext(_pstBank, orxNULL)) != orxNULL)
+  /* For all segments */
+  for(pstSegment = _pstBank->pstFirstSegment;
+      pstSegment != orxNULL;
+      pstSegment = pstSegment->pstNext)
   {
-    orxBank_Free(_pstBank, pstCell);
+    /* Clears it */
+    pstSegment->u16NbFree = _pstBank->u16NbCellPerSegments;
+    orxMemory_Zero(pstSegment->pu32FreeElemBits, _pstBank->u16SizeSegmentBitField * sizeof(orxU32));
   }
+
+  /* Clears bank counter */
+  _pstBank->u32Counter = 0;
 }
 
 /** Get the next cell
