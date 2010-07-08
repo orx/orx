@@ -69,6 +69,7 @@
 #define orxFONT_KZ_CONFIG_TEXTURE_NAME          "Texture"
 #define orxFONT_KZ_CONFIG_CHARACTER_LIST        "CharacterList"
 #define orxFONT_KZ_CONFIG_CHARACTER_SIZE        "CharacterSize"
+#define orxFONT_KZ_CONFIG_CHARACTER_STRIDE      "CharacterStride"
 #define orxFONT_KZ_CONFIG_TEXTURE_CORNER        "TextureCorner"
 #define orxFONT_KZ_CONFIG_TEXTURE_SIZE          "TextureSize"
 
@@ -84,13 +85,14 @@ struct __orxFONT_t
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxCHARACTER_MAP *pstMap;                     /**< Font's map : 20 */
   orxVECTOR         vCharacterSize;             /**< Character size : 32 */
-  orxTEXTURE       *pstTexture;                 /**< Texture : 36 */
-  orxFLOAT          fTop;                       /**< Top coordinate : 40 */
-  orxFLOAT          fLeft;                      /**< Left coordinate : 44 */
-  orxFLOAT          fWidth;                     /**< Width : 48 */
-  orxFLOAT          fHeight;                    /**< Height : 52 */
-  const orxSTRING   zCharacterList;             /**< Character list : 56 */
-  const orxSTRING   zReference;                 /**< Config reference : 60 */
+  orxVECTOR         vCharacterStride;           /**< Character stride : 44 */
+  orxTEXTURE       *pstTexture;                 /**< Texture : 48 */
+  orxFLOAT          fTop;                       /**< Top coordinate : 52 */
+  orxFLOAT          fLeft;                      /**< Left coordinate : 56 */
+  orxFLOAT          fWidth;                     /**< Width : 60 */
+  orxFLOAT          fHeight;                    /**< Height : 64 */
+  const orxSTRING   zCharacterList;             /**< Character list : 68 */
+  const orxSTRING   zReference;                 /**< Config reference : 72 */
 };
 
 /** Static structure
@@ -169,7 +171,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
       pstGlyph->fY = vOrigin.fY;
 
       /* Updates current origin X value */
-      vOrigin.fX += _pstFont->vCharacterSize.fX;
+      vOrigin.fX += _pstFont->vCharacterSize.fX + _pstFont->vCharacterStride.fX;
 
       /* Out of bound? */
       if(vOrigin.fX >= _pstFont->fLeft + _pstFont->fWidth)
@@ -178,7 +180,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         vOrigin.fX = _pstFont->fLeft;
 
         /* Updates its Y value */
-        vOrigin.fY += _pstFont->vCharacterSize.fY;
+        vOrigin.fY += _pstFont->vCharacterSize.fY + _pstFont->vCharacterStride.fY;
       }
     }
 
@@ -231,11 +233,12 @@ static orxINLINE void orxFont_CreateDefaultFont()
             /* Sets its texture */
             if(orxFont_SetTexture(sstFont.pstDefaultFont, pstTexture) != orxSTATUS_FAILURE)
             {
-              orxVECTOR vSize;
+              orxVECTOR vSize, vStride;
 
               /* Inits it */
               orxFont_SetCharacterList(sstFont.pstDefaultFont, sstDefaultFont.zCharacterList);
               orxFont_SetCharacterSize(sstFont.pstDefaultFont, orxVector_Set(&vSize, sstDefaultFont.fCharacterWidth, sstDefaultFont.fCharacterHeight, orxFLOAT_0));
+              orxFont_SetCharacterStride(sstFont.pstDefaultFont, orxVector_Set(&vStride, sstDefaultFont.fCharacterStrideX, sstDefaultFont.fCharacterStrideY, orxFLOAT_0));
 
               /* Stores its reference key */
               sstFont.pstDefaultFont->zReference = orxFONT_KZ_DEFAULT_FONT_NAME;
@@ -609,7 +612,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
             /* Links it */
             if(orxFont_SetTexture(pstResult, pstTexture) != orxSTATUS_FAILURE)
             {
-              orxVECTOR vCharacterSize;
+              orxVECTOR vCharacterSize, vCharacterStride;
 
               /* Updates flags */
               orxStructure_SetFlags(pstResult, orxFONT_KU32_FLAG_INTERNAL, orxFONT_KU32_MASK_ALL);
@@ -627,6 +630,13 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
                 /* Updates them */
                 orxFont_SetOrigin(pstResult, &vTextureCorner);
                 orxFont_SetSize(pstResult, &vTextureSize);
+              }
+
+              /* Gets character stride */
+              if(orxConfig_GetVector(orxFONT_KZ_CONFIG_CHARACTER_STRIDE, &vCharacterStride) != orxNULL)
+              {
+                /* Sets it */
+                orxFont_SetCharacterStride(pstResult, &vCharacterStride);
               }
 
               /* Gets character size */
@@ -951,6 +961,39 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterSize(orxFONT *_pstFont, const orxVECTO
   return eResult;
 }
 
+/** Sets font's character stride
+ * @param[in]   _pstFont      Concerned font
+ * @param[in]   _pvStride     Character's stride
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFont_SetCharacterStride(orxFONT *_pstFont, const orxVECTOR *_pvStride)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFont);
+  orxASSERT(_pvStride != orxNULL);
+
+  /* Valid? */
+  if((_pvStride->fX >= orxFLOAT_0) && (_pvStride->fY >= orxFLOAT_0))
+  {
+    /* Stores it */
+    orxVector_Set(&(_pstFont->vCharacterStride), _pvStride->fX, _pvStride->fY, orxFLOAT_0);
+
+    /* Updates font's map */
+    orxFont_UpdateMap(_pstFont);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[in]   _pvOrigin     Font's origin
@@ -1080,7 +1123,7 @@ const orxSTRING orxFASTCALL orxFont_GetCharacterList(const orxFONT *_pstFont)
 /** Gets font's character size
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvSize       Character's size
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxVECTOR / orxNULL
  */
 orxVECTOR *orxFASTCALL orxFont_GetCharacterSize(const orxFONT *_pstFont, orxVECTOR *_pvSize)
 {
@@ -1098,10 +1141,31 @@ orxVECTOR *orxFASTCALL orxFont_GetCharacterSize(const orxFONT *_pstFont, orxVECT
   return pvResult;
 }
 
+/** Gets font's character stride
+ * @param[in]   _pstFont      Concerned font
+ * @param[out]  _pvStride     Character's stride
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxFont_GetCharacterStride(const orxFONT *_pstFont, orxVECTOR *_pvStride)
+{
+  orxVECTOR *pvResult = _pvStride;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFont);
+  orxASSERT(_pvStride != orxNULL);
+
+  /* Updates result */
+  orxVector_Copy(pvResult, &(_pstFont->vCharacterStride));
+
+  /* Done! */
+  return pvResult;
+}
+
 /** Gets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvOrigin     Font's origin
- * @return      orxDISPLAY_FONT / orxNULL
+ * @return      orxVECTOR / orxNULL
  */
 orxVECTOR *orxFASTCALL orxFont_GetOrigin(const orxFONT *_pstFont, orxVECTOR *_pvOrigin)
 {
@@ -1122,7 +1186,7 @@ orxVECTOR *orxFASTCALL orxFont_GetOrigin(const orxFONT *_pstFont, orxVECTOR *_pv
 /** Gets font's size
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvSize       Font's size
- * @return      orxDISPLAY_FONT / orxNULL
+ * @return      orxVECTOR / orxNULL
  */
 orxVECTOR *orxFASTCALL orxFont_GetSize(const orxFONT *_pstFont, orxVECTOR *_pvSize)
 {

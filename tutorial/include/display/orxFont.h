@@ -112,6 +112,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterList(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterSize(orxFONT *_pstFont, const orxVECTOR *_pvSize);
 
+/** Sets font's character stride
+ * @param[in]   _pstFont      Concerned font
+ * @param[in]   _pvStride     Character's stride
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterStride(orxFONT *_pstFont, const orxVECTOR *_pvStride);
+
 /** Sets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[in]   _pvOrigin     Font's origin
@@ -142,21 +149,28 @@ extern orxDLLAPI const orxSTRING orxFASTCALL          orxFont_GetCharacterList(c
 /** Gets font's character size
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvSize       Character's size
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterSize(const orxFONT *_pstFont, orxVECTOR *_pvSize);
+
+/** Gets font's character stride
+ * @param[in]   _pstFont      Concerned font
+ * @param[out]  _pvSstride    Character's stride
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterStride(const orxFONT *_pstFont, orxVECTOR *_pvStride);
 
 /** Gets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvOrigin     Font's origin
- * @return      orxDISPLAY_FONT / orxNULL
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetOrigin(const orxFONT *_pstFont, orxVECTOR *_pvOrigin);
 
 /** Gets font's size
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvSize       Font's size
- * @return      orxDISPLAY_FONT / orxNULL
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetSize(const orxFONT *_pstFont, orxVECTOR *_pvSize);
 

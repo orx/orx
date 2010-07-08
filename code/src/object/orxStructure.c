@@ -385,36 +385,39 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         /* Dependig on type */
         switch(pstNode->eType)
         {
-        case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
-
-          /* Adds node to list */
-          eResult = orxLinkList_AddEnd(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
-
-          break;
-
-        case orxSTRUCTURE_STORAGE_TYPE_TREE:
-
-          /* No root yet? */
-          if(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)) == orxNULL)
+          case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
           {
-            /* Adds root to tree */
-            eResult = orxTree_AddRoot(&(sstStructure.astStorage[_eStructureID].stTree), &(pstNode->stTreeNode));
-          }
-          else
-          {
-            /* Adds node to tree */
-            eResult = orxTree_AddChild(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)), &(pstNode->stTreeNode));
+            /* Adds node to list */
+            eResult = orxLinkList_AddEnd(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
+
+            break;
           }
 
-          break;
+          case orxSTRUCTURE_STORAGE_TYPE_TREE:
+          {
+            /* No root yet? */
+            if(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)) == orxNULL)
+            {
+              /* Adds root to tree */
+              eResult = orxTree_AddRoot(&(sstStructure.astStorage[_eStructureID].stTree), &(pstNode->stTreeNode));
+            }
+            else
+            {
+              /* Adds node to tree */
+              eResult = orxTree_AddChild(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)), &(pstNode->stTreeNode));
+            }
 
-        default:
+            break;
+          }
 
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
+          default:
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
 
-          /* Wrong type */
-          eResult = orxSTATUS_FAILURE;
+            /* Wrong type */
+            eResult = orxSTATUS_FAILURE;
+          }
         }
 
         /* Succesful? */
