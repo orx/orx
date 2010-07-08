@@ -61,7 +61,6 @@ struct __orxHASHTABLE_t
   orxHASHTABLE_CELL  *apstCell[orxHASHTABLE_KU32_INDEX_SIZE]; /**< Hash table */
   orxBANK            *pstBank;                                /**< Bank where are stored cells */
   orxU32              u32Counter;                             /**< Hashtable item counter */
-
 };
 
 
@@ -128,7 +127,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE));
 
     /* Allocate bank for cells */
-    pstHashTable->pstBank = orxBank_Create((orxU16)_u32NbKey, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
+    pstHashTable->pstBank = orxBank_Create((orxU16)orxMIN(_u32NbKey, 0xFFFF), sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
 
     /* Correct bank allocation ? */
     if(pstHashTable->pstBank == orxNULL)
@@ -418,82 +417,82 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
 orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
-  orxU16 u16Cell;
+  orxU32    u32Cell;
 
-	/* Checks */
-	orxASSERT(_pstHashTable != orxNULL);
+  /* Checks */
+  orxASSERT(_pstHashTable != orxNULL);
 
-	for(u16Cell = 0; u16Cell < orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
-	{
-		if(_pstHashTable->apstCell[u16Cell] != orxNULL)
-		{
-			if(_pu32Key != orxNULL)
-			{
-				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
-			}
-			if(_ppData!=orxNULL)
-			{
-				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
-			}
+  for(u32Cell = 0; u32Cell < orxHASHTABLE_KU32_INDEX_SIZE; u32Cell++)
+  {
+    if(_pstHashTable->apstCell[u32Cell] != orxNULL)
+    {
+      if(_pu32Key != orxNULL)
+      {
+          *_pu32Key = _pstHashTable->apstCell[u32Cell]->u32Key;
+      }
+      if(_ppData!=orxNULL)
+      {
+          *_ppData = _pstHashTable->apstCell[u32Cell]->pData;
+      }
 
-			/* Updates result */
-			hResult = (orxHANDLE)(_pstHashTable->apstCell[u16Cell]);
-			break;
-		}
-	}
+      /* Updates result */
+      hResult = (orxHANDLE)(_pstHashTable->apstCell[u32Cell]);
+      break;
+    }
+  }
 
-	/* Done! */
-	return hResult;
+  /* Done! */
+  return hResult;
 }
 
 // Find a the next item of the hashtable and return the iterator corresponding to the search.
 orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)
 {
-	orxHASHTABLE_CELL *pIter = (orxHASHTABLE_CELL*)_hIterator;
-	orxU16             u16Cell;
-	orxHANDLE          hResult = orxHANDLE_UNDEFINED;
+  orxHASHTABLE_CELL *pIter = (orxHASHTABLE_CELL*)_hIterator;
+  orxU32             u32Cell;
+  orxHANDLE          hResult = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL && _hIterator != orxHANDLE_UNDEFINED);
 
   if(pIter->pstNext != orxNULL)
-	{
-		if(_pu32Key != orxNULL)
-		{
-			*_pu32Key = pIter->pstNext->u32Key;
-		}
-		if(_ppData != orxNULL)
-		{
-			*_ppData = pIter->pstNext->pData;
-		}
+  {
+    if(_pu32Key != orxNULL)
+    {
+      *_pu32Key = pIter->pstNext->u32Key;
+    }
+    if(_ppData != orxNULL)
+    {
+      *_ppData = pIter->pstNext->pData;
+    }
 
-		/* Updates result */
-		hResult = (orxHANDLE)(pIter->pstNext);
-	}
+    /* Updates result */
+    hResult = (orxHANDLE)(pIter->pstNext);
+  }
   else
   {
-  	for(u16Cell=(orxU16)orxHashTable_FindIndex(_pstHashTable, pIter->u32Key)+1; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
-  	{
-  		if(_pstHashTable->apstCell[u16Cell]!=orxNULL)
-  		{
-  			if(_pu32Key!=orxNULL)
-  			{
-  				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
-  			}
-  			if(_ppData!=orxNULL)
-  			{
-  				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
-  			}
+    for(u32Cell = orxHashTable_FindIndex(_pstHashTable, pIter->u32Key) + 1; u32Cell < orxHASHTABLE_KU32_INDEX_SIZE; u32Cell++)
+    {
+      if(_pstHashTable->apstCell[u32Cell]!=orxNULL)
+      {
+        if(_pu32Key!=orxNULL)
+        {
+          *_pu32Key = _pstHashTable->apstCell[u32Cell]->u32Key;
+        }
+        if(_ppData!=orxNULL)
+        {
+          *_ppData = _pstHashTable->apstCell[u32Cell]->pData;
+        }
 
-  			/* Updates result */
-  			hResult = (orxHANDLE)(_pstHashTable->apstCell[u16Cell]);
-  			break;
-  		}
-  	}
+        /* Updates result */
+        hResult = (orxHANDLE)(_pstHashTable->apstCell[u32Cell]);
+        break;
+      }
+    }
   }
 
-	/* Done! */
-	return hResult;
+  /* Done! */
+  return hResult;
 }
 
 /*******************************************************************************
