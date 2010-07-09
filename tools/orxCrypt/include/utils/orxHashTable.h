@@ -127,7 +127,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
  * @param[in] _ppData Address where store the data, NULL to not store it.
  * @return iterator of HashTable traversing. orxHANDLE_UNDEFINED if no element.
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData);
 
 /** Find a the next item of the hashtable and return the iterator corresponding to the search.
  * @param[in] _pstHashTable Address of the HashTable.
@@ -136,7 +136,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindFirst(orxHASHTABLE
  * @param[in] _hIterator Iterator to continue the search.
  * @return iterator of HashTable traversing. orxHANDLE_UNDEFINED if no element.
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
 /** @} */
 
 /*******************************************************************************

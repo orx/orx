@@ -49,9 +49,9 @@
 
 /** Defines
  */
-#define orxSTRUCTURE_KU32_STORAGE_BANK_SIZE   256
+#define orxSTRUCTURE_KU32_STORAGE_BANK_SIZE   128
 
-#define orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE 32
+#define orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE 128
 
 
 /***************************************************************************
@@ -209,7 +209,7 @@ void orxFASTCALL orxStructure_Exit()
   {
     orxU32 i;
 
-    /* For all banks */
+    /* For all structures */
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
       /* Depending on storage type */
@@ -237,10 +237,10 @@ void orxFASTCALL orxStructure_Exit()
         }
       }
 
-      /* Deletes node */
+      /* Deletes node bank */
       orxBank_Delete(sstStructure.astStorage[i].pstNodeBank);
 
-      /* Is bank empty? */
+      /* Is bank valid? */
       if(sstStructure.astStorage[i].pstStructureBank != orxNULL)
       {
         /* Deletes it */

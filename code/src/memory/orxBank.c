@@ -46,7 +46,7 @@
  ***************************************************************************/
 typedef struct __orxBANK_SEGMENT_t
 {
-  orxU32                     *pu32FreeElemBits; /**< List of bits that represents free and used elements in the segment */
+  orxU32                     *pu32CellAllocationMap; /**< List of bits that represents free and used elements in the segment */
   void                       *pSegmentData;     /**< Pointer address on the head of the segment data cells */
   struct __orxBANK_SEGMENT_t *pstNext;          /**< Pointer on the next segment */
   orxU16                      u16NbFree;        /**< Number of free elements in the segment */
@@ -105,10 +105,10 @@ static orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(const orxBANK *_pstBank)
   {
     /* Set initial segment values */
     orxMemory_Zero(pstSegment, u32SegmentSize);
-    pstSegment->pstNext           = orxNULL;
-    pstSegment->u16NbFree         = _pstBank->u16NbCellPerSegments;
-    pstSegment->pu32FreeElemBits  = (orxU32 *)(((orxU8 *)pstSegment) + sizeof(orxBANK_SEGMENT));
-    pstSegment->pSegmentData     = (void *)(((orxU8 *)pstSegment->pu32FreeElemBits) + (_pstBank->u16SizeSegmentBitField * sizeof(orxU32)));
+    pstSegment->pstNext               = orxNULL;
+    pstSegment->u16NbFree             = _pstBank->u16NbCellPerSegments;
+    pstSegment->pu32CellAllocationMap = (orxU32 *)(((orxU8 *)pstSegment) + sizeof(orxBANK_SEGMENT));
+    pstSegment->pSegmentData          = (void *)(((orxU8 *)pstSegment->pu32CellAllocationMap) + (_pstBank->u16SizeSegmentBitField * sizeof(orxU32)));
   }
 
   return pstSegment;
@@ -158,7 +158,7 @@ static orxINLINE orxBANK_SEGMENT *orxBank_GetSegment(const orxBANK *_pstBank, co
       pstSegment != orxNULL;
       pstSegment = pstSegment->pstNext)
   {
-    /* In cell in segment? */
+    /* Is cell in segment? */
     if((_pCell >= pstSegment->pSegmentData)
     && (((orxU32)((orxU8 *)_pCell - (orxU8 *)pstSegment->pSegmentData)) < u32Size))
     {
@@ -299,7 +299,6 @@ void orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 
   /* Completly Free Bank */
   orxMemory_Free(_pstBank);
-
 }
 
 /** Allocate a new cell from the bank
@@ -338,41 +337,30 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     }
   }
 
-  /* Is the current segment has free nodes ? (yes : the allocation was correct (if there was), else returns orxNULL) */
+  /* Does the current segment has free nodes ? (yes : the allocation was correct (if there was), else returns orxNULL) */
   if(pstCurrentSegment->u16NbFree > 0)
   {
-    orxU32 u32Index32Bits;          /* Index between 0 and _pstBank->u32SizeSegmentBitField */
-    orxU32 u32Index8Bits;           /* Index to traverse a 32 bit field (indexed by u32Index32Bits) */
-    orxU32 u32BitResultIndex   = 0; /* Position of the free bit found */
-    orxU32 u32FieldResultIndex = 0; /* Index of the bit field to use */
-    orxBOOL bFound = orxFALSE;      /* Set as orxTRUE, when the bit position will be found */
+    orxU32  u32BitIndex, u32MapPartIndex;
+    orxBOOL bFound;
 
-    /* Look for the first free cell (use precomputed array to improve search speed) */
-    /* Loop on the segment bits */
-    for(u32Index32Bits = 0; !bFound && (u32Index32Bits < _pstBank->u16SizeSegmentBitField); u32Index32Bits++)
+    /* For all map parts */
+    for(u32BitIndex = 0, u32MapPartIndex = 0, bFound = orxFALSE; !bFound && (u32MapPartIndex < (orxU32)_pstBank->u16SizeSegmentBitField); u32MapPartIndex++)
     {
-      u32BitResultIndex = 0;
-      for(u32Index8Bits = 0; !bFound && (u32Index8Bits < 4); u32Index8Bits++)
+      orxS32 s32MapPartValue;
+
+      /* Gets the available spaces */
+      s32MapPartValue = ~(pstCurrentSegment->pu32CellAllocationMap[u32MapPartIndex]);
+
+      /* Any free one? */
+      if(s32MapPartValue != 0)
       {
-        orxS32 s328BitsValue;
+        /* Gets free cell's map part index */
+        u32BitIndex = orxMath_GetBitCount((s32MapPartValue & -s32MapPartValue) - 1);
 
-        /* Get the 8 bits to check */
-        s328BitsValue = ~(((pstCurrentSegment->pu32FreeElemBits[u32Index32Bits]) >> (u32Index8Bits << 3))) & 0xFF;
+        /* Found ! */
+        bFound = orxTRUE;
 
-        /* Get the array index value (take 8 bits from the segment) */
-        /* All bits used ? */
-        if(s328BitsValue != 0)
-        {
-          /* Gets starting index */
-          u32BitResultIndex = orxMath_GetBitCount((s328BitsValue & -s328BitsValue) - 1);
-
-          /* Compute the global position index the segment */
-          u32BitResultIndex  += (u32Index8Bits << 3);
-          u32FieldResultIndex = u32Index32Bits;
-
-          /* Found ! */
-          bFound = orxTRUE;
-        }
+        break;
       }
     }
 
@@ -385,7 +373,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     if(bFound)
     {
       /* Get the pointer on the cell according to index value and cells size */
-      pCell = (void *)(((orxU8 *)pstCurrentSegment->pSegmentData) + (_pstBank->u32ElemSize * u32FieldResultIndex << 5) + (_pstBank->u32ElemSize * u32BitResultIndex));
+      pCell = (void *)(((orxU8 *)pstCurrentSegment->pSegmentData) + (_pstBank->u32ElemSize * u32MapPartIndex << 5) + (_pstBank->u32ElemSize * u32BitIndex));
 
       /* Decrease the number of free elements */
       pstCurrentSegment->u16NbFree--;
@@ -394,7 +382,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
       _pstBank->u32Counter++;
 
       /* Set the bit as used */
-      ((orxU32*)(pstCurrentSegment->pu32FreeElemBits))[u32FieldResultIndex] |= 1 << u32BitResultIndex;
+      ((orxU32*)(pstCurrentSegment->pu32CellAllocationMap))[u32MapPartIndex] |= 1 << u32BitIndex;
       
 #ifdef __orxMEMORY_DEBUG__
       {
@@ -404,7 +392,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
         {
           for(j = 0; j < 32; j++)
           {
-            if((1 << j) & pstCurrentSegment->pu32FreeElemBits[i])
+            if((1 << j) & pstCurrentSegment->pu32CellAllocationMap[i])
             {
               r++;
             }
@@ -452,7 +440,7 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   u32IndexBit     = u32CellIndex & 31;
 
   /* Set cell as Free */
-  pstSegment->pu32FreeElemBits[u32Index32Bits] &= ~(1 << u32IndexBit);
+  pstSegment->pu32CellAllocationMap[u32Index32Bits] &= ~(1 << u32IndexBit);
 
   /* Increase the number of free elements */
   pstSegment->u16NbFree++;
@@ -481,7 +469,7 @@ void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
   {
     /* Clears it */
     pstSegment->u16NbFree = _pstBank->u16NbCellPerSegments;
-    orxMemory_Zero(pstSegment->pu32FreeElemBits, _pstBank->u16SizeSegmentBitField * sizeof(orxU32));
+    orxMemory_Zero(pstSegment->pu32CellAllocationMap, _pstBank->u16SizeSegmentBitField * sizeof(orxU32));
   }
 
   /* Clears bank counter */
@@ -541,7 +529,7 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
         orxU32 u32Mask;
 
         /* Loop on bits while not found */
-        for(u32Mask = pstSegment->pu32FreeElemBits[u32Index32Bits] >> s32IndexBit; (u32Mask != 0) && (s32IndexBit < 32); u32Mask >>= 1, s32IndexBit++)
+        for(u32Mask = pstSegment->pu32CellAllocationMap[u32Index32Bits] >> s32IndexBit; (u32Mask != 0) && (s32IndexBit < 32); u32Mask >>= 1, s32IndexBit++)
         {
           /* Found? */
           if(u32Mask & (orxU32)1)
@@ -556,6 +544,93 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
 
   /* Not found */
   return orxNULL;
+}
+
+/** Gets the cell's index
+ * @param[in] _pstBank    Concerned memory bank
+ * @param[in] _pCell      Cell of which we want the index
+ * @return The index of the given cell if allocated, orxU32_UNDEFINED otherwise
+ */
+orxU32 orxFASTCALL orxBank_GetIndex(const orxBANK *_pstBank, const void *_pCell)
+{
+  orxBANK_SEGMENT  *pstSegment;
+  orxU32            u32CellIndex, u32Size, u32SegmentCounter, u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBank != orxNULL);
+  orxASSERT(_pCell != orxNULL);
+
+  /* For all segments */
+  for(pstSegment = _pstBank->pstFirstSegment, u32Size = _pstBank->u32ElemSize * (orxU32)_pstBank->u16NbCellPerSegments, u32SegmentCounter = 0;
+      pstSegment != orxNULL;
+      pstSegment = pstSegment->pstNext, u32SegmentCounter++)
+  {
+    /* Is cell in segment? */
+    if((_pCell >= pstSegment->pSegmentData)
+    && (((orxU32)((orxU8 *)_pCell - (orxU8 *)pstSegment->pSegmentData)) < u32Size))
+    {
+      /* Stops */
+      break;
+    }
+  }
+
+  /* Checks */
+  orxASSERT(pstSegment != orxNULL);
+
+  /* Updates result */
+  u32CellIndex = (orxU32)((orxU8 *)_pCell - (orxU8 *)pstSegment->pSegmentData) / _pstBank->u32ElemSize;
+
+  /* Valid? */
+  if(pstSegment->pu32CellAllocationMap[u32CellIndex >> 5] & (1 << (u32CellIndex & 31)))
+  {
+    /* Updates result */
+    u32Result = (u32SegmentCounter * (orxU32)_pstBank->u16NbCellPerSegments) + u32CellIndex;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets the cell at given index, orxNULL is the cell isn't allocated
+ * @param[in] _pstBank    Concerned memory bank
+ * @param[in] _u32Index   Index of the cell to retrieve
+ * @return The cell at the given index if allocated, orxNULL otherwise
+ */
+void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
+{
+  void *pResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBank != orxNULL);
+
+  /* Non empty? */
+  if(_pstBank->u32Counter > 0)
+  {
+    orxBANK_SEGMENT  *pstSegment;
+    orxU32            u32Index;
+
+    /* Skips all segments till we hit the right one */
+    for(u32Index = _u32Index, pstSegment = _pstBank->pstFirstSegment; (u32Index > (orxU32)_pstBank->u16NbCellPerSegments) && (pstSegment != orxNULL); u32Index -= (orxU32)_pstBank->u16NbCellPerSegments, pstSegment = pstSegment->pstNext);
+
+    /* Is segment valid? */
+    if(pstSegment != orxNULL)
+    {
+      /* Checks */
+      orxASSERT((u32Index >> 5) < _pstBank->u16SizeSegmentBitField);
+
+      /* Is cell allocated? */
+      if(pstSegment->pu32CellAllocationMap[u32Index >> 5] & (1 << (u32Index & 31)))
+      {
+        /* Updates result */
+        pResult = (void *)(((orxU8 *)pstSegment->pSegmentData) + (u32Index * _pstBank->u32ElemSize));
+      }
+    }
+  }
+
+  /* Done! */
+  return pResult;
 }
 
 /** Gets the bank allocated cell counter
@@ -616,14 +691,14 @@ void orxFASTCALL orxBank_DebugPrint(const orxBANK *_pstBank)
 
       orxMemory_Zero(zBuffer, 4096 * sizeof(orxCHAR));
 
-      orxString_Print(zBuffer, "Bits : %02d (%x) = ", u32Index1, pstSegment->pu32FreeElemBits[u32Index1]);
+      orxString_Print(zBuffer, "Bits : %02d (%x) = ", u32Index1, pstSegment->pu32CellAllocationMap[u32Index1]);
 
       for(u32Index2 = 0; u32Index2 < 4; u32Index2++)
       {
         orxString_Print(zBuffer, "[");
         for(u32Index3 = 0; u32Index3 < 8; u32Index3++)
         {
-          if((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((u32Index2 << 3) + u32Index3))) == (orxU32)(1 << ((u32Index2 << 3) + u32Index3)))
+          if((pstSegment->pu32CellAllocationMap[u32Index1] & (orxU32)(1 << ((u32Index2 << 3) + u32Index3))) == (orxU32)(1 << ((u32Index2 << 3) + u32Index3)))
           {
             orxString_Print(zBuffer, "1");
           }

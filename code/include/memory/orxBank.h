@@ -111,11 +111,26 @@ extern orxDLLAPI void orxFASTCALL           orxBank_Clear(orxBANK *_pstBank);
  */
 extern orxDLLAPI void *orxFASTCALL          orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell);
 
+/** Gets the cell's index
+ * @param[in] _pstBank    Concerned memory bank
+ * @param[in] _pCell      Cell of which we want the index
+ * @return The index of the given cell
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxBank_GetIndex(const orxBANK *_pstBank, const void *_pCell);
+
+/** Gets the cell at given index, orxNULL is the cell isn't allocated
+ * @param[in] _pstBank    Concerned memory bank
+ * @param[in] _u32Index   Index of the cell to retrieve
+ * @return The cell at the given index if allocated, orxNULL otherwise
+ */
+extern orxDLLAPI void *orxFASTCALL          orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index);
+
 /** Gets the bank allocated cell counter
  * @param[in] _pstBank    Concerned bank
  * @return Number of allocated cells
  */
 extern orxDLLAPI orxU32 orxFASTCALL         orxBank_GetCounter(const orxBANK *_pstBank);
+
 
 /*******************************************************************************
  * DEBUG FUNCTION
