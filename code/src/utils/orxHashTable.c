@@ -178,6 +178,9 @@ orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
   /* Clear the hash */
   orxMemory_Zero(_pstHashTable->apstCell, orxHASHTABLE_KU32_INDEX_SIZE * sizeof(orxHASHTABLE_CELL *));
 
+  /* Clears counter */
+  _pstHashTable->u32Counter = 0;
+
   /* Done! */
   return orxSTATUS_SUCCESS;
 }
