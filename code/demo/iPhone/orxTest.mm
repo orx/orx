@@ -89,6 +89,9 @@ static orxSTATUS orxFASTCALL Run()
 {
   orxVECTOR vMousePos, vGravity;
 
+  /* Updates generator's status */
+  orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
+
   /* Gets mouse position in world space */
   if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
   {
@@ -102,9 +105,6 @@ static orxSTATUS orxFASTCALL Run()
 
     /* Updates generator's position */
     orxObject_SetPosition(spstGenerator, &vMousePos);
-
-    /* Updates its status */
-    orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
   }
 
   /* Gets gravity vector from input */
