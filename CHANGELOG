@@ -17,6 +17,7 @@ orx 1.2
 * GLFW plugins are now the default plugins for embedded mode. SFML plugins are still the only existing plugins for non-embedded mode.
 * GLFW and SDL plugins also use SOIL library for handling graphic files I/O
 * Fixed incorrectly names joystick axes
+* Texts can use localized fonts using the locale module in the same way as string content
 * Added orxBank_GetIndex() & orxBank_GetAtIndex() for array-like manipulations
 * Heavy optims in the orxBANK module when allocating cells and clearing banks
 * Added orxObject_BoxPick() for picking objects intersecting with box
