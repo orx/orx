@@ -599,6 +599,7 @@ orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
  */
 orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
+  orxU32    u32ID;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -606,14 +607,17 @@ orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCalle
   orxSTRUCTURE_ASSERT(_pStructure);
   orxASSERT(_pstClockInfo != orxNULL);
 
+  /* Gets structure ID */
+  u32ID = orxStructure_GetID(_pStructure);
+  
   /* Is structure registered? */
-  if(sstStructure.astInfo[orxStructure_GetID(_pStructure)].u32Size != 0)
+  if(sstStructure.astInfo[u32ID].u32Size != 0)
   {
     /* Is an update function registered? */
-    if(sstStructure.astInfo[orxStructure_GetID(_pStructure)].pfnUpdate != orxNULL)
+    if(sstStructure.astInfo[u32ID].pfnUpdate != orxNULL)
     {
       /* Calls it */
-      eResult = sstStructure.astInfo[orxStructure_GetID(_pStructure)].pfnUpdate(((orxSTRUCTURE *)_pStructure), ((orxSTRUCTURE *)_pCaller), _pstClockInfo);
+      eResult = sstStructure.astInfo[u32ID].pfnUpdate(((orxSTRUCTURE *)_pStructure), ((orxSTRUCTURE *)_pCaller), _pstClockInfo);
     }
     else
     {
