@@ -194,9 +194,14 @@ PFNGLGETUNIFORMLOCATIONARBPROC    glGetUniformLocationARB   = NULL;
 PFNGLUNIFORM1FARBPROC             glUniform1fARB            = NULL;
 PFNGLUNIFORM3FARBPROC             glUniform3fARB            = NULL;
 PFNGLUNIFORM1IARBPROC             glUniform1iARB            = NULL;
-PFNGLACTIVETEXTUREARBPROC         glActiveTextureARB        = NULL;
 
-#endif
+  #ifndef __orxLINUX__
+
+    PFNGLACTIVETEXTUREARBPROC     glActiveTextureARB        = NULL;
+
+  #endif /* __orxLINUX__ */
+
+#endif /* __orxMAC__ */
 
 
 /***************************************************************************
@@ -270,7 +275,12 @@ static orxINLINE void orxDisplay_GLFW_InitShaderSupport()
     orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM1FARBPROC, glUniform1fARB);
     orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM3FARBPROC, glUniform3fARB);
     orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM1IARBPROC, glUniform1iARB);
-    orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLACTIVETEXTUREARBPROC, glActiveTextureARB);
+	
+    #ifndef __orxLINUX__
+
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLACTIVETEXTUREARBPROC, glActiveTextureARB);
+
+    #endif /* __orxLINUX__ */
 
 #endif /* __orxMAC__ */
 

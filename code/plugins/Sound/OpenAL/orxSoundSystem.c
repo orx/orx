@@ -34,17 +34,17 @@
 
 #include "orxPluginAPI.h"
 
-#ifdef __orxWINDOWS__
-
-  #include <AL/al.h>
-  #include <AL/alc.h>
-
-#else /* __orxWINDOWS__ */
+#ifdef __orxMAC__
 
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
 
-#endif /* __orxWINDOWS__ */
+#else /* __orxMAC__ */
+
+  #include <AL/al.h>
+  #include <AL/alc.h>
+
+#endif /* __orxMAC__ */
 
 #ifdef __orxMSVC__
 
