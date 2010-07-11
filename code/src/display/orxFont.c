@@ -448,6 +448,24 @@ void orxFASTCALL orxFont_Exit()
   /* Initialized? */
   if(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY)
   {
+    orxBITMAP  *pstBitmap;
+    orxTEXTURE *pstTexture;
+
+    /* Gets default font texture */
+    pstTexture = orxFont_GetTexture(sstFont.pstDefaultFont);
+
+    /* Gets its bitmap */
+    pstBitmap = orxTexture_GetBitmap(pstTexture);
+
+    /* Unlinks bitmap */
+    orxTexture_UnlinkBitmap(pstTexture);
+
+    /* Deletes bitmap */
+    orxDisplay_DeleteBitmap(pstBitmap);
+
+    /* Deletes texture */
+    orxTexture_Delete(pstTexture);
+
     /* Deletes font list */
     orxFont_DeleteAll();
 

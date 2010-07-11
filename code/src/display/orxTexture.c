@@ -52,12 +52,15 @@
 
 #define orxTEXTURE_KU32_FLAG_BITMAP             0x00000010
 #define orxTEXTURE_KU32_FLAG_EXTERNAL           0x00000020
+#define orxTEXTURE_KU32_FLAG_INTERNAL           0x00000040
 #define orxTEXTURE_KU32_FLAG_REF_COORD          0x00000100
 #define orxTEXTURE_KU32_FLAG_SIZE               0x00000200
 
 #define orxTEXTURE_KU32_MASK_ALL                0xFFFFFFFF
 
 #define orxTEXTURE_KU32_TABLE_SIZE              128
+
+#define orxTEXTURE_KZ_PIXEL                     "pixel"
 
 
 /***************************************************************************
@@ -82,7 +85,8 @@ typedef struct __orxTEXTURE_STATIC_t
 {
   orxHASHTABLE *pstTable;                       /**< Bitmap hashtable : 4 */
   orxTEXTURE   *pstScreen;                      /**< Screen texture : 8 */
-  orxU32        u32Flags;                       /**< Control flags : 12 */
+  orxTEXTURE   *pstPixel;                       /**< Pixel texture : 12 */
+  orxU32        u32Flags;                       /**< Control flags : 16 */
 
 } orxTEXTURE_STATIC;
 
@@ -180,30 +184,65 @@ orxSTATUS orxFASTCALL orxTexture_Init()
         /* Updates flags for screen texture creation */
         sstTexture.u32Flags = orxTEXTURE_KU32_STATIC_FLAG_READY;
 
-        /* Creates screen texture */
-        sstTexture.pstScreen = orxTexture_Create();
+        /* Creates screen & pixel textures */
+        sstTexture.pstScreen  = orxTexture_Create();
+        sstTexture.pstPixel   = orxTexture_Create();
 
         /* Valid? */
-        if(sstTexture.pstScreen != orxNULL)
+        if((sstTexture.pstScreen != orxNULL) && (sstTexture.pstPixel != orxNULL))
         {
           /* Links screen bitmap */
           eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME);
 
-          /* Failed? */
-          if(eResult != orxSTATUS_SUCCESS)
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
           {
-            /* Deletes screen texture */
-            orxTexture_Delete(sstTexture.pstScreen);
+            orxBITMAP *pstBitmap;
 
-            /* Deletes hash table */
-            orxHashTable_Delete(sstTexture.pstTable);
+            /* Creates empty bitmap */
+            pstBitmap = orxDisplay_CreateBitmap(1, 1);
+
+            /* Success? */
+            if(pstBitmap != orxNULL)
+            {
+              orxU8 au8PixelBuffer[] = {0xFF, 0xFF, 0xFF, 0xFF};
+
+              /* Sets it data */
+              if(orxDisplay_SetBitmapData(pstBitmap, au8PixelBuffer, sizeof(orxRGBA)) != orxSTATUS_FAILURE)
+              {
+                /* Links it */
+                if(orxTexture_LinkBitmap(sstTexture.pstPixel, pstBitmap, orxTEXTURE_KZ_PIXEL) != orxSTATUS_FAILURE)
+                {
+                  /* Updates its flag */
+                  orxStructure_SetFlags(sstTexture.pstPixel, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+                }
+                else
+                {
+                  /* Deletes bitmap */
+                  orxDisplay_DeleteBitmap(pstBitmap);
+
+                  /* Updates result */
+                  eResult = orxSTATUS_FAILURE;
+                }
+              }
+              else
+              {
+                /* Deletes bitmap */
+                orxDisplay_DeleteBitmap(pstBitmap);
+
+                /* Updates result */
+                eResult = orxSTATUS_FAILURE;
+              }
+            }
+            else
+            {
+              /* Updates result */
+              eResult = orxSTATUS_FAILURE;
+            }
           }
         }
         else
         {
-          /* Deletes hash table */
-          orxHashTable_Delete(sstTexture.pstTable);
-
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
         }
@@ -225,10 +264,29 @@ orxSTATUS orxFASTCALL orxTexture_Init()
   }
 
   /* Not initialized? */
-  if(eResult != orxSTATUS_SUCCESS)
+  if(eResult == orxSTATUS_FAILURE)
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing texture module failed.");
+
+    /* Deletes screen & pixel textures */
+    if(sstTexture.pstScreen != orxNULL)
+    {
+      orxTexture_Delete(sstTexture.pstScreen);
+      sstTexture.pstScreen = orxNULL;
+    }
+    if(sstTexture.pstPixel != orxNULL)
+    {
+      orxTexture_Delete(sstTexture.pstPixel);
+      sstTexture.pstPixel = orxNULL;
+    }
+
+    /* Deletes hash table */
+    if(sstTexture.pstTable != orxNULL)
+    {
+      orxHashTable_Delete(sstTexture.pstTable);
+      sstTexture.pstTable = orxNULL;
+    }
 
     /* Updates Flags */
     sstTexture.u32Flags &= ~orxTEXTURE_KU32_STATIC_FLAG_READY;
@@ -245,11 +303,9 @@ void orxFASTCALL orxTexture_Exit()
   /* Initialized? */
   if(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY)
   {
-    /* Unlinks screen texture */
-    orxTexture_UnlinkBitmap(sstTexture.pstScreen);
-
-    /* Deletes screen texture */
+    /* Deletes screen & pixel textures */
     orxTexture_Delete(sstTexture.pstScreen);
+    orxTexture_Delete(sstTexture.pstPixel);
 
     /* Deletes texture list */
     orxTexture_DeleteAll();
@@ -339,6 +395,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
       && (orxTexture_LinkBitmap(pstTexture, pstBitmap, _zBitmapFileName) == orxSTATUS_SUCCESS))
       {
           /* Inits it */
+        orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
       }
       else
       {
@@ -510,11 +567,15 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     }
     else
     {
-      /* Updates flags */
-      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_NONE, (orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE));
+      /* Internally handled? */
+      if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL))
+      {
+        /* Deletes bitmap */
+        orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->hData));
+      }
 
-      /* Deletes bitmap */
-      orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->hData));
+      /* Updates flags */
+      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_NONE, (orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE | orxTEXTURE_KU32_FLAG_INTERNAL));
 
       /* Cleans data */
       _pstTexture->hData = orxHANDLE_UNDEFINED;
