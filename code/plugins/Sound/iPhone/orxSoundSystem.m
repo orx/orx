@@ -55,24 +55,21 @@
 #define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY      orx2F(0.1f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO orx2F(0.01f)
 
-#ifdef __orxDEBUG__
+//! Deactivated for now as it breaks on iPhone simulator 4.0. All other versions are fine.
+//#ifdef __orxDEBUG__
+//
+//#define alASSERT()                                                      \
+//do                                                                      \
+//{                                                                       \
+//  ALenum eError = alGetError();                                         \
+//  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
+//} while(orxFALSE)
+//
+//#else /* __orxDEBUG__ */
 
-#define alASSERT()                                                      \
-do                                                                      \
-{                                                                       \
-  ALenum eError = alGetError();                                         \
-  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
-} while(orxFALSE)
+#define alASSERT()
 
-#else /* __orxDEBUG__ */
-
-#define alASSERT()                                                      \
-do                                                                      \
-{                                                                       \
-  alGetError();                                                         \
-} while(orxFALSE)
-
-#endif /* __orxDEBUG__ */
+//#endif /* __orxDEBUG__ */
 
 
 /***************************************************************************
