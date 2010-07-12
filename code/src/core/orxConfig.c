@@ -82,7 +82,7 @@
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          4           /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 
-#define orxCONFIG_KU32_BUFFER_SIZE                4096        /**< Buffer size */
+#define orxCONFIG_KU32_BUFFER_SIZE                8192        /**< Buffer size */
 
 #define orxCONFIG_KC_SECTION_START                '['         /**< Section start character */
 #define orxCONFIG_KC_SECTION_END                  ']'         /**< Section end character */
@@ -4095,7 +4095,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
   orxASSERT(_azValue != orxNULL);
 
   /* Valid? */
-  if(_u32Number > 0)
+  if((_u32Number > 0) && (_u32Number < 256))
   {
     /* Gets entry */
     pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
@@ -4108,12 +4108,12 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
     }
 
     /* For all values */
-    for(i = 0, u32Index = 0; i < _u32Number; i++)
+    for(i = 0, u32Index = 0; (i < _u32Number) && (u32Index < orxCONFIG_KU32_BUFFER_SIZE - 1); i++)
     {
       const orxCHAR *pc;
 
       /* For all characters */
-      for(pc = _azValue[i]; *pc != orxCHAR_NULL; pc++)
+      for(pc = _azValue[i]; (*pc != orxCHAR_NULL) && (u32Index < orxCONFIG_KU32_BUFFER_SIZE - 1); pc++)
       {
         /* Copies it */
         acBuffer[u32Index++] = *pc;
@@ -4123,16 +4123,28 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
       acBuffer[u32Index++] = orxCONFIG_KC_LIST_SEPARATOR;
     }
 
-    /* Removes last separator */
-    acBuffer[u32Index - 1] = orxCHAR_NULL;
+    /* Ran out of memory? */
+    if(u32Index >= orxCONFIG_KU32_BUFFER_SIZE - 1)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cannot write config string list as the list would exceed %ld bytes in memory.", orxCONFIG_KU32_BUFFER_SIZE);
 
-    /* Adds new entry */
-    eResult = orxConfig_AddEntry(_zKey, acBuffer, orxFALSE);
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+    else
+    {
+      /* Removes last separator */
+      acBuffer[u32Index - 1] = orxCHAR_NULL;
+
+      /* Adds new entry */
+      eResult = orxConfig_AddEntry(_zKey, acBuffer, orxFALSE);
+    }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cannot write config string list as no item is provided.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cannot write config string list as no or too many item(s) are provided.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

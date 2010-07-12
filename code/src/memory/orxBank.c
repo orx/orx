@@ -348,7 +348,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     {
       orxS32 s32MapPartValue;
 
-      /* Gets the available spaces */
+      /* Gets the available slots */
       s32MapPartValue = ~(pstCurrentSegment->pu32CellAllocationMap[u32MapPartIndex]);
 
       /* Any free one? */
