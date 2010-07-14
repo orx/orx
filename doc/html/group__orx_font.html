@@ -44,6 +44,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g7b1d62517a924b9b24f0b81174b28f3c">orxFont_SetCharacterSize</a> (<a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSize)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g650ac0e9b4f5505d781e177c85cb98f0">orxFont_SetCharacterStride</a> (<a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStride)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g1fd622d700599de60f4ec16b0ec524ed">orxFont_SetOrigin</a> (<a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOrigin)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g031179787e10cc2b416cd4737eef85e2">orxFont_SetSize</a> (<a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSize)</td></tr>
@@ -54,6 +56,8 @@
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g017c9101872e0b814e510ae0ad7c4b0a">orxFont_GetCharacterList</a> (const <a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#ga29e31f5bf27bc4f3e60a326358744b5">orxFont_GetCharacterSize</a> (const <a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSize)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g70917b5334f24ca7b524eaba878d1fae">orxFont_GetCharacterStride</a> (const <a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStride)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_font.html#g3687283c3e2898d75be8bbf1b5e57b31">orxFont_GetOrigin</a> (const <a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *_pstFont, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOrigin)</td></tr>
 
@@ -233,7 +237,43 @@ Gets font's character size <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvSize</em>&nbsp;</td><td>Character's size </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g70917b5334f24ca7b524eaba878d1fae"></a><!-- doxytag: member="orxFont.h::orxFont_GetCharacterStride" ref="g70917b5334f24ca7b524eaba878d1fae" args="(const orxFONT *_pstFont, orxVECTOR *_pvStride)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxFASTCALL orxFont_GetCharacterStride           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFont</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvStride</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets font's character stride <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFont</em>&nbsp;</td><td>Concerned font </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvStride</em>&nbsp;</td><td>Character's stride </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -341,7 +381,7 @@ Gets font's origin <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvOrigin</em>&nbsp;</td><td>Font's origin </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxDISPLAY_FONT / orxNULL </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -377,7 +417,7 @@ Gets font's size <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvSize</em>&nbsp;</td><td>Font's size </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxDISPLAY_FONT / orxNULL </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -493,6 +533,42 @@ Sets font's character size <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFont</em>&nbsp;</td><td>Concerned font </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvSize</em>&nbsp;</td><td>Character's size </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g650ac0e9b4f5505d781e177c85cb98f0"></a><!-- doxytag: member="orxFont.h::orxFont_SetCharacterStride" ref="g650ac0e9b4f5505d781e177c85cb98f0" args="(orxFONT *_pstFont, const orxVECTOR *_pvStride)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFont_SetCharacterStride           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_font.html#gb691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFont</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvStride</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets font's character stride <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFont</em>&nbsp;</td><td>Concerned font </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvStride</em>&nbsp;</td><td>Character's stride </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

@@ -43,6 +43,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g0e51aa395e0ff3f3df68afa8c1cc22e7">orxString_IsCharacterASCII</a> (orxU32 _u32CharacterCode)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gd8d7a17ce2df2104defe95fa879933e1">orxString_GetUTF8CharacterLength</a> (orxU32 _u32CharacterCode)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g990c3c681faa995be8cb6fe7e1d57ec2">orxString_PrintUTF8Character</a> (orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCode)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g1c85527e8785f5f424c31178b3d95058">orxString_GetFirstCharacterCode</a> (const orxSTRING _zString, const orxSTRING *_pzRemaining)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g08c8a06ad01a11f54df7ebc604dfa998">orxString_GetCharacterCounter</a> (const orxSTRING _zString)</td></tr>
@@ -421,6 +425,32 @@ Returns the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won'
 
 </div>
 </div><p>
+<a class="anchor" name="gd8d7a17ce2df2104defe95fa879933e1"></a><!-- doxytag: member="orxString.h::orxString_GetUTF8CharacterLength" ref="gd8d7a17ce2df2104defe95fa879933e1" args="(orxU32 _u32CharacterCode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxBOOL orxString_GetUTF8CharacterLength           </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32CharacterCode</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets the UTF-8 encoding length of given character <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32CharacterCode</em>&nbsp;</td><td>Concerned character code </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Encoding length in UTF-8 for given character if valid, orxU32_UNDEFINED otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g981c39a82ad021ec08f84a8cb074a695"></a><!-- doxytag: member="orxString.h::orxString_ICompare" ref="g981c39a82ad021ec08f84a8cb074a695" args="(const orxSTRING _zString1, const orxSTRING _zString2)" -->
 <div class="memitem">
 <div class="memproto">
@@ -476,7 +506,7 @@ Compare two strings, case insensitive. If the first one is smaller than the seco
 <p>
 Tells if a character is ASCII from its ID <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32CharacterCode</em>&nbsp;</td><td>Concerned character ID </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32CharacterCode</em>&nbsp;</td><td>Concerned character code </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise </dd></dl>
@@ -805,6 +835,49 @@ Prints a formated string to a memory buffer <dl compact><dt><b>Parameters:</b></
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The number of written characters </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g990c3c681faa995be8cb6fe7e1d57ec2"></a><!-- doxytag: member="orxString.h::orxString_PrintUTF8Character" ref="g990c3c681faa995be8cb6fe7e1d57ec2" args="(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxU32 orxFASTCALL orxString_PrintUTF8Character           </td>
+          <td>(</td>
+          <td class="paramtype">orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zDstString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32CharacterCode</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Prints a unicode character encoded with UTF-8 to an orxSTRING <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDstString</em>&nbsp;</td><td>Destination string </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>Available size on the string </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32CharacterCode</em>&nbsp;</td><td>Unicode code point of the character to print </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise </dd></dl>
 
 </div>
 </div><p>

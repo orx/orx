@@ -155,7 +155,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterSize(c
 
 /** Gets font's character stride
  * @param[in]   _pstFont      Concerned font
- * @param[out]  _pvSstride    Character's stride
+ * @param[out]  _pvStride     Character's stride
  * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterStride(const orxFONT *_pstFont, orxVECTOR *_pvStride);

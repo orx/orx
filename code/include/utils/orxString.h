@@ -225,10 +225,11 @@ static orxINLINE orxBOOL                orxString_GetUTF8CharacterLength(orxU32 
   return u32Result;
 }
 
-/** Returns the code of the first character of the UTF-8 string
- * @param[in] _zString                  Concerned string
- * @param[out]  _pzRemaining            If non null, will contain the remaining string after the first UTF-8 character
- * @return                              Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character
+/** Prints a unicode character encoded with UTF-8 to an orxSTRING
+ * @param[in] _zDstString               Destination string
+ * @param[in] _u32Size                  Available size on the string
+ * @param[in] _u32CharacterCode         Unicode code point of the character to print
+ * @return                              Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise
  */
 static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCode)
 {
@@ -243,7 +244,6 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
     /* Depending on character's length */
     switch(u32Result)
     {
-      default:
       case 1:
       {
         /* Writes character */
@@ -293,10 +293,24 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
 
         break;
       }
+
+      default:
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't print invalid unicode character <0x%X> to string.", _u32CharacterCode);
+
+        /* Updates result */
+        u32Result = orxU32_UNDEFINED;
+
+        break;
+      }
     }
   }
   else
   {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't print unicode character <0x%X> to string as there isn't enough space for it.", _u32CharacterCode);
+
     /* Updates result */
     u32Result = orxU32_UNDEFINED;
   }
@@ -307,7 +321,7 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
 
 /** Returns the code of the first character of the UTF-8 string
  * @param[in] _zString                  Concerned string
- * @param[out]  _pzRemaining            If non null, will contain the remaining string after the first UTF-8 character
+ * @param[out] _pzRemaining             If non null, will contain the remaining string after the first UTF-8 character
  * @return                              Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character
  */
 static orxU32 orxFASTCALL               orxString_GetFirstCharacterCode(const orxSTRING _zString, const orxSTRING *_pzRemaining)

@@ -25,8 +25,20 @@
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gccb7c6f56180d6f17b0e9d6faee23767">orxINPUT_KU32_BINDING_NUMBER</a>&nbsp;&nbsp;&nbsp;4</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gccb7c6f56180d6f17b0e9d6faee23767">orxINPUT_KU32_BINDING_NUMBER</a>&nbsp;&nbsp;&nbsp;4</td></tr>
+
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a">orxINPUT_TYPE_KEYBOARD_KEY</a> =  0, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52">orxINPUT_TYPE_MOUSE_BUTTON</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860">orxINPUT_TYPE_MOUSE_AXIS</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704">orxINPUT_TYPE_JOYSTICK_BUTTON</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8">orxINPUT_TYPE_JOYSTICK_AXIS</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066">orxINPUT_TYPE_EXTERNAL</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b">orxINPUT_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8">orxINPUT_TYPE_NONE</a> =  orxENUM_NONE, 
+<br>
 &nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a">orxINPUT_TYPE_KEYBOARD_KEY</a> =  0, 
 <a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52">orxINPUT_TYPE_MOUSE_BUTTON</a>, 
 <a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860">orxINPUT_TYPE_MOUSE_AXIS</a>, 
@@ -39,10 +51,53 @@
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad778a6cb60c4e8b47e35f8a9216f108">orxINPUT_EVENT</a> { <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> =  0, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad778a6cb60c4e8b47e35f8a9216f108">orxINPUT_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> =  0, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> =  orxENUM_NONE, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> =  0, 
 <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
 <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a">orxINPUT_TYPE_KEYBOARD_KEY</a> =  0, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52">orxINPUT_TYPE_MOUSE_BUTTON</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860">orxINPUT_TYPE_MOUSE_AXIS</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704">orxINPUT_TYPE_JOYSTICK_BUTTON</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8">orxINPUT_TYPE_JOYSTICK_AXIS</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066">orxINPUT_TYPE_EXTERNAL</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b">orxINPUT_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8">orxINPUT_TYPE_NONE</a> =  orxENUM_NONE, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a">orxINPUT_TYPE_KEYBOARD_KEY</a> =  0, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52">orxINPUT_TYPE_MOUSE_BUTTON</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860">orxINPUT_TYPE_MOUSE_AXIS</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704">orxINPUT_TYPE_JOYSTICK_BUTTON</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8">orxINPUT_TYPE_JOYSTICK_AXIS</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066">orxINPUT_TYPE_EXTERNAL</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b">orxINPUT_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8">orxINPUT_TYPE_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad778a6cb60c4e8b47e35f8a9216f108">orxINPUT_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> =  0, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> =  orxENUM_NONE, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> =  0, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> =  orxENUM_NONE
+<br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
@@ -113,6 +168,21 @@ Input module Module that handles generalized inputs (keyboard, mouse, joystick, 
 Misc defines 
 </div>
 </div><p>
+<a class="anchor" name="gccb7c6f56180d6f17b0e9d6faee23767"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxINPUT_KU32_BINDING_NUMBER" ref="gccb7c6f56180d6f17b0e9d6faee23767" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxINPUT_KU32_BINDING_NUMBER&nbsp;&nbsp;&nbsp;4          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Misc defines 
+</div>
+</div><p>
 <hr><h2>Enumeration Type Documentation</h2>
 <a class="anchor" name="gad778a6cb60c4e8b47e35f8a9216f108"></a><!-- doxytag: member="orxInput.h::orxINPUT_EVENT" ref="gad778a6cb60c4e8b47e35f8a9216f108" args="" -->
 <div class="memitem">
@@ -128,6 +198,49 @@ Misc defines
 <p>
 Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809"></a><!-- doxytag: member="orxINPUT_EVENT_ON" ref="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809" args="" -->orxINPUT_EVENT_ON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00"></a><!-- doxytag: member="orxINPUT_EVENT_OFF" ref="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00" args="" -->orxINPUT_EVENT_OFF</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c"></a><!-- doxytag: member="orxINPUT_EVENT_NUMBER" ref="ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c" args="" -->orxINPUT_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82"></a><!-- doxytag: member="orxINPUT_EVENT_NONE" ref="ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82" args="" -->orxINPUT_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809"></a><!-- doxytag: member="orxINPUT_EVENT_ON" ref="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809" args="" -->orxINPUT_EVENT_ON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00"></a><!-- doxytag: member="orxINPUT_EVENT_OFF" ref="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00" args="" -->orxINPUT_EVENT_OFF</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c"></a><!-- doxytag: member="orxINPUT_EVENT_NUMBER" ref="ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c" args="" -->orxINPUT_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82"></a><!-- doxytag: member="orxINPUT_EVENT_NONE" ref="ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82" args="" -->orxINPUT_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gad778a6cb60c4e8b47e35f8a9216f108"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxINPUT_EVENT" ref="gad778a6cb60c4e8b47e35f8a9216f108" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_input.html#gad778a6cb60c4e8b47e35f8a9216f108">orxINPUT_EVENT</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809"></a><!-- doxytag: member="orxINPUT_EVENT_ON" ref="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809" args="" -->orxINPUT_EVENT_ON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00"></a><!-- doxytag: member="orxINPUT_EVENT_OFF" ref="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00" args="" -->orxINPUT_EVENT_OFF</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c"></a><!-- doxytag: member="orxINPUT_EVENT_NUMBER" ref="ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c" args="" -->orxINPUT_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82"></a><!-- doxytag: member="orxINPUT_EVENT_NONE" ref="ggad778a6cb60c4e8b47e35f8a9216f108ae45de01d74ad9364c33533d2fbbac82" args="" -->orxINPUT_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809"></a><!-- doxytag: member="orxINPUT_EVENT_ON" ref="ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809" args="" -->orxINPUT_EVENT_ON</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00"></a><!-- doxytag: member="orxINPUT_EVENT_OFF" ref="ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00" args="" -->orxINPUT_EVENT_OFF</em>&nbsp;</td><td>
@@ -171,13 +284,80 @@ Input type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8"></a><!-- doxytag: member="orxINPUT_TYPE_NONE" ref="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8" args="" -->orxINPUT_TYPE_NONE</em>&nbsp;</td><td>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a"></a><!-- doxytag: member="orxINPUT_TYPE_KEYBOARD_KEY" ref="gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a" args="" -->orxINPUT_TYPE_KEYBOARD_KEY</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52"></a><!-- doxytag: member="orxINPUT_TYPE_MOUSE_BUTTON" ref="gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52" args="" -->orxINPUT_TYPE_MOUSE_BUTTON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860"></a><!-- doxytag: member="orxINPUT_TYPE_MOUSE_AXIS" ref="gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860" args="" -->orxINPUT_TYPE_MOUSE_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_BUTTON" ref="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704" args="" -->orxINPUT_TYPE_JOYSTICK_BUTTON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_AXIS" ref="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8" args="" -->orxINPUT_TYPE_JOYSTICK_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066"></a><!-- doxytag: member="orxINPUT_TYPE_EXTERNAL" ref="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066" args="" -->orxINPUT_TYPE_EXTERNAL</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b"></a><!-- doxytag: member="orxINPUT_TYPE_NUMBER" ref="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b" args="" -->orxINPUT_TYPE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8"></a><!-- doxytag: member="orxINPUT_TYPE_NONE" ref="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8" args="" -->orxINPUT_TYPE_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g13d8a7334d0c18530536658991628659"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxINPUT_TYPE" ref="g13d8a7334d0c18530536658991628659" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Input type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a"></a><!-- doxytag: member="orxINPUT_TYPE_KEYBOARD_KEY" ref="gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a" args="" -->orxINPUT_TYPE_KEYBOARD_KEY</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52"></a><!-- doxytag: member="orxINPUT_TYPE_MOUSE_BUTTON" ref="gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52" args="" -->orxINPUT_TYPE_MOUSE_BUTTON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860"></a><!-- doxytag: member="orxINPUT_TYPE_MOUSE_AXIS" ref="gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860" args="" -->orxINPUT_TYPE_MOUSE_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_BUTTON" ref="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704" args="" -->orxINPUT_TYPE_JOYSTICK_BUTTON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_AXIS" ref="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8" args="" -->orxINPUT_TYPE_JOYSTICK_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066"></a><!-- doxytag: member="orxINPUT_TYPE_EXTERNAL" ref="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066" args="" -->orxINPUT_TYPE_EXTERNAL</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b"></a><!-- doxytag: member="orxINPUT_TYPE_NUMBER" ref="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b" args="" -->orxINPUT_TYPE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8"></a><!-- doxytag: member="orxINPUT_TYPE_NONE" ref="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8" args="" -->orxINPUT_TYPE_NONE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a"></a><!-- doxytag: member="orxINPUT_TYPE_KEYBOARD_KEY" ref="gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a" args="" -->orxINPUT_TYPE_KEYBOARD_KEY</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52"></a><!-- doxytag: member="orxINPUT_TYPE_MOUSE_BUTTON" ref="gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52" args="" -->orxINPUT_TYPE_MOUSE_BUTTON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860"></a><!-- doxytag: member="orxINPUT_TYPE_MOUSE_AXIS" ref="gg13d8a7334d0c18530536658991628659fc167459723e9d296cd0f04cac65f860" args="" -->orxINPUT_TYPE_MOUSE_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_BUTTON" ref="gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704" args="" -->orxINPUT_TYPE_JOYSTICK_BUTTON</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8"></a><!-- doxytag: member="orxINPUT_TYPE_JOYSTICK_AXIS" ref="gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8" args="" -->orxINPUT_TYPE_JOYSTICK_AXIS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066"></a><!-- doxytag: member="orxINPUT_TYPE_EXTERNAL" ref="gg13d8a7334d0c185305366589916286593e6de4367351b0224dfc0e473e835066" args="" -->orxINPUT_TYPE_EXTERNAL</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b"></a><!-- doxytag: member="orxINPUT_TYPE_NUMBER" ref="gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b" args="" -->orxINPUT_TYPE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8"></a><!-- doxytag: member="orxINPUT_TYPE_NONE" ref="gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8" args="" -->orxINPUT_TYPE_NONE</em>&nbsp;</td><td>
+</td></tr>
 </table>
 </dl>
 
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g6445ff03f53efd756258070b52f8eea9"></a><!-- doxytag: member="orxInput.h::orxInput_Bind" ref="g6445ff03f53efd756258070b52f8eea9" args="(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID)" -->
+<a class="anchor" name="g6445ff03f53efd756258070b52f8eea9"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Bind" ref="g6445ff03f53efd756258070b52f8eea9" args="(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -220,7 +400,7 @@ Binds an input to a mouse/joystick button, keyboard key or joystick axis <dl com
 
 </div>
 </div><p>
-<a class="anchor" name="g494bcae3fb2c30b26d44069ce7a844a1"></a><!-- doxytag: member="orxInput.h::orxInput_Exit" ref="g494bcae3fb2c30b26d44069ce7a844a1" args="()" -->
+<a class="anchor" name="g494bcae3fb2c30b26d44069ce7a844a1"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Exit" ref="g494bcae3fb2c30b26d44069ce7a844a1" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -239,7 +419,7 @@ Binds an input to a mouse/joystick button, keyboard key or joystick axis <dl com
 Exits from Input module 
 </div>
 </div><p>
-<a class="anchor" name="gf6ad5f021a20889b303ca270a9e3d8a2"></a><!-- doxytag: member="orxInput.h::orxInput_GetActiveBinding" ref="gf6ad5f021a20889b303ca270a9e3d8a2" args="(orxINPUT_TYPE *_peType, orxENUM *_peID)" -->
+<a class="anchor" name="gf6ad5f021a20889b303ca270a9e3d8a2"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetActiveBinding" ref="gf6ad5f021a20889b303ca270a9e3d8a2" args="(orxINPUT_TYPE *_peType, orxENUM *_peID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -275,7 +455,7 @@ Gets active binding (current pressed key/button/...) so as to allow on-the-fly u
 
 </div>
 </div><p>
-<a class="anchor" name="gba4b01e74bf2c456659a815cf67281c9"></a><!-- doxytag: member="orxInput.h::orxInput_GetBinding" ref="gba4b01e74bf2c456659a815cf67281c9" args="(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID)" -->
+<a class="anchor" name="gba4b01e74bf2c456659a815cf67281c9"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetBinding" ref="gba4b01e74bf2c456659a815cf67281c9" args="(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -325,7 +505,7 @@ Gets an input binding (mouse/joystick button, keyboard key or joystick axis) at 
 
 </div>
 </div><p>
-<a class="anchor" name="g7bb6be1573073dfdc881d901c8c79284"></a><!-- doxytag: member="orxInput.h::orxInput_GetBindingList" ref="g7bb6be1573073dfdc881d901c8c79284" args="(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER])" -->
+<a class="anchor" name="g7bb6be1573073dfdc881d901c8c79284"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetBindingList" ref="g7bb6be1573073dfdc881d901c8c79284" args="(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER])" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -368,7 +548,7 @@ Gets an input binding (mouse/joystick button, keyboard key or joystick axis) lis
 
 </div>
 </div><p>
-<a class="anchor" name="gd764ac0f8b77dbd4bbefdd9891519dbf"></a><!-- doxytag: member="orxInput.h::orxInput_GetBindingName" ref="gd764ac0f8b77dbd4bbefdd9891519dbf" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
+<a class="anchor" name="gd764ac0f8b77dbd4bbefdd9891519dbf"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetBindingName" ref="gd764ac0f8b77dbd4bbefdd9891519dbf" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -404,7 +584,7 @@ Gets a binding name <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g1d785a408be82ed78e4a2defb0c0acdc"></a><!-- doxytag: member="orxInput.h::orxInput_GetBoundInput" ref="g1d785a408be82ed78e4a2defb0c0acdc" args="(orxINPUT_TYPE _eType, orxENUM _eID, orxU32 _u32InputIndex)" -->
+<a class="anchor" name="g1d785a408be82ed78e4a2defb0c0acdc"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetBoundInput" ref="g1d785a408be82ed78e4a2defb0c0acdc" args="(orxINPUT_TYPE _eType, orxENUM _eID, orxU32 _u32InputIndex)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -447,7 +627,7 @@ Gets the input name to which a mouse/joystick button, keyboard key or joystick a
 
 </div>
 </div><p>
-<a class="anchor" name="g4f1eae3eb68f2d9fe9912cdb3512f291"></a><!-- doxytag: member="orxInput.h::orxInput_GetBoundInputCounter" ref="g4f1eae3eb68f2d9fe9912cdb3512f291" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
+<a class="anchor" name="g4f1eae3eb68f2d9fe9912cdb3512f291"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetBoundInputCounter" ref="g4f1eae3eb68f2d9fe9912cdb3512f291" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -483,7 +663,7 @@ Gets the input counter to which a mouse/joystick button, keyboard key or joystic
 
 </div>
 </div><p>
-<a class="anchor" name="gbf638c2d7b0cf7488050b390caf26b21"></a><!-- doxytag: member="orxInput.h::orxInput_GetCurrentSet" ref="gbf638c2d7b0cf7488050b390caf26b21" args="()" -->
+<a class="anchor" name="gbf638c2d7b0cf7488050b390caf26b21"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetCurrentSet" ref="gbf638c2d7b0cf7488050b390caf26b21" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -503,7 +683,7 @@ Gets current working set <dl class="return" compact><dt><b>Returns:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gdaa46efcffa6a0267862228ca01f9131"></a><!-- doxytag: member="orxInput.h::orxInput_GetValue" ref="gdaa46efcffa6a0267862228ca01f9131" args="(const orxSTRING _zInputName)" -->
+<a class="anchor" name="gdaa46efcffa6a0267862228ca01f9131"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_GetValue" ref="gdaa46efcffa6a0267862228ca01f9131" args="(const orxSTRING _zInputName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -529,7 +709,7 @@ Gets input value <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gc5afa246a389c779ac3c3a0d6635e363"></a><!-- doxytag: member="orxInput.h::orxInput_HasNewStatus" ref="gc5afa246a389c779ac3c3a0d6635e363" args="(const orxSTRING _zInputName)" -->
+<a class="anchor" name="gc5afa246a389c779ac3c3a0d6635e363"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_HasNewStatus" ref="gc5afa246a389c779ac3c3a0d6635e363" args="(const orxSTRING _zInputName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -555,7 +735,7 @@ Has a new active status since this frame? <dl compact><dt><b>Parameters:</b></dt
 
 </div>
 </div><p>
-<a class="anchor" name="g6ccb0b601cbaa9dad16033ff7f242555"></a><!-- doxytag: member="orxInput.h::orxInput_Init" ref="g6ccb0b601cbaa9dad16033ff7f242555" args="()" -->
+<a class="anchor" name="g6ccb0b601cbaa9dad16033ff7f242555"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Init" ref="g6ccb0b601cbaa9dad16033ff7f242555" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -575,7 +755,7 @@ Initializes Input module <dl class="return" compact><dt><b>Returns:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g4ee461925448ad4a31a3e82749bd0d92"></a><!-- doxytag: member="orxInput.h::orxInput_IsActive" ref="g4ee461925448ad4a31a3e82749bd0d92" args="(const orxSTRING _zInputName)" -->
+<a class="anchor" name="g4ee461925448ad4a31a3e82749bd0d92"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_IsActive" ref="g4ee461925448ad4a31a3e82749bd0d92" args="(const orxSTRING _zInputName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -601,7 +781,7 @@ Is input active? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g802173143cf6500c21cd543515cbecad"></a><!-- doxytag: member="orxInput.h::orxInput_IsInCombineMode" ref="g802173143cf6500c21cd543515cbecad" args="(const orxSTRING _zName)" -->
+<a class="anchor" name="g802173143cf6500c21cd543515cbecad"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_IsInCombineMode" ref="g802173143cf6500c21cd543515cbecad" args="(const orxSTRING _zName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -627,7 +807,7 @@ Is an input in combine mode? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gd85a555d5e7ee7bd35815a6a52baefbb"></a><!-- doxytag: member="orxInput.h::orxInput_Load" ref="gd85a555d5e7ee7bd35815a6a52baefbb" args="(const orxSTRING _zFileName)" -->
+<a class="anchor" name="gd85a555d5e7ee7bd35815a6a52baefbb"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Load" ref="gd85a555d5e7ee7bd35815a6a52baefbb" args="(const orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -653,7 +833,7 @@ Loads inputs from config <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g2a34aa6090226956398b7b1753760f71"></a><!-- doxytag: member="orxInput.h::orxInput_ResetValue" ref="g2a34aa6090226956398b7b1753760f71" args="(const orxSTRING _zInputName)" -->
+<a class="anchor" name="g2a34aa6090226956398b7b1753760f71"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_ResetValue" ref="g2a34aa6090226956398b7b1753760f71" args="(const orxSTRING _zInputName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -679,7 +859,7 @@ Resets input value (peripheral inputs will then be used instead of code ones) <d
 
 </div>
 </div><p>
-<a class="anchor" name="gcb452866d26f0e8845775a8fe7b414d0"></a><!-- doxytag: member="orxInput.h::orxInput_Save" ref="gcb452866d26f0e8845775a8fe7b414d0" args="(const orxSTRING _zFileName)" -->
+<a class="anchor" name="gcb452866d26f0e8845775a8fe7b414d0"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Save" ref="gcb452866d26f0e8845775a8fe7b414d0" args="(const orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -705,7 +885,7 @@ Saves inputs to config <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gae225101ab66ae99f8416fb5b12dbd0b"></a><!-- doxytag: member="orxInput.h::orxInput_SelectSet" ref="gae225101ab66ae99f8416fb5b12dbd0b" args="(const orxSTRING _zSetName)" -->
+<a class="anchor" name="gae225101ab66ae99f8416fb5b12dbd0b"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_SelectSet" ref="gae225101ab66ae99f8416fb5b12dbd0b" args="(const orxSTRING _zSetName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -730,7 +910,7 @@ Selects current working set <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g11e483a6951d7c96b51db668cc148e04"></a><!-- doxytag: member="orxInput.h::orxInput_SetCombineMode" ref="g11e483a6951d7c96b51db668cc148e04" args="(const orxSTRING _zName, orxBOOL _bCombine)" -->
+<a class="anchor" name="g11e483a6951d7c96b51db668cc148e04"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_SetCombineMode" ref="g11e483a6951d7c96b51db668cc148e04" args="(const orxSTRING _zName, orxBOOL _bCombine)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -766,7 +946,7 @@ Sets an input combine mode <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g42393f5dfe8922974e5ecf198abde788"></a><!-- doxytag: member="orxInput.h::orxInput_SetPermanentValue" ref="g42393f5dfe8922974e5ecf198abde788" args="(const orxSTRING _zInputName, orxFLOAT _fValue)" -->
+<a class="anchor" name="g42393f5dfe8922974e5ecf198abde788"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_SetPermanentValue" ref="g42393f5dfe8922974e5ecf198abde788" args="(const orxSTRING _zInputName, orxFLOAT _fValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -802,7 +982,7 @@ Sets permanent input value (will prevail on peripheral inputs till reset) <dl co
 
 </div>
 </div><p>
-<a class="anchor" name="g1095ad88059cd0d841a28ad60efc0a22"></a><!-- doxytag: member="orxInput.h::orxInput_Setup" ref="g1095ad88059cd0d841a28ad60efc0a22" args="()" -->
+<a class="anchor" name="g1095ad88059cd0d841a28ad60efc0a22"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Setup" ref="g1095ad88059cd0d841a28ad60efc0a22" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -821,7 +1001,7 @@ Sets permanent input value (will prevail on peripheral inputs till reset) <dl co
 Input module setup 
 </div>
 </div><p>
-<a class="anchor" name="gb2b159105a935ccb1547119a07822f97"></a><!-- doxytag: member="orxInput.h::orxInput_SetValue" ref="gb2b159105a935ccb1547119a07822f97" args="(const orxSTRING _zInputName, orxFLOAT _fValue)" -->
+<a class="anchor" name="gb2b159105a935ccb1547119a07822f97"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_SetValue" ref="gb2b159105a935ccb1547119a07822f97" args="(const orxSTRING _zInputName, orxFLOAT _fValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -857,7 +1037,7 @@ Sets input value (will prevail on peripheral inputs only once) <dl compact><dt><
 
 </div>
 </div><p>
-<a class="anchor" name="g41dac9027f2f429d21026c0a2994e7ae"></a><!-- doxytag: member="orxInput.h::orxInput_Unbind" ref="g41dac9027f2f429d21026c0a2994e7ae" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
+<a class="anchor" name="g41dac9027f2f429d21026c0a2994e7ae"></a><!-- doxytag: member="Backup 1 of orxInput.h::orxInput_Unbind" ref="g41dac9027f2f429d21026c0a2994e7ae" args="(orxINPUT_TYPE _eType, orxENUM _eID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">

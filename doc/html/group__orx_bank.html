@@ -46,6 +46,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gc989e67080308981d31e5e055f854f61">orxBank_GetNext</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, const void *_pCell)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g1feb3a29e189618bddab014bf32364d5">orxBank_GetIndex</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, const void *_pCell)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gf95868757d6eabc89dfb66491253cf86">orxBank_GetAtIndex</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, orxU32 _u32Index)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g2d51c38d4cd273bcb7308180afc6a3ce">orxBank_GetCounter</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 
 </table>
@@ -279,6 +283,42 @@ Frees an allocated cell <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gf95868757d6eabc89dfb66491253cf86"></a><!-- doxytag: member="orxBank.h::orxBank_GetAtIndex" ref="gf95868757d6eabc89dfb66491253cf86" args="(const orxBANK *_pstBank, orxU32 _u32Index)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void* orxFASTCALL orxBank_GetAtIndex           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBank</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Index</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets the cell at given index, orxNULL is the cell isn't allocated <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBank</em>&nbsp;</td><td>Concerned memory bank </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Index</em>&nbsp;</td><td>Index of the cell to retrieve </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>The cell at the given index if allocated, orxNULL otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g2d51c38d4cd273bcb7308180afc6a3ce"></a><!-- doxytag: member="orxBank.h::orxBank_GetCounter" ref="g2d51c38d4cd273bcb7308180afc6a3ce" args="(const orxBANK *_pstBank)" -->
 <div class="memitem">
 <div class="memproto">
@@ -302,6 +342,42 @@ Gets the bank allocated cell counter <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of allocated cells </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g1feb3a29e189618bddab014bf32364d5"></a><!-- doxytag: member="orxBank.h::orxBank_GetIndex" ref="g1feb3a29e189618bddab014bf32364d5" args="(const orxBANK *_pstBank, const void *_pCell)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxBank_GetIndex           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBank</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&nbsp;</td>
+          <td class="paramname"> <em>_pCell</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets the cell's index <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBank</em>&nbsp;</td><td>Concerned memory bank </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pCell</em>&nbsp;</td><td>Cell of which we want the index </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>The index of the given cell </dd></dl>
 
 </div>
 </div><p>

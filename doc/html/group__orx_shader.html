@@ -27,6 +27,8 @@
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxSHADER_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxSHADER_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g94512a95acea8de509b7346199eab3a1">orxSHADER_PARAM_TYPE</a> { <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a">orxSHADER_PARAM_TYPE_FLOAT</a> =  0, 
@@ -34,13 +36,52 @@
 <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44">orxSHADER_PARAM_TYPE_VECTOR</a>, 
 <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a">orxSHADER_PARAM_TYPE_FLOAT</a> =  0, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6">orxSHADER_PARAM_TYPE_TEXTURE</a>, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44">orxSHADER_PARAM_TYPE_VECTOR</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g90de18f99b8a163957f646599ffeeaca">orxSHADER_EVENT</a> { <a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c">orxSHADER_EVENT_SET_PARAM</a> =  0, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g90de18f99b8a163957f646599ffeeaca">orxSHADER_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c">orxSHADER_EVENT_SET_PARAM</a> =  0, 
 <a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e">orxSHADER_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb">orxSHADER_EVENT_NONE</a> =  orxENUM_NONE, 
+<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c">orxSHADER_EVENT_SET_PARAM</a> =  0, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e">orxSHADER_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb">orxSHADER_EVENT_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g94512a95acea8de509b7346199eab3a1">orxSHADER_PARAM_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a">orxSHADER_PARAM_TYPE_FLOAT</a> =  0, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6">orxSHADER_PARAM_TYPE_TEXTURE</a>, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44">orxSHADER_PARAM_TYPE_VECTOR</a>, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a">orxSHADER_PARAM_TYPE_FLOAT</a> =  0, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6">orxSHADER_PARAM_TYPE_TEXTURE</a>, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44">orxSHADER_PARAM_TYPE_VECTOR</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g90de18f99b8a163957f646599ffeeaca">orxSHADER_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c">orxSHADER_EVENT_SET_PARAM</a> =  0, 
+<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e">orxSHADER_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb">orxSHADER_EVENT_NONE</a> =  orxENUM_NONE, 
+<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c">orxSHADER_EVENT_SET_PARAM</a> =  0, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e">orxSHADER_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb">orxSHADER_EVENT_NONE</a> =  orxENUM_NONE
+<br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
@@ -50,9 +91,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g4cdf9639bf729cb4a6dd26b1cb655f54">orxShader_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g797b23fe634e863a7c3befd9cda7d13b">orxShader_Create</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g5f2e6e9b926fe3be9ac2b1324af5175a">orxShader_Create</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g96e4a893c541b945d05aae98a08b1f46">orxShader_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g6e651d03ff2f2493e6e51b104f36652a">orxShader_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g87e4282c60db4362287cc0c2e8e40c72">orxShader_Delete</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
 
@@ -69,7 +110,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g80c39a9086eab3bd3e1b143c27cfb87e">orxShader_CompileCode</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zCode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> <br>
-*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g107c0364f5c749d496cfc11cf3b9f37d">orxShader_GetParamList</a> (const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
+*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gdc3c1bbca2e012e37f59442b8a74bd92">orxShader_GetParamList</a> (const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gc27e790b7913206f56fd598822ee9f47">orxShader_Enable</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, orxBOOL _bEnable)</td></tr>
 
@@ -82,6 +123,21 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Shader module Allows to store shader information (code + parameters). <hr><h2>Typedef Documentation</h2>
 <a class="anchor" name="gfa7c386fd805fd23b1ff9b32c7972e51"></a><!-- doxytag: member="orxShader.h::orxSHADER" ref="gfa7c386fd805fd23b1ff9b32c7972e51" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct __orxSHADER_t <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Internal shader structure 
+</div>
+</div><p>
+<a class="anchor" name="gfa7c386fd805fd23b1ff9b32c7972e51"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxSHADER" ref="gfa7c386fd805fd23b1ff9b32c7972e51" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -117,6 +173,43 @@ Event sent when setting a parameter </td></tr>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb"></a><!-- doxytag: member="orxSHADER_EVENT_NONE" ref="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb" args="" -->orxSHADER_EVENT_NONE</em>&nbsp;</td><td>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c"></a><!-- doxytag: member="orxSHADER_EVENT_SET_PARAM" ref="gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c" args="" -->orxSHADER_EVENT_SET_PARAM</em>&nbsp;</td><td>
+Event sent when setting a parameter </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e"></a><!-- doxytag: member="orxSHADER_EVENT_NUMBER" ref="gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e" args="" -->orxSHADER_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb"></a><!-- doxytag: member="orxSHADER_EVENT_NONE" ref="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb" args="" -->orxSHADER_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g90de18f99b8a163957f646599ffeeaca"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxSHADER_EVENT" ref="g90de18f99b8a163957f646599ffeeaca" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_shader.html#g90de18f99b8a163957f646599ffeeaca">orxSHADER_EVENT</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c"></a><!-- doxytag: member="orxSHADER_EVENT_SET_PARAM" ref="gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c" args="" -->orxSHADER_EVENT_SET_PARAM</em>&nbsp;</td><td>
+Event sent when setting a parameter </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e"></a><!-- doxytag: member="orxSHADER_EVENT_NUMBER" ref="gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e" args="" -->orxSHADER_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb"></a><!-- doxytag: member="orxSHADER_EVENT_NONE" ref="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb" args="" -->orxSHADER_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c"></a><!-- doxytag: member="orxSHADER_EVENT_SET_PARAM" ref="gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c" args="" -->orxSHADER_EVENT_SET_PARAM</em>&nbsp;</td><td>
+Event sent when setting a parameter </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e"></a><!-- doxytag: member="orxSHADER_EVENT_NUMBER" ref="gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e" args="" -->orxSHADER_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb"></a><!-- doxytag: member="orxSHADER_EVENT_NONE" ref="gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb" args="" -->orxSHADER_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
 </table>
 </dl>
 
@@ -146,13 +239,62 @@ Shader parameter type <dl compact><dt><b>Enumerator: </b></dt><dd>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NONE" ref="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235" args="" -->orxSHADER_PARAM_TYPE_NONE</em>&nbsp;</td><td>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_FLOAT" ref="gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a" args="" -->orxSHADER_PARAM_TYPE_FLOAT</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_TEXTURE" ref="gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6" args="" -->orxSHADER_PARAM_TYPE_TEXTURE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_VECTOR" ref="gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44" args="" -->orxSHADER_PARAM_TYPE_VECTOR</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NUMBER" ref="gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932" args="" -->orxSHADER_PARAM_TYPE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NONE" ref="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235" args="" -->orxSHADER_PARAM_TYPE_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g94512a95acea8de509b7346199eab3a1"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxSHADER_PARAM_TYPE" ref="g94512a95acea8de509b7346199eab3a1" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_shader.html#g94512a95acea8de509b7346199eab3a1">orxSHADER_PARAM_TYPE</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Shader parameter type <dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_FLOAT" ref="gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a" args="" -->orxSHADER_PARAM_TYPE_FLOAT</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_TEXTURE" ref="gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6" args="" -->orxSHADER_PARAM_TYPE_TEXTURE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_VECTOR" ref="gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44" args="" -->orxSHADER_PARAM_TYPE_VECTOR</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NUMBER" ref="gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932" args="" -->orxSHADER_PARAM_TYPE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NONE" ref="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235" args="" -->orxSHADER_PARAM_TYPE_NONE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_FLOAT" ref="gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a" args="" -->orxSHADER_PARAM_TYPE_FLOAT</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_TEXTURE" ref="gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6" args="" -->orxSHADER_PARAM_TYPE_TEXTURE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_VECTOR" ref="gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44" args="" -->orxSHADER_PARAM_TYPE_VECTOR</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NUMBER" ref="gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932" args="" -->orxSHADER_PARAM_TYPE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235"></a><!-- doxytag: member="orxSHADER_PARAM_TYPE_NONE" ref="gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235" args="" -->orxSHADER_PARAM_TYPE_NONE</em>&nbsp;</td><td>
+</td></tr>
 </table>
 </dl>
 
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g93a5dd89f3185227563de422def889b6"></a><!-- doxytag: member="orxShader.h::orxShader_AddFloatParam" ref="g93a5dd89f3185227563de422def889b6" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fValue)" -->
+<a class="anchor" name="g93a5dd89f3185227563de422def889b6"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_AddFloatParam" ref="g93a5dd89f3185227563de422def889b6" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -195,7 +337,7 @@ Adds a float parameter definition to a shader (parameters need to be set before 
 
 </div>
 </div><p>
-<a class="anchor" name="gb3708aee10e0d490d8197a3d969010d7"></a><!-- doxytag: member="orxShader.h::orxShader_AddTextureParam" ref="gb3708aee10e0d490d8197a3d969010d7" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxTEXTURE *_pstValue)" -->
+<a class="anchor" name="gb3708aee10e0d490d8197a3d969010d7"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_AddTextureParam" ref="gb3708aee10e0d490d8197a3d969010d7" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxTEXTURE *_pstValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -238,7 +380,7 @@ Adds a texture parameter definition to a shader (parameters need to be set befor
 
 </div>
 </div><p>
-<a class="anchor" name="ga963abb12984ba48bba0e6520d34301d"></a><!-- doxytag: member="orxShader.h::orxShader_AddVectorParam" ref="ga963abb12984ba48bba0e6520d34301d" args="(orxSHADER *_pstShader, const orxSTRING _zName, const orxVECTOR *_pvValue)" -->
+<a class="anchor" name="ga963abb12984ba48bba0e6520d34301d"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_AddVectorParam" ref="ga963abb12984ba48bba0e6520d34301d" args="(orxSHADER *_pstShader, const orxSTRING _zName, const orxVECTOR *_pvValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -281,7 +423,7 @@ Adds a vector parameter definition to a shader (parameters need to be set before
 
 </div>
 </div><p>
-<a class="anchor" name="g80c39a9086eab3bd3e1b143c27cfb87e"></a><!-- doxytag: member="orxShader.h::orxShader_CompileCode" ref="g80c39a9086eab3bd3e1b143c27cfb87e" args="(orxSHADER *_pstShader, const orxSTRING _zCode)" -->
+<a class="anchor" name="g80c39a9086eab3bd3e1b143c27cfb87e"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_CompileCode" ref="g80c39a9086eab3bd3e1b143c27cfb87e" args="(orxSHADER *_pstShader, const orxSTRING _zCode)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -317,12 +459,12 @@ Sets shader code &amp; compiles it (parameters need to be set before compiling t
 
 </div>
 </div><p>
-<a class="anchor" name="g797b23fe634e863a7c3befd9cda7d13b"></a><!-- doxytag: member="orxShader.h::orxShader_Create" ref="g797b23fe634e863a7c3befd9cda7d13b" args="()" -->
+<a class="anchor" name="g5f2e6e9b926fe3be9ac2b1324af5175a"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Create" ref="g5f2e6e9b926fe3be9ac2b1324af5175a" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a>* orxFASTCALL orxShader_Create           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL orxShader_Create           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -337,12 +479,12 @@ Creates an empty shader <dl class="return" compact><dt><b>Returns:</b></dt><dd>o
 
 </div>
 </div><p>
-<a class="anchor" name="g96e4a893c541b945d05aae98a08b1f46"></a><!-- doxytag: member="orxShader.h::orxShader_CreateFromConfig" ref="g96e4a893c541b945d05aae98a08b1f46" args="(const orxSTRING _zConfigID)" -->
+<a class="anchor" name="g6e651d03ff2f2493e6e51b104f36652a"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_CreateFromConfig" ref="g6e651d03ff2f2493e6e51b104f36652a" args="(const orxSTRING _zConfigID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a>* orxFASTCALL orxShader_CreateFromConfig           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL orxShader_CreateFromConfig           </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&nbsp;</td>
           <td class="paramname"> <em>_zConfigID</em>          </td>
@@ -362,7 +504,7 @@ Creates a shader from config <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g87e4282c60db4362287cc0c2e8e40c72"></a><!-- doxytag: member="orxShader.h::orxShader_Delete" ref="g87e4282c60db4362287cc0c2e8e40c72" args="(orxSHADER *_pstShader)" -->
+<a class="anchor" name="g87e4282c60db4362287cc0c2e8e40c72"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Delete" ref="g87e4282c60db4362287cc0c2e8e40c72" args="(orxSHADER *_pstShader)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -388,7 +530,7 @@ Deletes a shader <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gc27e790b7913206f56fd598822ee9f47"></a><!-- doxytag: member="orxShader.h::orxShader_Enable" ref="gc27e790b7913206f56fd598822ee9f47" args="(orxSHADER *_pstShader, orxBOOL _bEnable)" -->
+<a class="anchor" name="gc27e790b7913206f56fd598822ee9f47"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Enable" ref="gc27e790b7913206f56fd598822ee9f47" args="(orxSHADER *_pstShader, orxBOOL _bEnable)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -423,7 +565,7 @@ Enables/disables a shader <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g4cdf9639bf729cb4a6dd26b1cb655f54"></a><!-- doxytag: member="orxShader.h::orxShader_Exit" ref="g4cdf9639bf729cb4a6dd26b1cb655f54" args="()" -->
+<a class="anchor" name="g4cdf9639bf729cb4a6dd26b1cb655f54"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Exit" ref="g4cdf9639bf729cb4a6dd26b1cb655f54" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -442,7 +584,7 @@ Enables/disables a shader <dl compact><dt><b>Parameters:</b></dt><dd>
 Exits from the shader module 
 </div>
 </div><p>
-<a class="anchor" name="gfb33ac8cb6d593ce19a1c84a5b8f59b3"></a><!-- doxytag: member="orxShader.h::orxShader_GetName" ref="gfb33ac8cb6d593ce19a1c84a5b8f59b3" args="(const orxSHADER *_pstShader)" -->
+<a class="anchor" name="gfb33ac8cb6d593ce19a1c84a5b8f59b3"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_GetName" ref="gfb33ac8cb6d593ce19a1c84a5b8f59b3" args="(const orxSHADER *_pstShader)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -468,12 +610,12 @@ Gets shader name <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g107c0364f5c749d496cfc11cf3b9f37d"></a><!-- doxytag: member="orxShader.h::orxShader_GetParamList" ref="g107c0364f5c749d496cfc11cf3b9f37d" args="(const orxSHADER *_pstShader)" -->
+<a class="anchor" name="gdc3c1bbca2e012e37f59442b8a74bd92"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_GetParamList" ref="gdc3c1bbca2e012e37f59442b8a74bd92" args="(const orxSHADER *_pstShader)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a>* orxFASTCALL orxShader_GetParamList           </td>
+          <td class="memname">orxDLLAPI const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *orxFASTCALL orxShader_GetParamList           </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstShader</em>          </td>
@@ -494,7 +636,7 @@ Gets shader parameter list <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gfb85fac6a25b5d2ca6d7972c814fcd9c"></a><!-- doxytag: member="orxShader.h::orxShader_Init" ref="gfb85fac6a25b5d2ca6d7972c814fcd9c" args="()" -->
+<a class="anchor" name="gfb85fac6a25b5d2ca6d7972c814fcd9c"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Init" ref="gfb85fac6a25b5d2ca6d7972c814fcd9c" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -514,7 +656,7 @@ Inits the shader module <dl class="return" compact><dt><b>Returns:</b></dt><dd>o
 
 </div>
 </div><p>
-<a class="anchor" name="g90b62cdab01eb571ac8fb4d1c1620a84"></a><!-- doxytag: member="orxShader.h::orxShader_IsEnabled" ref="g90b62cdab01eb571ac8fb4d1c1620a84" args="(const orxSHADER *_pstShader)" -->
+<a class="anchor" name="g90b62cdab01eb571ac8fb4d1c1620a84"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_IsEnabled" ref="g90b62cdab01eb571ac8fb4d1c1620a84" args="(const orxSHADER *_pstShader)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -540,7 +682,7 @@ Is shader enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g33b20cc352fbcab74c0de9e62e35b55b"></a><!-- doxytag: member="orxShader.h::orxShader_Setup" ref="g33b20cc352fbcab74c0de9e62e35b55b" args="()" -->
+<a class="anchor" name="g33b20cc352fbcab74c0de9e62e35b55b"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Setup" ref="g33b20cc352fbcab74c0de9e62e35b55b" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -559,7 +701,7 @@ Is shader enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
 Shader module setup 
 </div>
 </div><p>
-<a class="anchor" name="g18f6009dc119f90cb9fb5b48a7d30c50"></a><!-- doxytag: member="orxShader.h::orxShader_Start" ref="g18f6009dc119f90cb9fb5b48a7d30c50" args="(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner)" -->
+<a class="anchor" name="g18f6009dc119f90cb9fb5b48a7d30c50"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Start" ref="g18f6009dc119f90cb9fb5b48a7d30c50" args="(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -595,7 +737,7 @@ Starts a shader <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g650247fe0da8917b20b7f8c9e01e762d"></a><!-- doxytag: member="orxShader.h::orxShader_Stop" ref="g650247fe0da8917b20b7f8c9e01e762d" args="(const orxSHADER *_pstShader)" -->
+<a class="anchor" name="g650247fe0da8917b20b7f8c9e01e762d"></a><!-- doxytag: member="Backup 1 of orxShader.h::orxShader_Stop" ref="g650247fe0da8917b20b7f8c9e01e762d" args="(const orxSHADER *_pstShader)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
