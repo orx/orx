@@ -627,9 +627,9 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
   poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
   /* For all characters */
-  for(u32CharacterCodePoint = orxString_GetFirstCharacterCode(_zString, &pc), fX = fStartX, fY = fStartY;
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), fX = fStartX, fY = fStartY;
       u32CharacterCodePoint != orxCHAR_NULL;
-      u32CharacterCodePoint = orxString_GetFirstCharacterCode(pc, &pc))
+      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
   {
     /* Depending on character */
     switch(u32CharacterCodePoint)

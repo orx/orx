@@ -147,9 +147,9 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
     orxVECTOR       vOrigin;
 
     /* For all defined characters */
-    for(u32CharacterCodePoint = orxString_GetFirstCharacterCode(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
+    for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
         (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
-        u32CharacterCodePoint = orxString_GetFirstCharacterCode(pc, &pc))
+        u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
     {
       orxCHARACTER_GLYPH *pstGlyph;
 

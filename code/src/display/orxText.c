@@ -247,9 +247,9 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
     orxFont_GetCharacterSize(_pstText->pstFont, &vCharacterSize);
 
     /* For all characters */
-    for(u32CharacterCodePoint = orxString_GetFirstCharacterCode(_pstText->zString, &pc), fHeight = vCharacterSize.fY, fWidth = fMaxWidth = orxFLOAT_0;
+    for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = vCharacterSize.fY, fWidth = fMaxWidth = orxFLOAT_0;
         u32CharacterCodePoint != orxCHAR_NULL;
-        u32CharacterCodePoint = orxString_GetFirstCharacterCode(pc, &pc))
+        u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
     {
       /* Depending on character */
       switch(u32CharacterCodePoint)

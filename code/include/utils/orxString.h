@@ -324,7 +324,7 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
  * @param[out] _pzRemaining             If non null, will contain the remaining string after the first UTF-8 character
  * @return                              Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character
  */
-static orxU32 orxFASTCALL               orxString_GetFirstCharacterCode(const orxSTRING _zString, const orxSTRING *_pzRemaining)
+static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
   orxU8  *pu8Byte;
   orxU32  u32Result;
@@ -503,7 +503,7 @@ static orxINLINE orxU32                 orxString_GetCharacterCounter(const orxS
   for(pc = _zString, u32Result = 0; *pc != orxCHAR_NULL; u32Result++)
   {
     /* Invalid current character ID */
-    if(orxString_GetFirstCharacterCode(pc, &pc) == orxU32_UNDEFINED)
+    if(orxString_GetFirstCharacterCodePoint(pc, &pc) == orxU32_UNDEFINED)
     {
       /* Updates result */
       u32Result = orxU32_UNDEFINED;
