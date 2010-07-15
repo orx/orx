@@ -650,7 +650,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreen()
 orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   const orxCHAR  *pc;
-  orxU32          u32Counter, u32CharacterCode;
+  orxU32          u32Counter, u32CharacterCodePoint;
   GLfloat         fX, fY, fWidth, fHeight;
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
@@ -685,12 +685,12 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   orxDisplay_iPhone_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
 
   /* For all characters */
-  for(u32CharacterCode = orxString_GetFirstCharacterCode(_zString, &pc), u32Counter = 0, fX = fY = 0.0f;
-      u32CharacterCode != orxCHAR_NULL;
-      u32CharacterCode = orxString_GetFirstCharacterCode(pc, &pc))
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), u32Counter = 0, fX = fY = 0.0f;
+      u32CharacterCodePoint != orxCHAR_NULL;
+      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
   {
     /* Depending on character */
-    switch(u32CharacterCode)
+    switch(u32CharacterCodePoint)
     {
       case orxCHAR_CR:
       {
@@ -720,7 +720,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
         const orxCHARACTER_GLYPH *pstGlyph;
 
         /* Gets glyph from table */
-        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCode);
+        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
 
         /* Valid? */
         if(pstGlyph != orxNULL)

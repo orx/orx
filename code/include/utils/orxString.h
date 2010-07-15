@@ -178,39 +178,39 @@ static orxINLINE orxU32                 orxString_GetLength(const orxSTRING _zSt
 }
 
 /** Tells if a character is ASCII from its ID
- * @param[in] _u32CharacterCode         Concerned character code
+ * @param[in] _u32CharacterCodePoint    Concerned character code
  * @return                              orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise
  */
-static orxINLINE orxBOOL                orxString_IsCharacterASCII(orxU32 _u32CharacterCode)
+static orxINLINE orxBOOL                orxString_IsCharacterASCII(orxU32 _u32CharacterCodePoint)
 {
-  return((_u32CharacterCode < 0x80) ? orxTRUE : orxFALSE);
+  return((_u32CharacterCodePoint < 0x80) ? orxTRUE : orxFALSE);
 }
 
 /** Gets the UTF-8 encoding length of given character
- * @param[in] _u32CharacterCode         Concerned character code
+ * @param[in] _u32CharacterCodePoint    Concerned character code
  * @return                              Encoding length in UTF-8 for given character if valid, orxU32_UNDEFINED otherwise
  */
-static orxINLINE orxBOOL                orxString_GetUTF8CharacterLength(orxU32 _u32CharacterCode)
+static orxINLINE orxBOOL                orxString_GetUTF8CharacterLength(orxU32 _u32CharacterCodePoint)
 {
   orxU32 u32Result;
 
   /* 1-byte long? */
-  if(_u32CharacterCode < 0x80)
+  if(_u32CharacterCodePoint < 0x80)
   {
     /* Updates result */
     u32Result = 1;
   }
-  else if(_u32CharacterCode < 0x0800)
+  else if(_u32CharacterCodePoint < 0x0800)
   {
     /* Updates result */
     u32Result = 2;
   }
-  else if(_u32CharacterCode < 0x00010000)
+  else if(_u32CharacterCodePoint < 0x00010000)
   {
     /* Updates result */
     u32Result = 3;
   }
-  else if(_u32CharacterCode < 0x00110000)
+  else if(_u32CharacterCodePoint < 0x00110000)
   {
     /* Updates result */
     u32Result = 4;
@@ -228,15 +228,15 @@ static orxINLINE orxBOOL                orxString_GetUTF8CharacterLength(orxU32 
 /** Prints a unicode character encoded with UTF-8 to an orxSTRING
  * @param[in] _zDstString               Destination string
  * @param[in] _u32Size                  Available size on the string
- * @param[in] _u32CharacterCode         Unicode code point of the character to print
+ * @param[in] _u32CharacterCodePoint    Unicode code point of the character to print
  * @return                              Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise
  */
-static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCode)
+static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCodePoint)
 {
   orxU32 u32Result;
 
   /* Gets character's encoded length */
-  u32Result = orxString_GetUTF8CharacterLength(_u32CharacterCode);
+  u32Result = orxString_GetUTF8CharacterLength(_u32CharacterCodePoint);
 
   /* Enough room? */
   if(u32Result <= _u32Size)
@@ -247,7 +247,7 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
       case 1:
       {
         /* Writes character */
-        *_zDstString = (orxCHAR)_u32CharacterCode;
+        *_zDstString = (orxCHAR)_u32CharacterCodePoint;
 
         break;
       }
@@ -255,10 +255,10 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
       case 2:
       {
         /* Writes first character */
-        *_zDstString++ = (orxCHAR)(0xC0 | ((_u32CharacterCode & 0x07C0) >> 6));
+        *_zDstString++ = (orxCHAR)(0xC0 | ((_u32CharacterCodePoint & 0x07C0) >> 6));
 
         /* Writes second character */
-        *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCode & 0x3F));
+        *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint & 0x3F));
 
         break;
       }
@@ -266,13 +266,13 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
       case 3:
       {
         /* Writes first character */
-        *_zDstString++ = (orxCHAR)(0xE0 | ((_u32CharacterCode & 0xF000) >> 12));
+        *_zDstString++ = (orxCHAR)(0xE0 | ((_u32CharacterCodePoint & 0xF000) >> 12));
 
         /* Writes second character */
-        *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCode & 0x0FC0) >> 6));
+        *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint & 0x0FC0) >> 6));
 
         /* Writes third character */
-        *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCode & 0x3F));
+        *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint & 0x3F));
 
         break;
       }
@@ -280,16 +280,16 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
       case 4:
       {
         /* Writes first character */
-        *_zDstString++ = (orxCHAR)(0xF0 | ((_u32CharacterCode & 0x001C0000) >> 18));
+        *_zDstString++ = (orxCHAR)(0xF0 | ((_u32CharacterCodePoint & 0x001C0000) >> 18));
 
         /* Writes second character */
-        *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCode & 0x0003F000) >> 12));
+        *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint & 0x0003F000) >> 12));
 
         /* Writes third character */
-        *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCode & 0x00000FC0) >> 6));
+        *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint & 0x00000FC0) >> 6));
 
         /* Writes fourth character */
-        *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCode & 0x3F));
+        *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint & 0x3F));
 
         break;
       }
@@ -297,7 +297,7 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
       default:
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't print invalid unicode character <0x%X> to string.", _u32CharacterCode);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't print invalid unicode character <0x%X> to string.", _u32CharacterCodePoint);
 
         /* Updates result */
         u32Result = orxU32_UNDEFINED;
@@ -309,7 +309,7 @@ static orxU32 orxFASTCALL               orxString_PrintUTF8Character(orxSTRING _
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't print unicode character <0x%X> to string as there isn't enough space for it.", _u32CharacterCode);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't print unicode character <0x%X> to string as there isn't enough space for it.", _u32CharacterCodePoint);
 
     /* Updates result */
     u32Result = orxU32_UNDEFINED;

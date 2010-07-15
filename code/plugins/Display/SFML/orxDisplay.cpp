@@ -578,7 +578,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmap(orxBITMAP 
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite     *poSprite;
-  orxU32          u32CharacterCode;
+  orxU32          u32CharacterCodePoint;
   const orxCHAR  *pc;
   orxFLOAT        fX, fY, fStartX, fStartY;
   orxVECTOR       vSpacing;
@@ -627,12 +627,12 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
   poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
   /* For all characters */
-  for(u32CharacterCode = orxString_GetFirstCharacterCode(_zString, &pc), fX = fStartX, fY = fStartY;
-      u32CharacterCode != orxCHAR_NULL;
-      u32CharacterCode = orxString_GetFirstCharacterCode(pc, &pc))
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCode(_zString, &pc), fX = fStartX, fY = fStartY;
+      u32CharacterCodePoint != orxCHAR_NULL;
+      u32CharacterCodePoint = orxString_GetFirstCharacterCode(pc, &pc))
   {
     /* Depending on character */
-    switch(u32CharacterCode)
+    switch(u32CharacterCodePoint)
     {
       case orxCHAR_CR:
       {
@@ -662,7 +662,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
         const orxCHARACTER_GLYPH *pstGlyph;
 
         /* Gets glyph from table */
-        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCode);
+        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
 
         /* Valid? */
         if(pstGlyph != orxNULL)

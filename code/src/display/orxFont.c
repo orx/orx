@@ -143,18 +143,18 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
   && (_pstFont->zCharacterList != orxSTRING_EMPTY))
   {
     const orxCHAR  *pc;
-    orxU32          u32CharacterCode;
+    orxU32          u32CharacterCodePoint;
     orxVECTOR       vOrigin;
 
     /* For all defined characters */
-    for(u32CharacterCode = orxString_GetFirstCharacterCode(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
-        (u32CharacterCode != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
-        u32CharacterCode = orxString_GetFirstCharacterCode(pc, &pc))
+    for(u32CharacterCodePoint = orxString_GetFirstCharacterCode(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
+        (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
+        u32CharacterCodePoint = orxString_GetFirstCharacterCode(pc, &pc))
     {
       orxCHARACTER_GLYPH *pstGlyph;
 
       /* Not already defined? */
-      if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, u32CharacterCode)) == orxNULL)
+      if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint)) == orxNULL)
       {
         /* Allocates it */
         pstGlyph = (orxCHARACTER_GLYPH *)orxBank_Allocate(_pstFont->pstMap->pstCharacterBank);
@@ -163,7 +163,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         orxASSERT(pstGlyph != orxNULL);
 
         /* Adds it to table */
-        orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCode, pstGlyph);
+        orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint, pstGlyph);
       }
 
       /* Stores its origin */
@@ -188,7 +188,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
     orxVector_Copy(&(_pstFont->pstMap->vCharacterSize), &(_pstFont->vCharacterSize));
 
     /* Had more defined characters? */
-    if(u32CharacterCode != orxCHAR_NULL)
+    if(u32CharacterCodePoint != orxCHAR_NULL)
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Too many characters defined for font <%s>: couldn't map characters [%s].", _pstFont->zReference, pc);
