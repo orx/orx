@@ -278,6 +278,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetFloat(const orxSTRING
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
 
+/** Writes a string value to config, in block mode
+ * @param[in] _zKey             Key name
+ * @param[in] _zValue           Value to write in block mode
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetStringBlock(const orxSTRING _zKey, const orxSTRING _zValue);
+
 /** Writes a boolean value to config
  * @param[in] _zKey             Key name
  * @param[in] _bValue           Value

@@ -321,8 +321,8 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
       /* Copies it */
       *pcOutput++ = *pcInput++;
 
-      /* First block character? */
-      if(*pcInput == orxCONFIG_KC_BLOCK)
+      /* First block character of two? */
+      if((*pcInput == orxCONFIG_KC_BLOCK) && (*(pcInput + 1) == orxCONFIG_KC_BLOCK))
       {
         /* Skips it */
         pcInput++;
@@ -3007,8 +3007,28 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               }
               else
               {
-                /* Writes it */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %c%s%c%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK, pstEntry->stValue.zValue, orxCONFIG_KC_BLOCK, orxSTRING_EOL);
+                orxCHAR *pcSrc, *pcDst;
+
+                /* Writes lead in */
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %c", pstEntry->zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK);
+
+                /* For all characters */
+                for(pcSrc = pstEntry->stValue.zValue, pcDst = acBuffer + u32BufferSize; (*pcSrc != orxCHAR_NULL) && (pcDst < acBuffer + orxCONFIG_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++, u32BufferSize++)
+                {
+                  /* Copies character */
+                  *pcDst = *pcSrc;
+
+                  /* Is a block marker? */
+                  if(*pcSrc == orxCONFIG_KC_BLOCK)
+                  {
+                    /* Doubles it */
+                    *(++pcDst) = orxCONFIG_KC_BLOCK;
+                    u32BufferSize++;
+                  }
+                }
+
+                /* Writes lead out */
+                u32BufferSize += (orxU32)orxString_NPrint(pcDst, orxCONFIG_KU32_BUFFER_SIZE - 1 - u32BufferSize, "%c%s", orxCONFIG_KC_BLOCK, orxSTRING_EOL);
                 acBuffer[orxCONFIG_KU32_BUFFER_SIZE - 1] = orxCHAR_NULL;
               }
 
@@ -3707,6 +3727,39 @@ orxSTATUS orxFASTCALL orxConfig_SetString(const orxSTRING _zKey, const orxSTRING
 
   /* Adds new entry */
   eResult = orxConfig_AddEntry(_zKey, _zValue, orxFALSE);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Writes a string value to config, in block mode
+ * @param[in] _zKey             Key name
+ * @param[in] _zValue           Value to write in block mode
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetStringBlock(const orxSTRING _zKey, const orxSTRING _zValue)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(_zValue != orxNULL);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, _zValue, orxTRUE);
 
   /* Done! */
   return eResult;

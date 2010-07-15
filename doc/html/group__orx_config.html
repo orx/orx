@@ -161,6 +161,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g5726d4058a6f7b9f9004314c6b7f21d3">orxConfig_RenameSection</a> (const orxSTRING _zSectionName, const orxSTRING _zNewSectionName)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga1cbcd169b12be39cc85ca1838020eb8">orxConfig_SetStringBlock</a> (const orxSTRING _zKey, const orxSTRING _zValue)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Config module Module that handles configuration files <hr><h2>Typedef Documentation</h2>
@@ -1517,6 +1519,42 @@ Writes a string value to config <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zKey</em>&nbsp;</td><td>Key name </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zValue</em>&nbsp;</td><td>Value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ga1cbcd169b12be39cc85ca1838020eb8"></a><!-- doxytag: member="orxConfig.h::orxConfig_SetStringBlock" ref="ga1cbcd169b12be39cc85ca1838020eb8" args="(const orxSTRING _zKey, const orxSTRING _zValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_SetStringBlock           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zKey</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Writes a string value to config, in block mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zKey</em>&nbsp;</td><td>Key name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zValue</em>&nbsp;</td><td>Value to write in block mode </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
