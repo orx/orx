@@ -391,7 +391,7 @@ orxSTATUS orxFASTCALL orxText_Init()
   }
 
   /* Not initialized? */
-  if(eResult != orxSTATUS_SUCCESS)
+  if(eResult == orxSTATUS_FAILURE)
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing text module failed.");

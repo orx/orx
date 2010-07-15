@@ -277,7 +277,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Init()
       eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
       /* Initialized? */
-      if(eResult == orxSTATUS_SUCCESS)
+      if(eResult != orxSTATUS_FAILURE)
       {
         /* Inits Flags */
         sstShaderPointer.u32Flags = orxSHADERPOINTER_KU32_STATIC_FLAG_READY;

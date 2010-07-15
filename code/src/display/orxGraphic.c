@@ -276,7 +276,7 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
   }
 
   /* Not initialized? */
-  if(eResult != orxSTATUS_SUCCESS)
+  if(eResult == orxSTATUS_FAILURE)
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing graphic module failed.");
@@ -1315,7 +1315,7 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
   }
 
   /* Valid and has a relative pivot? */
-  if((eResult == orxSTATUS_SUCCESS)
+  if((eResult != orxSTATUS_FAILURE)
   && (orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT)))
   {
     /* Updates relative pivot */

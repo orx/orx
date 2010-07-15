@@ -629,7 +629,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
     eResult = pfnInit(&u32UserFunctionNumber, &astUserFunctionInfo);
 
     /* Adds all functions to plugin info */
-    for(i = 0; (eResult == orxSTATUS_SUCCESS) && (i < u32UserFunctionNumber); i++)
+    for(i = 0; (eResult != orxSTATUS_FAILURE) && (i < u32UserFunctionNumber); i++)
     {
       /* Is function valid? */
       if(astUserFunctionInfo[i].pfnFunction != orxNULL)
@@ -727,7 +727,7 @@ void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLU
   eResult = _pfnPluginInit(&u32UserFunctionNumber, &astUserFunctionInfo);
 
   /* Adds all functions to plugin info */
-  for(i = 0; (eResult == orxSTATUS_SUCCESS) && (i < u32UserFunctionNumber); i++)
+  for(i = 0; (eResult != orxSTATUS_FAILURE) && (i < u32UserFunctionNumber); i++)
   {
     /* Checks */
     orxASSERT(astUserFunctionInfo[i].pfnFunction != orxNULL);
@@ -776,7 +776,7 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
   orxU32    i;
 
   /* For all specified plugin names */
-  for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
+  for(i = 1; (eResult != orxSTATUS_FAILURE) && (i < _u32ParamCount); i++)
   {
     const orxSTRING zPluginName;
     orxS32          s32LastSeparatorIndex, s32SeparatorIndex;
@@ -977,7 +977,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
       pstPluginInfo->hPluginHandle = (orxHANDLE)pstPluginInfo;
 
       /* Registers plugin */
-      if(orxPlugin_RegisterPlugin(pstPluginInfo) == orxSTATUS_SUCCESS)
+      if(orxPlugin_RegisterPlugin(pstPluginInfo) != orxSTATUS_FAILURE)
       {
         /* Stores plugin name */
         pstPluginInfo->zPluginName = _zPluginName;

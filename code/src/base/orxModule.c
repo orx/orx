@@ -286,7 +286,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
             eResult = orxModule_Init((orxMODULE_ID)u32Index);
 
             /* Failed ? */
-            if(eResult != orxSTATUS_SUCCESS)
+            if(eResult == orxSTATUS_FAILURE)
             {
               /* Stops init here */
               break;
@@ -313,7 +313,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
       }
 
       /* All dependencies initialized? */
-      if(eResult == orxSTATUS_SUCCESS)
+      if(eResult != orxSTATUS_FAILURE)
       {
         /* Not already initialized */
         if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
@@ -325,7 +325,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
           eResult = (sstModule.astModuleInfo[_eModuleID].pfnInit != orxNULL) ? sstModule.astModuleInfo[_eModuleID].pfnInit() : orxSTATUS_SUCCESS;
 
           /* Successful? */
-          if(eResult == orxSTATUS_SUCCESS)
+          if(eResult != orxSTATUS_FAILURE)
           {
             /* Updates initialized flag */
             sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED;
@@ -352,7 +352,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   if(sstModule.u32InitLoopCounter == 0)
   {
     /* Failed? */
-    if(eResult != orxSTATUS_SUCCESS)
+    if(eResult == orxSTATUS_FAILURE)
     {
       /* For all modules */
       for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
@@ -395,7 +395,7 @@ orxSTATUS orxFASTCALL orxModule_InitAll()
     eResult = orxModule_Init((orxMODULE_ID)eID);
 
     /* Failed? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Updates init counter */
       u32InitCounter++;

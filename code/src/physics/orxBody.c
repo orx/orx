@@ -211,7 +211,7 @@ orxSTATUS orxFASTCALL orxBody_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     sstBody.u32Flags = orxBODY_KU32_STATIC_FLAG_READY;

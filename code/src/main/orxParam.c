@@ -387,7 +387,7 @@ static orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount,
   orxU32    i;
 
   /* For all specified plugin names */
-  for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
+  for(i = 1; (eResult != orxSTATUS_FAILURE) && (i < _u32ParamCount); i++)
   {
     /* Loads config file */
     eResult = orxConfig_Load(_azParams[i]);

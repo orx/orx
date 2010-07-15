@@ -1296,7 +1296,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY;

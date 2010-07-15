@@ -338,7 +338,7 @@ static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_T
     }
 
     /* Valid? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Animset has to be computed again */
       orxAnimSet_SetLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
@@ -1296,7 +1296,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     sstAnimSet.u32Flags = orxANIMSET_KU32_STATIC_FLAG_READY;
@@ -1884,7 +1884,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
     u32Counter = orxAnimSet_GetAnimCounter(_pstAnimSet);
 
     /* Until there are no animation left */
-    for(i = 0, eResult = orxSTATUS_SUCCESS; (i < u32Counter) && (eResult == orxSTATUS_SUCCESS); i++)
+    for(i = 0, eResult = orxSTATUS_SUCCESS; (i < u32Counter) && (eResult != orxSTATUS_FAILURE); i++)
     {
       eResult = orxAnimSet_RemoveAnim(_pstAnimSet, (orxHANDLE)i);
     }
@@ -2113,7 +2113,7 @@ orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHAN
     eResult = orxAnimSet_SetLinkTableLinkProperty(_pstAnimSet->pstLinkTable, (orxU32)_hLinkHandle, _u32Property, _u32Value);
 
     /* Changes occured? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Added loop counter? */
       if(_u32Property == orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER)
@@ -2189,7 +2189,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
   orxASSERT(pstWorkTable != orxNULL);
 
   /* Computes link table if needed */
-  if(orxAnimSet_ComputeLinkTable(pstWorkTable) == orxSTATUS_SUCCESS)
+  if(orxAnimSet_ComputeLinkTable(pstWorkTable) != orxSTATUS_FAILURE)
   {
     orxU32  u32Anim, u32LinkIndex, u32LinkProperty, u32RoutingAnim, u32TargetAnim;
 

@@ -402,7 +402,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     sstAnimPointer.u32Flags = orxANIMPOINTER_KU32_STATIC_FLAG_READY;

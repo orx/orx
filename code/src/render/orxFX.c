@@ -327,7 +327,7 @@ static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRIN
     }
 
     /* Valid? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       orxFLOAT  fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fPow;
       orxSTRING zType;
@@ -596,7 +596,7 @@ orxSTATUS orxFASTCALL orxFX_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     orxFLAG_SET(sstFX.u32Flags, orxFX_KU32_STATIC_FLAG_READY, orxFX_KU32_STATIC_FLAG_NONE);

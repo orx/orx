@@ -173,7 +173,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
     eResult = orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Success? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Creates hash table */
       sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -392,7 +392,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
 
       /* Assigns given bitmap to it */
       if((pstBitmap != orxNULL)
-      && (orxTexture_LinkBitmap(pstTexture, pstBitmap, _zBitmapFileName) == orxSTATUS_SUCCESS))
+      && (orxTexture_LinkBitmap(pstTexture, pstBitmap, _zBitmapFileName) != orxSTATUS_FAILURE))
       {
           /* Inits it */
         orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);

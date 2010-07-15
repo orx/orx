@@ -378,7 +378,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
     eResult = orxSTRUCTURE_REGISTER(OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Creates objects clock */
       sstObject.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
@@ -390,7 +390,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
         eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
 
         /* Success? */
-        if(eResult == orxSTATUS_SUCCESS)
+        if(eResult != orxSTATUS_FAILURE)
         {
           /* Inits Flags */
           sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
@@ -2998,7 +2998,7 @@ orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, const orxST
       eResult = orxText_SetString(pstText, _zString);
 
       /* Valid */
-      if(eResult == orxSTATUS_SUCCESS)
+      if(eResult != orxSTATUS_FAILURE)
       {
         /* Updates graphic */
         orxGraphic_UpdateSize(pstGraphic);

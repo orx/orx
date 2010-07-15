@@ -262,7 +262,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Init()
     eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSoundPointer_Update);
 
     /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Inits Flags */
       sstSoundPointer.u32Flags = orxSOUNDPOINTER_KU32_STATIC_FLAG_READY;

@@ -403,7 +403,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
   }
 
   /* Successful? */
-  if(eStatus == orxSTATUS_SUCCESS)
+  if(eStatus != orxSTATUS_FAILURE)
   {
     /* Updates counter */
     _pstHashTable->u32Counter--;

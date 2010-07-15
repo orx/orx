@@ -387,7 +387,7 @@ orxSTATUS orxFASTCALL orxAnim_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     sstAnim.u32Flags = orxANIM_KU32_STATIC_FLAG_READY;

@@ -286,7 +286,7 @@ orxSTATUS orxFASTCALL orxFXPointer_Init()
     eResult = orxSTRUCTURE_REGISTER(FXPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxFXPointer_Update);
 
     /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Inits Flags */
       sstFXPointer.u32Flags = orxFXPOINTER_KU32_STATIC_FLAG_READY;

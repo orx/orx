@@ -590,7 +590,7 @@ orxSTATUS orxFASTCALL orxFrame_Init()
     eResult = orxSTRUCTURE_REGISTER(FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Successful? */
-    if(eResult == orxSTATUS_SUCCESS)
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* Inits frame tree */
       sstFrame.pstRoot = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);

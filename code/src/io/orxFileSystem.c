@@ -229,7 +229,7 @@ orxBOOL orxFASTCALL orxFileSystem_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILESYSTEM_INFO));
 
   /* Done! */
-	return(orxFileSystem_Info(_zFileName, &(stInfo)) == orxSTATUS_SUCCESS);
+	return(orxFileSystem_Info(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)

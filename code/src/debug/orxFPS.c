@@ -143,7 +143,7 @@ orxSTATUS orxFASTCALL orxFPS_Init()
       eResult = orxClock_Register(sstFPS.pstClock, orxFPS_Update, orxNULL, orxMODULE_ID_FPS, orxCLOCK_PRIORITY_NORMAL);
 
       /* Registered? */
-      if(eResult == orxSTATUS_SUCCESS)
+      if(eResult != orxSTATUS_FAILURE)
       {
         /* Inits Flags */
         sstFPS.u32Flags = orxFPS_KU32_STATIC_FLAG_READY;

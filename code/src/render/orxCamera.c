@@ -182,7 +182,7 @@ orxSTATUS orxFASTCALL orxCamera_Init()
   }
 
   /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Inits Flags */
     sstCamera.u32Flags = orxCAMERA_KU32_STATIC_FLAG_READY;
