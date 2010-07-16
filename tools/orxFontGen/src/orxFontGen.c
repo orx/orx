@@ -34,7 +34,6 @@
 
 #include "SOIL.h"
 
-#define STBTT_malloc
 #define STBTT_malloc(x,u)  malloc(x)
 #define STBTT_free(x,u)    free(x)
 
@@ -45,6 +44,12 @@
 /** Module flags
  */
 #define orxFONTGEN_KU32_STATIC_FLAG_NONE            0x00000000  /**< No flags */
+
+#define orxFONTGEN_KU32_STATIC_FLAG_FONT            0x00000001  /**< Font flag */
+#define orxFONTGEN_KU32_STATIC_FLAG_SIZE            0x00000002  /**< Size flag */
+#define orxFONTGEN_KU32_STATIC_FLAG_OUTPUT          0x00000004  /**< Output flag */
+
+#define orxFONTGEN_KU32_STATIC_MASK_READY           0x00000003  /**< Ready mask */
 
 #define orxFONTGEN_KU32_STATIC_MASK_ALL             0xFFFFFFFF  /**< All mask */
 
@@ -156,7 +161,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
         orxU32 u32CharacterCodePoint;
 
         // Reads it
-        u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pcNext);
+        u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxSTRING *)&pcNext);
 
         // Non EOL?
         if((u32CharacterCodePoint != orxCHAR_CR)
@@ -216,7 +221,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                   u32Counter++;
 
                   // Gets character's width
-                  stbtt_GetCodepointHMetrics(&sstFontGen.stFontInfo, u32CharacterCodePoint, &s32Width, &s32LSB);
+                  stbtt_GetCodepointHMetrics(&sstFontGen.stFontInfo, u32CharacterCodePoint, (int *)&s32Width, (int *)&s32LSB);
 
                   // Scales it
                   fWidth = sstFontGen.fFontScale * orxS2F(s32Width);
@@ -505,16 +510,6 @@ static orxSTATUS orxFASTCALL Init()
   // Success?
   if(eResult != orxSTATUS_FAILURE)
   {
-    // No font name?
-    if(!sstFontGen.zFontName)
-    {
-      // Uses default one
-      sstFontGen.zFontName = orxString_Duplicate(orxFONTGEN_KZ_DEFAULT_NAME);
-
-      // Logs message
-      orxLOG("[OUTPUT]  No valid output found, using default '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
-    }
-
     // Asks for command line size parameter
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
     stParams.zShortName = "s";
@@ -532,6 +527,9 @@ static orxSTATUS orxFASTCALL Init()
       // Valid height?
       if(sstFontGen.vCharacterSize.fY > orxFLOAT_0)
       {
+        // Updates status
+        orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
+
         // Asks for command line decrypt parameter
         stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
         stParams.zShortName = "f";
@@ -549,6 +547,9 @@ static orxSTATUS orxFASTCALL Init()
           // Valid font?
           if(sstFontGen.fFontScale != orxFLOAT_0)
           {
+            // Updates status
+            orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_FONT, orxFONTGEN_KU32_STATIC_FLAG_NONE);
+
             // Asks for command line input file parameter
             stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
             stParams.zShortName = "t";
@@ -560,23 +561,7 @@ static orxSTATUS orxFASTCALL Init()
             // Registers params
             eResult = orxParam_Register(&stParams);
           }
-          else
-          {
-            // Logs message
-            orxLOG("[FONT]    No font specified, aborting.");
-
-            // Updates result
-            eResult = orxSTATUS_FAILURE;
-          }
         }
-      }
-      else
-      {
-        // Logs message
-        orxLOG("[SIZE]    No character height found, aborting.");
-
-        // Updates result
-        eResult = orxSTATUS_FAILURE;
       }
     }
   }
@@ -612,146 +597,175 @@ static void orxFASTCALL Exit()
 
 static void Run()
 {
-  orxU32 u32Counter;
-
-  // Gets glyph list's counter
-  u32Counter = orxLinkList_GetCounter(&sstFontGen.stGlyphList);
-
-  // Valid?
-  if(u32Counter)
+  // Ready?
+  if(orxFLAG_TEST_ALL(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_MASK_READY))
   {
-    orxS32    s32Width, s32Height, s32Ascent, s32Descent, s32LineGap;
-    orxFLOAT  fWidth, fHeight;
-    orxU8    *pu8ImageBuffer;
+    orxU32 u32Counter;
 
-    // Gets width & height
-    fWidth  = orxMath_Floor(orxMath_Sqrt(orxU2F(u32Counter)));
-    fHeight = orxMath_Ceil(orxU2F(u32Counter) / fWidth);
-    s32Width  = orxF2S(fWidth * sstFontGen.vCharacterSize.fX);
-    s32Height = orxF2S(fHeight * sstFontGen.vCharacterSize.fY);
-
-    // Logs messages
-    orxLOG("[PROCESS] Calculated character size: %6g x %g.", sstFontGen.vCharacterSize.fX, sstFontGen.vCharacterSize.fY);
-    orxLOG("[PROCESS] Calculated texture size:   %6ld x %ld.", s32Width, s32Height);
-
-    // Gets font's metrics
-    stbtt_GetFontVMetrics(&sstFontGen.stFontInfo, &s32Ascent, &s32Descent, &s32LineGap);
-    s32Ascent = orxF2S(sstFontGen.fFontScale * orxS2F(s32Ascent));
-
-    // Allocates image
-    pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(s32Width * s32Height * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    // Gets glyph list's counter
+    u32Counter = orxLinkList_GetCounter(&sstFontGen.stGlyphList);
 
     // Valid?
-    if(pu8ImageBuffer)
+    if(u32Counter)
     {
-      orxU32            u32Size;
-      orxS32            s32X, s32Y;
-      orxFONTGEN_GLYPH *pstGlyph;
-      orxCHAR           acBuffer[orxFONTGEN_KU32_BUFFER_SIZE], *pc;
+      orxS32    s32Width, s32Height, s32Ascent, s32Descent, s32LineGap;
+      orxFLOAT  fWidth, fHeight;
+      orxU8    *pu8ImageBuffer;
 
-      // Clears bitmap
-      orxMemory_Zero(pu8ImageBuffer, s32Width * s32Height * sizeof(orxU8));
-
-      // For all defined glyphs
-      for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), pc = acBuffer, u32Size = orxFONTGEN_KU32_BUFFER_SIZE - 1, s32X = 0, s32Y = s32Ascent;
-          pstGlyph;
-          pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
+      // No font name?
+      if(!sstFontGen.zFontName)
       {
-        orxU32 u32Offset;
+        // Uses default one
+        sstFontGen.zFontName = orxString_Duplicate(orxFONTGEN_KZ_DEFAULT_NAME);
 
-        // Adds it to list
-        u32Offset = orxString_PrintUTF8Character(pc, u32Size, pstGlyph->u32CodePoint);
+        // Logs message
+        orxLOG("[OUTPUT]  No output name specified, defaulting to '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
+      }
+      
+      // Gets width & height
+      fWidth  = orxMath_Floor(orxMath_Sqrt(orxU2F(u32Counter)));
+      fHeight = orxMath_Ceil(orxU2F(u32Counter) / fWidth);
+      s32Width  = orxF2S(fWidth * sstFontGen.vCharacterSize.fX);
+      s32Height = orxF2S(fHeight * sstFontGen.vCharacterSize.fY);
 
-        // Success?
-        if(u32Offset != orxU32_UNDEFINED)
+      // Logs messages
+      orxLOG("[PROCESS] Calculated character size: %6g x %g.", sstFontGen.vCharacterSize.fX, sstFontGen.vCharacterSize.fY);
+      orxLOG("[PROCESS] Calculated texture size:   %6ld x %ld.", s32Width, s32Height);
+
+      // Gets font's metrics
+      stbtt_GetFontVMetrics(&sstFontGen.stFontInfo, (int *)&s32Ascent, (int *)&s32Descent, (int *)&s32LineGap);
+      s32Ascent = orxF2S(sstFontGen.fFontScale * orxS2F(s32Ascent));
+
+      // Allocates image
+      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(s32Width * s32Height * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+      // Valid?
+      if(pu8ImageBuffer)
+      {
+        orxU32            u32Size;
+        orxS32            s32X, s32Y;
+        orxFONTGEN_GLYPH *pstGlyph;
+        orxCHAR           acBuffer[orxFONTGEN_KU32_BUFFER_SIZE], *pc;
+
+        // Clears bitmap
+        orxMemory_Zero(pu8ImageBuffer, s32Width * s32Height * sizeof(orxU8));
+
+        // For all defined glyphs
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), pc = acBuffer, u32Size = orxFONTGEN_KU32_BUFFER_SIZE - 1, s32X = 0, s32Y = s32Ascent;
+            pstGlyph;
+            pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
         {
-          orxS32 s32Advance, s32LSB, s32XStart, s32XEnd, s32YStart, s32YEnd, s32AdjustedX, s32AdjustedY;
+          orxU32 u32Offset;
 
-          // Gets glyph's metrics
-          stbtt_GetGlyphHMetrics(&sstFontGen.stFontInfo, pstGlyph->s32Index, &s32Advance, &s32LSB);
+          // Adds it to list
+          u32Offset = orxString_PrintUTF8Character(pc, u32Size, pstGlyph->u32CodePoint);
 
-          // Gets glyph's bitmap box
-          stbtt_GetGlyphBitmapBox(&sstFontGen.stFontInfo, pstGlyph->s32Index, sstFontGen.fFontScale, sstFontGen.fFontScale, &s32XStart, &s32YStart, &s32XEnd, &s32YEnd);
-
-          // Gets adjusted position
-          s32AdjustedX  = s32X + orxF2S(orx2F(0.5f) * (sstFontGen.vCharacterSize.fX - orxS2F(s32XEnd - s32XStart)));
-          s32AdjustedY  = s32Y + s32YStart;
-
-          // Prints glyph on bitmap
-          stbtt_MakeGlyphBitmap(&sstFontGen.stFontInfo, pu8ImageBuffer + (s32AdjustedY * s32Width) + s32AdjustedX, s32XEnd - s32XStart, s32YEnd - s32YStart, s32Width, sstFontGen.fFontScale, sstFontGen.fFontScale, pstGlyph->s32Index);
-
-          // Updates position
-          s32X += orxF2S(sstFontGen.vCharacterSize.fX);
-
-          // Next line?
-          if(s32X >= s32Width)
+          // Success?
+          if(u32Offset != orxU32_UNDEFINED)
           {
-            s32X  = 0;
-            s32Y += orxF2S(sstFontGen.vCharacterSize.fY);
-          }
+            orxS32 s32Advance, s32LSB, s32XStart, s32XEnd, s32YStart, s32YEnd, s32AdjustedX, s32AdjustedY;
 
-          // Updates character list & size
-          pc      += u32Offset;
-          u32Size -= u32Offset;
+            // Gets glyph's metrics
+            stbtt_GetGlyphHMetrics(&sstFontGen.stFontInfo, pstGlyph->s32Index, (int *)&s32Advance, (int *)&s32LSB);
+
+            // Gets glyph's bitmap box
+            stbtt_GetGlyphBitmapBox(&sstFontGen.stFontInfo, pstGlyph->s32Index, sstFontGen.fFontScale, sstFontGen.fFontScale, (int *)&s32XStart, (int *)&s32YStart, (int *)&s32XEnd, (int *)&s32YEnd);
+
+            // Gets adjusted position
+            s32AdjustedX  = s32X + orxF2S(orx2F(0.5f) * (sstFontGen.vCharacterSize.fX - orxS2F(s32XEnd - s32XStart)));
+            s32AdjustedY  = s32Y + s32YStart;
+
+            // Prints glyph on bitmap
+            stbtt_MakeGlyphBitmap(&sstFontGen.stFontInfo, pu8ImageBuffer + (s32AdjustedY * s32Width) + s32AdjustedX, s32XEnd - s32XStart, s32YEnd - s32YStart, s32Width, sstFontGen.fFontScale, sstFontGen.fFontScale, pstGlyph->s32Index);
+
+            // Updates position
+            s32X += orxF2S(sstFontGen.vCharacterSize.fX);
+
+            // Next line?
+            if(s32X >= s32Width)
+            {
+              s32X  = 0;
+              s32Y += orxF2S(sstFontGen.vCharacterSize.fY);
+            }
+
+            // Updates character pointer & size
+            pc      += u32Offset;
+            u32Size -= u32Offset;
+          }
+          else
+          {
+            // Logs message
+            orxLOG("[PROCESS] Too many characters defined for a single font, stopping.");
+
+            break;
+          }
+        }
+
+        // Ends character list
+        *pc = orxCHAR_NULL;
+
+        // Pushes font section
+        orxConfig_PushSection(sstFontGen.zFontName);
+
+        // Stores font info
+        orxConfig_SetStringBlock("CharacterList", acBuffer);
+        orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
+        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.tga", sstFontGen.zFontName);
+        orxConfig_SetString("Texture", acBuffer);
+
+        // Pops config
+        orxConfig_PopSection();
+
+        // Saves texture
+        SOIL_save_image(acBuffer, SOIL_SAVE_TYPE_TGA, s32Width, s32Height, 1, pu8ImageBuffer);
+
+        // Logs message
+        orxLOG("[PROCESS] %ld glyphs generated in '%s'.", u32Counter, acBuffer);
+
+        // Gets config file name
+        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.ini", sstFontGen.zFontName);
+
+        // Saves it
+        if(orxConfig_Save(acBuffer, orxFALSE, SaveFilter) != orxSTATUS_FAILURE)
+        {
+          // Logs message
+          orxLOG("[SAVE]    '%s': SUCCESS.", acBuffer);
         }
         else
         {
           // Logs message
-          orxLOG("[PROCESS] Too many characters defined for a single font, aborting.");
-
-          break;
+          orxLOG("[SAVE]    '%s': FAILURE.", acBuffer);
         }
-      }
 
-      // Ends character list
-      *pc = orxCHAR_NULL;
-
-      // Pushes font section
-      orxConfig_PushSection(sstFontGen.zFontName);
-
-      // Stores font info
-      orxConfig_SetStringBlock("CharacterList", acBuffer);
-      orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
-      orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.tga", sstFontGen.zFontName);
-      orxConfig_SetString("Texture", acBuffer);
-
-      // Pops config
-      orxConfig_PopSection();
-
-      // Saves texture
-      SOIL_save_image(acBuffer, SOIL_SAVE_TYPE_TGA, s32Width, s32Height, 1, pu8ImageBuffer);
-
-      // Logs message
-      orxLOG("[PROCESS] %ld glyphs generated in '%s'.", u32Counter, acBuffer);
-
-        // Gets config file name
-      orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.ini", sstFontGen.zFontName);
-
-      // Saves it
-      if(orxConfig_Save(acBuffer, orxFALSE, SaveFilter) != orxSTATUS_FAILURE)
-      {
-        // Logs message
-        orxLOG("[SAVE]    '%s': SUCCESS.", acBuffer);
+        // Frees image buffer
+        orxMemory_Free(pu8ImageBuffer);
       }
       else
       {
         // Logs message
-        orxLOG("[SAVE]    '%s': FAILURE.", acBuffer);
+        orxLOG("[PROCESS] Couldn't allocate texture memory (%ld x %ld), aborting.", s32Width, s32Height);
       }
-
-      // Frees image buffer
-      orxMemory_Free(pu8ImageBuffer);
     }
     else
     {
       // Logs message
-      orxLOG("[PROCESS] Couldn't allocate texture memory (%ld x %ld), aborting.", s32Width, s32Height);
+      orxLOG("[PROCESS] No characters to output, aborting.");
     }
   }
   else
   {
-    // Logs message
-    orxLOG("[PROCESS] No characters to output, aborting.");
+    // No size?
+    if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE))
+    {
+      // Logs message
+      orxLOG("[SIZE]    No character height found, aborting.");
+    }
+    // No font?
+    else if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_FONT))
+    {
+      // Logs message
+      orxLOG("[FONT]    No font specified, aborting.");
+    }
   }
 }
 
