@@ -355,7 +355,7 @@ static orxSTATUS orxFASTCALL ProcessOutputParams(orxU32 _u32ParamCount, const or
   return eResult;
 }
 
-static orxSTATUS orxFASTCALL ProcessHeightParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult;
 
@@ -371,18 +371,18 @@ static orxSTATUS orxFASTCALL ProcessHeightParams(orxU32 _u32ParamCount, const or
       sstFontGen.vCharacterSize.fY = fHeight;
 
       // Logs message
-      orxLOG("[HEIGHT]  Character height set to '%g'.", fHeight);
+      orxLOG("[SIZE]    Character height set to '%g'.", fHeight);
     }
     else
     {
       // Logs message
-      orxLOG("[HEIGHT]  Invalid height found '%s', aborting.", _azParams[1]);
+      orxLOG("[SIZE]    Invalid character height found '%s', aborting.", _azParams[1]);
     }
   }
   else
   {
     // Logs message
-    orxLOG("[HEIGHT]  No height found, aborting.");
+    orxLOG("[SIZE]    No character height found, aborting.");
 
     // Updates result
     eResult = orxSTATUS_FAILURE;
@@ -517,7 +517,7 @@ static orxSTATUS orxFASTCALL Init()
     stParams.zLongName  = "size";
     stParams.zShortDesc = "Size (height) of characters";
     stParams.zLongDesc  = "Height to use for characters defined with this font, as only monospaced font are supported the width will depend directly on it";
-    stParams.pfnParser  = ProcessHeightParams;
+    stParams.pfnParser  = ProcessSizeParams;
 
     // Registers params
     eResult = orxParam_Register(&stParams);
@@ -569,7 +569,7 @@ static orxSTATUS orxFASTCALL Init()
       else
       {
         // Logs message
-        orxLOG("[HEIGHT]  No height found, aborting.");
+        orxLOG("[SIZE]    No character height found, aborting.");
 
         // Updates result
         eResult = orxSTATUS_FAILURE;
@@ -625,6 +625,10 @@ static void Run()
     fHeight = orxMath_Ceil(orxU2F(u32Counter) / fWidth);
     s32Width  = orxF2S(fWidth * sstFontGen.vCharacterSize.fX);
     s32Height = orxF2S(fHeight * sstFontGen.vCharacterSize.fY);
+
+    // Logs messages
+    orxLOG("[PROCESS] Calculated character size: %6g x %g.", sstFontGen.vCharacterSize.fX, sstFontGen.vCharacterSize.fY);
+    orxLOG("[PROCESS] Calculated texture size:   %6ld x %ld.", s32Width, s32Height);
 
     // Gets font's metrics
     stbtt_GetFontVMetrics(&sstFontGen.stFontInfo, &s32Ascent, &s32Descent, &s32LineGap);
