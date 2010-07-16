@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="orxd.lib SOIL.lib"
+				AdditionalDependencies="orxd.lib SOIL.lib opengl32.lib"
 				OutputFile="$(OutDir)\orxFontGend.exe"
 				AdditionalLibraryDirectories="..\..\..\lib\msvs2005;..\..\..\..\..\extern\SOIL\lib\msvs2005"
 				GenerateManifest="false"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="orx.lib SOIL.lib"
+				AdditionalDependencies="orx.lib SOIL.lib opengl32.lib"
 				OutputFile="$(OutDir)\orxFontGen.exe"
 				AdditionalLibraryDirectories="..\..\..\lib\msvs2005;..\..\..\..\..\extern\SOIL\lib\msvs2005"
 				GenerateManifest="false"
