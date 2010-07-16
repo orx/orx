@@ -21,7 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		E0BF3E1B1069B3C6005B9DE1 /* orxCrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = E0BF3E1A1069B3BE005B9DE1 /* orxCrypt.c */; };
+		E05DE39211F10B6C008EA0AD /* orxFontGen.c in Sources */ = {isa = PBXBuildFile; fileRef = E05DE39111F10B6C008EA0AD /* orxFontGen.c */; };
+		E05DE39411F10C3E008EA0AD /* libSOIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E05DE39311F10C3E008EA0AD /* libSOIL.a */; };
 		E0BF3E251069B42A005B9DE1 /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0BF3E231069B41A005B9DE1 /* liborx.dylib */; };
 /* End PBXBuildFile section */
 
@@ -36,8 +37,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E0BF3E181069B364005B9DE1 /* orxcrypt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = orxcrypt; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0BF3E1A1069B3BE005B9DE1 /* orxCrypt.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = orxCrypt.c; path = ../../../src/orxCrypt.c; sourceTree = SOURCE_ROOT; };
+		E05DE39111F10B6C008EA0AD /* orxFontGen.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = orxFontGen.c; path = ../../../src/orxFontGen.c; sourceTree = SOURCE_ROOT; };
+		E05DE39311F10C3E008EA0AD /* libSOIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSOIL.a; path = ../../../../../extern/SOIL/lib/mac/libSOIL.a; sourceTree = SOURCE_ROOT; };
+		E0BF3E181069B364005B9DE1 /* orxfontgen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = orxfontgen; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0BF3E231069B41A005B9DE1 /* liborx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liborx.dylib; path = ../../../lib/mac/liborx.dylib; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -47,6 +49,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0BF3E251069B42A005B9DE1 /* liborx.dylib in Frameworks */,
+				E05DE39411F10C3E008EA0AD /* libSOIL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,7 +59,7 @@
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E0BF3E181069B364005B9DE1 /* orxcrypt */,
+				E0BF3E181069B364005B9DE1 /* orxfontgen */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,7 +77,7 @@
 		08FB77ACFE841707C02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E0BF3E1A1069B3BE005B9DE1 /* orxCrypt.c */,
+				E05DE39111F10B6C008EA0AD /* orxFontGen.c */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -82,6 +85,7 @@
 		E0BF3E241069B421005B9DE1 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E05DE39311F10C3E008EA0AD /* libSOIL.a */,
 				E0BF3E231069B41A005B9DE1 /* liborx.dylib */,
 			);
 			name = Library;
@@ -90,9 +94,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E059AAE20F22ECCA00900DF0 /* orxcrypt */ = {
+		E059AAE20F22ECCA00900DF0 /* orxfontgen */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "orxcrypt" */;
+			buildConfigurationList = E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "orxfontgen" */;
 			buildPhases = (
 				E059AAE00F22ECCA00900DF0 /* Sources */,
 				E059AAE10F22ECCA00900DF0 /* Frameworks */,
@@ -101,9 +105,9 @@
 			);
 			dependencies = (
 			);
-			name = orxcrypt;
+			name = orxfontgen;
 			productName = orx;
-			productReference = E0BF3E181069B364005B9DE1 /* orxcrypt */;
+			productReference = E0BF3E181069B364005B9DE1 /* orxfontgen */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -111,7 +115,7 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orxCrypt" */;
+			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orxFontGen" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* orx */;
@@ -120,7 +124,7 @@
 			projectRoot = "";
 			targets = (
 				E059AC040F22FEE800900DF0 /* All */,
-				E059AAE20F22ECCA00900DF0 /* orxcrypt */,
+				E059AAE20F22ECCA00900DF0 /* orxfontgen */,
 			);
 		};
 /* End PBXProject section */
@@ -130,7 +134,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0BF3E1B1069B3C6005B9DE1 /* orxCrypt.c in Sources */,
+				E05DE39211F10B6C008EA0AD /* orxFontGen.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,7 +143,7 @@
 /* Begin PBXTargetDependency section */
 		E0FF29020F2BF328003D47DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E059AAE20F22ECCA00900DF0 /* orxcrypt */;
+			target = E059AAE20F22ECCA00900DF0 /* orxfontgen */;
 			targetProxy = E0FF29010F2BF328003D47DF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -149,7 +153,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ONLY_ACTIVE_ARCH_PRE_XCODE_3_1)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				DEAD_CODE_STRIPPING = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -177,7 +182,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
 				MACH_O_TYPE = mh_bundle;
 				OBJROOT = build;
-				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH)";
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
@@ -203,14 +208,21 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				HEADER_SEARCH_PATHS = (
+					../../../../../extern/SOIL/include,
+					../../../../../extern/stb_truetype,
+				);
 				INSTALL_PATH = "@executable_path";
 				LD_DYLIB_INSTALL_NAME = "";
 				LIBRARY_SEARCH_PATHS = (
 					../../../lib/mac,
+					../../../../../extern/SOIL/lib,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../lib/mac\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../lib/mac\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../../extern/SOIL/lib/mac\"";
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -220,7 +232,8 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = orxcrypt;
+				PRODUCT_NAME = orxfontgen;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = all;
 				SYMROOT = ../../../bin/mac;
@@ -243,7 +256,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orxCrypt" */ = {
+		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orxFontGen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB916608733D950010E9CD /* Release */,
@@ -251,7 +264,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "orxcrypt" */ = {
+		E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "orxfontgen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E059AAE60F22ECCB00900DF0 /* Release */,
