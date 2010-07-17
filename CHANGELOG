@@ -9,6 +9,7 @@ orx 1.2
 * *** Orx is now published under the zlib license, please see the LICENSE file. ***
 * IMPORTANT: Added Unicode support with UTF-8. Config files now should be encoded with either plain ANSI or UTF-8: extended ASCII characters (ISO-Latin-1) won't be recognized any longer.
 * IMPORTANT: Added custom bitmap font support in orx with Jørgen 'Jibs' Ibsen's Dina font as default.
+* IMPORTANT: Added the orxFontGen tool to create orx-compatible bitmap fonts (.tga/.ini) from TrueType (.ttf) font files, using reference texts to define the list of characters to export.
 * IMPORTANT: Joystick buttons/axes are now suffixed with the corresponding joystick's ID (JOY_X_1, JOY_1_2, ...).
 * IMPORTANT: Added new plugins for embedded versions: SDL plugins for win/linux (35-40% than the SFML ones) and GLFW plugins for win/linux/osx (~2% faster than SDL ones).
 * IMPORTANT: Added an OpenAL/libsndfile/stb_vorbis audio plugin as SFML audio plugin counterpart.
