@@ -1774,6 +1774,49 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
   return bResult;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates VSync status */
+    glfwSwapInterval(1);
+
+    /* Updates status */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates VSync status */
+    glfwSwapInterval(0);
+
+    /* Updates status */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VSYNC);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
   orxSTATUS eResult;
@@ -1955,6 +1998,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
 
+    /* Enforces VSync status */
+    orxDisplay_GLFW_EnableVSync(orxDisplay_GLFW_IsVSyncEnabled());
+
     /* Had bitmaps? */
     if(sstDisplay.s32BitmapCounter > 0)
     {
@@ -2019,49 +2065,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
   /* Done! */
   return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  /* Enable? */
-  if(_bEnable != orxFALSE)
-  {
-    /* Updates VSync status */
-    glfwSwapInterval(1);
-
-    /* Updates status */
-    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-  }
-  else
-  {
-    /* Updates VSync status */
-    glfwSwapInterval(0);
-
-    /* Updates status */
-    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VSYNC);
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
-{
-  orxBOOL bResult = orxFALSE;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  /* Updates result */
-  bResult = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE;
-
-  /* Done! */
-  return bResult;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
