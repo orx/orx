@@ -37,8 +37,8 @@ static const struct
   orxU32    u32Height;
   orxFLOAT  fCharacterWidth;
   orxFLOAT  fCharacterHeight;
-  orxFLOAT  fCharacterStrideX;
-  orxFLOAT  fCharacterStrideY;
+  orxFLOAT  fCharacterSpacingX;
+  orxFLOAT  fCharacterSpacingY;
   orxSTRING zCharacterList;
   orxU8     au8Data[128 * 224 * 4];
 } sstDefaultFont =

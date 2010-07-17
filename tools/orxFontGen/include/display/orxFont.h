@@ -112,12 +112,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterList(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterSize(orxFONT *_pstFont, const orxVECTOR *_pvSize);
 
-/** Sets font's character stride
+/** Sets font's character spacing
  * @param[in]   _pstFont      Concerned font
- * @param[in]   _pvStride     Character's stride
+ * @param[in]   _pvSpacing    Character's spacing
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterStride(orxFONT *_pstFont, const orxVECTOR *_pvStride);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterSpacing(orxFONT *_pstFont, const orxVECTOR *_pvSpacing);
 
 /** Sets font's origin
  * @param[in]   _pstFont      Concerned font
@@ -153,12 +153,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL          orxFont_GetCharacterList(c
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterSize(const orxFONT *_pstFont, orxVECTOR *_pvSize);
 
-/** Gets font's character stride
+/** Gets font's character spacing
  * @param[in]   _pstFont      Concerned font
- * @param[out]  _pvStride     Character's stride
+ * @param[out]  _pvSpacing    Character's spacing
  * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterStride(const orxFONT *_pstFont, orxVECTOR *_pvStride);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterSpacing(const orxFONT *_pstFont, orxVECTOR *_pvSpacing);
 
 /** Gets font's origin
  * @param[in]   _pstFont      Concerned font
