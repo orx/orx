@@ -398,16 +398,11 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
         // Sets unicode map
         if(!FT_Select_Charmap(sstFontGen.pstFontFace, ft_encoding_unicode))
         {
-          orxFLOAT fRatio;
-
-          // Gets its ratio
-          fRatio = orxS2F(sstFontGen.pstFontFace->max_advance_width) / orxS2F(sstFontGen.pstFontFace->max_advance_height);
-
           // Updates character size
-          sstFontGen.vCharacterSize.fX = orxMath_Ceil(fRatio * sstFontGen.vCharacterSize.fY);
+          sstFontGen.vCharacterSize.fX = sstFontGen.vCharacterSize.fY;
 
           // Stores scale
-          sstFontGen.fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(sstFontGen.pstFontFace->max_advance_height);
+          sstFontGen.fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(sstFontGen.pstFontFace->bbox.yMax - sstFontGen.pstFontFace->bbox.yMin);
 
           // Sets pixel's size (with an extra pixel of spacing)
           eResult = FT_Set_Pixel_Sizes(sstFontGen.pstFontFace, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fX) - 1, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fY) - 1) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
