@@ -403,8 +403,8 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
           sstFontGen.vCharacterSize.fX = sstFontGen.vCharacterSize.fY;
 
           // Updates character spacing
-          sstFontGen.vCharacterSpacing.fX = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fX * (orxFLOAT_1 / orx2F(16.0f)));
-          sstFontGen.vCharacterSpacing.fY = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fY * (orxFLOAT_1 / orx2F(16.0f)));
+          sstFontGen.vCharacterSpacing.fX = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fX * (orxFLOAT_1 / orx2F(32.0f)));
+          sstFontGen.vCharacterSpacing.fY = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fY * (orxFLOAT_1 / orx2F(32.0f)));
 
           // Stores scale
           sstFontGen.fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(sstFontGen.pstFontFace->bbox.yMax - sstFontGen.pstFontFace->bbox.yMin);
