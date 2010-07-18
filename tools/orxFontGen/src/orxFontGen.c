@@ -490,38 +490,30 @@ static orxSTATUS orxFASTCALL Init()
     // Success?
     if(eResult != orxSTATUS_FAILURE)
     {
-      // Valid size?
-      if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE))
+      // Asks for command line decrypt parameter
+      stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+      stParams.zShortName = "f";
+      stParams.zLongName  = "font";
+      stParams.zShortDesc = "Input font file";
+      stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs";
+      stParams.pfnParser  = ProcessFontParams;
+
+      // Registers params
+      eResult = orxParam_Register(&stParams);
+
+      // Success?
+      if(eResult != orxSTATUS_FAILURE)
       {
-        // Asks for command line decrypt parameter
+        // Asks for command line input file parameter
         stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-        stParams.zShortName = "f";
-        stParams.zLongName  = "font";
-        stParams.zShortDesc = "Input font file";
-        stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs";
-        stParams.pfnParser  = ProcessFontParams;
+        stParams.zShortName = "t";
+        stParams.zLongName  = "textlist";
+        stParams.zShortDesc = "List of input text files";
+        stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
+        stParams.pfnParser  = ProcessInputParams;
 
         // Registers params
         eResult = orxParam_Register(&stParams);
-
-        // Success?
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          // Valid font?
-          if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_FONT))
-          {
-            // Asks for command line input file parameter
-            stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-            stParams.zShortName = "t";
-            stParams.zLongName  = "textlist";
-            stParams.zShortDesc = "List of input text files";
-            stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
-            stParams.pfnParser  = ProcessInputParams;
-
-            // Registers params
-            eResult = orxParam_Register(&stParams);
-          }
-        }
       }
     }
   }
