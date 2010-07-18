@@ -82,6 +82,7 @@ typedef struct __orxFONTGEN_STATIC_t
 {
   orxSTRING       zFontName;
   orxVECTOR       vCharacterSize;
+  orxVECTOR       vCharacterSpacing;
   orxFLOAT        fFontScale;
   orxHASHTABLE   *pstCharacterTable;
   orxBANK        *pstGlyphBank;
@@ -401,11 +402,15 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
           // Updates character size
           sstFontGen.vCharacterSize.fX = sstFontGen.vCharacterSize.fY;
 
+          // Updates character spacing
+          sstFontGen.vCharacterSpacing.fX = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fX * (orxFLOAT_1 / orx2F(16.0f)));
+          sstFontGen.vCharacterSpacing.fY = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fY * (orxFLOAT_1 / orx2F(16.0f)));
+
           // Stores scale
           sstFontGen.fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(sstFontGen.pstFontFace->bbox.yMax - sstFontGen.pstFontFace->bbox.yMin);
 
-          // Sets pixel's size (with an extra pixel of spacing)
-          eResult = FT_Set_Pixel_Sizes(sstFontGen.pstFontFace, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fX) - 1, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fY) - 1) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
+          // Sets pixel's size
+          eResult = FT_Set_Pixel_Sizes(sstFontGen.pstFontFace, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fX) - 2, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fY) - 2) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
         }
       }
     }
@@ -586,12 +591,13 @@ static void Run()
       // Gets width & height
       fWidth  = orxMath_Floor(orxMath_Sqrt(orxU2F(u32Counter)));
       fHeight = orxMath_Ceil(orxU2F(u32Counter) / fWidth);
-      s32Width  = orxF2S(fWidth * sstFontGen.vCharacterSize.fX);
-      s32Height = orxF2S(fHeight * sstFontGen.vCharacterSize.fY);
+      s32Width  = orxF2S((fWidth * sstFontGen.vCharacterSize.fX) + (sstFontGen.vCharacterSpacing.fX * orxMAX(fWidth - orxFLOAT_1, orxFLOAT_0)));
+      s32Height = orxF2S((fHeight * sstFontGen.vCharacterSize.fY) + (sstFontGen.vCharacterSpacing.fY * orxMAX(fHeight - orxFLOAT_1, orxFLOAT_0)));
 
       // Logs messages
-      orxLOG("[PROCESS] Calculated character size: %6g x %g.", sstFontGen.vCharacterSize.fX, sstFontGen.vCharacterSize.fY);
-      orxLOG("[PROCESS] Calculated texture size:   %6ld x %ld.", s32Width, s32Height);
+      orxLOG("[PROCESS] Calculated character size:    %4g x %g.", sstFontGen.vCharacterSize.fX, sstFontGen.vCharacterSize.fY);
+      orxLOG("[PROCESS] Calculated character spacing: %4g x %g.", sstFontGen.vCharacterSpacing.fX, sstFontGen.vCharacterSpacing.fY);
+      orxLOG("[PROCESS] Calculated texture size:      %4ld x %ld.", s32Width, s32Height);
 
       // Gets baseline (using scaled ascender)
       s32BaseLine = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->ascender)));
@@ -659,13 +665,13 @@ static void Run()
             }
 
             // Updates position
-            s32X += orxF2S(sstFontGen.vCharacterSize.fX);
+            s32X += orxF2S(sstFontGen.vCharacterSize.fX + sstFontGen.vCharacterSpacing.fX);
 
             // Next line?
             if(s32X >= s32Width)
             {
               s32X  = 0;
-              s32Y += orxF2S(sstFontGen.vCharacterSize.fY);
+              s32Y += orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.vCharacterSpacing.fY);
             }
 
             // Updates character pointer & size
@@ -690,6 +696,7 @@ static void Run()
         // Stores font info
         orxConfig_SetStringBlock("CharacterList", acBuffer);
         orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
+        orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
         orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.tga", sstFontGen.zFontName);
         orxConfig_SetString("Texture", acBuffer);
 
