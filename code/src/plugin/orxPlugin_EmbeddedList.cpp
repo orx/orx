@@ -45,10 +45,14 @@
 /* iPhone? */
 #elif defined(__orxIPHONE__)
 
+#pragma GCC visibility push(hidden)
+
 /* Display, joystick, mouse & sound system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
+
+#pragma GCC visibility pop
 
 /* Others */
 #else
