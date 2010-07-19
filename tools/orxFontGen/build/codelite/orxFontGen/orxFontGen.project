@@ -20,10 +20,11 @@
       </Compiler>
       <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/linux/liborxd.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/linux"/>
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mingw"/>
-        <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mingw"/>
+        <LibraryPath Value="../../../../../extern/SOIL/lib/linux"/>
+        <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/linux"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="z"/>
         <Library Value="SOIL"/>
         <Library Value="GL"/>
         <Library Value="freetype"/>
@@ -60,10 +61,11 @@
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/linux/liborx.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/linux"/>
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mingw"/>
-        <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mingw"/>
+        <LibraryPath Value="../../../../../extern/SOIL/lib/linux"/>
+        <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/linux"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="z"/>
         <Library Value="SOIL"/>
         <Library Value="GL"/>
         <Library Value="freetype"/>
