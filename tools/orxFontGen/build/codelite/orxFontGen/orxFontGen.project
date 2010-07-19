@@ -108,7 +108,7 @@
         <Library Value="freetype"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/windows/orxFontGend.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxFontGend.exe" CommandArguments="" WorkingDirectory="../../../bin/windows" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/windows/orxfontgend.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxfontgend.exe" CommandArguments="" WorkingDirectory="../../../bin/windows" PauseExecWhenProcTerminates="yes"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -146,7 +146,7 @@
         <Library Value="freetype"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/windows/orxFontGen.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxFontGen.exe" CommandArguments="" WorkingDirectory="../../../bin/windows" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/windows/orxfontgen.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxfontgen.exe" CommandArguments="" WorkingDirectory="../../../bin/windows" PauseExecWhenProcTerminates="yes"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>

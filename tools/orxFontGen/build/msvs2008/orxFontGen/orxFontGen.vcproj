@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="orxd.lib SOIL.lib opengl32.lib freetype.lib"
-				OutputFile="$(OutDir)\orxFontGend.exe"
+				OutputFile="$(OutDir)\orxfontgend.exe"
 				AdditionalLibraryDirectories="..\..\..\lib\msvs2008;..\..\..\..\..\extern\SOIL\lib\msvs2008;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2008"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
@@ -141,7 +141,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="orx.lib SOIL.lib opengl32.lib freetype.lib"
-				OutputFile="$(OutDir)\orxFontGen.exe"
+				OutputFile="$(OutDir)\orxfontgen.exe"
 				AdditionalLibraryDirectories="..\..\..\lib\msvs2008;..\..\..\..\..\extern\SOIL\lib\msvs2008;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2008"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
