@@ -113,7 +113,7 @@ NB: You'll need orx-extern-1.2.zip (orx plugins' external dependencies) if you i
 use orx-src-1.2.zip and you plan on compiling orx yourself. They are not neeeded otherwise.
 The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
-Warning for slow connections: this package is ~36MB.
+Warning for slow connections: this package is ~67MB.
 
 - orx-tools-1.2.zip: orx's additional set of tools (Win32, Linux and MacOS X) containing:
   . orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
