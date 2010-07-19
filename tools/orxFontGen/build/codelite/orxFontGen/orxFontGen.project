@@ -25,7 +25,7 @@
         <Library Value="dl"/>
         <Library Value="m"/>
         <Library Value="SOIL"/>
-        <Library Value="opengl32"/>
+        <Library Value="GL"/>
         <Library Value="freetype"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
@@ -65,7 +65,7 @@
         <Library Value="dl"/>
         <Library Value="m"/>
         <Library Value="SOIL"/>
-        <Library Value="opengl32"/>
+        <Library Value="GL"/>
         <Library Value="freetype"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
