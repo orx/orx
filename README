@@ -106,7 +106,7 @@ Here is a list with a small description for each package.
   . code::blocks (Win32 only, non-embedded versions)
   . codelite (Win32 and Linux, all versions)
   . msvs2005, msvs2008 & msvs2010 (Win32 Visual Studio, all versions)
-  . xcode (2.4+, for MacOS X, non-static versions, for iPhone/iPod Touch, static embedded versions)
+  . xcode (2.4+, for MacOS X, non-static versions; 3.1 for iPhone/iPod Touch, static embedded versions)
 NB: You'll need orx-extern-1.2.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
 
 - orx-extern-1.2.zip: orx's external dependencies. You will only *NEED* these if you
@@ -125,7 +125,8 @@ Warning for slow connections: this package is ~67MB.
 - orx-dev-msvs2005-1.2.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2005), release and debug.
 - orx-dev-msvs2008-1.2.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
 - orx-dev-msvs2010-1.2.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2010), release and debug.
-- orx-dev-iphone-1.2.zip   : orx's static embedded precompiled binaries for iPhone/iPod Touch/iPad, release and debug, simulator and device.
+
+- orx-full-iphone-1.2.zip  : orx's static embedded precompiled binaries for iPhone/iPod Touch/iPad, release/debug, simulator/device + doc + source + XCode project file.
 
 - orx-tutorial-linux-1.2.tar.bz2: orx's precompiled tutorial for Linux (x86), release only.
 - orx-tutorial-mac-1.2.zip      : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
