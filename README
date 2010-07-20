@@ -25,7 +25,7 @@ The current features of orx engine are:
 - animation engine (including a chaining graph & custom animation events for synchronization)
 - fragment (pixel) shader support
 - collision handling and rigid body physics
-- generic input system that abstracts keyboard, mouse and joystick inputs
+- generic input system that abstracts keyboard, mouse, joystick, touch and accelerometer inputs
 - powerful config system that makes orx data-driven and provides an easy to use load/save system
 - powerful localization module
 - camera/viewport scheme allowing multiple views displayed with camera translation, zoom and rotation
