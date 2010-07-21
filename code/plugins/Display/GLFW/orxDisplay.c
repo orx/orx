@@ -1759,9 +1759,9 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
     /* Matches? */
     if((_pstVideoMode->u32Width == (orxU32)astModeList[i].Width)
     && (_pstVideoMode->u32Height == (orxU32)astModeList[i].Height)
-    && (_pstVideoMode->u32Depth == (orxU32)(astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits))
-    || ((_pstVideoMode->u32Depth == 32)
-     && (astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits == 24)))
+    && ((_pstVideoMode->u32Depth == (orxU32)(astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits))
+     || ((_pstVideoMode->u32Depth == 32)
+      && (astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits == 24))))
     {
       /* Updates result */
       bResult = orxTRUE;
