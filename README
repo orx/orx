@@ -110,7 +110,7 @@ Here is a list with a small description for each package.
 NB: You'll need orx-extern-1.2.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
 
 - orx-extern-1.2.zip: orx's external dependencies. You will only *NEED* these if you
-use orx-src-1.2.zip and you plan on compiling orx yourself. They are not neeeded otherwise.
+use orx-src-1.2.zip and you plan on compiling orx yourself. They are not needed otherwise.
 The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
 Warning for slow connections: this package is ~67MB.
@@ -196,7 +196,7 @@ for which you're compiling. Here's a quick list of these flags:
 - __orxWINDOWS__      : orx is being compiled for Win32
 - __orxLINUX__        : orx is being compiled for Linux (x86)
 - __orxMAC__          : orx is being compiled for MacOS X (ppc/x86)
-- __orxIPHONE__       : orx is being compiled for iPhone/iPod Touch
+- __orxIPHONE__       : orx is being compiled for iPhone/iPod Touch/iPad
 - __orxWII__          : orx is being compiled for Wii
 - __orxGP2X__         : orx is being compiled for GP2X (gcc-arm)
 - __orxCPP__          : orx is being compiled with a C++ compiler
