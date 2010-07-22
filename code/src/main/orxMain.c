@@ -291,3 +291,16 @@ int main(int argc, char **argv)
   /* Done! */
   return EXIT_SUCCESS;
 }
+
+#ifdef __orxMSVC__
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+  /* Executes orx */
+  orx_WinExecute(orxMain_Init, orxMain_Run, orxMain_Exit);
+
+  /* Done! */
+  return EXIT_SUCCESS;
+}
+
+#endif /* __orxMSVC__ */
