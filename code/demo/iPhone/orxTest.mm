@@ -118,26 +118,11 @@ static orxSTATUS orxFASTCALL Run()
       orxFLOAT_0, -orxFLOAT_1, orxFLOAT_0
     };
 
-    orxVECTOR vTransform;
-    orxFLOAT  fGravityForce;
-
-    /* Selects test config section */
-    orxConfig_SelectSection("Test");
-
     /* Gets smoothed gravity from new value (low-pass filter) */
     orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
 
-    /* Gets gravity force */
-    fGravityForce = orxConfig_GetFloat("GravityForce");
-
-    /* Sets transformation vector */
-    orxVector_Set(&vTransform, fGravityForce, -fGravityForce, orxFLOAT_0);
-
-    /* Updates new gravity */
-    orxPhysics_SetGravity(orxVector_Mul(&vGravity, &svSmoothedGravity, &vTransform));
-
-    /* Pops config section */
-    orxConfig_PopSection();
+    /* Updates camera rotation */
+    orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
   }
 
   return orxSTATUS_SUCCESS;
