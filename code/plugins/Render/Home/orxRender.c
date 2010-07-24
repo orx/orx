@@ -60,8 +60,9 @@ typedef struct __orxRENDER_RENDER_NODE_t
 {
   orxLINKLIST_NODE  stNode;                       /**< Linklist node : 12 */
   orxOBJECT        *pstObject;                    /**< Object pointer : 16 */
-  orxVECTOR         vPosition;                    /**< Object position : 28 */
-  orxFLOAT          fDepthCoef;                   /**< Depth coef : 32 */
+  orxTEXTURE       *pstTexture;                   /**< Texture pointer : 20 */
+  orxFLOAT          fZ;                           /**< Z coordinate : 24 */
+  orxFLOAT          fDepthCoef;                   /**< Depth coef : 28 */
 
 } orxRENDER_NODE;
 
@@ -662,6 +663,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                     {
                       orxFRAME     *pstFrame;
                       orxSTRUCTURE *pstData;
+                      orxTEXTURE   *pstTexture;
 
                       /* Gets object's frame */
                       pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
@@ -671,10 +673,17 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 
                       /* Valid and has text/texture data? */
                       if((pstFrame != orxNULL)
-                      && ((orxTEXTURE(pstData) != orxNULL)
+                      && (((pstTexture = orxTEXTURE(pstData)) != orxNULL)
                        || (orxTEXT(pstData) != orxNULL)))
                       {
                         orxVECTOR vObjectPos;
+
+                        /* Not a texture? */
+                        if(pstTexture == orxNULL)
+                        {
+                          /* Gets texture from text */
+                          pstTexture = orxFont_GetTexture(orxText_GetFont(orxTEXT(pstData)));
+                        }
 
                         /* Gets its position */
                         orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
@@ -758,7 +767,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           /* Circle test between object & camera */
                           if(fSqrDist <= (fCameraBoundingRadius + fObjectBoundingRadius) * (fCameraBoundingRadius + fObjectBoundingRadius))
                           {
-                            orxLINKLIST_NODE *pstNode;
+                            orxRENDER_NODE *pstNode;
 
                             /* Creates a render node */
                             pstRenderNode = (orxRENDER_NODE *)orxBank_Allocate(sstRender.pstRenderBank);
@@ -768,9 +777,10 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 
                             /* Stores object */
                             pstRenderNode->pstObject = pstObject;
+                            pstRenderNode->pstTexture = pstTexture;
 
-                            /* Stores its position */
-                            orxVector_Copy(&(pstRenderNode->vPosition), &vObjectPos);
+                            /* Stores its Z coordinate */
+                            pstRenderNode->fZ = vObjectPos.fZ;
 
                             /* Stores its depth coef */
                             pstRenderNode->fDepthCoef = fDepthCoef;
@@ -784,27 +794,20 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                             else
                             {
                               /* Finds correct node */
-                              for(pstNode = orxLinkList_GetFirst(&(sstRender.stRenderList));
-                                  (pstNode != orxNULL);
-                                  pstNode = orxLinkList_GetNext(pstNode))
-                              {
-                                /* Is current object further? */
-                                if(vObjectPos.fZ > ((orxRENDER_NODE *)pstNode)->vPosition.fZ)
-                                {
-                                  break;
-                                }
-                              }
+                              for(pstNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
+                                  (pstNode != orxNULL) && ((vObjectPos.fZ < pstNode->fZ) || ((vObjectPos.fZ == pstNode->fZ) && (pstTexture != pstNode->pstTexture)));
+                                  pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
 
                               /* End of list reached? */
                               if(pstNode == orxNULL)
                               {
                                 /* Adds it at end */
-                                orxLinkList_AddEnd(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
+                                orxLinkList_AddEnd(&(sstRender.stRenderList), &(pstRenderNode->stNode));
                               }
                               else
                               {
                                 /* Adds it before found node */
-                                orxLinkList_AddBefore(pstNode, (orxLINKLIST_NODE *)pstRenderNode);
+                                orxLinkList_AddBefore(&(pstNode->stNode), &(pstRenderNode->stNode));
                               }
                             }
                           }
@@ -827,7 +830,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   pstObject = pstRenderNode->pstObject;
 
                   /* Gets object's position */
-                  orxVector_Copy(&vObjectPos, &(pstRenderNode->vPosition));
+                  orxObject_GetWorldPosition(pstObject, &vObjectPos);
 
                   /* Gets object's frame */
                   pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
