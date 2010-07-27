@@ -56,7 +56,6 @@ static void orxBounce_ApplyCurrentVideoMode()
   /* Updates title string */
   orxConfig_PushSection("Bounce");
   orxString_NPrint(acBuffer, 1024, "%s (%ldx%ld)", orxConfig_GetString("Title"), stVideoMode.u32Width, stVideoMode.u32Height);
-  acBuffer[1023] = orxCHAR_NULL;
   orxConfig_PopSection();
 
   /* Updates display module config content */
