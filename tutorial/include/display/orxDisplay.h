@@ -165,15 +165,15 @@ typedef struct __orxCOLOR_t
 
 /** Config parameters
  */
-#define orxDISPLAY_KZ_CONFIG_SECTION    "Display"
-#define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
-#define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
-#define orxDISPLAY_KZ_CONFIG_DEPTH      "ScreenDepth"
-#define orxDISPLAY_KZ_CONFIG_FULLSCREEN "FullScreen"
-#define orxDISPLAY_KZ_CONFIG_DECORATION "Decoration"
-#define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
-#define orxDISPLAY_KZ_CONFIG_SMOOTH     "Smoothing"
-#define orxDISPLAY_KZ_CONFIG_VSYNC      "VSync"
+#define orxDISPLAY_KZ_CONFIG_SECTION        "Display"
+#define orxDISPLAY_KZ_CONFIG_WIDTH          "ScreenWidth"
+#define orxDISPLAY_KZ_CONFIG_HEIGHT         "ScreenHeight"
+#define orxDISPLAY_KZ_CONFIG_DEPTH          "ScreenDepth"
+#define orxDISPLAY_KZ_CONFIG_FULLSCREEN     "FullScreen"
+#define orxDISPLAY_KZ_CONFIG_DECORATION     "Decoration"
+#define orxDISPLAY_KZ_CONFIG_TITLE          "Title"
+#define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
+#define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
 
 
 /** Shader texture suffixes
@@ -182,6 +182,30 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT    "_left"
 #define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM  "_bottom"
 #define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT   "_right"
+
+
+/** Event enum
+ */
+typedef enum __orxDISPLAY_EVENT_t
+{
+  orxDISPLAY_EVENT_SET_VIDEO_MODE = 0,
+
+  orxDISPLAY_EVENT_NUMBER,
+
+  orxDISPLAY_EVENT_NONE = orxENUM_NONE
+
+} orxDISPLAY_EVENT;
+
+/** Display event payload
+ */
+typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
+{
+  orxU32  u32Width;                                     /**< Screen width : 4 */
+  orxU32  u32Height;                                    /**< Screen height : 8 */
+  orxU32  u32Depth;                                     /**< Screen depth : 12 */
+  orxBOOL bFullScreen;                                  /**< FullScreen? : 16 */
+
+} orxDISPLAY_EVENT_PAYLOAD;
 
 
 /***************************************************************************

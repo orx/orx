@@ -3,6 +3,13 @@ Orx - Portable Game Engine  (Version 1.2)
 
 =============================================================================
 
+orx 1.2 final
+---
+* Optimized home render plugin to batch objects by texture (5-15% FPS boost, depending on scenes)
+* Rendering to texture support is back with GLFW plugins / iPhone plugins
+* Added orxEVENT_TYPE_DISPLAY/orxDISPLAY_EVENT_SET_VIDEO_MODE event
+* Simplified iPhone demo
+
 orx 1.2
 -----
 * *** Added new platform with full support: iPhone (iPod Touch/iPad). ***

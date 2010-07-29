@@ -1789,11 +1789,27 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
+  int       iWidth, iHeight, iDepth;
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstVideoMode != orxNULL);
+
+  /* Has specified video mode? */
+  if(_pstVideoMode != orxNULL)
+  {
+    /* Gets its info */
+    iWidth  = (int)_pstVideoMode->u32Width;
+    iHeight = (int)_pstVideoMode->u32Height;
+    iDepth  = (int)_pstVideoMode->u32Depth;
+  }
+  else
+  {
+    /* Uses current values */
+    iWidth  = (int)orxF2S(sstDisplay.pstScreen->fWidth);
+    iHeight = (int)orxF2S(sstDisplay.pstScreen->fHeight);
+    iDepth  = (int)sstDisplay.pstScreen->u32Depth;
+  }
 
   /* Has opened window? */
   if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
@@ -1878,13 +1894,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
 
   /* Depending on video depth */
-  switch(_pstVideoMode->u32Depth)
+  switch(iDepth)
   {
     /* 16-bit */
     case 16:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow((int)_pstVideoMode->u32Width, (int)_pstVideoMode->u32Height, 5, 6, 5, 0, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -1893,7 +1909,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 24:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow((int)_pstVideoMode->u32Width, (int)_pstVideoMode->u32Height, 8, 8, 8, 0, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -1903,7 +1919,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 32:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow((int)_pstVideoMode->u32Width, (int)_pstVideoMode->u32Height, 8, 8, 8, 8, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -1912,6 +1928,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    orxDISPLAY_EVENT_PAYLOAD stPayload;
+
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -1956,14 +1974,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     }
 
     /* Updates screen info */
-    sstDisplay.pstScreen->fWidth          = orx2F(_pstVideoMode->u32Width);
-    sstDisplay.pstScreen->fHeight         = orx2F(_pstVideoMode->u32Height);
-    sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _pstVideoMode->u32Width : orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Width);
-    sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _pstVideoMode->u32Height : orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Height);
-    sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
-    sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
-    sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
-    sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+    if(_pstVideoMode != orxNULL)
+    {
+      sstDisplay.pstScreen->fWidth          = orx2F(_pstVideoMode->u32Width);
+      sstDisplay.pstScreen->fHeight         = orx2F(_pstVideoMode->u32Height);
+      sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _pstVideoMode->u32Width : orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Width);
+      sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _pstVideoMode->u32Height : orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Height);
+      sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
+      sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
+      sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
+      sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+    }
     orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
 
@@ -2051,6 +2072,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
     /* Clears counters */
     sstDisplay.s32BitmapCounter = sstDisplay.s32ShaderCounter = 0;
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+    stPayload.u32Width    = (orxU32)iWidth;
+    stPayload.u32Height   = (orxU32)iHeight;
+    stPayload.u32Depth    = (orxU32)iDepth;
+    stPayload.bFullScreen = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
   }
 
   /* Clears last blend mode & last bitmap */

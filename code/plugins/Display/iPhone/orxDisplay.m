@@ -1715,12 +1715,14 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
     /* Valid? */
     if(sstDisplay.pstBitmapBank != orxNULL)
     {
+      orxDISPLAY_EVENT_PAYLOAD stPayload;
+
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
       /* Stores view instance */
       sstDisplay.poView = [orxView GetInstance];
-      
+
       /* Inits default values */
       sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
       sstDisplay.pstScreen                  = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -1743,6 +1745,16 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
 
       /* Inits flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
+
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+      stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+      stPayload.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
+      stPayload.u32Depth    = 32;
+      stPayload.bFullScreen = orxTRUE;
+
+      /* Sends it */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;

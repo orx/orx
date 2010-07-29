@@ -84,25 +84,6 @@ static orxMOUSE_STATIC sstMouse;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Event handler
- */
-static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
-{
-  /* Should clear wheel? */
-  if(sstMouse.bClearWheel != orxFALSE)
-  {
-    /* Clears it */
-    sstMouse.fWheelMove   = orxFLOAT_0;
-    sstMouse.bClearWheel  = orxFALSE;
-  }
-
-  /* Clears internal wheel move */
-  sstMouse.fInternalWheelMove = orxFLOAT_0;
-
-  /* Done! */
-  return;
-}
-
 /** Position callback
  */
 static void GLFWCALL orxMouse_GLFW_MousePositionCallback(int _iX, int _iY)
@@ -129,6 +110,44 @@ static void GLFWCALL orxMouse_GLFW_MouseWheelCallback(int _iWheel)
 
   /* Stores last wheel position */
   sstMouse.s32WheelPos = _iWheel;
+
+  /* Done! */
+  return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
+
+  /* Registers mouse position callback */
+  glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
+
+  /* Registers mouse wheel callback */
+  glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Update callback
+ */
+static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Should clear wheel? */
+  if(sstMouse.bClearWheel != orxFALSE)
+  {
+    /* Clears it */
+    sstMouse.fWheelMove   = orxFLOAT_0;
+    sstMouse.bClearWheel  = orxFALSE;
+  }
+
+  /* Clears internal wheel move */
+  sstMouse.fInternalWheelMove = orxFLOAT_0;
 
   /* Done! */
   return;
@@ -183,6 +202,12 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        /* Updates status */
+        sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
+
+        /* Adds event handler */
+        orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxMouse_GLFW_EventHandler);
+
         /* Registers mouse position callback */
         glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
 
@@ -201,9 +226,6 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
 
         /* Pops config section */
         orxConfig_PopSection();
-
-        /* Updates status */
-        sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
       }
     }
   }
@@ -219,6 +241,9 @@ void orxFASTCALL orxMouse_GLFW_Exit()
   {
     /* Unregisters update function */
     orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxMouse_GLFW_Update);
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxMouse_GLFW_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));

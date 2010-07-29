@@ -2031,6 +2031,22 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
   sstDisplay.pstLastBitmap  = orxNULL;
 
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    orxDISPLAY_EVENT_PAYLOAD stPayload;
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+    stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+    stPayload.u32Height   = orxF2U(sstDisplay.pstScreen->fWidth);
+    stPayload.u32Depth    = sstDisplay.pstScreen->u32Depth;
+    stPayload.bFullScreen = orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+  }
+
   /* Done! */
   return eResult;
 }

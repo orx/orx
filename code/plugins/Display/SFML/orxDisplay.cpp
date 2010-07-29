@@ -1218,6 +1218,8 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetFullScreen(orxBOOL _bFullScr
   /* Should update? */
   if(bUpdate != orxFALSE)
   {
+    orxDISPLAY_EVENT_PAYLOAD stPayload;
+
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -1236,6 +1238,16 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetFullScreen(orxBOOL _bFullScr
 
     /* Pops config section */
     orxConfig_PopSection();
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+    stPayload.u32Width    = sstDisplay.u32ScreenWidth;
+    stPayload.u32Height   = sstDisplay.u32ScreenHeight;
+    stPayload.u32Depth    = sstDisplay.u32ScreenDepth;
+    stPayload.bFullScreen = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
   }
 
   /* Done! */
@@ -1333,6 +1345,8 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
   /* Is video mode available? */
   if((_pstVideoMode == orxNULL) || (orxDisplay_SFML_IsVideoModeAvailable(_pstVideoMode) != orxFALSE))
   {
+    orxDISPLAY_EVENT_PAYLOAD stPayload;
+
     /* Updates local info */
     if(_pstVideoMode != orxNULL)
     {
@@ -1374,6 +1388,16 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
 
     /* Pops config section */
     orxConfig_PopSection();
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+    stPayload.u32Width    = sstDisplay.u32ScreenWidth;
+    stPayload.u32Height   = sstDisplay.u32ScreenHeight;
+    stPayload.u32Depth    = sstDisplay.u32ScreenDepth;
+    stPayload.bFullScreen = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
