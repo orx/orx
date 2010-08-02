@@ -720,7 +720,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, or
   fWidth  = (GLfloat)(_pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX);
   fHeight = (GLfloat)(_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
-  /* Fill the vertex list */
+  /* Fills the vertex list */
   sstDisplay.afVertexList[0]  =
   sstDisplay.afVertexList[2]  = 0.0f;
   sstDisplay.afVertexList[1]  =
@@ -730,7 +730,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, or
   sstDisplay.afVertexList[3]  =
   sstDisplay.afVertexList[7]  = 0.0f;
   
-  /* Fill the texture coord list */
+  /* Fills the texture coord list */
   sstDisplay.afTextureCoordList[0]  =
   sstDisplay.afTextureCoordList[2]  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.afTextureCoordList[1]  =

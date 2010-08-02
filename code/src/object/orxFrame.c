@@ -419,8 +419,16 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
 
     /* Updates angle */
     fAngle        = _orxFrame_GetRotation(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
-    fCos          = orxMath_Cos(fParentAngle);
-    fSin          = orxMath_Sin(fParentAngle);
+    if(fParentAngle != orxFLOAT_0)
+    {
+      fCos        = orxMath_Cos(fParentAngle);
+      fSin        = orxMath_Sin(fParentAngle);
+    }
+    else
+    {
+      fCos        = orxFLOAT_1;
+      fSin        = orxFLOAT_0;
+    }
 
     /* Updates scales */
     vScale.fX     = vLocalScale.fX * vParentScale.fX;

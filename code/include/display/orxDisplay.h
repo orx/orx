@@ -218,6 +218,8 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
 
 /** Orx view interface
  */
@@ -226,10 +228,12 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 @private
   EAGLContext  *poMainContext, *poThreadContext;
   GLuint        uiRenderBuffer, uiFrameBuffer;
+  BOOL          bShaderSupport;
 }
 
-@property (nonatomic, retain) EAGLContext *poMainContext;
-@property (nonatomic, retain) EAGLContext *poThreadContext;
+@property (nonatomic, retain) EAGLContext  *poMainContext;
+@property (nonatomic, retain) EAGLContext  *poThreadContext;
+@property                     BOOL          bShaderSupport;
 
 @end
 
