@@ -82,8 +82,16 @@ static orxINLINE orxOBOX *                    orxOBox_2DSet(orxOBOX *_pstRes, co
   orxASSERT(_pvPivot != orxNULL);
 
   /* Gets cosine and sine */
-  fCos = orxMath_Cos(_fAngle);
-  fSin = orxMath_Sin(_fAngle);
+  if(_fAngle == orxFLOAT_0)
+  {
+    fCos = orxFLOAT_1;
+    fSin = orxFLOAT_0;
+  }
+  else
+  {
+    fCos = orxMath_Cos(_fAngle);
+    fSin = orxMath_Sin(_fAngle);
+  }
 
   /* Sets axis */
   orxVector_Set(&(_pstRes->vX), fCos * _pvSize->fX, fSin * _pvSize->fX, orxFLOAT_0);
@@ -173,8 +181,16 @@ static orxINLINE orxOBOX *                    orxOBox_2DRotate(orxOBOX *_pstRes,
   orxASSERT(_pstOp != orxNULL);
 
   /* Gets cos & sin of angle */
-  fCos = orxMath_Cos(_fAngle);
-  fSin = orxMath_Sin(_fAngle);
+  if(_fAngle == orxFLOAT_0)
+  {
+    fCos = orxFLOAT_1;
+    fSin = orxFLOAT_0;
+  }
+  else
+  {
+    fCos = orxMath_Cos(_fAngle);
+    fSin = orxMath_Sin(_fAngle);
+  }
 
   /* Updates axis */
   orxVector_Set(&(_pstRes->vX), (fCos * _pstRes->vX.fX) - (fSin * _pstRes->vX.fY), (fSin * _pstRes->vX.fX) + (fCos * _pstRes->vX.fY), _pstRes->vX.fZ);

@@ -419,15 +419,15 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
 
     /* Updates angle */
     fAngle        = _orxFrame_GetRotation(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
-    if(fParentAngle != orxFLOAT_0)
-    {
-      fCos        = orxMath_Cos(fParentAngle);
-      fSin        = orxMath_Sin(fParentAngle);
-    }
-    else
+    if(fParentAngle == orxFLOAT_0)
     {
       fCos        = orxFLOAT_1;
       fSin        = orxFLOAT_0;
+    }
+    else
+    {
+      fCos        = orxMath_Cos(fParentAngle);
+      fSin        = orxMath_Sin(fParentAngle);
     }
 
     /* Updates scales */
@@ -863,8 +863,16 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
         _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vParentScale);
 
         /* Gets cosine & sine */
-        fCos  = orxMath_Cos(fParentAngle);
-        fSin  = orxMath_Sin(fParentAngle);
+        if(fParentAngle == orxFLOAT_0)
+        {
+          fCos = orxFLOAT_1;
+          fSin = orxFLOAT_0;
+        }
+        else
+        {
+          fCos = orxMath_Cos(fParentAngle);
+          fSin = orxMath_Sin(fParentAngle);
+        }
 
         /* Computes intermediate coordinates */
         fX = _pvPos->fX - pvParentPos->fX;

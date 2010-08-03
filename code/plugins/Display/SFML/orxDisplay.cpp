@@ -761,7 +761,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(const orxBITMAP
     /* Gets sprite's clipping */
     stClip = poSprite->GetSubRect();
 
-    /* Has no rotation */
+    /* Has no rotation? */
     if(_pstTransform->fRotation == orxFLOAT_0)
     {
       /* Gets cosine and sine of the object angle */
@@ -782,7 +782,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(const orxBITMAP
       fCos = -orxFLOAT_1;
       fSin = orxFLOAT_0;
     }
-    /* 180°? */
+    /* 270°? */
     else if(_pstTransform->fRotation == -orxMATH_KF_PI_BY_2)
     {
       /* Gets cosine and sine of the object angle */
