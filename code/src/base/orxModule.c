@@ -104,7 +104,9 @@ void orxFASTCALL orxModule_RegisterAll()
 
 #define orxMODULE_KU32_STATUS_FLAG_REGISTERED   0x00000001
 #define orxMODULE_KU32_STATUS_FLAG_INITIALIZED  0x00000002
-#define orxMODULE_KU32_STATUS_FLAG_TEMP         0x00010000
+#define orxMODULE_KU32_STATUS_FLAG_PENDING      0x00010000
+
+#define orxMODULE_KU32_STATUS_MASK_ALL          0xFFFFFFFF
 
 
 /***************************************************************************
@@ -269,7 +271,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
   {
     /* Is not initialized? */
-    if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
+    if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING)))
     {
       /* For all dependencies */
       for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
@@ -280,7 +282,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         if(u64Depend & (orxU64)1)
         {
           /* Not already initialized */
-          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
+          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING)))
           {
             /* Inits it */
             eResult = orxModule_Init((orxMODULE_ID)u32Index);
@@ -319,7 +321,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
         {
           /* Updates temp flag */
-          sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_TEMP;
+          sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
 
           /* Calls module init function */
           eResult = (sstModule.astModuleInfo[_eModuleID].pfnInit != orxNULL) ? sstModule.astModuleInfo[_eModuleID].pfnInit() : orxSTATUS_SUCCESS;
@@ -333,7 +335,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
           else
           {
             /* Updates temp flag */
-            sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
+            sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
           }
         }
       }
@@ -358,7 +360,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
       for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
       {
         /* Is temporary initialized? */
-        if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_TEMP)
+        if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_PENDING)
         {
           /* Internal exit call */
           orxModule_Exit((orxMODULE_ID)u32Index);
@@ -372,7 +374,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
       for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
       {
         /* Cleans temp status */
-        sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
+        sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
       }
     }
   }
@@ -440,7 +442,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
   {
     /* Cleans flags */
-    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP);
+    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
 
     /* Computes dependency flag */
     u64Depend = (orxU64)1 << _eModuleID;

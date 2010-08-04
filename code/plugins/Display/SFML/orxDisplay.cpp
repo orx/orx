@@ -351,7 +351,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitm
     poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
 
     /* Allocates buffer */
-    au8Buffer = (orxU8 *)orxMemory_Allocate(poImage->GetWidth() * poImage->GetHeight() * 4, orxMEMORY_TYPE_MAIN);
+    au8Buffer = (orxU8 *)orxMemory_Allocate(poImage->GetWidth() * poImage->GetHeight() * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(au8Buffer != orxNULL)
@@ -475,6 +475,42 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstB
   return eResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+
+  /* Not screen? */
+  if(_pstBitmap != orxDisplay::spoScreen)
+  {
+    const sf::Uint8 *pu8Data;
+    const sf::Image *poImage;
+
+    /* Gets image */
+    poImage = ((sf::Sprite *)_pstBitmap)->GetImage();
+
+    /* Gets its content */
+    pu8Data = poImage->GetPixelsPtr();
+
+    /* Copies it */
+    orxMemory_Copy(_au8Data, pu8Data, orxMIN(_u32ByteNumber, poImage->GetWidth() * poImage->GetHeight() * 4));
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxRGBA orxFASTCALL orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_pstBitmap)
 {
   sf::Sprite *poSprite;
@@ -498,7 +534,7 @@ extern "C" orxRGBA orxFASTCALL orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_
   return stResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite   *poSprite;
   sf::Vector2f  vPosition;
@@ -1848,6 +1884,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SaveBitmap, DISPLAY, SAVE_BITMA
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_LoadBitmap, DISPLAY, LOAD_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreen, DISPLAY, GET_SCREEN_BITMAP);

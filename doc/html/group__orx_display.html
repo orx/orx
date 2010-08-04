@@ -163,9 +163,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g9ab637c5b295fdd11024c270327db5e4">orxDisplay_LoadBitmap</a> (const orxSTRING _zFileName)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gd88758772634d94e250d0163567af051">orxDisplay_GetBitmapSize</a> (const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge1da1268cc2137d50a7026d1c29e3a2a">orxDisplay_GetBitmapData</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gd115c2a3c5a27410cc1509bb100bf44c">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gd88758772634d94e250d0163567af051">orxDisplay_GetBitmapSize</a> (const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9943e90cc99fcbafaf56c63f62525c7">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList)</td></tr>
 
@@ -1295,6 +1297,49 @@ Gets bitmap color (lighting/hue) <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="ge1da1268cc2137d50a7026d1c29e3a2a"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetBitmapData" ref="ge1da1268cc2137d50a7026d1c29e3a2a" args="(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_GetBitmapData           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBitmap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU8 *&nbsp;</td>
+          <td class="paramname"> <em>_au8Data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32ByteNumber</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a bitmap data (RGBA memory format) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_au8Data</em>&nbsp;</td><td>Output buffer (4 channels, RGBA) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32ByteNumber</em>&nbsp;</td><td>Number of bytes of the buffer </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gd88758772634d94e250d0163567af051"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetBitmapSize" ref="gd88758772634d94e250d0163567af051" args="(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1766,7 +1811,7 @@ Sets a bitmap color key (used with non alpha transparency) <dl compact><dt><b>Pa
 <div class="memdoc">
 
 <p>
-Sets a bitmap data (RGBA format) <dl compact><dt><b>Parameters:</b></dt><dd>
+Sets a bitmap data (RGBA memory format) <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_au8Data</em>&nbsp;</td><td>Data (4 channels, RGBA) </td></tr>

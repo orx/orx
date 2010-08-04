@@ -208,7 +208,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
               orxU8 au8PixelBuffer[] = {0xFF, 0xFF, 0xFF, 0xFF};
 
               /* Sets it data */
-              if(orxDisplay_SetBitmapData(pstBitmap, au8PixelBuffer, sizeof(orxRGBA)) != orxSTATUS_FAILURE)
+              if(orxDisplay_SetBitmapData(pstBitmap, au8PixelBuffer, 4 * sizeof(orxU8)) != orxSTATUS_FAILURE)
               {
                 /* Links it */
                 if(orxTexture_LinkBitmap(sstTexture.pstPixel, pstBitmap, orxTEXTURE_KZ_PIXEL) != orxSTATUS_FAILURE)
