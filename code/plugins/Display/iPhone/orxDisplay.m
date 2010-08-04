@@ -189,7 +189,7 @@ static orxView *spoInstance;
 
 - (BOOL) CreateThreadContext;
 - (BOOL) CreateFrameBuffer;
-- (BOOL) CreateRenderTarget:(orxBITMAP *)_pstBitmap;
+- (BOOL) CreateRenderTarget:(const orxBITMAP *)_pstBitmap;
 
 @end
 
@@ -406,12 +406,9 @@ static orxView *spoInstance;
   return bResult;
 }
 
-- (BOOL) CreateRenderTarget:(orxBITMAP *)_pstBitmap
+- (BOOL) CreateRenderTarget:(const orxBITMAP *)_pstBitmap
 {
   BOOL bResult = NO;
-
-  /* Checks */
-  orxASSERT((_pstBitmap == sstDisplay.pstScreen) && "This plugin can only render to screen.");
 
   /* Had a render buffer? */
   if(uiRenderBuffer != 0)
@@ -617,7 +614,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
   "{"
   "  float fCos       = cos(__fRotation__);"
   "  float fSin       = sin(__fRotation__);"
-  "  vec2 vPos        = vec4(__vScale__ * __vPosition__);"
+  "  vec2 vPos        = __vScale__ * __vPosition__;"
   "  vec2 vRot        = vec2((fCos * vPos.x) - (fSin * vPos.y), (fCos * vPos.y) + (fSin * vPos.x));"
   "  vPos             = vRot + __vTranslation__;"
   "  gl_Position      = __mProjection__ * vec4(vPos.xy, 0.0, 1.0);"
@@ -1438,60 +1435,48 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapData(orxBITMAP *_pstBitmap, orx
   /* Is size matching? */
   if(_u32ByteNumber == u32BufferSize)
   {
-    orxU32  u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
-    orxU8  *pu8ImageData;
-
-    /* Allocates buffer */
-    pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-    /* Checks */
-    orxASSERT(pu8ImageData != orxNULL);
-
-    /* Screen capture? */
-    if(_pstBitmap == sstDisplay.pstScreen)
-    {
-      /* Binds its backup texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
-      /* Copies screen content */
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
-      glASSERT();
-      glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
-      glASSERT();
-    }
-    else
-    {
-      /* Binds bitmap */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
-      /* Copies bitmap data */
-      glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
-      glASSERT();
-    }
-
-    /* Gets line sizes */
-    u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
-    u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
-
-    /* Clears padding */
-    orxMemory_Zero(_au8Data, u32LineSize * orxF2U(_pstBitmap->fHeight));
-
-    /* For all lines */
-    for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
-        i < orxF2U(_pstBitmap->fHeight);
-        i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
-    {
-      /* Copies data */
-      orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
-    }
-
-    /* Frees buffers */
-    orxMemory_Free(pu8ImageData);
-
     /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    eResult = ([sstDisplay.poView CreateRenderTarget:_pstBitmap] != NO) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    glASSERT();
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      orxU32  u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
+      orxU8  *pu8ImageData;
+
+      /* Allocates buffer */
+      pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+      
+      /* Checks */
+      orxASSERT(pu8ImageData != orxNULL);
+      
+      /* Reads OpenGL data */
+      glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
+      glASSERT();
+
+      /* Gets line sizes */
+      u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
+      u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
+
+      /* Clears padding */
+      orxMemory_Zero(_au8Data, u32LineSize * orxF2U(_pstBitmap->fHeight));
+
+      /* For all lines */
+      for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+          i < orxF2U(_pstBitmap->fHeight);
+          i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+      {
+        /* Copies data */
+        orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
+      }
+
+      /* Frees buffers */
+      orxMemory_Free(pu8ImageData);
+    }
+
+    /* Clears destination bitmap for a rebind */
+    sstDisplay.pstDestinationBitmap = orxNULL;
   }
   else
   {
@@ -1703,7 +1688,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
     fTop  = orxFLOAT_1 - (_pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY);
 
     /* For all lines */
-    for(fY = (GLfloat)-pstTransform->fSrcY, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
+    for(fY = (GLfloat)-_pstTransform->fSrcY, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
     {
       /* Partial line? */
       if(i < orxFLOAT_1)
@@ -1726,7 +1711,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
       fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
 
       /* For all columns */
-      for(fX = (GLfloat)-pstTransform->fSrcX, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
+      for(fX = (GLfloat)-_pstTransform->fSrcX, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
       {
         /* Partial column? */
         if(j < orxFLOAT_1)
@@ -1795,51 +1780,38 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxBOOL   bPNG = orxFALSE;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBOOL         bPNG = orxFALSE;
+  orxU32          u32Length;
+  const orxCHAR  *zExtension;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Screen capture? */
-  if(_pstBitmap == sstDisplay.pstScreen)
+  /* Gets file name's length */
+  u32Length = orxString_GetLength(_zFilename);
+
+  /* Gets extension */
+  zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+  /* DDS? */
+  if(orxString_ICompare(zExtension, "png") == 0)
   {
-    orxU32          u32Length;
-    const orxCHAR  *zExtension;
-
-    /* Gets file name's length */
-    u32Length = orxString_GetLength(_zFilename);
-
-    /* Gets extension */
-    zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
-
-    /* DDS? */
-    if(orxString_ICompare(zExtension, "png") == 0)
-    {
-      /* Updates status */
-      bPNG = orxTRUE;
-    }
-    /* BMP? */
-    else if(orxString_ICompare(zExtension, "jpg") == 0)
-    {
-      /* Updates status */
-      bPNG = orxFALSE;
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: only PNG and JPG formats are supported.", _zFilename);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Updates status */
+    bPNG = orxTRUE;
+  }
+  /* BMP? */
+  else if(orxString_ICompare(zExtension, "jpg") == 0)
+  {
+    /* Updates status */
+    bPNG = orxFALSE;
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap tp <%s>: only screen can be saved to file.", _zFilename);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: only PNG and JPG formats are supported.", _zFilename);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1853,7 +1825,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
     orxU32    u32BufferSize;
 
     /* Gets buffer size */
-    u32BufferSize = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(GLubyte);
+    u32BufferSize = _pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(GLubyte);
 
     /* Allocates both buffers */
     au8Buffer       = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
@@ -1862,74 +1834,85 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
     /* Valid? */
     if((au8Buffer != orxNULL) && (au8ImageBuffer != orxNULL))
     {
-      CGDataProviderRef oProvider;
-      CGColorSpaceRef   oColorSpace;
-      CGContextRef      oContext;
-      CGImageRef        oImage;
-
-      /* Reads OpenGL data */
-      glReadPixels(0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+      /* Updates result */
+      eResult = ([sstDisplay.poView CreateRenderTarget:_pstBitmap] != NO) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       glASSERT();
 
-      /* Creates data provider */
-      oProvider = CGDataProviderCreateWithData(NULL, au8Buffer, u32BufferSize, NULL);
-
-      /* Creates a device color space */
-      oColorSpace = CGColorSpaceCreateDeviceRGB();
-
-      /* Gets image reference */
-      oImage = CGImageCreate(sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 8, 32, 4 * sstDisplay.pstScreen->u32RealWidth, oColorSpace, kCGBitmapByteOrderDefault, oProvider, nil, NO, kCGRenderingIntentDefault);
-
-      /* Creates graphic context */
-      oContext = CGBitmapContextCreate(au8ImageBuffer, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 8, 4 * sstDisplay.pstScreen->u32RealWidth, CGImageGetColorSpace(oImage), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-
-      /* Valid? */
-      if(oContext)
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        UIImage *poImage;
+        CGDataProviderRef oProvider;
+        CGColorSpaceRef   oColorSpace;
+        CGContextRef      oContext;
+        CGImageRef        oImage;
 
-        /* Applies vertical flip for OpenGL/bitmap reordering */
-        CGContextTranslateCTM(oContext, 0, sstDisplay.pstScreen->u32RealHeight);
-        CGContextScaleCTM(oContext, 1.0f, -1.0f);
+        /* Reads OpenGL data */
+        glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
+        glASSERT();
 
-        /* Draws image */
-        CGContextDrawImage(oContext, CGRectMake(0.0f, 0.0f, sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight), oImage);
+        /* Creates data provider */
+        oProvider = CGDataProviderCreateWithData(NULL, au8Buffer, u32BufferSize, NULL);
 
-        /* Gets UIImage */
-        poImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(oContext)];
+        /* Creates a device color space */
+        oColorSpace = CGColorSpaceCreateDeviceRGB();
 
-        /* PNG? */
-        if(bPNG != orxFALSE)
+        /* Gets image reference */
+        oImage = CGImageCreate(_pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 32, 4 * _pstBitmap->u32RealWidth, oColorSpace, kCGBitmapByteOrderDefault, oProvider, nil, NO, kCGRenderingIntentDefault);
+
+        /* Creates graphic context */
+        oContext = CGBitmapContextCreate(au8ImageBuffer, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 4 * _pstBitmap->u32RealWidth, CGImageGetColorSpace(oImage), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+
+        /* Valid? */
+        if(oContext)
         {
-          /* Updates result */
-          eResult = [UIImagePNGRepresentation(poImage) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          UIImage *poImage;
+
+          /* Applies vertical flip for OpenGL/bitmap reordering */
+          CGContextTranslateCTM(oContext, 0, _pstBitmap->u32RealHeight);
+          CGContextScaleCTM(oContext, 1.0f, -1.0f);
+
+          /* Draws image */
+          CGContextDrawImage(oContext, CGRectMake(0.0f, 0.0f, _pstBitmap->fWidth, _pstBitmap->fHeight), oImage);
+
+          /* Gets UIImage */
+          poImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(oContext)];
+
+          /* PNG? */
+          if(bPNG != orxFALSE)
+          {
+            /* Updates result */
+            eResult = [UIImagePNGRepresentation(poImage) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          }
+          else
+          {
+            /* Updates result */
+            eResult = [UIImageJPEGRepresentation(poImage, 1.0f) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          }
+
+          /* Deletes context */
+          CGContextRelease(oContext);
         }
         else
         {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't grab screen data.", _zFilename);
+
           /* Updates result */
-          eResult = [UIImageJPEGRepresentation(poImage, 1.0f) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = orxSTATUS_FAILURE;
         }
 
-        /* Deletes context */
-        CGContextRelease(oContext);
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't grab screen data.", _zFilename);
+        /* Deletes image */
+        CGImageRelease(oImage);
 
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
+        /* Deletes color space */
+        CGColorSpaceRelease(oColorSpace);
+
+        /* Deletes provider */
+        CGDataProviderRelease(oProvider);
       }
 
-      /* Deletes image */
-      CGImageRelease(oImage);
-
-      /* Deletes color space */
-      CGColorSpaceRelease(oColorSpace);
-
-      /* Deletes provider */
-      CGDataProviderRelease(oProvider);
+      /* Clears destination bitmap for a rebind */
+      sstDisplay.pstDestinationBitmap = orxNULL;
     }
     else
     {
