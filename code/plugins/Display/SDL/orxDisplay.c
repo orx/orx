@@ -798,7 +798,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
         fY += fHeight;
 
         /* Resets X position */
-        fX = 0.0f;
+        fX = (GLfloat)-_pstTransform->fSrcX;
 
         break;
       }

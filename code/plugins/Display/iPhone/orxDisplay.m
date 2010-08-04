@@ -1130,7 +1130,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
         fY += fHeight;
 
         /* Resets X position */
-        fX = 0.0f;
+        fX = (GLfloat)-_pstTransform->fSrcX;
 
         break;
       }
