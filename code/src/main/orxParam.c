@@ -454,7 +454,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
     if(sstParam.pstBank != orxNULL)
     {
       /* Now create the hash table */
-      sstParam.pstHashTable = orxHashTable_Create(orxPARAM_KU32_MODULE_BANK_SIZE * 2,
+      sstParam.pstHashTable = orxHashTable_Create(orxPARAM_KU32_MODULE_BANK_SIZE,
                                                   orxHASHTABLE_KU32_FLAG_NONE,
                                                   orxMEMORY_TYPE_MAIN);
 

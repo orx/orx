@@ -36,11 +36,6 @@
 #include "utils/orxString.h"
 
 
-/** Misc defines
- */
-#define orxHASHTABLE_KU32_INDEX_SIZE                          256
-
-
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -58,9 +53,10 @@ typedef struct __orxHASHTABLE_CELL_t
 /** Hash Table */
 struct __orxHASHTABLE_t
 {
-  orxHASHTABLE_CELL  *apstCell[orxHASHTABLE_KU32_INDEX_SIZE]; /**< Hash table */
-  orxBANK            *pstBank;                                /**< Bank where are stored cells */
-  orxU32              u32Counter;                             /**< Hashtable item counter */
+  orxBANK            *pstBank;                                /**< Bank where are stored cells : 4 */
+  orxU32              u32Counter;                             /**< Hashtable item counter : 8 */
+  orxU32              u32Size;                                /**< Hashtable size : 12 */
+  orxHASHTABLE_CELL  *apstCell[1];                            /**< Hash table */
 };
 
 
@@ -83,7 +79,7 @@ static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Computes the hash index */
-  return(_u32Key & (orxHASHTABLE_KU32_INDEX_SIZE - 1));
+  return(_u32Key & (_pstHashTable->u32Size - 1));
 }
 
 /***************************************************************************
@@ -101,14 +97,18 @@ static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable
 orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
   orxHASHTABLE *pstHashTable = orxNULL; /* New created hash table */
+  orxU32        u32Size;
   orxU32        u32Flags;               /* Flags used for bank creation */
 
   /* Checks */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
   orxASSERT(_u32NbKey > 0);
 
+  /* Gets Power of Two size */
+  u32Size = orxMath_GetNextPowerOfTwo(_u32NbKey);
+
   /* Allocate memory for a hash table */
-  pstHashTable = (orxHASHTABLE *)orxMemory_Allocate(sizeof(orxHASHTABLE), _eMemType);
+  pstHashTable = (orxHASHTABLE *)orxMemory_Allocate(sizeof(orxHASHTABLE) + ((u32Size - 1) * sizeof(orxHASHTABLE_CELL *)), _eMemType);
 
   /* Enough memory ? */
   if(pstHashTable != orxNULL)
@@ -124,10 +124,10 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     }
 
     /* Clean values */
-    orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE));
+    orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE) + ((u32Size - 1) * sizeof(orxHASHTABLE_CELL *)));
 
     /* Allocate bank for cells */
-    pstHashTable->pstBank = orxBank_Create((orxU16)orxMIN(_u32NbKey, 0xFFFF), sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
+    pstHashTable->pstBank = orxBank_Create((orxU16)u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
 
     /* Correct bank allocation ? */
     if(pstHashTable->pstBank == orxNULL)
@@ -136,6 +136,9 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
       orxMemory_Free(pstHashTable);
       pstHashTable = orxNULL;
     }
+
+    /* Stores its size */
+    pstHashTable->u32Size = u32Size;
   }
 
   return pstHashTable;
@@ -176,7 +179,7 @@ orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
   orxBank_Clear(_pstHashTable->pstBank);
 
   /* Clear the hash */
-  orxMemory_Zero(_pstHashTable->apstCell, orxHASHTABLE_KU32_INDEX_SIZE * sizeof(orxHASHTABLE_CELL *));
+  orxMemory_Zero(_pstHashTable->apstCell, _pstHashTable->u32Size * sizeof(orxHASHTABLE_CELL *));
 
   /* Clears counter */
   _pstHashTable->u32Counter = 0;
@@ -425,7 +428,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
-  for(u32Cell = 0; u32Cell < orxHASHTABLE_KU32_INDEX_SIZE; u32Cell++)
+  for(u32Cell = 0; u32Cell < _pstHashTable->u32Size; u32Cell++)
   {
     if(_pstHashTable->apstCell[u32Cell] != orxNULL)
     {
@@ -474,7 +477,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
   }
   else
   {
-    for(u32Cell = orxHashTable_FindIndex(_pstHashTable, pIter->u32Key) + 1; u32Cell < orxHASHTABLE_KU32_INDEX_SIZE; u32Cell++)
+    for(u32Cell = orxHashTable_FindIndex(_pstHashTable, pIter->u32Key) + 1; u32Cell < _pstHashTable->u32Size; u32Cell++)
     {
       if(_pstHashTable->apstCell[u32Cell]!=orxNULL)
       {
@@ -517,7 +520,7 @@ void orxFASTCALL orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
 
   orxLOG("\n\n\n********* HashTable (%x) *********", _pstHashTable);
 
-  for(u32Index = 0; u32Index < orxHASHTABLE_KU32_INDEX_SIZE; u32Index++)
+  for(u32Index = 0; u32Index < _pstHashTable->u32Size; u32Index++)
   {
     orxCHAR zBuffer[4096];
 

@@ -233,7 +233,6 @@ static orxView *spoInstance;
     poMainContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
     /* Success? */
-    //! TODO
     if(poMainContext != nil)
     {
       /* Updates status */
@@ -2629,10 +2628,116 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxDISPLAY_SHADER  *pstShader;
+  orxCHAR             acBuffer[256];
+  orxSTATUS           eResult;
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+  orxASSERT(_zParam != orxNULL);
+
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* Has free texture unit left? */
+  if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
+  {
+    GLint iLocation;
+
+    /* Gets parameter location */
+    iLocation = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)_zParam);
+    glASSERT();
+
+    /* Valid? */
+    if(iLocation != -1)
+    {
+      /* No bitmap? */
+      if(_pstValue == orxNULL)
+      {
+        /* Uses screen bitmap */
+        _pstValue = sstDisplay.pstScreen;
+      }
+
+      /* Updates texture info */
+      pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = iLocation;
+      pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
+
+      /* Updates texture counter */
+      pstShader->iTextureCounter++;
+
+      /* Gets top parameter location */
+      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      iLocation = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
+      glASSERT();
+
+      /* Valid? */
+      if(iLocation != -1)
+      {
+          /* Updates its value */
+          glUniform1f(iLocation, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+          glASSERT();
+      }
+
+      /* Gets left parameter location */
+      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      iLocation = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
+      glASSERT();
+
+      /* Valid? */
+      if(iLocation != -1)
+      {
+          /* Updates its value */
+          glUniform1f(iLocation, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+          glASSERT();
+      }
+
+      /* Gets bottom parameter location */
+      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      iLocation = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
+      glASSERT();
+
+      /* Valid? */
+      if(iLocation != -1)
+      {
+          /* Updates its value */
+          glUniform1f(iLocation, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+          glASSERT();
+      }
+
+      /* Gets right parameter location */
+      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      iLocation = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
+      glASSERT();
+
+      /* Valid? */
+      if(iLocation != -1)
+      {
+          /* Updates its value */
+          glUniform1f(iLocation, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
+          glASSERT();
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Outputs log */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't find texture parameter <%s> for fragment shader.", _zParam);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Outputs log */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter <%s> for fragment shader: all the texture units are used.", _zParam);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -2640,10 +2745,37 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, cons
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxDISPLAY_SHADER  *pstShader;
+  GLint               iLocation;
+  orxSTATUS           eResult;
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+  orxASSERT(_zParam != orxNULL);
+
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* Gets parameter location */
+  iLocation = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)_zParam);
+  glASSERT();
+
+  /* Valid? */
+  if(iLocation != -1)
+  {
+    /* Updates its value */
+    glUniform1f(iLocation, (GLfloat)_fValue);
+    glASSERT();
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;

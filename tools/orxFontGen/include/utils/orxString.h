@@ -71,12 +71,38 @@
 #define orxSTRING_KC_VECTOR_END_ALT     '}'
 
 
+extern orxDLLAPI const orxU32 sau32CRCTable[256];
+
+
+/* *** String inlined functions *** */
+
+
 /** Continues a CRC with a string one
  * @param[in] _zString        String used to continue the given CRC
  * @param[in] _u32CRC         Base CRC.
  * @return The resulting CRC.
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CRC);
+static orxINLINE orxU32                 orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CRC)
+{
+  orxU32          u32CRC;
+  const orxCHAR  *pc;
+
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* Inits CRC */
+  u32CRC = _u32CRC ^ 0xFFFFFFFFL;
+
+  /* For the whole string */
+  for(pc = _zString; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Computes the CRC */
+    u32CRC = sau32CRCTable[(u32CRC ^ *pc) & 0xFF] ^ (u32CRC >> 8);
+  }
+
+  /* Done! */
+  return(u32CRC ^ 0xFFFFFFFFL);
+}
 
 /** Continues a CRC with a string one
  * @param[in] _zString        String used to continue the given CRC
@@ -84,11 +110,28 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(const orxSTRING _z
  * @param[in] _u32CharNumber  Number of character to process
  * @return The resulting CRC.
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber);
+static orxINLINE orxU32                 orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
+{
+  orxU32          u32CRC;
+  orxU32          u32Counter;
+  const orxCHAR  *pc;
 
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
 
-/* *** String inlined functions *** */
+  /* Inits CRC */
+  u32CRC = _u32CRC ^ 0xFFFFFFFFL;
 
+  /* For the whole string */
+  for(pc = _zString, u32Counter = 0; (*pc != orxCHAR_NULL) && (u32Counter < _u32CharNumber); pc++, u32Counter++)
+  {
+    /* Computes the CRC */
+    u32CRC = sau32CRCTable[(u32CRC ^ *pc) & 0xFF] ^ (u32CRC >> 8);
+  }
+
+  /* Done! */
+  return(u32CRC ^ 0xFFFFFFFFL);
+}
 
 /** Skips all white spaces
  * @param[in] _zString        Concerned string
@@ -96,7 +139,7 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxString_NContinueCRC(const orxSTRING _
  */
 static orxINLINE const orxSTRING        orxString_SkipWhiteSpaces(const orxSTRING _zString)
 {
-  register const orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Non null? */
   if(_zString != orxNULL)
@@ -127,7 +170,7 @@ static orxINLINE const orxSTRING        orxString_SkipWhiteSpaces(const orxSTRIN
  */
 static orxINLINE const orxSTRING        orxString_SkipPath(const orxSTRING _zString)
 {
-  register const orxSTRING zResult;
+  const orxSTRING zResult;
 
   /* Non null? */
   if(_zString != orxNULL)
@@ -1202,9 +1245,9 @@ static orxINLINE const orxSTRING        orxString_SearchChar(const orxSTRING _zS
  */
 static orxINLINE orxS32                 orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
 {
-  register orxS32          s32Result = -1;
-  register orxS32          s32Index;
-  register const orxCHAR  *pc;
+  orxS32          s32Result = -1;
+  orxS32          s32Index;
+  const orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
