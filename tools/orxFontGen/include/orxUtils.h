@@ -48,7 +48,6 @@
 
 #include "utils/orxHashTable.h"
 #include "utils/orxLinkList.h"
-#include "utils/orxScreenshot.h"
 #include "utils/orxString.h"
 #include "utils/orxTree.h"
 

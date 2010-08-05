@@ -99,6 +99,7 @@
 		<Unit filename="..\..\..\include\display\orxDisplay.h" />
 		<Unit filename="..\..\..\include\display\orxFont.h" />
 		<Unit filename="..\..\..\include\display\orxGraphic.h" />
+		<Unit filename="..\..\..\include\display\orxScreenshot.h" />
 		<Unit filename="..\..\..\include\display\orxText.h" />
 		<Unit filename="..\..\..\include\display\orxTexture.h" />
 		<Unit filename="..\..\..\include\io\orxFile.h" />
@@ -150,7 +151,6 @@
 		<Unit filename="..\..\..\include\sound\orxSoundSystem.h" />
 		<Unit filename="..\..\..\include\utils\orxHashTable.h" />
 		<Unit filename="..\..\..\include\utils\orxLinkList.h" />
-		<Unit filename="..\..\..\include\utils\orxScreenshot.h" />
 		<Unit filename="..\..\..\include\utils\orxString.h" />
 		<Unit filename="..\..\..\include\utils\orxTree.h" />
 		<Unit filename="..\..\..\src\anim\orxAnim.c">
@@ -196,6 +196,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\display\orxGraphic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\display\orxScreenshot.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\display\orxText.c">
@@ -293,9 +296,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxLinkList.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\..\..\src\utils\orxScreenshot.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxString.c">

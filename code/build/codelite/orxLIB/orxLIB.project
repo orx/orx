@@ -33,6 +33,7 @@
       <File Name="../../../src/display/orxDisplay.c"/>
       <File Name="../../../src/display/orxFont.c"/>
       <File Name="../../../src/display/orxGraphic.c"/>
+      <File Name="../../../src/display/orxScreenshot.c"/>
       <File Name="../../../src/display/orxText.c"/>
       <File Name="../../../src/display/orxTexture.c"/>
     </VirtualDirectory>
@@ -86,7 +87,6 @@
     <VirtualDirectory Name="utils">
       <File Name="../../../src/utils/orxHashTable.c"/>
       <File Name="../../../src/utils/orxLinkList.c"/>
-      <File Name="../../../src/utils/orxScreenshot.c"/>
       <File Name="../../../src/utils/orxString.c"/>
       <File Name="../../../src/utils/orxTree.c"/>
     </VirtualDirectory>
@@ -122,6 +122,7 @@
       <File Name="../../../include/display/orxDisplay.h"/>
       <File Name="../../../include/display/orxFont.h"/>
       <File Name="../../../include/display/orxGraphic.h"/>
+      <File Name="../../../include/display/orxScreenshot.h"/>
       <File Name="../../../include/display/orxText.h"/>
       <File Name="../../../include/display/orxTexture.h"/>
     </VirtualDirectory>
@@ -190,7 +191,6 @@
     <VirtualDirectory Name="utils">
       <File Name="../../../include/utils/orxHashTable.h"/>
       <File Name="../../../include/utils/orxLinkList.h"/>
-      <File Name="../../../include/utils/orxScreenshot.h"/>
       <File Name="../../../include/utils/orxString.h"/>
       <File Name="../../../include/utils/orxTree.h"/>
     </VirtualDirectory>

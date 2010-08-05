@@ -30,7 +30,7 @@
  */
 
 
-#include "utils/orxScreenshot.h"
+#include "display/orxScreenshot.h"
 
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"

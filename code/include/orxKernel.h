@@ -62,6 +62,7 @@
 #include "display/orxGraphic.h"
 #include "display/orxDisplay.h"
 #include "display/orxFont.h"
+#include "display/orxScreenshot.h"
 #include "display/orxText.h"
 #include "display/orxTexture.h"
 
