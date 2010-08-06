@@ -32,6 +32,8 @@
 
 #include "math/orxMath.h"
 
+#include <stdlib.h>
+
 
 void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 {

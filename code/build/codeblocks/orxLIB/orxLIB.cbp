@@ -82,6 +82,7 @@
 			<Add option="-Wswitch" />
 			<Add option="-Wunused-variable" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\..\..\extern\dlmalloc" />
 		</Compiler>
 		<Unit filename="..\..\..\include\anim\orxAnim.h" />
 		<Unit filename="..\..\..\include\anim\orxAnimPointer.h" />

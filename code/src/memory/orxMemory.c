@@ -34,8 +34,9 @@
 #include "debug/orxDebug.h"
 
 
-#include <stdlib.h>
 #include <string.h>
+#define USE_DL_PREFIX
+#include "malloc.c"
 
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
@@ -138,7 +139,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
 
   /* Returns system allocation function */
-  return((void *)malloc(_u32Size));
+  return((void *)dlmalloc(_u32Size));
 }
 
 /** Frees a portion of memory allocated with orxMemory_Allocateate
@@ -153,7 +154,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
   orxASSERT(_pMem != orxNULL);
 
   /* System call to free memory */
-  free(_pMem);
+  dlfree(_pMem);
 
   return;
 }
@@ -220,5 +221,5 @@ void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
  */
 void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 {
-  return((void *)realloc(_pMem, _u32Size));
+  return((void *)dlrealloc(_pMem, _u32Size));
 }

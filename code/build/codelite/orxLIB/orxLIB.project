@@ -216,6 +216,7 @@
     <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -246,6 +247,7 @@
     <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2 -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
@@ -275,6 +277,7 @@
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -306,6 +309,7 @@
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2 -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -336,6 +340,7 @@
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -393,6 +398,7 @@
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3 -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -449,6 +455,7 @@
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -487,6 +494,7 @@
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3 -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -524,6 +532,7 @@
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -553,6 +562,7 @@
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2 -fPIC" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -581,6 +591,7 @@
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-Wl,--out-implib=../../../lib/dynamic/liborxd.a" Required="yes"/>
@@ -612,6 +623,7 @@
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
       <Linker Options="-Wl,--out-implib=../../../lib/dynamic/liborx.a -s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -642,6 +654,7 @@
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -700,6 +713,7 @@
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -757,6 +771,7 @@
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -795,6 +810,7 @@
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
@@ -832,6 +848,7 @@
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -861,6 +878,7 @@
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
