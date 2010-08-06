@@ -162,7 +162,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         orxBITMAP      *pstBitmap;
         orxTEXTURE     *pstTexture;
         orxANIMPOINTER *pstAnimPointer;
-        orxRGBA         stBackupColor = 0;
         orxBOOL         bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
         orxVECTOR       vClipTL, vClipBR;
         orxFLOAT        fRepeatX, fRepeatY;
@@ -237,9 +236,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         {
           orxCOLOR stColor;
 
-          /* Backups previous color */
-          stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
-
           /* Updates display color */
           orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
         }
@@ -248,11 +244,13 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         {
           orxCOLOR stColor;
 
-          /* Backups previous color */
-          stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
-
           /* Updates display color */
           orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
+        }
+        else
+        {
+          /* Applies white color */
+          orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
         }
 
         /* Gets object repeat values */
@@ -317,19 +315,10 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             eResult = orxSTATUS_SUCCESS;
           }
         }
-
-        /* Has object or graphic color? */
-        if((orxObject_HasColor(_pstObject) != orxFALSE)
-        || (orxGraphic_HasColor(pstGraphic) != orxFALSE))
-        {
-          /* Restores its original color */
-          orxDisplay_SetBitmapColor(pstBitmap, stBackupColor);
-        }
       }
       else
       {
-        orxTEXT  *pstText;
-        orxRGBA   stBackupColor = 0;
+        orxTEXT *pstText;
 
         /* Gets text */
         pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
@@ -397,9 +386,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               {
                 orxCOLOR stColor;
 
-                /* Backups previous color */
-                stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
-
                 /* Updates display color */
                 orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
               }
@@ -408,11 +394,13 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               {
                 orxCOLOR stColor;
 
-                /* Backups previous color */
-                stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
-
                 /* Updates display color */
                 orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
+              }
+              else
+              {
+                /* Applies white color */
+                orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
               }
 
               /* Valid scale? */
@@ -439,14 +427,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
                 /* Updates result */
                 eResult = orxSTATUS_SUCCESS;
-              }
-
-              /* Has object or graphic color? */
-              if((orxObject_HasColor(_pstObject) != orxFALSE)
-              || (orxGraphic_HasColor(pstGraphic) != orxFALSE))
-              {
-                /* Restores its original color */
-                orxDisplay_SetBitmapColor(pstBitmap, stBackupColor);
               }
             }
           }
@@ -1019,7 +999,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       {
         orxVIEWPORT          *pstViewport;
         orxBITMAP            *pstBitmap;
-        orxRGBA               stBackupColor;
         orxDISPLAY_TRANSFORM  stTextTransform;
         orxCHAR               acBuffer[16];
 
@@ -1091,9 +1070,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
           stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
         }
 
-        /* Gets font's color */
-        stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
-
         /* Sets font's color */
         orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_DEFAULT_COLOR);
 
@@ -1102,9 +1078,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
 
         /* Displays it */
         orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
-
-        /* Restores bitmap's color */
-        orxDisplay_SetBitmapColor(pstBitmap, stBackupColor);
       }
     }
 

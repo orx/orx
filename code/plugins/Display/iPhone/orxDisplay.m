@@ -727,11 +727,12 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
       }
       else
       {
-        orxCHAR acBuffer[1024];
+        orxCHAR acBuffer[4096];
 
         /* Gets log */
-        glGetProgramInfoLog(uiProgram, 1024 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
+        glGetProgramInfoLog(uiProgram, 4095 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
         glASSERT();
+        acBuffer[4095] = orxCHAR_NULL;
 
         /* Outputs log */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:\n%s\n", acBuffer);
@@ -743,11 +744,12 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
     }
     else
     {
-      orxCHAR acBuffer[1024];
+      orxCHAR acBuffer[4096];
 
       /* Gets log */
-      glGetShaderInfoLog(uiFragmentShader, 1024 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
+      glGetShaderInfoLog(uiFragmentShader, 4095 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
       glASSERT();
+      acBuffer[4095] = orxCHAR_NULL;
 
       /* Outputs log */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:\n%s\n", acBuffer);
@@ -763,11 +765,12 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
   }
   else
   {
-    orxCHAR acBuffer[1024];
+    orxCHAR acBuffer[4096];
 
     /* Gets log */
-    glGetShaderInfoLog(uiVertexShader, 1024 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
+    glGetShaderInfoLog(uiVertexShader, 4095 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
     glASSERT();
+    acBuffer[4095] = orxCHAR_NULL;
 
     /* Outputs log */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:\n%s\n", acBuffer);
@@ -991,9 +994,13 @@ static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitma
   /* Shader support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
-    /* Stores it */
-    glUniform4f(sstDisplay.uiColorLocation, _pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
-    glASSERT();
+    /* No custom shader active? */
+    if(sstDisplay.s32ActiveShaderCounter == 0)
+    {
+      /* Stores it */
+      glUniform4f(sstDisplay.uiColorLocation, _pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
+      glASSERT();
+    }
   }
   else
   {
@@ -1614,14 +1621,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(const orxBITMAP *_pstSrc, orx
 
   /* Draws it */
   orxDisplay_iPhone_DrawBitmap(_pstSrc, _fPosX, _fPosY, _eSmoothing, _eBlendMode);
-
-  /* No shader support? */
-  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-  {
-    /* Restores identity */
-    glLoadIdentity();
-    glASSERT();
-  }
 
   /* Done! */
   return eResult;
@@ -2256,8 +2255,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
       sstDisplay.pstScreen->fWidth          = [sstDisplay.poView frame].size.width;
       sstDisplay.pstScreen->fHeight         = [sstDisplay.poView frame].size.height;
-      sstDisplay.pstScreen->u32RealWidth    = orxF2U(sstDisplay.pstScreen->fWidth);
-      sstDisplay.pstScreen->u32RealHeight   = orxF2U(sstDisplay.pstScreen->fHeight);
+      sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
+      sstDisplay.pstScreen->u32RealHeight   = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
       sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / sstDisplay.pstScreen->fWidth;
       sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / sstDisplay.pstScreen->fHeight;
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
@@ -2289,6 +2288,22 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
 
         /* Inits flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
+        /* Creates texture for screen backup */
+        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
 
         /* Creates default shader */
         sstDisplay.pstDefaultShader = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
@@ -2391,6 +2406,11 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
         if(_pstParamList != orxNULL)
         {
           orxCHAR *pcReplace;
+
+          /* Adds wrapping code */
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\n");
+          pc       += s32Offset;
+          s32Free  -= s32Offset;
 
           /* For all parameters */
           for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
@@ -2568,6 +2588,15 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
     {
       /* Inits it */
       orxDisplay_iPhone_InitShader(pstShader);
+
+      /* Passes neutral translation to shader */
+      glUniform2f(sstDisplay.uiTranslationLocation, 0.0f, 0.0f);
+
+      /* Passes neutral scale to shader */
+      glUniform2f(sstDisplay.uiScaleLocation, 1.0f, 1.0f);
+
+      /* Passes neutral rotation to shader */
+      glUniform1f(sstDisplay.uiRotationLocation, 0.0f);
 
       /* Defines the vertex list */
       sstDisplay.afVertexList[0]  =
