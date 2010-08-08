@@ -59,7 +59,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 
 #include "debug/orxDebug.h"
 

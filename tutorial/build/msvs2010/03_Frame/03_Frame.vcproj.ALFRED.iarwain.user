@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="orx.exe"
-				WorkingDirectory="..\..\..\bin\msvs2010"
+				WorkingDirectory="..\..\..\bin\msvs2008"
 				CommandArguments="-c ..\03_Frame.ini"
 				Attach="false"
 				DebuggerType="3"

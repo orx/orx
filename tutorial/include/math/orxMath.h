@@ -49,7 +49,6 @@
 /** Maths related includes
  */
 #include <math.h>
-#include <stdlib.h>
 
 
 /** Public macro

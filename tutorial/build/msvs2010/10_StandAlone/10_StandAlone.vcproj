@@ -50,6 +50,7 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="false"
+				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"

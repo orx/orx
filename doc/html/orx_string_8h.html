@@ -24,7 +24,6 @@
 <code>#include &lt;stdarg.h&gt;</code><br>
 <code>#include &lt;string.h&gt;</code><br>
 <code>#include &lt;stdlib.h&gt;</code><br>
-<code>#include &lt;ctype.h&gt;</code><br>
 <code>#include &quot;<a class="el" href="orx_debug_8h.html">debug/orxDebug.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
@@ -40,9 +39,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga2a656e10d7ec4fe736684cc5e4828ae">orxSTRING_KC_VECTOR_END_ALT</a>&nbsp;&nbsp;&nbsp;'}'</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g369afe4c2300d4038a856f2eb9ef41d3">orxString_ContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g97f4ebd9c7861f0a0f34370154db6637">orxString_ContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gc60e7e4a540e43ecbb98d8cac0be28fd">orxString_NContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g6f2d9f112ec01738725cd001d7d17ae6">orxString_NContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a> (const orxSTRING _zString)</td></tr>
 
@@ -107,6 +106,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g5ffe64ef217d7745c6b0c3af518083f2">orxString_Print</a> (orxSTRING _zDstString, const orxSTRING _zSrcString,...)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a> (orxSTRING _zDstString, orxU32 _u32CharNumber, const orxSTRING _zSrcString,...)</td></tr>
+
+<tr><td colspan="2"><br><h2>Variables</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g73224238694302a058d934102e6a84d1">sau32CRCTable</a> [256]</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>

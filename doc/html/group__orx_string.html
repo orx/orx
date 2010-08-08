@@ -31,9 +31,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga2a656e10d7ec4fe736684cc5e4828ae">orxSTRING_KC_VECTOR_END_ALT</a>&nbsp;&nbsp;&nbsp;'}'</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g369afe4c2300d4038a856f2eb9ef41d3">orxString_ContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g97f4ebd9c7861f0a0f34370154db6637">orxString_ContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gc60e7e4a540e43ecbb98d8cac0be28fd">orxString_NContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g6f2d9f112ec01738725cd001d7d17ae6">orxString_NContinueCRC</a> (const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a> (const orxSTRING _zString)</td></tr>
 
@@ -98,6 +98,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g5ffe64ef217d7745c6b0c3af518083f2">orxString_Print</a> (orxSTRING _zDstString, const orxSTRING _zSrcString,...)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a> (orxSTRING _zDstString, orxU32 _u32CharNumber, const orxSTRING _zSrcString,...)</td></tr>
+
+<tr><td colspan="2"><br><h2>Variables</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g73224238694302a058d934102e6a84d1">sau32CRCTable</a> [256]</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -214,12 +217,12 @@ Compare two strings, case sensitive. If the first one is smaller than the second
 
 </div>
 </div><p>
-<a class="anchor" name="g369afe4c2300d4038a856f2eb9ef41d3"></a><!-- doxytag: member="orxString.h::orxString_ContinueCRC" ref="g369afe4c2300d4038a856f2eb9ef41d3" args="(const orxSTRING _zString, orxU32 _u32CRC)" -->
+<a class="anchor" name="g97f4ebd9c7861f0a0f34370154db6637"></a><!-- doxytag: member="orxString.h::orxString_ContinueCRC" ref="g97f4ebd9c7861f0a0f34370154db6637" args="(const orxSTRING _zString, orxU32 _u32CRC)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxString_ContinueCRC           </td>
+          <td class="memname">static orxINLINE orxU32 orxString_ContinueCRC           </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&nbsp;</td>
           <td class="paramname"> <em>_zString</em>, </td>
@@ -233,7 +236,7 @@ Compare two strings, case sensitive. If the first one is smaller than the second
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -582,12 +585,12 @@ Compare N first character from two strings, case sensitive. If the first one is 
 
 </div>
 </div><p>
-<a class="anchor" name="gc60e7e4a540e43ecbb98d8cac0be28fd"></a><!-- doxytag: member="orxString.h::orxString_NContinueCRC" ref="gc60e7e4a540e43ecbb98d8cac0be28fd" args="(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)" -->
+<a class="anchor" name="g6f2d9f112ec01738725cd001d7d17ae6"></a><!-- doxytag: member="orxString.h::orxString_NContinueCRC" ref="g6f2d9f112ec01738725cd001d7d17ae6" args="(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxString_NContinueCRC           </td>
+          <td class="memname">static orxINLINE orxU32 orxString_NContinueCRC           </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&nbsp;</td>
           <td class="paramname"> <em>_zString</em>, </td>
@@ -607,7 +610,7 @@ Compare N first character from two strings, case sensitive. If the first one is 
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -1412,6 +1415,22 @@ Uppercase a string <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The converted string. </dd></dl>
+
+</div>
+</div><p>
+<hr><h2>Variable Documentation</h2>
+<a class="anchor" name="g73224238694302a058d934102e6a84d1"></a><!-- doxytag: member="orxString.h::sau32CRCTable" ref="g73224238694302a058d934102e6a84d1" args="[256]" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const orxU32 <a class="el" href="group__orx_string.html#g73224238694302a058d934102e6a84d1">sau32CRCTable</a>[256]          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
 
 </div>
 </div><p>

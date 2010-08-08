@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="11_Spawner.exe"
-				WorkingDirectory="..\..\..\bin\msvs2010"
+				WorkingDirectory="..\..\..\bin\msvs2008"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"

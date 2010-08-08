@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="orx.exe"
-				WorkingDirectory="..\..\..\bin\msvs2010"
+				WorkingDirectory="..\..\..\bin\msvs2008"
 				CommandArguments="-c ..\08_Physics.ini"
 				Attach="false"
 				DebuggerType="3"
