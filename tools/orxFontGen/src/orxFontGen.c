@@ -444,7 +444,6 @@ static void orxFASTCALL Setup()
 {
   // Adds module dependencies
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILESYSTEM);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);
 }
 

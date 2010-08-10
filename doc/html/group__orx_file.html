@@ -19,7 +19,18 @@
 <div class="contents">
 <h1>OrxFile</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gfe605442fc348d6e43a677f0bbb40f7c">orxFILE_KU32_FLAG_INFO_NORMAL</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g676ecc30e309e73e7be89f09b51c20d7">orxFILE_KU32_FLAG_INFO_RDONLY</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g5731ca08a548c739b48914acf0136f67">orxFILE_KU32_FLAG_INFO_HIDDEN</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gf7834a06992a168a04f58274b01f8fd4">orxFILE_KU32_FLAG_INFO_DIR</a>&nbsp;&nbsp;&nbsp;0x00000008</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g0eb747b5ff0c937da5666b8fbce778b5">orxFILE_KU32_FLAG_OPEN_READ</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g2c82721c615d262bd4595d52909b6d26">orxFILE_KU32_FLAG_OPEN_WRITE</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
@@ -38,7 +49,17 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g17da9576f2412f099656dd62e02076c6">orxFile_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g21cee59029cf584023988a347282d92a">orxFile_Open</a> (const orxSTRING _zPath, orxU32 _u32OpenFlags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g784ed4314bd3c15827cf819acf2845bf">orxFile_Exists</a> (const orxSTRING _zFileName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g053cfcea3db4c6d74d643bfa7e210773">orxFile_FindFirst</a> (const orxSTRING _zSearchPattern, <a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gb1b28f2e382eedcc12d639ae99e83b67">orxFile_FindNext</a> (<a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gf9175eb2f39f2e2a1d60250b8c2bdd81">orxFile_FindClose</a> (<a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g87fca017cc8ed825104ba854654cda8c">orxFile_Info</a> (const orxSTRING _zFileName, <a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g69cb0d04489c13daba0ebd380a4ae19b">orxFile_Open</a> (const orxSTRING _zFileName, orxU32 _u32OpenFlags)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g6b28e81a5fe57e673f79b20c3f6c641f">orxFile_Read</a> (void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
@@ -46,13 +67,71 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga440ac942c5d5f341a60a606f6de8435">orxFile_Print</a> (<a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxSTRING _zString,...)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga41c8f652c63af29f09be2422bdc4141">orxFile_ReadLine</a> (orxSTRING _zBuffer, orxU32 _u32Size, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g8e45150c5019dc189069413c4ced085b">orxFile_Close</a> (<a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-File plugin module Module that handles file access <hr><h2>Define Documentation</h2>
+File / file system module Module that handles file / file system access <hr><h2>Define Documentation</h2>
+<a class="anchor" name="gf7834a06992a168a04f58274b01f8fd4"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_INFO_DIR" ref="gf7834a06992a168a04f58274b01f8fd4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFILE_KU32_FLAG_INFO_DIR&nbsp;&nbsp;&nbsp;0x00000008          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+directory 
+</div>
+</div><p>
+<a class="anchor" name="g5731ca08a548c739b48914acf0136f67"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_INFO_HIDDEN" ref="g5731ca08a548c739b48914acf0136f67" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFILE_KU32_FLAG_INFO_HIDDEN&nbsp;&nbsp;&nbsp;0x00000004          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+hidden file 
+</div>
+</div><p>
+<a class="anchor" name="gfe605442fc348d6e43a677f0bbb40f7c"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_INFO_NORMAL" ref="gfe605442fc348d6e43a677f0bbb40f7c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFILE_KU32_FLAG_INFO_NORMAL&nbsp;&nbsp;&nbsp;0x00000001          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+normal file 
+</div>
+</div><p>
+<a class="anchor" name="g676ecc30e309e73e7be89f09b51c20d7"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_INFO_RDONLY" ref="g676ecc30e309e73e7be89f09b51c20d7" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFILE_KU32_FLAG_INFO_RDONLY&nbsp;&nbsp;&nbsp;0x00000002          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+read-only file 
+</div>
+</div><p>
 <a class="anchor" name="g86e101811244bfbdc9bbb289d05c4ea1"></a><!-- doxytag: member="orxFile.h::orxFILE_KU32_FLAG_OPEN_APPEND" ref="g86e101811244bfbdc9bbb289d05c4ea1" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -156,6 +235,32 @@ Closes an oppened file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g784ed4314bd3c15827cf819acf2845bf"></a><!-- doxytag: member="orxFile.h::orxFile_Exists" ref="g784ed4314bd3c15827cf819acf2845bf" args="(const orxSTRING _zFileName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxFile_Exists           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zFileName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Returns orxTRUE if a file exists, else orxFALSE. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Full File's name to test </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxFALSE if _zFileName doesn't exist, else orxTRUE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g17da9576f2412f099656dd62e02076c6"></a><!-- doxytag: member="orxFile.h::orxFile_Exit" ref="g17da9576f2412f099656dd62e02076c6" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -173,6 +278,129 @@ Closes an oppened file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Exits from the File Module 
+</div>
+</div><p>
+<a class="anchor" name="gf9175eb2f39f2e2a1d60250b8c2bdd81"></a><!-- doxytag: member="orxFile.h::orxFile_FindClose" ref="gf9175eb2f39f2e2a1d60250b8c2bdd81" args="(orxFILE_INFO *_pstFileInfo)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxFile_FindClose           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFileInfo</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Closes a search (free the memory allocated for this search). <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Informations returned during search </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g053cfcea3db4c6d74d643bfa7e210773"></a><!-- doxytag: member="orxFile.h::orxFile_FindFirst" ref="g053cfcea3db4c6d74d643bfa7e210773" args="(const orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxFile_FindFirst           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zSearchPattern</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFileInfo</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSearchPattern</em>&nbsp;</td><td>Pattern to find </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Informations about the first file found </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if a file has been found, else orxFALSE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gb1b28f2e382eedcc12d639ae99e83b67"></a><!-- doxytag: member="orxFile.h::orxFile_FindNext" ref="gb1b28f2e382eedcc12d639ae99e83b67" args="(orxFILE_INFO *_pstFileInfo)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxFile_FindNext           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFileInfo</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(IN/OUT) Informations about the found file </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE, if the next file has been found, else returns orxFALSE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g87fca017cc8ed825104ba854654cda8c"></a><!-- doxytag: member="orxFile.h::orxFile_Info" ref="g87fca017cc8ed825104ba854654cda8c" args="(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFile_Info           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFileInfo</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves informations about a file <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Files used to get informations </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Returned file's informations </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g58fad06e476d24fe45d96f42c304eb65"></a><!-- doxytag: member="orxFile.h::orxFile_Init" ref="g58fad06e476d24fe45d96f42c304eb65" args="()" -->
@@ -194,7 +422,7 @@ Exits from the File Module
 Inits the File Module 
 </div>
 </div><p>
-<a class="anchor" name="g21cee59029cf584023988a347282d92a"></a><!-- doxytag: member="orxFile.h::orxFile_Open" ref="g21cee59029cf584023988a347282d92a" args="(const orxSTRING _zPath, orxU32 _u32OpenFlags)" -->
+<a class="anchor" name="g69cb0d04489c13daba0ebd380a4ae19b"></a><!-- doxytag: member="orxFile.h::orxFile_Open" ref="g69cb0d04489c13daba0ebd380a4ae19b" args="(const orxSTRING _zFileName, orxU32 _u32OpenFlags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -202,7 +430,7 @@ Inits the File Module
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a>* orxFASTCALL orxFile_Open           </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zPath</em>, </td>
+          <td class="paramname"> <em>_zFileName</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -222,7 +450,7 @@ Inits the File Module
 <p>
 Opens a file for later read or write operation <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPath</em>&nbsp;</td><td>Full file's path to open </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Full file's path to open </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32OpenFlags</em>&nbsp;</td><td>List of used flags when opened </td></tr>
   </table>
 </dl>
@@ -319,49 +547,6 @@ Reads data from a file <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of read elements (not bytes) </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="ga41c8f652c63af29f09be2422bdc4141"></a><!-- doxytag: member="orxFile.h::orxFile_ReadLine" ref="ga41c8f652c63af29f09be2422bdc4141" args="(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxFile_ReadLine           </td>
-          <td>(</td>
-          <td class="paramtype">orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zBuffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&nbsp;</td>
-          <td class="paramname"> <em>_u32Size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstFile</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets text line from a file <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_zBuffer</em>&nbsp;</td><td>Pointer where will be stored datas </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>Size of buffer </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Pointer on the file descriptor </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns orxTRUE if a line has been read, else returns orxFALSE. </dd></dl>
 
 </div>
 </div><p>

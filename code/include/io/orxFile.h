@@ -33,8 +33,8 @@
 /**
  * @addtogroup orxFile
  * 
- * File plugin module
- * Module that handles file access
+ * File / file system module
+ * Module that handles file / file system access
  *
  * @{
  */
@@ -46,34 +46,85 @@
 #include "orxInclude.h"
 
 
-#define orxFILE_KU32_FLAG_OPEN_READ   0x00000001 /**< opened for read */
-#define orxFILE_KU32_FLAG_OPEN_WRITE  0x00000002 /**< opened for write */
-#define orxFILE_KU32_FLAG_OPEN_APPEND 0x00000004 /**< descriptor positioned at the end of file */
-#define orxFILE_KU32_FLAG_OPEN_BINARY 0x00000008 /**< binary file accessing */
+#define orxFILE_KU32_FLAG_INFO_NORMAL       0x00000001  /**< normal file */
+#define orxFILE_KU32_FLAG_INFO_RDONLY       0x00000002  /**< read-only file */
+#define orxFILE_KU32_FLAG_INFO_HIDDEN       0x00000004  /**< hidden file */
+#define orxFILE_KU32_FLAG_INFO_DIR          0x00000008  /**< directory */
+
+#define orxFILE_KU32_FLAG_OPEN_READ         0x00000001  /**< opened for read */
+#define orxFILE_KU32_FLAG_OPEN_WRITE        0x00000002  /**< opened for write */
+#define orxFILE_KU32_FLAG_OPEN_APPEND       0x00000004  /**< descriptor positioned at the end of file */
+#define orxFILE_KU32_FLAG_OPEN_BINARY       0x00000008  /**< binary file accessing */
+
+
+/** Store datas about the current file. */
+typedef struct __orxFILE_INFO_t
+{
+  orxU32    u32Flags;                                   /**< File attributes (see list of availables flags) */
+  orxU32    u32TimeStamp;                               /**< Timestamp of the last modification */
+  orxU32    u32Size;                                    /**< File's size (in bytes) */
+  orxHANDLE hInternal;                                  /**< Internal use handle */
+  orxCHAR   zName[256];                                 /**< File's name */
+  orxCHAR   zPattern[256];                              /**< Search pattern */
+  orxCHAR   zPath[1024];                                /**< Directory's name where is stored the file */
+  orxCHAR   zFullName[1280];                            /**< Full file name */
+
+} orxFILE_INFO;
 
 
 /** Internal File structure
  */
-typedef struct __orxFILE_t orxFILE;
+typedef struct __orxFILE_t                  orxFILE;
 
 
 /** File module setup */
-extern orxDLLAPI void orxFASTCALL       orxFile_Setup();
+extern orxDLLAPI void orxFASTCALL           orxFile_Setup();
 
 /** Inits the File Module
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Init();
 
 /** Exits from the File Module
  */
-extern orxDLLAPI void orxFASTCALL       orxFile_Exit();
+extern orxDLLAPI void orxFASTCALL           orxFile_Exit();
+
+/** Returns orxTRUE if a file exists, else orxFALSE.
+ * @param[in] _zFileName           Full File's name to test
+ * @return orxFALSE if _zFileName doesn't exist, else orxTRUE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_Exists(const orxSTRING _zFileName);
+
+/** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
+ * @param[in] _zSearchPattern      Pattern to find
+ * @param[out] _pstFileInfo        Informations about the first file found
+ * @return orxTRUE if a file has been found, else orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo);
+
+/** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
+ * @param[in,out] _pstFileInfo    (IN/OUT) Informations about the found file
+ * @return orxTRUE, if the next file has been found, else returns orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_FindNext(orxFILE_INFO *_pstFileInfo);
+
+/** Closes a search (free the memory allocated for this search).
+ * @param[in] _pstFileInfo         Informations returned during search
+ */
+extern orxDLLAPI void orxFASTCALL           orxFile_FindClose(orxFILE_INFO *_pstFileInfo);
+
+/** Retrieves informations about a file
+ * @param[in] _zFileName            Files used to get informations
+ * @param[out] _pstFileInfo         Returned file's informations
+ * @return Returns the status of the operation
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Info(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo);
 
 /** Opens a file for later read or write operation
- * @param[in] _zPath               Full file's path to open
+ * @param[in] _zFileName           Full file's path to open
  * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-extern orxDLLAPI orxFILE *orxFASTCALL   orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags);
+extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFlags);
 
 /** Reads data from a file
  * @param[out] _pReadData          Pointer where will be stored datas
@@ -82,7 +133,7 @@ extern orxDLLAPI orxFILE *orxFASTCALL   orxFile_Open(const orxSTRING _zPath, orx
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** writes data to a file
  * @param[in] _pDataToWrite        Pointer where will be stored datas
@@ -91,28 +142,20 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Read(void *_pReadData, orxU32 _u
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer on the file descriptor
  * @param[in] _zString             Formatted string
  * @return Returns the number of written characters
  */
-extern orxDLLAPI orxS32 orxCDECL        orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...);
-
-/** Gets text line from a file
- * @param[out] _zBuffer             Pointer where will be stored datas
- * @param[in] _u32Size              Size of buffer
- * @param[in] _pstFile              Pointer on the file descriptor
- * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
- */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile);
+extern orxDLLAPI orxS32 orxCDECL            orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...);
 
 /** Closes an oppened file
  * @param[in] _pstFile             File's pointer to close
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Close(orxFILE *_pstFile);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Close(orxFILE *_pstFile);
 
 #endif /* _orxFILE_H_ */
 

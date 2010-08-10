@@ -36,7 +36,6 @@
 #include "core/orxConfig.h"
 #include "display/orxDisplay.h"
 #include "io/orxFile.h"
-#include "io/orxFileSystem.h"
 #include "utils/orxString.h"
 #include "memory/orxMemory.h"
 
@@ -158,7 +157,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
   }
 
   /* Valid? */
-  if(orxFileSystem_Exists(zDirectory) != orxFALSE)
+  if(orxFile_Exists(zDirectory) != orxFALSE)
   {
     do
     {
@@ -169,7 +168,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
       sstScreenshot.u32ScreenshotIndex++;
     }
     /* Till not found */
-    while(orxFileSystem_Exists(sstScreenshot.acScreenshotBuffer) != orxFALSE);
+    while(orxFile_Exists(sstScreenshot.acScreenshotBuffer) != orxFALSE);
   }
   else
   {
@@ -195,7 +194,7 @@ void orxFASTCALL orxScreenshot_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_CONFIG);
-  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILESYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_DISPLAY);
 
   return;

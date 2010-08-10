@@ -33,37 +33,62 @@
 
 #include "io/orxFile.h"
 #include "memory/orxMemory.h"
-#include "debug/orxDebug.h"
 #include "utils/orxString.h"
+#include "debug/orxDebug.h"
 
+#ifdef __orxWINDOWS__
+
+  #include <io.h>
 
 #ifdef __orxMSVC__
 
-  #pragma warning(disable : 4996)
+  #pragma warning(disable : 4311 4312 4996)
 
 #endif /* __orxMSVC__ */
+
+#else
+
+  #include <sys/types.h>
+  #include <dirent.h>
+  #include <fnmatch.h>
+  #include <sys/stat.h>
+  #include <unistd.h>
+
+#endif
+
+
+/** Module flags
+ */
+#define orxFILE_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxFILE_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
-#define orxFILE_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxFILE_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
-
-typedef struct __orxFILE_STATIC_t
-{
-  orxU32 u32Flags;
-} orxFILE_STATIC;
-
-struct __orxFILE_t
+/** File structure
+ */
+struct __orxFile_t
 {
   FILE *pstFile;
 };
 
+/** Static structure
+ */
+typedef struct __orxFILE_STATIC_t
+{
+  orxU32 u32Flags;
+
+} orxFILE_STATIC;
+
+
 /***************************************************************************
  * Static variables                                                        *
  ***************************************************************************/
+
+/** Static data
+ */
 static orxFILE_STATIC sstFile;
 
 
@@ -71,6 +96,86 @@ static orxFILE_STATIC sstFile;
  * Private functions                                                       *
  ***************************************************************************/
 
+#ifdef __orxWINDOWS__
+
+static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData, orxFILE_INFO *_pstFileInfo)
+{
+  /* Checks */
+  orxASSERT(_pstData != orxNULL);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Stores info */
+  _pstFileInfo->u32Size       = _pstData->size;
+  _pstFileInfo->u32TimeStamp  = (orxU32)_pstData->time_write;
+  orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, 255);
+  _pstFileInfo->zName[255]    = orxCHAR_NULL;
+  orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
+  _pstFileInfo->u32Flags      = (_pstData->attrib == 0)
+                                ? orxFILE_KU32_FLAG_INFO_NORMAL
+                                : ((_pstData->attrib & _A_RDONLY) ? orxFILE_KU32_FLAG_INFO_RDONLY : 0)
+                                | ((_pstData->attrib & _A_HIDDEN) ? orxFILE_KU32_FLAG_INFO_HIDDEN : 0)
+                                | ((_pstData->attrib & _A_SUBDIR) ? orxFILE_KU32_FLAG_INFO_DIR : 0);
+
+  return;
+}
+
+#else /* __orxWINDOWS__ */
+
+static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orxFILE_INFO *_pstFileInfo)
+{
+  struct stat stStat;
+  orxSTRING   zName;
+
+  /* Checks */
+  orxASSERT(_pstData != orxNULL);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Gets data name */
+  zName = (orxSTRING)_pstData->d_name;
+
+  /* Stores info */
+  orxString_NCopy(_pstFileInfo->zName, zName, 255);
+  _pstFileInfo->zName[255] = orxCHAR_NULL;
+  orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
+
+  /* Gets file info */
+  stat(_pstFileInfo->zFullName, &stStat);
+
+  _pstFileInfo->u32Flags = 0;
+
+  /* Read only file ? */
+  /* TODO : Update the way that read only is computed. It depends of the reader user/group */
+  if((stStat.st_mode & S_IROTH) && !(stStat.st_mode & S_IWOTH))
+  {
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_RDONLY;
+  }
+
+  /* Hidden ? */
+  if(_pstFileInfo->zName[0] == '.')
+  {
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_HIDDEN;
+  }
+
+  /* Dir ? */
+  if(stStat.st_mode & S_IFDIR)
+  {
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_DIR;
+  }
+
+  /* Normal file ? */
+  if(_pstFileInfo->u32Flags == 0)
+  {
+    _pstFileInfo->u32Flags = orxFILE_KU32_FLAG_INFO_NORMAL;
+  }
+
+  /* Sets time and last file access time */
+  _pstFileInfo->u32Size       = stStat.st_size;
+  _pstFileInfo->u32TimeStamp  = stStat.st_mtime;
+
+  return;
+}
+
+#endif /* __orxWINDOWS__ */
 
 /***************************************************************************
  * Public functions                                                        *
@@ -89,43 +194,327 @@ void orxFASTCALL orxFile_Setup()
  */
 orxSTATUS orxFASTCALL orxFile_Init()
 {
-  /* Module not already initialized ? */
-  orxASSERT(!(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY));
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Cleans static controller */
-  orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
-
-	/* Set module has ready */
-	sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_READY;
-
-  /* Module successfully initialized ? */
-  if(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
+  /* Was not already initialized? */
+  if(!(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY))
   {
-    return orxSTATUS_SUCCESS;
+    /* Cleans static controller */
+    orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
+
+    /* Updates status */
+    sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
   }
-  else
-  {
-    return orxSTATUS_FAILURE;
-  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Exits from the File Module
  */
 void orxFASTCALL orxFile_Exit()
 {
-  /* Module initialized ? */
-  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  /* Was initialized? */
+  if(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
+  {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
+  }
 
-  /* Module not ready now */
-  sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_NONE;
+  return;
+}
+
+/** Returns orxTRUE if a file exists, else orxFALSE.
+ * @param[in] _zFileName           Full File's name to test
+ * @return orxFALSE if _zFileName doesn't exist, else orxTRUE
+ */
+orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
+{
+  orxFILE_INFO stInfo;
+
+  /* Clears it */
+  orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
+
+  /* Done! */
+	return(orxFile_Info(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+}
+
+/** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
+ * @param[in] _zSearchPattern      Pattern to find
+ * @param[out] _pstFileInfo        Informations about the first file found
+ * @return orxTRUE if a file has been found, else orxFALSE
+ */
+orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo)
+{
+  orxBOOL bResult = orxFALSE;
+
+#ifdef __orxWINDOWS__
+
+  struct _finddata_t  stData;
+  orxS32              s32Handle;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Opens the search */
+  s32Handle = (orxU32)_findfirst(_zSearchPattern, &stData);
+
+  /* Valid? */
+  if(s32Handle >= 0)
+  {
+    orxS32 s32LastSeparator, i;
+
+    /* Gets last directory separator */
+    for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, 0);
+        i >= 0;
+        s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, i + 1));
+
+    /* Not found? */
+    if(s32LastSeparator < 0)
+    {
+      /* Gets last directory separator */
+      for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, 0);
+          i >= 0;
+          s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, i + 1));
+    }
+
+    /* Has directory? */
+    if(s32LastSeparator >= 0)
+    {
+      orxU32 u32Index;
+
+      /* Updates path & full name base */
+      u32Index = orxMIN(s32LastSeparator + 1, 1023);
+      orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
+      _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
+      orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+
+      /* Stores pattern */
+      u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, 255);
+      orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator] + 1, u32Index);
+      _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+    }
+    else
+    {
+      orxU32 u32Index;
+
+      /* Clears vars */
+      _pstFileInfo->zPath[0]      = orxCHAR_NULL;
+      _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
+
+      /* Stores pattern */
+      u32Index = orxMIN(orxString_GetLength(_zSearchPattern), 255);
+      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
+      _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+    }
+
+    /* Tranfers file info */
+    orxFile_GetInfoFromData(&stData, _pstFileInfo);
+
+    /* Stores handle */
+    _pstFileInfo->hInternal = (orxHANDLE)s32Handle;
+
+    /* Updates result */
+    bResult = orxTRUE;
+  }
+
+#else /* __orxWINDOWS__ */
+
+  /* Stores seach pattern */
+  orxS32 s32LastSeparator, i;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Gets last directory separator */
+  for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, 0);
+      i >= 0;
+      s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, i + 1));
+
+  /* Not found? */
+  if(s32LastSeparator < 0)
+  {
+    /* Gets last directory separator */
+    for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, 0);
+        i >= 0;
+        s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, i + 1));
+  }
+
+  /* Has directory? */
+  if(s32LastSeparator >= 0)
+  {
+    orxU32 u32Index;
+
+    /* Updates path & full name base */
+    u32Index = orxMIN(s32LastSeparator + 1, 1023);
+    orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
+    _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
+    orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+
+    /* Stores pattern */
+    u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, 255);
+    orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator] + 1, u32Index);
+    _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+  }
+  else
+  {
+    orxU32 u32Index;
+
+    /* Stores pattern */
+    u32Index = orxMIN(orxString_GetLength(_zSearchPattern), 255);
+    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
+    _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+
+    /* Clears vars */
+    orxString_Print(_pstFileInfo->zPath, "./");
+    orxString_Print(_pstFileInfo->zFullName, "./");
+  }
+
+  /* Open directory */
+  DIR *pDir = opendir(_pstFileInfo->zPath);
+
+  /* Valid ? */
+  if(pDir != orxNULL)
+  {
+    /* Stores the DIR handle */
+    _pstFileInfo->hInternal = (orxHANDLE) pDir;
+
+    /* Retrieves info */
+    bResult = orxFile_FindNext(_pstFileInfo);
+  }
+
+#endif /* __orxWINDOWS__ */
+
+  /* Done! */
+  return bResult;
+}
+
+/** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
+ * @param[in,out] _pstFileInfo    Informations about the found file
+ * @return orxTRUE, if the next file has been found, else returns orxFALSE
+ */
+orxBOOL orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
+{
+  orxBOOL bResult = orxFALSE;
+
+#ifdef __orxWINDOWS__
+
+  struct _finddata_t  stData;
+  orxS32              s32FindResult;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Opens the search */
+  s32FindResult = _findnext((orxS32)_pstFileInfo->hInternal, &stData);
+
+  /* Valid? */
+  if(s32FindResult == 0)
+  {
+    /* Tranfers file info */
+    orxFile_GetInfoFromData(&stData, _pstFileInfo);
+
+    /* Updates result */
+    bResult = orxTRUE;
+  }
+
+#else /* __orxWINDOWS__ */
+
+  struct dirent *pstDirEnt;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Updates full name */
+  orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+
+  /* Read directory */
+
+  /* loop on entries until the pattern match */
+  while((!bResult)
+     && (pstDirEnt = readdir((DIR*)_pstFileInfo->hInternal)))
+  {
+    /* Gets file info */
+    orxFile_GetInfoFromData(pstDirEnt, _pstFileInfo);
+
+    /* Match ? */
+    bResult = (fnmatch(_pstFileInfo->zPattern, _pstFileInfo->zName, 0) == 0);
+  }
+
+#endif /* __orxWINDOWS__ */
+
+  /* Done! */
+  return bResult;
+}
+
+/** Closes a search (free the memory allocated for this search)
+ * @param[in] _pstFileInfo         Informations returned during search
+ */
+void orxFASTCALL orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
+{
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+#ifdef __orxWINDOWS__
+
+  /* Has valid handle? */
+  if(((orxS32)_pstFileInfo->hInternal) > 0)
+  {
+    /* Closes the search */
+    _findclose((orxS32)_pstFileInfo->hInternal);
+  }
+
+#else /* __orxWINDOWS__ */
+
+  /* Closes the search */
+  closedir((DIR *) _pstFileInfo->hInternal);
+
+#endif /* __orxWINDOWS__ */
+
+  /* Clears handle */
+  _pstFileInfo->hInternal = 0;
+
+  return;
+}
+
+/** Retrieves informations about a file
+ * @param[in] _zFileName            Files used to get informations
+ * @param[out] _pstFileInfo         Returned file's informations
+ * @return Returns the status of the operation
+ */
+orxSTATUS orxFASTCALL orxFile_Info(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
+  /* Finds for the file */
+  if(orxFile_FindFirst(_zFileName, _pstFileInfo) != orxFALSE)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Closes the find */
+  orxFile_FindClose(_pstFileInfo);
+
+  /* Done! */
+  return eResult;
 }
 
 /** Opens a file for later read or write operation
- * @param[in] _zPath               Full file's path to open
+ * @param[in] _zFileName           Full file's path to open
  * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
+orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFlags)
 {
   /* Convert the open flags into a string */
   orxCHAR acMode[4];
@@ -257,7 +646,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
   }
 
   /* Open the file */
-  return(orxFILE*)fopen(_zPath, acMode);
+  return(orxFILE*)fopen(_zFileName, acMode);
 }
 
 /** Reads data from a file
@@ -341,41 +730,6 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
   return s32Result;
 }
 
-/** Gets text line from a file
- * @param[out] _zBuffer       Pointer where will be stored datas
- * @param[in] _u32Size        Size of buffer
- * @param[in] _pstFile        Pointer on the file descriptor
- * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
- */
-orxBOOL orxFASTCALL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
-{
-  /* Default return value */
-  orxBOOL bRet = orxFALSE;
-
-  /* Module initialized ? */
-  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-
-  /* Checks inputs */
-  orxASSERT(_pstFile != orxNULL);
-
-  /* Valid input ? */
-  if(_pstFile != orxNULL)
-  {
-    /* Try to read a line */
-    if(fgets(_zBuffer, _u32Size, (FILE*)_pstFile))
-    {
-      bRet = orxTRUE;
-    }
-    else
-    {
-      bRet = orxFALSE;
-    }
-  }
-
-  /* Returns orxTRUE if a line has been read, else orxFALSE */
-  return bRet;
-}
-
 /** Closes an oppened file
  * @param[in] _pstFile             File's pointer to close
  * @return Returns the status of the operation
@@ -406,9 +760,8 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
   return eRet;
 }
 
-
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4996)
+  #pragma warning(default : 4311 4312 4996)
 
 #endif /* __orxMSVC__ */

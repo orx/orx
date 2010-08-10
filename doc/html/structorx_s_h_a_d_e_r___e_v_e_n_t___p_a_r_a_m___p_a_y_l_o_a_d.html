@@ -32,7 +32,7 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Fields</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#7297b5e116fda7936ed658b766f4e099">pstShader</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#f433e8b035127feca401aa2ab4883790">pstShader</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">const orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#940c84d16f4c47594cc7768d5c14da00">zShaderName</a></td></tr>
 
@@ -50,15 +50,25 @@
 
 <tr><td class="memItemLeft" nowrap valign="top">};&nbsp;</td><td class="memItemRight" valign="bottom"></td></tr>
 
+<tr><td class="memItemLeft" nowrap>union {</td></tr>
+
+<tr><td class="memItemLeft" nowrap>&nbsp;&nbsp;&nbsp;orxFLOAT&nbsp;&nbsp;&nbsp;<a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#00945aaf7cca7c783c73b4cd98d63812">fValue</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap>&nbsp;&nbsp;&nbsp;<a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *&nbsp;&nbsp;&nbsp;<a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#5e7479839ef980e43ceb30c8a13d1952">pstValue</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap>&nbsp;&nbsp;&nbsp;<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>&nbsp;&nbsp;&nbsp;<a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#bfe1a365131ef68b48c6a75104d69b18">vValue</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap valign="top">};&nbsp;</td><td class="memItemRight" valign="bottom"></td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Shader event payload <hr><h2>Field Documentation</h2>
-<a class="anchor" name="7297b5e116fda7936ed658b766f4e099"></a><!-- doxytag: member="orxSHADER_EVENT_PARAM_PAYLOAD::pstShader" ref="7297b5e116fda7936ed658b766f4e099" args="" -->
+<a class="anchor" name="f433e8b035127feca401aa2ab4883790"></a><!-- doxytag: member="orxSHADER_EVENT_PARAM_PAYLOAD::pstShader" ref="f433e8b035127feca401aa2ab4883790" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a>* <a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#7297b5e116fda7936ed658b766f4e099">orxSHADER_EVENT_PARAM_PAYLOAD::pstShader</a>          </td>
+          <td class="memname">const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> * <a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_r_a_m___p_a_y_l_o_a_d.html#f433e8b035127feca401aa2ab4883790">orxSHADER_EVENT_PARAM_PAYLOAD::pstShader</a>          </td>
         </tr>
       </table>
 </div>
@@ -173,8 +183,23 @@ Vector value : 20
 Union value : 28 
 </div>
 </div><p>
-<hr>The documentation for this struct was generated from the following file:<ul>
-<li>include/render/<a class="el" href="orx_shader_8h.html">orxShader.h</a></ul>
+<a class="anchor" name="82f0cf5f031b184c6875fa9a3257b2a9"></a><!-- doxytag: member="orxSHADER_EVENT_PARAM_PAYLOAD::@16" ref="82f0cf5f031b184c6875fa9a3257b2a9" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">union { ... }           </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Union value : 28 
+</div>
+</div><p>
+<hr>The documentation for this struct was generated from the following files:<ul>
+<li>include/render/<a class="el" href="_backup_011_01of_01orx_shader_8h.html">Backup 1 of orxShader.h</a><li>include/render/<a class="el" href="orx_shader_8h.html">orxShader.h</a></ul>
 </div>
 <hr size="1"><address style="text-align: right;"><small>
 Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
