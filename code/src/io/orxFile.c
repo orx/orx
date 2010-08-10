@@ -69,7 +69,7 @@
 
 /** File structure
  */
-struct __orxFile_t
+struct __orxFILE_t
 {
   FILE *pstFile;
 };
@@ -667,7 +667,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
+    u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, _pstFile->pstFile);
   }
 
   /* Returns the number of read elements */
@@ -695,7 +695,7 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
+    u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, _pstFile->pstFile);
   }
 
   /* Returns the number of read elements */
@@ -722,7 +722,7 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
 
     /* Gets variable arguments & print the string */
     va_start(stArgs, _zString);
-    s32Result = vfprintf((FILE *)_pstFile, _zString, stArgs);
+    s32Result = vfprintf(_pstFile->pstFile, _zString, stArgs);
     va_end(stArgs);
   }
 
@@ -749,7 +749,7 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
   if(_pstFile != orxNULL)
   {
     /* Close file pointer */
-    if(fclose((FILE*)_pstFile) == 0)
+    if(fclose(_pstFile->pstFile) == 0)
     {
       /* Success ! */
       eRet = orxSTATUS_SUCCESS;
