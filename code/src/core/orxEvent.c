@@ -36,6 +36,7 @@
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
+#include "utils/orxLinkList.h"
 
 
 /** Module flags
@@ -51,18 +52,39 @@
  */
 #define orxEVENT_KU32_HANDLER_TABLE_SIZE  64
 #define orxEVENT_KU32_HANDLER_BANK_SIZE   4
+#define orxEVENT_KU32_STORAGE_BANK_SIZE   16
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Event handler info structure
+ */
+typedef struct __orxEVENT_HANDLER_INFO_t
+{
+  orxLINKLIST_NODE  stNode;
+  orxEVENT_HANDLER  pfnHandler;
+
+} orxEVENT_HANDLER_INFO;
+
+/** Event handler storage
+ */
+typedef struct __orxEVENT_HANDLER_STORAGE_t
+{
+  orxLINKLIST stList;
+  orxBANK    *pstBank;
+
+} orxEVENT_HANDLER_STORAGE;
+
 /** Static structure
  */
 typedef struct __orxEVENT_STATIC_t
 {
   orxU32        u32Flags;                             /**< Control flags */
-  orxHASHTABLE *pstHandlerTable;                      /**< Handler table */
+  orxHASHTABLE *pstHandlerStorageTable;               /**< Handler storage table */
+  orxBANK      *pstHandlerStorageBank;                /**< Handler storage bank */
+
 
 } orxEVENT_STATIC;
 
@@ -107,17 +129,35 @@ orxSTATUS orxFASTCALL orxEvent_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstEvent, sizeof(orxEVENT_STATIC));
 
-    /* Creates handler table */
-    sstEvent.pstHandlerTable = orxHashTable_Create(orxEVENT_KU32_HANDLER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Creates handler storage table */
+    sstEvent.pstHandlerStorageTable = orxHashTable_Create(orxEVENT_KU32_HANDLER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-    /* Valid? */
-    if(sstEvent.pstHandlerTable != orxNULL)
+    /* Success? */
+    if(sstEvent.pstHandlerStorageTable != orxNULL)
     {
-      /* Inits Flags */
-      orxFLAG_SET(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY, orxEVENT_KU32_STATIC_MASK_ALL);
+      /* Creates handler storage bank */
+      sstEvent.pstHandlerStorageBank = orxBank_Create(orxEVENT_KU32_STORAGE_BANK_SIZE, sizeof(orxEVENT_HANDLER_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
+      /* Success? */
+      if(sstEvent.pstHandlerStorageBank != orxNULL)
+      {
+        /* Inits Flags */
+        orxFLAG_SET(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY, orxEVENT_KU32_STATIC_MASK_ALL);
+
+        /* Success */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Deletes table */
+        orxHashTable_Delete(sstEvent.pstHandlerStorageTable);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Event module failed to create bank.");
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
     else
     {
@@ -149,7 +189,10 @@ void orxFASTCALL orxEvent_Exit()
   if(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY))
   {
     /* Deletes hashtable */
-    orxHashTable_Delete(sstEvent.pstHandlerTable);
+    orxHashTable_Delete(sstEvent.pstHandlerStorageTable);
+
+    /* Deletes bank */
+    orxBank_Delete(sstEvent.pstHandlerStorageBank);
 
     /* Updates flags */
     orxFLAG_SET(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_NONE, orxEVENT_KU32_STATIC_MASK_ALL);
@@ -165,51 +208,73 @@ void orxFASTCALL orxEvent_Exit()
  */
 orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
 {
-  orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxEVENT_HANDLER_STORAGE *pstStorage;
+  orxSTATUS                 eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pfnEventHandler != orxNULL);
 
-  /* Gets corresponding bank */
-  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _eEventType);
+  /* Gets corresponding storage */
+  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
 
-  /* No bank yet? */
-  if(pstBank == orxNULL)
+  /* No storage yet? */
+  if(pstStorage == orxNULL)
   {
-    /* Creates it */
-    pstBank = orxBank_Create(orxEVENT_KU32_HANDLER_BANK_SIZE, sizeof(orxEVENT_HANDLER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Allocates it */
+    pstStorage = (orxEVENT_HANDLER_STORAGE *)orxBank_Allocate(sstEvent.pstHandlerStorageBank);
 
-    /* Valid? */
-    if(pstBank != orxNULL)
+    /* Success? */
+    if(pstStorage != orxNULL)
     {
-      /* Tries to add it to the table */
-      if(orxHashTable_Add(sstEvent.pstHandlerTable, _eEventType, pstBank) == orxSTATUS_FAILURE)
+      /* Creates its bank */
+      pstStorage->pstBank = orxBank_Create(orxEVENT_KU32_HANDLER_BANK_SIZE, sizeof(orxEVENT_HANDLER_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Success? */
+      if(pstStorage->pstBank != orxNULL)
       {
-        /* Deletes bank */
-        orxBank_Delete(pstBank);
-        pstBank = orxNULL;
+        /* Clears its list */
+        orxMemory_Zero(&(pstStorage->stList), sizeof(orxLINKLIST));
+
+        /* Tries to add it to the table */
+        if(orxHashTable_Add(sstEvent.pstHandlerStorageTable, _eEventType, pstStorage) == orxSTATUS_FAILURE)
+        {
+          /* Deletes its bank */
+          orxBank_Delete(pstStorage->pstBank);
+
+          /* Frees storage */
+          orxBank_Free(sstEvent.pstHandlerStorageBank, pstStorage);
+          pstStorage = orxNULL;
+        }
+      }
+      else
+      {
+        /* Frees storage */
+        orxBank_Free(sstEvent.pstHandlerStorageBank, pstStorage);
+        pstStorage = orxNULL;
       }
     }
   }
 
   /* Valid? */
-  if(pstBank != orxNULL)
+  if(pstStorage != orxNULL)
   {
-    orxEVENT_HANDLER *ppfnHandler;
+    orxEVENT_HANDLER_INFO *pstInfo;
 
-    /* Creates a new handler slot */
-    ppfnHandler = (orxEVENT_HANDLER *)orxBank_Allocate(pstBank);
+    /* Allocates a new handler info */
+    pstInfo = (orxEVENT_HANDLER_INFO *)orxBank_Allocate(pstStorage->pstBank);
 
     /* Valid? */
-    if(ppfnHandler != orxNULL)
+    if(pstInfo != orxNULL)
     {
-      /* Updates it */
-      *ppfnHandler = _pfnEventHandler;
+      /* Clears its node */
+      orxMemory_Zero(&(pstInfo->stNode), sizeof(orxLINKLIST_NODE));
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Stores its handler */
+      pstInfo->pfnHandler = _pfnEventHandler;
+
+      /* Adds it to the list */
+      eResult = orxLinkList_AddEnd(&(pstStorage->stList), &(pstInfo->stNode));
     }
   }
 
@@ -224,31 +289,34 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
  */
 orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
 {
-  orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxEVENT_HANDLER_STORAGE *pstStorage;
+  orxSTATUS                 eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pfnEventHandler != orxNULL);
 
-  /* Gets corresponding bank */
-  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _eEventType);
+  /* Gets corresponding storage */
+  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
 
   /* Valid? */
-  if(pstBank != orxNULL)
+  if(pstStorage != orxNULL)
   {
-    orxEVENT_HANDLER *ppfnHandler;
+    orxEVENT_HANDLER_INFO *pstInfo;
 
-    /* For all handler */
-    for(ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, orxNULL);
-        ppfnHandler != orxNULL;
-        ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
+    /* For all handlers */
+    for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
+        pstInfo != orxNULL;
+        pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
     {
       /* Found? */
-      if(*ppfnHandler == _pfnEventHandler)
+      if(pstInfo->pfnHandler == _pfnEventHandler)
       {
-        /* Removes it */
-        orxBank_Free(pstBank, ppfnHandler);
+        /* Removes it from list */
+        orxLinkList_Remove(&(pstInfo->stNode));
+
+        /* Frees it */
+        orxBank_Free(pstStorage->pstBank, pstInfo);
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -272,28 +340,28 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
  */
 orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
 {
-  orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxEVENT_HANDLER_STORAGE *pstStorage;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pstEvent != orxNULL);
 
-  /* Gets corresponding bank */
-  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _pstEvent->eType);
+  /* Gets corresponding storage */
+  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _pstEvent->eType);
 
   /* Valid? */
-  if(pstBank != orxNULL)
+  if(pstStorage != orxNULL)
   {
-    orxEVENT_HANDLER *ppfnHandler;
+    orxEVENT_HANDLER_INFO *pstInfo;
 
-    /* For all handler */
-    for(ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, orxNULL);
-        ppfnHandler != orxNULL;
-        ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
+    /* For all handlers */
+    for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
+        pstInfo != orxNULL;
+        pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
     {
-      /* Calls handler */
-      if((*ppfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
+      /* Calls its handler */
+      if((pstInfo->pfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -314,9 +382,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
  */
 orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID)
 {
-  orxEVENT stEvent;
-  orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxEVENT                  stEvent;
+  orxEVENT_HANDLER_STORAGE *pstStorage;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
@@ -326,21 +394,21 @@ orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEv
   stEvent.eType = _eEventType;
   stEvent.eID   = _eEventID;
 
-  /* Gets corresponding bank */
-  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _eEventType);
+  /* Gets corresponding storage */
+  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
 
   /* Valid? */
-  if(pstBank != orxNULL)
+  if(pstStorage != orxNULL)
   {
-    orxEVENT_HANDLER *ppfnHandler;
+    orxEVENT_HANDLER_INFO *pstInfo;
 
-    /* For all handler */
-    for(ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, orxNULL);
-        ppfnHandler != orxNULL;
-        ppfnHandler = (orxEVENT_HANDLER *)orxBank_GetNext(pstBank, ppfnHandler))
+    /* For all handlers */
+    for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
+        pstInfo != orxNULL;
+        pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
     {
-      /* Calls handler */
-      if((*ppfnHandler)(&stEvent) == orxSTATUS_FAILURE)
+      /* Calls its handler */
+      if((pstInfo->pfnHandler)(&stEvent) == orxSTATUS_FAILURE)
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
