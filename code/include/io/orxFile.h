@@ -146,6 +146,7 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(void *_pDataToWrite, o
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
+ * @param[in] _s32Position          Position (from start) where to set the indicator
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position);

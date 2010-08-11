@@ -57,13 +57,19 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gf9175eb2f39f2e2a1d60250b8c2bdd81">orxFile_FindClose</a> (<a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g87fca017cc8ed825104ba854654cda8c">orxFile_Info</a> (const orxSTRING _zFileName, <a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gb3f0c189fe842c6628177e5bdbd89166">orxFile_GetInfo</a> (const orxSTRING _zFileName, <a class="el" href="structorx_f_i_l_e___i_n_f_o.html">orxFILE_INFO</a> *_pstFileInfo)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g69cb0d04489c13daba0ebd380a4ae19b">orxFile_Open</a> (const orxSTRING _zFileName, orxU32 _u32OpenFlags)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g6b28e81a5fe57e673f79b20c3f6c641f">orxFile_Read</a> (void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g179d964e4e74c7266468f7f6c54dc1ad">orxFile_Write</a> (void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gad3788ccc8b930c0034b59039ab23344">orxFile_Seek</a> (<a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxS32 _s32Position)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g7e03dfe3355ee7eedf288737757389bf">orxFile_Tell</a> (const <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g017e8a1b07e7dac74193f5908bcabfcf">orxFile_GetSize</a> (const <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga440ac942c5d5f341a60a606f6de8435">orxFile_Print</a> (<a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxSTRING _zString,...)</td></tr>
 
@@ -367,12 +373,12 @@ Continues a search. Find the next occurence of a pattern. The search has to be s
 
 </div>
 </div><p>
-<a class="anchor" name="g87fca017cc8ed825104ba854654cda8c"></a><!-- doxytag: member="orxFile.h::orxFile_Info" ref="g87fca017cc8ed825104ba854654cda8c" args="(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)" -->
+<a class="anchor" name="gb3f0c189fe842c6628177e5bdbd89166"></a><!-- doxytag: member="orxFile.h::orxFile_GetInfo" ref="gb3f0c189fe842c6628177e5bdbd89166" args="(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFile_Info           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFile_GetInfo           </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&nbsp;</td>
           <td class="paramname"> <em>_zFileName</em>, </td>
@@ -393,13 +399,39 @@ Continues a search. Find the next occurence of a pattern. The search has to be s
 <div class="memdoc">
 
 <p>
-Retrieves informations about a file <dl compact><dt><b>Parameters:</b></dt><dd>
+Retrieves information about a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Files used to get informations </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Returned file's informations </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Files used to get information </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Returned file's information </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g017e8a1b07e7dac74193f5908bcabfcf"></a><!-- doxytag: member="orxFile.h::orxFile_GetSize" ref="g017e8a1b07e7dac74193f5908bcabfcf" args="(const orxFILE *_pstFile)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxS32 orxFASTCALL orxFile_GetSize           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFile</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Retrieves a file's size <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Concerned file </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the length of the file, &lt;= 0 if invalid </dd></dl>
 
 </div>
 </div><p>
@@ -550,6 +582,42 @@ Reads data from a file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gad3788ccc8b930c0034b59039ab23344"></a><!-- doxytag: member="orxFile.h::orxFile_Seek" ref="gad3788ccc8b930c0034b59039ab23344" args="(orxFILE *_pstFile, orxS32 _s32Position)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFile_Seek           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFile</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&nbsp;</td>
+          <td class="paramname"> <em>_s32Position</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Seeks to a position in the given file <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Concerned file </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_s32Position</em>&nbsp;</td><td>Position (from start) where to set the indicator </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g3211b72acbc9ff98a67d97ee757acd7d"></a><!-- doxytag: member="orxFile.h::orxFile_Setup" ref="g3211b72acbc9ff98a67d97ee757acd7d" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -567,6 +635,32 @@ Reads data from a file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 File module setup 
+</div>
+</div><p>
+<a class="anchor" name="g7e03dfe3355ee7eedf288737757389bf"></a><!-- doxytag: member="orxFile.h::orxFile_Tell" ref="g7e03dfe3355ee7eedf288737757389bf" args="(const orxFILE *_pstFile)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxS32 orxFASTCALL orxFile_Tell           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFile</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Tells the current position of the indicator in a file <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Concerned file </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the current position of the file indicator, -1 is invalid </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g179d964e4e74c7266468f7f6c54dc1ad"></a><!-- doxytag: member="orxFile.h::orxFile_Write" ref="g179d964e4e74c7266468f7f6c54dc1ad" args="(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)" -->

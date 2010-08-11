@@ -6,13 +6,14 @@ Orx - Portable Game Engine  (Version 1.2)
 orx 1.3
 ---
 * IMPORTANT: Added OpenGL ES 2.0 support for iPhone/iPod Touch/iPad + full shader pipeline (including custom shader support)
-* IMPORTANT: Rendering to texture support is back with GLFW plugins / iPhone plugins
+* IMPORTANT: Rendering to texture support is back with GLFW & iPhone plugins
 * Added orxDisplay_GetBitmapData()
 * Optimized home render plugin to batch objects by texture (5-15% FPS boost, depending on scenes)
 * Optimized frame update for orphan objects (6-8% FPS boost)
 * Minor internal pipeline/vertex shader optimization
 * Added orxEVENT_TYPE_DISPLAY/orxDISPLAY_EVENT_SET_VIDEO_MODE event
 * Simplified iPhone demo
+* Misc optimizations & fixes
 
 orx 1.2
 -----
