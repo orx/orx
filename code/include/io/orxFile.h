@@ -112,12 +112,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_FindNext(orxFILE_INFO *_pstF
  */
 extern orxDLLAPI void orxFASTCALL           orxFile_FindClose(orxFILE_INFO *_pstFileInfo);
 
-/** Retrieves informations about a file
- * @param[in] _zFileName            Files used to get informations
- * @param[out] _pstFileInfo         Returned file's informations
+/** Retrieves information about a file
+ * @param[in] _zFileName            Files used to get information
+ * @param[out] _pstFileInfo         Returned file's information
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Info(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo);
 
 /** Opens a file for later read or write operation
  * @param[in] _zFileName           Full file's path to open
@@ -143,6 +143,24 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Read(void *_pReadData, orxU3
  * @return Returns the number of written elements (not bytes)
  */
 extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+
+/** Seeks to a position in the given file
+ * @param[in] _pstFile              Concerned file
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position);
+
+/** Tells the current position of the indicator in a file
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the current position of the file indicator, -1 is invalid
+ */
+extern orxDLLAPI orxS32 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile);
+
+/** Retrieves a file's size
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the length of the file, <= 0 if invalid
+ */
+extern orxDLLAPI orxS32 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
 
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer on the file descriptor

@@ -54,4 +54,9 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		AMDCaPersistentConfig = Dynamic Release|Win32
+		AMDCaPersistentStartup = 11_Spawner
+		AMDCaProjectFile = C:\Tmp\orx\tutorial\build\msvs2005\CodeAnalyst\Tutorial.caw
+	EndGlobalSection
 EndGlobal

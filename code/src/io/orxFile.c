@@ -36,6 +36,9 @@
 #include "utils/orxString.h"
 #include "debug/orxDebug.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #ifdef __orxWINDOWS__
 
   #include <io.h>
@@ -48,10 +51,8 @@
 
 #else
 
-  #include <sys/types.h>
   #include <dirent.h>
   #include <fnmatch.h>
-  #include <sys/stat.h>
   #include <unistd.h>
 
 #endif
@@ -236,7 +237,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-	return(orxFile_Info(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+	return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
@@ -482,12 +483,12 @@ void orxFASTCALL orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
   return;
 }
 
-/** Retrieves informations about a file
- * @param[in] _zFileName            Files used to get informations
- * @param[out] _pstFileInfo         Returned file's informations
+/** Retrieves information about a file
+ * @param[in] _zFileName            File used to get information
+ * @param[out] _pstFileInfo         Returned file's information
  * @return Returns the status of the operation
  */
-orxSTATUS orxFASTCALL orxFile_Info(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)
+orxSTATUS orxFASTCALL orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -523,8 +524,8 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
-  /* Fills with null terminated characters */
-  orxMemory_Zero(acMode, 4 * sizeof(orxCHAR));
+  /* Clears mode */
+  acMode[0] = orxCHAR_NULL;
 
   /*** LIB C MODES :
    * r   : Open text file for reading.
@@ -646,7 +647,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
   }
 
   /* Open the file */
-  return(orxFILE*)fopen(_zFileName, acMode);
+  return(orxFILE *)fopen(_zFileName, acMode);
 }
 
 /** Reads data from a file
@@ -702,6 +703,91 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
   return u32Ret;
 }
 
+/** Seeks to a position in the given file
+ * @param[in] _pstFile              Concerned file
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstFile != orxNULL)
+  {
+    /* Updates result */
+    eResult = (fseek((FILE *)_pstFile, _s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Tells the current position of the indicator in a file
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the current position of the file indicator, -1 if invalid
+ */
+orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
+{
+  orxS32 s32Result;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstFile != orxNULL)
+  {
+    /* Updates result */
+    s32Result = ftell((FILE *)_pstFile);
+  }
+  else
+  {
+    /* Updates result */
+    s32Result = -1;
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Retrieves a file's size
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the length of the file, <= 0 if invalid
+ */
+orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
+{
+  struct stat stStat;
+  orxS32      s32Result;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstFile != orxNULL)
+  {
+    /* Gets file stats */
+    fstat(((FILE *)_pstFile)->_file, &stStat);
+
+    /* Updates result */
+    s32Result = stStat.st_size;
+  }
+  else
+  {
+    /* Updates result */
+    s32Result = 0;
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer on the file descriptor
  * @param[in] _zString             Formatted string
@@ -709,7 +795,7 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
  */
 orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
 {
-  orxS32 s32Result;
+  orxS32 s32Result = 0;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
