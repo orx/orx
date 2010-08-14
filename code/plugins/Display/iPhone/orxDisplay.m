@@ -188,7 +188,7 @@ static orxView *spoInstance;
 + (orxView *) GetInstance;
 
 - (BOOL) CreateThreadContext;
-- (BOOL) CreateFrameBuffer;
+- (BOOL) CreateBuffers;
 - (BOOL) CreateRenderTarget:(const orxBITMAP *)_pstBitmap;
 
 @end
@@ -377,8 +377,8 @@ static orxView *spoInstance;
       glDisable(GL_STENCIL_TEST);
       glASSERT();
 
-      /* Creates frame buffer */
-      [self CreateFrameBuffer];
+      /* Creates frame & render buffers */
+      [self CreateBuffers];
 
       /* Updates result */
       bResult = YES;
@@ -389,7 +389,7 @@ static orxView *spoInstance;
   return bResult;
 }
 
-- (BOOL) CreateFrameBuffer
+- (BOOL) CreateBuffers
 {
   BOOL bResult = YES;
 
@@ -401,6 +401,17 @@ static orxView *spoInstance;
   glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
   glASSERT();
 
+  /* Generates render buffer */
+  glGenRenderbuffersOES(1, &uiRenderBuffer);
+  glASSERT();
+
+  /* Binds it */
+  glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+  glASSERT();
+
+  /* Links render buffer to layer */
+  bResult = [poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer];
+
   /* Done! */
   return bResult;
 }
@@ -409,55 +420,37 @@ static orxView *spoInstance;
 {
   BOOL bResult = NO;
 
-  /* Had a render buffer? */
-  if(uiRenderBuffer != 0)
-  {
-    /* Deletes it */
-    glDeleteRenderbuffersOES(1, &uiRenderBuffer);
-    glASSERT();
-
-    /* Updates references */
-    uiRenderBuffer = 0;
-  }
-
   /* Screen? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    /* Generates render buffer */
-    glGenRenderbuffersOES(1, &uiRenderBuffer);
+    /* Unbinds texture from frame buffer */
+    glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, 0, 0);
     glASSERT();
 
-    /* Binds it */
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+    /* Binds it to frame buffer */
+    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
+    glASSERT();
+    glFlush();
     glASSERT();
 
-    /* Links it to layer */
-    if([poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer] != NO)
-    {
-      /* Binds it to frame buffer */
-      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
-      glASSERT();
-      glFlush();
-      glASSERT();
-
-      /* Updates result */
-      bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
-      glASSERT();
-    }
-    else
-    {
-      /* Updates result */
-      bResult = NO;
-    }
+    /* Updates result */
+    bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
+    glASSERT();
   }
   else
   {
+    /* Unbinds render buffer from frame buffer */
+    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, 0);
+    glASSERT();
+
     /* Binds corresponding texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
 
     /* Links it to frame buffer */
     glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
+    glASSERT();
+    glFlush();
     glASSERT();
 
     /* Updates result */
