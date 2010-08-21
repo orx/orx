@@ -2256,6 +2256,11 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
       sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
 
+      /* Updates config info */
+      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
+      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
+
       /* Pops config section */
       orxConfig_PopSection();
 
