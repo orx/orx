@@ -130,11 +130,11 @@ typedef struct __orxCLOCK_STATIC_t
 {
   orxBANK          *pstTimerBank;               /**< Timer bank : 4 */
   orxCLOCK_MOD_TYPE eModType;                   /**< Clock mod type : 8 */
-  orxFLOAT          fModValue;                  /**< Clock mod value : 12 */
-  orxFLOAT          fTime;                      /**< Current time : 16 */
-  orxFLOAT          fMainClockTickSize;         /**< Main clock tick size : 20 */
-  orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file : 24 */
-  orxU32            u32Flags;                   /**< Control flags : 28 */
+  orxDOUBLE         dTime;                      /**< Current time : 16 */
+  orxFLOAT          fModValue;                  /**< Clock mod value : 20 */
+  orxFLOAT          fMainClockTickSize;         /**< Main clock tick size : 24 */
+  orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file : 28 */
+  orxU32            u32Flags;                   /**< Control flags : 32 */
 
 } orxCLOCK_STATIC;
 
@@ -361,7 +361,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
           sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
 
           /* Gets init time */
-          sstClock.fTime  = orxSystem_GetTime();
+          sstClock.dTime  = orxSystem_GetTime();
 
           /* Inits Flags */
           sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
@@ -442,7 +442,8 @@ void orxFASTCALL orxClock_Exit()
  */
 orxSTATUS orxFASTCALL orxClock_Update()
 {
-  orxFLOAT  fNewTime, fDT, fDelay;
+  orxDOUBLE dNewTime;
+  orxFLOAT  fDT, fDelay;
   orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -456,16 +457,16 @@ orxSTATUS orxFASTCALL orxClock_Update()
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
     /* Gets new time */
-    fNewTime  = orxSystem_GetTime();
+    dNewTime  = orxSystem_GetTime();
 
     /* Computes natural DT */
-    fDT       = fNewTime - sstClock.fTime;
+    fDT       = (orxFLOAT)(dNewTime - sstClock.dTime);
 
     /* Gets modified DT */
     fDT       = orxClock_ComputeDT(fDT, orxNULL);
 
     /* Updates time */
-    sstClock.fTime = fNewTime;
+    sstClock.dTime = dNewTime;
 
     /* Inits delay */
     fDelay = sstClock.fMainClockTickSize;

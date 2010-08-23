@@ -223,7 +223,7 @@ void orxFASTCALL orxSystem_Exit()
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed from the application start.
  */
-orxFLOAT orxFASTCALL orxSystem_GetTime()
+orxDOUBLE orxFASTCALL orxSystem_GetTime()
 {
   orxDOUBLE dCurrentTime;
 
@@ -234,7 +234,7 @@ orxFLOAT orxFASTCALL orxSystem_GetTime()
   dCurrentTime = orxSystem_GetSystemTime();
 
   /* Done! */
-  return (orxFLOAT)(dCurrentTime - sstSystem.dStartTime);
+  return(dCurrentTime - sstSystem.dStartTime);
 }
 
 /** Gets real time

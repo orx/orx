@@ -1328,7 +1328,7 @@ orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _f
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
   {
-    orxINPUT_ENTRY *pstEntry;
+    orxINPUT_ENTRY *pstEntry, *pstSelectedEntry = orxNULL;
     orxU32          u32EntryID;
     
     /* Gets entry ID */
@@ -1342,17 +1342,31 @@ orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _f
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
       {
-        /* Updates its value */
-        pstEntry->fExternalValue = _fValue;
-
-        /* Updates its status */
-        orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL, orxINPUT_KU32_ENTRY_FLAG_PERMANENT | orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_LAST_EXTERNAL);
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+        /* Updates selection */
+        pstSelectedEntry = pstEntry;
 
         break;
       }
+    }
+
+    /* Entry not found? */
+    if(pstSelectedEntry == orxNULL)
+    {
+      /* Creates a new entry */
+      pstSelectedEntry = orxInput_CreateEntry(_zInputName);
+    }
+
+    /* Valid? */
+    if(pstSelectedEntry != orxNULL)
+    {
+      /* Updates its value */
+      pstSelectedEntry->fExternalValue = _fValue;
+
+      /* Updates its status */
+      orxFLAG_SET(pstSelectedEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL, orxINPUT_KU32_ENTRY_FLAG_PERMANENT | orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_LAST_EXTERNAL);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -1376,7 +1390,7 @@ orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, or
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
   {
-    orxINPUT_ENTRY *pstEntry;
+    orxINPUT_ENTRY *pstEntry, *pstSelectedEntry = orxNULL;
     orxU32          u32EntryID;
     
     /* Gets entry ID */
@@ -1390,17 +1404,31 @@ orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, or
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
       {
-        /* Updates its value */
-        pstEntry->fExternalValue = _fValue;
-        
-        /* Updates its status */
-        orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_PERMANENT, orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_LAST_EXTERNAL);
-        
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+        /* Updates selection */
+        pstSelectedEntry = pstEntry;
         
         break;
       }
+    }
+
+    /* Entry not found? */
+    if(pstSelectedEntry == orxNULL)
+    {
+      /* Creates a new entry */
+      pstSelectedEntry = orxInput_CreateEntry(_zInputName);
+    }
+
+    /* Valid? */
+    if(pstSelectedEntry != orxNULL)
+    {
+      /* Updates its value */
+      pstSelectedEntry->fExternalValue = _fValue;
+
+      /* Updates its status */
+      orxFLAG_SET(pstSelectedEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_PERMANENT, orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_LAST_EXTERNAL);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
