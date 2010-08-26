@@ -122,11 +122,13 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+#ifdef __orxIPHONE__
 
-#import <UIKit/UIKit.h>
+  #ifdef __orxOBJC__
 
-#define orxEVENT_TYPE_IPHONE          orxEVENT_TYPE_FIRST_RESERVED
+  #import <UIKit/UIKit.h>
+
+  #define orxEVENT_TYPE_IPHONE          orxEVENT_TYPE_FIRST_RESERVED
 
 /** Event enum
   */
@@ -239,7 +241,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   return;
 }
 
-#else /* __orxIPHONE__ && __orxOBJC__ */
+  #endif /* __orxOBJC__ */
+
+#else /* __orxIPHONE__ */
     
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -310,9 +314,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
     
-#ifdef __orxMSVC__
+  #ifdef __orxMSVC__
 
-#include "windows.h"
+  #include "windows.h"
 
 /** Orx main execution function (console-less windows application)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
@@ -355,7 +359,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
   orx_Execute(argc, argv, _pfnInit, _pfnRun, _pfnExit);
 }
 
-#endif /* __orxMSVC__ */
+  #endif /* __orxMSVC__ */
     
 #endif /* __orxIPHONE__ */
 

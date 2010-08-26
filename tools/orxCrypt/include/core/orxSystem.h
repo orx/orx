@@ -79,7 +79,7 @@ extern orxDLLAPI void orxFASTCALL       orxSystem_Exit();
 /** Gets current time (elapsed from the beginning of the application)
  * @return Current time
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxSystem_GetTime();
+extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetTime();
 
 /** Gets current real time (in seconds)
  * @return Current real time
