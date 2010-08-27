@@ -1254,7 +1254,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                   else
                   {
                     /* Gets start value */
-                    fStartRotation = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fStartCoef);
+                    fStartRotation = orxLERP(pstFXSlot->fStartRotation, pstFXSlot->fEndRotation, fStartCoef);
                   }
 
                   /* Gets end value */
