@@ -593,7 +593,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
 
   /* Checks */
   orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
+  orxASSERT(_zConfigID != orxNULL);
 
   /* Search for font */
   pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, orxString_ToCRC(_zConfigID));
