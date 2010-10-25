@@ -67,10 +67,6 @@
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-#define orxDISPLAY_KU32_SCREEN_WIDTH            800
-#define orxDISPLAY_KU32_SCREEN_HEIGHT           600
-#define orxDISPLAY_KU32_SCREEN_DEPTH            32
-
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        64
 
@@ -165,6 +161,9 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32BufferIndex;
   orxU32                    u32GLFWFlags;
   orxU32                    u32Flags;
+  orxU32                    u32DefaultWidth;
+  orxU32                    u32DefaultHeight;
+  orxU32                    u32DefaultDepth;
   GLfloat                   afVertexList[orxDISPLAY_KU32_BUFFER_SIZE];
   GLfloat                   afTextureCoordList[orxDISPLAY_KU32_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
@@ -2261,14 +2260,23 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
       && (sstDisplay.pstShaderBank != orxNULL))
       {
         orxDISPLAY_VIDEO_MODE stVideoMode;
+        GLFWvidmode           stDesktopMode;
+
+        /* Gets desktop mode */
+        glfwGetDesktopMode(&stDesktopMode);
+
+        /* Updates default mode */
+        sstDisplay.u32DefaultWidth  = (orxU32)stDesktopMode.Width;
+        sstDisplay.u32DefaultHeight = (orxU32)stDesktopMode.Height;
+        sstDisplay.u32DefaultDepth  = (orxU32)(stDesktopMode.RedBits + stDesktopMode.GreenBits +stDesktopMode.BlueBits);
 
         /* Pushes display section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
         /* Gets resolution from config */
-        stVideoMode.u32Width  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : orxDISPLAY_KU32_SCREEN_WIDTH;
-        stVideoMode.u32Height = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : orxDISPLAY_KU32_SCREEN_HEIGHT;
-        stVideoMode.u32Depth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : orxDISPLAY_KU32_SCREEN_DEPTH;
+        stVideoMode.u32Width  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : sstDisplay.u32DefaultWidth;
+        stVideoMode.u32Height = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : sstDisplay.u32DefaultHeight;
+        stVideoMode.u32Depth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
 
         /* Full screen? */
         if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
@@ -2304,9 +2312,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           sstDisplay.u32GLFWFlags = GLFW_WINDOW | GLFW_WINDOW_NO_RESIZE;
 
           /* Updates resolution */
-          stVideoMode.u32Width  = orxDISPLAY_KU32_SCREEN_WIDTH;
-          stVideoMode.u32Height = orxDISPLAY_KU32_SCREEN_HEIGHT;
-          stVideoMode.u32Depth  = orxDISPLAY_KU32_SCREEN_DEPTH;
+          stVideoMode.u32Width  = sstDisplay.u32DefaultWidth;
+          stVideoMode.u32Height = sstDisplay.u32DefaultHeight;
+          stVideoMode.u32Depth  = sstDisplay.u32DefaultDepth;
 
           /* Sets video mode using default parameters */
           eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode);
