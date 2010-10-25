@@ -51,9 +51,6 @@
 
 namespace orxDisplay
 {
-  static const orxU32     su32ScreenWidth         = 1024;
-  static const orxU32     su32ScreenHeight        = 768;
-  static const orxU32     su32ScreenDepth         = 32;
   static const orxBITMAP *spoScreen               = (const orxBITMAP *)-1;
 }
 
@@ -1467,14 +1464,17 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
         orxU32        u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
         orxCLOCK     *pstClock;
 
+        /* Gets desktop video mode */
+        sf::VideoMode roDesktopMode = sf::VideoMode::GetDesktopMode();
+
         /* Adds event handler */
         orxEvent_AddHandler((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_SFML_EventHandler);
 
         /* Gets resolution from config */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-        u32ConfigWidth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : orxDisplay::su32ScreenWidth;
-        u32ConfigHeight = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : orxDisplay::su32ScreenHeight;
-        u32ConfigDepth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : orxDisplay::su32ScreenDepth;
+        u32ConfigWidth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : roDesktopMode.Width;
+        u32ConfigHeight = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : roDesktopMode.Height;
+        u32ConfigDepth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : roDesktopMode.BitsPerPixel;
 
         /* Gets default smoothing */
         sstDisplay.bDefaultSmooth = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
@@ -1503,10 +1503,10 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
         if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle)) == orxNULL)
         {
           /* Inits default rendering window */
-          sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(orxDisplay::su32ScreenWidth, orxDisplay::su32ScreenHeight, orxDisplay::su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
+          sstDisplay.poRenderWindow = new sf::RenderWindow(roDesktopMode, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sstDisplay.ulWindowStyle);
 
           /* Stores depth */
-          sstDisplay.u32ScreenDepth = orxDisplay::su32ScreenDepth;
+          sstDisplay.u32ScreenDepth = roDesktopMode.BitsPerPixel;
         }
         else
         {

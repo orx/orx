@@ -69,10 +69,6 @@
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-#define orxDISPLAY_KU32_SCREEN_WIDTH            1024
-#define orxDISPLAY_KU32_SCREEN_HEIGHT           768
-#define orxDISPLAY_KU32_SCREEN_DEPTH            32
-
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        64
 
@@ -2328,9 +2324,9 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
         /* Gets resolution from config */
-        stVideoMode.u32Width  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : orxDISPLAY_KU32_SCREEN_WIDTH;
-        stVideoMode.u32Height = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : orxDISPLAY_KU32_SCREEN_HEIGHT;
-        stVideoMode.u32Depth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : orxDISPLAY_KU32_SCREEN_DEPTH;
+        stVideoMode.u32Width  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : 0;
+        stVideoMode.u32Height = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : 0;
+        stVideoMode.u32Depth  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 0;
 
         /* Full screen? */
         if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
@@ -2380,9 +2376,9 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
           sstDisplay.u32SDLFlags = SDL_OPENGL;
 
           /* Updates resolution */
-          stVideoMode.u32Width  = orxDISPLAY_KU32_SCREEN_WIDTH;
-          stVideoMode.u32Height = orxDISPLAY_KU32_SCREEN_HEIGHT;
-          stVideoMode.u32Depth  = orxDISPLAY_KU32_SCREEN_DEPTH;
+          stVideoMode.u32Width  = 0;
+          stVideoMode.u32Height = 0;
+          stVideoMode.u32Depth  = 0;
 
           /* Sets video mode using default parameters */
           eResult = orxDisplay_SDL_SetVideoMode(&stVideoMode);
