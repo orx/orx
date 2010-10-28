@@ -160,7 +160,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         break;
       }
 
-      case orxSOUND_EVENT_STOP:
+      case orxFX_EVENT_STOP:
       {
         /* Logs info */
         orxLOG("FX <%s>@<%s> has stoped!", pstPayload->zFXName, orxObject_GetName(pstObject));

@@ -126,7 +126,7 @@ static orxSOUND_STATIC sstSound;
 /** Loads a sound sample
  * @return orxSOUND_SAMPLE / orxNULL
  */
-static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName)
+static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName, orxBOOL _bKeepInCache)
 {
   orxSOUND_SAMPLE  *pstResult;
   orxU32            u32ID;
@@ -162,7 +162,7 @@ static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName
       && (orxHashTable_Add(sstSound.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE))
       {
         /* Inits its reference counter */
-        pstResult->u32Counter = 0;
+        pstResult->u32Counter = (_bKeepInCache != orxFALSE) ? 1 : 0;
 
         /* Stores its ID */
         pstResult->u32ID = u32ID;
@@ -405,7 +405,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
         zSoundName = orxConfig_GetString(orxSOUND_KZ_CONFIG_SOUND);
 
         /* Loads its corresponding sample */
-        pstResult->pstSample = orxSound_LoadSample(zSoundName);
+        pstResult->pstSample = orxSound_LoadSample(zSoundName, orxConfig_GetBool(orxSOUND_KZ_CONFIG_KEEP_IN_CACHE));
 
         /* Valid? */
         if(pstResult->pstSample != orxNULL)
@@ -421,13 +421,6 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Protects it */
             orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
-            /* Should keep it in cache? */
-            if(orxConfig_GetBool(orxSOUND_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
-            {
-              /* Reloads sample to keep it in reference table */
-              orxSound_LoadSample(zSoundName);
-            }
 
             /* Updates its status */
             orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_SAMPLE, orxSOUND_KU32_MASK_ALL);
