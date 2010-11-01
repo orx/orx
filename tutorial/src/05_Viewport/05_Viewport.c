@@ -254,7 +254,7 @@ orxSTATUS Init()
   const orxSTRING zInputViewportScaleUp;
   const orxSTRING zInputViewportScaleDown;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../05_Viewport.ini");
 
   /* Reloads inputs */
@@ -329,7 +329,7 @@ orxSTATUS Init()
   orxObject_CreateFromConfig("Box");
   pstSoldier = orxObject_CreateFromConfig("Soldier");
 
-  /* Creates a 100 Hz clock */
+  /* Gets the main clock */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Registers our update callback */

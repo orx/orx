@@ -136,17 +136,20 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 
   /* *** SOUND FX CONTROLS *** */
 
-  /* Selects config tutorial section */
-  orxConfig_SelectSection("Tutorial");
-
   /* Random SFX? */
   if(orxInput_IsActive("RandomSFX") && orxInput_HasNewStatus("RandomSFX"))
   {
     /* Adds a sound FX on soldier */
     orxObject_AddSound(pstSoldier, "RandomBip");
 
+    /* Pushes config tutorial section */
+    orxConfig_PushSection("Tutorial");
+
     /* Sets a random color on soldier */
     orxObject_SetColor(pstSoldier, orxColor_Set(&stColor, orxConfig_GetVector("RandomColor", &v), orxFLOAT_1));
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
   /* Default SFX? */
   if(orxInput_IsActive("DefaultSFX") && orxInput_HasNewStatus("DefaultSFX"))
@@ -236,7 +239,7 @@ orxSTATUS Init()
   const orxSTRING zInputRandomSFX;
   const orxSTRING zInputDefaultSFX;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../06_Sound.ini");
 
   /* Reloads inputs */
@@ -279,8 +282,8 @@ orxSTATUS Init()
   /* Creates soldier */
   pstSoldier = orxObject_CreateFromConfig("Soldier");
 
-  /* Creates a 100 Hz clock */
-  pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
+  /* Gets main clock */
+  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Creates background music (streamed) */
   pstMusic = orxSound_CreateFromConfig("Music");

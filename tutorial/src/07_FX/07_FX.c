@@ -261,7 +261,7 @@ orxSTATUS Init()
   const orxSTRING zInputSelectMultiFX;
   const orxSTRING zInputApplyFX;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../07_FX.ini");
 
   /* Reloads inputs */
@@ -310,8 +310,8 @@ orxSTATUS Init()
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
 
-  /* Creates a 100 Hz clock */
-  pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
+  /* Gets main clock */
+  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

@@ -71,14 +71,12 @@
  */
 void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
-  orxCLOCK  *pstClock;
   orxOBJECT *pstObject;
-
 
   /* *** LOG DISPLAY SECTION *** */
 
-  /* Selects main config section */
-  orxConfig_SelectSection("Main");
+  /* Pushes main config section */
+  orxConfig_PushSection("Main");
 
   /* Should display log? */
   if(orxConfig_GetBool("DisplayLog"))
@@ -87,12 +85,8 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
     orxLOG("CLOCK<%p> : Time = %.3f / DT = %.3f", _pstClockInfo, _pstClockInfo->fTime, _pstClockInfo->fDT);
   }
 
-  /* Is log input newly active? */
-  if(orxInput_IsActive("Log") && orxInput_HasNewStatus("Log"))
-  {
-    /* Toggles logging */
-    orxConfig_SetBool("DisplayLog", !orxConfig_GetBool("DisplayLog"));
-  }
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* *** OBJECT UPDATE SECTION *** */
 
@@ -104,10 +98,31 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 
   /* Rotates it according to ellapsed time (complete rotation every 2 seconds) */
   orxObject_SetRotation(pstObject, orxMATH_KF_PI * _pstClockInfo->fTime);
+}
 
+/** Input update callback
+ */
+void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+{
+  orxCLOCK  *pstClock;
+
+  /* *** LOG DISPLAY SECTION *** */
+
+  /* Pushes main config section */
+  orxConfig_PushSection("Main");
+
+  /* Is log input newly active? */
+  if(orxInput_IsActive("Log") && orxInput_HasNewStatus("Log"))
+  {
+    /* Toggles logging */
+    orxConfig_SetBool("DisplayLog", !orxConfig_GetBool("DisplayLog"));
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* *** CLOCK TIME STRETCHING SECTION *** */
-
+  
   /* Finds first user created clock (clock1).
    * We could have stored the clock at creation, of course, but this is done here for didactic purpose. */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_USER);
@@ -137,7 +152,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
  */
 orxSTATUS Init()
 {
-  orxCLOCK       *pstClock1, *pstClock2;
+  orxCLOCK       *pstClock1, *pstClock2, *pstMainClock;
   orxOBJECT      *pstObject1, *pstObject2;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
@@ -146,7 +161,7 @@ orxSTATUS Init()
   const orxSTRING zInputSlower;
   const orxSTRING zInputNormal;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../02_Clock.ini");
 
   /* Reloads inputs */
@@ -179,7 +194,7 @@ orxSTATUS Init()
   pstObject1 = orxObject_CreateFromConfig("Object1");
   pstObject2 = orxObject_CreateFromConfig("Object2");
 
-  /* Creates two user clocks */
+  /* Creates two user clocks: a 100Hz and a 5Hz */
   pstClock1 = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
   pstClock2 = orxClock_Create(orx2F(0.2f), orxCLOCK_TYPE_USER);
 
@@ -189,6 +204,15 @@ orxSTATUS Init()
    */
   orxClock_Register(pstClock1, Update, pstObject1, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
   orxClock_Register(pstClock2, Update, pstObject2, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+  /* Gets main clock */
+  pstMainClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+  /* Registers our input update callback to it
+   * !!IMPORTANT!! *DO NOT* handle inputs in clock callbacks that are *NOT* registered to the main clock
+   * you might miss input status updates if the user clock runs slower than the main one
+   */
+  orxClock_Register(pstMainClock, InputUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
   /* Done! */
   return orxSTATUS_SUCCESS;

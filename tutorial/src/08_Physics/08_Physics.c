@@ -176,9 +176,8 @@ orxSTATUS Init()
   const orxSTRING zInputRotateLeft;
   const orxSTRING zInputRotateRight;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../08_Physics.ini");
-  orxConfig_SelectSection("Tutorial");
 
   /* Reloads inputs */
   orxInput_Load(orxSTRING_EMPTY);
@@ -201,8 +200,8 @@ orxSTATUS Init()
   /* Gets camera */
   pstCamera = orxViewport_GetCamera(pstViewport);
 
-  /* Creates a 100 Hz clock */
-  pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
+  /* Gets main clock */
+  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
@@ -216,12 +215,18 @@ orxSTATUS Init()
   /* Creates walls */
   orxObject_CreateFromConfig("Walls");
 
+  /* Pushes tutorial section */
+  orxConfig_PushSection("Tutorial");
+
   /* For all requested boxes */
   for(i = 0; i < orxConfig_GetU32("BoxNumber"); i++)
   {
     /* Creates it */
     orxObject_CreateFromConfig("Box");
   }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Done! */
   return orxSTATUS_SUCCESS;

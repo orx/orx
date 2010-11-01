@@ -175,7 +175,7 @@ orxSTATUS Init()
   const orxSTRING zInputScaleUp;
   const orxSTRING zInputScaleDown;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../04_Anim.ini");
 
   /* Reloads inputs */
@@ -203,8 +203,8 @@ orxSTATUS Init()
   /* Creates soldier */
   pstSoldier = orxObject_CreateFromConfig("Soldier");
 
-  /* Creates a 100 Hz clock */
-  pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
+  /* Gets main clock */
+  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

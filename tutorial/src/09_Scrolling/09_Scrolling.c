@@ -99,11 +99,14 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   /* Clears move vector */
   orxVector_Copy(&vMove, &orxVECTOR_0);
 
-  /* Selects tutorial config section */
-  orxConfig_SelectSection("Tutorial");
+  /* Pushes tutorial config section */
+  orxConfig_PushSection("Tutorial");
 
   /* Gets scroll speed */
   orxConfig_GetVector("ScrollSpeed", &vScrollSpeed);
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Updates scroll speed with our current DT */
   orxVector_Mulf(&vScrollSpeed, &vScrollSpeed, _pstClockInfo->fDT);
@@ -167,9 +170,8 @@ orxSTATUS Init()
   const orxSTRING zInputCameraZoomIn;
   const orxSTRING zInputCameraZoomOut;
 
-  /* Loads config file and selects main section */
+  /* Loads config file */
   orxConfig_Load("../09_Scrolling.ini");
-  orxConfig_SelectSection("Tutorial");
 
   /* Reloads inputs */
   orxInput_Load(orxSTRING_EMPTY);
@@ -207,8 +209,8 @@ orxSTATUS Init()
   /* Gets camera */
   pstCamera = orxViewport_GetCamera(pstViewport);
 
-  /* Creates a 100 Hz clock */
-  pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
+  /* Gets main clock */
+  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
@@ -216,12 +218,18 @@ orxSTATUS Init()
   /* Creates sky */
   pstSky = orxObject_CreateFromConfig("Sky");
 
+  /* Pushes tutorial config section */
+  orxConfig_PushSection("Tutorial");
+
   /* For all requested clouds */
   for(i = 0; i < orxConfig_GetU32("CloudNumber"); i++)
   {
     /* Creates it */
     orxObject_CreateFromConfig("Cloud");
   }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Done! */
   return orxSTATUS_SUCCESS;
