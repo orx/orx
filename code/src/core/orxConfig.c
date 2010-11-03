@@ -2873,7 +2873,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
 
     /* Sends event */
-    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_END);
+    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_STOP);
   }
   else
   {

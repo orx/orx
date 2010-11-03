@@ -80,7 +80,7 @@ typedef struct __orxFPS_STATIC_t
 
 /** Static data
  */
-static volatile orxFPS_STATIC sstFPS;
+static orxFPS_STATIC sstFPS;
 
 
 /***************************************************************************
@@ -131,7 +131,7 @@ orxSTATUS orxFASTCALL orxFPS_Init()
   if(!(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Zero((orxFPS_STATIC *)&sstFPS, sizeof(orxFPS_STATIC));
+    orxMemory_Zero(&sstFPS, sizeof(orxFPS_STATIC));
 
     /* Creates clock */
     sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_SECOND);
