@@ -338,16 +338,6 @@
 #endif /* __orxPADDING__ */
 
 
-/** Fast in-place swap macros for two 32-bits objects. */
-#define orxSWAP32(A, B)                                       \
-do                                                            \
-{                                                             \
-  *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-  *((orxU32 *)&(B)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-  *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-} while(orxFALSE)
-
-
 /** Tests all flags
  * @param[in] X Flag container
  * @param[in] F Flags to test
