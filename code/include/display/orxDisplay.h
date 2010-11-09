@@ -174,6 +174,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_TITLE          "Title"
 #define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
 #define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
+#define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
 
 
 /** Shader texture suffixes
@@ -227,7 +228,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 {
 @private
   EAGLContext  *poMainContext, *poThreadContext;
-  GLuint        uiRenderBuffer, uiFrameBuffer;
+  GLuint        uiRenderBuffer, uiFrameBuffer, uiDepthBuffer;
   BOOL          bShaderSupport;
 }
 

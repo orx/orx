@@ -66,6 +66,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002 /**< VSync flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000004 /**< Shader support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FOCUS       0x00000008 /**< Focus flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000010 /**< Depthbuffer support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -1950,6 +1951,10 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+  {
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  }
 
   /* Pushes display section */
   orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -2349,6 +2354,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
 
         /* Sets module as ready */
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
+
+        /* Depth buffer? */
+        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+        {
+           /* Updates flags */
+           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+        }
 
         /* Has VSync value? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)

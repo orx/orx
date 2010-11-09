@@ -64,6 +64,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000010 /**< NPOT texture support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY   0x00000020 /**< Extensions ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000040 /**< Framebuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000080 /**< Depthbuffer support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -1967,7 +1968,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 16:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -1976,7 +1977,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 24:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -1986,7 +1987,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 32:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -2300,6 +2301,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
         /* Sets module as ready */
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
+
+        /* Depth buffer? */
+        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+        {
+           /* Updates flags */
+           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+        }
 
         /* Allocates screen bitmap */
         sstDisplay.pstScreen = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);

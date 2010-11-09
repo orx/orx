@@ -43,6 +43,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000002 /**< Shader support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_LOCATION    0x00000004 /**< Has location support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER	0x00000008 /**< Has depth buffer support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -412,6 +413,28 @@ static orxView *spoInstance;
   /* Links render buffer to layer */
   bResult = [poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer];
 
+  /* Uses depth buffer? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+  {
+    GLint iWidth, iHeight;
+
+    /* Gets render buffer's size */
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
+    glASSERT();
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
+    glASSERT();
+
+    /* Creates depth buffer */
+    glGenRenderbuffersOES(1, &uiDepthBuffer);
+    glASSERT();
+
+    /* Binds it */
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiDepthBuffer);
+
+    /* Sets its size */
+    glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, iWidth, iHeight);
+  }
+
   /* Done! */
   return bResult;
 }
@@ -427,9 +450,16 @@ static orxView *spoInstance;
     glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, 0, 0);
     glASSERT();
 
-    /* Binds it to frame buffer */
+    /* Binds render buffer to frame buffer */
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
     glASSERT();
+
+    /* Uses depth buffer? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    {
+      /* Binds it to frame buffer */
+      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, uiDepthBuffer);
+    }
     glFlush();
     glASSERT();
 
@@ -442,6 +472,14 @@ static orxView *spoInstance;
     /* Unbinds render buffer from frame buffer */
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, 0);
     glASSERT();
+
+    /* Uses depth buffer? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    {
+      /* Unbinds depth buffer from frame buffer */
+      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, 0);
+      glASSERT();
+    }
 
     /* Binds corresponding texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
@@ -2260,6 +2298,18 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
+
+      /* Depth buffer? */
+      if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+      {
+         /* Inits flags */
+         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
+      }
+      else
+      {
+         /* Inits flags */
+         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
+      }
 
       /* Pops config section */
       orxConfig_PopSection();

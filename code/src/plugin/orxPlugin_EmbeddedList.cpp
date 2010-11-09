@@ -69,7 +69,7 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
-/* SFML & Box2D */
+/* SFML (bad shader support, no rendering to texture) & Box2D */
 //#include "../plugins/Display/SFML/orxDisplay.cpp"
 //#include "../plugins/Joystick/SFML/orxJoystick.cpp"
 //#include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
@@ -80,7 +80,7 @@
 
 #ifndef __orxMAC__
 
-/* SDL, Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
+/* SDL (no rendering to texture), Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
 //#include "../plugins/Display/SDL/orxDisplay.c"
 //#include "../plugins/Joystick/SDL/orxJoystick.c"
 //#include "../plugins/Keyboard/SDL/orxKeyboard.c"
