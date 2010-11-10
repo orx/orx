@@ -2405,8 +2405,12 @@ void orxFASTCALL orxDisplay_iPhone_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Deletes default shader */
-    orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+    /* has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Deletes default shader */
+      orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+    }
 
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);
