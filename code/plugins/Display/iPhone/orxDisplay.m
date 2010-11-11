@@ -1111,7 +1111,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
     /* Passes translation to shader */
-    glUniform2f(sstDisplay.uiTranslationLocation, (GLfloat)_pstTransform->fDstX, (GLfloat)_pstTransform->fDstY);
+    glUniform2f(sstDisplay.uiTranslationLocation, (GLfloat)orxMath_Floor(_pstTransform->fDstX), (GLfloat)orxMath_Floor(_pstTransform->fDstY));
 
     /* Passes scale to shader */
     glUniform2f(sstDisplay.uiScaleLocation, (GLfloat)_pstTransform->fScaleX, (GLfloat)_pstTransform->fScaleY);
@@ -1122,7 +1122,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   else
   {
     /* Translates it */
-    glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
+    glTranslatef(orxMath_Floor(_pstTransform->fDstX), orxMath_Floor(_pstTransform->fDstY), 0.0f);
     glASSERT();
 
     /* Applies rotation */
