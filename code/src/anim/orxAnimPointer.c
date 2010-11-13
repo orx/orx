@@ -217,21 +217,26 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
       {
         orxANIM_EVENT_PAYLOAD stPayload;
-        orxFLOAT              fAnimLength;
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
-        /* Gets anim length */
-        fAnimLength = orxAnim_GetLength(stPayload.pstAnim);
-
-        /* In scope? */
-        if(fEventStartTime < fAnimLength)
+        /* Not cut? */
+        if(bCut == orxFALSE)
         {
-          /* Sends custom events */
-          orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, fAnimLength);
+          orxFLOAT fAnimLength;
+
+          /* Gets anim length */
+          fAnimLength = orxAnim_GetLength(stPayload.pstAnim);
+
+          /* In scope? */
+          if(fEventStartTime < fAnimLength)
+          {
+            /* Sends custom events */
+            orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, fAnimLength);
+          }
         }
 
         /* Updates current anim handle */
