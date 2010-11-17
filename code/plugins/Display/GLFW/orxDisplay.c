@@ -152,10 +152,11 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBITMAP                *pstScreen;
   orxBITMAP                *pstDestinationBitmap;
   const orxBITMAP          *pstLastBitmap;
+  orxCOLOR                  stLastColor;
+  orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxU8                   **aau8BufferArray;
   orxS32                    s32BitmapCounter;
   orxS32                    s32ShaderCounter;
-  orxDISPLAY_BLEND_MODE     eLastBlendMode;
   GLint                     iTextureUnitNumber;
   GLuint                    uiFrameBuffer;
   orxS32                    s32ActiveShaderCounter;
@@ -538,8 +539,8 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
 
       /* For all shaders */
       for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-        pstShader != orxNULL;
-        pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+          pstShader != orxNULL;
+          pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
       {
         /* Is active? */
         if(pstShader->bActive != orxFALSE)
@@ -701,9 +702,19 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     }
   }
 
-  /* Applies color */
-  glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
-  glASSERT();
+  /* New color? */
+  if((_pstBitmap->stColor.vRGB.fR != sstDisplay.stLastColor.vRGB.fR)
+  || (_pstBitmap->stColor.vRGB.fG != sstDisplay.stLastColor.vRGB.fG)
+  || (_pstBitmap->stColor.vRGB.fB != sstDisplay.stLastColor.vRGB.fB)
+  || (_pstBitmap->stColor.fAlpha != sstDisplay.stLastColor.fAlpha))
+  {
+    /* Stores it */
+    orxColor_Copy(&(sstDisplay.stLastColor), &(_pstBitmap->stColor));
+
+    /* Applies it */
+    glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
+    glASSERT();
+  }
 
   /* Done! */
   return;
