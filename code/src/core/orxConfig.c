@@ -283,7 +283,7 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
       {
         const orxCHAR *pcTest;
 
-        /* Skips all the spaces */
+        /* Scans all the spaces */
         for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
 
         /* Is a list separator or end of string? */
@@ -295,7 +295,7 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
         else
         {
           /* For all spaces */
-          for(pcTest; pcInput < pcTest; pcInput++, pcOutput++)
+          for(; pcInput < pcTest; pcInput++, pcOutput++)
           {
             /* Copies it */
             *pcOutput = *pcInput;
