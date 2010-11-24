@@ -155,11 +155,13 @@ orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
       /* Has valid accelerometer frequency? */
       if(orxConfig_HasValue(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
       {
+        orxFLOAT fFrequency;
+
         /* Valid? */
-        if(orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) > orxFLOAT_0)
+        if((fFrequency = orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
         {
           /* Applies it */
-          [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY)];
+          [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / fFrequency];
 
           /* Binds accelerometer */
           [[UIAccelerometer sharedAccelerometer] setDelegate: (orxAppDelegate *)[[UIApplication sharedApplication] delegate]];
