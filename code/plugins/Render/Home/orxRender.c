@@ -1235,10 +1235,23 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
     /* Valid? */
     if(sstRender.pstRenderBank != orxNULL)
     {
-      /* Creates rendering clock */
-      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+      orxFLOAT fMinFrequency = orxFLOAT_0;
+
+      /* Gets core clock */
       sstRender.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-      orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, (orxConfig_HasValue(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) && orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) : orxRENDER_KF_TICK_SIZE);
+
+      /* Pushes render config section clock */
+      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+      /* Min frequency is not inhibited? */
+      if((orxConfig_HasValue(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) == orxFALSE)
+      || ((fMinFrequency = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) > orxFLOAT_0))
+      {
+        /* Sets clock modifier */
+        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
+      }
+
+      /* Pops config section */
       orxConfig_PopSection();
 
       /* Valid? */

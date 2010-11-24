@@ -60,6 +60,7 @@ namespace orxPhysics
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
   static const orxFLOAT sfDefaultWorldSize      = orx2F(100000.0f);
   static const orxU32   su32MessageBankSize     = 64;
+  static const orxFLOAT sfMaxDT                 = orx2F(0.1f);
 }
 
 
@@ -373,8 +374,27 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
   /* Is simulation enabled? */
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
-    /* Updates world simulation */
-    sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pContext, (orxU32)_pContext);
+    orxFLOAT fDT;
+
+    /* Is DT capped? */
+    if((_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MAXED)
+    && (_pstClockInfo->fModValue <= orxPhysics::sfMaxDT))
+    {
+      /* Uses clock's DT */
+      fDT = _pstClockInfo->fDT;
+    }
+    else
+    {
+      /* For all passed cycles */
+      for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
+      {
+        /* Updates world simulation */
+        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, (orxU32)_pContext, (orxU32)_pContext);
+      }
+    }
+
+    /* Updates last step of world simulation */
+    sstPhysics.poWorld->Step(fDT, (orxU32)_pContext, (orxU32)_pContext);
 
     /* For all bodies */
     for(pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
