@@ -91,16 +91,17 @@ typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t
 } orxDISPLAY_ATTRIBUTE_LOCATION;
 
 
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Internal matrix structure
+ */
 typedef struct __orxDISPLAY_MATRIX_t
 {
   orxFLOAT aafValueList[4][4];
 
 } orxDISPLAY_MATRIX;
-
-
-/***************************************************************************
- * Structure declaration                                                   *
- ***************************************************************************/
 
 /** Internal bitmap structure
  */
