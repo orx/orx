@@ -247,7 +247,7 @@ static orxView *spoInstance;
     poMainContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
     /* Success? */
-    if(orxNULL && poMainContext != nil)
+    if(poMainContext != nil)
     {
       /* Updates status */
       bShaderSupport = YES;
@@ -699,13 +699,14 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
   "uniform mat4 __mProjection__;"
   "attribute mediump vec2 __vTexCoord__;"
   "varying mediump vec2 ___TexCoord___;"
-  "attribute lowp ivec4 __vColor__;"
-  "varying lowp ivec4 ___Color___;"
+  "attribute lowp vec4 __vColor__;"
+  "varying lowp vec4 ___Color___;"
   "void main()"
   "{"
+  "  lowp float fCoef = 1.0 / 255.0;"
   "  gl_Position      = __mProjection__ * vec4(__vPosition__.xy, 0.0, 1.0);"
   "  ___TexCoord___   = __vTexCoord__;"
-  "  ___Color___      = __vColor__;"
+  "  ___Color___      = fCoef * __vColor__;"
   "}";
 
   GLuint    uiProgram, uiVertexShader, uiFragmentShader;
@@ -2314,7 +2315,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
         "varying vec2 ___TexCoord___;"
-        "varying lowp ivec4 ___Color___;"
+        "varying lowp vec4 ___Color___;"
         "uniform sampler2D __Texture__;"
         "void main()"
         "{"
