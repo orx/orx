@@ -573,15 +573,15 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               /* Sets bitmap clipping */
               orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
               
-              /* Should clear bitmap? */
-              if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
+              /* Does viewport have a background color? */
+              if(orxViewport_HasBackgroundColor(_pstViewport) != orxFALSE)
               {
                 orxCOLOR stColor;
 
-                /* Gets viewport color */
+                /* Gets it */
                 orxViewport_GetBackgroundColor(_pstViewport, &stColor);
 
-                /* Clears it */
+                /* Clears viewport */
                 orxDisplay_ClearBitmap(pstBitmap, orxColor_ToRGBA(&stColor));
               }
 
@@ -1088,6 +1088,10 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   /* Swap buffers */
   orxDisplay_Swap();
 
+  /* Clears screen */
+  orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+
+  /* Done! */
   return;
 }
 

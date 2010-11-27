@@ -54,7 +54,7 @@
 #define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
 #define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
 #define orxVIEWPORT_KU32_FLAG_TEXTURE           0x00000004  /**< Has texture flag */
-#define orxVIEWPORT_KU32_FLAG_CLEAR             0x00000008  /**< Clear background before render flag */
+#define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000008  /**< Has background color flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE  0x10000000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
@@ -75,7 +75,6 @@
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE     "RelativeSize"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
-#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_CLEAR  "BackgroundClear"
 #define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
 
 #define orxVIEWPORT_KZ_LEFT                     "left"
@@ -361,19 +360,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         }
       }
 
-      /* Shouldn't clear before rendering? */
-      if((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_CLEAR) != orxFALSE)
-      && (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_BACKGROUND_CLEAR) == orxFALSE))
-      {
-        /* Updates background clearing */
-        orxViewport_EnableBackgroundClearing(pstResult, orxFALSE);
-      }
-      else
-      {
-        /* Updates background clearing */
-        orxViewport_EnableBackgroundClearing(pstResult, orxTRUE);
-      }
-
       /* Has background color? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
       {
@@ -386,6 +372,11 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Applies it */
         orxViewport_SetBackgroundColor(pstResult, &stColor);
+      }
+      else
+      {
+        /* Clears background color */
+        orxViewport_ClearBackgroundColor(pstResult);
       }
 
       /* Has relative size? */
@@ -647,8 +638,53 @@ orxSTATUS orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, 
   /* Updates background color */
   orxColor_Copy(&(_pstViewport->stBackgroundColor), _pstColor);
 
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR, orxVIEWPORT_KU32_FLAG_NONE);
+
   /* Done! */
   return eResult;
+}
+
+/** Clears viewport background color
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxViewport_ClearBackgroundColor(orxVIEWPORT *_pstViewport)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR);
+
+  /* Restores default color */
+  _pstViewport->stBackgroundColor.fAlpha = orxFLOAT_1;
+  orxVector_Copy(&(_pstViewport->stBackgroundColor.vRGB), &orxVECTOR_BLACK);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Viewport has background color accessor
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxViewport_HasBackgroundColor(const orxVIEWPORT *_pstViewport)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Gets a viewport texture
@@ -665,11 +701,23 @@ orxCOLOR *orxFASTCALL orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstView
   orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT(_pstColor != orxNULL);
 
-  /* Stores color */
-  orxColor_Copy(_pstColor, &(_pstViewport->stBackgroundColor));
+  /* Has color? */
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR))
+  {
+    /* Copies color */
+    orxColor_Copy(_pstColor, &(_pstViewport->stBackgroundColor));
 
-  /* Updates result */
-  pstResult = _pstColor;
+    /* Updates result */
+    pstResult = _pstColor;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Background color not set on viewport.");
+
+    /* Clears result */
+    pstResult = orxNULL;
+  }
 
   /* Done! */
   return pstResult;
@@ -712,45 +760,6 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(const orxVIEWPORT *_pstViewport)
 
   /* Tests */
   return(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED));
-}
-
-/** Enables / disables background clearing for a viewport
- * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _bEnable        Enable / disable
- */
-void orxFASTCALL orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
-{
-  /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstViewport);
-
-  /* Enable? */
-  if(_bEnable != orxFALSE)
-  {
-    /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CLEAR, orxVIEWPORT_KU32_FLAG_NONE);
-  }
-  else
-  {
-    /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_CLEAR);
-  }
-
-  return;
-}
-
-/** Has a viewport background clearing enabled?
- * @param[in]   _pstViewport    Concerned viewport
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxViewport_IsBackgroundClearingEnabled(const orxVIEWPORT *_pstViewport)
-{
-  /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstViewport);
-
-  /* Tests */
-  return(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CLEAR));
 }
 
 /** Sets a viewport camera

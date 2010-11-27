@@ -194,7 +194,7 @@
       <Project Name="orx" ConfigName="Win32 Embedded Static Release"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Static Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Debug" Selected="no">
       <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Debug"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>
@@ -207,7 +207,7 @@
       <Project Name="orx" ConfigName="Win32 Embedded Dynamic Debug"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Release" Selected="no">
+    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Release" Selected="yes">
       <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Release"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
       <Project Name="orxRender_Home" ConfigName="Not compiled"/>

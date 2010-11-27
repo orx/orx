@@ -71,9 +71,9 @@
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        64
 
-#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (8 * 2048)  /**< 1024 items batch capacity */
-#define orxDISPLAY_KU32_COLOR_BUFFER_SIZE       (4 * 2048)  /**< 1024 items batch capacity */
-#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 2048)  /**< 1024 items batch capacity */
+#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (8 * 2048)  /**< 2048 items batch capacity */
+#define orxDISPLAY_KU32_COLOR_BUFFER_SIZE       (4 * 2048)  /**< 2048 items batch capacity */
+#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 2048)  /**< 2048 items batch capacity */
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      65536
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
@@ -125,9 +125,9 @@ struct __orxBITMAP_t
   GLuint                    uiTexture;
   orxBOOL                   bSmoothing;
   orxFLOAT                  fWidth, fHeight;
+  orxAABOX                  stClip;
   orxU32                    u32RealWidth, u32RealHeight, u32Depth;
   orxFLOAT                  fRecRealWidth, fRecRealHeight;
-  orxAABOX                  stClip;
   orxRGBA                   stColor;
 };
 
@@ -1744,6 +1744,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
   /* Destination bitmap? */
   if(_pstBitmap == sstDisplay.pstDestinationBitmap)
   {
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
     glASSERT();
