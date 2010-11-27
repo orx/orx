@@ -50,8 +50,7 @@
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        128
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        16
 
-#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (8 * 1024)  /**< 1024 items batch capacity */
-#define orxDISPLAY_KU32_COLOR_BUFFER_SIZE       (4 * 1024)  /**< 1024 items batch capacity */
+#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 1024)  /**< 1024 items batch capacity */
 #define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 1024)  /**< 1024 items batch capacity */
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      65536
 
@@ -105,6 +104,14 @@ typedef struct __orxDISPLAY_MATRIX_t
   orxVECTOR vY;
 
 } orxDISPLAY_MATRIX;
+
+/** Internal vertex structure
+ */
+typedef struct __orxDISPLAY_VERTEX_t
+{
+  orxFLOAT  fX, fY, fU, fV;
+  orxRGBA   stRGBA;
+} orxDISPLAY_VERTEX;
 
 /** Internal projection matrix structure
  */
@@ -171,9 +178,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxView                  *poView;
   orxU32                    u32Flags;
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
-  GLfloat                   afVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
-  GLfloat                   afTextureCoordList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
-  orxRGBA                   astColorList[orxDISPLAY_KU32_COLOR_BUFFER_SIZE];
+  orxDISPLAY_VERTEX         astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
 
@@ -268,15 +273,15 @@ static orxView *spoInstance;
       if(bShaderSupport != NO)
       {
         /* Sets vextex attribute arrays */
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, sstDisplay.afVertexList);
+        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
         glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, sstDisplay.afTextureCoordList);
+        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
         glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, sstDisplay.astColorList);
+        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
@@ -298,11 +303,11 @@ static orxView *spoInstance;
         glASSERT();
 
         /* Selects arrays */
-        glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
         glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, 0, sstDisplay.astColorList);
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
       }
 
@@ -361,15 +366,15 @@ static orxView *spoInstance;
       if(bShaderSupport != NO)
       {
         /* Sets vextex attribute arrays */
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, sstDisplay.afVertexList);
+        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
         glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, sstDisplay.afTextureCoordList);
+        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
         glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, sstDisplay.astColorList);
+        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
@@ -391,11 +396,11 @@ static orxView *spoInstance;
         glASSERT();
 
         /* Selects arrays */
-        glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
         glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, 0, sstDisplay.astColorList);
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
       }
 
@@ -865,30 +870,42 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
 
 static void orxFASTCALL orxDisplay_iPhone_InitShader(orxDISPLAY_SHADER *_pstShader)
 {
-  GLint i;
-
-  /* Uses its program */
+  /* Uses shader's program */
   glUseProgram(_pstShader->uiProgram);
   glASSERT();
 
-  /* For all defined textures */
-  for(i = 0; i < _pstShader->iTextureCounter; i++)
+  /* Has custom textures? */
+  if(_pstShader->iTextureCounter > 0)
   {
-    /* Updates corresponding texture unit */
-    glUniform1i(_pstShader->astTextureInfoList[i].iLocation, i);
-    glASSERT();
-    glActiveTexture(GL_TEXTURE0 + i);
-    glASSERT();
-    glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
+    GLint i, iTexture;
+
+    /* Backups current texture */
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
     glASSERT();
 
-    /* Screen? */
-    if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
+    /* For all defined textures */
+    for(i = 0; i < _pstShader->iTextureCounter; i++)
     {
-      /* Copies screen content */
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+      /* Updates corresponding texture unit */
+      glUniform1i(_pstShader->astTextureInfoList[i].iLocation, i);
       glASSERT();
+      glActiveTexture(GL_TEXTURE0 + i);
+      glASSERT();
+      glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
+      glASSERT();
+
+      /* Screen? */
+      if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
+      {
+        /* Copies screen content */
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+        glASSERT();
+      }
     }
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iTexture);
+    glASSERT();
   }
 
   /* Updates its status */
@@ -920,7 +937,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
           orxDisplay_iPhone_InitShader(pstShader);
 
           /* Draws arrays */
-          glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex - (sstDisplay.s32BufferIndex >> 2), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+          glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
           glASSERT();
         }
       }
@@ -928,7 +945,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
     else
     {
       /* Draws arrays */
-      glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex - (sstDisplay.s32BufferIndex >> 2), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+      glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
       glASSERT();
     }
 
@@ -1091,40 +1108,40 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(const orxBITMAP *_pstBitmap, 
   fHeight = (GLfloat)(_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
   /* End of buffer? */
-  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 8)
+  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
   {
     /* Draw arrays */
     orxDisplay_iPhone_DrawArrays();
   }
 
   /* Fills the vertex list */
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex]      = (_pmTransform->vX.fY * fHeight) + _pmTransform->vX.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 1]  = (_pmTransform->vY.fY * fHeight) + _pmTransform->vY.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 2]  = _pmTransform->vX.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 3]  = _pmTransform->vY.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 4]  = (_pmTransform->vX.fX * fWidth) + (_pmTransform->vX.fY * fHeight) + _pmTransform->vX.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 5]  = (_pmTransform->vY.fX * fWidth) + (_pmTransform->vY.fY * fHeight) + _pmTransform->vY.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 6]  = (_pmTransform->vX.fX * fWidth) + _pmTransform->vX.fZ;
-  sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 7]  = (_pmTransform->vY.fX * fWidth) + _pmTransform->vY.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (_pmTransform->vX.fY * fHeight) + _pmTransform->vX.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (_pmTransform->vY.fY * fHeight) + _pmTransform->vY.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = _pmTransform->vX.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = _pmTransform->vY.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (_pmTransform->vX.fX * fWidth) + (_pmTransform->vX.fY * fHeight) + _pmTransform->vX.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (_pmTransform->vY.fX * fWidth) + (_pmTransform->vY.fY * fHeight) + _pmTransform->vY.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (_pmTransform->vX.fX * fWidth) + _pmTransform->vX.fZ;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (_pmTransform->vY.fX * fWidth) + _pmTransform->vY.fZ;
 
   /* Fills the texture coord list */
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex]      =
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 2]  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 1]  =
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 5]  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 4]  =
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 6]  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 3]  =
-  sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 7]  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
 
   /* Fills the color list */
-  sstDisplay.astColorList[sstDisplay.s32BufferIndex >> 1]       =
-  sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 1] =
-  sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 2] =
-  sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 3] = _pstBitmap->stColor;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstBitmap->stColor;
 
   /* Updates index */
-  sstDisplay.s32BufferIndex += 8;
+  sstDisplay.s32BufferIndex += 4;
 
   /* Done! */
   return;
@@ -1206,39 +1223,39 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
         if(pstGlyph != orxNULL)
         {
           /* End of buffer? */
-          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 8)
+          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
           {
             /* Draw arrays */
             orxDisplay_iPhone_DrawArrays();
           }
 
           /* Outputs vertices and texture coordinates */
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex]      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 1]  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 2]  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 3]  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 4]  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 5]  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 6]  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-          sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 7]  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
 
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex]      =
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 2]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 4]  =
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 6]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 3]  =
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 7]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 1]  =
-          sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 5]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
 
           /* Fills the color list */
-          sstDisplay.astColorList[sstDisplay.s32BufferIndex >> 1]       =
-          sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 1] =
-          sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 2] =
-          sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 3] = _pstFont->stColor;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstFont->stColor;
 
           /* Updates counter */
-          sstDisplay.s32BufferIndex += 8;
+          sstDisplay.s32BufferIndex += 4;
         }
       }
 
@@ -1285,6 +1302,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
   /* Valid? */
   if(pstBitmap != orxNULL)
   {
+    GLint iTexture;
+
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -1300,6 +1319,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
+    /* Backups current texture */
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    glASSERT();
+
     /* Creates new texture */
     glGenTextures(1, &pstBitmap->uiTexture);
     glASSERT();
@@ -1314,6 +1337,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
     glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iTexture);
     glASSERT();
 
     /* Pops config section */
@@ -1335,7 +1362,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   /* Is not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    orxRGBA *astBuffer, *pstPixel;
+    GLint     iTexture;
+    orxRGBA  *astBuffer, *pstPixel;
 
     /* Allocates buffer */
     astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
@@ -1350,12 +1378,20 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
       *pstPixel = _stColor;
     }
 
+    /* Backups current texture */
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    glASSERT();
+
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
 
     /* Updates texture */
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iTexture);
     glASSERT();
 
     /* Frees buffer */
@@ -1408,8 +1444,9 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapData(orxBITMAP *_pstBitmap, con
   /* Valid? */
   if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
   {
-    orxU8        *pu8ImageBuffer;
-    orxU32        i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
+    GLint   iTexture;
+    orxU8  *pu8ImageBuffer;
+    orxU32  i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
     /* Allocates buffer */
     pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
@@ -1433,12 +1470,20 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapData(orxBITMAP *_pstBitmap, con
       orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
     }
 
+    /* Backups current texture */
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    glASSERT();
+
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
 
     /* Updates its content */
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iTexture);
     glASSERT();
 
     /* Frees buffer */
@@ -1736,39 +1781,39 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
         }
 
         /* End of buffer? */
-        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 8)
+        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
         {
           /* Draws arrays */
           orxDisplay_iPhone_DrawArrays();
         }
 
         /* Outputs vertices and texture coordinates */
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex]      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 1]  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 2]  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 3]  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 4]  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 5]  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 6]  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-        sstDisplay.afVertexList[sstDisplay.s32BufferIndex + 7]  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
 
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex]      =
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 2]  = fLeft;
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 4]  =
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 6]  = fRight;
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 3]  =
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 7]  = fTop;
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 1]  =
-        sstDisplay.afTextureCoordList[sstDisplay.s32BufferIndex + 5]  = fBottom;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = fLeft;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = fRight;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = fTop;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = fBottom;
 
         /* Fills the color list */
-        sstDisplay.astColorList[sstDisplay.s32BufferIndex >> 1]       =
-        sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 1] =
-        sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 2] =
-        sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 3] = _pstSrc->stColor;
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstSrc->stColor;
 
         /* Updates counter */
-        sstDisplay.s32BufferIndex += 8;
+        sstDisplay.s32BufferIndex += 4;
       }
     }
   }
@@ -1980,6 +2025,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
       {
         CGColorSpaceRef oColorSpace;
         CGContextRef    oContext;
+        GLint           iTexture;
 
         /* Creates a device color space */
         oColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -2012,6 +2058,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
+        /* Backups current texture */
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+        glASSERT();
+        
         /* Creates new texture */
         glGenTextures(1, &pstBitmap->uiTexture);
         glASSERT();
@@ -2026,6 +2076,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
         glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+
+        /* Restores previous texture */
+        glBindTexture(GL_TEXTURE_2D, iTexture);
         glASSERT();
 
         /* Pops config section */
@@ -2636,33 +2690,33 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
       orxDisplay_iPhone_InitShader(pstShader);
 
       /* Defines the vertex list */
-      sstDisplay.afVertexList[0]  =
-      sstDisplay.afVertexList[2]  = sstDisplay.pstScreen->stClip.vTL.fX;
-      sstDisplay.afVertexList[1]  =
-      sstDisplay.afVertexList[5]  = sstDisplay.pstScreen->stClip.vBR.fY;
-      sstDisplay.afVertexList[4]  =
-      sstDisplay.afVertexList[6]  = sstDisplay.pstScreen->stClip.vBR.fX;
-      sstDisplay.afVertexList[3]  =
-      sstDisplay.afVertexList[7]  = sstDisplay.pstScreen->stClip.vTL.fY;
+      sstDisplay.astVertexList[0].fX  =
+      sstDisplay.astVertexList[1].fX  = sstDisplay.pstScreen->stClip.vTL.fX;
+      sstDisplay.astVertexList[2].fX  =
+      sstDisplay.astVertexList[3].fX  = sstDisplay.pstScreen->stClip.vBR.fX;
+      sstDisplay.astVertexList[1].fY  =
+      sstDisplay.astVertexList[3].fY  = sstDisplay.pstScreen->stClip.vTL.fY;
+      sstDisplay.astVertexList[0].fY  =
+      sstDisplay.astVertexList[2].fY  = sstDisplay.pstScreen->stClip.vBR.fY;
 
       /* Defines the texture coord list */
-      sstDisplay.afTextureCoordList[0]  =
-      sstDisplay.afTextureCoordList[2]  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
-      sstDisplay.afTextureCoordList[1]  =
-      sstDisplay.afTextureCoordList[5]  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
-      sstDisplay.afTextureCoordList[4]  =
-      sstDisplay.afTextureCoordList[6]  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
-      sstDisplay.afTextureCoordList[3]  =
-      sstDisplay.afTextureCoordList[7]  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+      sstDisplay.astVertexList[0].fU  =
+      sstDisplay.astVertexList[1].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
+      sstDisplay.astVertexList[2].fU  =
+      sstDisplay.astVertexList[3].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
+      sstDisplay.astVertexList[1].fV  =
+      sstDisplay.astVertexList[3].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+      sstDisplay.astVertexList[0].fV  =
+      sstDisplay.astVertexList[2].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
 
       /* Fills the color list */
-      sstDisplay.astColorList[sstDisplay.s32BufferIndex >> 1]       =
-      sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 1] =
-      sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 2] =
-      sstDisplay.astColorList[(sstDisplay.s32BufferIndex >> 1) + 3] = sstDisplay.pstScreen->stColor;
+      sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+      sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+      sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+      sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
 
       /* Updates counter */
-      sstDisplay.s32BufferIndex = 8;
+      sstDisplay.s32BufferIndex = 4;
 
       /* Draws arrays */
       orxDisplay_iPhone_DrawArrays();
