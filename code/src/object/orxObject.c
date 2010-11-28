@@ -801,8 +801,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         && ((orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
          || (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)))
         {
+          orxVECTOR vSize;
+
+          /* Gets object's size */
+          orxObject_GetSize(pstResult, &vSize);
+          vSize.fZ = orxFLOAT_1;
+
           /* Gets world space values */
-          orxVector_Mul(&vValue, &vValue, &vParentSize);
+          orxVector_Mul(&vValue, orxVector_Div(&vValue, &vValue, &vSize), &vParentSize);
         }
 
         /* Updates object scale */
