@@ -805,10 +805,21 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
           /* Gets object's size */
           orxObject_GetSize(pstResult, &vSize);
-          vSize.fZ = orxFLOAT_1;
 
-          /* Gets world space values */
-          orxVector_Mul(&vValue, orxVector_Div(&vValue, &vValue, &vSize), &vParentSize);
+          /* Valid? */
+          if((vSize.fX != orxFLOAT_0) && (vSize.fY != orxFLOAT_0))
+          {
+            /* No scale on Z */
+            vSize.fZ = orxFLOAT_1;
+
+            /* Gets world space values */
+            orxVector_Mul(&vValue, orxVector_Div(&vValue, &vValue, &vSize), &vParentSize);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> can' t use relative scale from parent <%s> as it doesn't have any size.", _zConfigID, zCameraName);
+          }
         }
 
         /* Updates object scale */
