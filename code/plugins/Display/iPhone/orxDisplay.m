@@ -877,11 +877,7 @@ static void orxFASTCALL orxDisplay_iPhone_InitShader(orxDISPLAY_SHADER *_pstShad
   /* Has custom textures? */
   if(_pstShader->iTextureCounter > 0)
   {
-    GLint i, iTexture;
-
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-    glASSERT();
+    GLint i;
 
     /* For all defined textures */
     for(i = 0; i < _pstShader->iTextureCounter; i++)
@@ -902,10 +898,6 @@ static void orxFASTCALL orxDisplay_iPhone_InitShader(orxDISPLAY_SHADER *_pstShad
         glASSERT();
       }
     }
-
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
-    glASSERT();
   }
 
   /* Updates its status */
