@@ -946,9 +946,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
  */
 static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxVIEWPORT  *pstViewport;
-  orxFLOAT      fWidth, fHeight;
-  orxBOOL       bRender;
+  orxBOOL bRender;
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -960,6 +958,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   /* Should render? */
   if(bRender != orxFALSE)
   {
+    orxVIEWPORT  *pstViewport;
+    orxFLOAT      fWidth, fHeight;
+
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
         pstViewport != orxNULL;
@@ -968,128 +969,128 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       /* Renders it */
       orxRender_RenderViewport(pstViewport);
     }
-  }
 
-  /* Restores screen bitmap clipping */
-  orxDisplay_GetScreenSize(&fWidth, &fHeight);
-  orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+    /* Restores screen bitmap clipping */
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
 
-  /* Sends render stop event */
-  orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
+    /* Sends render stop event */
+    orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
 
-  /* Increases FPS counter */
-  orxFPS_IncreaseFrameCounter();
+    /* Increases FPS counter */
+    orxFPS_IncreaseFrameCounter();
 
-  /* Should render? */
-  if(bRender != orxFALSE)
-  {
-    /* Pushes render config section */
-    orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
-
-    /* Should display FPS? */
-    if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
+    /* Should render? */
+    if(bRender != orxFALSE)
     {
-      const orxFONT *pstFont;
+      /* Pushes render config section */
+      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
-      /* Gets default font */
-      pstFont = orxFont_GetDefaultFont();
-
-      /* Valid? */
-      if(pstFont != orxNULL)
+      /* Should display FPS? */
+      if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
       {
-        orxVIEWPORT          *pstViewport;
-        orxBITMAP            *pstBitmap;
-        orxDISPLAY_TRANSFORM  stTextTransform;
-        orxCHAR               acBuffer[16];
+        const orxFONT *pstFont;
 
-        /* Gets its bitmap */
-        pstBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
-        
-        /* Clears text transform */
-        orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
-
-        /* Gets first viewport */
-        pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+        /* Gets default font */
+        pstFont = orxFont_GetDefaultFont();
 
         /* Valid? */
-        if(pstViewport != orxNULL)
+        if(pstFont != orxNULL)
         {
-          orxAABOX  stBox;
-          orxFLOAT  fWidth, fHeight, fCorrectionRatio;
+          orxVIEWPORT          *pstViewport;
+          orxBITMAP            *pstBitmap;
+          orxDISPLAY_TRANSFORM  stTextTransform;
+          orxCHAR               acBuffer[16];
 
-          /* Gets its box & size */
-          orxViewport_GetBox(pstViewport, &stBox);
-          orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
+          /* Gets its bitmap */
+          pstBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
+          
+          /* Clears text transform */
+          orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
-          /* Gets current correction ratio */
-          fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+          /* Gets first viewport */
+          pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
 
-          /* Has correction ratio? */
-          if(fCorrectionRatio != orxFLOAT_1)
+          /* Valid? */
+          if(pstViewport != orxNULL)
           {
-            /* X axis? */
-            if(fCorrectionRatio < orxFLOAT_1)
+            orxAABOX  stBox;
+            orxFLOAT  fWidth, fHeight, fCorrectionRatio;
+
+            /* Gets its box & size */
+            orxViewport_GetBox(pstViewport, &stBox);
+            orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
+
+            /* Gets current correction ratio */
+            fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+
+            /* Has correction ratio? */
+            if(fCorrectionRatio != orxFLOAT_1)
             {
-              orxFLOAT fDelta;
+              /* X axis? */
+              if(fCorrectionRatio < orxFLOAT_1)
+              {
+                orxFLOAT fDelta;
 
-              /* Gets rendering limit delta using correction ratio */
-              fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stBox.vBR.fX - stBox.vTL.fX);
+                /* Gets rendering limit delta using correction ratio */
+                fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stBox.vBR.fX - stBox.vTL.fX);
 
-              /* Updates viewport */
-              stBox.vTL.fX += fDelta;
-              stBox.vBR.fX -= fDelta;
+                /* Updates viewport */
+                stBox.vTL.fX += fDelta;
+                stBox.vBR.fX -= fDelta;
+              }
+              /* Y axis */
+              else
+              {
+                orxFLOAT fDelta;
+
+                /* Gets rendering limit delta using correction ratio */
+                fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
+
+                /* Updates viewport */
+                stBox.vTL.fY += fDelta;
+                stBox.vBR.fY -= fDelta;
+              }
             }
-            /* Y axis */
-            else
-            {
-              orxFLOAT fDelta;
 
-              /* Gets rendering limit delta using correction ratio */
-              fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
+            /* Inits transform's scale */
+            stTextTransform.fScaleX = orx2F(2.0f) * fWidth;
+            stTextTransform.fScaleY = orx2F(2.0f) * fHeight;
 
-              /* Updates viewport */
-              stBox.vTL.fY += fDelta;
-              stBox.vBR.fY -= fDelta;
-            }
+            /* Inits transform's destination */
+            stTextTransform.fDstX = stBox.vTL.fX + orx2F(10.0f);
+            stTextTransform.fDstY = stBox.vTL.fY + orx2F(10.0f);
+          }
+          else
+          {
+            /* Inits transform's scale */
+            stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(2.0f);
+
+            /* Inits transform's position */
+            stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
           }
 
-          /* Inits transform's scale */
-          stTextTransform.fScaleX = orx2F(2.0f) * fWidth;
-          stTextTransform.fScaleY = orx2F(2.0f) * fHeight;
+          /* Sets font's color */
+          orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_DEFAULT_COLOR);
 
-          /* Inits transform's destination */
-          stTextTransform.fDstX = stBox.vTL.fX + orx2F(10.0f);
-          stTextTransform.fDstY = stBox.vTL.fY + orx2F(10.0f);
+          /* Writes string */
+          orxString_NPrint(acBuffer, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+
+          /* Displays it */
+          orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
         }
-        else
-        {
-          /* Inits transform's scale */
-          stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(2.0f);
-
-          /* Inits transform's position */
-          stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
-        }
-
-        /* Sets font's color */
-        orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_DEFAULT_COLOR);
-
-        /* Writes string */
-        orxString_NPrint(acBuffer, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
-
-        /* Displays it */
-        orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
       }
+
+      /* Pops previous section */
+      orxConfig_PopSection();
     }
 
-    /* Pops previous section */
-    orxConfig_PopSection();
+    /* Swap buffers */
+    orxDisplay_Swap();
+
+    /* Clears screen */
+    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
   }
-
-  /* Swap buffers */
-  orxDisplay_Swap();
-
-  /* Clears screen */
-  orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
 
   /* Done! */
   return;
