@@ -2322,8 +2322,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       sstDisplay.pstScreen->fHeight         = [sstDisplay.poView frame].size.height;
       sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
       sstDisplay.pstScreen->u32RealHeight   = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
-      sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / sstDisplay.pstScreen->fWidth;
-      sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / sstDisplay.pstScreen->fHeight;
+      sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
+      sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
       sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
