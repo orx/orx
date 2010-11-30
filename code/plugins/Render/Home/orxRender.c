@@ -783,9 +783,11 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                                   (pstNode != orxNULL)
                                && ((vObjectPos.fZ < pstNode->fZ)
                                 || ((vObjectPos.fZ == pstNode->fZ)
-                                 && ((pstTexture != pstNode->pstTexture)
-                                  || (eBlendMode != pstNode->eBlendMode)
-                                  || (eSmoothing != pstNode->eSmoothing))));
+                                 && ((pstTexture < pstNode->pstTexture)
+                                  || ((pstTexture == pstNode->pstTexture)
+                                   && (eBlendMode < pstNode->eBlendMode))
+                                    || ((eBlendMode == pstNode->eBlendMode)
+                                     && (eSmoothing < pstNode->eSmoothing)))));
                                   pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
 
                               /* End of list reached? */
