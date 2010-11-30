@@ -58,11 +58,13 @@
 
 typedef struct __orxRENDER_RENDER_NODE_t
 {
-  orxLINKLIST_NODE  stNode;                       /**< Linklist node : 12 */
-  orxOBJECT        *pstObject;                    /**< Object pointer : 16 */
-  orxTEXTURE       *pstTexture;                   /**< Texture pointer : 20 */
-  orxFLOAT          fZ;                           /**< Z coordinate : 24 */
-  orxFLOAT          fDepthCoef;                   /**< Depth coef : 28 */
+  orxLINKLIST_NODE      stNode;                   /**< Linklist node : 12 */
+  orxOBJECT            *pstObject;                /**< Object pointer : 16 */
+  orxTEXTURE           *pstTexture;               /**< Texture pointer : 20 */
+  orxFLOAT              fZ;                       /**< Z coordinate : 24 */
+  orxFLOAT              fDepthCoef;               /**< Depth coef : 28 */
+  orxDISPLAY_SMOOTHING  eSmoothing;               /**< Smoothing : 32 */
+  orxDISPLAY_BLEND_MODE eBlendMode;               /**< Blend mode : 36 */
 
 } orxRENDER_NODE;
 
@@ -95,9 +97,11 @@ static orxRENDER_STATIC sstRender;
  * @param[in]   _pstObject        Object to render
  * @param[in]   _pstRenderBitmap  Bitmap surface where to render
  * @param[in]   _pstFrame         Rendering frame
+ * @param[in]   _eSmoothing       Smoothing
+ * @param[in]   _eBlendMode       Blend mode
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame)
+static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
@@ -133,29 +137,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
     /* Sends start event */
     if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
     {
-      orxDISPLAY_BLEND_MODE eBlendMode;
-      orxDISPLAY_SMOOTHING  eSmoothing;
-
-      /* Gets graphic smoothing */
-      eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
-
-      /* Default? */
-      if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
-      {
-        /* Gets object smoothing */
-        eSmoothing = orxObject_GetSmoothing(_pstObject);
-      }
-
-      /* Gets graphic blend mode */
-      eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
-
-      /* None? */
-      if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
-      {
-        /* Gets object blend mode */
-        eBlendMode = orxObject_GetBlendMode(_pstObject);
-      }
-
       /* 2D? */
       if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
       {
@@ -283,7 +264,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           orxVector_Sub(&vPosition, &vPosition, &vPivot);
 
           /* Blits bitmap */
-          eResult = orxDisplay_BlitBitmap(pstBitmap, vPosition.fX, vPosition.fY, eSmoothing, eBlendMode);
+          eResult = orxDisplay_BlitBitmap(pstBitmap, vPosition.fX, vPosition.fY, _eSmoothing, _eBlendMode);
         }
         else
         {
@@ -304,7 +285,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             stTransform.fRotation = fRotation;
 
             /* Transforms bitmap */
-            eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, eSmoothing, eBlendMode);
+            eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, _eSmoothing, _eBlendMode);
           }
           else
           {
@@ -418,7 +399,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
                 stTransform.fRotation = fRotation;
 
                 /* Draws text */
-                eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), &stTransform, eSmoothing, eBlendMode);
+                eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), &stTransform, _eSmoothing, _eBlendMode);
               }
               else
               {
@@ -747,7 +728,29 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           /* Circle test between object & camera */
                           if(fSqrDist <= (fCameraBoundingRadius + fObjectBoundingRadius) * (fCameraBoundingRadius + fObjectBoundingRadius))
                           {
-                            orxRENDER_NODE *pstNode;
+                            orxDISPLAY_BLEND_MODE eBlendMode;
+                            orxDISPLAY_SMOOTHING  eSmoothing;
+                            orxRENDER_NODE       *pstNode;
+
+                            /* Gets graphic smoothing */
+                            eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
+
+                            /* Default? */
+                            if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
+                            {
+                              /* Gets object smoothing */
+                              eSmoothing = orxObject_GetSmoothing(pstObject);
+                            }
+
+                            /* Gets graphic blend mode */
+                            eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
+
+                            /* None? */
+                            if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
+                            {
+                              /* Gets object blend mode */
+                              eBlendMode = orxObject_GetBlendMode(pstObject);
+                            }
 
                             /* Creates a render node */
                             pstRenderNode = (orxRENDER_NODE *)orxBank_Allocate(sstRender.pstRenderBank);
@@ -756,8 +759,10 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                             orxMemory_Zero(pstRenderNode, sizeof(orxLINKLIST_NODE));
 
                             /* Stores object */
-                            pstRenderNode->pstObject = pstObject;
+                            pstRenderNode->pstObject  = pstObject;
                             pstRenderNode->pstTexture = pstTexture;
+                            pstRenderNode->eSmoothing = eSmoothing;
+                            pstRenderNode->eBlendMode = eBlendMode;
 
                             /* Stores its Z coordinate */
                             pstRenderNode->fZ = vObjectPos.fZ;
@@ -775,7 +780,12 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                             {
                               /* Finds correct node */
                               for(pstNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
-                                  (pstNode != orxNULL) && ((vObjectPos.fZ < pstNode->fZ) || ((vObjectPos.fZ == pstNode->fZ) && (pstTexture != pstNode->pstTexture)));
+                                  (pstNode != orxNULL)
+                               && ((vObjectPos.fZ < pstNode->fZ)
+                                || ((vObjectPos.fZ == pstNode->fZ)
+                                 && ((pstTexture != pstNode->pstTexture)
+                                  || (eBlendMode != pstNode->eBlendMode)
+                                  || (eSmoothing != pstNode->eSmoothing))));
                                   pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
 
                               /* End of list reached? */
@@ -876,7 +886,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   orxFrame_SetScale(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vObjectScale);
 
                   /* Renders it */
-                  if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_FAILURE)
+                  if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) != orxSTATUS_FAILURE)
                   {
                     /* Updates its render status */
                     orxObject_SetRendered(pstObject, orxTRUE);
