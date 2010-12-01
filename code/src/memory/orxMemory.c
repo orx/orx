@@ -34,7 +34,6 @@
 #include "debug/orxDebug.h"
 
 
-#include <string.h>
 #define USE_DL_PREFIX
 #include "malloc.c"
 
