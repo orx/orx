@@ -316,10 +316,10 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
     const orxCHAR  *pcInput;
 
     /* For all characters */
-    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
+    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL; pcInput++, pcOutput++)
     {
       /* Copies it */
-      *pcOutput++ = *pcInput++;
+      *pcOutput = *pcInput;
 
       /* First block character of two? */
       if((*pcInput == orxCONFIG_KC_BLOCK) && (*(pcInput + 1) == orxCONFIG_KC_BLOCK))
@@ -2763,8 +2763,10 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                   /* Valid? */
                   if(pcValueStart < acBuffer + u32Size)
                   {
-                    /* Is not a block delimiter? */
-                    if(*pcValueStart != orxCONFIG_KC_BLOCK)
+                    /* Is not a block delimiter or triple block delimiter? */
+                    if((*pcValueStart != orxCONFIG_KC_BLOCK)
+                    || ((pcValueStart + 1 < acBuffer + u32Size)
+                     && (*(pcValueStart + 1) == orxCONFIG_KC_BLOCK)))
                     {
                       /* Activates block mode */
                       bBlockMode = orxTRUE;
@@ -2774,7 +2776,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               }
 
               /* Updates current character */
-              pc = pcValueStart;
+              pc = pcValueStart - 1;
             }
             else
             {
