@@ -72,25 +72,37 @@ static orxINLINE orxAABOX *                   orxAABox_Reorder(orxAABOX *_pstBox
 
   /* Reorders coordinates so as to have upper left & bottom right box corners */
 
-  /* Z coord */
-  if(_pstBox->vTL.fZ > _pstBox->vBR.fZ)
+  /* X coord */
+  if(_pstBox->vTL.fX > _pstBox->vBR.fX)
   {
-    /* Swaps */
-    orxSWAP32(_pstBox->vTL.fZ, _pstBox->vBR.fZ);
+     orxFLOAT fTemp;
+
+     /* Swaps */
+     fTemp           = _pstBox->vTL.fX;
+     _pstBox->vTL.fX = _pstBox->vBR.fX;
+     _pstBox->vBR.fX = fTemp;
   }
 
   /* Y coord */
   if(_pstBox->vTL.fY > _pstBox->vBR.fY)
   {
+    orxFLOAT fTemp;
+
     /* Swaps */
-    orxSWAP32(_pstBox->vTL.fY, _pstBox->vBR.fY);
+    fTemp           = _pstBox->vTL.fY;
+    _pstBox->vTL.fY = _pstBox->vBR.fY;
+    _pstBox->vBR.fY = fTemp;
   }
 
-  /* X coord */
-  if(_pstBox->vTL.fX > _pstBox->vBR.fX)
+  /* Z coord */
+  if(_pstBox->vTL.fZ > _pstBox->vBR.fZ)
   {
+    orxFLOAT fTemp;
+
     /* Swaps */
-    orxSWAP32(_pstBox->vTL.fX, _pstBox->vBR.fX);
+    fTemp           = _pstBox->vTL.fZ;
+    _pstBox->vTL.fZ = _pstBox->vBR.fZ;
+    _pstBox->vBR.fZ = fTemp;
   }
 
   /* Done! */

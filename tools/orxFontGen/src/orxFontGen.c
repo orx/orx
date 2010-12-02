@@ -620,11 +620,11 @@ static void Run()
           // Success?
           if(u32Offset != orxU32_UNDEFINED)
           {
-            FT_Error stError;
+            FT_Error eError;
 
             // Loads rendered glyph
-            stError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
-            orxASSERT(!stError);
+            eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
+            orxASSERT(!eError);
 
             // Has data?
             if(sstFontGen.pstFontFace->glyph->bitmap.buffer)
@@ -633,13 +633,13 @@ static void Run()
               orxU8  *pu8Src, *pu8Dst;
 
               // Gets adjusted position
-              s32AdjustedX  = s32X + (orxS32)sstFontGen.pstFontFace->glyph->bitmap_left;
-              s32AdjustedY  = orxMAX(0, s32Y - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top);
+              s32AdjustedX  = s32X + orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0);
+              s32AdjustedY  = s32Y - orxMIN((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top, s32BaseLine);
 
               // For all rows
               for(i = 0, pu8Src = (orxU8 *)sstFontGen.pstFontFace->glyph->bitmap.buffer, pu8Dst = pu8ImageBuffer + sizeof(orxRGBA) * ((s32AdjustedY * s32Width) + s32AdjustedX);
                   i < (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows;
-                  i++, pu8Src += sstFontGen.pstFontFace->glyph->bitmap.pitch - sstFontGen.pstFontFace->glyph->bitmap.width, pu8Dst += sizeof(orxRGBA) * (s32Width - (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width))
+                  i++, pu8Src += orxMAX(sstFontGen.pstFontFace->glyph->bitmap.pitch, -sstFontGen.pstFontFace->glyph->bitmap.pitch) - sstFontGen.pstFontFace->glyph->bitmap.width, pu8Dst += sizeof(orxRGBA) * (s32Width - (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width))
               {
                 orxS32 j;
 
@@ -688,7 +688,7 @@ static void Run()
         orxConfig_SetStringBlock("CharacterList", acBuffer);
         orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
         orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
-        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.tga", sstFontGen.zFontName);
+        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.tga", sstFontGen.zFontName);
         orxConfig_SetString("Texture", acBuffer);
 
         // Pops config
@@ -701,7 +701,7 @@ static void Run()
         orxLOG("[PROCESS] %ld glyphs generated in '%s'.", u32Counter, acBuffer);
 
         // Gets config file name
-        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE - 1, "%s.ini", sstFontGen.zFontName);
+        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.ini", sstFontGen.zFontName);
 
         // Saves it
         if(orxConfig_Save(acBuffer, orxFALSE, SaveFilter) != orxSTATUS_FAILURE)

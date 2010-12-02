@@ -55,7 +55,7 @@
 typedef enum __orxCONFIG_EVENT_t
 {
   orxCONFIG_EVENT_RELOAD_START = 0,                     /**< Event sent when reloading config starts */
-  orxCONFIG_EVENT_RELOAD_END,                           /**< Event sent when reloading config starts */
+  orxCONFIG_EVENT_RELOAD_STOP,                          /**< Event sent when reloading config stops */
   orxCONFIG_EVENT_INVALID_TYPE_ACCESS,                  /**< Event sent when accessing a value with an invalid type getter */
 
   orxCONFIG_EVENT_NUMBER,
