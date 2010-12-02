@@ -494,7 +494,7 @@ static orxSTATUS orxFASTCALL Init()
       stParams.zShortName = "f";
       stParams.zLongName  = "font";
       stParams.zShortDesc = "Input font file";
-      stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs";
+      stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs. Only monospaced fonts are truely supported. Other fonts should produce visually correct glyphs but the end result text will differ in spacing.";
       stParams.pfnParser  = ProcessFontParams;
 
       // Registers params
