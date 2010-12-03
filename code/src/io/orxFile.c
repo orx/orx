@@ -772,8 +772,17 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
+#ifdef __orxMSVC__
+
     /* Gets file stats */
     fstat(((FILE *)_pstFile)->_file, &stStat);
+
+#else /* __orxMSVC__ */
+
+    /* Gets file stats */
+    fstat(fileno((FILE *)_pstFile), &stStat);
+
+#endif /* __orxMSVC__ */
 
     /* Updates result */
     s32Result = stStat.st_size;
