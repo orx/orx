@@ -342,7 +342,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -356,7 +356,7 @@
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/linux"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/linux"/>
         <Library Value="sndfile"/>
         <Library Value="openal"/>
         <Library Value="dl"/>
@@ -400,7 +400,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -413,7 +413,7 @@
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/linux"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/linux"/>
         <Library Value="sndfile"/>
         <Library Value="openal"/>
         <Library Value="dl"/>
@@ -457,7 +457,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -496,7 +496,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -656,7 +656,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -671,7 +671,7 @@
         <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
         <Library Value="glfw"/>
         <Library Value="sndfile"/>
         <Library Value="openal32"/>
@@ -715,7 +715,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -729,7 +729,7 @@
         <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
         <Library Value="glfw"/>
         <Library Value="sndfile"/>
         <Library Value="openal32"/>
@@ -773,7 +773,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
@@ -812,7 +812,7 @@
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
         <IncludePath Value="../../../../extern/SFML-1.5/include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
         <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>

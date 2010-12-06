@@ -34,7 +34,6 @@
 
 #include "orxPluginAPI.h"
 
-static orxU32       su32BallCounter = 0;
 static orxU32       su32VideoModeIndex = 0;
 static orxSPAWNER  *spoBallSpawner;
 static orxVIEWPORT *spstViewport;
@@ -113,17 +112,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
     /* Physics */
     case orxEVENT_TYPE_PHYSICS:
     {
-      /* Going out of world? */
-      if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
-      {
-        /* Deletes corresponding object */
-        orxObject_SetLifeTime(orxOBJECT(_pstEvent->hSender), orxFLOAT_0);
-
-        /* Updates ball counter */
-        su32BallCounter--;
-      }
       /* Colliding? */
-      else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+      if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
       {
         /* Adds bump FX on both objects */
         orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");

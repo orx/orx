@@ -46,14 +46,8 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
 
-  /* Going out of world? */
-  if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
-  {
-    /* Asks for corresponding object deletion */
-    orxObject_SetLifeTime(orxOBJECT(_pstEvent->hSender), orxFLOAT_0);
-  }
   /* Colliding? */
-  else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+  if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
   {
     /* Adds bump FX on both objects */
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");

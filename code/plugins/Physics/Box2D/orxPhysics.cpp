@@ -58,9 +58,8 @@ namespace orxPhysics
 {
   static const orxU32   su32DefaultIterations   = 10;
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
-  static const orxFLOAT sfDefaultWorldSize      = orx2F(100000.0f);
   static const orxU32   su32MessageBankSize     = 64;
-  static const orxFLOAT sfMaxDT                 = orx2F(0.1f);
+  static const orxFLOAT sfMaxDT                 = orx2F(1.0f / 30.0f);
 }
 
 
@@ -89,14 +88,6 @@ public:
   void EndContact(b2Contact *_poContact);
 };
 
-/** Boundary listener
- */
-class orxPhysicsBoundaryListener : public b2BoundaryListener
-{
-public:
-  void Violation(b2Body *_poBody);
-};
-
 /** Static structure
  */
 typedef struct __orxPHYSICS_STATIC_t
@@ -108,9 +99,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxLINKLIST                 stEventList;        /**< Event link list */
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
-  b2Fixture                  *poRaycastFixture;   /**< Raycast fixture */
   orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
-  orxPhysicsBoundaryListener *poBoundaryListener; /**< Boundary listener */
 
 } orxPHYSICS_STATIC;
 
@@ -127,6 +116,73 @@ static orxPHYSICS_STATIC sstPhysics;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+class RayCastCallback : public b2RayCastCallback
+{
+public:
+
+  RayCastCallback()
+  {
+    /* Clears handle */
+    hResult = orxHANDLE_UNDEFINED;
+  }
+
+  float32 ReportFixture(b2Fixture *_poFixture, const b2Vec2 &_rvContact, const b2Vec2 &_rvNormal, float32 _fFraction)
+  {
+    float32 fResult;
+
+    /* Has hit? */
+    if(_poFixture)
+    {
+      /* Gets fixture's filter info */
+      const b2Filter &rstFilter = _poFixture->GetFilterData();
+
+      /* Match? */
+      if(((rstFilter.maskBits & u16SelfFlags) != 0)
+      && ((rstFilter.categoryBits & u16CheckMask) != 0))
+      {
+        /* Stores contact and normal */
+        orxVector_Set(&vContact, sstPhysics.fRecDimensionRatio * _rvContact.x, sstPhysics.fRecDimensionRatio * _rvContact.y, orxFLOAT_0);
+        orxVector_Set(&vNormal, _rvNormal.x, _rvNormal.y, orxFLOAT_0);
+
+        /* Stores associated object's handle */
+        hResult = (orxHANDLE)_poFixture->GetBody()->GetUserData();
+
+        /* Early exit? */
+        if(bEarlyExit != orxFALSE)
+        {
+          /* Stops now */
+          fResult = 0.0f;
+        }
+        else
+        {
+          /* Checks for closer fixture */
+          fResult = _fFraction;
+        }
+      }
+      else
+      {
+        /* Ignores fixture completely */
+        fResult = -1.0f;
+      }
+    }
+    else
+    {
+      /* Stops now */
+      fResult = 0.0f;
+    }
+
+    /* Done! */
+    return _fFraction;
+  }
+
+  orxVECTOR   vContact;
+  orxVECTOR   vNormal;
+  orxHANDLE   hResult;
+  orxBOOL     bEarlyExit;
+  orxU16      u16SelfFlags;
+  orxU16      u16CheckMask;
+};
 
 static orxINLINE orxU32 orxPhysics_Box2D_GetFixtureIndex(const b2Body *_poBody, const b2Fixture *_poFixture)
 {
@@ -178,121 +234,116 @@ static orxINLINE orxU32 orxPhysics_Box2D_GetFixtureIndex(const b2Body *_poBody, 
 
 static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
 {
-  b2Body *poSource, *poDestination;
+  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+  b2Body                   *poSource, *poDestination;
+  orxBOOL                   bSendEvent = orxTRUE;
 
   /* Gets both bodies */
   poSource      = _poContact->GetFixtureA()->GetBody();
   poDestination = _poContact->GetFixtureB()->GetBody();
 
-  /* Doesn't involve ground? */
-  if((poSource != sstPhysics.poWorld->GetGroundBody())
-  && (poDestination != sstPhysics.poWorld->GetGroundBody()))
+
+  /* For all pending events */
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
+      pstEventStorage != orxNULL;
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
   {
-    orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-    orxBOOL                   bSendEvent = orxTRUE;
-
-    /* For all pending events */
-    for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-        pstEventStorage != orxNULL;
-        pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
+    /* Same pair? */
+    if((pstEventStorage->poSource == poSource) && (pstEventStorage->poDestination == poDestination))
     {
-      /* Same pair? */
-      if((pstEventStorage->poSource == poSource) && (pstEventStorage->poDestination == poDestination))
+      /* Depending on old event */
+      switch(pstEventStorage->eID)
       {
-        /* Depending on old event */
-        switch(pstEventStorage->eID)
+        case orxPHYSICS_EVENT_CONTACT_ADD:
         {
-          case orxPHYSICS_EVENT_CONTACT_ADD:
+          /* Removes it */
+          orxLinkList_Remove(&(pstEventStorage->stNode));
+          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+
+          /* Removing it? */
+          if(_eEventID == orxPHYSICS_EVENT_CONTACT_REMOVE)
           {
-            /* Removes it */
-            orxLinkList_Remove(&(pstEventStorage->stNode));
-            orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
-
-            /* Removing it? */
-            if(_eEventID == orxPHYSICS_EVENT_CONTACT_REMOVE)
-            {
-              /* Don't send event */
-              bSendEvent = orxFALSE;
-            }
-
-            break;
+            /* Don't send event */
+            bSendEvent = orxFALSE;
           }
 
-          case orxPHYSICS_EVENT_CONTACT_REMOVE:
-          {
-            /* Removes it */
-            orxLinkList_Remove(&(pstEventStorage->stNode));
-            orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
-
-            /* Is new one a add? */
-            if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
-            {
-              /* Don't send event */
-              bSendEvent = orxFALSE;
-            }
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
+          break;
         }
 
-        break;
-      }
-    }
-
-    /* Should send the event? */
-    if(bSendEvent != orxFALSE)
-    {
-      orxU32 u32SourcePartIndex, u32DestinationPartIndex;
-
-      /* Gets part indexes */
-      u32SourcePartIndex      = orxPhysics_Box2D_GetFixtureIndex(poSource, _poContact->GetFixtureA());
-      u32DestinationPartIndex = orxPhysics_Box2D_GetFixtureIndex(poDestination, _poContact->GetFixtureB());
-
-      /* Valid? */
-      if((u32SourcePartIndex != orxU32_UNDEFINED) && (u32DestinationPartIndex != orxU32_UNDEFINED))
-      {
-        orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-
-        /* Adds a contact event */
-        pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
-
-        /* Valid? */
-        if(pstEventStorage != orxNULL)
+        case orxPHYSICS_EVENT_CONTACT_REMOVE:
         {
-          b2WorldManifold oManifold;
+          /* Removes it */
+          orxLinkList_Remove(&(pstEventStorage->stNode));
+          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
 
-          /* Gets manifold */
-          _poContact->GetWorldManifold(&oManifold);
-
-          /* Adds it to list */
-          orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
-
-          /* Inits it */
-          pstEventStorage->eID            = _eEventID;
-          pstEventStorage->poSource       = poSource;
-          pstEventStorage->poDestination  = poDestination;
-
-          /* Contact add? */
+          /* Is new one a add? */
           if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
           {
-            orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.m_points[0].x, sstPhysics.fRecDimensionRatio * oManifold.m_points[0].y, orxFLOAT_0);
-            orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.m_normal.x, oManifold.m_normal.y, orxFLOAT_0);
-          }
-          else
-          {
-            orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
-            orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
+            /* Don't send event */
+            bSendEvent = orxFALSE;
           }
 
-          /* Updates part names */
-          pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(orxBODY(poSource->GetUserData()), u32SourcePartIndex);
-          pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(orxBODY(poDestination->GetUserData()), u32DestinationPartIndex);
+          break;
         }
+
+        default:
+        {
+          break;
+        }
+      }
+
+      break;
+    }
+  }
+
+  /* Should send the event? */
+  if(bSendEvent != orxFALSE)
+  {
+    orxU32 u32SourcePartIndex, u32DestinationPartIndex;
+
+    /* Gets part indexes */
+    u32SourcePartIndex      = orxPhysics_Box2D_GetFixtureIndex(poSource, _poContact->GetFixtureA());
+    u32DestinationPartIndex = orxPhysics_Box2D_GetFixtureIndex(poDestination, _poContact->GetFixtureB());
+
+    /* Valid? */
+    if((u32SourcePartIndex != orxU32_UNDEFINED) && (u32DestinationPartIndex != orxU32_UNDEFINED))
+    {
+      orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+
+      /* Adds a contact event */
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
+
+      /* Valid? */
+      if(pstEventStorage != orxNULL)
+      {
+        b2WorldManifold oManifold;
+
+        /* Gets manifold */
+        _poContact->GetWorldManifold(&oManifold);
+
+        /* Adds it to list */
+        orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+
+        /* Inits it */
+        pstEventStorage->eID            = _eEventID;
+        pstEventStorage->poSource       = poSource;
+        pstEventStorage->poDestination  = poDestination;
+
+        /* Contact add? */
+        if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+        {
+          orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.points[0].x, sstPhysics.fRecDimensionRatio * oManifold.points[0].y, orxFLOAT_0);
+          orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
+        }
+        else
+        {
+          orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
+          orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
+        }
+
+        /* Updates part names */
+        pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(orxBODY(poSource->GetUserData()), u32SourcePartIndex);
+        pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(orxBODY(poDestination->GetUserData()), u32DestinationPartIndex);
       }
     }
   }
@@ -312,27 +363,6 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 {
   /* Sends contact event */
   orxPhysics_Box2D_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_REMOVE);
-
-  return;
-}
-
-void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
-{
-  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-
-  /* Adds an out of world event */
-  pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
-
-  /* Valid? */
-  if(pstEventStorage != orxNULL)
-  {
-    /* Adds it to list */
-    orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
-
-    /* Inits it */
-    pstEventStorage->eID      = orxPHYSICS_EVENT_OUT_OF_WORLD;
-    pstEventStorage->poSource = _poBody;
-  }
 
   return;
 }
@@ -413,19 +443,6 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Depending on type */
       switch(pstEventStorage->eID)
       {
-        case orxPHYSICS_EVENT_OUT_OF_WORLD:
-        {
-          orxSTRUCTURE *pstOwner;
-
-          /* Gets owner */
-          pstOwner = orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
-
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_OUT_OF_WORLD, pstOwner, pstOwner, orxNULL);
-
-          break;
-        }
-
         case orxPHYSICS_EVENT_CONTACT_ADD:
         case orxPHYSICS_EVENT_CONTACT_REMOVE:
         {
@@ -435,7 +452,7 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
             b2Vec2 vPos;
 
             /* Source can't slide and destination is static? */
-            if(!pstEventStorage->poSource->CanSlide() && pstEventStorage->poDestination->IsStatic())
+            if(!pstEventStorage->poSource->CanSlide() && (pstEventStorage->poDestination->GetType() != b2_dynamicBody))
             {
               /* Gets current position */
               vPos = pstEventStorage->poSource->GetPosition();
@@ -444,10 +461,10 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
               vPos.y += 0.01f;
 
               /* Updates it */
-              pstEventStorage->poSource->SetXForm(vPos, pstEventStorage->poSource->GetAngle());
+              pstEventStorage->poSource->SetTransform(vPos, pstEventStorage->poSource->GetAngle());
             }
             /* Destination can't slide and source is static? */
-            else if(!pstEventStorage->poDestination->CanSlide() && pstEventStorage->poSource->IsStatic())
+            else if(!pstEventStorage->poDestination->CanSlide() && (pstEventStorage->poSource->GetType() != b2_dynamicBody))
             {
               /* Gets current position */
               vPos = pstEventStorage->poDestination->GetPosition();
@@ -456,7 +473,7 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
               vPos.y += 0.01f;
 
               /* Updates it */
-              pstEventStorage->poDestination->SetXForm(vPos, pstEventStorage->poDestination->GetAngle());
+              pstEventStorage->poDestination->SetTransform(vPos, pstEventStorage->poDestination->GetAngle());
             }
           }
 
@@ -499,7 +516,7 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
     stBodyDef.angle             = _pstBodyDef->fRotation;
     stBodyDef.linearDamping     = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping    = _pstBodyDef->fAngularDamping;
-    stBodyDef.isBullet          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
+    stBodyDef.bullet            = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
     stBodyDef.canSlide          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_SLIDE);
     stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
@@ -507,20 +524,44 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
     /* Is dynamic? */
     if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
     {
-      /* Stores mass properties */
-      stBodyDef.massData.I      = (_pstBodyDef->fInertia != 0.0f) ? _pstBodyDef->fInertia : 1.0f;
-      stBodyDef.massData.mass   = (_pstBodyDef->fMass != 0.0f) ? _pstBodyDef->fMass : 1.0f;;
+      b2MassData  stMassData;
+      orxBOOL     bHasMass;
+
+      /* Sets its type */
+      stBodyDef.type = b2_dynamicBody;
+
+      /* Has mass data? */
+      if((_pstBodyDef->fInertia > 0.0f) && (_pstBodyDef->fMass > 0.0f))
+      {
+        /* Stores mass properties */
+        stMassData.I    = _pstBodyDef->fInertia;
+        stMassData.mass = _pstBodyDef->fMass;
+
+        /* Updates status */
+        bHasMass = orxTRUE;
+      }
+      else
+      {
+        /* Updates status */
+        bHasMass = orxFALSE;
+      }
 
       /* Creates dynamic body */
       poResult = sstPhysics.poWorld->CreateBody(&stBodyDef);
+
+      /* Valid and has mass data? */
+      if((bHasMass != orxFALSE) && (poResult != orxNULL))
+      {
+        /* Updates its mass data */
+        poResult->SetMassData(&stMassData);
+      }
     }
     else
     {
-      /* Cleans mass properties */
-      stBodyDef.massData.I      = 0.0f;
-      stBodyDef.massData.mass   = 0.0f;
+      /* Sets its type */
+      stBodyDef.type = b2_staticBody;
 
-      /* Creates static body */
+      /* Creates dynamic body */
       poResult = sstPhysics.poWorld->CreateBody(&stBodyDef);
     }
   }
@@ -567,11 +608,11 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBod
 
 extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
-  b2Body       *poBody;
-  b2Fixture    *poResult = 0;
-  b2FixtureDef *pstFixtureDef;
-  b2CircleDef   stCircleDef;
-  b2PolygonDef  stPolygonDef;
+  b2Body         *poBody;
+  b2Fixture      *poResult = 0;
+  b2FixtureDef    stFixtureDef;
+  b2CircleShape   stCircleShape;
+  b2PolygonShape  stPolygonShape;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -585,58 +626,53 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
   /* Circle? */
   if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
   {
-    /* Gets def reference */
-    pstFixtureDef = &stCircleDef;
-
-    /* Updates Fixture type */
-    stCircleDef.type = b2_circleShape;
+    /* Stores shape reference */
+    stFixtureDef.shape = &stCircleShape;
 
     /* Stores its coordinates */
-    stCircleDef.localPosition.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fY * _pstBodyPartDef->vScale.fY);
-    stCircleDef.radius = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.fRadius * orx2F(0.5f) * (orxMath_Abs(_pstBodyPartDef->vScale.fX) + orxMath_Abs(_pstBodyPartDef->vScale.fY));
+    stCircleShape.m_p.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fY * _pstBodyPartDef->vScale.fY);
+    stCircleShape.m_radius = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.fRadius * orx2F(0.5f) * (orxMath_Abs(_pstBodyPartDef->vScale.fX) + orxMath_Abs(_pstBodyPartDef->vScale.fY));
   }
   /* Polygon */
   else
   {
-    /* Gets def reference */
-    pstFixtureDef = &stPolygonDef;
-
-    /* Updates Fixture type */
-    stPolygonDef.type = b2_polygonShape;
+    /* Stores shape reference */
+    stFixtureDef.shape = &stPolygonShape;
 
     /* Box? */
     if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX))
     {
+      b2Vec2 avVertexList[4];
+
       /* No mirroring? */
       if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
       {
         /* Stores its coordinates */
-        stPolygonDef.vertexCount = 4;
-        stPolygonDef.vertices[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
-        stPolygonDef.vertices[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-        stPolygonDef.vertices[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-        stPolygonDef.vertices[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
       }
       else
       {
         /* Stores its coordinates */
-        stPolygonDef.vertexCount = 4;
-        stPolygonDef.vertices[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
-        stPolygonDef.vertices[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-        stPolygonDef.vertices[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-        stPolygonDef.vertices[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
+        avVertexList[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
       }
+
+      /* Updates shape */
+      stPolygonShape.Set(avVertexList, 4);
     }
     else
     {
+      b2Vec2 avVertexList[b2_maxPolygonVertices];
       orxU32 i;
 
       /* Checks */
       orxASSERT(_pstBodyPartDef->stMesh.u32VertexCounter > 0);
       orxASSERT(orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER <= b2_maxPolygonVertices);
-
-      /* Updates the vertex counter */
-      stPolygonDef.vertexCount = _pstBodyPartDef->stMesh.u32VertexCounter;
 
       /* No mirroring? */
       if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
@@ -645,7 +681,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
         for(i = 0; i < _pstBodyPartDef->stMesh.u32VertexCounter; i++)
         {
           /* Sets its vector */
-          stPolygonDef.vertices[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
+          avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
         }
       }
       else
@@ -656,30 +692,26 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
         for(iDst = _pstBodyPartDef->stMesh.u32VertexCounter - 1, i = 0; iDst >= 0; iDst--, i++)
         {
           /* Sets its vector */
-          stPolygonDef.vertices[iDst].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
+          avVertexList[iDst].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
         }
       }
+
+      /* Updates shape */
+      stPolygonShape.Set(avVertexList, _pstBodyPartDef->stMesh.u32VertexCounter);
     }
   }
 
   /* Inits Fixture definition */
-  pstFixtureDef->friction             = _pstBodyPartDef->fFriction;
-  pstFixtureDef->restitution          = _pstBodyPartDef->fRestitution;
-  pstFixtureDef->density              = poBody->IsStatic() ? 0.0f : _pstBodyPartDef->fDensity;
-  pstFixtureDef->filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
-  pstFixtureDef->filter.maskBits      = _pstBodyPartDef->u16CheckMask;
-  pstFixtureDef->filter.groupIndex    = 0;
-  pstFixtureDef->isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
+  stFixtureDef.friction             = _pstBodyPartDef->fFriction;
+  stFixtureDef.restitution          = _pstBodyPartDef->fRestitution;
+  stFixtureDef.density              = (poBody->GetType() != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
+  stFixtureDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
+  stFixtureDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+  stFixtureDef.filter.groupIndex    = 0;
+  stFixtureDef.isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
 
   /* Creates it */
-  poResult = poBody->CreateFixture(pstFixtureDef);
-
-  /* Valid? */
-  if(poResult != 0)
-  {
-    /* Computes body's mass */
-    poBody->SetMassFromShapes();
-  }
+  poResult = poBody->CreateFixture(&stFixtureDef);
 
   /* Done! */
   return (orxPHYSICS_BODY_PART *)poResult;
@@ -710,7 +742,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_
 {
   b2Body   *poBody;
   b2Vec2    vPosition;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -721,13 +753,13 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Sets position vector */
   vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
 
   /* Updates its position */
-  eResult = (poBody->SetXForm(vPosition, poBody->GetAngle()) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  poBody->SetTransform(vPosition, poBody->GetAngle());
 
   /* Done! */
   return eResult;
@@ -736,7 +768,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
 {
   b2Body   *poBody;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -746,10 +778,10 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Updates its rotation */
-  eResult = (poBody->SetXForm(poBody->GetPosition(), _fRotation) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  poBody->SetTransform(poBody->GetPosition(), _fRotation);
 
   /* Done! */
   return eResult;
@@ -773,7 +805,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pst
   vSpeed.Set(sstPhysics.fDimensionRatio * _pvSpeed->fX, sstPhysics.fDimensionRatio * _pvSpeed->fY);
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Updates its speed */
   poBody->SetLinearVelocity(vSpeed);
@@ -795,7 +827,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Updates its angular velocity */
   poBody->SetAngularVelocity(_fVelocity);
@@ -817,7 +849,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BO
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Has custom gravity */
   if(_pvCustomGravity != orxNULL)
@@ -1007,7 +1039,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Applies torque */
   poBody->ApplyTorque(_fTorque);
@@ -1032,7 +1064,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_p
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Sets force */
   vForce.Set(_pvForce->fX, _pvForce->fY);
@@ -1063,7 +1095,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   poBody = (b2Body *)_pstBody;
 
   /* Wakes up */
-  poBody->WakeUp();
+  poBody->SetAwake(true);
 
   /* Sets impulse */
   vImpulse.Set(_pvImpulse->fX, _pvImpulse->fY);
@@ -1072,61 +1104,55 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
 
   /* Applies force */
-  poBody->ApplyImpulse(vImpulse, vPoint);
+  poBody->ApplyLinearImpulse(vImpulse, vPoint);
 
   /* Done! */
   return eResult;
 }
 
-extern "C" orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+extern "C" orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
-  b2Segment     stSegment;
-  b2Vec2        vNormal;
-  b2Fixture    *poRaycastResult;
-  b2FilterData  stFilterData;
-  float         fLambda;
-  orxHANDLE     hResult = orxHANDLE_UNDEFINED;
+  b2Vec2          vStart, vEnd;
+  RayCastCallback oRaycastCallback;
+  orxHANDLE       hResult = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvStart != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
 
-  /* Gets segment */
-  stSegment.p1.Set(sstPhysics.fDimensionRatio * _pvStart->fX, sstPhysics.fDimensionRatio * _pvStart->fY);
-  stSegment.p2.Set(sstPhysics.fDimensionRatio * _pvEnd->fX, sstPhysics.fDimensionRatio * _pvEnd->fY);
+  /* Gets extremities */
+  vStart.Set(sstPhysics.fDimensionRatio * _pvStart->fX, sstPhysics.fDimensionRatio * _pvStart->fY);
+  vEnd.Set(sstPhysics.fDimensionRatio * _pvEnd->fX, sstPhysics.fDimensionRatio * _pvEnd->fY);
 
   /* Inits filter data */
-  stFilterData.categoryBits = _u16SelfFlags;
-  stFilterData.maskBits     = _u16CheckMask;
-  stFilterData.groupIndex   = 0;
+  oRaycastCallback.u16SelfFlags = _u16SelfFlags;
+  oRaycastCallback.u16CheckMask = _u16CheckMask;
 
-  /* Inits raycast fixture */
-  sstPhysics.poRaycastFixture->SetFilterData(stFilterData);
+  /* Stores early exit status */
+  oRaycastCallback.bEarlyExit   = _bEarlyExit;
 
   /* Issues Raycast */
-  poRaycastResult = sstPhysics.poWorld->RaycastOne(stSegment, &fLambda, &vNormal, false, sstPhysics.poRaycastFixture);
+  sstPhysics.poWorld->RayCast(&oRaycastCallback, vStart, vEnd);
 
   /* Found? */
-  if(poRaycastResult != orxNULL)
+  if(oRaycastCallback.hResult != orxHANDLE_UNDEFINED)
   {
     /* Updates result */
-    hResult = (orxHANDLE)poRaycastResult->GetBody()->GetUserData();
+    hResult = oRaycastCallback.hResult;
 
     /* Asked for contact? */
     if(_pvContact != orxNULL)
     {
       /* Updates it */
-      _pvContact->fX = ((orxFLOAT_1 - orx2F(fLambda)) * _pvStart->fX) + (orx2F(fLambda) * _pvEnd->fX);
-      _pvContact->fY = ((orxFLOAT_1 - orx2F(fLambda)) * _pvStart->fY) + (orx2F(fLambda) * _pvEnd->fY);
-      _pvContact->fZ = _pvStart->fZ;
+      orxVector_Set(_pvContact, oRaycastCallback.vContact.fX, oRaycastCallback.vContact.fY, _pvStart->fZ);
     }
 
     /* Asked for normal? */
     if(_pvNormal != orxNULL)
     {
       /* Updates it */
-      orxVector_Set(_pvNormal, vNormal.x, vNormal.y, orxFLOAT_0);
+      orxVector_Copy(_pvNormal, &(oRaycastCallback.vNormal));
     }
   }
 
@@ -1200,16 +1226,11 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
   {
     orxBOOL   bAllowSleep;
     orxFLOAT  fRatio;
-    orxVECTOR vGravity, vLower, vUpper;
-    b2AABB    stWorldAABB;
+    orxVECTOR vGravity;
     b2Vec2    vWorldGravity;
 
     /* Cleans static controller */
     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
-
-    /* Sets default world boundaries */
-    orxVector_Set(&vLower, -orxPhysics::sfDefaultWorldSize, -orxPhysics::sfDefaultWorldSize, orxFLOAT_0);
-    orxVector_Set(&vUpper, orxPhysics::sfDefaultWorldSize, orxPhysics::sfDefaultWorldSize, orxFLOAT_0);
 
     /* Pushes config section */
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
@@ -1236,19 +1257,11 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       sstPhysics.fDimensionRatio = orxPhysics::sfDefaultDimensionRatio;
     }
 
-    /* Gets world corners from config */
-    orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_WORLD_LOWER, &vLower);
-    orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_WORLD_UPPER, &vUpper);
-
-    /* Inits world AABB */
-    stWorldAABB.lowerBound.Set(sstPhysics.fDimensionRatio * vLower.fX, sstPhysics.fDimensionRatio * vLower.fY);
-    stWorldAABB.upperBound.Set(sstPhysics.fDimensionRatio * vUpper.fX, sstPhysics.fDimensionRatio * vUpper.fY);
-
     /* Inits world gravity */
     vWorldGravity.Set(sstPhysics.fDimensionRatio * vGravity.fX, sstPhysics.fDimensionRatio * vGravity.fY);
 
     /* Creates world */
-    sstPhysics.poWorld = new b2World(stWorldAABB, vWorldGravity, bAllowSleep ? true : false);
+    sstPhysics.poWorld = new b2World(vWorldGravity, bAllowSleep ? true : false);
 
     /* Success? */
     if(sstPhysics.poWorld != orxNULL)
@@ -1257,12 +1270,10 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       orxU32    u32IterationsPerStep;
 
       /* Creates listeners */
-      sstPhysics.poContactListener  = new orxPhysicsContactListener();
-      sstPhysics.poBoundaryListener = new orxPhysicsBoundaryListener();
+      sstPhysics.poContactListener = new orxPhysicsContactListener();
 
       /* Registers them */
       sstPhysics.poWorld->SetContactListener(sstPhysics.poContactListener);
-      sstPhysics.poWorld->SetBoundaryListener(sstPhysics.poBoundaryListener);
 
       /* Stores inverse dimension ratio */
       sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
@@ -1297,19 +1308,6 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          b2CircleDef stCircleDef;
-
-          /* Updates Fixture type */
-          stCircleDef.type = b2_circleShape;
-
-          /* Stores its coordinates */
-          stCircleDef.localPosition.Set(0.0f, 0.0f);
-          stCircleDef.radius    = 0.0f;
-          stCircleDef.isSensor  = true;
-
-          /* Creates raycast fixture */
-          sstPhysics.poRaycastFixture = sstPhysics.poWorld->GetGroundBody()->CreateFixture(&stCircleDef);
-
           /* Creates event bank */
           sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -1320,7 +1318,6 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
         {
           /* Deletes listeners */
           delete sstPhysics.poContactListener;
-          delete sstPhysics.poBoundaryListener;
 
           /* Deletes world */
           delete sstPhysics.poWorld;
@@ -1333,7 +1330,6 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       {
         /* Deletes listeners */
         delete sstPhysics.poContactListener;
-        delete sstPhysics.poBoundaryListener;
 
         /* Deletes world */
         delete sstPhysics.poWorld;
@@ -1363,7 +1359,6 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_Exit()
   {
     /* Deletes the listeners */
     delete sstPhysics.poContactListener;
-    delete sstPhysics.poBoundaryListener;
 
     /* Deletes world */
     delete sstPhysics.poWorld;

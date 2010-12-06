@@ -52,13 +52,13 @@
     <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/static/gp2x"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/gp2x"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/gp2x"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -89,12 +89,12 @@
     <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2 -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/static/gp2x"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/gp2x"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/gp2x"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -125,12 +125,12 @@
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -161,11 +161,11 @@
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -196,12 +196,12 @@
     <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -232,11 +232,11 @@
     <Configuration Name="Linux Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2 -Wno-write-strings -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -299,12 +299,12 @@
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -335,11 +335,11 @@
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -370,12 +370,12 @@
     <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Options="-fPIC" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
         <Library Value="Box2Dd"/>
         <Library Value="imporxd"/>
       </Linker>
@@ -406,11 +406,11 @@
     <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2" Required="yes">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.2/Orx/include/"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
         <Library Value="Box2D"/>
         <Library Value="imporx"/>
       </Linker>

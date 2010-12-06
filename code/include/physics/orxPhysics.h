@@ -134,7 +134,6 @@ typedef enum __orxPHYSICS_EVENT_t
 {
   orxPHYSICS_EVENT_CONTACT_ADD = 0,
   orxPHYSICS_EVENT_CONTACT_REMOVE,
-  orxPHYSICS_EVENT_OUT_OF_WORLD,
 
   orxPHYSICS_EVENT_NUMBER,
 
@@ -167,8 +166,6 @@ typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
 #define orxPHYSICS_KZ_CONFIG_SECTION      "Physics"
 #define orxPHYSICS_KZ_CONFIG_GRAVITY      "Gravity"
 #define orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP  "AllowSleep"
-#define orxPHYSICS_KZ_CONFIG_WORLD_LOWER  "WorldLowerBound"
-#define orxPHYSICS_KZ_CONFIG_WORLD_UPPER  "WorldUpperBound"
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
 #define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
@@ -341,11 +338,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(or
  * @param[in]   _pvEnd                                End of raycast
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
  * @return Colliding body's user data / orxHANDLE_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Enables/disables physics simulation

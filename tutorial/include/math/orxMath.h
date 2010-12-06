@@ -409,8 +409,17 @@ static orxINLINE orxFLOAT    orxMath_Floor(orxFLOAT _fOp)
 {
   register orxFLOAT fResult;
 
+#ifdef __orxMSVC__
+
   /* Updates result */
   fResult = floorf(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = floor(_fOp);
+
+#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
