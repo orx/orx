@@ -375,18 +375,22 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-  orxBODY                  *pstBody;
+  b2Body                   *poBody;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
-  /* For all bodies */
-  for(pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
-      pstBody != orxNULL;
-      pstBody = orxBODY(orxStructure_GetNext(pstBody)))
+  /* For all physical bodies */
+  for(poBody = sstPhysics.poWorld->GetBodyList();
+      poBody != NULL;
+      poBody = poBody->GetNext())
   {
     orxFRAME *pstFrame;
+    orxBODY  *pstBody;
+
+    /* Gets associated body */
+    pstBody = orxBODY(poBody->GetUserData());
 
     /* Gets owner's frame */
     pstFrame = orxOBJECT_GET_STRUCTURE(orxOBJECT(orxBody_GetOwner(pstBody)), FRAME);
@@ -426,13 +430,23 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Updates last step of world simulation */
     sstPhysics.poWorld->Step(fDT, (orxU32)_pContext, (orxU32)_pContext);
 
-    /* For all bodies */
-    for(pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
-        pstBody != orxNULL;
-        pstBody = orxBODY(orxStructure_GetNext(pstBody)))
+    /* For all physical bodies */
+    for(poBody = sstPhysics.poWorld->GetBodyList();
+        poBody != NULL;
+        poBody = poBody->GetNext())
     {
-      /* Applies simulation result */
-      orxBody_ApplySimulationResult(pstBody);
+      /* Non-static and awake? */
+      if((poBody->GetType() != b2_staticBody)
+      && (poBody->IsAwake() != false))
+      {
+        orxBODY *pstBody;
+
+        /* Gets associated body */
+        pstBody = orxBODY(poBody->GetUserData());
+
+        /* Applies simulation result */
+        orxBody_ApplySimulationResult(pstBody);
+      }
     }
 
     /* For all stored events */
@@ -528,7 +542,7 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
       orxBOOL     bHasMass;
 
       /* Sets its type */
-      stBodyDef.type = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_NO_SIMULATION) ? b2_kinematicBody : b2_dynamicBody;
+      stBodyDef.type = b2_dynamicBody;
 
       /* Has mass data? */
       if((_pstBodyDef->fInertia > 0.0f) && (_pstBodyDef->fMass > 0.0f))
@@ -559,7 +573,7 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
     else
     {
       /* Sets its type */
-      stBodyDef.type = b2_staticBody;
+      stBodyDef.type = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_MOVE) ? b2_kinematicBody : b2_staticBody;
 
       /* Creates dynamic body */
       poResult = sstPhysics.poWorld->CreateBody(&stBodyDef);

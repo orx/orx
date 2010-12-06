@@ -131,6 +131,8 @@
 #define orxOBJECT_KZ_ALPHA                      "alpha"
 #define orxOBJECT_KZ_MULTIPLY                   "multiply"
 #define orxOBJECT_KZ_ADD                        "add"
+#define orxOBJECT_KZ_SCALE                      "scale"
+#define orxOBJECT_KZ_POSITION                   "position"
 
 
 /***************************************************************************
@@ -609,7 +611,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       orxU32    u32FrameFlags, u32Flags;
       orxS32    s32Number;
       orxVECTOR vValue, vParentSize, vColor;
-      orxBOOL   bHasParent = orxFALSE;
+      orxBOOL   bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE;
 
       /* Defaults to 2D flags */
       u32Flags = orxOBJECT_KU32_FLAG_2D;
@@ -716,6 +718,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Updates parent status */
           bHasParent = orxTRUE;
 
+          /* Has parent scale value? */
+          if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)
+          {
+            const orxSTRING zUseParentScale;
+
+            /* Gets its literal version */
+            zUseParentScale = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE));
+
+            /* Scale only? */
+            if(orxString_Compare(zUseParentScale, orxOBJECT_KZ_SCALE) == 0)
+            {
+              /* Updates status */
+              bUseParentPosition  = orxFALSE;
+            }
+            /* Position only? */
+            else if(orxString_Compare(zUseParentScale, orxOBJECT_KZ_POSITION) == 0)
+            {
+              /* Updates status */
+              bUseParentScale     = orxFALSE;
+            }
+            /* Not both? */
+            else if(orxString_Compare(zUseParentScale, orxOBJECT_KZ_BOTH) != 0)
+            {
+              /* Is false? */
+              if(orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
+              {
+                /* Updates status */
+                bUseParentScale     = orxFALSE;
+                bUseParentPosition  = orxFALSE;
+              }
+            }
+          }
+
           /* Gets camera frustum */
           orxCamera_GetFrustum(pstCamera, &stFrustum);
 
@@ -796,10 +831,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxVector_SetAll(&vValue, fScale);
         }
 
-        /* Use parent space and has a valid parent? */
+        /* Has a valid parent and uses its scale? */
         if((bHasParent != orxFALSE)
-        && ((orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
-         || (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)))
+        && (bUseParentScale != orxFALSE))
         {
           orxVECTOR vSize;
 
@@ -813,7 +847,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxVector_SetAll(&vSize, orxFLOAT_1);
 
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> can' t use relative scale from parent <%s> as it doesn't have any size. Assuming size (1, 1, 1).", _zConfigID, zCameraName);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> can't use relative scale from parent <%s> as it doesn't have any size. Assuming size (1, 1, 1).", _zConfigID, zCameraName);
           }
 
           /* No scale on Z */
@@ -967,10 +1001,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has a position? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
       {
-        /* Use parent space and has a valid parent? */
+        /* Has valid parent and uses its position? */
         if((bHasParent != orxFALSE)
-        && ((orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
-         || (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)))
+        && (bUseParentPosition != orxFALSE))
         {
           /* Gets world space values */
           orxVector_Mul(&vValue, &vValue, &vParentSize);
@@ -1051,7 +1084,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has blend mode? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
       {
-        orxSTRING zBlendMode;
+        const orxSTRING zBlendMode;
 
         /* Gets blend mode value */
         zBlendMode = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE));
