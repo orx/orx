@@ -528,7 +528,7 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHAN
       orxBOOL     bHasMass;
 
       /* Sets its type */
-      stBodyDef.type = b2_dynamicBody;
+      stBodyDef.type = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_NO_SIMULATION) ? b2_kinematicBody : b2_dynamicBody;
 
       /* Has mass data? */
       if((_pstBodyDef->fInertia > 0.0f) && (_pstBodyDef->fMass > 0.0f))

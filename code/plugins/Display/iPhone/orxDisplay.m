@@ -2710,10 +2710,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
       /* Updates counter */
       sstDisplay.s32BufferIndex = 4;
 
-      glDisable(GL_BLEND);
-      glASSERT();
-      sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NONE;
-
       /* Draws arrays */
       orxDisplay_iPhone_DrawArrays();
     }

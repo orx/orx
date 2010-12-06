@@ -70,6 +70,7 @@
 #define orxBODY_KZ_CONFIG_CUSTOM_GRAVITY      "CustomGravity"
 #define orxBODY_KZ_CONFIG_FIXED_ROTATION      "FixedRotation"
 #define orxBODY_KZ_CONFIG_ALLOW_GROUND_SLIDING "AllowGroundSliding"
+#define orxBODY_KZ_CONFIG_ALLOW_SIMULATION    "AllowSimulation"
 #define orxBODY_KZ_CONFIG_HIGH_SPEED          "HighSpeed"
 #define orxBODY_KZ_CONFIG_DYNAMIC             "Dynamic"
 #define orxBODY_KZ_CONFIG_PART_LIST           "PartList"
@@ -386,6 +387,10 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
     if((orxConfig_HasValue(orxBODY_KZ_CONFIG_ALLOW_GROUND_SLIDING) == orxFALSE) || (orxConfig_GetBool(orxBODY_KZ_CONFIG_ALLOW_GROUND_SLIDING) != orxFALSE))
     {
       stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_CAN_SLIDE;
+    }
+    if((orxConfig_HasValue(orxBODY_KZ_CONFIG_ALLOW_SIMULATION) != orxFALSE) && (orxConfig_GetBool(orxBODY_KZ_CONFIG_ALLOW_SIMULATION) == orxFALSE))
+    {
+      stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_NO_SIMULATION;
     }
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_HIGH_SPEED) != orxFALSE)
     {
