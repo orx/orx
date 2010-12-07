@@ -61,10 +61,11 @@ typedef struct __orxRENDER_RENDER_NODE_t
   orxLINKLIST_NODE      stNode;                   /**< Linklist node : 12 */
   orxOBJECT            *pstObject;                /**< Object pointer : 16 */
   orxTEXTURE           *pstTexture;               /**< Texture pointer : 20 */
-  orxFLOAT              fZ;                       /**< Z coordinate : 24 */
-  orxFLOAT              fDepthCoef;               /**< Depth coef : 28 */
-  orxDISPLAY_SMOOTHING  eSmoothing;               /**< Smoothing : 32 */
-  orxDISPLAY_BLEND_MODE eBlendMode;               /**< Blend mode : 36 */
+  const orxSHADER      *pstShader;                /**< Shader pointer : 24 */
+  orxFLOAT              fZ;                       /**< Z coordinate : 28 */
+  orxFLOAT              fDepthCoef;               /**< Depth coef : 32 */
+  orxDISPLAY_SMOOTHING  eSmoothing;               /**< Smoothing : 36 */
+  orxDISPLAY_BLEND_MODE eBlendMode;               /**< Blend mode : 40 */
 
 } orxRENDER_NODE;
 
@@ -730,7 +731,24 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                           {
                             orxDISPLAY_BLEND_MODE eBlendMode;
                             orxDISPLAY_SMOOTHING  eSmoothing;
+                            const orxSHADER      *pstShader;
+                            orxSHADERPOINTER     *pstShaderPointer;
                             orxRENDER_NODE       *pstNode;
+
+                            /* Gets shader pointer */
+                            pstShaderPointer = orxOBJECT_GET_STRUCTURE(pstObject, SHADERPOINTER);
+
+                            /* Valid? */
+                            if(pstShaderPointer != orxNULL)
+                            {
+                              /* Gets first shader */
+                              pstShader = orxShaderPointer_GetShader(pstShaderPointer, 0);
+                            }
+                            else
+                            {
+                              /* Clears shader */
+                              pstShader = orxNULL;
+                            }
 
                             /* Gets graphic smoothing */
                             eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
@@ -761,6 +779,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                             /* Stores object */
                             pstRenderNode->pstObject  = pstObject;
                             pstRenderNode->pstTexture = pstTexture;
+                            pstRenderNode->pstShader  = pstShader;
                             pstRenderNode->eSmoothing = eSmoothing;
                             pstRenderNode->eBlendMode = eBlendMode;
 
@@ -778,16 +797,18 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                             }
                             else
                             {
-                              /* Finds correct node */
+                              /* Finds correct node position */
                               for(pstNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
                                   (pstNode != orxNULL)
                                && ((vObjectPos.fZ < pstNode->fZ)
                                 || ((vObjectPos.fZ == pstNode->fZ)
                                  && ((pstTexture < pstNode->pstTexture)
                                   || ((pstTexture == pstNode->pstTexture)
-                                   && (eBlendMode < pstNode->eBlendMode))
-                                    || ((eBlendMode == pstNode->eBlendMode)
-                                     && (eSmoothing < pstNode->eSmoothing)))));
+                                   && ((pstShader < pstNode->pstShader)
+                                    || ((pstShader == pstNode->pstShader)
+                                     && (eBlendMode < pstNode->eBlendMode))
+                                      || ((eBlendMode == pstNode->eBlendMode)
+                                       && (eSmoothing < pstNode->eSmoothing)))))));
                                   pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
 
                               /* End of list reached? */
