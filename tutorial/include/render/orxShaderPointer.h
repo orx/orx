@@ -129,6 +129,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_AddShader(orxSH
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader);
 
+/** Gets a shader
+ * @param[in]   _pstShaderPointer Concerned ShaderPointer
+ * @param[in]   _u32Index         Index of shader to get
+ * @return      orxSJADER / orxNULL
+ */
+extern orxDLLAPI const orxSHADER *orxFASTCALL   orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index);
+
 /** Adds a shader using its config ID
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _zShaderConfigID  Config ID of the shader to add

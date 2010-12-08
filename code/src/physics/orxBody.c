@@ -69,6 +69,7 @@
 #define orxBODY_KZ_CONFIG_ANGULAR_DAMPING     "AngularDamping"
 #define orxBODY_KZ_CONFIG_CUSTOM_GRAVITY      "CustomGravity"
 #define orxBODY_KZ_CONFIG_FIXED_ROTATION      "FixedRotation"
+#define orxBODY_KZ_CONFIG_ALLOW_SLEEP         "AllowSleep"
 #define orxBODY_KZ_CONFIG_ALLOW_GROUND_SLIDING "AllowGroundSliding"
 #define orxBODY_KZ_CONFIG_ALLOW_MOVING        "AllowMoving"
 #define orxBODY_KZ_CONFIG_HIGH_SPEED          "HighSpeed"
@@ -383,6 +384,10 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_FIXED_ROTATION) != orxFALSE)
     {
       stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_FIXED_ROTATION;
+    }
+    if((orxConfig_HasValue(orxBODY_KZ_CONFIG_ALLOW_SLEEP) == orxFALSE) || (orxConfig_GetBool(orxBODY_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE))
+    {
+      stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP;
     }
     if((orxConfig_HasValue(orxBODY_KZ_CONFIG_ALLOW_GROUND_SLIDING) == orxFALSE) || (orxConfig_GetBool(orxBODY_KZ_CONFIG_ALLOW_GROUND_SLIDING) != orxFALSE))
     {

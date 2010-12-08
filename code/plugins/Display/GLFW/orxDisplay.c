@@ -2129,6 +2129,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
     glDisable(GL_STENCIL_TEST);
     glASSERT();
+    glDisable(GL_ALPHA_TEST);
+    glASSERT();
     glEnableClientState(GL_VERTEX_ARRAY);
     glASSERT();
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);

@@ -314,6 +314,8 @@ static orxView *spoInstance;
       /* Common init */
       glDisable(GL_CULL_FACE);
       glASSERT();
+      glDisable(GL_ALPHA_TEST);
+      glASSERT();
       glDisable(GL_DEPTH_TEST);
       glASSERT();
       glDisable(GL_STENCIL_TEST);
