@@ -271,10 +271,11 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBody(orxP
 
 /** Creates a part for a physical body
  * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _hUserData                            User data to associate with this physical body part
  * @param[in]   _pstBodyPartDef                       Physical body part definition
  * @return orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Deletes a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
@@ -285,10 +286,11 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyPart(
 /** Creates a joint to link two physical bodies together
  * @param[in]   _pstSrcBody                           Concerned source body
  * @param[in]   _pstDstBody                           Concerned destination body
+ * @param[in]   _hUserData                            User data to associate with this physical body part
  * @param[in]   _pstBodyJointDef                      Physical body joint definition
  * @return orxPHYSICS_BODY_JOINT / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxBODY_JOINT_DEF *_pstBodyJointDef);
+extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef);
 
 /** Deletes a physical body joint
  * @param[in]   _pstBodyJoint                         Concerned physical body joint

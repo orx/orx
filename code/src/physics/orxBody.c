@@ -90,6 +90,10 @@
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
 #define orxBODY_KZ_TYPE_BOX                   "box"
 #define orxBODY_KZ_TYPE_MESH                  "mesh"
+#define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
+
+#define orxBODY_KU32_PART_BANK_SIZE           256
+#define orxBODY_KU32_JOINT_BANK_SIZE          32
 
 
 /***************************************************************************
@@ -100,10 +104,19 @@
  */
 struct __orxBODY_PART_t
 {
-  orxPHYSICS_BODY_PART *pstData;                                      /**< Data structure : 4 */
-  const orxSTRING       zReference;                                   /**< Part reference name : 8 */
+  orxLINKLIST_NODE        stNode;                                     /**< Linklist node : 12 */
+  orxPHYSICS_BODY_PART   *pstData;                                    /**< Data structure : 16 */
+  const orxSTRING         zReference;                                 /**< Part reference name : 20 */
+};
 
-  orxPAD(8)
+/** Body joint structure
+ */
+struct __orxBODY_JOINT_t
+{
+  orxLINKLIST_NODE        stSrcNode;                                  /**< Linklist source node : 12 */
+  orxLINKLIST_NODE        stDstNode;                                  /**< Linklist destination node : 24 */
+  orxPHYSICS_BODY_JOINT  *pstData;                                    /**< Data structure : 28 */
+  const orxSTRING         zReference;                                 /**< Part reference name : 32 */
 };
 
 /** Body structure
@@ -112,13 +125,15 @@ struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
   orxVECTOR               vScale;                                     /**< Scale : 28 */
-  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 32 */
-  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 36 */
-  orxU32                  u32DefFlags;                                /**< Definition flags : 40 */
-  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 44 */
-  orxVECTOR               vPreviousPosition;                          /**< Previous position : 56 */
-  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 60 */
-  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 124 */
+  orxVECTOR               vPreviousPosition;                          /**< Previous position : 40 */
+  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 44 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 48 */
+  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 52 */
+  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 56 */
+  orxU32                  u32DefFlags;                                /**< Definition flags : 60 */
+  orxLINKLIST             stPartList;                                 /**< Part list : 72 */
+  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 84 */
+  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 96 */
 };
 
 /** Static structure
@@ -126,6 +141,8 @@ struct __orxBODY_t
 typedef struct __orxBODY_STATIC_t
 {
   orxU32            u32Flags;                                         /**< Control flags */
+  orxBANK          *pstPartBank;                                      /**< Part bank */
+  orxBANK          *pstJointBank;                                     /**< Joint bank */
 
 } orxBODY_STATIC;
 
@@ -196,8 +213,37 @@ orxSTATUS orxFASTCALL orxBody_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstBody, sizeof(orxBODY_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    /* Creates banks */
+    sstBody.pstPartBank   = orxBank_Create(orxBODY_KU32_PART_BANK_SIZE, sizeof(orxBODY_PART), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstBody.pstJointBank  = orxBank_Create(orxBODY_KU32_JOINT_BANK_SIZE, sizeof(orxBODY_JOINT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if((sstBody.pstPartBank != orxNULL)
+    && (sstBody.pstJointBank != orxNULL))
+    {
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't create body part & body joint banks.");
+
+      /* Deletes banks */
+      if(sstBody.pstPartBank != orxNULL)
+      {
+        orxBank_Delete(sstBody.pstPartBank);
+        sstBody.pstPartBank = orxNULL;
+      }
+      if(sstBody.pstJointBank != orxNULL)
+      {
+        orxBank_Delete(sstBody.pstJointBank);
+        sstBody.pstJointBank = orxNULL;
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
@@ -233,6 +279,12 @@ void orxFASTCALL orxBody_Exit()
   {
     /* Deletes body list */
     orxBody_DeleteAll();
+
+    /* Deletes banks */
+    orxBank_Delete(sstBody.pstPartBank);
+    sstBody.pstPartBank = orxNULL;
+    orxBank_Delete(sstBody.pstJointBank);
+    sstBody.pstJointBank = orxNULL;
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_BODY);
@@ -377,20 +429,6 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
       /* Gets number of declared slots */
       u32SlotCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_PART_LIST);
 
-      /* Too many slots? */
-      if(u32SlotCounter > orxBODY_KU32_PART_MAX_NUMBER)
-      {
-        /* For all exceeding slots */
-        for(i = orxBODY_KU32_PART_MAX_NUMBER; i < u32SlotCounter; i++)
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Too many parts for this body, can't add part <%s>.", _zConfigID, orxConfig_GetListString(orxBODY_KZ_CONFIG_PART_LIST, i));
-        }
-
-        /* Updates slot counter */
-        u32SlotCounter = orxBODY_KU32_PART_MAX_NUMBER;
-      }
-
       /* For all parts */
       for(i = 0; i < u32SlotCounter; i++)
       {
@@ -403,7 +441,11 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
         if((zPartName != orxNULL) && (zPartName != orxSTRING_EMPTY))
         {
           /* Adds part */
-          orxBody_AddPartFromConfig(pstResult, i, zPartName);
+          if(orxBody_AddPartFromConfig(pstResult, zPartName) == orxNULL)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Couldn't add part <%s> for this body: too many parts or invalid part.", _zConfigID, orxConfig_GetListString(orxBODY_KZ_CONFIG_PART_LIST, i));
+          }
         }
         else
         {
@@ -451,13 +493,34 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstBody) == 0)
   {
-    orxU32 i;
+    orxBODY_PART   *pstBodyPart;
+    orxBODY_JOINT  *pstBodyJoint;
 
-    /* For all data structure */
-    for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
+    /* For all parts */
+    for(pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
+        pstBodyPart != orxNULL;
+        pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList)))
     {
-      /* Cleans it */
-      orxBody_RemovePart(_pstBody, i);
+      /* Removes it */
+      orxBody_RemovePart(pstBodyPart);
+    }
+
+    /* For all source joints */
+    for(pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stSrcJointList));
+        pstBodyJoint != orxNULL;
+        pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stSrcJointList)))
+    {
+      /* Removes it */
+      orxBody_RemoveJoint(pstBodyJoint);
+    }
+
+    /* For all destination joints */
+    for(pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList));
+        pstBodyJoint != orxNULL;
+        pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList)))
+    {
+      /* Removes it */
+      orxBody_RemoveJoint(pstBodyJoint);
     }
 
     /* Has data? */
@@ -502,74 +565,72 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetOwner(const orxBODY *_pstBody)
   return pstResult;
 }
 
-/** Adds a body part
+/** Adds a part to body
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
- * @param[in]   _pstPartDef     Body part definition
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstBodyPartDef Body part definition
+ * @return      orxBODY_PART / orxNULL
  */
-orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const orxBODY_PART_DEF *_pstBodyPartDef)
+orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBODY_PART *pstResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
   orxASSERT(_pstBodyPartDef != orxNULL);
-  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
-  /* Had previous part? */
-  if(_pstBody->astPartList[_u32Index].pstData != orxNULL)
-  {
-    /* Removes it */
-    eResult = orxBody_RemovePart(_pstBody, _u32Index);
-  }
+  /* Creates a body part */
+  pstResult = (orxBODY_PART *)orxBank_Allocate(sstBody.pstPartBank);
 
   /* Valid? */
-  if(eResult != orxSTATUS_FAILURE)
+  if(pstResult != orxNULL)
   {
     orxPHYSICS_BODY_PART *pstBodyPart;
 
-    /* Creates part */
-    pstBodyPart = orxPhysics_CreateBodyPart(_pstBody->pstData, _pstBodyPartDef);
+    /* Clears it */
+    orxMemory_Zero(pstResult, sizeof(orxBODY_PART));
+
+    /* Creates physics part */
+    pstBodyPart = orxPhysics_CreateBodyPart(_pstBody->pstData, pstResult, _pstBodyPartDef);
 
     /* Valid? */
     if(pstBodyPart != orxNULL)
     {
-      /* Stores it */
-      _pstBody->astPartList[_u32Index].pstData = pstBodyPart;
+      /* Stores its data */
+      pstResult->pstData = pstBodyPart;
+
+      /* Links it */
+      orxLinkList_AddEnd(&(_pstBody->stPartList), &(pstResult->stNode));
     }
     else
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to create body part.");
 
-      /* Cleans reference */
-      _pstBody->astPartList[_u32Index].pstData = orxNULL;
+      /* Deletes part */
+      orxBank_Free(sstBody.pstPartBank, pstResult);
 
       /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      pstResult = orxNULL;
     }
   }
 
   /* Done! */
-  return eResult;
+  return pstResult;
 }
 
 /** Adds a part to body from config
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _zConfigID      Body part config ID
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxBODY_PART / orxNULL
  */
-orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, const orxSTRING _zConfigID)
+orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBODY_PART *pstResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Pushes section */
@@ -578,6 +639,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
   {
     orxSTRING         zBodyPartType;
     orxBODY_PART_DEF  stBodyPartDef;
+    orxBOOL           bSuccess = orxTRUE;
 
     /* Clears body part definition */
     orxMemory_Zero(&stBodyPartDef, sizeof(orxBODY_PART_DEF));
@@ -683,8 +745,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or less than 3 vertices).", _zConfigID);
 
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
+        /* Updates status */
+        bSuccess = orxFALSE;
       }
     }
     /* Unknown */
@@ -693,24 +755,24 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "<%s> isn't a valid type for a body part.", zBodyPartType);
 
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      /* Updates status */
+      bSuccess = orxFALSE;
     }
 
     /* Valid? */
-    if(eResult != orxSTATUS_FAILURE)
+    if(bSuccess != orxFALSE)
     {
       /* Adds body part */
-      eResult = orxBody_AddPart(_pstBody, _u32Index, &stBodyPartDef);
+      pstResult = orxBody_AddPart(_pstBody, &stBodyPartDef);
 
       /* Valid? */
-      if(eResult != orxSTATUS_FAILURE)
+      if(pstResult != orxNULL)
       {
         /* Stores its reference */
-        _pstBody->astPartList[_u32Index].zReference = orxConfig_GetCurrentSection();
+        pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Protects it */
-        orxConfig_ProtectSection(_pstBody->astPartList[_u32Index].zReference, orxTRUE);
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
       }
     }
 
@@ -723,6 +785,97 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named (%s)", _zConfigID);
 
     /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets next body part
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pstBodyPart    Current body part (orxNULL to get the first one)
+ * @return      orxBODY_PART / orxNULL
+ */
+orxBODY_PART *orxFASTCALL orxBody_GetNextPart(const orxBODY *_pstBody, const orxBODY_PART *_pstBodyPart)
+{
+  orxBODY_PART *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* First one? */
+  if(_pstBodyPart == orxNULL)
+  {
+    /* Updates result */
+    pstResult = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = (orxBODY_PART *)orxLinkList_GetNext(&(_pstBodyPart->stNode));
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a body part name
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxSTRING / orxNULL
+ */
+const orxSTRING orxFASTCALL orxBody_GetPartName(const orxBODY_PART *_pstBodyPart)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  zResult = _pstBodyPart->zReference;
+
+  /* Done! */
+  return zResult;
+}
+
+/** Removes a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY_PART *_pstBodyPart)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyPart != orxNULL)
+  {
+    /* Unlinks it */
+    orxLinkList_Remove(&(_pstBodyPart->stNode));
+
+    /* Deletes its data */
+    orxPhysics_DeleteBodyPart(_pstBodyPart->pstData);
+
+    /* Has reference? */
+    if(_pstBodyPart->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstBodyPart->zReference, orxFALSE);
+    }
+
+    /* Frees part */
+    orxBank_Free(sstBody.pstPartBank, _pstBodyPart);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
 
@@ -730,73 +883,179 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
   return eResult;
 }
 
-/** Gets a body part
- * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      orxPHYSICS_BODY_PART / orxNULL
+/** Adds a joint to link two bodies together
+ * @param[in]   _pstSrcBody       Concerned source body
+ * @param[in]   _pstDstBody       Concerned destination body
+ * @param[in]   _pstBodyJointDef  Body joint definition
+ * @return      orxBODY_JOINT / orxNULL
  */
-orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index)
+orxBODY_JOINT *orxFASTCALL orxBody_AddJoint(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 {
-  orxPHYSICS_BODY_PART *pstResult = orxNULL;
+  orxBODY_JOINT *pstResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+  orxSTRUCTURE_ASSERT(_pstSrcBody);
+  orxSTRUCTURE_ASSERT(_pstDstBody);
+  orxASSERT(_pstBodyJointDef != orxNULL);
 
-  /* Updates result */
-  pstResult = _pstBody->astPartList[_u32Index].pstData;
+  /* Creates a body part */
+  pstResult = (orxBODY_JOINT *)orxBank_Allocate(sstBody.pstJointBank);
+
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    orxPHYSICS_BODY_JOINT *pstBodyJoint;
+
+    /* Clears it */
+    orxMemory_Zero(pstResult, sizeof(orxBODY_JOINT));
+
+    /* Creates physics joint */
+    pstBodyJoint = orxPhysics_CreateBodyJoint(_pstSrcBody->pstData, _pstDstBody->pstData, pstResult, _pstBodyJointDef);
+
+    /* Valid? */
+    if(pstBodyJoint != orxNULL)
+    {
+      /* Stores its data */
+      pstResult->pstData = pstBodyJoint;
+
+      /* Links it */
+      orxLinkList_AddEnd(&(_pstSrcBody->stSrcJointList), &(pstResult->stSrcNode));
+      orxLinkList_AddEnd(&(_pstDstBody->stDstJointList), &(pstResult->stDstNode));
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to create body part.");
+
+      /* Deletes part */
+      orxBank_Free(sstBody.pstPartBank, pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
 
   /* Done! */
   return pstResult;
 }
 
-/** Gets a body part name
+/** Adds a joint from config to link two bodies together
+ * @param[in]   _pstSrcBody     Concerned source body
+ * @param[in]   _pstDstBody     Concerned destination body
+ * @param[in]   _zConfigID      Body joint config ID
+ * @return      orxBODY_JOINT / orxNULL
+ */
+orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxSTRING _zConfigID)
+{
+  //! TODO
+  return orxNULL;
+}
+
+/** Gets next body joint
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _pstBodyJoint   Current body joint (orxNULL to get the first one)
+ * @return      orxBODY_JOINT / orxNULL
+ */
+orxBODY_JOINT *orxFASTCALL orxBody_GetNextJoint(const orxBODY *_pstBody, const orxBODY_JOINT *_pstBodyJoint)
+{
+  orxBODY_JOINT *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* First one? */
+  if(_pstBodyJoint == orxNULL)
+  {
+    /* Gets first source joint */
+    pstResult = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stSrcJointList));
+
+    /* Invalid? */
+    if(pstResult == orxNULL)
+    {
+      /* Gets first destination joint */
+      pstResult = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList));
+    }
+  }
+  else
+  {
+    /* Is a source joint? */
+    if(_pstBodyJoint->stSrcNode.pstList == &(_pstBody->stSrcJointList))
+    {
+      /* Is last? */
+      if(&(_pstBodyJoint->stSrcNode) == orxLinkList_GetLast(&(_pstBody->stSrcJointList)))
+      {
+        /* Gets first destination joint */
+        pstResult = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList));
+      }
+    }
+    else
+    {
+      /* Checks */
+      orxASSERT(_pstBodyJoint->stDstNode.pstList == &(_pstBody->stDstJointList));
+
+      /* Gets next destination joint */
+      pstResult = (orxBODY_JOINT *)((orxU8 *)orxLinkList_GetNext(&(_pstBodyJoint->stDstNode)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stDstNode));
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a body joint name
+ * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      orxSTRING / orxNULL
  */
-const orxSTRING orxFASTCALL orxBody_GetPartName(const orxBODY *_pstBody, orxU32 _u32Index)
+const orxSTRING orxFASTCALL orxBody_GetJointName(const orxBODY_JOINT *_pstBodyJoint)
 {
   const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+  orxASSERT(_pstBodyJoint != orxNULL);
 
   /* Updates result */
-  zResult = _pstBody->astPartList[_u32Index].zReference;
+  zResult = _pstBodyJoint->zReference;
 
   /* Done! */
   return zResult;
 }
 
-/** Removes a body part
- * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+/** Removes a body joint
+ * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index)
+orxSTATUS orxFASTCALL orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
-  /* Has a part? */
-  if(_pstBody->astPartList[_u32Index].pstData != orxNULL)
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
   {
-    /* Deletes it */
-    orxPhysics_DeleteBodyPart(_pstBody->astPartList[_u32Index].pstData);
-    _pstBody->astPartList[_u32Index].pstData = orxNULL;
+    /* Unlinks it */
+    orxLinkList_Remove(&(_pstBodyJoint->stSrcNode));
+    orxLinkList_Remove(&(_pstBodyJoint->stDstNode));
+
+    /* Deletes its data */
+    orxPhysics_DeleteBodyJoint(_pstBodyJoint->pstData);
 
     /* Has reference? */
-    if(_pstBody->astPartList[_u32Index].zReference != orxNULL)
+    if(_pstBodyJoint->zReference != orxNULL)
     {
       /* Unprotects it */
-      orxConfig_ProtectSection(_pstBody->astPartList[_u32Index].zReference, orxFALSE);
-
-      /* Clears it */
-      _pstBody->astPartList[_u32Index].zReference = orxNULL;
+      orxConfig_ProtectSection(_pstBodyJoint->zReference, orxFALSE);
     }
+
+    /* Frees joint */
+    orxBank_Free(sstBody.pstJointBank, _pstBodyJoint);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -892,45 +1151,42 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    orxU32 i;
-
     /* Is new scale different? */
     if(orxVector_AreEqual(_pvScale, &(_pstBody->vScale)) == orxFALSE)
     {
+      orxBODY_PART *pstBodyPart;
+      orxU32        u32Counter;
+
       /* Stores it */
       orxVector_Copy(&(_pstBody->vScale), _pvScale);
 
       /* For all parts */
-      for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
+      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stPartList)), pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
+          u32Counter > 0;
+          u32Counter--, pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList)))
       {
-        /* Has part? */
-        if(_pstBody->astPartList[i].pstData != orxNULL)
+        /* Has reference? */
+        if(pstBodyPart->zReference != orxNULL)
         {
-          /* Has reference? */
-          if(_pstBody->astPartList[i].zReference != orxNULL)
-          {
-            const orxSTRING zReference;
+          const orxSTRING zReference;
 
-            /* Stores it locally */
-            zReference = _pstBody->astPartList[i].zReference;
+          /* Stores it locally */
+          zReference = pstBodyPart->zReference;
 
-            /* Removes part */
-            orxBody_RemovePart(_pstBody, i);
+          /* Removes part */
+          orxBody_RemovePart(pstBodyPart);
 
-            /* Creates new part */
-            orxBody_AddPartFromConfig(_pstBody, i, zReference);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Scaling of body part with no config reference is unsupported. Please scale only bodies that contain parts created from config.", (_pstBody->pstOwner != orxNULL) ? orxObject_GetName(orxOBJECT(_pstBody->pstOwner)) : "UNDEFINED");
-          }
+          /* Creates new part */
+          orxBody_AddPartFromConfig(_pstBody, zReference);
         }
         else
         {
-          break;
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Scaling of body part with no config reference is unsupported. Please scale only bodies that contain parts created from config.", (_pstBody->pstOwner != orxNULL) ? orxObject_GetName(orxOBJECT(_pstBody->pstOwner)) : "UNDEFINED");
         }
       }
+
+      //! TODO: For all joints
     }
 
     /* Updates result */

@@ -52,11 +52,6 @@
 #include "physics/orxPhysics.h"
 
 
-/** Misc defines
- */
-#define orxBODY_KU32_PART_MAX_NUMBER          8
-
-
 /** Internal Body structure
  */
 typedef struct __orxBODY_t                    orxBODY;
@@ -64,6 +59,10 @@ typedef struct __orxBODY_t                    orxBODY;
 /** Internal Body part structure
  */
 typedef struct __orxBODY_PART_t               orxBODY_PART;
+
+/** Internal Body joint structure
+ */
+typedef struct __orxBODY_JOINT_t              orxBODY_JOINT;
 
 
 /** Body module setup
@@ -107,40 +106,72 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(const orxBODY *_p
 
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _pstBodyPartDef Body part definition
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxBODY_PART / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Adds a part to body from config
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _zConfigID      Body part config ID
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxBODY_PART / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, const orxSTRING _zConfigID);
+extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_AddPartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID);
 
-/** Gets a body part
+/** Gets next body part
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      orxPHYSICS_BODY_PART / orxNULL
+ * @param[in]   _pstBodyPart    Current body part (orxNULL to get the first one)
+ * @return      orxBODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_GetNextPart(const orxBODY *_pstBody, const orxBODY_PART *_pstBodyPart);
 
 /** Gets a body part name
- * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _pstBodyPart    Concerned body part
  * @return      orxSTRING / orxNULL
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetPartName(const orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetPartName(const orxBODY_PART *_pstBodyPart);
 
 /** Removes a body part
- * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _pstBodyPart    Concerned body part
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY_PART *_pstBodyPart);
+
+
+/** Adds a joint to link two bodies together
+ * @param[in]   _pstSrcBody       Concerned source body
+ * @param[in]   _pstDstBody       Concerned destination body
+ * @param[in]   _pstBodyJointDef  Body joint definition
+ * @return      orxBODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxBODY_JOINT *orxFASTCALL   orxBody_AddJoint(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxBODY_JOINT_DEF *_pstBodyJointDef);
+
+/** Adds a joint from config to link two bodies together
+ * @param[in]   _pstSrcBody     Concerned source body
+ * @param[in]   _pstDstBody     Concerned destination body
+ * @param[in]   _zConfigID      Body joint config ID
+ * @return      orxBODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxBODY_JOINT *orxFASTCALL   orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxSTRING _zConfigID);
+
+/** Gets next body joint
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pstBodyJoint   Current body joint (orxNULL to get the first one)
+ * @return      orxBODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxBODY_JOINT *orxFASTCALL   orxBody_GetNextJoint(const orxBODY *_pstBody, const orxBODY_JOINT *_pstBodyJoint);
+
+/** Gets a body joint name
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @return      orxSTRING / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetJointName(const orxBODY_JOINT *_pstBodyJoint);
+
+/** Removes a body joint
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemoveJoint(orxBODY_JOINT *_pstBody);
 
 
 /** Sets a body position

@@ -184,54 +184,6 @@ public:
   orxU16      u16CheckMask;
 };
 
-static orxINLINE orxU32 orxPhysics_Box2D_GetFixtureIndex(const b2Body *_poBody, const b2Fixture *_poFixture)
-{
-  orxBODY  *pstBody;
-  orxU32    u32Result = orxU32_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(_poBody != orxNULL);
-  orxASSERT(_poFixture != orxNULL);
-
-  /* Gets corresponding body */
-  pstBody = orxBODY(const_cast<b2Body *>(_poBody)->GetUserData());
-
-  /* Valid? */
-  if(pstBody != orxNULL)
-  {
-    orxPHYSICS_BODY_PART *pstBodyPart;
-    orxU32                i;
-
-    /* For all parts */
-    for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
-    {
-      /* Gets part */
-      pstBodyPart = orxBody_GetPart(pstBody, i);
-
-      /* Valid? */
-      if(pstBodyPart != orxNULL)
-      {
-        /* Found? */
-        if((orxHANDLE)pstBodyPart == (orxHANDLE)_poFixture)
-        {
-          /* Updates result */
-          u32Result = i;
-
-          break;
-        }
-      }
-      else
-      {
-        /* Stops */
-        break;
-      }
-    }
-  }
-
-  /* Done! */
-  return u32Result;
-}
-
 static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
@@ -299,14 +251,14 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
   /* Should send the event? */
   if(bSendEvent != orxFALSE)
   {
-    orxU32 u32SourcePartIndex, u32DestinationPartIndex;
+    orxBODY_PART *pstSourceBodyPart, *pstDestinationBodyPart;
 
-    /* Gets part indexes */
-    u32SourcePartIndex      = orxPhysics_Box2D_GetFixtureIndex(poSource, _poContact->GetFixtureA());
-    u32DestinationPartIndex = orxPhysics_Box2D_GetFixtureIndex(poDestination, _poContact->GetFixtureB());
+    /* Gets body parts */
+    pstSourceBodyPart       = (orxBODY_PART *)_poContact->GetFixtureA()->GetUserData();
+    pstDestinationBodyPart  = (orxBODY_PART *)_poContact->GetFixtureB()->GetUserData();
 
     /* Valid? */
-    if((u32SourcePartIndex != orxU32_UNDEFINED) && (u32DestinationPartIndex != orxU32_UNDEFINED))
+    if((pstSourceBodyPart != orxNULL) && (pstDestinationBodyPart != orxNULL))
     {
       orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
@@ -342,8 +294,8 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
         }
 
         /* Updates part names */
-        pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(orxBODY(poSource->GetUserData()), u32SourcePartIndex);
-        pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(orxBODY(poDestination->GetUserData()), u32DestinationPartIndex);
+        pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(pstSourceBodyPart);
+        pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(pstDestinationBodyPart);
       }
     }
   }
@@ -621,7 +573,7 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBod
   return;
 }
 
-extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
+extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
   b2Body         *poBody;
   b2Fixture      *poResult = 0;
@@ -717,6 +669,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
   }
 
   /* Inits Fixture definition */
+  stFixtureDef.userData             = _hUserData;
   stFixtureDef.friction             = _pstBodyPartDef->fFriction;
   stFixtureDef.restitution          = _pstBodyPartDef->fRestitution;
   stFixtureDef.density              = (poBody->GetType() != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
@@ -753,7 +706,7 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART
   return;
 }
 
-extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxBODY_JOINT_DEF *_pstBodyJointDef)
+extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 {
   //! TODO
   return orxNULL;
