@@ -708,13 +708,78 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART
 
 extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 {
+  b2Joint            *poResult = 0;
+  b2JointDef         *pstJointDef;
+  b2RevoluteJointDef  stRevoluteJointDef;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSrcBody != orxNULL);
+  orxASSERT(_pstDstBody != orxNULL);
+  orxASSERT(_hUserData != orxHANDLE_UNDEFINED);
+  orxASSERT(_pstBodyJointDef != orxNULL);
+  orxASSERT(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE));
+
+  /* Revolute? */
+  if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE))
+  {
+    /* Stores joint reference */
+    pstJointDef = &stRevoluteJointDef;
+
+    /* Stores anchors */
+    stRevoluteJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+    stRevoluteJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+    /* Stores reference angle */
+    stRevoluteJointDef.referenceAngle = _pstBodyJointDef->stRevolute.fDefaultRotation;
+
+    /* Has rotation limits? */
+    if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT))
+    {
+      /* Stores them */
+      stRevoluteJointDef.lowerAngle   = _pstBodyJointDef->stRevolute.fMinRotation;
+      stRevoluteJointDef.upperAngle   = _pstBodyJointDef->stRevolute.fMaxRotation;
+
+      /* Updates status */
+      stRevoluteJointDef.enableLimit  = true;
+    }
+
+    /* Is motor? */
+    if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
+    {
+      /* Stores them */
+      stRevoluteJointDef.motorSpeed     = _pstBodyJointDef->stRevolute.fMotorSpeed;
+      stRevoluteJointDef.maxMotorTorque = _pstBodyJointDef->stRevolute.fMaxMotorTorque;
+
+      /* Updates status */
+      stRevoluteJointDef.enableMotor    = true;
+    }
+  }
   //! TODO
-  return orxNULL;
+
+  /* Inits joint definition */
+  pstJointDef->userData             = _hUserData;
+  pstJointDef->bodyA                = (b2Body *)_pstSrcBody;
+  pstJointDef->bodyB                = (b2Body *)_pstDstBody;
+  pstJointDef->collideConnected     = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+
+  /* Creates it */
+  poResult = sstPhysics.poWorld->CreateJoint(pstJointDef);
+
+  /* Done! */
+  return (orxPHYSICS_BODY_JOINT *)poResult;
 }
 
 extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint)
 {
-  //! TODO
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+
+  /* Deletes it */
+  sstPhysics.poWorld->DestroyJoint((b2Joint *)_pstBodyJoint);
+
+  return;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)

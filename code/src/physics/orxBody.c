@@ -85,6 +85,13 @@
 #define orxBODY_KZ_CONFIG_CENTER              "Center"
 #define orxBODY_KZ_CONFIG_RADIUS              "Radius"
 #define orxBODY_KZ_CONFIG_VERTEX_LIST         "VertexList"
+#define orxBODY_KZ_CONFIG_PARENT_ANCHOR       "ParentAnchor"
+#define orxBODY_KZ_CONFIG_CHILD_ANCHOR        "ChildAnchor"
+#define orxBODY_KZ_CONFIG_COLLIDE             "Collide"
+#define orxBODY_KZ_CONFIG_MIN_ROTATION        "MinRotation"
+#define orxBODY_KZ_CONFIG_MAX_ROTATION        "MaxRotation"
+#define orxBODY_KZ_CONFIG_MOTOR_SPEED         "MotorSpeed"
+#define orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE    "MaxMotorTorque"
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
@@ -948,8 +955,111 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJoint(orxBODY *_pstSrcBody, orxBODY *_pstD
  */
 orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxSTRING _zConfigID)
 {
-  //! TODO
-  return orxNULL;
+  orxBODY_JOINT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSrcBody);
+  orxSTRUCTURE_ASSERT(_pstDstBody);
+  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
+
+  /* Pushes section */
+  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
+  {
+    orxSTRING         zBodyJointType;
+    orxBODY_JOINT_DEF stBodyJointDef;
+    orxBOOL           bSuccess = orxTRUE;
+
+    /* Clears body part definition */
+    orxMemory_Zero(&stBodyJointDef, sizeof(orxBODY_JOINT_DEF));
+
+    /* Gets body joint type */
+    zBodyJointType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
+
+    /* Inits it */
+    orxConfig_GetVector(orxBODY_KZ_CONFIG_PARENT_ANCHOR, &(stBodyJointDef.vSrcAnchor));
+    orxConfig_GetVector(orxBODY_KZ_CONFIG_CHILD_ANCHOR, &(stBodyJointDef.vDstAnchor));
+    if(orxConfig_GetBool(orxBODY_KZ_CONFIG_COLLIDE) != orxFALSE)
+    {
+      stBodyJointDef.u32Flags                     = orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE;
+    }
+
+    /* Revolute? */
+    if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_REVOLUTE) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE;
+
+      /* Computes default rotation */
+      stBodyJointDef.stRevolute.fDefaultRotation  = orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+
+      /* Has angle limits? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_ROTATION) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_ROTATION) != orxFALSE))
+      {
+        /* Updates status */
+        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT;
+
+        /* Stores them */
+        stBodyJointDef.stRevolute.fMinRotation    = orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_ROTATION);
+        stBodyJointDef.stRevolute.fMaxRotation    = orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_ROTATION);
+      }
+
+      /* Is a motor? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE) != orxFALSE))
+      {
+        /* Stores motor values */
+        stBodyJointDef.stRevolute.fMotorSpeed     = orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
+        stBodyJointDef.stRevolute.fMaxMotorTorque = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+      }
+    }
+    //! TODO
+    /* Unknown */
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "<%s> isn't a valid type for a body joint.", zBodyJointType);
+
+      /* Updates status */
+      bSuccess = orxFALSE;
+    }
+
+    /* Valid? */
+    if(bSuccess != orxFALSE)
+    {
+      /* Adds body part */
+      pstResult = orxBody_AddJoint(_pstSrcBody, _pstDstBody, &stBodyJointDef);
+
+      /* Valid? */
+      if(pstResult != orxNULL)
+      {
+        /* Stores its reference */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+      }
+    }
+
+    /* Pops previous section */
+    orxConfig_PopSection();
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named (%s)", _zConfigID);
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets next body joint
