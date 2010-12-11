@@ -68,6 +68,8 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, const o
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBody, void, orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, const orxBODY_PART_DEF *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyPart, void, orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyJoint, orxPHYSICS_BODY_JOINT *, orxPHYSICS_BODY *, orxPHYSICS_BODY *, const orxBODY_JOINT_DEF *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyJoint, void, orxPHYSICS_BODY_JOINT *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetSpeed, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
@@ -98,6 +100,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY, orxPhysics_CreateBody)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY, orxPhysics_DeleteBody)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_PART, orxPhysics_CreateBodyPart)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY_PART, orxPhysics_DeleteBodyPart)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_JOINT, orxPhysics_CreateBodyJoint)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY_JOINT, orxPhysics_DeleteBodyJoint)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_POSITION, orxPhysics_SetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ROTATION, orxPhysics_SetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_SPEED, orxPhysics_SetSpeed)
@@ -158,6 +162,16 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_ps
 void orxFASTCALL orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyPart)(_pstBodyPart);
+}
+
+orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxBODY_JOINT_DEF *_pstBodyJointDef)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyJoint)(_pstSrcBody, _pstDstBody, _pstBodyJointDef);
+}
+
+void orxFASTCALL orxPhysics_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyJoint)(_pstBodyJoint);
 }
 
 orxSTATUS orxFASTCALL orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
