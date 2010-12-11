@@ -896,7 +896,7 @@ static void orxFASTCALL orxDisplay_iPhone_InitShader(orxDISPLAY_SHADER *_pstShad
       if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
       {
         /* Copies screen content */
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, orxF2U(sstDisplay.pstScreen->fWidth), sstDisplay.pstScreen->u32RealHeight);
         glASSERT();
       }
     }

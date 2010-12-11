@@ -994,6 +994,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     orxVIEWPORT  *pstViewport;
     orxFLOAT      fWidth, fHeight;
 
+    /* Clears screen */
+    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
         pstViewport != orxNULL;
@@ -1120,9 +1123,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
 
     /* Swap buffers */
     orxDisplay_Swap();
-
-    /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
   }
 
   /* Done! */

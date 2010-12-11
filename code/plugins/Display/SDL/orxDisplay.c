@@ -502,7 +502,7 @@ static orxINLINE void orxDisplay_SDL_InitShader(orxDISPLAY_SHADER *_pstShader)
     if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
     {
       /* Copies screen content */
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, orxF2U(sstDisplay.pstScreen->fWidth), sstDisplay.pstScreen->u32RealHeight);
       glASSERT();
     }
   }
@@ -1184,7 +1184,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 
       glASSERT();
 
       /* Copies screen content */
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
+      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, orxF2U(_pstBitmap->fWidth), _pstBitmap->u32RealHeight);
       glASSERT();
       glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
       glASSERT();
@@ -1589,7 +1589,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
     glASSERT();
 
     /* Copies screen content */
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, orxF2U(_pstBitmap->fWidth), _pstBitmap->u32RealHeight);
     glASSERT();
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
     glASSERT();
