@@ -116,6 +116,7 @@
 #define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
 #define orxBODY_KZ_TYPE_SPRING                "spring"
 #define orxBODY_KZ_TYPE_PULLEY                "pulley"
+#define orxBODY_KZ_TYPE_SUSPENSION            "suspension"
 
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
@@ -1109,6 +1110,39 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stPulley.fDstLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_CHILD_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vPos), &(stBodyJointDef.stPulley.vDstGroundAnchor));
       stBodyJointDef.stPulley.fMaxSrcLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fLengthRatio * stBodyJointDef.stPulley.fDstLength;
       stBodyJointDef.stPulley.fMaxDstLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fDstLength;
+    }
+    /* Suspension? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_SUSPENSION) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION;
+
+      /* Stores translation axis */
+      orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stSuspension.vTranslationAxis));
+
+      /* Has translation limits? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_TRANSLATION) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_TRANSLATION) != orxFALSE))
+      {
+        /* Updates status */
+        stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
+
+        /* Stores them */
+        stBodyJointDef.stSuspension.fMinTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_TRANSLATION);
+        stBodyJointDef.stSuspension.fMaxTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TRANSLATION);
+      }
+
+      /* Is a motor? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE) != orxFALSE))
+      {
+        /* Stores motor values */
+        stBodyJointDef.stSuspension.fMotorSpeed      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
+        stBodyJointDef.stSuspension.fMaxMotorForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+      }
     }
     //! TODO
     /* Unknown */

@@ -714,6 +714,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   b2PrismaticJointDef stPrismaticJointDef;
   b2DistanceJointDef  stSpringJointDef;
   b2PulleyJointDef    stPulleyJointDef;
+  b2LineJointDef      stSuspensionJointDef;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -784,8 +785,8 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
       if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT))
       {
         /* Stores them */
-        stPrismaticJointDef.lowerTranslation  = _pstBodyJointDef->stPrismatic.fMinTranslation;
-        stPrismaticJointDef.upperTranslation  = _pstBodyJointDef->stPrismatic.fMaxTranslation;
+        stPrismaticJointDef.lowerTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPrismatic.fMinTranslation;
+        stPrismaticJointDef.upperTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPrismatic.fMaxTranslation;
 
         /* Updates status */
         stPrismaticJointDef.enableLimit  = true;
@@ -847,6 +848,44 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
 
       /* Stores ratio */
       stPulleyJointDef.ratio      = _pstBodyJointDef->stPulley.fLengthRatio;
+
+      break;
+    }
+
+    /* Suspension? */
+    case orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION:
+    {
+      /* Stores joint reference */
+      pstJointDef = &stSuspensionJointDef;
+
+      /* Stores anchors */
+      stSuspensionJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+      stSuspensionJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+      /* Stores translation axis */
+      stSuspensionJointDef.localAxisA.Set(_pstBodyJointDef->stSuspension.vTranslationAxis.fX, _pstBodyJointDef->stSuspension.vTranslationAxis.fY);
+
+      /* Has translation limits? */
+      if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT))
+      {
+        /* Stores them */
+        stSuspensionJointDef.lowerTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMinTranslation;
+        stSuspensionJointDef.upperTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMaxTranslation;
+
+        /* Updates status */
+        stSuspensionJointDef.enableLimit  = true;
+      }
+
+      /* Is motor? */
+      if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
+      {
+        /* Stores them */
+        stSuspensionJointDef.motorSpeed    = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMotorSpeed;
+        stSuspensionJointDef.maxMotorForce = _pstBodyJointDef->stSuspension.fMaxMotorForce;
+
+        /* Updates status */
+        stSuspensionJointDef.enableMotor    = true;
+      }
 
       break;
     }
