@@ -88,6 +88,7 @@
 #define orxBODY_KZ_CONFIG_PARENT_ANCHOR       "ParentAnchor"
 #define orxBODY_KZ_CONFIG_CHILD_ANCHOR        "ChildAnchor"
 #define orxBODY_KZ_CONFIG_COLLIDE             "Collide"
+#define orxBODY_KZ_CONFIG_ROTATION            "Rotation"
 #define orxBODY_KZ_CONFIG_MIN_ROTATION        "MinRotation"
 #define orxBODY_KZ_CONFIG_MAX_ROTATION        "MaxRotation"
 #define orxBODY_KZ_CONFIG_MOTOR_SPEED         "MotorSpeed"
@@ -99,6 +100,13 @@
 #define orxBODY_KZ_CONFIG_LENGTH              "Length"
 #define orxBODY_KZ_CONFIG_FREQUENCY           "Frequency"
 #define orxBODY_KZ_CONFIG_DAMPING             "Damping"
+#define orxBODY_KZ_CONFIG_PARENT_GROUND_ANCHOR "ParentGroundAnchor"
+#define orxBODY_KZ_CONFIG_CHILD_GROUND_ANCHOR "ChildGroundAnchor"
+#define orxBODY_KZ_CONFIG_PARENT_LENGTH       "ParentLength"
+#define orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH   "MaxParentLength"
+#define orxBODY_KZ_CONFIG_CHILD_LENGTH        "ChildLength"
+#define orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH    "MaxChildLength"
+#define orxBODY_KZ_CONFIG_LENGTH_RATIO        "LengthRatio"
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
@@ -107,6 +115,7 @@
 #define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
 #define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
 #define orxBODY_KZ_TYPE_SPRING                "spring"
+#define orxBODY_KZ_TYPE_PULLEY                "pulley"
 
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
@@ -1001,7 +1010,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE;
 
       /* Computes default rotation */
-      stBodyJointDef.stRevolute.fDefaultRotation  = orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      stBodyJointDef.stRevolute.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
       /* Has rotation limits? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_ROTATION) != orxFALSE)
@@ -1034,7 +1043,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC;
 
       /* Computes default rotation */
-      stBodyJointDef.stPrismatic.fDefaultRotation = orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      stBodyJointDef.stPrismatic.fDefaultRotation = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
       /* Stores translation axis */
       orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stPrismatic.vTranslationAxis));
@@ -1066,17 +1075,40 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
     /* Spring? */
     else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_SPRING) == 0)
     {
+      orxVECTOR vSrcPos, vDstPos;
+
       /* Stores type */
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
 
       /* Stores length */
-      stBodyJointDef.stSpring.fLength     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH);
+      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
 
       /* Stores frequency */
       stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
 
       /* Stores damping */
       stBodyJointDef.stSpring.fDamping    = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+    }
+    /* Pulley? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
+    {
+      orxVECTOR vPos;
+
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_PULLEY;
+
+      /* Stores ratio */
+      stBodyJointDef.stPulley.fLengthRatio  = (orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH_RATIO) != orxFALSE) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH_RATIO) : orxFLOAT_1;
+
+      /* Stores anchors */
+      orxConfig_GetVector(orxBODY_KZ_CONFIG_PARENT_GROUND_ANCHOR, &(stBodyJointDef.stPulley.vSrcGroundAnchor));
+      orxConfig_GetVector(orxBODY_KZ_CONFIG_CHILD_GROUND_ANCHOR, &(stBodyJointDef.stPulley.vDstGroundAnchor));
+
+      /* Stores lengths */
+      stBodyJointDef.stPulley.fSrcLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_PARENT_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vPos), &(stBodyJointDef.stPulley.vSrcGroundAnchor));
+      stBodyJointDef.stPulley.fDstLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_CHILD_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vPos), &(stBodyJointDef.stPulley.vDstGroundAnchor));
+      stBodyJointDef.stPulley.fMaxSrcLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fLengthRatio * stBodyJointDef.stPulley.fDstLength;
+      stBodyJointDef.stPulley.fMaxDstLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fDstLength;
     }
     //! TODO
     /* Unknown */

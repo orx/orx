@@ -191,7 +191,19 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fFrequency;                 /**< Frequency : 36 */
       orxFLOAT  fDamping;                   /**< Damping : 40 */
 
-    } stSpring;                             /**< Prismatic : 40 */
+    } stSpring;                             /**< Spring : 40 */
+
+    struct
+    {
+      orxFLOAT  fLengthRatio;               /**< Length ratio : 32 */
+      orxVECTOR vSrcGroundAnchor;           /**< Source ground anchor : 44 */
+      orxVECTOR vDstGroundAnchor;           /**< Destination ground anchor : 56 */
+      orxFLOAT  fSrcLength;                 /**< Source length : 60 */
+      orxFLOAT  fMaxSrcLength;              /**< Max source length : 64 */
+      orxFLOAT  fDstLength;                 /**< Destination length : 68 */
+      orxFLOAT  fMaxDstLength;              /**< Max destination length : 72 */
+
+    } stPulley;                             /**< Pulley : 72 */
 
   };                                        /**< Joint : ??? */
 
