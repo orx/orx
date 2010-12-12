@@ -83,7 +83,7 @@
 
 #define orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE          0x00000001  /**< Revolute body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC         0x00000002  /**< Prismatic body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_DISTANCE          0x00000004  /**< Distance body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_SPRING            0x00000004  /**< Spring body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000008  /**< Pulley body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_LINE              0x00000010  /**< Line body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000020  /**< Weld body joint def flag */
@@ -183,7 +183,15 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fMotorSpeed;                /**< Motor speed : 86 */
       orxFLOAT  fMaxMotorForce;             /**< Max motor force : 60 */
 
-    } stPrismatic;                          /**< Prismatic : 48 */
+    } stPrismatic;                          /**< Prismatic : 60 */
+
+    struct
+    {
+      orxFLOAT  fLength;                    /**< Length : 32 */
+      orxFLOAT  fFrequency;                 /**< Frequency : 36 */
+      orxFLOAT  fDamping;                   /**< Damping : 40 */
+
+    } stSpring;                             /**< Prismatic : 40 */
 
   };                                        /**< Joint : ??? */
 

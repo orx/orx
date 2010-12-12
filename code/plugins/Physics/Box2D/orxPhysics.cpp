@@ -712,6 +712,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   b2JointDef         *pstJointDef;
   b2RevoluteJointDef  stRevoluteJointDef;
   b2PrismaticJointDef stPrismaticJointDef;
+  b2DistanceJointDef  stSpringJointDef;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -793,6 +794,25 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
       /* Updates status */
       stPrismaticJointDef.enableMotor    = true;
     }
+  }
+  /* Spring? */
+  else if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_SPRING))
+  {
+    /* Stores joint reference */
+    pstJointDef = &stSpringJointDef;
+
+    /* Stores anchors */
+    stSpringJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+    stSpringJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+    /* Stores length */
+    stSpringJointDef.length       = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSpring.fLength;
+
+    /* Stores frequency */
+    stSpringJointDef.frequencyHz  = _pstBodyJointDef->stSpring.fFrequency;
+
+    /* Stores length */
+    stSpringJointDef.dampingRatio = _pstBodyJointDef->stSpring.fDamping;
   }
   //! TODO
 

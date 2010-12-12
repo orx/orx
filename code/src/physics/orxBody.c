@@ -96,6 +96,9 @@
 #define orxBODY_KZ_CONFIG_MIN_TRANSLATION     "MinTranslation"
 #define orxBODY_KZ_CONFIG_MAX_TRANSLATION     "MaxTranslation"
 #define orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE     "MaxMotorForce"
+#define orxBODY_KZ_CONFIG_LENGTH              "Length"
+#define orxBODY_KZ_CONFIG_FREQUENCY           "Frequency"
+#define orxBODY_KZ_CONFIG_DAMPING             "Damping"
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
@@ -103,6 +106,7 @@
 #define orxBODY_KZ_TYPE_MESH                  "mesh"
 #define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
 #define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
+#define orxBODY_KZ_TYPE_SPRING                "spring"
 
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
@@ -1040,7 +1044,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_TRANSLATION) != orxFALSE))
       {
         /* Updates status */
-        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
+        stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
 
         /* Stores them */
         stBodyJointDef.stPrismatic.fMinTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_TRANSLATION);
@@ -1058,6 +1062,21 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         /* Updates status */
         stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
       }
+    }
+    /* Spring? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_SPRING) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
+
+      /* Stores length */
+      stBodyJointDef.stSpring.fLength     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH);
+
+      /* Stores frequency */
+      stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+
+      /* Stores damping */
+      stBodyJointDef.stSpring.fDamping    = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
     }
     //! TODO
     /* Unknown */
