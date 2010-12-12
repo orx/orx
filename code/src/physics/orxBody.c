@@ -92,12 +92,17 @@
 #define orxBODY_KZ_CONFIG_MAX_ROTATION        "MaxRotation"
 #define orxBODY_KZ_CONFIG_MOTOR_SPEED         "MotorSpeed"
 #define orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE    "MaxMotorTorque"
+#define orxBODY_KZ_CONFIG_TRANSLATION_AXIS    "TranslationAxis"
+#define orxBODY_KZ_CONFIG_MIN_TRANSLATION     "MinTranslation"
+#define orxBODY_KZ_CONFIG_MAX_TRANSLATION     "MaxTranslation"
+#define orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE     "MaxMotorForce"
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
 #define orxBODY_KZ_TYPE_BOX                   "box"
 #define orxBODY_KZ_TYPE_MESH                  "mesh"
 #define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
+#define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
 
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
@@ -994,7 +999,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Computes default rotation */
       stBodyJointDef.stRevolute.fDefaultRotation  = orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
-      /* Has angle limits? */
+      /* Has rotation limits? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_ROTATION) != orxFALSE)
       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_ROTATION) != orxFALSE))
       {
@@ -1016,6 +1021,42 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
 
         /* Updates status */
         stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+      }
+    }
+    /* Prismatic? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_PRISMATIC) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC;
+
+      /* Computes default rotation */
+      stBodyJointDef.stPrismatic.fDefaultRotation = orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+
+      /* Stores translation axis */
+      orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stPrismatic.vTranslationAxis));
+
+      /* Has translation limits? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_TRANSLATION) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_TRANSLATION) != orxFALSE))
+      {
+        /* Updates status */
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
+
+        /* Stores them */
+        stBodyJointDef.stPrismatic.fMinTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_TRANSLATION);
+        stBodyJointDef.stPrismatic.fMaxTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TRANSLATION);
+      }
+
+      /* Is a motor? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE) != orxFALSE))
+      {
+        /* Stores motor values */
+        stBodyJointDef.stPrismatic.fMotorSpeed      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
+        stBodyJointDef.stPrismatic.fMaxMotorForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
       }
     }
     //! TODO

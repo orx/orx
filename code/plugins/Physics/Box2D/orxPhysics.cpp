@@ -585,7 +585,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
   orxASSERT(_pstBodyPartDef != orxNULL);
-  orxASSERT(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX | orxBODY_PART_DEF_KU32_FLAG_SPHERE | orxBODY_PART_DEF_KU32_FLAG_MESH));
+  orxASSERT(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_MASK_TYPE));
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
@@ -711,6 +711,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   b2Joint            *poResult = 0;
   b2JointDef         *pstJointDef;
   b2RevoluteJointDef  stRevoluteJointDef;
+  b2PrismaticJointDef stPrismaticJointDef;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -718,7 +719,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   orxASSERT(_pstDstBody != orxNULL);
   orxASSERT(_hUserData != orxHANDLE_UNDEFINED);
   orxASSERT(_pstBodyJointDef != orxNULL);
-  orxASSERT(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE));
+  orxASSERT(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_MASK_TYPE));
 
   /* Revolute? */
   if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE))
@@ -753,6 +754,44 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
 
       /* Updates status */
       stRevoluteJointDef.enableMotor    = true;
+    }
+  }
+  /* Prismatic? */
+  else if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC))
+  {
+    /* Stores joint reference */
+    pstJointDef = &stPrismaticJointDef;
+
+    /* Stores anchors */
+    stPrismaticJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+    stPrismaticJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+    /* Stores reference angle */
+    stPrismaticJointDef.referenceAngle = _pstBodyJointDef->stPrismatic.fDefaultRotation;
+
+    /* Stores translation axis */
+    stPrismaticJointDef.localAxis1.Set(_pstBodyJointDef->stPrismatic.vTranslationAxis.fX, _pstBodyJointDef->stPrismatic.vTranslationAxis.fY);
+
+    /* Has translation limits? */
+    if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT))
+    {
+      /* Stores them */
+      stPrismaticJointDef.lowerTranslation  = _pstBodyJointDef->stPrismatic.fMinTranslation;
+      stPrismaticJointDef.upperTranslation  = _pstBodyJointDef->stPrismatic.fMaxTranslation;
+
+      /* Updates status */
+      stPrismaticJointDef.enableLimit  = true;
+    }
+
+    /* Is motor? */
+    if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
+    {
+      /* Stores them */
+      stPrismaticJointDef.motorSpeed    = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPrismatic.fMotorSpeed;
+      stPrismaticJointDef.maxMotorForce = _pstBodyJointDef->stPrismatic.fMaxMotorForce;
+
+      /* Updates status */
+      stPrismaticJointDef.enableMotor    = true;
     }
   }
   //! TODO

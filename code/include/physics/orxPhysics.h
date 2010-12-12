@@ -51,46 +51,52 @@
 
 /** Body definition flags
  */
-#define orxBODY_DEF_KU32_FLAG_NONE                  0x00000000  /**< No flags */
+#define orxBODY_DEF_KU32_FLAG_NONE                    0x00000000  /**< No flags */
 
-#define orxBODY_DEF_KU32_FLAG_2D                    0x00000001  /**< 2D type body def flag */
-#define orxBODY_DEF_KU32_FLAG_DYNAMIC               0x00000002  /**< Dynamic type body def flag */
-#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED            0x00000004  /**< High speed type body def flag */
-#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION        0x00000008  /**< Body can't be rotated by physics */
-#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE             0x00000010  /**< Body is allowed to slide */
-#define orxBODY_DEF_KU32_FLAG_CAN_MOVE              0x00000020  /**< Static body is allowed to move by user direct access */
-#define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP           0x00000040  /**< Allow sleep body def flag */
+#define orxBODY_DEF_KU32_FLAG_2D                      0x00000001  /**< 2D type body def flag */
+#define orxBODY_DEF_KU32_FLAG_DYNAMIC                 0x00000002  /**< Dynamic type body def flag */
+#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED              0x00000004  /**< High speed type body def flag */
+#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION          0x00000008  /**< Body can't be rotated by physics */
+#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE               0x00000010  /**< Body is allowed to slide */
+#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000020  /**< Static body is allowed to move by user direct access */
+#define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP             0x00000040  /**< Allow sleep body def flag */
 
-#define orxBODY_DEF_KU32_MASK_ALL                   0xFFFFFFFF  /**< Body def all mask */
+#define orxBODY_DEF_KU32_MASK_ALL                     0xFFFFFFFF  /**< Body def all mask */
 
 /** Body part definition flags
  */
-#define orxBODY_PART_DEF_KU32_FLAG_NONE             0x00000000  /**< No flags */
+#define orxBODY_PART_DEF_KU32_FLAG_NONE               0x00000000  /**< No flags */
 
-#define orxBODY_PART_DEF_KU32_FLAG_SPHERE           0x00000001  /**< Sphere body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_BOX              0x00000002  /**< Box body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_MESH             0x00000004  /**< Mesh body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_SOLID            0x00000010  /**< Solid body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SPHERE             0x00000001  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_BOX                0x00000002  /**< Box body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_MESH               0x00000004  /**< Mesh body part def flag */
 
-#define orxBODY_PART_DEF_KU32_MASK_ALL              0xFFFFFFFF  /**< Body part def all mask */
+#define orxBODY_PART_DEF_KU32_MASK_TYPE               0x00000007 /**< Type body part def mask */
+
+#define orxBODY_PART_DEF_KU32_FLAG_SOLID              0x10000000  /**< Solid body part def flag */
+
+#define orxBODY_PART_DEF_KU32_MASK_ALL                0xFFFFFFFF  /**< Body part def all mask */
 
 /** Body joint definition flags
  */
-#define orxBODY_JOINT_DEF_KU32_FLAG_NONE            0x00000000  /**< No flags */
+#define orxBODY_JOINT_DEF_KU32_FLAG_NONE              0x00000000  /**< No flags */
 
-#define orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE        0x00000001  /**< Revolute body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC       0x00000002  /**< Prismatic body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_DISTANCE        0x00000004  /**< Distance body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY          0x00000008  /**< Pulley body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_LINE            0x00000010  /**< Line body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_WELD            0x00000020  /**< Weld body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION        0x00000040  /**< Friction body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE          0x00000001  /**< Revolute body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC         0x00000002  /**< Prismatic body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_DISTANCE          0x00000004  /**< Distance body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000008  /**< Pulley body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_LINE              0x00000010  /**< Line body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000020  /**< Weld body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000040  /**< Friction body joint def flag */
 
-#define orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE         0x10000000  /**< Collide body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT  0x20000000  /**< Rotation  limit body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_MOTOR           0x40000000  /**< Motor body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x000000FF  /**< Type body joint def mask */
 
-#define orxBODY_JOINT_DEF_KU32_MASK_ALL             0xFFFFFFFF  /**< Body joint def all mask */
+#define orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE           0x10000000  /**< Collide body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT    0x20000000  /**< Rotation  limit body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_MOTOR             0x40000000  /**< Motor body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT 0x80000000  /**< Translation limit def flag */
+
+#define orxBODY_JOINT_DEF_KU32_MASK_ALL               0xFFFFFFFF  /**< Body joint def all mask */
 
 
 /** Misc defines
@@ -167,6 +173,17 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fMaxMotorTorque;            /**< Max motor torque : 48 */
 
     } stRevolute;                           /**< Revolute : 48 */
+
+    struct
+    {
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
+      orxVECTOR vTranslationAxis;           /**< Translation axis : 44 */
+      orxFLOAT  fMinTranslation;            /**< Min translation : 48 */
+      orxFLOAT  fMaxTranslation;            /**< Max translation : 52 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 86 */
+      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 60 */
+
+    } stPrismatic;                          /**< Prismatic : 48 */
 
   };                                        /**< Joint : ??? */
 
