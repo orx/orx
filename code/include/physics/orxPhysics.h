@@ -213,9 +213,22 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fMotorSpeed;                /**< Motor speed : 52 */
       orxFLOAT  fMaxMotorForce;             /**< Max motor force : 56 */
 
-    } stSuspension;                          /**< Suspension : 56 */
+    } stSuspension;                         /**< Suspension : 56 */
 
-  };                                        /**< Joint : ??? */
+    struct
+    {
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
+
+    } stWeld;                               /**< Weld : 32 */
+
+    struct
+    {
+      orxFLOAT  fMaxForce;                  /**< Max force : 32 */
+      orxFLOAT  fMaxTorque;                 /**< Max torque : 36 */
+
+    } stFriction;                           /**< Friction : 36 */
+
+  };                                        /**< Joint : 72 */
 
 } orxBODY_JOINT_DEF;
 

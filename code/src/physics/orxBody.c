@@ -92,11 +92,13 @@
 #define orxBODY_KZ_CONFIG_MIN_ROTATION        "MinRotation"
 #define orxBODY_KZ_CONFIG_MAX_ROTATION        "MaxRotation"
 #define orxBODY_KZ_CONFIG_MOTOR_SPEED         "MotorSpeed"
+#define orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE     "MaxMotorForce"
 #define orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE    "MaxMotorTorque"
+#define orxBODY_KZ_CONFIG_MAX_FORCE           "MaxForce"
+#define orxBODY_KZ_CONFIG_MAX_TORQUE          "MaxTorque"
 #define orxBODY_KZ_CONFIG_TRANSLATION_AXIS    "TranslationAxis"
 #define orxBODY_KZ_CONFIG_MIN_TRANSLATION     "MinTranslation"
 #define orxBODY_KZ_CONFIG_MAX_TRANSLATION     "MaxTranslation"
-#define orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE     "MaxMotorForce"
 #define orxBODY_KZ_CONFIG_LENGTH              "Length"
 #define orxBODY_KZ_CONFIG_FREQUENCY           "Frequency"
 #define orxBODY_KZ_CONFIG_DAMPING             "Damping"
@@ -117,6 +119,8 @@
 #define orxBODY_KZ_TYPE_SPRING                "spring"
 #define orxBODY_KZ_TYPE_PULLEY                "pulley"
 #define orxBODY_KZ_TYPE_SUSPENSION            "suspension"
+#define orxBODY_KZ_TYPE_WELD                  "weld"
+#define orxBODY_KZ_TYPE_FRICTION              "friction"
 
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
@@ -1010,8 +1014,8 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Stores type */
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE;
 
-      /* Computes default rotation */
-      stBodyJointDef.stRevolute.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      /* Stores default rotation */
+      stBodyJointDef.stRevolute.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
       /* Has rotation limits? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_ROTATION) != orxFALSE)
@@ -1043,8 +1047,8 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Stores type */
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC;
 
-      /* Computes default rotation */
-      stBodyJointDef.stPrismatic.fDefaultRotation = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      /* Stores default rotation */
+      stBodyJointDef.stPrismatic.fDefaultRotation = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
       /* Stores translation axis */
       orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stPrismatic.vTranslationAxis));
@@ -1137,12 +1141,31 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE) != orxFALSE))
       {
         /* Stores motor values */
-        stBodyJointDef.stSuspension.fMotorSpeed      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
-        stBodyJointDef.stSuspension.fMaxMotorForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
+        stBodyJointDef.stSuspension.fMotorSpeed     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
+        stBodyJointDef.stSuspension.fMaxMotorForce  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
 
         /* Updates status */
         stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
       }
+    }
+    /* Weld? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_WELD) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_WELD;
+
+      /* Stores default rotation */
+      stBodyJointDef.stWeld.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+    }
+    /* Friction? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_FRICTION) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_FRICTION;
+
+      /* Stores max force & torque values */
+      stBodyJointDef.stFriction.fMaxForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_FORCE);
+      stBodyJointDef.stFriction.fMaxTorque  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TORQUE);
     }
     //! TODO
     /* Unknown */

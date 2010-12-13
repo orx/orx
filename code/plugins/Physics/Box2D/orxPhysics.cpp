@@ -709,12 +709,15 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART
 extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 {
   b2Joint            *poResult = 0;
+  orxBOOL             bSuccess = orxTRUE;
   b2JointDef         *pstJointDef;
   b2RevoluteJointDef  stRevoluteJointDef;
   b2PrismaticJointDef stPrismaticJointDef;
   b2DistanceJointDef  stSpringJointDef;
   b2PulleyJointDef    stPulleyJointDef;
   b2LineJointDef      stSuspensionJointDef;
+  b2WeldJointDef      stWeldJointDef;
+  b2FrictionJointDef  stFrictionJointDef;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -890,21 +893,63 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
       break;
     }
 
-    //! TODO
+    /* Weld? */
+    case orxBODY_JOINT_DEF_KU32_FLAG_WELD:
+    {
+      /* Stores joint reference */
+      pstJointDef = &stWeldJointDef;
+
+      /* Stores anchors */
+      stWeldJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+      stWeldJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+      /* Stores reference angle */
+      stWeldJointDef.referenceAngle = _pstBodyJointDef->stWeld.fDefaultRotation;
+
+      break;
+    }
+
+    /* Friction? */
+    case orxBODY_JOINT_DEF_KU32_FLAG_FRICTION:
+    {
+      /* Stores joint reference */
+      pstJointDef = &stFrictionJointDef;
+
+      /* Stores anchors */
+      stFrictionJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+      stFrictionJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+      /* Stores max force & torque values */
+      stFrictionJointDef.maxForce   = _pstBodyJointDef->stFriction.fMaxForce;
+      stFrictionJointDef.maxTorque  = _pstBodyJointDef->stFriction.fMaxTorque;
+
+      break;
+    }
+
     default:
     {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create body joint, invalid type <0x%X>.", orxFLAG_GET(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_MASK_TYPE));
+
+      /* Updates status */
+      bSuccess = orxFALSE;
+
       break;
     }
   }
 
-  /* Inits joint definition */
-  pstJointDef->userData             = _hUserData;
-  pstJointDef->bodyA                = (b2Body *)_pstSrcBody;
-  pstJointDef->bodyB                = (b2Body *)_pstDstBody;
-  pstJointDef->collideConnected     = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+  /* Valid? */
+  if(bSuccess != orxFALSE)
+  {
+    /* Inits joint definition */
+    pstJointDef->userData             = _hUserData;
+    pstJointDef->bodyA                = (b2Body *)_pstSrcBody;
+    pstJointDef->bodyB                = (b2Body *)_pstDstBody;
+    pstJointDef->collideConnected     = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
 
-  /* Creates it */
-  poResult = sstPhysics.poWorld->CreateJoint(pstJointDef);
+    /* Creates it */
+    poResult = sstPhysics.poWorld->CreateJoint(pstJointDef);
+  }
 
   /* Done! */
   return (orxPHYSICS_BODY_JOINT *)poResult;
