@@ -284,7 +284,8 @@ static orxSTATUS orxBounce_Init()
   /* Valid? */
   if(spoBallSpawner != orxNULL)
   {
-    orxOBJECT *pstParticleSource;
+    orxOBJECT *pstParticleSource, *p, *q;
+    orxVECTOR v;
 
     /* Creates particle source */
     pstParticleSource = orxObject_CreateFromConfig("ParticleSource");
@@ -301,6 +302,15 @@ static orxSTATUS orxBounce_Init()
 
     /* Creates walls */
     orxObject_CreateFromConfig("Walls");
+
+    orxVector_Set(&v, -100.0f, 100.0f, 0.5f);
+    p = orxObject_CreateFromConfig("BallP");
+    orxObject_SetPosition(p, &v);
+    orxVector_Set(&v, 100.0f, 200.0f, 0.5f);
+    q = orxObject_CreateFromConfig("Ball");
+    orxObject_SetPosition(q, &v);
+
+    orxBody_AddJointFromConfig(orxOBJECT_GET_STRUCTURE(p, BODY), orxOBJECT_GET_STRUCTURE(q, BODY), "Joint");
 
     /* Creates viewport on screen */
     spstViewport = orxViewport_CreateFromConfig("BounceViewport");

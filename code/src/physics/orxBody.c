@@ -1009,7 +1009,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
     orxConfig_GetVector(orxBODY_KZ_CONFIG_CHILD_ANCHOR, &(stBodyJointDef.vDstAnchor));
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_COLLIDE) != orxFALSE)
     {
-      stBodyJointDef.u32Flags                     = orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE;
+      stBodyJointDef.u32Flags = orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE;
     }
 
     /* Revolute? */

@@ -171,7 +171,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetJointName(const orxBODY
  * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemoveJoint(orxBODY_JOINT *_pstBody);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint);
 
 
 /** Sets a body position

@@ -29,7 +29,7 @@
  *
  * @todo
  * - Manage memory alignment
- * - Allow to specifiy memory starting address & maximum size for each memory type
+ * - Allow to specify memory starting address & maximum size for each memory type
  */
 
 /**

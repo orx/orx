@@ -28,7 +28,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Add rotate function with matrix module, when it's done
  */
 
 /**
