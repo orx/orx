@@ -718,6 +718,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   b2LineJointDef      stSuspensionJointDef;
   b2WeldJointDef      stWeldJointDef;
   b2FrictionJointDef  stFrictionJointDef;
+  b2GearJointDef      stGearJointDef;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -923,6 +924,95 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
       stFrictionJointDef.maxForce   = _pstBodyJointDef->stFriction.fMaxForce;
       stFrictionJointDef.maxTorque  = _pstBodyJointDef->stFriction.fMaxTorque;
 
+      break;
+    }
+
+    /* Gear? */
+    case orxBODY_JOINT_DEF_KU32_FLAG_GEAR:
+    {
+      b2Body *poBody;
+
+      /* Stores joint reference */
+      pstJointDef = &stGearJointDef;
+
+      /* Stores ratio */
+      stGearJointDef.ratio = _pstBodyJointDef->stGear.fJointRatio;
+
+      /* Gets source body */
+      poBody = (b2Body *)_pstSrcBody;
+
+      /* For all its joints */
+      for(b2JointEdge *poEdge = poBody->GetJointList();
+          poEdge != 0;
+          poEdge = poEdge->next)
+      {
+        b2Joint        *poJoint;
+        orxBODY_JOINT  *pstJoint;
+
+        /* Gets it */
+        poJoint = poEdge->joint;
+
+        /* Gets its body joint */
+        pstJoint = (orxBODY_JOINT *)poJoint->GetUserData();
+
+        /* Does name match? */
+        if(orxString_Compare(orxBody_GetJointName(pstJoint), _pstBodyJointDef->stGear.zSrcJointName) == 0)
+        {
+          /* Stores it */
+          stGearJointDef.joint1 = poJoint;
+          break;
+        }
+      }
+
+      /* Found source joint? */
+      if(stGearJointDef.joint1 != 0)
+      {
+        /* Gets destination body */
+        poBody = (b2Body *)_pstDstBody;
+
+        /* For all its joints */
+        for(b2JointEdge *poEdge = poBody->GetJointList();
+            poEdge != 0;
+            poEdge = poEdge->next)
+        {
+          b2Joint        *poJoint;
+          orxBODY_JOINT  *pstJoint;
+
+          /* Gets it */
+          poJoint = poEdge->joint;
+
+          /* Gets its body joint */
+          pstJoint = (orxBODY_JOINT *)poJoint->GetUserData();
+
+          /* Does name match? */
+          if(orxString_Compare(orxBody_GetJointName(pstJoint), _pstBodyJointDef->stGear.zDstJointName) == 0)
+          {
+            /* Stores it */
+            stGearJointDef.joint2 = poJoint;
+            break;
+          }
+        }
+
+        /* No destination joint found? */
+        if(stGearJointDef.joint2 == 0)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create gear body joint, couldn't find joint <%s> on destination body.", _pstBodyJointDef->stGear.zDstJointName);
+
+          /* Updates status */
+          bSuccess = orxFALSE;
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create gear body joint, couldn't find joint <%s> on source body.", _pstBodyJointDef->stGear.zSrcJointName);
+
+        /* Updates status */
+        bSuccess = orxFALSE;
+      }
+
+      //! TODO
       break;
     }
 

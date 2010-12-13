@@ -88,6 +88,7 @@
 #define orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION        0x00000010  /**< Suspension body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000020  /**< Weld body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000040  /**< Friction body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000080  /**< Gear body joint def flag */
 
 #define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x000000FF  /**< Type body joint def mask */
 
@@ -101,7 +102,7 @@
 
 /** Misc defines
  */
-#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER    8
+#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER      8
 
 
 /** Body definition
@@ -227,6 +228,14 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fMaxTorque;                 /**< Max torque : 36 */
 
     } stFriction;                           /**< Friction : 36 */
+
+    struct
+    {
+      const orxSTRING zSrcJointName;        /**< Source joint name : 32 */
+      const orxSTRING zDstJointName;        /**< Destination joint name : 36 */
+      orxFLOAT        fJointRatio;          /**< Joint ratio : 40 */
+
+    } stGear;                               /**< Gear : 40 */
 
   };                                        /**< Joint : 72 */
 

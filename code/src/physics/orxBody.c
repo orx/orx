@@ -109,6 +109,9 @@
 #define orxBODY_KZ_CONFIG_CHILD_LENGTH        "ChildLength"
 #define orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH    "MaxChildLength"
 #define orxBODY_KZ_CONFIG_LENGTH_RATIO        "LengthRatio"
+#define orxBODY_KZ_CONFIG_JOINT_RATIO         "JointRatio"
+#define orxBODY_KZ_CONFIG_PARENT_JOINT_NAME   "ParentJoint"
+#define orxBODY_KZ_CONFIG_CHILD_JOINT_NAME    "ChildJoint"
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
@@ -121,6 +124,7 @@
 #define orxBODY_KZ_TYPE_SUSPENSION            "suspension"
 #define orxBODY_KZ_TYPE_WELD                  "weld"
 #define orxBODY_KZ_TYPE_FRICTION              "friction"
+#define orxBODY_KZ_TYPE_GEAR                  "gear"
 
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
@@ -1167,12 +1171,24 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stFriction.fMaxForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_FORCE);
       stBodyJointDef.stFriction.fMaxTorque  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TORQUE);
     }
-    //! TODO
+    /* Gear? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_GEAR) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_GEAR;
+
+      /* Stores joint names */
+      stBodyJointDef.stGear.zSrcJointName = orxConfig_GetString(orxBODY_KZ_CONFIG_PARENT_JOINT_NAME);
+      stBodyJointDef.stGear.zDstJointName = orxConfig_GetString(orxBODY_KZ_CONFIG_CHILD_JOINT_NAME);
+
+      /* Stores joint ratio */
+      stBodyJointDef.stGear.fJointRatio   = (orxConfig_HasValue(orxBODY_KZ_CONFIG_JOINT_RATIO) != orxFALSE) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_JOINT_RATIO) : orxFLOAT_1;
+    }
     /* Unknown */
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "<%s> isn't a valid type for a body joint.", zBodyJointType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create body joint: <%s> isn't a valid type.", zBodyJointType);
 
       /* Updates status */
       bSuccess = orxFALSE;
