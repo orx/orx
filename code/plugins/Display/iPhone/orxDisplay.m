@@ -272,16 +272,10 @@ static orxView *spoInstance;
       /* Shader support? */
       if(bShaderSupport != NO)
       {
-        /* Sets vextex attribute arrays */
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-        glASSERT();
+        /* Enables vextex attribute arrays */
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
         glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-        glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
-        glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
@@ -300,14 +294,6 @@ static orxView *spoInstance;
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glASSERT();
         glEnableClientState(GL_COLOR_ARRAY);
-        glASSERT();
-
-        /* Selects arrays */
-        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-        glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-        glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
       }
 
@@ -367,16 +353,10 @@ static orxView *spoInstance;
       /* Shader support? */
       if(bShaderSupport != NO)
       {
-        /* Sets vextex attribute arrays */
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-        glASSERT();
+        /* Enables vertex attribute arrays */
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
         glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-        glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
-        glASSERT();
-        glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
@@ -396,18 +376,12 @@ static orxView *spoInstance;
         glASSERT();
         glEnableClientState(GL_COLOR_ARRAY);
         glASSERT();
-
-        /* Selects arrays */
-        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-        glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-        glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-        glASSERT();
       }
 
       /* Common init */
       glDisable(GL_CULL_FACE);
+      glASSERT();
+      glDisable(GL_ALPHA_TEST);
       glASSERT();
       glDisable(GL_DEPTH_TEST);
       glASSERT();
@@ -914,6 +888,28 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
   /* Has data? */
   if(sstDisplay.s32BufferIndex > 0)
   {
+    /* Shader support? */
+    if(bShaderSupport != NO)
+    {
+      /* Sets vextex attribute arrays */
+      glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+      glASSERT();
+      glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+      glASSERT();
+      glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+      glASSERT();
+    }
+    else
+    {
+      /* Selects arrays */
+      glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+      glASSERT();
+      glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+      glASSERT();
+      glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+      glASSERT();
+    }
+
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)
     {

@@ -588,6 +588,14 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
   /* Has data? */
   if(sstDisplay.s32BufferIndex > 0)
   {
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
+
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)
     {
@@ -2136,14 +2144,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glASSERT();
     glEnableClientState(GL_COLOR_ARRAY);
-    glASSERT();
-
-    /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-    glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-    glASSERT();
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
 
     /* Has framebuffer support? */
