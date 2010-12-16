@@ -694,7 +694,7 @@ const orxSHADER *orxFASTCALL orxShaderPointer_GetShader(const orxSHADERPOINTER *
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
-  orxSTRUCTURE_ASSERT(_u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER);
+  orxASSERT(_u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER);
 
   /* Updates result */
   pstResult = _pstShaderPointer->astShaderList[_u32Index].pstShader;
