@@ -218,7 +218,7 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
  */
 static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
 {
-  orxU32      i, u32RemainingNumber = 0;
+  orxU32      i;
   orxBOOL     bUseConfig = orxFALSE;
   orxSTRING  *azParamList = orxNULL;
   orxSTRING   azConfigParamList[orxPARAM_KU32_MAX_CONFIG_PARAM];
@@ -236,7 +236,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
     || ((_pstParamInfo->u32Count > 0)
      && (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED)))))
     {
-      orxU32 u32ParamCounter;
+      orxU32 u32ParamCounter, u32RemainingNumber = 0;
 
       /* Loop on Extra parameters */
       for(i = 0; i < sstParam.u32ParamNumber; i++)

@@ -468,14 +468,13 @@ static orxINLINE orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue, or
  */
 static orxINLINE void orxConfig_CryptBuffer(orxCHAR *_acBuffer, orxU32 _u32BufferSize)
 {
-  orxCHAR *pc, *pcKey, *pcEndKey, *pcStartKey;
+  orxCHAR *pc, *pcKey, *pcEndKey;
 
   orxASSERT(sstConfig.zEncryptionKey != orxNULL);
 
   /* Gets current, first and last encryption character */
-  pcKey       = sstConfig.pcEncryptionChar;
-  pcStartKey  = sstConfig.zEncryptionKey;
-  pcEndKey    = sstConfig.zEncryptionKey + sstConfig.u32EncryptionKeySize - 1;
+  pcKey     = sstConfig.pcEncryptionChar;
+  pcEndKey  = sstConfig.zEncryptionKey + sstConfig.u32EncryptionKeySize - 1;
 
   /* For all characters */
   for(pc = _acBuffer; pc < _acBuffer + _u32BufferSize; pc++)

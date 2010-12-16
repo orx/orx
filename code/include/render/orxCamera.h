@@ -54,11 +54,11 @@
 
 /** Anim flags
  */
-#define orxCAMERA_KU32_FLAG_NONE              0x00000000 /**< No flags */
+#define orxCAMERA_KU32_FLAG_NONE        0x00000000 /**< No flags */
 
-#define orxCAMERA_KU32_FLAG_2D                0x00000001 /**< 2D flag */
+#define orxCAMERA_KU32_FLAG_2D          0x00000001 /**< 2D flag */
 
-#define orxCAMERA_KU32_MASK_USER_ALL          0x000000FF /**< User all mask */
+#define orxCAMERA_KU32_MASK_USER_ALL   	0x000000FF /**< User all mask */
 
 
 /** Internal camera structure

@@ -4343,10 +4343,8 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
     /* Is enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      orxGRAPHIC *pstGraphic;
-
       /* Has graphic? */
-      if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != orxNULL)
+      if(orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC) != orxNULL)
       {
         orxVECTOR vObjectPos;
 
@@ -4405,10 +4403,8 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox)
     /* Is enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      orxGRAPHIC *pstGraphic;
-
       /* Has graphic? */
-      if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != orxNULL)
+      if(orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC) != orxNULL)
       {
         orxVECTOR vObjectPos;
 

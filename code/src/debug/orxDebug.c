@@ -315,13 +315,13 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 {
   va_list stArgs;
   FILE   *pstFile = orxNULL;
-  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE];
+  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
 
 
-  /* TODO : Checks log mask if display is enable for this level */
+  //! TODO : Checks log mask to see if display is enabled for this level
 
   /* Empties current buffer */
-  zBuffer[0] = orxCHAR_NULL;
+  pcBuffer[0] = orxCHAR_NULL;
 
   /* Time Stamp? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
@@ -331,13 +331,13 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Inits Log Time */
     time(&u32Time);
 
-    strftime(zBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
+    pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
   }
 
   /* Log Type? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TYPE)
   {
-    sprintf(zBuffer, "%s <%s>", zBuffer, orxDebug_GetLevelString(_eLevel));
+    pcBuffer += sprintf(pcBuffer, " <%s>", orxDebug_GetLevelString(_eLevel));
   }
 
   /* Log FUNCTION, FILE & LINE? */
@@ -351,7 +351,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
         pc++);
 
     /* Writes info */
-    sprintf(zBuffer, "%s (%s() - %s:%ld)", zBuffer, _zFunction, pc, _u32Line);
+    pcBuffer += sprintf(pcBuffer, " (%s() - %s:%ld)", _zFunction, pc, _u32Line);
   }
 
   /* Debug Log */
@@ -359,7 +359,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   vsprintf(zLog, _zFormat, stArgs);
   va_end(stArgs);
 
-  sprintf(zBuffer, "%s %s\n", zBuffer, zLog);
+  pcBuffer += sprintf(pcBuffer, " %s\n", zLog);
 
   /* Use file? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)

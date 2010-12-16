@@ -164,7 +164,6 @@ static orxSTATUS orxScroll_Init()
   {
     orxCLOCK     *pstClock;
     orxVIEWPORT  *pstViewport;
-    orxOBJECT    *pstBackground;
 
     /* Creates viewport */
     pstViewport = orxViewport_CreateFromConfig("ScrollViewport");
@@ -173,7 +172,7 @@ static orxSTATUS orxScroll_Init()
     spstRoot = orxObject_CreateFromConfig("Root");
 
     /* Creates background */
-    pstBackground = orxObject_CreateFromConfig("Background");
+    orxObject_CreateFromConfig("Background");
 
     /* Creates overlay */
     spstOverlay = orxObject_CreateFromConfig("Overlay");
