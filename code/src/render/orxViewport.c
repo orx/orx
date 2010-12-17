@@ -1266,7 +1266,7 @@ orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewp
     fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
 
     /* Updates result */
-    fResult = (_pstViewport->fHeight / _pstViewport->fWidth) * (fCameraWidth / fCameraHeight);
+    fResult = (_pstViewport->fHeight * fCameraWidth) / ( _pstViewport->fWidth * fCameraHeight);
   }
 
   /* Done! */

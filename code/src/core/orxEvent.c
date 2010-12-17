@@ -382,9 +382,8 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
  */
 orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID)
 {
-  orxEVENT                  stEvent;
-  orxEVENT_HANDLER_STORAGE *pstStorage;
-  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
+  orxEVENT  stEvent;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
@@ -394,29 +393,8 @@ orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEv
   stEvent.eType = _eEventType;
   stEvent.eID   = _eEventID;
 
-  /* Gets corresponding storage */
-  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
-
-  /* Valid? */
-  if(pstStorage != orxNULL)
-  {
-    orxEVENT_HANDLER_INFO *pstInfo;
-
-    /* For all handlers */
-    for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
-        pstInfo != orxNULL;
-        pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
-    {
-      /* Calls its handler */
-      if((pstInfo->pfnHandler)(&stEvent) == orxSTATUS_FAILURE)
-      {
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-
-        break;
-      }
-    }
-  }
+  /* Sends it */
+  eResult = orxEvent_Send(&stEvent);
 
   /* Done! */
   return eResult;
