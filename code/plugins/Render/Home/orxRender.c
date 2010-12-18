@@ -291,7 +291,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", vScale.fX, vScale.fY);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not be equal to 0. Got (%g, %g).", vScale.fX, vScale.fY);
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
