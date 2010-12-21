@@ -268,11 +268,6 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
       /* Valid? */
       if(pstEventStorage != orxNULL)
       {
-        b2WorldManifold oManifold;
-
-        /* Gets manifold */
-        _poContact->GetWorldManifold(&oManifold);
-
         /* Adds it to list */
         orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
 
@@ -284,8 +279,41 @@ static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact,
         /* Contact add? */
         if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
         {
-          orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.points[0].x, sstPhysics.fRecDimensionRatio * oManifold.points[0].y, orxFLOAT_0);
-          orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
+          const b2Manifold *poManifold;
+
+          /* Gets local manifold */
+          poManifold = _poContact->GetManifold();
+
+          /* 2 contacts? */
+          if(poManifold->pointCount > 1)
+          {
+            b2WorldManifold oManifold;
+
+            /* Gets global manifold */
+            _poContact->GetWorldManifold(&oManifold);
+
+            /* Updates values */
+            orxVector_Set(&(pstEventStorage->stPayload.vPosition), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].x + oManifold.points[1].x), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].y + oManifold.points[1].y), orxFLOAT_0);
+            orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
+          }
+          /* 1 contact? */
+          else if(poManifold->pointCount == 1)
+          {
+            b2WorldManifold oManifold;
+
+            /* Gets global manifold */
+            _poContact->GetWorldManifold(&oManifold);
+
+            /* Updates values */
+            orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.points[0].x, sstPhysics.fRecDimensionRatio * oManifold.points[0].y, orxFLOAT_0);
+            orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
+          }
+          /* 0 contact */
+          else
+          {
+            orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
+            orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
+          }
         }
         else
         {
@@ -347,8 +375,8 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Gets owner's frame */
     pstFrame = orxOBJECT_GET_STRUCTURE(orxOBJECT(orxBody_GetOwner(pstBody)), FRAME);
 
-    /* Is dirty? */
-    if(orxFrame_IsDirty(pstFrame) != orxFALSE)
+    /* Is not a root child? */
+    if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
     {
       orxVECTOR vPos;
 
