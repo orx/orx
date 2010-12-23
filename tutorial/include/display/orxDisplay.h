@@ -482,11 +482,11 @@ do                                                                              
   {                                                                               \
     RESULT = ALT;                                                                 \
   }                                                                               \
-  if((RESULT < orxFLOAT_0) || (RESULT < orxMATH_KF_EPSILON))                      \
+  if(RESULT < orxMATH_KF_EPSILON)                                                 \
   {                                                                               \
     RESULT = orxFLOAT_0;                                                          \
   }                                                                               \
-  else if((RESULT > orxFLOAT_1) || (RESULT > orxFLOAT_1 - orxMATH_KF_EPSILON))    \
+  else if(RESULT > orxFLOAT_1 - orxMATH_KF_EPSILON)                               \
   {                                                                               \
     RESULT = orxFLOAT_1;                                                          \
   }                                                                               \

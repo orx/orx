@@ -28,7 +28,6 @@
  * @author iarwain@orx-project.org
  * 
  * @todo 
- * - Use double or int/fixed point for time to keep DT precision over time
  * - Add freezing behaviour
  */
 

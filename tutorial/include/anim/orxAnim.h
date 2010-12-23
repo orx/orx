@@ -61,10 +61,12 @@
 
 #define orxANIM_KU32_MASK_USER_ALL            0x0000000F  /**< User all ID mask */
 
+#define orxANIM_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
+
 /** Anim defines
  */
-#define orxANIM_KU32_KEY_MAX_NUMBER           255         /**< Maximum number of keys for an animation structure */
-#define orxANIM_KU32_EVENT_MAX_NUMBER         15          /**< Maximum number of events for an animation structure */
+#define orxANIM_KU32_KEY_MAX_NUMBER           65535       /**< Maximum number of keys for an animation */
+#define orxANIM_KU32_EVENT_MAX_NUMBER         65535       /**< Maximum number of events for an animation */
 
 
 /** Internal Anim structure

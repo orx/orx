@@ -51,33 +51,58 @@
 
 /** Body definition flags
  */
-#define orxBODY_DEF_KU32_FLAG_NONE                0x00000000  /**< No flags */
+#define orxBODY_DEF_KU32_FLAG_NONE                    0x00000000  /**< No flags */
 
-#define orxBODY_DEF_KU32_FLAG_2D                  0x00000001  /**< 2D type body def flag */
-#define orxBODY_DEF_KU32_FLAG_DYNAMIC             0x00000002  /**< Dynamic type body def flag */
-#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED          0x00000004  /**< High speed type body def flag */
-#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION      0x00000008  /**< Body can't be rotated by physics */
-#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE           0x00000010  /**< Body is allowed to slide */
-#define orxBODY_DEF_KU32_FLAG_CAN_MOVE            0x00000020  /**< Static body is allowed to move by user direct access */
-#define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP         0x00000040  /**< Allow sleep body def flag */
+#define orxBODY_DEF_KU32_FLAG_2D                      0x00000001  /**< 2D type body def flag */
+#define orxBODY_DEF_KU32_FLAG_DYNAMIC                 0x00000002  /**< Dynamic type body def flag */
+#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED              0x00000004  /**< High speed type body def flag */
+#define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION          0x00000008  /**< Body can't be rotated by physics */
+#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE               0x00000010  /**< Body is allowed to slide */
+#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000020  /**< Static body is allowed to move by user direct access */
+#define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP             0x00000040  /**< Allow sleep body def flag */
 
-#define orxBODY_DEF_KU32_MASK_ALL                 0xFFFFFFFF  /**< Body def all mask */
+#define orxBODY_DEF_KU32_MASK_ALL                     0xFFFFFFFF  /**< Body def all mask */
 
 /** Body part definition flags
  */
-#define orxBODY_PART_DEF_KU32_FLAG_NONE           0x00000000  /**< No flags */
+#define orxBODY_PART_DEF_KU32_FLAG_NONE               0x00000000  /**< No flags */
 
-#define orxBODY_PART_DEF_KU32_FLAG_SPHERE         0x00000001  /**< Sphere body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_BOX            0x00000002  /**< Box body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_MESH           0x00000004  /**< Mesh body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_SOLID          0x00000010  /**< Solid body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SPHERE             0x00000001  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_BOX                0x00000002  /**< Box body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_MESH               0x00000004  /**< Mesh body part def flag */
 
-#define orxBODY_PART_DEF_KU32_MASK_ALL            0xFFFFFFFF  /**< Body part def all mask */
+#define orxBODY_PART_DEF_KU32_MASK_TYPE               0x00000007 /**< Type body part def mask */
+
+#define orxBODY_PART_DEF_KU32_FLAG_SOLID              0x10000000  /**< Solid body part def flag */
+
+#define orxBODY_PART_DEF_KU32_MASK_ALL                0xFFFFFFFF  /**< Body part def all mask */
+
+/** Body joint definition flags
+ */
+#define orxBODY_JOINT_DEF_KU32_FLAG_NONE              0x00000000  /**< No flags */
+
+#define orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE          0x00000001  /**< Revolute body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC         0x00000002  /**< Prismatic body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_SPRING            0x00000004  /**< Spring body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000008  /**< Pulley body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION        0x00000010  /**< Suspension body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000020  /**< Weld body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000040  /**< Friction body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000080  /**< Gear body joint def flag */
+
+#define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x000000FF  /**< Type body joint def mask */
+
+#define orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE           0x10000000  /**< Collide body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT    0x20000000  /**< Rotation  limit body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_MOTOR             0x40000000  /**< Motor body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT 0x80000000  /**< Translation limit def flag */
+
+#define orxBODY_JOINT_DEF_KU32_MASK_ALL               0xFFFFFFFF  /**< Body joint def all mask */
 
 
 /** Misc defines
  */
-#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER  8
+#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER      8
 
 
 /** Body definition
@@ -94,7 +119,7 @@ typedef struct __orxBODY_DEF_t
 
 } orxBODY_DEF;
 
-/** Shape definition
+/** Part definition
  */
 typedef struct __orxBODY_PART_DEF_t
 {
@@ -126,9 +151,96 @@ typedef struct __orxBODY_PART_DEF_t
 
     } stMesh;
 
-  };                                        /**< Shape : 132 */
+  };                                        /**< Part : 132 */
 
 } orxBODY_PART_DEF;
+
+/** Joint definition
+ */
+typedef struct __orxBODY_JOINT_DEF_t
+{
+  orxVECTOR     vSrcAnchor;                 /**< Source body anchor : 12 */
+  orxVECTOR     vDstAnchor;                 /**< Destination body anchor : 24 */
+  orxU32        u32Flags;                   /**< Control flags : 28 */
+
+  union
+  {
+    struct
+    {
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
+      orxFLOAT  fMinRotation;               /**< Min rotation : 36 */
+      orxFLOAT  fMaxRotation;               /**< Max rotation : 40 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 44 */
+      orxFLOAT  fMaxMotorTorque;            /**< Max motor torque : 48 */
+
+    } stRevolute;                           /**< Revolute : 48 */
+
+    struct
+    {
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
+      orxVECTOR vTranslationAxis;           /**< Translation axis : 44 */
+      orxFLOAT  fMinTranslation;            /**< Min translation : 48 */
+      orxFLOAT  fMaxTranslation;            /**< Max translation : 52 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 56 */
+      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 60 */
+
+    } stPrismatic;                          /**< Prismatic : 60 */
+
+    struct
+    {
+      orxFLOAT  fLength;                    /**< Length : 32 */
+      orxFLOAT  fFrequency;                 /**< Frequency : 36 */
+      orxFLOAT  fDamping;                   /**< Damping : 40 */
+
+    } stSpring;                             /**< Spring : 40 */
+
+    struct
+    {
+      orxFLOAT  fLengthRatio;               /**< Length ratio : 32 */
+      orxVECTOR vSrcGroundAnchor;           /**< Source ground anchor : 44 */
+      orxVECTOR vDstGroundAnchor;           /**< Destination ground anchor : 56 */
+      orxFLOAT  fSrcLength;                 /**< Source length : 60 */
+      orxFLOAT  fMaxSrcLength;              /**< Max source length : 64 */
+      orxFLOAT  fDstLength;                 /**< Destination length : 68 */
+      orxFLOAT  fMaxDstLength;              /**< Max destination length : 72 */
+
+    } stPulley;                             /**< Pulley : 72 */
+
+    struct
+    {
+      orxVECTOR vTranslationAxis;           /**< Translation axis : 40 */
+      orxFLOAT  fMinTranslation;            /**< Min translation : 44 */
+      orxFLOAT  fMaxTranslation;            /**< Max translation : 48 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 52 */
+      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 56 */
+
+    } stSuspension;                         /**< Suspension : 56 */
+
+    struct
+    {
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
+
+    } stWeld;                               /**< Weld : 32 */
+
+    struct
+    {
+      orxFLOAT  fMaxForce;                  /**< Max force : 32 */
+      orxFLOAT  fMaxTorque;                 /**< Max torque : 36 */
+
+    } stFriction;                           /**< Friction : 36 */
+
+    struct
+    {
+      const orxSTRING zSrcJointName;        /**< Source joint name : 32 */
+      const orxSTRING zDstJointName;        /**< Destination joint name : 36 */
+      orxFLOAT        fJointRatio;          /**< Joint ratio : 40 */
+
+    } stGear;                               /**< Gear : 40 */
+
+  };                                        /**< Joint : 72 */
+
+} orxBODY_JOINT_DEF;
+
 
 /** Event enum
  */
@@ -158,9 +270,13 @@ typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
  */
 typedef struct __orxPHYSICS_BODY_t        orxPHYSICS_BODY;
 
-/** Internal physics shape structure
+/** Internal physics part structure
  */
 typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
+
+/** Internal physics joint structure
+ */
+typedef struct __orxPHYSICS_BODY_JOINT_t  orxPHYSICS_BODY_JOINT;
 
 
 /** Config defines
@@ -224,15 +340,31 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBody(orxP
 
 /** Creates a part for a physical body
  * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _hUserData                            User data to associate with this physical body part
  * @param[in]   _pstBodyPartDef                       Physical body part definition
  * @return orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Deletes a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  */
 extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
+
+
+/** Creates a joint to link two physical bodies together
+ * @param[in]   _pstSrcBody                           Concerned source body
+ * @param[in]   _pstDstBody                           Concerned destination body
+ * @param[in]   _hUserData                            User data to associate with this physical body part
+ * @param[in]   _pstBodyJointDef                      Physical body joint definition
+ * @return orxPHYSICS_BODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef);
+
+/** Deletes a physical body joint
+ * @param[in]   _pstBodyJoint                         Concerned physical body joint
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint);
 
 
 /** Sets the position of a physical body
