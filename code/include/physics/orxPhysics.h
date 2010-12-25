@@ -84,11 +84,12 @@
 #define orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE          0x00000001  /**< Revolute body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC         0x00000002  /**< Prismatic body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_SPRING            0x00000004  /**< Spring body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000008  /**< Pulley body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION        0x00000010  /**< Suspension body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000020  /**< Weld body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000040  /**< Friction body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000080  /**< Gear body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_ROPE              0x00000008  /**< Rope body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000010  /**< Pulley body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION        0x00000020  /**< Suspension body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000040  /**< Weld body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000080  /**< Friction body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000100  /**< Gear body joint def flag */
 
 #define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x000000FF  /**< Type body joint def mask */
 
@@ -193,6 +194,12 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fDamping;                   /**< Damping : 40 */
 
     } stSpring;                             /**< Spring : 40 */
+
+    struct
+    {
+      orxFLOAT  fLength;                    /**< Length : 32 */
+      
+    } stRope;                               /**< Rope : 32 */
 
     struct
     {

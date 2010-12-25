@@ -289,6 +289,8 @@ static orxView *spoInstance;
         glASSERT();
         glDisable(GL_FOG);
         glASSERT();
+        glDisable(GL_ALPHA_TEST);
+        glASSERT();
         glEnableClientState(GL_VERTEX_ARRAY);
         glASSERT();
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -299,8 +301,6 @@ static orxView *spoInstance;
 
       /* Common init */
       glDisable(GL_CULL_FACE);
-      glASSERT();
-      glDisable(GL_ALPHA_TEST);
       glASSERT();
       glDisable(GL_DEPTH_TEST);
       glASSERT();
@@ -370,6 +370,8 @@ static orxView *spoInstance;
         glASSERT();
         glDisable(GL_FOG);
         glASSERT();
+        glDisable(GL_ALPHA_TEST);
+        glASSERT();
         glEnableClientState(GL_VERTEX_ARRAY);
         glASSERT();
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -380,8 +382,6 @@ static orxView *spoInstance;
 
       /* Common init */
       glDisable(GL_CULL_FACE);
-      glASSERT();
-      glDisable(GL_ALPHA_TEST);
       glASSERT();
       glDisable(GL_DEPTH_TEST);
       glASSERT();
@@ -889,7 +889,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
   if(sstDisplay.s32BufferIndex > 0)
   {
     /* Shader support? */
-    if(bShaderSupport != NO)
+    if([sstDisplay.poView bShaderSupport] != NO)
     {
       /* Sets vextex attribute arrays */
       glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
@@ -1389,8 +1389,11 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   }
   else
   {
+    /* Makes sure we're working on screen */
+    orxDisplay_SetDestinationBitmap(sstDisplay.pstScreen);
+
     /* Clears the color buffer with given color */
-    glClearColor((1.0f / 255.f) * orxU2F(orxRGBA_R(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_G(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_B(_stColor)), (1.0f / 255.f) * orxU2F(orxRGBA_A(_stColor)));
+    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
     glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();

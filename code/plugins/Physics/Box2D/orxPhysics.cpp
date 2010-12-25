@@ -742,6 +742,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   b2RevoluteJointDef  stRevoluteJointDef;
   b2PrismaticJointDef stPrismaticJointDef;
   b2DistanceJointDef  stSpringJointDef;
+  b2RopeJointDef      stRopeJointDef;
   b2PulleyJointDef    stPulleyJointDef;
   b2LineJointDef      stSuspensionJointDef;
   b2WeldJointDef      stWeldJointDef;
@@ -854,8 +855,24 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
       /* Stores frequency */
       stSpringJointDef.frequencyHz  = _pstBodyJointDef->stSpring.fFrequency;
 
-      /* Stores length */
+      /* Stores damping ratio */
       stSpringJointDef.dampingRatio = _pstBodyJointDef->stSpring.fDamping;
+
+      break;
+    }
+
+    /* Rope? */
+    case orxBODY_JOINT_DEF_KU32_FLAG_ROPE:
+    {
+      /* Stores joint reference */
+      pstJointDef = &stRopeJointDef;
+
+      /* Stores anchors */
+      stRopeJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcAnchor.fY);
+      stRopeJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstAnchor.fY);
+
+      /* Stores length */
+      stRopeJointDef.maxLength = sstPhysics.fDimensionRatio * _pstBodyJointDef->stRope.fLength;
 
       break;
     }

@@ -8,7 +8,7 @@ orx 1.3
 * *** Added new platform with full support (better sound support in the next version): android. ***
 * IMPORTANT: Added OpenGL ES 2.0 support for iPhone/iPod Touch/iPad + full shader pipeline (including custom shader support)
 * IMPORTANT: Mingw dev package has binaries built with gcc 4.5.0 which are *NOT* compatible with older versions of gcc. Please upgrade or recompile orx and dependencies.
-* IMPORTANT: Added physics joints support and updated to Box2D 2.1.2 which impacts on some physics settings (no more world boundaries, etc...)
+* IMPORTANT: Added physics joints support and updated to Box2D 2.1.3 (svn v140, pre-release) which impacts on some physics settings (no more world boundaries, etc...)
 * IMPORTANT: Added sound recording (to memory and/or disk, with post-processing through events)
 * IMPORTANT: Rendering to texture support is back with GLFW & iPhone plugins
 * IMPORTANT: orxSYSTEM_EVENT_BACKGROUND & orxSYSTEM_EVENT_FOREGROUND have been added to handle new iOS 4 "backgrounding" for application and will deactivate any rendering made by orx by defaault

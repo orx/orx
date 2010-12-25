@@ -120,6 +120,7 @@
 #define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
 #define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
 #define orxBODY_KZ_TYPE_SPRING                "spring"
+#define orxBODY_KZ_TYPE_ROPE                  "rope"
 #define orxBODY_KZ_TYPE_PULLEY                "pulley"
 #define orxBODY_KZ_TYPE_SUSPENSION            "suspension"
 #define orxBODY_KZ_TYPE_WELD                  "weld"
@@ -1097,6 +1098,17 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
 
       /* Stores damping */
       stBodyJointDef.stSpring.fDamping    = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+    }
+    /* Rope? */
+    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_ROPE) == 0)
+    {
+      orxVECTOR vSrcPos, vDstPos;
+
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_ROPE;
+
+      /* Stores length */
+      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
     }
     /* Pulley? */
     else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
