@@ -742,7 +742,9 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
   b2RevoluteJointDef  stRevoluteJointDef;
   b2PrismaticJointDef stPrismaticJointDef;
   b2DistanceJointDef  stSpringJointDef;
+#if 0 //! To be activated when all versions have switched to Box2D 2.1.3
   b2RopeJointDef      stRopeJointDef;
+#endif // 0
   b2PulleyJointDef    stPulleyJointDef;
   b2LineJointDef      stSuspensionJointDef;
   b2WeldJointDef      stWeldJointDef;
@@ -860,7 +862,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
 
       break;
     }
-
+#if 0 //! To be activated when all versions have switched to Box2D 2.1.3
     /* Rope? */
     case orxBODY_JOINT_DEF_KU32_FLAG_ROPE:
     {
@@ -876,7 +878,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateBodyJoint(o
 
       break;
     }
-
+#endif // 0
     /* Pulley? */
     case orxBODY_JOINT_DEF_KU32_FLAG_PULLEY:
     {
