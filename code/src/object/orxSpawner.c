@@ -78,6 +78,7 @@
 #define orxSPAWNER_KZ_CONFIG_OBJECT_SPEED         "ObjectSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED   "UseRelativeSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
+#define orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE      "CleanOnDelete"
 
 
 /***************************************************************************
@@ -613,6 +614,13 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT, orxSPAWNER_KU32_FLAG_NONE);
       }
 
+      /* Should clean on delete? */
+      if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE) != orxFALSE)
+      {
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE, orxSPAWNER_KU32_FLAG_NONE);
+      }
+
       /* Has speed? */
       if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(pstResult->vSpeed)) != orxNULL)
       {
@@ -701,16 +709,38 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_DELETE, _pstSpawner, orxNULL, orxNULL);
 
-    /* For all objects */
-    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
-        pstObject != orxNULL;
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+    /* Should clean? */
+    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
     {
-      /* Is spawner the owner */
-      if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
+      /* For all objects */
+      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+          pstObject != orxNULL;
+          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
       {
-        /* Removes it */
-        orxObject_SetOwner(pstObject, orxNULL);
+        /* Is spawner the owner */
+        if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
+        {
+          /* Removes it */
+          orxObject_SetOwner(pstObject, orxNULL);
+
+          /* Updates its lifetime */
+          orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+        }
+      }
+    }
+    else
+    {
+      /* For all objects */
+      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+          pstObject != orxNULL;
+          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      {
+        /* Is spawner the owner */
+        if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
+        {
+          /* Removes it */
+          orxObject_SetOwner(pstObject, orxNULL);
+        }
       }
     }
 
@@ -1181,23 +1211,16 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         }
 
         /* Gets spawner rotation */
-        fSpawnerRotation = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? orxSpawner_GetWorldRotation(_pstSpawner) : orxSpawner_GetRotation(_pstSpawner);
+        fSpawnerRotation = orxSpawner_GetWorldRotation(_pstSpawner);
 
         /* Updates object rotation */
-        orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + fSpawnerRotation);
+        orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? fSpawnerRotation : orxFLOAT_0);
 
         /* Gets spawner scale */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE))
-        {
-          orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale);
-        }
-        else
-        {
-          orxSpawner_GetScale(_pstSpawner, &vSpawnerScale);
-        }
+        orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale);
 
         /* Updates object scale */
-        orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), &vSpawnerScale));
+        orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE) ? &vSpawnerScale : &orxVECTOR_1));
 
         /* Not using self as parent or has a body? */
         if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT) || (_orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_BODY) != orxNULL))
