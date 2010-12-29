@@ -2308,6 +2308,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
     && (sstDisplay.pstShaderBank != orxNULL))
     {
       orxDISPLAY_EVENT_PAYLOAD stPayload;
+      GLint                    iWidth, iHeight;
 
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -2315,12 +2316,33 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       /* Stores view instance */
       sstDisplay.poView = [orxView GetInstance];
 
+      /* Depth buffer? */
+      if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+      {
+        /* Inits flags */
+        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
+      }
+      else
+      {
+        /* Inits flags */
+        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
+      }
+
+      /* Creates OpenGL thread context */
+      [sstDisplay.poView CreateThreadContext];
+
+      /* Gets render buffer's size */
+      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
+      glASSERT();
+      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
+      glASSERT();
+
       /* Inits default values */
       sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
       sstDisplay.pstScreen                  = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-      sstDisplay.pstScreen->fWidth          = [sstDisplay.poView frame].size.width;
-      sstDisplay.pstScreen->fHeight         = [sstDisplay.poView frame].size.height;
+      sstDisplay.pstScreen->fWidth          = iWidth;
+      sstDisplay.pstScreen->fHeight         = iHeight;
       sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
       sstDisplay.pstScreen->u32RealHeight   = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
       sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
@@ -2328,30 +2350,15 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
       sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
-
+      
       /* Updates config info */
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
-
-      /* Depth buffer? */
-      if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
-      {
-         /* Inits flags */
-         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
-      }
-      else
-      {
-         /* Inits flags */
-         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
-      }
-
+      
       /* Pops config section */
       orxConfig_PopSection();
-
-      /* Creates OpenGL thread context */
-      [sstDisplay.poView CreateThreadContext];
-
+      
       /* Gets max texture unit number */
       glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
       glASSERT();

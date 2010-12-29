@@ -76,7 +76,7 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   stFrame.origin.y = 0.0;
   poView = [[orxView alloc] initWithFrame:stFrame];
 
-  /* Attaches it window */
+  /* Attaches its window */
   [poWindow addSubview:poView];
 
   /* Assigns main loop to a new thread */

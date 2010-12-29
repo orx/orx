@@ -255,7 +255,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't update color/alpha for object <%s> spawned by <%s> as spawner has no valid owner.", orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), orxSpawner_GetName(pstSpawner));
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't update color/alpha for object <%s> spawned by the spawner <%s> as it has no valid owner.", orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), orxSpawner_GetName(pstSpawner));
           }
         }
       }
@@ -1181,7 +1181,7 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         }
 
         /* Gets spawner rotation */
-        fSpawnerRotation = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? orxSpawner_GetWorldRotation(_pstSpawner) : orxSpawner_GetRotation(_pstSpawner) ;
+        fSpawnerRotation = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? orxSpawner_GetWorldRotation(_pstSpawner) : orxSpawner_GetRotation(_pstSpawner);
 
         /* Updates object rotation */
         orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + fSpawnerRotation);
