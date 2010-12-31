@@ -443,6 +443,10 @@ static orxView *spoInstance;
 
     /* Sets its size */
     glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, iWidth, iHeight);
+
+    /* Binds render buffer back */
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+    glASSERT();
   }
 
   /* Done! */
