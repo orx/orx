@@ -372,11 +372,15 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   {
     orxINPUT_ENTRY *pstEntry;
 
-    /* Updates previous mouse position */
-    orxVector_Copy(&(sstInput.vPreviousMousePosition), &(sstInput.vCurrentMousePosition));
+    /* Not an internal call? */
+    if(_pstClockInfo != orxNULL)
+    {
+      /* Updates previous mouse position */
+      orxVector_Copy(&(sstInput.vPreviousMousePosition), &(sstInput.vCurrentMousePosition));
 
-    /* Updates current mouse position */
-    orxMouse_GetPosition(&(sstInput.vCurrentMousePosition));
+      /* Updates current mouse position */
+      orxMouse_GetPosition(&(sstInput.vCurrentMousePosition));
+    }
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -470,8 +474,9 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
       /* Active? */
       if(bActive != orxFALSE)
       {
-        /* Was not active? */
-        if(!orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
+        /* Was not active and not an internal call? */
+        if((!orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
+        && (_pstClockInfo != orxNULL))
         {
           orxINPUT_EVENT_PAYLOAD stPayload;
 
@@ -539,8 +544,9 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
       }
       else
       {
-        /* Was active? */
-        if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
+        /* Was active and not an internal call? */
+        if((orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
+        && (_pstClockInfo != orxNULL))
         {
           orxINPUT_EVENT_PAYLOAD stPayload;
 
@@ -1100,6 +1106,9 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
           /* Selects it */
           sstInput.pstCurrentSet = pstSet;
 
+          /* Updates it */
+          orxInput_Update(orxNULL, orxNULL);
+          
           break;
         }
       }
