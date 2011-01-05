@@ -380,8 +380,9 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     {
       orxVECTOR vPos;
 
-      /* Updates body's position */
+      /* Updates body's position & rotation*/
       orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
+      orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
     }
   }
 
@@ -1118,14 +1119,21 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Gets its position */
+  const b2Vec2 &rvPos = poBody->GetPosition();
 
   /* Sets position vector */
   vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
 
-  /* Updates its position */
-  poBody->SetTransform(vPosition, poBody->GetAngle());
+  /* Should apply? */
+  if((rvPos.x != vPosition.x) || (rvPos.y != vPosition.y))
+  {
+    /* Wakes up */
+    poBody->SetAwake(true);
+
+    /* Updates its position */
+    poBody->SetTransform(vPosition, poBody->GetAngle());
+  }
 
   /* Done! */
   return eResult;
@@ -1134,6 +1142,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
 {
   b2Body   *poBody;
+  float32   fRotation;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1143,11 +1152,18 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Gets its rotation */
+  fRotation = poBody->GetAngle();
 
-  /* Updates its rotation */
-  poBody->SetTransform(poBody->GetPosition(), _fRotation);
+  /* Should apply? */
+  if(fRotation != _fRotation)
+  {
+    /* Wakes up */
+    poBody->SetAwake(true);
+
+    /* Updates its rotation */
+    poBody->SetTransform(poBody->GetPosition(), _fRotation);
+  }
 
   /* Done! */
   return eResult;
@@ -1167,14 +1183,21 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pst
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
+  /* Gets its speed */
+  const b2Vec2 &rvSpeed = poBody->GetLinearVelocity();
+
   /* Sets speed vector */
   vSpeed.Set(sstPhysics.fDimensionRatio * _pvSpeed->fX, sstPhysics.fDimensionRatio * _pvSpeed->fY);
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Should apply? */
+  if((rvSpeed.x != vSpeed.x) || (rvSpeed.y != vSpeed.y))
+  {
+    /* Wakes up */
+    poBody->SetAwake(true);
 
-  /* Updates its speed */
-  poBody->SetLinearVelocity(vSpeed);
+    /* Updates its speed */
+    poBody->SetLinearVelocity(vSpeed);
+  }
 
   /* Done! */
   return eResult;
@@ -1183,6 +1206,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pst
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
 {
   b2Body   *poBody;
+  float32   fAngularVelocity;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1192,11 +1216,18 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Gets its angular velocity */
+  fAngularVelocity = poBody->GetAngularVelocity();
 
-  /* Updates its angular velocity */
-  poBody->SetAngularVelocity(_fVelocity);
+  /* Should apply? */
+  if(fAngularVelocity != _fVelocity)
+  {
+    /* Wakes up */
+    poBody->SetAwake(true);
+
+    /* Updates its angular velocity */
+    poBody->SetAngularVelocity(_fVelocity);
+  }
 
   /* Done! */
   return eResult;
@@ -1204,8 +1235,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity)
 {
-  b2Body   *poBody;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  b2Body       *poBody;
+  const b2Vec2 *pvCustomGravity;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -1214,10 +1246,10 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BO
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Gets its custom gravity */
+  pvCustomGravity = poBody->GetCustomGravity();
 
-  /* Has custom gravity */
+  /* Has new custom gravity? */
   if(_pvCustomGravity != orxNULL)
   {
     b2Vec2 vGravity;
@@ -1225,13 +1257,27 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BO
     /* Sets gravity vector */
     vGravity.Set(sstPhysics.fDimensionRatio * _pvCustomGravity->fX, sstPhysics.fDimensionRatio * _pvCustomGravity->fY);
 
-    /* Updates it */
-    poBody->SetCustomGravity(&vGravity);
+    /* Should apply? */
+    if((pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
+    {
+      /* Wakes up */
+      poBody->SetAwake(true);
+
+      /* Updates it */
+      poBody->SetCustomGravity(&vGravity);
+    }
   }
   else
   {
-    /* Removes it */
-    poBody->SetCustomGravity(orxNULL);
+    /* Should apply */
+    if(pvCustomGravity != NULL)
+    {
+      /* Wakes up */
+      poBody->SetAwake(true);
+
+      /* Removes it */
+      poBody->SetCustomGravity(orxNULL);
+    }
   }
 
   /* Done! */
