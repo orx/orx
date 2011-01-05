@@ -74,11 +74,11 @@
 			<Add option="-Wswitch" />
 			<Add option="-Wunused-variable" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\..\extern\Box2D_2.1.2\Orx\include" />
+			<Add directory="..\..\..\..\extern\Box2D_2.1.3\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-fPIC" />
-			<Add directory="..\..\..\..\extern\Box2D_2.1.2\Orx\lib\mingw" />
+			<Add directory="..\..\..\..\extern\Box2D_2.1.3\lib\mingw" />
 		</Linker>
 		<Unit filename="..\..\..\plugins\Physics\Box2D\orxPhysics.cpp" />
 		<Extensions>

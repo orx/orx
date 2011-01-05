@@ -121,9 +121,9 @@ typedef struct __orxINPUT_ENTRY_t
 typedef struct __orxINPUT_SET_t
 {
   orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
-  orxBANK          *pstEntryBank;                                 /**< Entry bank : 16 */
+  orxU32            u32ID;                                        /**< Set CRC : 16 */
   orxSTRING         zName;                                        /**< Set name : 20 */
-  orxU32            u32ID;                                        /**< Set CRC : 24 */
+  orxBANK          *pstEntryBank;                                 /**< Entry bank : 24 */
   orxLINKLIST       stEntryList;                                  /**< Entry list : 36 */
 
 } orxINPUT_SET;

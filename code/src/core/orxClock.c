@@ -89,9 +89,9 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
-  void                       *pContext;         /**< Clock function context : 20 */
-  orxMODULE_ID                eModuleID;        /**< Clock function module ID : 24 */
-  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 28 */
+  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 20 */
+  void                       *pContext;         /**< Clock function context : 24 */
+  orxMODULE_ID                eModuleID;        /**< Clock function module ID : 28 */
 
   orxPAD(28)
 
@@ -101,8 +101,8 @@ typedef struct __orxCLOCK_TIMER_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Timer function pointer : 16 */
-  void                       *pContext;         /**< Timer function context : 20 */
-  orxFLOAT                    fDelay;           /**< Timer delay : 24 */
+  orxFLOAT                    fDelay;           /**< Timer delay : 20 */
+  void                       *pContext;         /**< Timer function context : 24 */
   orxS32                      s32Repetition;    /**< Timer repetition : 28 */
   orxFLOAT                    fTimeStamp;       /**< Next call time stamp : 32 */
 

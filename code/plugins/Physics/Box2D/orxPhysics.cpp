@@ -72,10 +72,10 @@ namespace orxPhysics
 typedef struct __orxPHYSICS_EVENT_STORAGE_t
 {
   orxLINKLIST_NODE                  stNode;           /**< Link list node */
-  orxPHYSICS_EVENT_PAYLOAD          stPayload;        /**< Event payload */
-  orxPHYSICS_EVENT                  eID;              /**< Event ID */
   b2Body                           *poSource;         /**< Event source */
   b2Body                           *poDestination;    /**< Event destination */
+  orxPHYSICS_EVENT                  eID;              /**< Event ID */
+  orxPHYSICS_EVENT_PAYLOAD          stPayload;        /**< Event payload */
 
 } orxPHYSICS_EVENT_STORAGE;
 

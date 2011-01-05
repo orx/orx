@@ -561,7 +561,7 @@
         <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/mingw"/>
         <Library Value="orxd"/>
         <Library Value="glfw"/>
         <Library Value="sndfile"/>
@@ -609,7 +609,7 @@
         <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/Box2D_2.1.2/Orx/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/mingw"/>
         <Library Value="orx"/>
         <Library Value="glfw"/>
         <Library Value="sndfile"/>

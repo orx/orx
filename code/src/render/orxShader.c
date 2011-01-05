@@ -631,13 +631,13 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
         }
       }
 
-      /* For all parameters */
-      for(pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-          pstParam != orxNULL;
-          pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
+      /* No custom param? */
+      if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
       {
-        /* No custom param? */
-        if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
+        /* For all parameters */
+        for(pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamList));
+            pstParam != orxNULL;
+            pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
         {
           /* Depending on parameter type */
           switch(pstParam->stParam.eType)
@@ -692,7 +692,13 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             }
           }
         }
-        else
+      }
+      else
+      {
+        /* For all parameters */
+        for(pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamList));
+            pstParam != orxNULL;
+            pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
         {
           orxSHADER_EVENT_PARAM_PAYLOAD stPayload;
 

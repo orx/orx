@@ -172,8 +172,8 @@ typedef struct __orxCONFIG_VALUE_t
 typedef struct __orxCONFIG_ENTRY_t
 {
   orxLINKLIST_NODE  stNode;                 /**< List node : 12 */
-  orxSTRING         zKey;                   /**< Entry key : 16 */
-  orxU32            u32ID;                  /**< Key ID (CRC) : 20 */
+  orxU32            u32ID;                  /**< Key ID (CRC) : 16 */
+  orxSTRING         zKey;                   /**< Entry key : 20 */
 
   orxCONFIG_VALUE   stValue;                /**< Entry value : 56 */
 
@@ -186,11 +186,11 @@ typedef struct __orxCONFIG_ENTRY_t
 typedef struct __orxCONFIG_SECTION_t
 {
   orxLINKLIST_NODE  stNode;                 /**< List node : 12 */
-  orxBANK          *pstEntryBank;           /**< Entry bank : 16 */
-  orxSTRING         zName;                  /**< Section name : 20 */
-  orxU32            u32ID;                  /**< Section ID (CRC) : 24 */
-  orxU32            u32ParentID;            /**< Parent ID (CRC) : 28 */
-  orxS32            s32ProtectionCounter;   /**< Protection counter : 32 */
+  orxU32            u32ParentID;            /**< Parent ID (CRC) : 16 */
+  orxU32            u32ID;                  /**< Section ID (CRC) : 20 */
+  orxS32            s32ProtectionCounter;   /**< Protection counter : 24 */
+  orxSTRING         zName;                  /**< Section name : 28 */
+  orxBANK          *pstEntryBank;           /**< Entry bank : 32 */
   orxLINKLIST       stEntryList;            /**< Entry list : 44 */
 
   orxPAD(44)
