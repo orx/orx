@@ -1213,14 +1213,22 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Gets spawner rotation */
         fSpawnerRotation = orxSpawner_GetWorldRotation(_pstSpawner);
 
-        /* Updates object rotation */
-        orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION) ? fSpawnerRotation : orxFLOAT_0);
+        /* Should update rotation? */
+        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION))
+        {
+          /* Updates object rotation */
+          orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + fSpawnerRotation);
+        }
 
         /* Gets spawner scale */
         orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale);
 
-        /* Updates object scale */
-        orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE) ? &vSpawnerScale : &orxVECTOR_1));
+        /* Should update scale? */
+        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE))
+        {
+          /* Updates object scale */
+          orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), &vSpawnerScale));
+        }
 
         /* Not using self as parent or has a body? */
         if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT) || (_orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_BODY) != orxNULL))
