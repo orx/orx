@@ -355,7 +355,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
       if(s32MapPartValue != 0)
       {
         /* Gets free cell's map part index */
-        u32BitIndex = orxMath_GetBitCount((s32MapPartValue & -s32MapPartValue) - 1);
+        u32BitIndex = orxMath_GetTrailingZeroCount(s32MapPartValue);
 
         /* Found ! */
         bFound = orxTRUE;

@@ -962,6 +962,44 @@ orxU32 orxFASTCALL orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner
   return u32Result;
 }
 
+/** Gets spawner total object counter
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Total object counter
+ */
+orxU32 orxFASTCALL orxSpawner_GetTotalObjectCounter(const orxSPAWNER *_pstSpawner)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Updates result */
+  u32Result = (orxU32)_pstSpawner->u16TotalObjectCounter;
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets spawner active object counter
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Active object counter
+ */
+orxU32 orxFASTCALL orxSpawner_GetActiveObjectCounter(const orxSPAWNER *_pstSpawner)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Updates result */
+  u32Result = (orxU32)_pstSpawner->u16ActiveObjectCounter;
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Sets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _u32WaveSize    Number of objects to spawn in a wave / 0 for deactivating wave mode

@@ -164,6 +164,18 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectLimit(const
  */
 extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner);
 
+/** Gets spawner total object counter
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Total object counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectCounter(const orxSPAWNER *_pstSpawner);
+
+/** Gets spawner active object counter
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Active object counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectCounter(const orxSPAWNER *_pstSpawner);
+
 
 /** Sets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner

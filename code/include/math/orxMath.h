@@ -193,6 +193,23 @@ static orxINLINE orxU32 orxMath_GetBitCount(orxU32 _u32Value)
   return(_u32Value & 0x0000003f);
 }
 
+/** Gets the counts of trailing zeros in an orxU32
+ * @param[in]   _u32Value                       Value to process
+ * @return      Number of trailing zeros
+ */
+static orxINLINE orxU32 orxMath_GetTrailingZeroCount(orxU32 _u32Value)
+{
+  /* De Bruijn multiply look up table */
+  static const orxU32 sau32DeBruijnLUT[32] = 
+  {
+    0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 
+    31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
+  };
+
+  /* Done! */
+  return sau32DeBruijnLUT[((orxU32)(((orxS32)_u32Value & -(orxS32)_u32Value) * 0x077CB531U)) >> 27];
+}
+
 /** Gets next power of two of an orxU32
  * @param[in]   _u32Value                       Value to process
  * @return      If _u32Value is already a power of two, returns it, otherwise the next power of two
