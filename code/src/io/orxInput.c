@@ -137,8 +137,7 @@ typedef struct __orxINPUT_STATIC_t
   orxFLOAT      fJoystickAxisThreshold;                           /**< Joystick axis threshold */
   orxU32        u32Flags;                                         /**< Control flags */
   orxLINKLIST   stSetList;                                        /**< Set list */
-  orxVECTOR     vCurrentMousePosition;                            /**< Current mouse position */
-  orxVECTOR     vPreviousMousePosition;                           /**< Previous mouse position */
+  orxVECTOR     vMouseMove;                                       /**< Mouse move */
 
 } orxINPUT_STATIC;
 
@@ -210,9 +209,9 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
     {
       /* Updates result */
       fResult = (_eID == (orxMOUSE_AXIS_X))
-              ? sstInput.vCurrentMousePosition.fX - sstInput.vPreviousMousePosition.fX
+              ? sstInput.vMouseMove.fX
               : (_eID == (orxMOUSE_AXIS_Y))
-              ?  sstInput.vCurrentMousePosition.fY - sstInput.vPreviousMousePosition.fY
+              ?  sstInput.vMouseMove.fY
               : orxFLOAT_0;
 
       break;
@@ -375,11 +374,8 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
     /* Not an internal call? */
     if(_pstClockInfo != orxNULL)
     {
-      /* Updates previous mouse position */
-      orxVector_Copy(&(sstInput.vPreviousMousePosition), &(sstInput.vCurrentMousePosition));
-
-      /* Updates current mouse position */
-      orxMouse_GetPosition(&(sstInput.vCurrentMousePosition));
+      /* Updates mouse move */
+      orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
     }
 
     /* For all entries */

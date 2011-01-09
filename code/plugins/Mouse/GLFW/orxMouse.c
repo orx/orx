@@ -62,10 +62,10 @@
  */
 typedef struct __orxMOUSE_STATIC_t
 {
-  orxVECTOR   vMouseMove, vMouseBackup;
+  orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel;
+  orxBOOL     bClearWheel, bClearMove;
   orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
@@ -89,12 +89,15 @@ static orxMOUSE_STATIC sstMouse;
 static void GLFWCALL orxMouse_GLFW_MousePositionCallback(int _iX, int _iY)
 {
   /* Updates mouse move */
-  sstMouse.vMouseMove.fX += orxS2F(_iX) - sstMouse.vMouseBackup.fX;
-  sstMouse.vMouseMove.fY += orxS2F(_iY) - sstMouse.vMouseBackup.fY;
+  sstMouse.vMouseMove.fX += orxS2F(_iX) - sstMouse.vMouseBackup.fX + sstMouse.vMouseAcc.fX;
+  sstMouse.vMouseMove.fY += orxS2F(_iY) - sstMouse.vMouseBackup.fY + sstMouse.vMouseAcc.fY;
 
   /* Stores last mouse position */
   sstMouse.vMouseBackup.fX = orxS2F(_iX);
   sstMouse.vMouseBackup.fY = orxS2F(_iY);
+
+  /* Clears mouse accumulator */
+  sstMouse.vMouseAcc.fX = sstMouse.vMouseAcc.fY = orxFLOAT_0;
 
   /* Done! */
   return;
@@ -144,6 +147,15 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
     /* Clears it */
     sstMouse.fWheelMove   = orxFLOAT_0;
     sstMouse.bClearWheel  = orxFALSE;
+  }
+
+  /* Should clear move? */
+  if(sstMouse.bClearMove != orxFALSE)
+  {
+    /* Clears it */
+    sstMouse.vMouseMove.fX  =
+    sstMouse.vMouseMove.fY  = orxFLOAT_0;
+    sstMouse.bClearMove     = orxFALSE;
   }
 
   /* Clears internal wheel move */
@@ -254,10 +266,18 @@ void orxFASTCALL orxMouse_GLFW_Exit()
 
 orxSTATUS orxFASTCALL orxMouse_GLFW_SetPosition(const orxVECTOR *_pvPosition)
 {
+  orxS32    s32X, s32Y;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Gets mouse position */
+  glfwGetMousePos((int *)&s32X, (int *)&s32Y);
+
+  /* Updates accumulator */
+  sstMouse.vMouseAcc.fX += orxS2F(s32X) - _pvPosition->fX;
+  sstMouse.vMouseAcc.fY += orxS2F(s32Y) - _pvPosition->fY;
 
   /* Moves mouse */
   glfwSetMousePos((int)orxF2S(_pvPosition->fX), (int)orxF2S(_pvPosition->fY));
@@ -370,8 +390,8 @@ orxVECTOR *orxFASTCALL orxMouse_GLFW_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   /* Updates result */
   orxVector_Copy(_pvMoveDelta, &(sstMouse.vMouseMove));
 
-  /* Clears move */
-  orxVector_Copy(&(sstMouse.vMouseMove), &orxVECTOR_0);
+  /* Clears mouse move on next update */
+  sstMouse.bClearMove = orxTRUE;
 
   /* Done! */
   return pvResult;
