@@ -424,7 +424,7 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
           pstEntry->astBindingList[i].fValue = orxInput_GetBindingValue(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
 
           /* Is a joystick axis? */
-          if(pstEntry->astBindingList[i].eID == orxINPUT_TYPE_JOYSTICK_AXIS)
+          if(pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS)
           {
             /* Updates value with multiplier */
             pstEntry->astBindingList[i].fValue *= sstInput.fJoystickAxisMultiplier;
@@ -1316,8 +1316,8 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
           for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
           {
             /* Valid & active? */
-            if((pstEntry->astBindingList[i].eID != orxINPUT_TYPE_NONE)
-            && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > ((pstEntry->astBindingList[i].eID == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0)))
+            if((pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
+            && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > ((pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0)))
             {
               /* Updates result */
               fResult = pstEntry->astBindingList[i].fValue;
