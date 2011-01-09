@@ -56,6 +56,7 @@
 #define orxINPUT_KZ_CONFIG_SECTION                    "Input"     /**< Input set name */
 #define orxINPUT_KZ_CONFIG_SET_LIST                   "SetList"   /**< Input set list */
 #define orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD         "JoystickThreshold" /**< Input joystick threshold */
+#define orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER        "JoystickMultiplier" /**< Input joystick multiplier */
 #define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList" /**< Combine input list */
 
 #define orxINPUT_KZ_INPUT_EXTERNAL                    "EXTERNAL"  /**< External input */
@@ -93,10 +94,9 @@ typedef struct __orxINPUT_BINDING_t
 {
   orxINPUT_TYPE   eType;                                          /**< Input type : 4 */
   orxENUM         eID;                                            /**< Input ID : 8 */
-  orxFLOAT        fThreshold;                                     /**< Threshold : 12 */
-  orxFLOAT        fValue;                                         /**< Value : 16 */
+  orxFLOAT        fValue;                                         /**< Value : 12 */
 
-  orxPAD(16)
+  orxPAD(12)
 
 } orxINPUT_BINDING;
 
@@ -135,6 +135,7 @@ typedef struct __orxINPUT_STATIC_t
   orxBANK      *pstSetBank;                                       /**< Set bank */
   orxINPUT_SET *pstCurrentSet;                                    /**< Current set */
   orxFLOAT      fJoystickAxisThreshold;                           /**< Joystick axis threshold */
+  orxFLOAT      fJoystickAxisMultiplier;                          /**< Joystick axis multiplier */
   orxU32        u32Flags;                                         /**< Control flags */
   orxLINKLIST   stSetList;                                        /**< Set list */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
@@ -422,11 +423,18 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
           /* Updates it */
           pstEntry->astBindingList[i].fValue = orxInput_GetBindingValue(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
 
+          /* Is a joystick axis? */
+          if(pstEntry->astBindingList[i].eID == orxINPUT_TYPE_JOYSTICK_AXIS)
+          {
+            /* Updates value with multiplier */
+            pstEntry->astBindingList[i].fValue *= sstInput.fJoystickAxisMultiplier;
+          }
+
           /* Gets test value */
           fTestValue = (orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL)) ? pstEntry->fExternalValue : pstEntry->astBindingList[i].fValue;
 
           /* Active? */
-          if(orxMath_Abs(fTestValue) > pstEntry->astBindingList[i].fThreshold)
+          if(orxMath_Abs(fTestValue) > ((pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0))
           {
             /* First one? */
             if(bStatusSet == orxFALSE)
@@ -940,6 +948,13 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
     /* Gets joystick threshold */
     sstInput.fJoystickAxisThreshold = orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD);
 
+    /* Gets joystick multiplier */
+    sstInput.fJoystickAxisMultiplier = orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER);
+    if(sstInput.fJoystickAxisMultiplier <= orxFLOAT_0)
+    {
+      sstInput.fJoystickAxisMultiplier = orxFLOAT_1;
+    }
+
     /* Has list set */
     if(orxConfig_HasValue(orxINPUT_KZ_CONFIG_SET_LIST) != orxFALSE)
     {
@@ -1023,6 +1038,9 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
 
       /* Adds joystick threshold */
       orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
+
+      /* Adds joystick multiplier */
+      orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER, sstInput.fJoystickAxisMultiplier);
 
       /* For all sets */
       for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
@@ -1299,7 +1317,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
           {
             /* Valid & active? */
             if((pstEntry->astBindingList[i].eID != orxINPUT_TYPE_NONE)
-            && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold))
+            && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > ((pstEntry->astBindingList[i].eID == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0)))
             {
               /* Updates result */
               fResult = pstEntry->astBindingList[i].fValue;
@@ -1659,10 +1677,9 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
       }
 
       /* Updates binding */
-      pstSelectedEntry->astBindingList[u32OldestIndex].eType      = _eType;
-      pstSelectedEntry->astBindingList[u32OldestIndex].eID        = _eID;
-      pstSelectedEntry->astBindingList[u32OldestIndex].fThreshold = (_eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0;
-      pstSelectedEntry->astBindingList[u32OldestIndex].fValue     = orxFLOAT_0;
+      pstSelectedEntry->astBindingList[u32OldestIndex].eType  = _eType;
+      pstSelectedEntry->astBindingList[u32OldestIndex].eID    = _eID;
+      pstSelectedEntry->astBindingList[u32OldestIndex].fValue = orxFLOAT_0;
 
       /* Gets new oldest index */
       u32OldestIndex = (u32OldestIndex + 1) % orxINPUT_KU32_BINDING_NUMBER;
