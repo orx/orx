@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -81,7 +81,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER));
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER) || (_pstEvent->eType == orxEVENT_TYPE_SOUND));
 
   /* Depending on event type */
   switch(_pstEvent->eType)
@@ -151,6 +151,45 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       {
         /* Updates its value */
         pstPayload->fValue = sfShaderAmplitude;
+      }
+
+      break;
+    }
+
+    /* Sound */
+    case orxEVENT_TYPE_SOUND:
+    {
+      /* Recording packet? */
+      if(_pstEvent->eID == orxSOUND_EVENT_RECORDING_PACKET)
+      {
+        orxSOUND_EVENT_PAYLOAD *pstPayload;
+
+        /* Gets event payload */
+        pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Is recording input active? */
+        if(orxInput_IsActive("Record") != orxFALSE)
+        {
+          orxU32 i;
+
+          /* For all samples */
+          for(i = 0; i < pstPayload->stRecording.stPacket.u32SampleNumber / 2; i++)
+          {
+            /* Shorten the packet by half */
+            pstPayload->stRecording.stPacket.as16SampleList[i] = pstPayload->stRecording.stPacket.as16SampleList[i * 2];
+          }
+
+          /* Updates sample number */
+          pstPayload->stRecording.stPacket.u32SampleNumber = pstPayload->stRecording.stPacket.u32SampleNumber / 2;
+
+          /* Updates write to file status */
+          pstPayload->stRecording.stInfo.bWriteToFile = orxTRUE;
+        }
+        else
+        {
+          /* Updates write to file status */
+          pstPayload->stRecording.stInfo.bWriteToFile = orxFALSE;
+        }
       }
 
       break;
@@ -238,6 +277,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     {
       orxOBJECT *pstObject;
 
+      orxSoundSystem_StopRecording();
+
       /* Updates mouse position */
       vMousePos.fZ -= orx2F(0.1f);
 
@@ -309,6 +350,9 @@ static orxSTATUS orxBounce_Init()
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
+    /* Starts recording with default settings */
+    orxSoundSystem_StartRecording("orxSoundRecording.wav", orxNULL);
+
     /* Registers callback */
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
@@ -316,6 +360,7 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   else
   {

@@ -12,6 +12,7 @@ Orx authors:
     Romain Killian
 
   IDE project files (CodeLite, Code::Blocks, Visual Studio, XCode) and external dependencies:
+    Grey
     Romain Killian
 
   MacOS X (ppc/x86) version:
@@ -20,8 +21,19 @@ Orx authors:
   iPhone (iPod Touch/iPad) version:
     Romain Killian
 
+  Android version:
+    Cai 'laschweinski' Huaxu
+
   Main executable, demos and tutorials:
     Romain Killian
+
+  Community tutorials:
+    Grey
+    Sausage
+    TDomhan
+
+  OpenAL sound recording:
+    TDomhan
 
   Most error and warning messages:
     M1SF17

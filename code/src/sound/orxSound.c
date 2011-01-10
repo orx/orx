@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,7 +35,6 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
-#include "sound/orxSoundSystem.h"
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
 #include "object/orxStructure.h"
@@ -618,6 +617,24 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   return eResult;
 }
 
+/** Is a stream (ie. music)?
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxSound_IsStream(orxSOUND *_pstSound)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Updates result */
+  bResult = (_pstSound->pstSample == orxNULL) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
 
 /** Plays sound
  * @param[in] _pstSound       Concerned Sound

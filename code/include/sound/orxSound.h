@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -45,6 +45,7 @@
 
 
 #include "orxInclude.h"
+#include "sound/orxSoundSystem.h"
 #include "math/orxVector.h"
 
 
@@ -74,6 +75,9 @@ typedef enum __orxSOUND_EVENT_t
 {
   orxSOUND_EVENT_START = 0,                   /**< Event sent when a sound starts */
   orxSOUND_EVENT_STOP,                        /**< Event sent when a sound stops */
+  orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
+  orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
+  orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */
 
   orxSOUND_EVENT_NUMBER,
 
@@ -85,8 +89,18 @@ typedef enum __orxSOUND_EVENT_t
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  orxSOUND       *pstSound;                   /**< Sound reference : 4 */
-  const orxSTRING zSoundName;                 /**< Sound name : 8 */
+  const orxSTRING                   zSoundName; /**< Sound name : 4 */
+
+  union
+  {
+    orxSOUND                       *pstSound;   /**< Sound reference : 8 */
+
+    struct
+    {
+      orxSOUNDSYSTEM_RECORDING_INFO   stInfo;   /**< Sound record info : 16 */
+      orxSOUNDSYSTEM_RECORDING_PACKET stPacket; /**< Sound record packet : 16 */
+    } stRecording;
+  };                                            /**< Recording : 16 */
 
 } orxSOUND_EVENT_PAYLOAD;
 
@@ -116,6 +130,13 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const or
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Delete(orxSOUND *_pstSound);
+
+
+/** Is a stream (ie. music)?
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_IsStream(orxSOUND *_pstSound);
 
 
 /** Plays sound

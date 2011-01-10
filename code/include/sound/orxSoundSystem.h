@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -70,6 +70,26 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
   orxSOUNDSYSTEM_STATUS_NONE = orxENUM_NONE
 
 } orxSOUNDSYSTEM_STATUS;
+
+/** Sound system recording info
+ */
+typedef struct __orxSOUNDSYSTEM_RECORDING_INFO_t
+{
+  orxU32                      u32SampleRate;          /**< The sample rate, e.g. 44100 Hertz : 4 */
+  orxU32                      u32ChannelNumber;       /**< Number of channels, either mono (1) or stereo (2) : 8 */
+  orxBOOL                     bWriteToFile;           /**< Write recording to sound file? : 12 */
+
+} orxSOUNDSYSTEM_RECORDING_INFO;
+
+/** Sound system recording packet
+ */
+typedef struct __orxSOUNDSYSTEM_RECORDING_PACKET_t
+{
+  orxFLOAT                    fTimeStamp;             /**< Packet's timestamp : 4 */
+  orxU32                      u32SampleNumber;        /**< Number of samples contained in this packet : 8 */
+  orxS16                     *as16SampleList;         /**< List of samples for this packet : 12 */
+
+} orxSOUNDSYSTEM_RECORDING_PACKET;
 
 
 /** Config defines
@@ -146,6 +166,23 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Pause(orxSO
  * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Starts recording
+ * @param[in]   _zName                                Name for the recorded sound/file
+ * @param[in]   _pstInfo                              Recording information
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_StartRecording(const orxCHAR *_zName, const orxSOUNDSYSTEM_RECORDING_INFO *_pstInfo);
+
+/** Stops recording
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_StopRecording();
+
+/** Is recording possible on the current system?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxSoundSystem_HasRecordingSupport();
 
 /** Sets a sound volume
  * @param[in]   _pstSound                             Concerned sound
