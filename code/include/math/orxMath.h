@@ -179,7 +179,7 @@ extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS3
 
 /*** Inlined functions *** */
 
-/** Gets the counts of bit in an orxU32
+/** Gets the count of bit in an orxU32
  * @param[in]   _u32Value                       Value to process
  * @return      Number of bits that are set in the value
  */
@@ -193,7 +193,7 @@ static orxINLINE orxU32 orxMath_GetBitCount(orxU32 _u32Value)
   return(_u32Value & 0x0000003f);
 }
 
-/** Gets the counts of trailing zeros in an orxU32
+/** Gets the count of trailing zeros in an orxU32
  * @param[in]   _u32Value                       Value to process
  * @return      Number of trailing zeros
  */
