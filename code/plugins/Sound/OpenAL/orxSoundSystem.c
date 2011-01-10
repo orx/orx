@@ -706,6 +706,9 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
+    /* Makes sure we stop recording */
+    orxSoundSystem_OpenAL_StopRecording();
+
     /* Deletes banks */
     orxBank_Delete(sstSoundSystem.pstSampleBank);
     orxBank_Delete(sstSoundSystem.pstSoundBank);
