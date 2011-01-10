@@ -62,7 +62,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Delete, orxSTATUS, orxSOUNDSYSTEM_
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Play, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Pause, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Stop, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StartRecording, orxSTATUS, const orxSTRING, const orxSOUNDSYSTEM_RECORDING_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StartRecording, orxSTATUS, const orxSTRING, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StopRecording, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_HasRecordingSupport, orxBOOL, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetVolume, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT);
@@ -176,9 +176,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Stop)(_pstSound);
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_StartRecording(const orxSTRING _zName, const orxSOUNDSYSTEM_RECORDING_INFO *_pstInfo)
+orxSTATUS orxFASTCALL orxSoundSystem_StartRecording(const orxSTRING _zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_StartRecording)(_zName, _pstInfo);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_StartRecording)(_zName, _u32SampleRate, _u32ChannelNumber);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_StopRecording()

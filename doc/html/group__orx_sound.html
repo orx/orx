@@ -33,15 +33,23 @@
 <tr><td colspan="2"><h2><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSOUND_EVENT_PAYLOAD</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_o_u_n_d___r_e_c_o_r_d_i_n_g___i_n_f_o.html">orxSOUND_RECORDING_INFO</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_o_u_n_d___r_e_c_o_r_d_i_n_g___p_a_c_k_e_t.html">orxSOUND_RECORDING_PACKET</a></td></tr>
 <tr><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef struct __orxSOUND_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a></td></tr>
 <tr><td colspan="2"><h2><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gae4874020c9c68ac319642a5eb6d49775">orxSOUND_EVENT</a> { <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aac1c77343d17aa3aefa55d46ecb041a5">orxSOUND_EVENT_START</a> =  0, 
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gae4874020c9c68ac319642a5eb6d49775">orxSOUND_EVENT</a> { <br/>
+&#160;&#160;<a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aac1c77343d17aa3aefa55d46ecb041a5">orxSOUND_EVENT_START</a> =  0, 
 <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a54156ca4dadd6f23f47a4166905d45f8">orxSOUND_EVENT_STOP</a>, 
+<a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a9ee84d9204873f1ea1528741edc5c2ef">orxSOUND_EVENT_RECORDING_START</a>, 
+<a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aae948e6d5a56ecef8d50a7589de5fbf4">orxSOUND_EVENT_RECORDING_STOP</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a4c032b3f3712a1188ecd040bd366e472">orxSOUND_EVENT_RECORDING_PACKET</a>, 
 <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775ab5940bee79c88ccb166f6f72bedad3d1">orxSOUND_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775af572d77ad9843a4be67512b335fc32d9">orxSOUND_EVENT_NONE</a> =  orxENUM_NONE
+<br/>
  }</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga7e5aec8c210684f5fc8920bd2c13a474">orxSOUND_STATUS</a> { <br/>
 &#160;&#160;<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474abd46bd305984386e8023c8edd59eb0e9">orxSOUND_STATUS_PLAY</a> =  0, 
@@ -69,6 +77,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga8311ab1b7e07c74bf56e3875dfae778e">orxSound_GetVolume</a> (const <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gaeb665de88011fc4deb1ae8182fcef109">orxSound_Init</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gad2c5d121b81cbd87ad8c2ff26516a8b9">orxSound_IsLooping</a> (const <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga15413bce8dbb7e7bab4cde2354f2f00f">orxSound_IsStream</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga0466c87d987fc8c5729a3ac82bfb1a29">orxSound_Loop</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound, orxBOOL _bLoop)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga54cce1f0fa0a1bcb82834c3617ebdfe1">orxSound_Pause</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga7303779b3586e321870c97ddb54d2107">orxSound_Play</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
@@ -115,6 +124,15 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775a54156ca4dadd6f23f47a4166905d45f8"></a><!-- doxytag: member="orxSOUND_EVENT_STOP" ref="ggae4874020c9c68ac319642a5eb6d49775a54156ca4dadd6f23f47a4166905d45f8" args="" -->orxSOUND_EVENT_STOP</em>&nbsp;</td><td>
 <p>Event sent when a sound stops </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775a9ee84d9204873f1ea1528741edc5c2ef"></a><!-- doxytag: member="orxSOUND_EVENT_RECORDING_START" ref="ggae4874020c9c68ac319642a5eb6d49775a9ee84d9204873f1ea1528741edc5c2ef" args="" -->orxSOUND_EVENT_RECORDING_START</em>&nbsp;</td><td>
+<p>Event sent when recording starts </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775aae948e6d5a56ecef8d50a7589de5fbf4"></a><!-- doxytag: member="orxSOUND_EVENT_RECORDING_STOP" ref="ggae4874020c9c68ac319642a5eb6d49775aae948e6d5a56ecef8d50a7589de5fbf4" args="" -->orxSOUND_EVENT_RECORDING_STOP</em>&nbsp;</td><td>
+<p>Event sent when recording stops </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775a4c032b3f3712a1188ecd040bd366e472"></a><!-- doxytag: member="orxSOUND_EVENT_RECORDING_PACKET" ref="ggae4874020c9c68ac319642a5eb6d49775a4c032b3f3712a1188ecd040bd366e472" args="" -->orxSOUND_EVENT_RECORDING_PACKET</em>&nbsp;</td><td>
+<p>Event sent when a packet has been recorded </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775ab5940bee79c88ccb166f6f72bedad3d1"></a><!-- doxytag: member="orxSOUND_EVENT_NUMBER" ref="ggae4874020c9c68ac319642a5eb6d49775ab5940bee79c88ccb166f6f72bedad3d1" args="" -->orxSOUND_EVENT_NUMBER</em>&nbsp;</td><td>
 </td></tr>
@@ -465,6 +483,31 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 <p>Is sound looping? </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxTRUE / orxFALSE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga15413bce8dbb7e7bab4cde2354f2f00f"></a><!-- doxytag: member="orxSound.h::orxSound_IsStream" ref="ga15413bce8dbb7e7bab4cde2354f2f00f" args="(orxSOUND *_pstSound)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxSound_IsStream </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *&#160;</td>
+          <td class="paramname"> <em>_pstSound</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Is a stream (ie. music)? </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>

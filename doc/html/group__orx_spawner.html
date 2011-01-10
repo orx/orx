@@ -34,6 +34,7 @@
 Defines</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gae85d9762c0af0efefd9371c8bf81f6af">orxSPAWNER_KU32_FLAG_AUTO_DELETE</a>&#160;&#160;&#160;0x00000001</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga9787936032dc7d434c0011c995c6873b">orxSPAWNER_KU32_FLAG_AUTO_RESET</a>&#160;&#160;&#160;0x00000002</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gae94f7631defe7e169359fba6c27bab93">orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE</a>&#160;&#160;&#160;0x00000100</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac">orxSPAWNER_KU32_FLAG_NONE</a>&#160;&#160;&#160;0x00000000</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gaacc4ba128377d1617c203696cf724332">orxSPAWNER_KU32_FLAG_USE_ALPHA</a>&#160;&#160;&#160;0x00000004</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga1a4e8d2ca6a5107c1f0b0aed92d790fc">orxSPAWNER_KU32_FLAG_USE_COLOR</a>&#160;&#160;&#160;0x00000008</td></tr>
@@ -66,6 +67,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga7bec65434ff5b1832830178154868743">orxSpawner_Delete</a> (<a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga41c76c081771932e9e5a2273e286d039">orxSpawner_Enable</a> (<a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, orxBOOL _bEnable)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga110c05c9c035dd0e1eef3684656315fb">orxSpawner_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga76851cde7f12f2b2819c00086340c87e">orxSpawner_GetActiveObjectCounter</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga67e8df619d4104358acd24208bd36ef0">orxSpawner_GetActiveObjectLimit</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gaf3adfb153f40a2fe58f6ff25f6a7cb4f">orxSpawner_GetFrame</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
@@ -75,6 +77,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga52ebd1b1eb8cd55f9240f394ffb7c35d">orxSpawner_GetPosition</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gadbb9862a0f7c458421a564c48994cf39">orxSpawner_GetRotation</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gae2f9d0834d08a82d25b3d7f43a3655aa">orxSpawner_GetScale</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvScale)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga701bb100ddf0f8721f83d76f2b1f1564">orxSpawner_GetTotalObjectCounter</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga4730175a7761257f523f2dce73b4458a">orxSpawner_GetTotalObjectLimit</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#ga4ddda12512bf4fa8769a37ae3793f60e">orxSpawner_GetWaveDelay</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_spawner.html#gab7326aa893f19ace86d9f9f72d66993e">orxSpawner_GetWaveSize</a> (const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner)</td></tr>
@@ -125,6 +128,20 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 <p>Auto delete flag </p>
+
+</div>
+</div>
+<a class="anchor" id="gae94f7631defe7e169359fba6c27bab93"></a><!-- doxytag: member="orxSpawner.h::orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE" ref="gae94f7631defe7e169359fba6c27bab93" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE&#160;&#160;&#160;0x00000100</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Clean on delete flag </p>
 
 </div>
 </div>
@@ -410,6 +427,31 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga76851cde7f12f2b2819c00086340c87e"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetActiveObjectCounter" ref="ga76851cde7f12f2b2819c00086340c87e" args="(const orxSPAWNER *_pstSpawner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxSpawner_GetActiveObjectCounter </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&#160;</td>
+          <td class="paramname"> <em>_pstSpawner</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Gets spawner active object counter </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSpawner</td><td>Concerned spawner </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Active object counter </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga67e8df619d4104358acd24208bd36ef0"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetActiveObjectLimit" ref="ga67e8df619d4104358acd24208bd36ef0" args="(const orxSPAWNER *_pstSpawner)" -->
 <div class="memitem">
 <div class="memproto">
@@ -640,6 +682,31 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Scale vector </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga701bb100ddf0f8721f83d76f2b1f1564"></a><!-- doxytag: member="orxSpawner.h::orxSpawner_GetTotalObjectCounter" ref="ga701bb100ddf0f8721f83d76f2b1f1564" args="(const orxSPAWNER *_pstSpawner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxSpawner_GetTotalObjectCounter </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *&#160;</td>
+          <td class="paramname"> <em>_pstSpawner</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Gets spawner total object counter </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSpawner</td><td>Concerned spawner </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Total object counter </dd></dl>
 
 </div>
 </div>

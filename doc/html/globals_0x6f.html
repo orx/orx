@@ -184,6 +184,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxANIM_KU32_KEY_MAX_NUMBER
 : <a class="el" href="group__orx_anim.html#ga4ea007379c0c16774e2c7db73d68964f">orxAnim.h</a>
 </li>
+<li>orxANIM_KU32_MASK_ALL
+: <a class="el" href="group__orx_anim.html#ga29bd78ea7025d50a8767da6b45fd9a6c">orxAnim.h</a>
+</li>
 <li>orxANIM_KU32_MASK_USER_ALL
 : <a class="el" href="group__orx_anim.html#gadfa002692d137e27aeb6c22cc71882a4">orxAnim.h</a>
 </li>
@@ -558,6 +561,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE
 : <a class="el" href="group__orx_physics.html#ga98f87e044fc823987287ab15e80732d9">orxPhysics.h</a>
+</li>
+<li>orxBODY_JOINT_DEF_KU32_FLAG_ROPE
+: <a class="el" href="group__orx_physics.html#ga1ddedff022a9201a4561898d9e2175c1">orxPhysics.h</a>
 </li>
 <li>orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT
 : <a class="el" href="group__orx_physics.html#ga7248dd8515c48a7b784ac6f0d9e59b33">orxPhysics.h</a>
@@ -3140,6 +3146,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxMath_GetRandomU32()
 : <a class="el" href="group__orx_math.html#ga2486997fa74ede624d529480179c9c8b">orxMath.h</a>
 </li>
+<li>orxMath_GetTrailingZeroCount()
+: <a class="el" href="group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e">orxMath.h</a>
+</li>
 <li>orxMath_InitRandom()
 : <a class="el" href="group__orx_math.html#ga6c72f24ba256435c70dafea7e34b94e3">orxMath.h</a>
 </li>
@@ -3513,8 +3522,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_mouse.html#ga3ca2003c5818fc247b164d3f17fa0874">orxMouse.h</a>
 </li>
 <li>orxOBJECT
-: <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxObject.h</a>
-, <a class="el" href="group__orx_structure.html#ga197e66bf3102a9e7550514f287738bae">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga197e66bf3102a9e7550514f287738bae">orxStructure.h</a>
+, <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxObject.h</a>
 </li>
 <li>orxObject_AddDelayedFX()
 : <a class="el" href="group__orx_object.html#ga2147a7d2e2a692f7b63059292a9c04ee">orxObject.h</a>
@@ -4027,7 +4036,7 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ga87c12bc67d2607a888c7d01cb1199676">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
-: <a class="el" href="group__orx_plugin.html#gaae3867a190c9d37c6439fb596ba0d8fe">orxPlugin_CoreDefine.h</a>
+: <a class="el" href="group__orx_plugin.html#ga2521b0142525880ca5a22a2f6d88cd7a">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_ENTRY_POINT
 : <a class="el" href="group__orx_plugin.html#ga071a2272df71ff393d741088a9537fd4">orxPluginUser.h</a>
@@ -4398,6 +4407,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_VOLUME
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba247f44c2212aa056834c1d8a81b75576">orxPlugin_SoundSystem.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_HAS_RECORDING_SUPPORT
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bac17c3f647c9c202c57d211554cad3cd7">orxPlugin_SoundSystem.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_INIT
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba2dae2d47ce321b9cd853f446007c16cc">orxPlugin_SoundSystem.h</a>
 </li>
@@ -4443,8 +4455,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_VOLUME
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117baf132e67c0f22b457cd73f04221d9da5a">orxPlugin_SoundSystem.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_START_RECORDING
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba0d60d02e629e97bd9cfb4e823ee60e24">orxPlugin_SoundSystem.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_STOP
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba3f36616771bb251ce398b98e22fc813e">orxPlugin_SoundSystem.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_STOP_RECORDING
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba5a468c86b6edd085257b459db74d5974">orxPlugin_SoundSystem.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_UNLOAD_SAMPLE
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba75f306516fd0357623cddd87c29f2357">orxPlugin_SoundSystem.h</a>
@@ -4624,8 +4642,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_screenshot.html#ga1f9631ae57b99d820a23b66a9cc515de">orxScreenshot.h</a>
 </li>
 <li>orxSHADER
-: <a class="el" href="group__orx_structure.html#ga4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
-, <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+: <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+, <a class="el" href="group__orx_structure.html#ga4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
 </li>
 <li>orxShader_AddFloatParam()
 : <a class="el" href="group__orx_shader.html#ga93a5dd89f3185227563de422def889b6">orxShader.h</a>
@@ -4776,6 +4794,15 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSOUND_EVENT_NUMBER
 : <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775ab5940bee79c88ccb166f6f72bedad3d1">orxSound.h</a>
 </li>
+<li>orxSOUND_EVENT_RECORDING_PACKET
+: <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a4c032b3f3712a1188ecd040bd366e472">orxSound.h</a>
+</li>
+<li>orxSOUND_EVENT_RECORDING_START
+: <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a9ee84d9204873f1ea1528741edc5c2ef">orxSound.h</a>
+</li>
+<li>orxSOUND_EVENT_RECORDING_STOP
+: <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aae948e6d5a56ecef8d50a7589de5fbf4">orxSound.h</a>
+</li>
 <li>orxSOUND_EVENT_START
 : <a class="el" href="group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aac1c77343d17aa3aefa55d46ecb041a5">orxSound.h</a>
 </li>
@@ -4814,6 +4841,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSound_IsLooping()
 : <a class="el" href="group__orx_sound.html#gad2c5d121b81cbd87ad8c2ff26516a8b9">orxSound.h</a>
+</li>
+<li>orxSound_IsStream()
+: <a class="el" href="group__orx_sound.html#ga15413bce8dbb7e7bab4cde2354f2f00f">orxSound.h</a>
 </li>
 <li>orxSound_Loop()
 : <a class="el" href="group__orx_sound.html#ga0466c87d987fc8c5729a3ac82bfb1a29">orxSound.h</a>
@@ -4957,6 +4987,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundSystem_GetVolume()
 : <a class="el" href="group__orx_sound_system.html#ga66982290a938a1286b506cb6f66fd492">orxSoundSystem.h</a>
 </li>
+<li>orxSoundSystem_HasRecordingSupport()
+: <a class="el" href="group__orx_sound_system.html#ga264653cca01906bd3d7004a4fe0965e7">orxSoundSystem.h</a>
+</li>
 <li>orxSoundSystem_Init()
 : <a class="el" href="group__orx_sound_system.html#ga2ade4f5f870f5fa52cfe748a309aa5e7">orxSoundSystem.h</a>
 </li>
@@ -5011,6 +5044,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSOUNDSYSTEM_SOUND
 : <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSoundSystem.h</a>
 </li>
+<li>orxSoundSystem_StartRecording()
+: <a class="el" href="group__orx_sound_system.html#gac40d5f262982f505ea5754690c4d1b70">orxSoundSystem.h</a>
+</li>
 <li>orxSOUNDSYSTEM_STATUS
 : <a class="el" href="group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a">orxSoundSystem.h</a>
 </li>
@@ -5031,6 +5067,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSoundSystem_Stop()
 : <a class="el" href="group__orx_sound_system.html#gaf3c36a83f830377130999a73013fe4fb">orxSoundSystem.h</a>
+</li>
+<li>orxSoundSystem_StopRecording()
+: <a class="el" href="group__orx_sound_system.html#ga211e61d56febbe41ad5c855ed704a3be">orxSoundSystem.h</a>
 </li>
 <li>orxSoundSystem_UnloadSample()
 : <a class="el" href="group__orx_sound_system.html#gaecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem.h</a>
@@ -5081,6 +5120,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSpawner_Exit()
 : <a class="el" href="group__orx_spawner.html#ga110c05c9c035dd0e1eef3684656315fb">orxSpawner.h</a>
 </li>
+<li>orxSpawner_GetActiveObjectCounter()
+: <a class="el" href="group__orx_spawner.html#ga76851cde7f12f2b2819c00086340c87e">orxSpawner.h</a>
+</li>
 <li>orxSpawner_GetActiveObjectLimit()
 : <a class="el" href="group__orx_spawner.html#ga67e8df619d4104358acd24208bd36ef0">orxSpawner.h</a>
 </li>
@@ -5104,6 +5146,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSpawner_GetScale()
 : <a class="el" href="group__orx_spawner.html#gae2f9d0834d08a82d25b3d7f43a3655aa">orxSpawner.h</a>
+</li>
+<li>orxSpawner_GetTotalObjectCounter()
+: <a class="el" href="group__orx_spawner.html#ga701bb100ddf0f8721f83d76f2b1f1564">orxSpawner.h</a>
 </li>
 <li>orxSpawner_GetTotalObjectLimit()
 : <a class="el" href="group__orx_spawner.html#ga4730175a7761257f523f2dce73b4458a">orxSpawner.h</a>
@@ -5134,6 +5179,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSPAWNER_KU32_FLAG_AUTO_RESET
 : <a class="el" href="group__orx_spawner.html#ga9787936032dc7d434c0011c995c6873b">orxSpawner.h</a>
+</li>
+<li>orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE
+: <a class="el" href="group__orx_spawner.html#gae94f7631defe7e169359fba6c27bab93">orxSpawner.h</a>
 </li>
 <li>orxSPAWNER_KU32_FLAG_NONE
 : <a class="el" href="group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac">orxSpawner.h</a>
@@ -5581,8 +5629,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem.h</a>
 </li>
 <li>orxTEXT
-: <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
-, <a class="el" href="group__orx_structure.html#ga796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+, <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
 </li>
 <li>orxText_Create()
 : <a class="el" href="group__orx_text.html#ga7db9913d83299e4951a308f10a129cd3">orxText.h</a>

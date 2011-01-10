@@ -71,26 +71,6 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 } orxSOUNDSYSTEM_STATUS;
 
-/** Sound system recording info
- */
-typedef struct __orxSOUNDSYSTEM_RECORDING_INFO_t
-{
-  orxU32                      u32SampleRate;          /**< The sample rate, e.g. 44100 Hertz : 4 */
-  orxU32                      u32ChannelNumber;       /**< Number of channels, either mono (1) or stereo (2) : 8 */
-  orxBOOL                     bWriteToFile;           /**< Write recording to sound file? : 12 */
-
-} orxSOUNDSYSTEM_RECORDING_INFO;
-
-/** Sound system recording packet
- */
-typedef struct __orxSOUNDSYSTEM_RECORDING_PACKET_t
-{
-  orxFLOAT                    fTimeStamp;             /**< Packet's timestamp : 4 */
-  orxU32                      u32SampleNumber;        /**< Number of samples contained in this packet : 8 */
-  orxS16                     *as16SampleList;         /**< List of samples for this packet : 12 */
-
-} orxSOUNDSYSTEM_RECORDING_PACKET;
-
 
 /** Config defines
  */
@@ -169,10 +149,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Stop(orxSOU
 
 /** Starts recording
  * @param[in]   _zName                                Name for the recorded sound/file
- * @param[in]   _pstInfo                              Recording information
+ * @param[in]   _u32SampleRate                        Sample rate, 0 for default rate (44100Hz)
+ * @param[in]   _u32ChannelNumber                     Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_StartRecording(const orxCHAR *_zName, const orxSOUNDSYSTEM_RECORDING_INFO *_pstInfo);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_StartRecording(const orxCHAR *_zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber);
 
 /** Stops recording
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

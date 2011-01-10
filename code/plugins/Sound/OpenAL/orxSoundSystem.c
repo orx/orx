@@ -211,7 +211,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_EventHandler(const orxEVENT *
     pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Should write the packet? */
-    if(pstPayload->stRecording.stInfo.bWriteToFile != orxFALSE)
+    if(pstPayload->stRecording.stPacket.bWriteToFile != orxFALSE)
     {
       /* No file opened yet? */
       if(sstSoundSystem.pstRecordingFile == orxNULL)
@@ -234,12 +234,6 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_EventHandler(const orxEVENT *
         {
           /* Updates format */
           stFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-        }
-        /* FLAC? */
-        else if(orxString_ICompare(zExtension, "flac") == 0)
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_16;
         }
         /* CAF? */
         else if(orxString_ICompare(zExtension, ".caf") == 0)
@@ -764,9 +758,6 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
-    /* Makes sure we stop recording */
-    orxSoundSystem_StopRecording();
-
     /* Deletes banks */
     orxBank_Delete(sstSoundSystem.pstSampleBank);
     orxBank_Delete(sstSoundSystem.pstSoundBank);
@@ -1110,7 +1101,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zName, const orxSOUNDSYSTEM_RECORDING_INFO *_pstInfo)
+orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
   ALCenum   eALFormat;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1129,12 +1120,11 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
     sstSoundSystem.stRecordingPayload.zSoundName = orxString_Duplicate(_zName);
 
     /* Stores recording info */
-    sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate    = ((_pstInfo != orxNULL) && (_pstInfo->u32SampleRate > 0)) ? _pstInfo->u32SampleRate : orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY;
-    sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber = ((_pstInfo != orxNULL) && (_pstInfo->u32ChannelNumber == 2)) ? 2 : 1;
-    sstSoundSystem.stRecordingPayload.stRecording.stInfo.bWriteToFile     = (_pstInfo != orxNULL) ? _pstInfo->bWriteToFile : orxFALSE;
+    sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate    = (_u32SampleRate > 0) ? _u32SampleRate : orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY;
+    sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber = (_u32ChannelNumber == 2) ? 2 : 1;
 
     /* Updates format based on the number of desired channels */
-    eALFormat = (sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+    eALFormat = (_u32ChannelNumber == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 
     /* Opens the default capturing device */
     sstSoundSystem.poCaptureDevice = alcCaptureOpenDevice(NULL, (ALCuint)sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate, eALFormat, (ALCsizei)sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate);

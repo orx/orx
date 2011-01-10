@@ -876,7 +876,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_iPhone_StartRecording(const orxSTRING _zName, const orxSOUNDSYSTEM_RECORDING_INFO *_pstInfo)
+orxSTATUS orxFASTCALL orxSoundSystem_iPhone_StartRecording(const orxSTRING _zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

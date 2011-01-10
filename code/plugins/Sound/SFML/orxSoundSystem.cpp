@@ -366,7 +366,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_Stop(orxSOUNDSYSTEM_SOUND *
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_StartRecording(const orxSTRING _zName, const orxSOUNDSYSTEM_RECORDING_INFO *_pstInfo)
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_StartRecording(const orxSTRING _zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

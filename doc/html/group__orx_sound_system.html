@@ -70,6 +70,7 @@ Functions</h2></td></tr>
 <a class="el" href="group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a">orxSOUNDSYSTEM_STATUS</a> <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga350e4fb7ca2f47913e949aaff4ddbc45">orxSoundSystem_GetStatus</a> (const <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga66982290a938a1286b506cb6f66fd492">orxSoundSystem_GetVolume</a> (const <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga264653cca01906bd3d7004a4fe0965e7">orxSoundSystem_HasRecordingSupport</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga2ade4f5f870f5fa52cfe748a309aa5e7">orxSoundSystem_Init</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gab4cc52eef9a571d2f6fd7cae0e129692">orxSoundSystem_IsLooping</a> (const <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <br class="typebreak"/>
@@ -86,7 +87,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f">orxSoundSystem_SetReferenceDistance</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound, orxFLOAT _fDistance)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga4fe88ac284a248e180404ee43dbf8eed">orxSoundSystem_Setup</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gad87e9057a6687f1b1fe1e54caf3a26a9">orxSoundSystem_SetVolume</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound, orxFLOAT _fVolume)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gac40d5f262982f505ea5754690c4d1b70">orxSoundSystem_StartRecording</a> (const orxCHAR *_zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaf3c36a83f830377130999a73013fe4fb">orxSoundSystem_Stop</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga211e61d56febbe41ad5c855ed704a3be">orxSoundSystem_StopRecording</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem_UnloadSample</a> (<a class="el" href="group__orx_sound_system.html#ga538302084499f65dee3d0228cb9cc0d8">orxSOUNDSYSTEM_SAMPLE</a> *_pstSample)</td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
@@ -497,6 +500,24 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga264653cca01906bd3d7004a4fe0965e7"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_HasRecordingSupport" ref="ga264653cca01906bd3d7004a4fe0965e7" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxSoundSystem_HasRecordingSupport </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Is recording possible on the current system? </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxTRUE / orxFALSE </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga2ade4f5f870f5fa52cfe748a309aa5e7"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_Init" ref="ga2ade4f5f870f5fa52cfe748a309aa5e7" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -898,6 +919,49 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="gac40d5f262982f505ea5754690c4d1b70"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_StartRecording" ref="gac40d5f262982f505ea5754690c4d1b70" args="(const orxCHAR *_zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxSoundSystem_StartRecording </td>
+          <td>(</td>
+          <td class="paramtype">const orxCHAR *&#160;</td>
+          <td class="paramname"> <em>_zName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"> <em>_u32SampleRate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"> <em>_u32ChannelNumber</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Starts recording </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Name for the recorded sound/file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32SampleRate</td><td>Sample rate, 0 for default rate (44100Hz) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32ChannelNumber</td><td>Channel number, 0 for default mono channel </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gaf3c36a83f830377130999a73013fe4fb"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_Stop" ref="gaf3c36a83f830377130999a73013fe4fb" args="(orxSOUNDSYSTEM_SOUND *_pstSound)" -->
 <div class="memitem">
 <div class="memproto">
@@ -920,6 +984,24 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATSUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga211e61d56febbe41ad5c855ed704a3be"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_StopRecording" ref="ga211e61d56febbe41ad5c855ed704a3be" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxSoundSystem_StopRecording </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Stops recording </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>

@@ -85,22 +85,42 @@ typedef enum __orxSOUND_EVENT_t
 
 } orxSOUND_EVENT;
 
+/** Sound recording info
+ */
+typedef struct __orxSOUND_RECORDING_INFO_t
+{
+  orxU32    u32SampleRate;                    /**< The sample rate, e.g. 44100 Hertz : 4 */
+  orxU32    u32ChannelNumber;                 /**< Number of channels, either mono (1) or stereo (2) : 8 */
+
+} orxSOUND_RECORDING_INFO;
+
+/** Sound recording packet
+ */
+typedef struct __orxSOUND_RECORDING_PACKET_t
+{
+  orxBOOL   bWriteToFile;                     /**< Write recording to sound file? : 4 */
+  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 8 */
+  orxS16    *as16SampleList;                  /**< List of samples for this packet : 12 */
+  orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
+
+} orxSOUND_RECORDING_PACKET;
+
 /** Sound event payload
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  const orxSTRING                   zSoundName; /**< Sound name : 4 */
+  const orxSTRING               zSoundName;   /**< Sound name : 4 */
 
   union
   {
-    orxSOUND                       *pstSound;   /**< Sound reference : 8 */
+    orxSOUND                   *pstSound;     /**< Sound reference : 8 */
 
     struct
     {
-      orxSOUNDSYSTEM_RECORDING_INFO   stInfo;   /**< Sound record info : 16 */
-      orxSOUNDSYSTEM_RECORDING_PACKET stPacket; /**< Sound record packet : 16 */
+      orxSOUND_RECORDING_INFO   stInfo;       /**< Sound record info : 16 */
+      orxSOUND_RECORDING_PACKET stPacket;     /**< Sound record packet : 24 */
     } stRecording;
-  };                                            /**< Recording : 16 */
+  };                                          /**< Recording : 24 */
 
 } orxSOUND_EVENT_PAYLOAD;
 
