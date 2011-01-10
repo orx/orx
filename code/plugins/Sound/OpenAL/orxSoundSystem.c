@@ -216,15 +216,73 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_EventHandler(const orxEVENT *
       /* No file opened yet? */
       if(sstSoundSystem.pstRecordingFile == orxNULL)
       {
-        SF_INFO stFileInfo;
+        SF_INFO         stFileInfo;
+        orxU32          u32Length;
+        const orxCHAR  *zExtension;
 
         /* Clears file info */
         orxMemory_Zero(&stFileInfo, sizeof(SF_INFO));
 
+        /* Gets file name's length */
+        u32Length = orxString_GetLength(sstSoundSystem.stRecordingPayload.zSoundName);
+
+        /* Gets extension */
+        zExtension = (u32Length > 4) ? sstSoundSystem.stRecordingPayload.zSoundName + u32Length - 4 : orxSTRING_EMPTY;
+
+        /* WAV? */
+        if(orxString_ICompare(zExtension, ".wav") == 0)
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+        }
+        /* FLAC? */
+        else if(orxString_ICompare(zExtension, "flac") == 0)
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_FLAC | SF_FORMAT_PCM_16;
+        }
+        /* CAF? */
+        else if(orxString_ICompare(zExtension, ".caf") == 0)
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_CAF | SF_FORMAT_PCM_16;
+        }
+        /* VOC? */
+        else if(orxString_ICompare(zExtension, ".voc") == 0)
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_VOC | SF_FORMAT_PCM_16;
+        }
+        /* AIFF? */
+        else if(orxString_ICompare(zExtension, "aiff") == 0)
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_AIFF | SF_FORMAT_PCM_16;
+        }
+        /* AU/SND? */
+        else if((orxString_ICompare(zExtension + 1, ".au") == 0)
+             || (orxString_ICompare(zExtension, ".snd") == 0))
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_AU | SF_FORMAT_PCM_16;
+        }
+        /* IFF/SVX? */
+        else if((orxString_ICompare(zExtension, ".iff") == 0)
+             || (orxString_ICompare(zExtension, ".svx") == 0))
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_SVX | SF_FORMAT_PCM_16;
+        }
+        /* RAW */
+        else
+        {
+          /* Updates format */
+          stFileInfo.format = SF_FORMAT_RAW | SF_FORMAT_PCM_16;
+        }
+
         /* Inits it */
         stFileInfo.samplerate = sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate;
         stFileInfo.channels   = (sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber == 2) ? 2 : 1;
-        stFileInfo.format     =  SF_FORMAT_WAV | SF_FORMAT_PCM_16;
 
         /* Opens file */
     	  sstSoundSystem.pstRecordingFile = sf_open(sstSoundSystem.stRecordingPayload.zSoundName, SFM_WRITE, &stFileInfo);
