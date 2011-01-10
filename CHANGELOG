@@ -9,22 +9,27 @@ orx 1.3
 * IMPORTANT: Added OpenGL ES 2.0 support for iPhone/iPod Touch/iPad + full shader pipeline (including custom shader support)
 * IMPORTANT: Mingw dev package has binaries built with gcc 4.5.0 which are *NOT* compatible with older versions of gcc. Please upgrade or recompile orx and dependencies.
 * IMPORTANT: Added physics joints support and updated to Box2D 2.1.3 (svn v140, pre-release) which impacts on some physics settings (no more world boundaries, etc...)
-* IMPORTANT: Added sound recording (to memory and/or disk, with post-processing through events)
+* IMPORTANT: Added sound recording (to memory and/or disk with various file format support, with possibility of analyzing/pre-processing the samples through events)
 * IMPORTANT: Rendering to texture support is back with GLFW & iPhone plugins
 * IMPORTANT: orxSYSTEM_EVENT_BACKGROUND & orxSYSTEM_EVENT_FOREGROUND have been added to handle new iOS 4 "backgrounding" for application and will deactivate any rendering made by orx by defaault
 * IMPORTANT: Scale for objects with a ParentCamera is now expressed in camera space, by default.
-* IMPORTANT: UseParentSpace config property for objects with a ParentCamera now take additional values: both, non, positiona and scale
 * IMPORTANT: Custom event config syntax has changed (please check CreationTemplate.ini): they are now bound to keys and don't require a timestamp
+* IMPORTANT: UseParentSpace config property for objects with a ParentCamera now take additional values: both, non, positiona and scale
+* IMPORTANT: UseRotation/UseScale in spawner config changed: when set to false, no rotation/scale will be applied to the created object by the spawner and UseRelativeSpeed will always use spawner's parent orientation/scale
 * Optimized home render plugin to batch objects by texture (5-15% FPS boost, depending on scenes)
 * Optimized frame update for orphan objects (6-8% FPS boost)
 * Optimized GLFW and iPhone rendering: batching + indexing + interlacing -> 10 - 100% FPS boost
 * Orx will now use the current desktop resolution if none if provided
+* When selecting a new input set, the inputs status will be updated immediately to make sure holding key/button won't register as a new status
+* Better mouse axis handling in the input module: when user manually moves the cursor to simulate a capture, this won't affect input's values
+* Added JoystickMultiplier to input module: all joystick axis values will be multiplied by this value to allow scaling and a more seamless joystick/mouse input integration
 * Anims can now contain 65535 keys and 65535 events
 * Added orxDisplay_GetBitmapData()
 * Added optional depth buffer creation + better user-defined external rendering support (such as custom 3D rendering)
+* Added CleanOnDelete in spawner config to delete all alive spawned objects when their spawner is deleted
 * Minor internal pipeline/vertex shader optimization
 * Added dlmalloc as internal default memory allocator
-* Clock DT and orxSystemGetTime() are now using double precision and can support longer uptimes
+* Clock DT and orxSystemGetTime() are now using double precision and can support much much longer uptimes
 * Added orxEVENT_TYPE_DISPLAY/orxDISPLAY_EVENT_SET_VIDEO_MODE event
 * No more limitation on the number of body parts contained in a body
 * Added AllowSleep config property for bodies
