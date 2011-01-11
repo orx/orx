@@ -1599,6 +1599,7 @@ orxOBJECT *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
 /** Sets associated clock for an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pOwner       Clock to associate / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock)
 {
