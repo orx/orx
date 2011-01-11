@@ -341,20 +341,19 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
-        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/linux"/>
         <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/linux"/>
         <Library Value="sndfile"/>
@@ -399,19 +398,18 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="-s" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
-        <LibraryPath Value="../../../../extern/SFML-1.5/lib/linux"/>
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/linux"/>
         <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/linux"/>
         <Library Value="sndfile"/>
@@ -456,14 +454,14 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -495,13 +493,13 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -655,32 +653,27 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="-Wl,--out-implib=../../../lib/dynamic/liborxd.a" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/OpenAL-soft/lib/mingw"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/mingw"/>
         <Library Value="glfw"/>
         <Library Value="sndfile"/>
         <Library Value="openal32"/>
         <Library Value="SOIL"/>
         <Library Value="SDL"/>
-        <Library Value="sfml-graphics-d"/>
-        <Library Value="sfml-window-d"/>
-        <Library Value="sfml-audio-d"/>
-        <Library Value="sfml-system-d"/>
         <Library Value="Box2Dd"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
@@ -714,31 +707,26 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="-Wl,--out-implib=../../../lib/dynamic/liborx.a -s" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/OpenAL-1.12.854/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/OpenAL-soft/lib/mingw"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
-        <LibraryPath Value="../../../../extern/SFML-1.5/lib/mingw"/>
         <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/mingw"/>
         <Library Value="glfw"/>
         <Library Value="sndfile"/>
         <Library Value="openal32"/>
         <Library Value="SOIL"/>
         <Library Value="SDL"/>
-        <Library Value="sfml-graphics"/>
-        <Library Value="sfml-window"/>
-        <Library Value="sfml-audio"/>
-        <Library Value="sfml-system"/>
         <Library Value="Box2D"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
@@ -772,14 +760,14 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -811,13 +799,13 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
         <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
-        <IncludePath Value="../../../../extern/SFML-1.5/include"/>
         <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
         <IncludePath Value="../../../../extern/SOIL/include"/>
-        <IncludePath Value="../../../../extern/OpenAL-1.12.854/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
         <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
         <IncludePath Value="../../../../extern/stb_vorbis"/>
         <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
       <Linker Options="-s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
