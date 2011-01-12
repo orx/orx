@@ -351,7 +351,7 @@ static orxSTATUS orxBounce_Init()
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
     /* Starts recording with default settings */
-    orxSoundSystem_StartRecording("orxSoundRecording.wav", 0, 0);
+    orxSoundSystem_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
 
     /* Registers callback */
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

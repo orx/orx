@@ -178,6 +178,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Pause(orxSOUND *_pstSound
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Stop(orxSOUND *_pstSound);
 
 
+/** Starts recording
+ * @param[in] _zName             Name for the recorded sound/file
+ * @param[in] _bWriteToFile      Should write to file?
+ * @param[in] _u32SampleRate     Sample rate, 0 for default rate (44100Hz)
+ * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSound_StartRecording(const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber);
+
+/** Stops recording
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSound_StopRecording();
+
+/** Is recording possible on the current system?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxSound_HasRecordingSupport();
+
+
 /** Sets sound volume
  * @param[in] _pstSound       Concerned Sound
  * @param[in] _fVolume        Desired volume (0.0 - 1.0)

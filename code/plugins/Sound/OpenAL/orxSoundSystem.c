@@ -195,6 +195,93 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
+static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_OpenRecordingFile()
+{
+  SF_INFO         stFileInfo;
+  orxU32          u32Length;
+  const orxCHAR  *zExtension;
+  orxSTATUS       eResult;
+
+  /* Clears file info */
+  orxMemory_Zero(&stFileInfo, sizeof(SF_INFO));
+
+  /* Gets file name's length */
+  u32Length = orxString_GetLength(sstSoundSystem.stRecordingPayload.zSoundName);
+
+  /* Gets extension */
+  zExtension = (u32Length > 4) ? sstSoundSystem.stRecordingPayload.zSoundName + u32Length - 4 : orxSTRING_EMPTY;
+
+  /* WAV? */
+  if(orxString_ICompare(zExtension, ".wav") == 0)
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+  }
+  /* CAF? */
+  else if(orxString_ICompare(zExtension, ".caf") == 0)
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_CAF | SF_FORMAT_PCM_16;
+  }
+  /* VOC? */
+  else if(orxString_ICompare(zExtension, ".voc") == 0)
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_VOC | SF_FORMAT_PCM_16;
+  }
+  /* AIFF? */
+  else if(orxString_ICompare(zExtension, "aiff") == 0)
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_AIFF | SF_FORMAT_PCM_16;
+  }
+  /* AU/SND? */
+  else if((orxString_ICompare(zExtension + 1, ".au") == 0)
+       || (orxString_ICompare(zExtension, ".snd") == 0))
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_AU | SF_FORMAT_PCM_16;
+  }
+  /* IFF/SVX? */
+  else if((orxString_ICompare(zExtension, ".iff") == 0)
+       || (orxString_ICompare(zExtension, ".svx") == 0))
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_SVX | SF_FORMAT_PCM_16;
+  }
+  /* RAW */
+  else
+  {
+    /* Updates format */
+    stFileInfo.format = SF_FORMAT_RAW | SF_FORMAT_PCM_16;
+  }
+
+  /* Inits it */
+  stFileInfo.samplerate = sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate;
+  stFileInfo.channels   = (sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber == 2) ? 2 : 1;
+
+  /* Opens file */
+  sstSoundSystem.pstRecordingFile = sf_open(sstSoundSystem.stRecordingPayload.zSoundName, SFM_WRITE, &stFileInfo);
+
+  /* Success? */
+  if(sstSoundSystem.pstRecordingFile)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file <%s> to write recorded audio data. Sound recording is still in progress.", sstSoundSystem.stRecordingPayload.zSoundName);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_EventHandler(const orxEVENT *_pstEvent) 
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -216,77 +303,8 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_EventHandler(const orxEVENT *
       /* No file opened yet? */
       if(sstSoundSystem.pstRecordingFile == orxNULL)
       {
-        SF_INFO         stFileInfo;
-        orxU32          u32Length;
-        const orxCHAR  *zExtension;
-
-        /* Clears file info */
-        orxMemory_Zero(&stFileInfo, sizeof(SF_INFO));
-
-        /* Gets file name's length */
-        u32Length = orxString_GetLength(sstSoundSystem.stRecordingPayload.zSoundName);
-
-        /* Gets extension */
-        zExtension = (u32Length > 4) ? sstSoundSystem.stRecordingPayload.zSoundName + u32Length - 4 : orxSTRING_EMPTY;
-
-        /* WAV? */
-        if(orxString_ICompare(zExtension, ".wav") == 0)
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-        }
-        /* CAF? */
-        else if(orxString_ICompare(zExtension, ".caf") == 0)
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_CAF | SF_FORMAT_PCM_16;
-        }
-        /* VOC? */
-        else if(orxString_ICompare(zExtension, ".voc") == 0)
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_VOC | SF_FORMAT_PCM_16;
-        }
-        /* AIFF? */
-        else if(orxString_ICompare(zExtension, "aiff") == 0)
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_AIFF | SF_FORMAT_PCM_16;
-        }
-        /* AU/SND? */
-        else if((orxString_ICompare(zExtension + 1, ".au") == 0)
-             || (orxString_ICompare(zExtension, ".snd") == 0))
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_AU | SF_FORMAT_PCM_16;
-        }
-        /* IFF/SVX? */
-        else if((orxString_ICompare(zExtension, ".iff") == 0)
-             || (orxString_ICompare(zExtension, ".svx") == 0))
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_SVX | SF_FORMAT_PCM_16;
-        }
-        /* RAW */
-        else
-        {
-          /* Updates format */
-          stFileInfo.format = SF_FORMAT_RAW | SF_FORMAT_PCM_16;
-        }
-
-        /* Inits it */
-        stFileInfo.samplerate = sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate;
-        stFileInfo.channels   = (sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber == 2) ? 2 : 1;
-
-        /* Opens file */
-    	  sstSoundSystem.pstRecordingFile = sf_open(sstSoundSystem.stRecordingPayload.zSoundName, SFM_WRITE, &stFileInfo);
-
-        /* Failure? */
-        if(!sstSoundSystem.pstRecordingFile)
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file <%s> to write recorded audio data. Sound recording is still in progress.", sstSoundSystem.stRecordingPayload.zSoundName);
-        }
+         /* Opens it */
+         orxSoundSystem_OpenAL_OpenRecordingFile();
       }
 
       /* Has a valid file opened? */
@@ -1101,10 +1119,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
   ALCenum   eALFormat;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -1126,39 +1144,59 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
     /* Updates format based on the number of desired channels */
     eALFormat = (_u32ChannelNumber == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 
-    /* Opens the default capturing device */
+    /* Opens the default capture device */
     sstSoundSystem.poCaptureDevice = alcCaptureOpenDevice(NULL, (ALCuint)sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate, eALFormat, (ALCsizei)sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate);
 
     /* Success? */
     if(sstSoundSystem.poCaptureDevice != NULL)
     {
-      /* Starts capture device */
-      alcCaptureStart(sstSoundSystem.poCaptureDevice);
-
-      /* Adds update recording timer */
-      eResult = orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_UpdateRecording, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL);
+      /* Should record? */
+      if(_bWriteToFile != orxFALSE)
+      {
+        /* Opens file for recording */
+        eResult = orxSoundSystem_OpenAL_OpenRecordingFile();
+      }
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Updates packet's timestamp */
-        sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+        /* Starts capture device */
+        alcCaptureStart(sstSoundSystem.poCaptureDevice);
 
-        /* Updates status */
-        orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+        /* Adds update recording timer */
+        eResult = orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_UpdateRecording, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL);
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates packet's timestamp */
+          sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+
+          /* Updates status */
+          orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: failed to register the recording timer.", _zName);
+
+          /* Stops capture device */
+          alcCaptureStop(sstSoundSystem.poCaptureDevice);
+
+          /* Deletes it */
+          alcCaptureCloseDevice(sstSoundSystem.poCaptureDevice);
+          sstSoundSystem.poCaptureDevice = orxNULL;
+        }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: failed to register the recording timer.", _zName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: failed to open file, aborting.", _zName);
 
-        /* Stops capture device */
-        alcCaptureStop(sstSoundSystem.poCaptureDevice);
-
-        /* Deletes it */
+        /* Deletes capture device */
         alcCaptureCloseDevice(sstSoundSystem.poCaptureDevice);
         sstSoundSystem.poCaptureDevice = orxNULL;
       }
@@ -1167,12 +1205,18 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording of <%s>: failed to open sound capture device.", _zName);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s> as the recording of <%s> is still in progress.", _zName, sstSoundSystem.stRecordingPayload.zSoundName);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

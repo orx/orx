@@ -693,6 +693,61 @@ orxSTATUS orxFASTCALL orxSound_Stop(orxSOUND *_pstSound)
   return eResult;
 }
 
+/** Starts recording
+ * @param[in] _zName             Name for the recorded sound/file
+ * @param[in] _bWriteToFile      Should write to file?
+ * @param[in] _u32SampleRate     Sample rate, 0 for default rate (44100Hz)
+ * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_StartRecording(const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+
+  /* Starts recording */
+  eResult = orxSoundSystem_StartRecording(_zName, _bWriteToFile, _u32SampleRate, _u32ChannelNumber);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Stops recording
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_StopRecording()
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+
+  /* Stops recording */
+  eResult = orxSoundSystem_StopRecording();
+
+  /* Done! */
+  return eResult;
+}
+
+/** Is recording possible on the current system?
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxSound_HasRecordingSupport()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = orxSoundSystem_HasRecordingSupport();
+
+  /* Done! */
+  return bResult;
+}
+
 /** Sets sound volume
  * @param[in] _pstSound       Concerned Sound
  * @param[in] _fVolume        Desired volume (0.0 - 1.0)
