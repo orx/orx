@@ -98,9 +98,9 @@ typedef struct __orxSOUND_RECORDING_INFO_t
  */
 typedef struct __orxSOUND_RECORDING_PACKET_t
 {
-  orxBOOL   bWriteToFile;                     /**< Write recording to sound file? : 4 */
   orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 8 */
-  orxS16    *as16SampleList;                  /**< List of samples for this packet : 12 */
+  orxS16   *as16SampleList;                   /**< List of samples for this packet : 12 */
+  orxBOOL   bWriteToFile;                     /**< Write recording to sound file? : 4 */
   orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
 
 } orxSOUND_RECORDING_PACKET;
