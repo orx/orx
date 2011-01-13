@@ -96,9 +96,9 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRI
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteShader, void, orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StartShader, orxSTATUS, const orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StopShader, orxSTATUS, const orxHANDLE);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderBitmap, orxSTATUS, orxHANDLE, const orxSTRING, const orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderFloat, orxSTATUS, orxHANDLE, const orxSTRING, orxFLOAT);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderVector, orxSTATUS, orxHANDLE, const orxSTRING, const orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderBitmap, orxSTATUS, orxHANDLE, const orxSTRING, orxS32, const orxBITMAP *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderFloat, orxSTATUS, orxHANDLE, const orxSTRING, orxS32, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderVector, orxSTATUS, orxHANDLE, const orxSTRING, orxS32, const orxVECTOR *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
@@ -295,19 +295,19 @@ orxSTATUS orxFASTCALL orxDisplay_StopShader(const orxHANDLE _hShader)
     return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_StopShader)(_hShader);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue)
+orxSTATUS orxFASTCALL orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxBITMAP *_pstValue)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderBitmap)(_hShader, _zParam, _pstValue);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderBitmap)(_hShader, _zParam, _s32Index, _pstValue);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
+orxSTATUS orxFASTCALL orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxFLOAT _fValue)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderFloat)(_hShader, _zParam, _fValue);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderFloat)(_hShader, _zParam, _s32Index, _fValue);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
+orxSTATUS orxFASTCALL orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxVECTOR *_pvValue)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderVector)(_hShader, _zParam, _pvValue);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderVector)(_hShader, _zParam, _s32Index, _pvValue);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_EnableVSync(orxBOOL _bEnable)

@@ -1741,7 +1741,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_StopShader(orxHANDLE _hShader)
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBITMAP *_pstValue)
 {
   sf::PostFX *poFX;
   orxCHAR     acBuffer[256];
@@ -1831,7 +1831,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxFLOAT _fValue)
 {
   sf::PostFX *poFX;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1850,7 +1850,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShad
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxVECTOR *_pvValue)
 {
   sf::PostFX *poFX;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;

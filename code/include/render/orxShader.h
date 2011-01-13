@@ -73,6 +73,7 @@ typedef struct __orxSHADER_PARAM_t
   orxLINKLIST_NODE      stNode;                 /**< Linklist node : 12 */
   orxSHADER_PARAM_TYPE  eType;                  /**< Parameter type : 16 */
   const orxSTRING       zName;                  /**< Parameter literal name : 20 */
+  orxU32                u32ArraySize;           /**< Parameter array size : 24 */
 
 } orxSHADER_PARAM;
 
@@ -103,13 +104,14 @@ typedef struct __orxSHADER_EVENT_PARAM_PAYLOAD_t
 
   orxSHADER_PARAM_TYPE  eParamType;             /**< Parameter type : 12 */
   const orxSTRING       zParamName;             /**< Parameter name : 16 */
+  orxS32                s32ParamIndex;          /**< Parameter index : 20 */
 
   union
   {
-    orxFLOAT    fValue;                         /**< Float value : 20 */
-    orxTEXTURE *pstValue;                       /**< Texture value : 20 */
-    orxVECTOR   vValue;                         /**< Vector value : 20 */
-  };                                            /**< Union value : 28 */
+    orxFLOAT    fValue;                         /**< Float value : 24 */
+    orxTEXTURE *pstValue;                       /**< Texture value : 24 */
+    orxVECTOR   vValue;                         /**< Vector value : 24 */
+  };                                            /**< Union value : 32 */
 
 } orxSHADER_EVENT_PARAM_PAYLOAD;
 
@@ -161,26 +163,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Stop(const orxSHADER *
 /** Adds a float parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for no array
  * @param[in] _fValue                 Parameter's float value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, orxFLOAT _fValue);
 
 /** Adds a texture parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for no array
  * @param[in] _pstValue               Parameter's texture value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxTEXTURE *_pstValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, orxTEXTURE *_pstValue);
 
 /** Adds a vector parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for no array
  * @param[in] _pvValue                Parameter's vector value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, const orxVECTOR *_pvValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_pvValue);
 
 /** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader

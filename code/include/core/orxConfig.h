@@ -199,6 +199,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearSection(const orxST
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearValue(const orxSTRING _zKey);
 
 
+/** Is this value inherited from another one?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsInheritedValue(const orxSTRING _zKey);
+
+
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE

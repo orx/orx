@@ -172,7 +172,6 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBITMAP                *pstDestinationBitmap;
   const orxBITMAP          *pstLastBitmap;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
-  orxU8                   **aau8BufferArray;
   orxS32                    s32BitmapCounter;
   orxS32                    s32ShaderCounter;
   GLint                     iTextureUnitNumber;
@@ -1972,6 +1971,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
   int       iWidth, iHeight, iDepth;
+  orxU8   **aau8BufferArray;
   orxSTATUS eResult;
 
   /* Checks */
@@ -2006,10 +2006,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       orxU32      u32Index;
 
       /* Allocates buffer array */
-      sstDisplay.aau8BufferArray = (orxU8 **)orxMemory_Allocate(sstDisplay.s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
+      aau8BufferArray = (orxU8 **)orxMemory_Allocate(sstDisplay.s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
 
       /* Checks */
-      orxASSERT(sstDisplay.aau8BufferArray != orxNULL);
+      orxASSERT(aau8BufferArray != orxNULL);
 
       /* For all bitmaps */
       for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL), u32Index = 0;
@@ -2020,17 +2020,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         if(pstBitmap != sstDisplay.pstScreen)
         {
           /* Allocates its buffer */
-          sstDisplay.aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+          aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
 
           /* Checks */
-          orxASSERT(sstDisplay.aau8BufferArray[u32Index] != orxNULL);
+          orxASSERT(aau8BufferArray[u32Index] != orxNULL);
 
           /* Binds bitmap */
           glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
           glASSERT();
 
           /* Copies bitmap data */
-          glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index++]);
+          glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, aau8BufferArray[u32Index++]);
           glASSERT();
 
           /* Deletes it */
@@ -2215,7 +2215,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           glASSERT();
           glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
           glASSERT();
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index]);
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, aau8BufferArray[u32Index]);
           glASSERT();
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
           glASSERT();
@@ -2227,12 +2227,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           glASSERT();
 
           /* Deletes buffer */
-          orxMemory_Free(sstDisplay.aau8BufferArray[u32Index++]);
+          orxMemory_Free(aau8BufferArray[u32Index++]);
         }
       }
 
       /* Deletes buffer array */
-      orxMemory_Free(sstDisplay.aau8BufferArray);
+      orxMemory_Free(aau8BufferArray);
     }
 
     /* Had shaders? */
@@ -2608,7 +2608,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
               orxS32 s32Offset;
 
               /* Adds its literal value */
-              s32Offset = orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
 
@@ -2620,7 +2620,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
               orxS32 s32Offset;
 
               /* Adds its literal value and automated coordinates */
-              s32Offset = orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
+              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%ld];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
 
@@ -2632,7 +2632,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
               orxS32 s32Offset;
 
               /* Adds its literal value */
-              s32Offset = orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
+              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
 
@@ -2818,7 +2818,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxBITMAP *_pstValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxCHAR             acBuffer[256];
@@ -2837,9 +2837,22 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, const 
   {
     GLint iLocation;
 
-    /* Gets parameter location */
-    iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
-    glASSERT();
+    /* Array? */
+    if(_s32Index >= 0)
+    {
+      /* Prints its name */
+      orxString_NPrint(acBuffer, 256, "%s[%ld]", _zParam, _s32Index);
+
+      /* Gets parameter location */
+      iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
+      glASSERT();
+    }
+    else
+    {
+      /* Gets parameter location */
+      iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
+      glASSERT();
+    }
 
     /* Valid? */
     if(iLocation != -1)
@@ -2858,56 +2871,114 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, const 
       /* Updates texture counter */
       pstShader->iTextureCounter++;
 
-      /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
-      iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
-      glASSERT();
-
-      /* Valid? */
-      if(iLocation != -1)
+      /* Array? */
+      if(_s32Index >= 0)
       {
+        /* Gets top parameter location */
+        orxString_NPrint(acBuffer, 256, "%s[%ld]"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam, _s32Index);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
+
+        /* Valid? */
+        if(iLocation != -1)
+        {
           /* Updates its value */
           glUniform1fARB(iLocation, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
           glASSERT();
-      }
+        }
 
-      /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
-      iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
-      glASSERT();
+        /* Gets left parameter location */
+        orxString_NPrint(acBuffer, 256, "%s[%ld]"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam, _s32Index);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
 
-      /* Valid? */
-      if(iLocation != -1)
-      {
+        /* Valid? */
+        if(iLocation != -1)
+        {
           /* Updates its value */
           glUniform1fARB(iLocation, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
           glASSERT();
-      }
+        }
 
-      /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
-      iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
-      glASSERT();
+        /* Gets bottom parameter location */
+        orxString_NPrint(acBuffer, 256, "%s[%ld]"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam, _s32Index);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
 
-      /* Valid? */
-      if(iLocation != -1)
-      {
+        /* Valid? */
+        if(iLocation != -1)
+        {
           /* Updates its value */
           glUniform1fARB(iLocation, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
           glASSERT();
-      }
+        }
 
-      /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
-      iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
-      glASSERT();
+        /* Gets right parameter location */
+        orxString_NPrint(acBuffer, 256, "%s[%ld]"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam, _s32Index);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
 
-      /* Valid? */
-      if(iLocation != -1)
-      {
+        /* Valid? */
+        if(iLocation != -1)
+        {
           /* Updates its value */
           glUniform1fARB(iLocation, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
           glASSERT();
+        }
+      }
+      else
+      {
+        /* Gets top parameter location */
+        orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
+
+        /* Valid? */
+        if(iLocation != -1)
+        {
+          /* Updates its value */
+          glUniform1fARB(iLocation, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+          glASSERT();
+        }
+
+        /* Gets left parameter location */
+        orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
+
+        /* Valid? */
+        if(iLocation != -1)
+        {
+          /* Updates its value */
+          glUniform1fARB(iLocation, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+          glASSERT();
+        }
+
+        /* Gets bottom parameter location */
+        orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
+
+        /* Valid? */
+        if(iLocation != -1)
+        {
+          /* Updates its value */
+          glUniform1fARB(iLocation, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+          glASSERT();
+        }
+
+        /* Gets right parameter location */
+        orxString_NPrint(acBuffer, 256, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+        iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+        glASSERT();
+
+        /* Valid? */
+        if(iLocation != -1)
+        {
+          /* Updates its value */
+          glUniform1fARB(iLocation, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
+          glASSERT();
+        }
       }
 
       /* Updates result */
@@ -2935,10 +3006,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, const 
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxFLOAT _fValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   GLint               iLocation;
+  GLcharARB           acBuffer[256];
   orxSTATUS           eResult;
 
   /* Checks */
@@ -2949,9 +3021,22 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, const o
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
-  /* Gets parameter location */
-  iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
-  glASSERT();
+  /* Array? */
+  if(_s32Index >= 0)
+  {
+    /* Prints its name */
+    orxString_NPrint(acBuffer, 256, "%s[%ld]", _zParam, _s32Index);
+
+    /* Gets parameter location */
+    iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
+    glASSERT();
+  }
+  else
+  {
+    /* Gets parameter location */
+    iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
+    glASSERT();
+  }
 
   /* Valid? */
   if(iLocation != -1)
@@ -2973,10 +3058,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, const o
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxVECTOR *_pvValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   GLint               iLocation;
+  GLcharARB           acBuffer[256];
   orxSTATUS           eResult;
 
   /* Checks */
@@ -2988,9 +3074,22 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, const 
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
-  /* Gets parameter location */
-  iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
-  glASSERT();
+  /* Array? */
+  if(_s32Index >= 0)
+  {
+    /* Prints its name */
+    orxString_NPrint(acBuffer, 256, "%s[%ld]", _zParam, _s32Index);
+
+    /* Gets parameter location */
+    iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
+    glASSERT();
+  }
+  else
+  {
+    /* Gets parameter location */
+    iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
+    glASSERT();
+  }
 
   /* Valid? */
   if(iLocation != -1)

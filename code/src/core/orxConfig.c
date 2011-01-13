@@ -3081,6 +3081,38 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   return eResult;
 }
 
+/** Is this value inherited from another one?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstEntry != orxNULL)
+  {
+    /* Has local inheritance? */
+    if(orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE

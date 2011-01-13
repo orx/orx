@@ -69,7 +69,7 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
-/* SFML (bad shader support, no rendering to texture) & Box2D */
+/* SFML (bad/incomplete shader support, no rendering to texture) & Box2D */
 //#include "../plugins/Display/SFML/orxDisplay.cpp"
 //#include "../plugins/Joystick/SFML/orxJoystick.cpp"
 //#include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
