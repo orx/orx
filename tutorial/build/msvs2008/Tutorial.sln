@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_StandAlone", "10_StandAl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11_Spawner", "11_Spawner\11_Spawner.vcproj", "{0E9FD768-5D9A-4502-B8C8-BFFA14D43C9B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12_Lighting", "12_Lighting\12_Lighting.vcproj", "{677376B5-4556-4C68-A202-40E602FBCC9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Release|Win32 = Dynamic Release|Win32
@@ -50,6 +52,8 @@ Global
 		{A350CE42-F198-4558-80C1-7257528C3B1B}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 		{0E9FD768-5D9A-4502-B8C8-BFFA14D43C9B}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
 		{0E9FD768-5D9A-4502-B8C8-BFFA14D43C9B}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{677376B5-4556-4C68-A202-40E602FBCC9F}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{677376B5-4556-4C68-A202-40E602FBCC9F}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

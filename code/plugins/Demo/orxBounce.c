@@ -40,6 +40,8 @@ static orxVIEWPORT *spstViewport;
 static orxFLOAT     sfShaderPhase = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency = orx2F(1.0f);
+static orxVECTOR    svColor = {0};
+static orxFLOAT     sfColorTime = orx2F(0.0f);
 
 /** Applies current selected video mode
  */
@@ -126,19 +128,23 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
     /* Shader */
     case orxEVENT_TYPE_SHADER:
     {
-      orxSHADER_EVENT_PARAM_PAYLOAD *pstPayload;
+      orxSHADER_EVENT_PAYLOAD *pstPayload;
 
       /* Checks */
       orxASSERT(_pstEvent->eID == orxSHADER_EVENT_SET_PARAM);
 
       /* Gets its payload */
-      pstPayload = (orxSHADER_EVENT_PARAM_PAYLOAD *)_pstEvent->pstPayload;
+      pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Phase? */
       if(!orxString_Compare(pstPayload->zParamName, "phase"))
       {
         /* Updates its value */
         pstPayload->fValue = sfShaderPhase;
+      }
+      else if(!orxString_Compare(pstPayload->zParamName, "color"))
+      {
+        orxVector_Copy(&pstPayload->vValue, &svColor);
       }
       /* Frequency? */
       else if(!orxString_Compare(pstPayload->zParamName, "frequency"))
@@ -249,6 +255,19 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   sfShaderPhase    += orxConfig_GetFloat("ShaderPhaseSpeed") * _pstClockInfo->fDT;
   sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
   sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
+
+  /* Updates color time */
+  sfColorTime -= _pstClockInfo->fDT;
+
+  /* Should update color */
+  if(sfColorTime <= orxFLOAT_0)
+  {
+    orxConfig_PushSection("BounceShader");
+    orxConfig_GetVector("color", &svColor);
+    orxConfig_PopSection();
+
+    sfColorTime += orx2F(3.0f);
+  }
 
   /* Gets mouse world position */
   bInViewport = (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos) != orxNULL) ? orxTRUE : orxFALSE;

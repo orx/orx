@@ -85,16 +85,16 @@
  */
 typedef struct __orxSHADER_PARAM_VALUE_t
 {
-  orxLINKLIST_NODE  stNode;                               /**< Linklist node : 12 */
-  orxSHADER_PARAM  *pstParam;                             /**< Param definition : 16 */
+  orxLINKLIST_NODE    stNode;                             /**< Linklist node : 12 */
+  orxSHADER_PARAM    *pstParam;                           /**< Param definition : 16 */
 
-  orxS32            s32Index;                             /**< Param index : 20 */
+  orxS32              s32Index;                           /**< Param index : 20 */
 
   union
   {
-    orxFLOAT        fValue;                               /**< Float value : 24 */
-    orxTEXTURE     *pstValue;                             /**< Texture value : 24 */
-    orxVECTOR       vValue;                               /**< Vector value : 24 */
+    orxFLOAT          fValue;                             /**< Float value : 24 */
+    const orxTEXTURE *pstValue;                           /**< Texture value : 24 */
+    orxVECTOR         vValue;                             /**< Vector value : 24 */
   };                                                      /**< Union value : 32 */
 
 } orxSHADER_PARAM_VALUE;
@@ -371,55 +371,118 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
             /* Valid? */
             if((zParamName != orxNULL) && (zParamName != orxSTRING_EMPTY))
             {
-              orxVECTOR vValue;
+              orxS8   as8ValueBuffer[256 * sizeof(orxVECTOR)];
+              orxS32  s32ParamListCounter;
+
+              /* Gets param's list counter */
+              s32ParamListCounter = (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0;
 
               /* Is a vector? */
-              if(orxConfig_GetVector(zParamName, &vValue) != orxNULL)
+              if(orxConfig_GetVector(zParamName, &(((orxVECTOR *)as8ValueBuffer)[0])) != orxNULL)
               {
+                /* Is a list? */
+                if(bIsList != orxFALSE)
+                {
+                  orxS32 j;
+
+                  /* For all defined entries */
+                  for(j = 0; j < s32ParamListCounter; j++)
+                  {
+                    /* Stores its vector */
+                    orxConfig_GetListVector(zParamName, j, &(((orxVECTOR *)as8ValueBuffer)[j]));
+                  }
+                }
+
                 /* Adds vector param */
-                orxShader_AddVectorParam(pstResult, zParamName, (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0, &vValue);
+                orxShader_AddVectorParam(pstResult, zParamName, s32ParamListCounter, (orxVECTOR *)as8ValueBuffer);
               }
               else
               {
-                orxSTRING zValue;
-                orxFLOAT  fValue;
+                const orxSTRING zValue;
 
                 /* Gets its literal value */
                 zValue = (orxSTRING)orxConfig_GetString(zParamName);
 
                 /* Is a float? */
-                if(orxString_ToFloat(zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
+                if(orxString_ToFloat(zValue, (orxFLOAT *)as8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
                 {
+                  /* Is a list? */
+                  if(bIsList != orxFALSE)
+                  {
+                    orxS32 j;
+
+                    /* For all defined entries */
+                    for(j = 0; j < s32ParamListCounter; j++)
+                    {
+                      /* Stores its vector */
+                      ((orxFLOAT *)as8ValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
+                    }
+                  }
+
                   /* Adds float param */
-                  orxShader_AddFloatParam(pstResult, zParamName, (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0, fValue);
+                  orxShader_AddFloatParam(pstResult, zParamName, s32ParamListCounter, (orxFLOAT *)as8ValueBuffer);
                 }
                 else
                 {
-                  orxTEXTURE *pstTexture;
-
-                  /* Valid? */
-                  if(zValue != orxSTRING_EMPTY)
+                  /* Is a list? */
+                  if(bIsList != orxFALSE)
                   {
-                    /* Is screen? */
-                    if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
+                    orxS32 j;
+
+                    /* For all defined entries */
+                    for(j = 0; j < s32ParamListCounter; j++)
                     {
-                      /* Gets its texture */
-                      pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
-                    }
-                    else
-                    {
-                      /* Creates texture */
-                      pstTexture = orxTexture_CreateFromFile(zValue);
+                      /* Stores its vector */
+                      zValue = orxConfig_GetListString(zParamName, j);
+
+                      /* Valid? */
+                      if(zValue != orxSTRING_EMPTY)
+                      {
+                        /* Is screen? */
+                        if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
+                        {
+                          /* Gets its texture */
+                          ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
+                        }
+                        else
+                        {
+                          /* Creates texture */
+                          ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue);
+                        }
+                      }
+                      else
+                      {
+                        /* No texture */
+                        ((orxTEXTURE **)as8ValueBuffer)[j] = orxNULL;
+                      }
                     }
                   }
                   else
                   {
-                    /* No texture */
-                    pstTexture = orxNULL;
+                    /* Valid? */
+                    if(zValue != orxSTRING_EMPTY)
+                    {
+                      /* Is screen? */
+                      if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
+                      {
+                        /* Gets its texture */
+                        ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
+                      }
+                      else
+                      {
+                        /* Creates texture */
+                        ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue);
+                      }
+                    }
+                    else
+                    {
+                      /* No texture */
+                      ((orxTEXTURE **)as8ValueBuffer)[0] = orxNULL;
+                    }
                   }
 
                   /* Adds texture param */
-                  orxShader_AddTextureParam(pstResult, zParamName, (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0, pstTexture);
+                  orxShader_AddTextureParam(pstResult, zParamName, s32ParamListCounter, (const orxTEXTURE **)as8ValueBuffer);
                 }
               }
             }
@@ -531,7 +594,7 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
           if((pstParamValue->pstValue != orxNULL) && (pstParamValue->s32Index <= 0))
           {
             /* Deletes it */
-            orxTexture_Delete(pstParamValue->pstValue);
+            orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
           }
         }
       }
@@ -725,7 +788,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             pstParamValue != orxNULL;
             pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
         {
-          orxSHADER_EVENT_PARAM_PAYLOAD stPayload;
+          orxSHADER_EVENT_PAYLOAD stPayload;
 
           /* Inits payload */
           stPayload.pstShader     = _pstShader;
@@ -837,11 +900,11 @@ orxSTATUS orxFASTCALL orxShader_Stop(const orxSHADER *_pstShader)
 /** Adds a float parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
- * @param[in] _u32ArraySize           Parameter's array size, 0 for no array
- * @param[in] _fValue                 Parameter's float value
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable
+ * @param[in] _afValueList            Parameter's float value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, orxFLOAT _fValue)
+orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -890,7 +953,7 @@ orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxST
           /* Inits it */
           pstParamValue->pstParam = pstParam;
           pstParamValue->s32Index = i;
-          pstParamValue->fValue   = _fValue;
+          pstParamValue->fValue   = _afValueList[orxMAX(i, 0)];
 
           /* Adds it to list */
           orxLinkList_AddEnd(&(_pstShader->stParamValueList), &(pstParamValue->stNode));
@@ -914,11 +977,11 @@ orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxST
 /** Adds a texture parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
- * @param[in] _u32ArraySize           Parameter's array size, 0 for no array
- * @param[in] _pstValue               Parameter's texture value
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable
+ * @param[in] _apstValueList          Parameter's texture value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, orxTEXTURE *_pstValue)
+orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -967,7 +1030,7 @@ orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orx
           /* Inits it */
           pstParamValue->pstParam = pstParam;
           pstParamValue->s32Index = i;
-          pstParamValue->pstValue = _pstValue;
+          pstParamValue->pstValue = _apstValueList[orxMAX(i, 0)];
 
           /* Adds it to list */
           orxLinkList_AddEnd(&(_pstShader->stParamValueList), &(pstParamValue->stNode));
@@ -991,18 +1054,18 @@ orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orx
 /** Adds a vector parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
- * @param[in] _u32ArraySize           Parameter's array size, 0 for no array
- * @param[in] _pvValue                Parameter's vector value
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable
+ * @param[in] _apValueList            Parameter's vector value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_pvValue)
+orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShader);
-  orxASSERT(_pvValue != orxNULL);
+  orxASSERT(_avValueList != orxNULL);
 
   /* Valid? */
   if((_zName != orxNULL) && (_zName != orxSTRING_EMPTY))
@@ -1045,7 +1108,7 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
           /* Inits it */
           pstParamValue->pstParam = pstParam;
           pstParamValue->s32Index = i;
-          orxVector_Copy(&(pstParamValue->vValue), _pvValue);
+          orxVector_Copy(&(pstParamValue->vValue), &(_avValueList[orxMAX(i, 0)]));
 
           /* Adds it to list */
           orxLinkList_AddEnd(&(_pstShader->stParamValueList), &(pstParamValue->stNode));

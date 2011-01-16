@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -197,6 +197,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearSection(const orxST
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearValue(const orxSTRING _zKey);
+
+
+/** Is this value inherited from another one?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsInheritedValue(const orxSTRING _zKey);
 
 
 /** Has specified value for the given key?

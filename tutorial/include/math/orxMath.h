@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -179,7 +179,7 @@ extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS3
 
 /*** Inlined functions *** */
 
-/** Gets the counts of bit in an orxU32
+/** Gets the count of bit in an orxU32
  * @param[in]   _u32Value                       Value to process
  * @return      Number of bits that are set in the value
  */
@@ -191,6 +191,23 @@ static orxINLINE orxU32 orxMath_GetBitCount(orxU32 _u32Value)
   _u32Value += (_u32Value >> 8);
   _u32Value += (_u32Value >> 16);
   return(_u32Value & 0x0000003f);
+}
+
+/** Gets the count of trailing zeros in an orxU32
+ * @param[in]   _u32Value                       Value to process
+ * @return      Number of trailing zeros
+ */
+static orxINLINE orxU32 orxMath_GetTrailingZeroCount(orxU32 _u32Value)
+{
+  /* De Bruijn multiply look up table */
+  static const orxU32 sau32DeBruijnLUT[32] = 
+  {
+    0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 
+    31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
+  };
+
+  /* Done! */
+  return sau32DeBruijnLUT[((orxU32)(((orxS32)_u32Value & -(orxS32)_u32Value) * 0x077CB531U)) >> 27];
 }
 
 /** Gets next power of two of an orxU32

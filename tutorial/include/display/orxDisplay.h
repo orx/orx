@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -921,26 +921,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StopShader(cons
 /** Sets a shader parameter (orxBITMAP)
  * @param[in]   _hShader                              Concerned shader
  * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _s32Index                             Parameter index, -1 for non-array types
  * @param[in]   _pstValue                             Value (orxBITMAP) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxBITMAP *_pstValue);
 
 /** Sets a shader parameter (orxFLOAT)
  * @param[in]   _hShader                              Concerned shader
  * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _s32Index                             Parameter index, -1 for non-array types
  * @param[in]   _fValue                               Value (orxFLOAT) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxFLOAT _fValue);
 
 /** Sets a shader parameter (orxVECTOR)
  * @param[in]   _hShader                              Concerned shader
  * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _s32Index                             Parameter index, -1 for non-array types
  * @param[in]   _pvValue                              Value (orxVECTOR) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxVECTOR *_pvValue);
 
 
 /** Enables / disables vertical synchro

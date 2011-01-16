@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_StandAlone", "10_StandAl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11_Spawner", "11_Spawner\11_Spawner.vcproj", "{EACB00ED-5694-4189-ABF9-3E24FAF2241E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12_Lighting", "12_Lighting\12_Lighting.vcproj", "{677376B5-4556-4C68-A202-40E602FBCC9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Release|Win32 = Dynamic Release|Win32
@@ -50,13 +52,10 @@ Global
 		{43025398-F723-4290-B079-EA3099213295}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 		{EACB00ED-5694-4189-ABF9-3E24FAF2241E}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
 		{EACB00ED-5694-4189-ABF9-3E24FAF2241E}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{677376B5-4556-4C68-A202-40E602FBCC9F}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{677376B5-4556-4C68-A202-40E602FBCC9F}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaPersistentConfig = Dynamic Release|Win32
-		AMDCaPersistentStartup = 11_Spawner
-		AMDCaProjectFile = C:\Tmp\orx\tutorial\build\msvs2005\CodeAnalyst\Tutorial.caw
 	EndGlobalSection
 EndGlobal
