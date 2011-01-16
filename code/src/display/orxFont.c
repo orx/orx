@@ -247,7 +247,7 @@ static orxINLINE void orxFont_CreateDefaultFont()
               orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(sstFont.pstDefaultFont->zReference), sstFont.pstDefaultFont);
 
               /* Updates its flags */
-              orxStructure_SetFlags(sstFont.pstDefaultFont, orxFONT_KU32_FLAG_REFERENCED | orxFONT_KU32_FLAG_INTERNAL, orxFONT_KU32_FLAG_NONE);
+              orxStructure_SetFlags(sstFont.pstDefaultFont, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
             }
             else
             {
@@ -454,6 +454,9 @@ void orxFASTCALL orxFont_Exit()
     /* Gets default font texture */
     pstTexture = orxFont_GetTexture(sstFont.pstDefaultFont);
 
+    /* Deletes font list */
+    orxFont_DeleteAll();
+
     /* Gets its bitmap */
     pstBitmap = orxTexture_GetBitmap(pstTexture);
 
@@ -465,9 +468,6 @@ void orxFASTCALL orxFont_Exit()
 
     /* Deletes texture */
     orxTexture_Delete(pstTexture);
-
-    /* Deletes font list */
-    orxFont_DeleteAll();
 
     /* Deletes reference table */
     orxHashTable_Delete(sstFont.pstReferenceTable);
@@ -820,9 +820,6 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to delete font object when it was still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

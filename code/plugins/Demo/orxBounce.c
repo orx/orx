@@ -40,7 +40,7 @@ static orxVIEWPORT *spstViewport;
 static orxFLOAT     sfShaderPhase = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency = orx2F(1.0f);
-static orxVECTOR    svColor = {0};
+static orxVECTOR    svColor;
 static orxFLOAT     sfColorTime = orx2F(0.0f);
 
 /** Applies current selected video mode
