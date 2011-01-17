@@ -471,6 +471,9 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU
           orxAnim_SetKeyCounter(pstAnim, 0);
           orxAnim_SetEventStorageSize(pstAnim, _u32EventNumber);
           orxAnim_SetEventCounter(pstAnim, 0);
+
+          /* Increases counter */
+          orxStructure_IncreaseCounter(pstAnim);
         }
         else
         {
@@ -670,6 +673,9 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstAnim);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnim) == 0)
   {
@@ -696,9 +702,6 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Cannot delete anim structure while it is still referenced by other objects.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

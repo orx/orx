@@ -357,6 +357,9 @@ orxFXPOINTER *orxFASTCALL orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
 
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFXPOINTER_KU32_FLAG_ENABLED, orxFXPOINTER_KU32_MASK_ALL);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
   }
   else
   {
@@ -379,6 +382,9 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstFXPointer);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFXPointer) == 0)
@@ -408,9 +414,6 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete FX pointer while it is still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

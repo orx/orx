@@ -270,6 +270,9 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
 
         /* Updates flags */
         orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_FLAG_2D, orxCAMERA_KU32_FLAG_NONE);
+
+        /* Increases counter */
+        orxStructure_IncreaseCounter(pstCamera);
       }
       else
       {
@@ -320,8 +323,13 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
   /* Search for camera */
   pstResult = orxCamera_Get(_zConfigID);
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Found? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
   {
     /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -433,6 +441,9 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstCamera);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstCamera) == 0)
   {
@@ -461,9 +472,6 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete camera while it is still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

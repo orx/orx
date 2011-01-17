@@ -1376,6 +1376,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
 
         /* Inits flags */
         orxStructure_SetFlags(pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC, orxANIMSET_KU32_MASK_FLAGS);
+
+        /* Increases counter */
+        orxStructure_IncreaseCounter(pstAnimSet);
       }
       else
       {
@@ -1429,8 +1432,13 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   /* Search for reference */
   pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_ToCRC(_zConfigID));
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Found? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
   {
     /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -1593,6 +1601,9 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
+
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstAnimSet);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnimSet) == 0)

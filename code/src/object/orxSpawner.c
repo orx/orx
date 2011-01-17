@@ -487,6 +487,9 @@ orxSPAWNER *orxFASTCALL orxSpawner_Create()
 
       /* Inits flags */
       orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_MASK_ALL);
+
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstResult);
     }
     else
     {
@@ -701,6 +704,9 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstSpawner);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstSpawner) == 0)
   {
@@ -762,9 +768,6 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to delete spawner when it was still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

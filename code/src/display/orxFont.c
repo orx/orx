@@ -528,6 +528,9 @@ orxFONT *orxFASTCALL orxFont_Create()
         {
           /* Clears its character list */
           pstResult->zCharacterList = orxSTRING_EMPTY;
+
+          /* Increases counter */
+          orxStructure_IncreaseCounter(pstResult);
         }
         else
         {
@@ -598,8 +601,13 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
   /* Search for font */
   pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, orxString_ToCRC(_zConfigID));
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Found? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
   {
     /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -785,6 +793,9 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
   /* Checks */
   orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFont);
+
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstFont);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFont) == 0)

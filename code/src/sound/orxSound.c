@@ -544,6 +544,13 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
     pstResult = orxNULL;
   }
 
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+
   /* Done! */
   return pstResult;
 }
@@ -559,12 +566,15 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
 
-  /* Has an ID? */
-  if((_pstSound->zReference != orxNULL)
-  && (_pstSound->zReference != orxSTRING_EMPTY))
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstSound);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter(_pstSound) == 0)
   {
-    /* Not referenced? */
-    if(orxStructure_GetRefCounter(_pstSound) == 0)
+    /* Has an ID? */
+    if((_pstSound->zReference != orxNULL)
+    && (_pstSound->zReference != orxSTRING_EMPTY))
     {
       /* Stops it */
       orxSound_Stop(_pstSound);
@@ -585,32 +595,15 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
         /* Unloads it */
         orxSound_UnloadSample(_pstSound->pstSample);
       }
+    }
 
-      /* Deletes structure */
-      orxStructure_Delete(_pstSound);
-    }
-    else
-    {
-      /* Decreases its reference counter */
-      orxStructure_DecreaseCounter(_pstSound);
-    }
+    /* Deletes structure */
+    orxStructure_Delete(_pstSound);
   }
   else
   {
-    /* Not referenced? */
-    if(orxStructure_GetRefCounter(_pstSound) == 0)
-    {
-      /* Deletes structure */
-      orxStructure_Delete(_pstSound);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Cannot delete structure while it is still referenced by others.");
-
-      /* Referenced by others */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

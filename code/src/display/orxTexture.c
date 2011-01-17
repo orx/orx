@@ -343,7 +343,8 @@ orxTEXTURE *orxFASTCALL orxTexture_Create()
   /* Created? */
   if(pstTexture != orxNULL)
   {
-    /* !!! INIT? !!! */
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstTexture);
   }
   else
   {
@@ -351,6 +352,7 @@ orxTEXTURE *orxFASTCALL orxTexture_Create()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to create structure for texture.");
   }
 
+  /* Done! */
   return pstTexture;
 }
 
@@ -429,6 +431,9 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTexture);
 
+  /* Decreases reference counter */
+  orxStructure_DecreaseCounter(_pstTexture);
+
   /* Is the last reference? */
   if(orxStructure_GetRefCounter(_pstTexture) == 0)
   {
@@ -440,8 +445,8 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   }
   else
   {
-    /* Decreases reference counter */
-    orxStructure_DecreaseCounter(_pstTexture);
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

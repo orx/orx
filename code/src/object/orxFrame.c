@@ -699,6 +699,9 @@ orxFRAME *orxFASTCALL orxFrame_Create(orxU32 _u32Flags)
         /* Sets frame to root */
         orxFrame_SetParent(pstFrame, sstFrame.pstRoot);
       }
+
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstFrame);
     }
     else
     {
@@ -728,6 +731,9 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFrame);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstFrame);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFrame) == 0)
   {
@@ -736,9 +742,6 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to delete frame when it was still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

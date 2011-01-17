@@ -11,6 +11,7 @@
   <Project Name="09_Scrolling" Path="09_Scrolling/09_Scrolling.project" Active="No"/>
   <Project Name="10_StandAlone" Path="10_StandAlone/10_StandAlone.project" Active="No"/>
   <Project Name="11_Spawner" Path="11_Spawner/11_Spawner.project" Active="No"/>
+  <Project Name="12_Lighting" Path="12_Lighting/12_Lighting.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
       <Project Name="01_Object" ConfigName="Linux Dynamic Release"/>
@@ -24,6 +25,7 @@
       <Project Name="09_Scrolling" ConfigName="Linux Dynamic Release"/>
       <Project Name="10_StandAlone" ConfigName="Linux Dynamic Release"/>
       <Project Name="11_Spawner" ConfigName="Linux Dynamic Release"/>
+      <Project Name="12_Lighting" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="yes">
       <Project Name="01_Object" ConfigName="Win32 Dynamic Release"/>
@@ -37,6 +39,7 @@
       <Project Name="09_Scrolling" ConfigName="Win32 Dynamic Release"/>
       <Project Name="10_StandAlone" ConfigName="Win32 Dynamic Release"/>
       <Project Name="11_Spawner" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="12_Lighting" ConfigName="Win32 Dynamic Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

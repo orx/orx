@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="12_Lighting">
+  <Description/>
+  <VirtualDirectory Name="src">
+    <File Name="../../../src/12_Lighting/12_Lighting.c"/>
+  </VirtualDirectory>
+  <Dependencies/>
+  <Dependencies Name="Linux Dynamic Release"/>
+  <Settings Type="Executable">
+    <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux/12_Lighting" IntermediateDirectory="$(ConfigurationName)" Command="12_Lighting" CommandArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2 -Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s -Wl,-rpath ./">
+        <LibraryPath Value="../../../lib/linux"/>
+        <Library Value="orx"/>
+        <Library Value="dl"/>
+        <Library Value="m"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/mingw/12_Lighting.exe" IntermediateDirectory="$(ConfigurationName)" Command="12_Lighting.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--export-all-symbols">
+        <LibraryPath Value="../../../lib/mingw"/>
+        <Library Value="orx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Win32 Dynamic Release"/>
+</CodeLite_Project>

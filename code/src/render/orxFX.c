@@ -652,6 +652,9 @@ orxFX *orxFASTCALL orxFX_Create()
   {
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_ENABLED, orxFX_KU32_MASK_ALL);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
   }
   else
   {
@@ -682,8 +685,13 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   /* Search for reference */
   pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, u32ID);
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Found? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
   {
     /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -785,11 +793,6 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
       pstResult = orxNULL;
     }
   }
-  else
-  {
-    /* Updates reference counter */
-    orxStructure_IncreaseCounter(pstResult);
-  }
 
   /* Done! */
   return pstResult;
@@ -807,44 +810,30 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  /* Has an ID? */
-  if((_pstFX->zReference != orxNULL)
-  && (_pstFX->zReference != orxSTRING_EMPTY))
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstFX);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter(_pstFX) == 0)
   {
-    /* Not referenced? */
-    if(orxStructure_GetRefCounter(_pstFX) == 0)
+    /* Has an ID? */
+    if((_pstFX->zReference != orxNULL)
+    && (_pstFX->zReference != orxSTRING_EMPTY))
     {
       /* Removes from hashtable */
       orxHashTable_Remove(sstFX.pstReferenceTable, orxString_ToCRC(_pstFX->zReference));
 
       /* Unprotects it */
       orxConfig_ProtectSection(_pstFX->zReference, orxFALSE);
+    }
 
-      /* Deletes structure */
-      orxStructure_Delete(_pstFX);
-    }
-    else
-    {
-      /* Decreases its reference counter */
-      orxStructure_DecreaseCounter(_pstFX);
-    }
+    /* Deletes structure */
+    orxStructure_Delete(_pstFX);
   }
   else
   {
-    /* Not referenced? */
-    if(orxStructure_GetRefCounter(_pstFX) == 0)
-    {
-      /* Deletes structure */
-      orxStructure_Delete(_pstFX);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete FX while it is still being referenced.");
-
-      /* Referenced by others */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

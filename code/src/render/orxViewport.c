@@ -257,6 +257,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_Create()
 
     /* Sets default size */
     orxViewport_SetRelativeSize(pstViewport, orxFLOAT_1, orxFLOAT_1);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstViewport);
   }
   else
   {
@@ -481,6 +484,9 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstViewport);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstViewport) == 0)
   {
@@ -520,9 +526,6 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete viewport while it is still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

@@ -454,6 +454,9 @@ orxTEXT *orxFASTCALL orxText_Create()
 
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_MASK_ALL);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
   }
   else
   {
@@ -598,6 +601,9 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstText);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstText) == 0)
   {
@@ -619,9 +625,6 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to delete text object when it was still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

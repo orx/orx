@@ -610,6 +610,9 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
       pstClock->stClockInfo.eType     = _eType;
       pstClock->stClockInfo.eModType  = orxCLOCK_MOD_TYPE_NONE;
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
+
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstClock);
     }
     else
     {
@@ -647,8 +650,13 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
   /* Search for clock */
   pstResult = orxClock_Get(_zConfigID);
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Found? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
   {
     /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -760,42 +768,62 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Not locked? */
-  if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_FLAG_NONE)
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstClock);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter(_pstClock) == 0)
   {
-    orxCLOCK_TIMER_STORAGE *pstTimerStorage;
-
-    /* For all stored timers */
-    for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stTimerList));
-        pstTimerStorage != orxNULL;
-        pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stTimerList)))
+    /* Not locked? */
+    if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_FLAG_NONE)
     {
-      /* Removes it */
-      orxLinkList_Remove(&(pstTimerStorage->stNode));
+      orxCLOCK_TIMER_STORAGE *pstTimerStorage;
 
-      /* Deletes it */
-      orxBank_Free(sstClock.pstTimerBank, pstTimerStorage);
+      /* For all stored timers */
+      for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stTimerList));
+          pstTimerStorage != orxNULL;
+          pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stTimerList)))
+      {
+        /* Removes it */
+        orxLinkList_Remove(&(pstTimerStorage->stNode));
+
+        /* Deletes it */
+        orxBank_Free(sstClock.pstTimerBank, pstTimerStorage);
+      }
+
+      /* Deletes function bank */
+      orxBank_Delete(_pstClock->pstFunctionBank);
+
+      /* Is referenced? */
+      if(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED))
+      {
+        /* Removes it from reference table */
+        orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));
+      }
+
+      /* Has reference? */
+      if(_pstClock->zReference != orxNULL)
+      {
+        /* Unprotects it */
+        orxConfig_ProtectSection(_pstClock->zReference, orxFALSE);
+      }
+
+      /* Deletes clock */
+      orxStructure_Delete(_pstClock);
     }
-
-    /* Deletes function bank */
-    orxBank_Delete(_pstClock->pstFunctionBank);
-
-    /* Is referenced? */
-    if(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED))
+    else
     {
-      /* Removes it from reference table */
-      orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));
-    }
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Can't delete clock <%s> as it's currently locked for processing!", orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED) ? _pstClock->zReference : orxSTRING_EMPTY);
 
-    /* Has reference? */
-    if(_pstClock->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstClock->zReference, orxFALSE);
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
-
-    /* Deletes clock */
-    orxStructure_Delete(_pstClock);
+  }
+  else
+  {
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

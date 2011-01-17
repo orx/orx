@@ -283,6 +283,9 @@ orxSHADER *orxFASTCALL orxShader_Create()
 
       /* Inits flags */
       orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_ENABLED, orxSHADER_KU32_MASK_ALL);
+
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstResult);
     }
     else
     {
@@ -331,8 +334,13 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   /* Search for reference */
   pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, u32ID);
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Found? */
+  if(pstResult != orxNULL)
+  {
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
   {
     /* Pushes section */
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -537,11 +545,6 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
       pstResult = orxNULL;
     }
   }
-  else
-  {
-    /* Updates reference counter */
-    orxStructure_IncreaseCounter(pstResult);
-  }
 
   /* Done! */
   return pstResult;
@@ -559,12 +562,15 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShader);
 
-  /* Has an ID? */
-  if((_pstShader->zReference != orxNULL)
-  && (_pstShader->zReference != orxSTRING_EMPTY))
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstShader);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter(_pstShader) == 0)
   {
-    /* Not referenced? */
-    if(orxStructure_GetRefCounter(_pstShader) == 0)
+    /* Has an ID? */
+    if((_pstShader->zReference != orxNULL)
+    && (_pstShader->zReference != orxSTRING_EMPTY))
     {
       orxSHADER_PARAM_VALUE  *pstParamValue;
       orxSHADER_PARAM        *pstParam;
@@ -611,32 +617,15 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
       /* Deletes param banks */
       orxBank_Delete(_pstShader->pstParamValueBank);
       orxBank_Delete(_pstShader->pstParamBank);
+    }
 
-      /* Deletes structure */
-      orxStructure_Delete(_pstShader);
-    }
-    else
-    {
-      /* Decreases its reference counter */
-      orxStructure_DecreaseCounter(_pstShader);
-    }
+    /* Deletes structure */
+    orxStructure_Delete(_pstShader);
   }
   else
   {
-    /* Not referenced? */
-    if(orxStructure_GetRefCounter(_pstShader) == 0)
-    {
-      /* Deletes structure */
-      orxStructure_Delete(_pstShader);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete shader while it is still being referenced.");
-
-      /* Referenced by others */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

@@ -491,6 +491,9 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner,
       /* Updates flags */
       orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_FLAG_NONE);
     }
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstAnimPointer);
   }
   else
   {
@@ -602,6 +605,9 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstAnimPointer);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnimPointer) == 0)
   {
@@ -631,9 +637,6 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Pointer does not reference any Anims.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

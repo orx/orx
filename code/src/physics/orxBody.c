@@ -383,6 +383,9 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
 
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
+
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstBody);
     }
     else
     {
@@ -525,6 +528,9 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstBody);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstBody) == 0)
   {
@@ -570,9 +576,6 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Cannot delete body object while it is still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

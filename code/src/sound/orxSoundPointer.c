@@ -340,6 +340,9 @@ orxSOUNDPOINTER *orxFASTCALL orxSoundPointer_Create(const orxSTRUCTURE *_pstOwne
 
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxSOUNDPOINTER_KU32_FLAG_ENABLED, orxSOUNDPOINTER_KU32_MASK_ALL);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
   }
   else
   {
@@ -362,6 +365,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstSoundPointer);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstSoundPointer) == 0)
@@ -391,9 +397,6 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound Pointer is still referenced by others. Not deleting.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

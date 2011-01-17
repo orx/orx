@@ -389,6 +389,9 @@ orxSHADERPOINTER *orxFASTCALL orxShaderPointer_Create(const orxSTRUCTURE *_pstOw
 
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_ENABLED, orxSHADERPOINTER_KU32_MASK_ALL);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
   }
   else
   {
@@ -411,6 +414,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
+
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstShaderPointer);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstShaderPointer) == 0)
@@ -440,9 +446,6 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete shader pointer while it is still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

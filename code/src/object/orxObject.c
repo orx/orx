@@ -487,6 +487,9 @@ orxOBJECT *orxFASTCALL orxObject_Create()
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
     }
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstObject);
   }
   else
   {
@@ -508,6 +511,9 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstObject);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstObject) == 0)
@@ -560,9 +566,6 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to delete object when it was still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

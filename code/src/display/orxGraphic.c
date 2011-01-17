@@ -341,6 +341,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create()
 
     /* Sets its repeat value to default */
     orxGraphic_SetRepeat(pstGraphic, orxFLOAT_1, orxFLOAT_1);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstGraphic);
   }
 
   /* Done! */
@@ -669,6 +672,9 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
+  /* Decreases counter */
+  orxStructure_DecreaseCounter(_pstGraphic);
+
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstGraphic) == 0)
   {
@@ -680,9 +686,6 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to delete graphic object when it was still referenced.");
-
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }
