@@ -112,6 +112,12 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         /* Pops config section */
         orxConfig_PopSection();
       }
+      /* Graphic size? */
+      else if(!orxString_Compare(pstPayload->zParamName, "vSize"))
+      {
+        /* Updates size */
+        orxObject_GetSize(orxOBJECT(_pstEvent->hSender), &(pstPayload->vValue));
+      }
       /* Light color? */
       else if(!orxString_Compare(pstPayload->zParamName, "avLightColor"))
       {
