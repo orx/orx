@@ -34,6 +34,13 @@
 
 #include <stdlib.h>
 
+#ifdef __orxANDROID__
+
+  #include "jni.h"
+  #include "android/log.h"
+
+#endif /* __orxANDROID__ */
+
 
 #ifdef __orxMSVC__
 
@@ -223,8 +230,8 @@ void orxFASTCALL _orxDebug_Exit()
 /** Software break function */
 void orxFASTCALL _orxDebug_Break()
 {
-  /* Windows / Linux / Mac / GP2X / Wii / IPhone */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
+  /* Windows / Linux / Mac / GP2X / Wii / IPhone / Android */
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
   /* Compiler specific */
 
@@ -241,6 +248,10 @@ void orxFASTCALL _orxDebug_Break()
     #elif defined(__orxIPHONE__)
 
       __builtin_trap();
+
+	#elif defined(__orxANDROID__)
+
+      //! TODO: Add Android software break code
 
     #else
 
@@ -385,6 +396,19 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   /* Console Display? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
   {
+#ifdef __orxANDROID__
+
+    if(_eLevel == orxDEBUG_LEVEL_LOG)
+    {
+      __android_log_print(ANDROID_LOG_INFO, "ORX", zBuffer);
+    }
+    else
+    {
+      __android_log_print(ANDROID_LOG_ERROR, "ORX", zBuffer);
+    }
+
+#else /* __orxANDROID__ */
+
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
       pstFile = stdout;
@@ -396,6 +420,8 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
     fprintf(pstFile, "%s", zBuffer);
     fflush(pstFile);
+
+#endif /* __orxANDROID__ */
   }
 
   /* Done */

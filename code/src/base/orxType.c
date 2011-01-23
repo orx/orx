@@ -43,7 +43,7 @@ const orxSTRING    orxSTRING_FALSE     = "false";
   const orxCHAR    orxCHAR_EOL         = '\n';
   const orxSTRING  orxSTRING_EOL       = "\r\n";
 
-#elif defined(__orxLINUX__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
+#elif defined(__orxLINUX__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
   const orxCHAR    orxCHAR_EOL         = '\n';
   const orxSTRING  orxSTRING_EOL       = "\n";
@@ -70,8 +70,8 @@ const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / GP2X / Wii */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
+  /* Linux / Mac / GP2X / iPhone / Android / Wii */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
     const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR         = '/';
     const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR       = "/";
