@@ -239,7 +239,17 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 @end
 
 #endif /* __orxIPHONE__ && __orxOBJC__ */
+//xp add
+#if defined(__orxANDROID__)
 
+
+#include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <jni.h>
+#include <android/log.h>
+typedef char GLchar;
+#endif
+//~xp add
 
 /** Display module setup
  */
