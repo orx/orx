@@ -23,7 +23,7 @@
  */
 
 /**
- * @file orxDefaultFont.c
+ * @file orxDefaultFont.inc
  * @date 08/03/2010
  * @author iarwain@orx-project.org
  *

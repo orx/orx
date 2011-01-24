@@ -113,7 +113,7 @@ typedef struct __orxFONT_STATIC_t
 
 static orxFONT_STATIC sstFont;
 
-#include "../src/display/orxDefaultFont.c"
+#include "../src/display/orxDefaultFont.inc"
 
 
 /***************************************************************************
