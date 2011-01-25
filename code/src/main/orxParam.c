@@ -48,6 +48,17 @@
 #endif /* __orxMSVC__ */
 
 
+#if defined(__orxIPHONE__)
+
+  #define orxPARAM_KZ_BASE_DIRECTORY_NAME "../Documents/"
+
+#else /* __orxIPHONE__ */
+
+  #define orxPARAM_KZ_BASE_DIRECTORY_NAME ""
+
+#endif /* __orxIPHONE__ */
+
+
 #define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */
 #define orxPARAM_KU32_MODULE_FLAG_READY   0x00000001  /**< The module has been initialized */
 
@@ -633,7 +644,11 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
   /* Has parameters? */
   if((_u32NbParams > 0) && (_azParams != orxNULL))
   {
-    orxS32 s32Index, s32NextIndex;
+    orxS32  s32Index, s32NextIndex;
+    orxCHAR zLocalName[256];
+
+    /* Copies it locally */
+    orxString_NPrint(zLocalName, 256, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", sstParam.azParams[0]);
 
     /* Finds last '.' */
     for(s32Index = orxString_SearchCharIndex(sstParam.azParams[0], '.', 0);
@@ -643,29 +658,15 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     /* Does base name have a '.'? */
     if((s32Index > 0) && (orxString_SearchCharIndex(sstParam.azParams[0], orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1) < 0))
     {
-      orxCHAR zLocalName[256];
-
-      /* Copies it locally */
-      orxString_NCopy(zLocalName, sstParam.azParams[0], 255);
-      zLocalName[255] = orxCHAR_NULL;
-
       /* Ends basename before extension */
-      *(zLocalName + s32Index) = orxCHAR_NULL;
-
-      /* Stores base name for config */
-      orxConfig_SetBaseName(zLocalName);
-
-      /* Stores base names for debug */
-      orxDEBUG_SETBASEFILENAME(zLocalName);
+      *(zLocalName + orxString_GetLength(orxPARAM_KZ_BASE_DIRECTORY_NAME) + s32Index) = orxCHAR_NULL;
     }
-    else
-    {
-      /* Stores base name for config */
-      orxConfig_SetBaseName(sstParam.azParams[0]);
 
-      /* Stores base names for debug */
-      orxDEBUG_SETBASEFILENAME(sstParam.azParams[0]);
-    }
+    /* Stores base name for config */
+    orxConfig_SetBaseName(zLocalName);
+
+    /* Stores base names for debug */
+    orxDEBUG_SETBASEFILENAME(zLocalName);
   }
 
   /* Done! */

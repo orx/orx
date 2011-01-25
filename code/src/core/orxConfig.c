@@ -1820,25 +1820,38 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
 #ifdef __orxMSVC__
 
       /* Sets current directory */
-      if(_chdir(_zBaseName) < 0)
+	    if(_chdir(_zBaseName) < 0)
       {
+        /* Restores separator */
+        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
+
         /* Clears index */
         s32Index = -1;
+      }
+      else
+      {
+        /* Restores separator */
+        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
       }
 
 #else /* __orxMSVC__ */
 
       /* Sets current directory */
-	  if(chdir(_zBaseName) < 0)
+	    if(chdir(_zBaseName) < 0)
       {
+        /* Restores separator */
+        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
+
         /* Clears index */
         s32Index = -1;
       }
+      else
+      {
+        /* Restores separator */
+        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
+      }
 
 #endif /* __orxMSVC__ */
-
-      /* Restores separator */
-      *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
     }
     else
     {
