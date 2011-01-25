@@ -373,7 +373,6 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_StartRecording(const orxSTR
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zName != orxNULL);
-  orxASSERT(_pstInfo != orxNULL);
 
   //! TODO: Not implemented yet
 
