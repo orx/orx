@@ -131,6 +131,29 @@
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
 
 
+/** Helpers
+ */
+#define orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(BODY)                                                                         \
+  (orxLinkList_GetFirst(&(BODY->stSrcJointList)) != orxNULL)                                                                \
+? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetFirst(&(BODY->stSrcJointList)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stSrcNode))  \
+: orxNULL
+
+#define orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST(JOINT)                                                                         \
+  (orxLinkList_GetNext(&(JOINT->stSrcNode)) != orxNULL)                                                                     \
+? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetNext(&(JOINT->stSrcNode)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stSrcNode))       \
+: orxNULL
+
+#define orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(BODY)                                                                         \
+  (orxLinkList_GetFirst(&(BODY->stDstJointList)) != orxNULL)                                                                \
+? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetFirst(&(BODY->stDstJointList)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stDstNode))  \
+: orxNULL
+
+#define orxBODY_GET_NEXT_JOINT_FROM_DST_LIST(JOINT)                                                                         \
+  (orxLinkList_GetNext(&(JOINT->stDstNode)) != orxNULL)                                                                     \
+? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetNext(&(JOINT->stDstNode)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stDstNode))       \
+: orxNULL
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -547,18 +570,18 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
     }
 
     /* For all source joints */
-    for(pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stSrcJointList));
+    for(pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
         pstBodyJoint != orxNULL;
-        pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stSrcJointList)))
+        pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody))
     {
       /* Removes it */
       orxBody_RemoveJoint(pstBodyJoint);
     }
 
     /* For all destination joints */
-    for(pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList));
+    for(pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
         pstBodyJoint != orxNULL;
-        pstBodyJoint = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList)))
+        pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody))
     {
       /* Removes it */
       orxBody_RemoveJoint(pstBodyJoint);
@@ -1205,6 +1228,9 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create body joint: <%s> isn't a valid type.", zBodyJointType);
 
+      /* Updates result */
+      pstResult = orxNULL;
+
       /* Updates status */
       bSuccess = orxFALSE;
     }
@@ -1259,13 +1285,13 @@ orxBODY_JOINT *orxFASTCALL orxBody_GetNextJoint(const orxBODY *_pstBody, const o
   if(_pstBodyJoint == orxNULL)
   {
     /* Gets first source joint */
-    pstResult = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stSrcJointList));
+    pstResult = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
 
     /* Invalid? */
     if(pstResult == orxNULL)
     {
       /* Gets first destination joint */
-      pstResult = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList));
+      pstResult = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
     }
   }
   else
@@ -1277,7 +1303,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_GetNextJoint(const orxBODY *_pstBody, const o
       if(&(_pstBodyJoint->stSrcNode) == orxLinkList_GetLast(&(_pstBody->stSrcJointList)))
       {
         /* Gets first destination joint */
-        pstResult = (orxBODY_JOINT *)orxLinkList_GetFirst(&(_pstBody->stDstJointList));
+        pstResult = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
       }
     }
     else
@@ -1286,7 +1312,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_GetNextJoint(const orxBODY *_pstBody, const o
       orxASSERT(_pstBodyJoint->stDstNode.pstList == &(_pstBody->stDstJointList));
 
       /* Gets next destination joint */
-      pstResult = (orxBODY_JOINT *)((orxU8 *)orxLinkList_GetNext(&(_pstBodyJoint->stDstNode)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stDstNode));
+      pstResult = orxBODY_GET_NEXT_JOINT_FROM_DST_LIST(_pstBodyJoint);
     }
   }
 
