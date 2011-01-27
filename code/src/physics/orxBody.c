@@ -1032,6 +1032,8 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
     zBodyJointType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
 
     /* Inits it */
+    orxVector_Copy(&(stBodyJointDef.vSrcScale), &(_pstSrcBody->vScale));
+    orxVector_Copy(&(stBodyJointDef.vDstScale), &(_pstDstBody->vScale));
     orxConfig_GetVector(orxBODY_KZ_CONFIG_PARENT_ANCHOR, &(stBodyJointDef.vSrcAnchor));
     orxConfig_GetVector(orxBODY_KZ_CONFIG_CHILD_ANCHOR, &(stBodyJointDef.vDstAnchor));
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_COLLIDE) != orxFALSE)
@@ -1470,8 +1472,9 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
     /* Is new scale different? */
     if(orxVector_AreEqual(_pvScale, &(_pstBody->vScale)) == orxFALSE)
     {
-      orxBODY_PART *pstBodyPart;
-      orxU32        u32Counter;
+      orxBODY_PART   *pstBodyPart;
+      orxBODY_JOINT  *pstBodyJoint;
+      orxU32          u32Counter;
 
       /* Stores it */
       orxVector_Copy(&(_pstBody->vScale), _pvScale);
@@ -1502,7 +1505,65 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
         }
       }
 
-      //! TODO: For all joints
+      /* For all source joints */
+      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stSrcJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
+          u32Counter > 0;
+          u32Counter--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody))
+      {
+        /* Has reference? */
+        if(pstBodyJoint->zReference != orxNULL)
+        {
+          const orxSTRING zReference;
+          orxBODY        *pstDstBody;
+
+          /* Stores it locally */
+          zReference = pstBodyJoint->zReference;
+
+          /* Gets destination body */
+          pstDstBody = (orxBODY *)((orxU8 *)orxLinkList_GetList(&(pstBodyJoint->stDstNode)) - (orxU8 *)&(((orxBODY *)0)->stDstJointList));
+
+          /* Removes part */
+          orxBody_RemoveJoint(pstBodyJoint);
+
+          /* Creates new joint */
+          orxBody_AddJointFromConfig(_pstBody, pstDstBody, zReference);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Scaling of body joint with no config reference is unsupported. Please scale only bodies that contain joints created from config.", (_pstBody->pstOwner != orxNULL) ? orxObject_GetName(orxOBJECT(_pstBody->pstOwner)) : "UNDEFINED");
+        }
+      }
+
+      /* For all destination joints */
+      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stDstJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
+          u32Counter > 0;
+          u32Counter--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody))
+      {
+        /* Has reference? */
+        if(pstBodyJoint->zReference != orxNULL)
+        {
+          const orxSTRING zReference;
+          orxBODY        *pstSrcBody;
+
+          /* Stores it locally */
+          zReference = pstBodyJoint->zReference;
+
+          /* Gets source body */
+          pstSrcBody = (orxBODY *)((orxU8 *)orxLinkList_GetList(&(pstBodyJoint->stSrcNode)) - (orxU8 *)&(((orxBODY *)0)->stSrcJointList));
+
+          /* Removes part */
+          orxBody_RemoveJoint(pstBodyJoint);
+
+          /* Creates new joint */
+          orxBody_AddJointFromConfig(pstSrcBody, _pstBody, zReference);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Scaling of body joint with no config reference is unsupported. Please scale only bodies that contain joints created from config.", (_pstBody->pstOwner != orxNULL) ? orxObject_GetName(orxOBJECT(_pstBody->pstOwner)) : "UNDEFINED");
+        }
+      }
     }
 
     /* Updates result */
