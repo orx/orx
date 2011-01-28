@@ -168,7 +168,6 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SET
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
-  orxASSERT(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED));
 
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;

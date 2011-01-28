@@ -115,6 +115,7 @@
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
+#define orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST    "ChildJointList"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
@@ -611,6 +612,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       const orxSTRING zSpawnerName;
       const orxSTRING zCameraName;
       orxFRAME *pstFrame;
+      orxBODY  *pstBody;
       orxU32    u32FrameFlags, u32Flags;
       orxS32    s32Number;
       orxVECTOR vValue, vParentSize, vColor;
@@ -892,8 +894,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY))
       {
-        orxBODY *pstBody;
-
         /* Creates body */
         pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(pstResult), zBodyName);
 
@@ -915,6 +915,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             }
           }
         }
+      }
+      else
+      {
+        /* Clears body */
+        pstBody = orxNULL;
       }
 
       /* *** Clock *** */
