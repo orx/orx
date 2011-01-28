@@ -569,6 +569,7 @@
         <Library Value="SOIL"/>
         <Library Value="SDL"/>
         <Library Value="Box2Dd"/>
+        <Library Value="winmm"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
@@ -613,6 +614,7 @@
         <Library Value="SOIL"/>
         <Library Value="SDL"/>
         <Library Value="Box2D"/>
+        <Library Value="winmm"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>

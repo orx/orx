@@ -675,6 +675,7 @@
         <Library Value="SOIL"/>
         <Library Value="SDL"/>
         <Library Value="Box2Dd"/>
+        <Library Value="winmm"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/dynamic/orxd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
@@ -728,6 +729,7 @@
         <Library Value="SOIL"/>
         <Library Value="SDL"/>
         <Library Value="Box2D"/>
+        <Library Value="winmm"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/dynamic/orx.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>

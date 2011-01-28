@@ -148,6 +148,7 @@ struct __orxSOUNDSYSTEM_SOUND_t
     /* Stream */
     struct
     {
+      orxLINKLIST_NODE        stNode;
       ALuint                  auiBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
       orxBOOL                 bLoop;
       orxBOOL                 bStop;
@@ -175,6 +176,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxFLOAT                fRecDimensionRatio; /**< Reciprocal dimension ratio */
   orxU32                  u32Flags;           /**< Status flags */
   SNDFILE                *pstRecordingFile;   /**< Recording file */
+  orxLINKLIST             stStreamList;       /**< Stream list */
   orxSOUND_EVENT_PAYLOAD  stRecordingPayload; /**< Recording payload */
   orxU8                   au8StreamBuffer[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE]; /**< Stream buffer */
   orxS16                  as16RecordingBuffer[orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE]; /**< Recording buffer */
@@ -450,25 +452,20 @@ static orxINLINE void orxSoundSystem_OpenAL_Rewind(orxSOUNDSYSTEM_DATA *_pstData
   return;
 }
 
-static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxSOUNDSYSTEM_SOUND *pstSound;
-
   /* Checks */
-  orxASSERT(_pContext != orxNULL);
-
-  /* Gets associated sound */
-  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+  orxASSERT(_pstSound != orxNULL);
 
   /* Not stopped? */
-  if(pstSound->bStop == orxFALSE)
+  if(_pstSound->bStop == orxFALSE)
   {
     ALint   iBufferNumber = 0;
     ALuint *puiBufferList;
     ALuint  auiLocalBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
 
     /* Gets number of queued buffers */
-    alGetSourcei(pstSound->uiSource, AL_BUFFERS_QUEUED, &iBufferNumber);
+    alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iBufferNumber);
     alASSERT();
 
     /* Checks */
@@ -478,7 +475,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
     if(iBufferNumber == 0)
     {
       /* Uses initial buffer list */
-      puiBufferList = pstSound->auiBufferList;
+      puiBufferList = _pstSound->auiBufferList;
 
       /* Updates buffer number */
       iBufferNumber = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER;
@@ -487,7 +484,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
     {
       /* Gets number of processed buffers */
       iBufferNumber = 0;
-      alGetSourcei(pstSound->uiSource, AL_BUFFERS_PROCESSED, &iBufferNumber);
+      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iBufferNumber);
       alASSERT();
 
       /* Found any? */
@@ -497,7 +494,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
         puiBufferList = auiLocalBufferList;
 
         /* Unqueues them all */
-        alSourceUnqueueBuffers(pstSound->uiSource, orxMIN(iBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), puiBufferList);
+        alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), puiBufferList);
         alASSERT();
       }
     }
@@ -508,7 +505,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
       orxU32 u32BufferFrameNumber, u32FrameNumber, i;
 
       /* Gets buffer's frame number */
-      u32BufferFrameNumber = (orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / sizeof(orxU16)) / pstSound->stData.u32ChannelNumber;
+      u32BufferFrameNumber = (orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / sizeof(orxU16)) / _pstSound->stData.u32ChannelNumber;
 
       /* For all processed buffers */
       for(i = 0, u32FrameNumber = u32BufferFrameNumber; i < (orxU32)iBufferNumber; i++)
@@ -516,17 +513,17 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
         orxBOOL bEOF = orxFALSE;
 
         /* Fills buffer */
-        u32FrameNumber = orxSoundSystem_OpenAL_Read(&(pstSound->stData), u32BufferFrameNumber, sstSoundSystem.au8StreamBuffer);
+        u32FrameNumber = orxSoundSystem_OpenAL_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.au8StreamBuffer);
 
         /* Success? */
         if(u32FrameNumber > 0)
         {
           /* Transfers its data */
-          alBufferData(puiBufferList[i], (pstSound->stData.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, sstSoundSystem.au8StreamBuffer, (ALsizei)(u32FrameNumber * pstSound->stData.u32ChannelNumber * sizeof(orxU16)), (ALsizei)pstSound->stData.u32SampleRate);
+          alBufferData(puiBufferList[i], (_pstSound->stData.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, sstSoundSystem.au8StreamBuffer, (ALsizei)(u32FrameNumber * _pstSound->stData.u32ChannelNumber * sizeof(orxU16)), (ALsizei)_pstSound->stData.u32SampleRate);
           alASSERT();
 
           /* Queues it */
-          alSourceQueueBuffers(pstSound->uiSource, 1, &puiBufferList[i]);
+          alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
           alASSERT();
 
           /* End of file? */
@@ -546,13 +543,13 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
         if(bEOF != orxFALSE)
         {
           /* Rewinds file */
-          orxSoundSystem_OpenAL_Rewind(&(pstSound->stData));
+          orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
 
           /* Not looping? */
-          if(pstSound->bLoop == orxFALSE)
+          if(_pstSound->bLoop == orxFALSE)
           {
             /* Stops */
-            pstSound->bStop = orxTRUE;
+            _pstSound->bStop = orxTRUE;
             break;
           }
         }
@@ -560,19 +557,19 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
     }
 
     /* Should continue */
-    if(pstSound->bStop == orxFALSE)
+    if(_pstSound->bStop == orxFALSE)
     {
       ALint iState;
 
       /* Gets actual state */
-      alGetSourcei(pstSound->uiSource, AL_SOURCE_STATE, &iState);
+      alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
       alASSERT();
 
       /* Stopped? */
       if((iState == AL_STOPPED) || (iState == AL_INITIAL))
       {
         /* Resumes play */
-        alSourcePlay(pstSound->uiSource);
+        alSourcePlay(_pstSound->uiSource);
         alASSERT();
       }
     }
@@ -582,7 +579,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
     ALint iState;
 
     /* Gets actual state */
-    alGetSourcei(pstSound->uiSource, AL_SOURCE_STATE, &iState);
+    alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
     alASSERT();
 
     /* Stopped? */
@@ -591,7 +588,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
       ALint iQueuedBufferNumber = 0;
 
       /* Gets queued buffer number */
-      alGetSourcei(pstSound->uiSource, AL_BUFFERS_QUEUED, &iQueuedBufferNumber);
+      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iQueuedBufferNumber);
       alASSERT();
 
       /* Checks */
@@ -603,7 +600,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
         ALuint auiDummy[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
 
         /* Unqueues them */
-        alSourceUnqueueBuffers(pstSound->uiSource, orxMIN(iQueuedBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), auiDummy);
+        alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iQueuedBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), auiDummy);
         alASSERT();
       }
     }
@@ -613,7 +610,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(const orxCLOCK_INFO *_p
   return;
 }
 
-static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording()
 {
   ALCint iSampleNumber;
 
@@ -667,6 +664,27 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INF
   return;
 }
 
+static void orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+
+  /* Is recording? */
+  if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
+  {
+    /* Updates recording */
+    orxSoundSystem_OpenAL_UpdateRecording();
+  }
+
+  /* For all streams */
+  for(pstSound = (orxSOUNDSYSTEM_SOUND *)orxLinkList_GetFirst(&(sstSoundSystem.stStreamList));
+      pstSound != orxNULL;
+      pstSound = (orxSOUNDSYSTEM_SOUND *)orxLinkList_GetNext(&(pstSound->stNode)))
+  {
+    /* Fills its stream */
+    orxSoundSystem_OpenAL_FillStream(pstSound);
+  }
+}
+
 orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -698,42 +716,68 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         /* Valid? */
         if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
         {
-          ALfloat afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
-
-          /* Selects it */
-          alcMakeContextCurrent(sstSoundSystem.poContext);
-
-          /* Sets 2D listener target */
-          alListenerfv(AL_ORIENTATION, afOrientation);
-          alASSERT();
-
-          /* Gets dimension ratio */
-          orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
-          fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
-
-          /* Valid? */
-          if(fRatio > orxFLOAT_0)
+          /* Adds streaming timer */
+          if(orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_UpdateStreaming, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL) != orxSTATUS_FAILURE)
           {
-            /* Stores it */
-            sstSoundSystem.fDimensionRatio = fRatio;
+            ALfloat afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
+
+            /* Selects it */
+            alcMakeContextCurrent(sstSoundSystem.poContext);
+
+            /* Sets 2D listener target */
+            alListenerfv(AL_ORIENTATION, afOrientation);
+            alASSERT();
+
+            /* Gets dimension ratio */
+            orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+            fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
+
+            /* Valid? */
+            if(fRatio > orxFLOAT_0)
+            {
+              /* Stores it */
+              sstSoundSystem.fDimensionRatio = fRatio;
+            }
+            else
+            {
+              /* Stores default one */
+              sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
+            }
+
+            /* Stores reciprocal dimenstion ratio */
+            sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
+      
+            /* Updates status */
+            orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+
+            /* Pops config section */
+            orxConfig_PopSection();
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
           }
           else
           {
-            /* Stores default one */
-            sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
+            /* Deletes banks */
+            if(sstSoundSystem.pstSampleBank != orxNULL)
+            {
+              orxBank_Delete(sstSoundSystem.pstSampleBank);
+              sstSoundSystem.pstSampleBank = orxNULL;
+            }
+            if(sstSoundSystem.pstSoundBank != orxNULL)
+            {
+              orxBank_Delete(sstSoundSystem.pstSoundBank);
+              sstSoundSystem.pstSoundBank = orxNULL;
+            }
+
+            /* Destroys openAL context */
+            alcDestroyContext(sstSoundSystem.poContext);
+            sstSoundSystem.poContext = NULL;
+
+            /* Closes openAL device */
+            alcCloseDevice(sstSoundSystem.poDevice);
+            sstSoundSystem.poDevice = NULL;
           }
-
-          /* Stores reciprocal dimenstion ratio */
-          sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
-    
-          /* Updates status */
-          orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
-
-          /* Pops config section */
-          orxConfig_PopSection();
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
         }
         else
         {
@@ -785,6 +829,13 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
 
     /* Deletes context */
     alcDestroyContext(sstSoundSystem.poContext);
+
+    /* Has capture device? */
+    if(sstSoundSystem.poCaptureDevice != orxNULL)
+    {
+      /* Closes it */
+      alcCaptureCloseDevice(sstSoundSystem.poCaptureDevice);
+    }
 
     /* Closes device */
     alcCloseDevice(sstSoundSystem.poDevice);
@@ -977,8 +1028,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
       pstResult->bStop      = orxTRUE;
       pstResult->bPause     = orxFALSE;
 
-      /* Adds timer for this stream */
-      orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_FillStream, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, pstResult);
+      /* Adds it to the list */
+      orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstResult->stNode));
     }
     else
     {
@@ -1025,8 +1076,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Delete(orxSOUNDSYSTEM_SOUND *_pstSou
     alDeleteBuffers(orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER, _pstSound->auiBufferList);
     alASSERT();
 
-    /* Removes associated timer */
-    orxClock_RemoveGlobalTimer(orxSoundSystem_OpenAL_FillStream, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, _pstSound);
+    /* Removes it from list */
+    orxLinkList_Remove(&(_pstSound->stNode));
   }
 
   /* Deletes sound */
@@ -1054,7 +1105,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Play(orxSOUNDSYSTEM_SOUND *_pstSound
       _pstSound->bStop = orxFALSE;
 
       /* Fills stream */
-      orxSoundSystem_OpenAL_FillStream(orxNULL, _pstSound);
+      orxSoundSystem_OpenAL_FillStream(_pstSound);
     }
 
     /* Updates status */
@@ -1163,33 +1214,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
         /* Starts capture device */
         alcCaptureStart(sstSoundSystem.poCaptureDevice);
 
-        /* Adds update recording timer */
-        eResult = orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_UpdateRecording, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL);
+        /* Updates packet's timestamp */
+        sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
 
-        /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          /* Updates packet's timestamp */
-          sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+        /* Updates status */
+        orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
 
-          /* Updates status */
-          orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
-
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: failed to register the recording timer.", _zName);
-
-          /* Stops capture device */
-          alcCaptureStop(sstSoundSystem.poCaptureDevice);
-
-          /* Deletes it */
-          alcCaptureCloseDevice(sstSoundSystem.poCaptureDevice);
-          sstSoundSystem.poCaptureDevice = orxNULL;
-        }
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
       }
       else
       {
@@ -1234,7 +1266,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StopRecording()
   if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
   {
     /* Processes the remaining samples */
-    orxSoundSystem_OpenAL_UpdateRecording(orxNULL, orxNULL);
+    orxSoundSystem_OpenAL_UpdateRecording();
 
     /* Has a recording file? */
     if(sstSoundSystem.pstRecordingFile != orxNULL)
@@ -1254,9 +1286,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StopRecording()
       orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_HANDLER);
     }
 
-    /* Removes update timer function */
-    orxClock_RemoveGlobalTimer(orxSoundSystem_OpenAL_UpdateRecording, orx2F(-1.0f), orxNULL);
-
     /* Reinits the packet */
     sstSoundSystem.stRecordingPayload.stRecording.stPacket.u32SampleNumber  = 0;
     sstSoundSystem.stRecordingPayload.stRecording.stPacket.as16SampleList   = sstSoundSystem.as16RecordingBuffer;
@@ -1265,7 +1294,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StopRecording()
     alcCaptureStop(sstSoundSystem.poCaptureDevice);
 
     /* Closes it */
-    alcCloseDevice(sstSoundSystem.poCaptureDevice);
+    alcCaptureCloseDevice(sstSoundSystem.poCaptureDevice);
     sstSoundSystem.poCaptureDevice = orxNULL;
 
     /* Updates status */
