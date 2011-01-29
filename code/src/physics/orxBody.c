@@ -1015,10 +1015,11 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSrcBody);
   orxSTRUCTURE_ASSERT(_pstDstBody);
-  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
+  orxASSERT(_zConfigID != orxNULL);
 
   /* Pushes section */
-  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  if((_zConfigID != orxSTRING_EMPTY)
+  && (orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     orxSTRING         zBodyJointType;
