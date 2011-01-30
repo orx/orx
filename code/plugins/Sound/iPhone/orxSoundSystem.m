@@ -681,7 +681,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Init()
         if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
         {
           /* Adds streaming timer */
-          if(orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_UpdateStreaming, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL) != orxSTATUS_FAILURE)
+          if(orxClock_AddGlobalTimer(orxSoundSystem_iPhone_UpdateStreaming, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL) != orxSTATUS_FAILURE)
           {
             ALfloat afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
 
