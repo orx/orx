@@ -645,28 +645,48 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
   if((_u32NbParams > 0) && (_azParams != orxNULL))
   {
     orxS32  s32Index, s32NextIndex;
-    orxCHAR zLocalName[256];
+    orxCHAR zLocalName[256], zPath[256];
 
     /* Copies it locally */
-    orxString_NPrint(zLocalName, 256, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", sstParam.azParams[0]);
+    orxString_NPrint(zLocalName, 256, "%s", sstParam.azParams[0]);
 
     /* Finds last '.' */
-    for(s32Index = orxString_SearchCharIndex(sstParam.azParams[0], '.', 0);
-        (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(sstParam.azParams[0], '.', s32Index + 1)) > 0);
+    for(s32Index = orxString_SearchCharIndex(zLocalName, '.', 0);
+        (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(zLocalName, '.', s32Index + 1)) > 0);
         s32Index = s32NextIndex);
 
     /* Does base name have a '.'? */
-    if((s32Index > 0) && (orxString_SearchCharIndex(sstParam.azParams[0], orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1) < 0))
+    if((s32Index > 0) && (orxString_SearchCharIndex(zLocalName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1) < 0))
     {
       /* Ends basename before extension */
-      *(zLocalName + orxString_GetLength(orxPARAM_KZ_BASE_DIRECTORY_NAME) + s32Index) = orxCHAR_NULL;
+      *(zLocalName + s32Index) = orxCHAR_NULL;
     }
 
     /* Stores base name for config */
     orxConfig_SetBaseName(zLocalName);
 
+    /* Finds last directory separator */
+    for(s32Index = orxString_SearchCharIndex(zLocalName, orxCHAR_DIRECTORY_SEPARATOR, 0);
+        (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(zLocalName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1)) > 0);
+        s32Index = s32NextIndex);
+
+    /* Found? */
+    if(s32Index >= 0)
+    {
+      /* Updates it */
+      s32Index++;
+    }
+    else
+    {
+      /* Clears it */
+      s32Index = 0;
+    }
+
+    /* Gets debug path */
+    orxString_NPrint(zPath, 256, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
+
     /* Stores base names for debug */
-    orxDEBUG_SETBASEFILENAME(zLocalName);
+    orxDEBUG_SETBASEFILENAME(zPath);
   }
 
   /* Done! */

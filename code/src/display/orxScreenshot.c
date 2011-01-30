@@ -205,7 +205,7 @@ void orxFASTCALL orxScreenshot_Setup()
  */
 orxSTATUS orxFASTCALL orxScreenshot_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Not already Initialized? */
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY))
@@ -220,9 +220,6 @@ orxSTATUS orxFASTCALL orxScreenshot_Init()
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Tried to initalize Screenshot module when it was already initialized.");
-
-    /* Already initialized */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

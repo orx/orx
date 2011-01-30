@@ -92,10 +92,6 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
-  ALuint    uiSource;
-  orxBOOL   bIsStream;
-  orxFLOAT  fDuration;
-
   union
   {
     /* Sample */
@@ -116,6 +112,10 @@ struct __orxSOUNDSYSTEM_SOUND_t
       AudioStreamBasicDescription stFileInfo;
     };
   };
+
+  ALuint    uiSource;
+  orxBOOL   bIsStream;
+  orxFLOAT  fDuration;
 };
 
 /** Static structure
