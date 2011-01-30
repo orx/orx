@@ -1253,7 +1253,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BO
     vGravity.Set(sstPhysics.fDimensionRatio * _pvCustomGravity->fX, sstPhysics.fDimensionRatio * _pvCustomGravity->fY);
 
     /* Should apply? */
-    if((pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
+    if((pvCustomGravity == NULL) || (pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
     {
       /* Wakes up */
       poBody->SetAwake(true);

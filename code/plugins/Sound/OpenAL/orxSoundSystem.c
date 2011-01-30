@@ -875,13 +875,13 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
       /* Allocates buffer */
       if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN)) != orxNULL)
       {
-        orxU32 u32ReadFrameNumber;
+        orxU32 u32ReadSampleNumber;
 
         /* Reads data */
-        u32ReadFrameNumber = orxSoundSystem_OpenAL_Read(&stData, stData.u32FrameNumber, pBuffer);
+        u32ReadSampleNumber = orxSoundSystem_OpenAL_Read(&stData, stData.u32FrameNumber, pBuffer);
 
         /* Success? */
-        if(u32ReadFrameNumber == stData.u32FrameNumber)
+        if(u32ReadSampleNumber == stData.u32FrameNumber * stData.u32ChannelNumber)
         {
           /* Generates an OpenAL buffer */
           alGenBuffers(1, &(pstResult->uiBuffer));
@@ -892,7 +892,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
           alASSERT();
 
           /* Stores duration */
-          pstResult->fDuration = orxU2F(stData.u32FrameNumber) / orx2F(stData.u32SampleRate);
+          pstResult->fDuration = orxU2F(stData.u32FrameNumber) / (orx2F(stData.u32SampleRate * stData.u32ChannelNumber));
         }
         else
         {
