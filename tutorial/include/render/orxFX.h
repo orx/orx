@@ -61,6 +61,7 @@
  typedef enum __orxFX_CURVE_t
  {
    orxFX_CURVE_LINEAR = 0,
+   orxFX_CURVE_SMOOTH,
    orxFX_CURVE_TRIANGLE,
    orxFX_CURVE_SINE,
    orxFX_CURVE_SQUARE,

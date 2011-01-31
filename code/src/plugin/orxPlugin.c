@@ -333,9 +333,10 @@ static void orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginI
 /** Registers a core function
  * @param[in] _eFunctionID            Concerned function ID
  * @param[in] _pfnFunction            Concerned function implementation
+ * @param[in] _bEmbedded              Embedded mode?
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID _eFunctionID, orxPLUGIN_FUNCTION _pfnFunction)
+static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID _eFunctionID, orxPLUGIN_FUNCTION _pfnFunction, orxBOOL _bEmbedded)
 {
   const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
   orxU32                          u32PluginIndex, u32FunctionIndex;
@@ -363,8 +364,9 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
     orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCounter);
     orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
 
-    /* Was not already loaded? */
-    if(*(pstCoreFunction[u32FunctionIndex].pfnFunction) == pstCoreFunction[u32FunctionIndex].pfnDefaultFunction)
+    /* Embedded mode or was not already loaded? */
+    if((_bEmbedded != orxFALSE)
+    || (*(pstCoreFunction[u32FunctionIndex].pfnFunction) == pstCoreFunction[u32FunctionIndex].pfnDefaultFunction))
     {
       /* Registers core function */
       *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunction;
@@ -652,7 +654,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
         if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
         {
           /* Registers core function */
-          eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo->eFunctionID, pstFunctionInfo->pfnFunction);
+          eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo->eFunctionID, pstFunctionInfo->pfnFunction, orxFALSE);
         }
       }
       else
@@ -734,7 +736,7 @@ void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLU
     orxASSERT(astUserFunctionInfo[i].eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID);
 
     /* Registers core function */
-    eResult = orxPlugin_RegisterCoreFunction(astUserFunctionInfo[i].eFunctionID, astUserFunctionInfo[i].pfnFunction);
+    eResult = orxPlugin_RegisterCoreFunction(astUserFunctionInfo[i].eFunctionID, astUserFunctionInfo[i].pfnFunction, orxTRUE);
   }
 
   /* Done! */

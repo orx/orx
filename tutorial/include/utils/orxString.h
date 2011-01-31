@@ -922,8 +922,8 @@ static orxINLINE orxSTATUS              orxString_ToFloat(const orxSTRING _zStri
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
-  /* Linux / Mac / GP2X / Wii / IPhone / MSVC? */
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__)
+  /* Linux / Mac / GP2X / Wii / IPhone / Android / MSVC? */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__) || defined(__orxANDROID__)
 
   /* Converts it */
   *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);

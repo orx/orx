@@ -90,8 +90,8 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
+  /* Linux / Mac / iPhone / Android / Wii */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
     typedef void *                orxHANDLE;
 

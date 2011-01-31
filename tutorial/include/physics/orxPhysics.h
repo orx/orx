@@ -160,91 +160,93 @@ typedef struct __orxBODY_PART_DEF_t
  */
 typedef struct __orxBODY_JOINT_DEF_t
 {
-  orxVECTOR     vSrcAnchor;                 /**< Source body anchor : 12 */
-  orxVECTOR     vDstAnchor;                 /**< Destination body anchor : 24 */
-  orxU32        u32Flags;                   /**< Control flags : 28 */
+  orxVECTOR     vSrcScale;                  /**< Source scale : 12 */
+  orxVECTOR     vDstScale;                  /**< Destination scale : 24 */
+  orxVECTOR     vSrcAnchor;                 /**< Source body anchor : 36 */
+  orxVECTOR     vDstAnchor;                 /**< Destination body anchor : 48 */
+  orxU32        u32Flags;                   /**< Control flags : 52 */
 
   union
   {
     struct
     {
-      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
-      orxFLOAT  fMinRotation;               /**< Min rotation : 36 */
-      orxFLOAT  fMaxRotation;               /**< Max rotation : 40 */
-      orxFLOAT  fMotorSpeed;                /**< Motor speed : 44 */
-      orxFLOAT  fMaxMotorTorque;            /**< Max motor torque : 48 */
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 56 */
+      orxFLOAT  fMinRotation;               /**< Min rotation : 60 */
+      orxFLOAT  fMaxRotation;               /**< Max rotation : 64 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 68 */
+      orxFLOAT  fMaxMotorTorque;            /**< Max motor torque : 72 */
 
-    } stRevolute;                           /**< Revolute : 48 */
-
-    struct
-    {
-      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
-      orxVECTOR vTranslationAxis;           /**< Translation axis : 44 */
-      orxFLOAT  fMinTranslation;            /**< Min translation : 48 */
-      orxFLOAT  fMaxTranslation;            /**< Max translation : 52 */
-      orxFLOAT  fMotorSpeed;                /**< Motor speed : 56 */
-      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 60 */
-
-    } stPrismatic;                          /**< Prismatic : 60 */
+    } stRevolute;                           /**< Revolute : 72 */
 
     struct
     {
-      orxFLOAT  fLength;                    /**< Length : 32 */
-      orxFLOAT  fFrequency;                 /**< Frequency : 36 */
-      orxFLOAT  fDamping;                   /**< Damping : 40 */
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 56 */
+      orxVECTOR vTranslationAxis;           /**< Translation axis : 68 */
+      orxFLOAT  fMinTranslation;            /**< Min translation : 72 */
+      orxFLOAT  fMaxTranslation;            /**< Max translation : 76 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 80 */
+      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 84 */
 
-    } stSpring;                             /**< Spring : 40 */
+    } stPrismatic;                          /**< Prismatic : 84 */
 
     struct
     {
-      orxFLOAT  fLength;                    /**< Length : 32 */
+      orxFLOAT  fLength;                    /**< Length : 56 */
+      orxFLOAT  fFrequency;                 /**< Frequency : 60 */
+      orxFLOAT  fDamping;                   /**< Damping : 64 */
+
+    } stSpring;                             /**< Spring : 64 */
+
+    struct
+    {
+      orxFLOAT  fLength;                    /**< Length : 56 */
       
-    } stRope;                               /**< Rope : 32 */
+    } stRope;                               /**< Rope : 56 */
 
     struct
     {
-      orxFLOAT  fLengthRatio;               /**< Length ratio : 32 */
-      orxVECTOR vSrcGroundAnchor;           /**< Source ground anchor : 44 */
-      orxVECTOR vDstGroundAnchor;           /**< Destination ground anchor : 56 */
-      orxFLOAT  fSrcLength;                 /**< Source length : 60 */
-      orxFLOAT  fMaxSrcLength;              /**< Max source length : 64 */
-      orxFLOAT  fDstLength;                 /**< Destination length : 68 */
-      orxFLOAT  fMaxDstLength;              /**< Max destination length : 72 */
+      orxFLOAT  fLengthRatio;               /**< Length ratio : 56 */
+      orxVECTOR vSrcGroundAnchor;           /**< Source ground anchor : 68 */
+      orxVECTOR vDstGroundAnchor;           /**< Destination ground anchor : 80 */
+      orxFLOAT  fSrcLength;                 /**< Source length : 84 */
+      orxFLOAT  fMaxSrcLength;              /**< Max source length : 88 */
+      orxFLOAT  fDstLength;                 /**< Destination length : 92 */
+      orxFLOAT  fMaxDstLength;              /**< Max destination length : 96 */
 
-    } stPulley;                             /**< Pulley : 72 */
-
-    struct
-    {
-      orxVECTOR vTranslationAxis;           /**< Translation axis : 40 */
-      orxFLOAT  fMinTranslation;            /**< Min translation : 44 */
-      orxFLOAT  fMaxTranslation;            /**< Max translation : 48 */
-      orxFLOAT  fMotorSpeed;                /**< Motor speed : 52 */
-      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 56 */
-
-    } stSuspension;                         /**< Suspension : 56 */
+    } stPulley;                             /**< Pulley : 96 */
 
     struct
     {
-      orxFLOAT  fDefaultRotation;           /**< Default rotation : 32 */
+      orxVECTOR vTranslationAxis;           /**< Translation axis : 64 */
+      orxFLOAT  fMinTranslation;            /**< Min translation : 68 */
+      orxFLOAT  fMaxTranslation;            /**< Max translation : 72 */
+      orxFLOAT  fMotorSpeed;                /**< Motor speed : 76 */
+      orxFLOAT  fMaxMotorForce;             /**< Max motor force : 80 */
 
-    } stWeld;                               /**< Weld : 32 */
-
-    struct
-    {
-      orxFLOAT  fMaxForce;                  /**< Max force : 32 */
-      orxFLOAT  fMaxTorque;                 /**< Max torque : 36 */
-
-    } stFriction;                           /**< Friction : 36 */
+    } stSuspension;                         /**< Suspension : 80 */
 
     struct
     {
-      const orxSTRING zSrcJointName;        /**< Source joint name : 32 */
-      const orxSTRING zDstJointName;        /**< Destination joint name : 36 */
-      orxFLOAT        fJointRatio;          /**< Joint ratio : 40 */
+      orxFLOAT  fDefaultRotation;           /**< Default rotation : 56 */
 
-    } stGear;                               /**< Gear : 40 */
+    } stWeld;                               /**< Weld : 56 */
 
-  };                                        /**< Joint : 72 */
+    struct
+    {
+      orxFLOAT  fMaxForce;                  /**< Max force : 56 */
+      orxFLOAT  fMaxTorque;                 /**< Max torque : 60 */
+
+    } stFriction;                           /**< Friction : 60 */
+
+    struct
+    {
+      const orxSTRING zSrcJointName;        /**< Source joint name : 56 */
+      const orxSTRING zDstJointName;        /**< Destination joint name : 60 */
+      orxFLOAT        fJointRatio;          /**< Joint ratio : 64 */
+
+    } stGear;                               /**< Gear : 64 */
+
+  };                                        /**< Joint : 96 */
 
 } orxBODY_JOINT_DEF;
 

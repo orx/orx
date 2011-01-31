@@ -56,10 +56,8 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_MOUSE_IN,
   orxSYSTEM_EVENT_MOUSE_OUT,
 
-#ifdef __orxIPHONE__
   orxSYSTEM_EVENT_BACKGROUND,
   orxSYSTEM_EVENT_FOREGROUND,
-#endif /* __orxIPHONE__ */
 
   orxSYSTEM_EVENT_NUMBER,
 
