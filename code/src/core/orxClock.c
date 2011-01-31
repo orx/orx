@@ -60,6 +60,7 @@
 
 #define orxCLOCK_KU32_FLAG_PAUSED               0x10000000  /**< Clock is paused */
 #define orxCLOCK_KU32_FLAG_REFERENCED           0x20000000  /**< Referenced flag */
+#define orxCLOCK_KU32_FLAG_UPDATE_LOCK          0x40000000  /**< Lock update flag */
 
 #define orxCLOCK_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -476,6 +477,9 @@ orxSTATUS orxFASTCALL orxClock_Update()
         pstClock != orxNULL;
         pstClock = orxCLOCK(orxStructure_GetNext(pstClock)))
     {
+      /* Locks it */
+      orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_UPDATE_LOCK, orxCLOCK_KU32_FLAG_NONE);
+
       /* Is clock not paused? */
       if(orxClock_IsPaused(pstClock) == orxFALSE)
       {
@@ -567,6 +571,9 @@ orxSTATUS orxFASTCALL orxClock_Update()
           fDelay = fClockDelay;
         }
       }
+
+      /* Unlocks it */
+      orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_UPDATE_LOCK);
     }
 
     /* Unlocks clocks */
@@ -775,7 +782,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   if(orxStructure_GetRefCounter(_pstClock) == 0)
   {
     /* Not locked? */
-    if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_FLAG_NONE)
+    if(!orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_UPDATE_LOCK))
     {
       orxCLOCK_TIMER_STORAGE *pstTimerStorage;
 
@@ -813,6 +820,9 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
     }
     else
     {
+      /* Increases counter */
+      orxStructure_IncreaseCounter(_pstClock);
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Can't delete clock <%s> as it's currently locked for processing!", orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED) ? _pstClock->zReference : orxSTRING_EMPTY);
 
@@ -843,7 +853,7 @@ orxSTATUS orxFASTCALL orxClock_Resync(orxCLOCK *_pstClock)
   orxSTRUCTURE_ASSERT(_pstClock);
 
   /* Not locked? */
-  if(!orxFLAG_TEST(sstClock.u32Flags, orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
+  if(!orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_UPDATE_LOCK))
   {
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_RESYNC, _pstClock, orxNULL, orxNULL);
@@ -908,7 +918,7 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
   orxSTRUCTURE_ASSERT(_pstClock);
 
   /* Not locked? */
-  if(!orxFLAG_TEST(sstClock.u32Flags, orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
+  if(!orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_UPDATE_LOCK))
   {
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_RESTART, _pstClock, orxNULL, orxNULL);
