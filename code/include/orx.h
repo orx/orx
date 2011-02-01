@@ -228,7 +228,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         orxBOOL bStop;
 
         /* Main loop */
-        for(bStop = orxFALSE; bStop == orxFALSE; bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+        for(bStop = orxFALSE, sbStopByEvent = orxFALSE; bStop == orxFALSE; bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
         {
           //! TODO: Use events instead?
           /* Notifies android of loop start */
@@ -431,7 +431,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         orxBOOL   bStop;
 
         /* Main loop */
-        for(bStop = orxFALSE;
+        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
             bStop == orxFALSE;
             bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
         {
