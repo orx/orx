@@ -417,7 +417,7 @@ static orxINLINE orxU32 orxSoundSystem_OpenAL_Read(orxSOUNDSYSTEM_DATA *_pstData
   if(_pstData->bVorbis != orxFALSE)
   {
     /* Reads frames */
-    u32Result = (orxU32)stb_vorbis_get_samples_short_interleaved(_pstData->vorbis.pstFile, _pstData->u32ChannelNumber, (short *)_pBuffer, _u32FrameNumber * _pstData->u32ChannelNumber);
+    u32Result = (orxU32)stb_vorbis_get_samples_short_interleaved(_pstData->vorbis.pstFile, _pstData->u32ChannelNumber, (short *)_pBuffer, _u32FrameNumber * _pstData->u32ChannelNumber) * _pstData->u32ChannelNumber;
   }
   /* sndfile */
   else
@@ -892,7 +892,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
           alASSERT();
 
           /* Stores duration */
-          pstResult->fDuration = orxU2F(stData.u32FrameNumber) / (orx2F(stData.u32SampleRate * stData.u32ChannelNumber));
+          pstResult->fDuration = orxU2F(stData.u32FrameNumber) / orx2F(stData.u32SampleRate);
         }
         else
         {
