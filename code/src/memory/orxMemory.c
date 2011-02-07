@@ -35,19 +35,12 @@
 
 #ifdef __orxANDROID__
 
-  #include <stdlib.h>
-  #include <string.h>
-
-  #define dlmalloc  malloc
-  #define dlrealloc realloc
-  #define dlfree    free
-
-#else /* __orxANDROID__ */
-
-  #define USE_DL_PREFIX
-  #include "malloc.c"
+  #define NO_MALLINFO
 
 #endif /* __orxANDROID__ */
+
+#define USE_DL_PREFIX
+#include "malloc.c"
 
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
