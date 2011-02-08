@@ -280,9 +280,6 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
     alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iBufferNumber);
     alASSERT();
 
-    /* Checks */
-    orxASSERT((iBufferNumber == 0) || (iBufferNumber == orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER));
-
     /* None found? */
     if(iBufferNumber == 0)
     {
@@ -356,51 +353,55 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxNULL, orxNULL, &stPayload);
 
-        /* Fills buffer? */
-        if((stPayload.stStream.stPacket.bDiscard == orxFALSE) && (u32FrameNumber > 0))
-        {
-          /* Transfers its data */
-          alBufferData(puiBufferList[i], (_pstSound->stFileInfo.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, (ALsizei)(stPayload.stStream.stPacket.u32SampleNumber * _pstSound->stFileInfo.mBytesPerFrame), (ALsizei)_pstSound->stFileInfo.mSampleRate);
-          alASSERT();
+        /* Should proceed? */
+        if(stPayload.stStream.stPacket.bDiscard == orxFALSE)
+        {        
+          /* Success? */
+          if(u32FrameNumber > 0)
+          {
+            /* Transfers its data */
+            alBufferData(puiBufferList[i], (_pstSound->stFileInfo.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, (ALsizei)(stPayload.stStream.stPacket.u32SampleNumber * _pstSound->stFileInfo.mBytesPerFrame), (ALsizei)_pstSound->stFileInfo.mSampleRate);
+            alASSERT();
 
-          /* Queues it */
-          alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
-          alASSERT();
+            /* Queues it */
+            alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
+            alASSERT();
 
-          /* End of file? */
-          if(u32FrameNumber < u32BufferFrameNumber)
+            /* End of file? */
+            if(u32FrameNumber < u32BufferFrameNumber)
+            {
+              /* Updates status */
+              bEOF = orxTRUE;
+            }
+          }
+          else
           {
             /* Updates status */
             bEOF = orxTRUE;
           }
-        }
-        else
-        {
-          /* Updates status */
-          bEOF = orxTRUE;
-        }
 
-        /* Ends of file? */
-        if(bEOF != orxFALSE)
-        {
-          /* Rewinds file */
-          ExtAudioFileSeek(_pstSound->oFileRef, 0);
-
-          /* Should loop? */
-          if(_pstSound->bLoop != orxFALSE)
+          /* Ends of file? */
+          if(bEOF != orxFALSE)
           {
-            /* Resets frame number */
-            u32FrameNumber = u32BufferFrameNumber;
+            /* Rewinds file */
+            ExtAudioFileSeek(_pstSound->oFileRef, 0);
 
-            /* Resets buffer size */
-            stBufferInfo.mBuffers[0].mDataByteSize = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE;
-          }
-          else
-          {
-            /* Stops */
-            _pstSound->bStop   = orxTRUE;
-            _pstSound->bPause  = orxFALSE;
-            break;
+            /* Should loop? */
+            if(_pstSound->bLoop != orxFALSE)
+            {
+              /* Resets frame number */
+              u32FrameNumber = u32BufferFrameNumber;
+
+              /* Resets buffer size */
+              stBufferInfo.mBuffers[0].mDataByteSize = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE;
+            }
+            else
+            {
+              /* Stops */
+              _pstSound->bStop   = orxTRUE;
+              _pstSound->bPause  = orxFALSE;
+              break;
+            }
           }
         }
       }
@@ -823,7 +824,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_LoadSample(const orxSTR
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Opends file */
+  /* Opens file */
   if(orxSoundSystem_iPhone_OpenFile(_zFilename, &oFileRef, &stFileInfo, &u32FrameNumber) != orxSTATUS_FAILURE)
   {
     /* Allocates sample */
