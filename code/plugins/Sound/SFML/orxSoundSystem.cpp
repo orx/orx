@@ -232,7 +232,7 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateFromSampl
   return pstResult;
 }
 
-extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateStreamFromFile(const orxSTRING _zFilename)
+extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
 {
   orxSOUNDSYSTEM_SOUND *pstResult;
   sf::Music            *poMusic;

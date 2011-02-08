@@ -44,7 +44,6 @@
 
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY     0x00000001 /**< Ready flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING 0x00000002 /**< Recording flag */
-#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_HANDLER   0x00000004 /**< Registered recording handler flag */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL       0xFFFFFFFF /**< All mask */
 
@@ -55,7 +54,7 @@
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER        4
 #define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY 44100
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          16384
-#define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       (2 * orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY)
+#define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       (orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / sizeof(orxS16))
 #define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY            orx2F(0.1f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO       orx2F(0.01f)
 
@@ -104,10 +103,11 @@ struct __orxSOUNDSYSTEM_SOUND_t
     struct
     {
       orxLINKLIST_NODE            stNode;
-      ALuint                      auiBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
       orxBOOL                     bLoop;
       orxBOOL                     bStop;
       orxBOOL                     bPause;
+      const orxSTRING             zReference;
+      ALuint                      auiBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
       ExtAudioFileRef             oFileRef;
       AudioStreamBasicDescription stFileInfo;
     };
@@ -133,7 +133,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ExtAudioFileRef         poRecordingFile;    /**< Recording file */
   orxLINKLIST             stStreamList;       /**< Stream list */
   orxSOUND_EVENT_PAYLOAD  stRecordingPayload; /**< Recording payload */
-  orxU8                   au8StreamBuffer[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE]; /**< Stream buffer */
+  orxS8                   as8StreamBuffer[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE]; /**< Stream buffer */
   orxS16                  as16RecordingBuffer[orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE]; /**< Recording buffer */
 
 } orxSOUNDSYSTEM_STATIC;
@@ -233,8 +233,8 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iPhone_OpenRecordingFile()
   orxMemory_Zero(&stFileInfo, sizeof(AudioStreamBasicDescription));
   
   /* Updates file info for 16bit PCM data */
-  stFileInfo.mSampleRate        = sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate;
-  stFileInfo.mChannelsPerFrame  = (sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber == 2) ? 2 : 1;
+  stFileInfo.mSampleRate        = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate;
+  stFileInfo.mChannelsPerFrame  = (sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber == 2) ? 2 : 1;
   stFileInfo.mFormatID          = kAudioFormatLinearPCM;
   stFileInfo.mFormatFlags       = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
   stFileInfo.mBytesPerPacket    = 2 * stFileInfo.mChannelsPerFrame;
@@ -258,52 +258,6 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iPhone_OpenRecordingFile()
 
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file <%s> to write recorded audio data. Sound recording is still in progress.", sstSoundSystem.stRecordingPayload.zSoundName);
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-static orxSTATUS orxFASTCALL orxSoundSystem_iPhone_EventHandler(const orxEVENT *_pstEvent) 
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SOUND);
-
-  /* Is a recording packet? */
-  if(_pstEvent->eID == orxSOUND_EVENT_RECORDING_PACKET)
-  {
-    orxSOUND_EVENT_PAYLOAD *pstPayload;
-
-    /* Gets its payload */
-    pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Should write the packet? */
-    if(pstPayload->stRecording.stPacket.bWriteToFile != orxFALSE)
-    {
-      /* No file opened yet? */
-      if(sstSoundSystem.poRecordingFile == orxNULL)
-      {
-        /* Opens it */
-        orxSoundSystem_iPhone_OpenRecordingFile();
-      }
-
-      /* Has a valid file opened? */
-      if(sstSoundSystem.poRecordingFile != orxNULL)
-      {
-        AudioBufferList stBufferInfo;
-
-        /* Inits buffer info */
-        stBufferInfo.mNumberBuffers               = 1;
-        stBufferInfo.mBuffers[0].mDataByteSize    = pstPayload->stRecording.stPacket.u32SampleNumber * 2;
-        stBufferInfo.mBuffers[0].mNumberChannels  = pstPayload->stRecording.stInfo.u32ChannelNumber;
-        stBufferInfo.mBuffers[0].mData            = pstPayload->stRecording.stPacket.as16SampleList;
-
-        /* Writes data */
-        ExtAudioFileWrite(sstSoundSystem.poRecordingFile, pstPayload->stRecording.stPacket.u32SampleNumber / pstPayload->stRecording.stInfo.u32ChannelNumber, &stBufferInfo);
-      } 
-    }
   }
 
   /* Done! */
@@ -360,8 +314,22 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
     /* Needs processing? */
     if(iBufferNumber > 0)
     {
-      orxU32          u32BufferFrameNumber;
-      AudioBufferList stBufferInfo;
+      orxU32                 u32BufferFrameNumber, u32FrameNumber, i;
+      orxSOUND_EVENT_PAYLOAD stPayload;
+      AudioBufferList        stBufferInfo;
+
+      /* Clears payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+
+      /* Stores recording name */
+      stPayload.zSoundName = _pstSound->zReference;
+
+      /* Stores stream info */
+      stPayload.stStream.stInfo.u32SampleRate     = _pstSound->stData.u32SampleRate;
+      stPayload.stStream.stInfo.u32ChannelNumber  = _pstSound->stData.u32ChannelNumber;
+
+      /* Stores time stamp */
+      stPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
 
       /* Gets buffer's frame number */
       u32BufferFrameNumber = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / _pstSound->stFileInfo.mBytesPerFrame;
@@ -370,7 +338,7 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
       stBufferInfo.mNumberBuffers               = 1;
       stBufferInfo.mBuffers[0].mDataByteSize    = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE;
       stBufferInfo.mBuffers[0].mNumberChannels  = _pstSound->stFileInfo.mChannelsPerFrame;
-      stBufferInfo.mBuffers[0].mData            = sstSoundSystem.au8StreamBuffer;
+      stBufferInfo.mBuffers[0].mData            = sstSoundSystem.as8StreamBuffer;
 
       /* For all processed buffers */
       for(orxU32 i = 0, u32FrameNumber = u32BufferFrameNumber; i < (orxU32)iBufferNumber; i++)
@@ -378,10 +346,21 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
         orxBOOL bEOF = orxFALSE;
 
         /* Fills buffer? */
-        if(ExtAudioFileRead(_pstSound->oFileRef, &u32FrameNumber, &stBufferInfo) == 0)
+        ExtAudioFileRead(_pstSound->oFileRef, &u32FrameNumber, &stBufferInfo);
+
+        /* Inits packet */
+        stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stData.u32ChannelNumber;
+        stPayload.stStream.stPacket.as16SampleList  = (orxS16 *)sstSoundSystem.as8StreamBuffer;
+        stPayload.stStream.stPacket.bDiscard        = orxFALSE;
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxNULL, orxNULL, &stPayload);
+
+        /* Fills buffer? */
+        if((stPayload.stStream.stPacket.bDiscard == orxFALSE) && (u32FrameNumber > 0))
         {
           /* Transfers its data */
-          alBufferData(puiBufferList[i], (_pstSound->stFileInfo.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, sstSoundSystem.au8StreamBuffer, (ALsizei)(u32FrameNumber * _pstSound->stFileInfo.mBytesPerFrame), (ALsizei)_pstSound->stFileInfo.mSampleRate);
+          alBufferData(puiBufferList[i], (_pstSound->stFileInfo.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, (ALsizei)(stPayload.stStream.stPacket.u32SampleNumber * _pstSound->stFileInfo.mBytesPerFrame), (ALsizei)_pstSound->stFileInfo.mSampleRate);
           alASSERT();
 
           /* Queues it */
@@ -486,17 +465,6 @@ static void orxFASTCALL orxSoundSystem_iPhone_UpdateRecording()
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING));
 
-  /* Hasn't added the handler yet? */
-  if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_HANDLER))
-  {
-    /* Adds event handler */
-    if(orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxSoundSystem_iPhone_EventHandler) != orxSTATUS_FAILURE)
-    {
-      /* Updates status */
-      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_HANDLER, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
-    }
-  }
-  
   /* Gets the number of captured samples */
   alcGetIntegerv(sstSoundSystem.poCaptureDevice, ALC_CAPTURE_SAMPLES, 1, &iSampleNumber);
   
@@ -509,24 +477,50 @@ static void orxFASTCALL orxSoundSystem_iPhone_UpdateRecording()
     u32PacketSampleNumber = orxMIN((orxU32)iSampleNumber, orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE);
     
     /* Inits packet */
-    sstSoundSystem.stRecordingPayload.stRecording.stPacket.u32SampleNumber  = u32PacketSampleNumber;
-    sstSoundSystem.stRecordingPayload.stRecording.stPacket.as16SampleList   = sstSoundSystem.as16RecordingBuffer;
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber  = u32PacketSampleNumber;
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.as16SampleList   = sstSoundSystem.as16RecordingBuffer;
     
     /* Gets the captured samples */
-    alcCaptureSamples(sstSoundSystem.poCaptureDevice, (ALCvoid *)sstSoundSystem.as16RecordingBuffer, (ALCsizei)sstSoundSystem.stRecordingPayload.stRecording.stPacket.u32SampleNumber);
+    alcCaptureSamples(sstSoundSystem.poCaptureDevice, (ALCvoid *)sstSoundSystem.as16RecordingBuffer, (ALCsizei)sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber);
     
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_PACKET, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
     
+    /* Should write the packet? */
+    if(sstSoundSystem.stRecordingPayload.stStream.stPacket.bDiscard == orxFALSE)
+    {
+      /* No file opened yet? */
+      if(sstSoundSystem.poRecordingFile == orxNULL)
+      {
+        /* Opens it */
+        orxSoundSystem_iPhone_OpenRecordingFile();
+      }
+
+      /* Has a valid file opened? */
+      if(sstSoundSystem.poRecordingFile != orxNULL)
+      {
+        AudioBufferList stBufferInfo;
+
+        /* Inits buffer info */
+        stBufferInfo.mNumberBuffers               = 1;
+        stBufferInfo.mBuffers[0].mDataByteSize    = sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber * sizeof(orxS16);
+        stBufferInfo.mBuffers[0].mNumberChannels  = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber;
+        stBufferInfo.mBuffers[0].mData            = sstSoundSystem.stRecordingPayload.stStream.stPacket.as16SampleList;
+
+        /* Writes data */
+        ExtAudioFileWrite(sstSoundSystem.poRecordingFile, sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber / sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber, &stBufferInfo);
+      } 
+    }
+
     /* Updates remaining sample number */
     iSampleNumber -= (ALCint)u32PacketSampleNumber;
     
     /* Updates timestamp */
-    sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp += orxU2F(sstSoundSystem.stRecordingPayload.stRecording.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber);
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
   }
   
   /* Updates packet's timestamp */
-  sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+  sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
   
   /* Done! */
   return;
@@ -967,7 +961,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateFromSample(const o
   return pstResult;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStreamFromFile(const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
 {
   orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
 
@@ -1004,6 +998,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStreamFromFile(con
       pstResult->bIsStream  = orxTRUE;
       pstResult->bStop      = orxTRUE;
       pstResult->bPause     = orxFALSE;
+      pstResult->zReference = _zReference;
 
       /* Adds it to the list */
       orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstResult->stNode));
@@ -1165,15 +1160,18 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_StartRecording(const orxSTRING _zNam
     /* Stores recording name */
     sstSoundSystem.stRecordingPayload.zSoundName = orxString_Duplicate(_zName);
 
-    /* Stores recording info */
-    sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate    = (_u32SampleRate > 0) ? _u32SampleRate : orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY;
-    sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32ChannelNumber = (_u32ChannelNumber == 2) ? 2 : 1;
+    /* Stores stream info */
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate    = (_u32SampleRate > 0) ? _u32SampleRate : orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY;
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber = (_u32ChannelNumber == 2) ? 2 : 1;
+
+    /* Stores discard status */
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.bDiscard = (_bWriteToFile != orxFALSE) ? orxFALSE : orxTRUE;
 
     /* Updates format based on the number of desired channels */
     eALFormat = (_u32ChannelNumber == 2) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 
     /* Opens the default capture device */
-    sstSoundSystem.poCaptureDevice = alcCaptureOpenDevice(NULL, (ALCuint)sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate, eALFormat, (ALCsizei)sstSoundSystem.stRecordingPayload.stRecording.stInfo.u32SampleRate);
+    sstSoundSystem.poCaptureDevice = alcCaptureOpenDevice(NULL, (ALCuint)sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate, eALFormat, (ALCsizei)sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate);
 
     /* Success? */
     if(sstSoundSystem.poCaptureDevice != NULL)
@@ -1192,13 +1190,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_StartRecording(const orxSTRING _zNam
         alcCaptureStart(sstSoundSystem.poCaptureDevice);
 
         /* Updates packet's timestamp */
-        sstSoundSystem.stRecordingPayload.stRecording.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+        sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
 
         /* Updates status */
         orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
       }
       else
       {
@@ -1253,19 +1251,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_StopRecording()
       sstSoundSystem.poRecordingFile = orxNULL;
     }
 
-    /* Has added the event handler? */
-    if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_HANDLER))
-    {
-      /* Removes it */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SOUND, orxSoundSystem_iPhone_EventHandler);
-
-      /* Updates status */
-      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_HANDLER);
-    }
-
     /* Reinits the packet */
-    sstSoundSystem.stRecordingPayload.stRecording.stPacket.u32SampleNumber  = 0;
-    sstSoundSystem.stRecordingPayload.stRecording.stPacket.as16SampleList   = sstSoundSystem.as16RecordingBuffer;
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber  = 0;
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.as16SampleList   = sstSoundSystem.as16RecordingBuffer;
 
     /* Stops the capture device */
     alcCaptureStop(sstSoundSystem.poCaptureDevice);

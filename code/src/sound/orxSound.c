@@ -447,7 +447,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
         zMusicName = orxConfig_GetString(orxSOUND_KZ_CONFIG_MUSIC);
 
         /* Loads it */
-        pstResult->pstData = orxSoundSystem_CreateStreamFromFile(zMusicName);
+        pstResult->pstData = orxSoundSystem_CreateStreamFromFile(zMusicName, pstResult->zReference);
 
         /* Stores its ID */
         pstResult->zReference = orxConfig_GetCurrentSection();

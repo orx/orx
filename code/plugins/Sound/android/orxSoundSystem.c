@@ -453,7 +453,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_ANDROID_CreateFromSample(
 }
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_ANDROID_CreateStreamFromFile(
-		const orxSTRING _zFilename) {
+		const orxSTRING _zFilename, const orxSTRING _zReference) {
 	orxSOUNDSYSTEM_SOUND *pstResult;
 
 	/* Checks */

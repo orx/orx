@@ -179,22 +179,22 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
           orxU32 i;
 
           /* For all samples */
-          for(i = 0; i < pstPayload->stRecording.stPacket.u32SampleNumber / 2; i++)
+          for(i = 0; i < pstPayload->stStream.stPacket.u32SampleNumber / 2; i++)
           {
             /* Shorten the packet by half */
-            pstPayload->stRecording.stPacket.as16SampleList[i] = pstPayload->stRecording.stPacket.as16SampleList[i * 2];
+            pstPayload->stStream.stPacket.as16SampleList[i] = pstPayload->stStream.stPacket.as16SampleList[i * 2];
           }
 
           /* Updates sample number */
-          pstPayload->stRecording.stPacket.u32SampleNumber = pstPayload->stRecording.stPacket.u32SampleNumber / 2;
+          pstPayload->stStream.stPacket.u32SampleNumber = pstPayload->stStream.stPacket.u32SampleNumber / 2;
 
-          /* Updates write to file status */
-          pstPayload->stRecording.stPacket.bWriteToFile = orxTRUE;
+          /* Asks for writing it */
+          pstPayload->stStream.stPacket.bDiscard = orxFALSE;
         }
         else
         {
-          /* Updates write to file status */
-          pstPayload->stRecording.stPacket.bWriteToFile = orxFALSE;
+          /* Asks for not writing it */
+          pstPayload->stStream.stPacket.bDiscard = orxTRUE;
         }
       }
 

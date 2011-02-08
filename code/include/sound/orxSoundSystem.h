@@ -120,9 +120,10 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromS
 
 /** Creates a streamed sound from file (can be played directly)
  * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
+ * @param[in]   _zReference                           Reference name used for streaming events (usually the corresponding config ID)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStreamFromFile(const orxSTRING _zFilename);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference);
 
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound
