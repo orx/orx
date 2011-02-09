@@ -33,11 +33,6 @@
 #include "memory/orxMemory.h"
 #include "debug/orxDebug.h"
 
-#ifdef __orxANDROID__
-
-  #define NO_MALLINFO
-
-#endif /* __orxANDROID__ */
 
 #define USE_DL_PREFIX
 #include "malloc.c"

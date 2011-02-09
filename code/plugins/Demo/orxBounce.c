@@ -181,7 +181,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
           /* For all samples */
           for(i = 0; i < pstPayload->stStream.stPacket.u32SampleNumber / 2; i++)
           {
-            /* Shorten the packet by half */
+            /* Shorten the packets by half */
             pstPayload->stStream.stPacket.as16SampleList[i] = pstPayload->stStream.stPacket.as16SampleList[i * 2];
           }
 
