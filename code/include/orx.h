@@ -39,7 +39,7 @@
  */
 
 #ifdef __cplusplus
-  extern "C" {
+extern "C" {
 #endif /* __cplusplus */
 
 #ifndef _orx_H_
@@ -510,7 +510,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 #endif /*_orx_H_*/
 
 #ifdef __cplusplus
-  }
+}
 #endif /* __cplusplus */
 
 /** @} */
