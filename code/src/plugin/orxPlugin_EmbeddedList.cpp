@@ -57,8 +57,6 @@
 /* Android? */
 #elif defined(__orxANDROID__)
 
-#pragma GCC visibility push(hidden)
-
 #include "../plugins/Display/android/orxDisplay.cpp"
 #include "../plugins/Joystick/android/orxJoystick.c"
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
@@ -66,8 +64,6 @@
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/android/orxSoundSystem.c"
-
-#pragma GCC visibility pop
 
 /* Others */
 #else
