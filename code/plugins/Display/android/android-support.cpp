@@ -214,7 +214,7 @@ extern "C" void JAVA_EXPORT_NAME(nativeSetMainAppPath)(JNIEnv* env,
 /*******************************************************************************
  Functions called by ORX into Java
  *******************************************************************************/
-extern "C" orxBOOL ANDROID_createGLContext() {
+orxBOOL ANDROID_createGLContext() {
 	orxLOG( "ORX: ORX_create_context()\n");
 
 	bRenderingEnabled = true;
@@ -226,7 +226,7 @@ extern "C" orxBOOL ANDROID_createGLContext() {
 	return true; //TODO always return true; will change
 }
 
-extern "C" void ANDROID_GL_SwapBuffer() {
+void ANDROID_GL_SwapBuffer() {
 
 	if (!bRenderingEnabled) {
 		return;
@@ -236,7 +236,7 @@ extern "C" void ANDROID_GL_SwapBuffer() {
 	mEnv->CallStaticVoidMethod(mActivityInstance, midFlipBuffers);
 }
 
-extern "C" jobject ANDROID_loadImage(JNIEnv** env,
+jobject ANDROID_loadImage(JNIEnv** env,
 		const orxSTRING filename) {
 	*env = mEnv;
 	static char filenamex[128];
@@ -247,11 +247,11 @@ extern "C" jobject ANDROID_loadImage(JNIEnv** env,
 			filePath);
 }
 
-extern "C" void ANDROID_removeImage() {
+void ANDROID_removeImage() {
 	mEnv->CallStaticVoidMethod(mActivityInstance, midRemoveImage);
 }
 
-extern "C" void ANDROID_saveScreenImage(const orxSTRING filename,
+void ANDROID_saveScreenImage(const orxSTRING filename,
 		orxBOOL bPNG) {
 	jstring filenamex = mEnv->NewStringUTF(filename);
 	mEnv->CallStaticVoidMethod(mActivityInstance, midSaveScreenImage,

@@ -31,13 +31,20 @@
 
 #include "orxPluginAPI.h"
 
-#include "jni.h"
+#include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <jni.h>
+#include <android/log.h>
 #include <android/bitmap.h>
+typedef char GLchar;
 
 #ifndef __ORX_ANDROID_EMULATOR__
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#endif
+
+  #include <GLES2/gl2.h>
+  #include <GLES2/gl2ext.h>
+
+#endif /* __ORX_ANDROID_EMULATOR__ */
+
 
 /** Module flags
  */
@@ -245,9 +252,9 @@ extern void ANDROID_removeImage();
 extern void ANDROID_saveScreenImage(const orxSTRING filename, orxBOOL bPNG);
 //void (*ANDROID_saveScreenImage)(const orxSTRING filename, orxBOOL bPNG);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 void ANDROID_SetShaderSupport(orxBOOL shaderSupport) {
 #ifndef __ORX_ANDROID_EMULATOR__
@@ -331,9 +338,9 @@ void ANDROID_OnAccel(unsigned int accelEventPtr, float x, float y, float z) {
 			accelEventPtr, orxNULL, &stPayload);
 }
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 
 /**
  * the context will be init in java part.

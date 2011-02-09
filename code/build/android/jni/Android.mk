@@ -17,12 +17,12 @@ endif
 LOCAL_MODULE := $(ORX_NAME)
 
 Box2D := $(LOCAL_PATH)/../../../../extern/Box2D_2.1.3
-#Dlmalloc := $(LOCAL_PATH)/../../../../extern/dlmalloc
+Dlmalloc := $(LOCAL_PATH)/../../../../extern/dlmalloc
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/../../../include \
 -I$(Box2D)/include \
 -I$(LOCAL_PATH)/include \
--D__orxANDROID__ #\
+-D__orxANDROID__ \
 -I$(Dlmalloc) 
 #-Wall
 
@@ -30,7 +30,7 @@ LOCAL_CPPFLAGS := -I$(LOCAL_PATH)/../../../include \
 -I$(Box2D)/include \
 -I$(LOCAL_PATH)/include \
 -I$(Dlmalloc) \
--D__orxANDROID__ #\
+-D__orxANDROID__ \
 -I$(Dlmalloc) 
 #-Wall
 
