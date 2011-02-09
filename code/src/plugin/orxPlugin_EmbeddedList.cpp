@@ -59,7 +59,7 @@
 
 #pragma GCC visibility push(hidden)
 
-#include "../plugins/Display/android/orxDisplay.c"
+#include "../plugins/Display/android/orxDisplay.cpp"
 #include "../plugins/Joystick/android/orxJoystick.c"
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Mouse/android/orxMouse.c"
