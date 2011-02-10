@@ -23,6 +23,7 @@ LOCAL_CFLAGS := -I$(LOCAL_PATH)/../../../include \
 -I$(Box2D)/include \
 -I$(LOCAL_PATH)/include \
 -D__orxANDROID__ \
+-DNO_MALLINFO=1 \
 -I$(Dlmalloc) 
 #-Wall
 
@@ -31,6 +32,7 @@ LOCAL_CPPFLAGS := -I$(LOCAL_PATH)/../../../include \
 -I$(LOCAL_PATH)/include \
 -I$(Dlmalloc) \
 -D__orxANDROID__ \
+-DNO_MALLINFO=1 \
 -I$(Dlmalloc) 
 #-Wall
 
@@ -83,13 +85,13 @@ include $(BUILD_STATIC_LIBRARY)
 
 # second lib, which will depend on and include the first one
 #
-include $(CLEAR_VARS)
+#include $(CLEAR_VARS)
+#
+#LOCAL_MODULE    := libtwolib-second
+#LOCAL_SRC_FILES := second.c
 
-LOCAL_MODULE    := libtwolib-second
-LOCAL_SRC_FILES := second.c
+#LOCAL_STATIC_LIBRARIES := $(ORX_NAME)
 
-LOCAL_STATIC_LIBRARIES := $(ORX_NAME)
-
-include $(BUILD_SHARED_LIBRARY)
+#include $(BUILD_SHARED_LIBRARY)
 
 #$(shell cp $(LOCAL_PATH)/../libs/armeabi/liborx.so  $(LOCAL_PATH)/../../../lib/android/)
