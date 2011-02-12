@@ -17,7 +17,7 @@ ORXAPP_SRCS := ../jni/*.c \
 			   
 ORXLIB     := ../../../lib/android
 ORXINCLUDE := ../../../include
-GRAPGICJNI := ../../../lib/android
+GRAPGICJNI := ../../../../extern/jni/lib/android
 BOX2DLIB     := ../../../../extern/Box2D_2.1.3/lib/android
 BOX2DORXINCLUDE := ../../../../extern/Box2D_2.1.3/include
 			   
@@ -29,7 +29,7 @@ ORX_JAVA_PACKAGE_PATH := org_orxproject_lib_AnOrxActivity
 ORX_JAVA_ACTITY_PATH := org/orxproject/lib/AnOrxActivity
 			 
 ORX_LIB_NAME := orx
-BOX2D_LIB_NAME := anbox2d
+BOX2D_LIB_NAME := Box2D
 
 ifeq ($(ORX_DEBUG),true)
 ORX_MODULE_NAME := $(ORX_MODULE_NAME)d

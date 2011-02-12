@@ -79,7 +79,7 @@ ifneq ($(ORX_EM),true)
 LOCAL_LDLIBS := -lGLESv2
 endif
 
-LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lgcc -lm -ljnigraphics -lanbox2d  -L$(Box2D)/lib/android
+LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lgcc -lm -lBox2D  -L$(Box2D)/lib/android
 
 include $(BUILD_STATIC_LIBRARY)
 
