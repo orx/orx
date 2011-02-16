@@ -56,6 +56,7 @@ The engine compiles and is tested for:
 - Win32 (msvs2008, msvs2010 and mingw32 with code::blocks or codelite)
 - MacOS X (ppc/x86 with xcode), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
 - iPhone/iPod Touch/iPad (simulator & device with xcode)
+- Android (NDK build files)
 
 The GP2X target is in debug stage and is not currently actively developed/maintained.
 
@@ -77,21 +78,23 @@ The embedded version will store everything in orx's library, meaning you won't b
 to choose which plugin to use at runtime, but will also be more compact. This will
 also make orx run considerably faster.
 
-From the download page you'll find precompiled binaries for Win32, Linux (x86) and MacOS X (ppc/x86)
-using the dynamic embedded versions only.
+From the download page you'll find precompiled binaries for Win32, Linux (x86), MacOS X (ppc/x86),
+iPhone/iPod Touch/iPad and Android, using the dynamic embedded versions only.
 If you want to use the non-embedded versions (to use with your own plugins)
 or the static ones, you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
-- GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iPhone platforms
-- OpenAL-based (+libsndfile/stb_vorbis) plugins for sound
+- GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iPhone/non-Android platforms
+- OpenAL-based (+libsndfile/stb_vorbis) plugins for sound for all non-Android platforms
 - Box2D-based plugin for physics
 - homemade plugin for 2D rendering
 
 - OpenGL/OpenAL-based plugins for display and sound on iPhone
-- Touch/MultiTouch-based plugin for mouse on iPhone
-- Accelerometer-based plugin for joystick on iPhone
+- OpenGL-based plugin for display on Android
+- NDK-based plugin for sound on Android
+- Touch/MultiTouch-based plugin for mouse on iPhone and Android
+- Accelerometer-based plugin for joystick on iPhone and Android
 
 
 Packages
@@ -107,6 +110,7 @@ Here is a list with a small description for each package.
   . codelite (Win32 and Linux, all versions)
   . msvs2008 & msvs2010 (Win32 Visual Studio, all versions)
   . xcode (2.4+, for MacOS X, non-static versions; 3.1 for iPhone/iPod Touch, static embedded versions)
+  . ndk build files for Android (static embedded versions)
 NB: You'll need orx-extern-1.3.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
 
 - orx-extern-1.3.zip: orx's external dependencies. You will only *NEED* these if you
@@ -126,6 +130,8 @@ Warning for slow connections: this package is ~67MB.
 - orx-dev-msvs2010-1.3.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2010), release and debug.
 
 - orx-full-iphone-1.3.zip  : orx's static embedded precompiled binaries for iPhone/iPod Touch/iPad, release/debug, simulator/device + doc + source + XCode project file.
+
+- orx-full-android-1.3.zip  : orx's static embedded precompiled binaries for Android, release/debug + doc + source + NDK build files.
 
 - orx-tutorial-linux-1.3.tar.bz2: orx's precompiled tutorial for Linux (x86), release only.
 - orx-tutorial-mac-1.3.zip      : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
@@ -195,6 +201,7 @@ for which you're compiling. Here's a quick list of these flags:
 - __orxLINUX__        : orx is being compiled for Linux (x86)
 - __orxMAC__          : orx is being compiled for MacOS X (ppc/x86)
 - __orxIPHONE__       : orx is being compiled for iPhone/iPod Touch/iPad
+- __orxANDROID__      : orx is being compiled for Android
 - __orxWII__          : orx is being compiled for Wii
 - __orxGP2X__         : orx is being compiled for GP2X (gcc-arm)
 - __orxCPP__          : orx is being compiled with a C++ compiler
