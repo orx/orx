@@ -78,15 +78,15 @@ static orxSTATUS orxFASTCALL orxMouse_android_EventHandler(
 	/* Depending on ID */
 	switch (_pstEvent->eID) {
 	/* Touch? */
-	case orxANDROID_EVENT_TOUCH_BEGIN:
-	case orxANDROID_EVENT_TOUCH_MOVE:
-	case orxANDROID_EVENT_TOUCH_END: {
-		orxANDROID_EVENT_PAYLOAD *pstPayload;
+	case orxSYSTEM_EVENT_TOUCH_BEGIN:
+	case orxSYSTEM_EVENT_TOUCH_MOVE:
+	case orxSYSTEM_EVENT_TOUCH_END: {
+		orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 //		orxBOOL bActive = orxTRUE;
 		orxVECTOR vNewPosition;
 
 		/* Gets payload */
-		pstPayload = (orxANDROID_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
 		/* Gets new position */
 		orxVector_Set(&vNewPosition, orx2F(pstPayload->x),
@@ -101,17 +101,17 @@ static orxSTATUS orxFASTCALL orxMouse_android_EventHandler(
 		/* Updates mouse position */
 		orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
 
-		if (_pstEvent->eID == orxANDROID_EVENT_TOUCH_END) {
+		if (_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_END) {
 
 			touchCount--;
 //			debug_printf("end %d", touchCount);
 		}
-		if (_pstEvent->eID == orxANDROID_EVENT_TOUCH_BEGIN) {
+		if (_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_BEGIN) {
 
 			touchCount++;
 //			debug_printf("begin %d", touchCount);
 		}
-		//		if (_pstEvent->eID == orxANDROID_EVENT_TOUCH_END) {
+		//		if (_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_END) {
 		//			count--;
 		//		}
 
@@ -159,7 +159,7 @@ orxSTATUS orxFASTCALL orxMouse_android_Init() {
 		orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
 		/* Adds our mouse event handlers */
-		if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_ANDROID,
+		if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM,
 				orxMouse_android_EventHandler)) != orxSTATUS_FAILURE) {
 			/* Updates status */
 			sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
@@ -187,7 +187,7 @@ void orxFASTCALL orxMouse_android_Exit() {
 	/* Was initialized? */
 	if (sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) {
 		/* Removes event handler */
-		orxEvent_RemoveHandler(orxEVENT_TYPE_ANDROID,
+		orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM,
 				orxMouse_android_EventHandler);
 
 		/* Cleans static controller */

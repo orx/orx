@@ -59,11 +59,72 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_BACKGROUND,
   orxSYSTEM_EVENT_FOREGROUND,
 
+  orxSYSTEM_EVENT_GAME_LOOP_START,
+  orxSYSTEM_EVENT_GAME_LOOP_STOP,
+
+  orxSYSTEM_EVENT_TOUCH_BEGIN,
+  orxSYSTEM_EVENT_TOUCH_MOVE,
+  orxSYSTEM_EVENT_TOUCH_END,
+  orxSYSTEM_EVENT_ACCELERATE,
+  orxSYSTEM_EVENT_MOTION_SHAKE,
+
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
 
 } orxSYSTEM_EVENT;
+
+/** System event payload
+ */
+typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
+{
+  orxU32 u32FrameCounter;
+
+#if defined(__orxIPHONE__)
+  union
+  {
+    /* UI event */
+    struct
+    {
+      UIEvent *poUIEvent;
+
+      union
+      {
+        /* Touch event */
+        NSSet          *poTouchList;
+
+        /* Motion event */
+        UIEventSubtype  eMotion;
+      };
+    };
+
+    /* Accelerate event */
+    struct
+    {
+      UIAccelerometer *poAccelerometer;
+      UIAcceleration  *poAcceleration;
+    };
+  };
+#elif defined(__orxANDROID__)
+  union
+  {
+    /* UI event */
+    struct
+    {
+      orxU32    u32PointID;
+      orxFLOAT  fX, fY, fPressure;
+    };
+
+    /* Accelerate event */
+    struct
+    {
+      void     *pAccelerometer;
+      orxFLOAT  fX, fY, fZ;
+    };
+  };
+#endif
+
+} orxSYSTEM_EVENT_PAYLOAD;
 
 
 /** System module setup

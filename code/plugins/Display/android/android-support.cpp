@@ -69,7 +69,7 @@ extern void ANDROID_SetShaderSupport(orxBOOL shaderSupport);
 extern void ANDROID_OnTouch(unsigned char action, unsigned int pointId, float x,
     float y, float p);
 
-extern void ANDROID_OnAccel(unsigned int accelEventPtr, float x, float y, float z);
+extern void ANDROID_OnAccel(void *accelEventPtr, float x, float y, float z);
 
 //If we're not the active app, don't try to render
 bool bRenderingEnabled = false;
@@ -196,8 +196,8 @@ extern "C" void JAVA_EXPORT_NAME(onNativeAccel)(JNIEnv* env, jobject obj,
 	//	fLastAccelerometer[0] = x;
 	//	fLastAccelerometer[1] = y;
 	//	fLastAccelerometer[2] = z;
-	jint objPtr = (jint) obj;
-	ANDROID_OnAccel((unsigned int) objPtr, x, y, z);
+	void *objPtr = (void *) obj;
+	ANDROID_OnAccel(objPtr, x, y, z);
 }
 
 extern "C" void JAVA_EXPORT_NAME(nativeSetAssetManager)(JNIEnv* env,
@@ -214,8 +214,47 @@ extern "C" void JAVA_EXPORT_NAME(nativeSetMainAppPath)(JNIEnv* env,
 /*******************************************************************************
  Functions called by ORX into Java
  *******************************************************************************/
+static orxSTATUS orxFASTCALL orxAndroid_DefaultEventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Frame start */
+    case orxSYSTEM_EVENT_GAME_LOOPSTART:
+    {
+      mEnv->CallStaticIntMethod(mActivityInstance, midStartLoop);
+
+      break;
+    }
+
+    /* Frame stop */
+    case orxSYSTEM_EVENT_GAME_LOOPSTART:
+    {
+      mEnv->CallStaticIntMethod(mActivityInstance, midEndLoop);
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 orxBOOL ANDROID_createGLContext() {
 	orxLOG( "ORX: ORX_create_context()\n");
+
+  /* Registers default event handler */
+  orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxAndroid_DefaultEventHandler);
 
 	bRenderingEnabled = true;
 
@@ -323,14 +362,3 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 
 	return JNI_VERSION_1_4;
 }
-
-extern "C" orxSTATUS ANDROID_startLoop() {
-	mEnv->CallStaticIntMethod(mActivityInstance, midStartLoop);
-	return orxSTATUS_SUCCESS;
-}
-
-extern "C" orxSTATUS ANDROID_endLoop() {
-	mEnv->CallStaticIntMethod(mActivityInstance, midEndLoop);
-	return orxSTATUS_SUCCESS;
-}
-

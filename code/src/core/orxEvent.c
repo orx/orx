@@ -360,7 +360,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
         pstInfo != orxNULL;
         pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
     {
-      /* Calls its handler */
+      /* Calls it */
       if((pstInfo->pfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
       {
         /* Updates result */

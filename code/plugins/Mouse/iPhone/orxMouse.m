@@ -80,19 +80,19 @@ static orxSTATUS orxFASTCALL orxMouse_iPhone_EventHandler(const orxEVENT *_pstEv
   switch(_pstEvent->eID)
   {
     /* Touch? */
-    case orxIPHONE_EVENT_TOUCH_BEGIN:
-    case orxIPHONE_EVENT_TOUCH_MOVE:
-    case orxIPHONE_EVENT_TOUCH_END:
-    case orxIPHONE_EVENT_TOUCH_CANCEL:
+    case orxSYSTEM_EVENT_TOUCH_BEGIN:
+    case orxSYSTEM_EVENT_TOUCH_MOVE:
+    case orxSYSTEM_EVENT_TOUCH_END:
+    case orxSYSTEM_EVENT_TOUCH_CANCEL:
     {
       UITouch                  *poTouch;
-      orxIPHONE_EVENT_PAYLOAD  *pstPayload;
+      orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
       orxBOOL                   bActive = orxFALSE;
       orxVECTOR                 vNewPosition;
       CGPoint                   vViewPosition;
 
       /* Gets payload */
-      pstPayload = (orxIPHONE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Gets first touch */
       poTouch = [[pstPayload->poUIEvent allTouches] anyObject];
@@ -163,7 +163,7 @@ orxSTATUS orxFASTCALL orxMouse_iPhone_Init()
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_IPHONE, orxMouse_iPhone_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMouse_iPhone_EventHandler)) != orxSTATUS_FAILURE)
     {
       /* Updates status */
       sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
@@ -193,7 +193,7 @@ void orxFASTCALL orxMouse_iPhone_Exit()
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_IPHONE, orxMouse_iPhone_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxMouse_iPhone_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));

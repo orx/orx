@@ -73,11 +73,11 @@ static orxSTATUS orxFASTCALL orxJoystick_android_EventHandler(
 	/* Depending on ID */
 	switch (_pstEvent->eID) {
 	/* Accelerate? */
-	case orxANDROID_EVENT_ACCELERATE: {
-		orxANDROID_EVENT_PAYLOAD *pstPayload;
+	case orxSYSTEM_EVENT_ACCELERATE: {
+		orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
 		/* Gets payload */
-		pstPayload = (orxANDROID_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
 		/* Gets new position */
 		orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->accelX),
@@ -104,7 +104,7 @@ orxSTATUS orxFASTCALL orxJoystick_android_Init() {
 		orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
 		/* Adds our joystick event handlers */
-		if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_ANDROID,
+		if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM,
 				orxJoystick_android_EventHandler)) != orxSTATUS_FAILURE) {
 			/* Updates status */
 			sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
@@ -119,7 +119,7 @@ void orxFASTCALL orxJoystick_android_Exit() {
 	/* Was initialized? */
 	if (sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) {
 		/* Removes event handler */
-		orxEvent_RemoveHandler(orxEVENT_TYPE_ANDROID,
+		orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM,
 				orxJoystick_android_EventHandler);
 
 		/* Cleans static controller */

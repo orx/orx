@@ -80,12 +80,12 @@ static orxSTATUS orxFASTCALL orxJoystick_iPhone_EventHandler(const orxEVENT *_ps
   switch(_pstEvent->eID)
   {
     /* Accelerate? */
-    case orxIPHONE_EVENT_ACCELERATE:
+    case orxSYSTEM_EVENT_ACCELERATE:
     {
-      orxIPHONE_EVENT_PAYLOAD *pstPayload;
+      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
       /* Gets payload */
-      pstPayload = (orxIPHONE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Gets new position */
       orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->poAcceleration.x), orx2F(pstPayload->poAcceleration.y), orx2F(pstPayload->poAcceleration.z));
@@ -114,7 +114,7 @@ orxSTATUS orxFASTCALL orxJoystick_iPhone_Init()
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
     /* Adds our joystick event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_IPHONE, orxJoystick_iPhone_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iPhone_EventHandler)) != orxSTATUS_FAILURE)
     {
       /* Updates status */
       sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
@@ -131,7 +131,7 @@ void orxFASTCALL orxJoystick_iPhone_Exit()
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_IPHONE, orxJoystick_iPhone_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iPhone_EventHandler);
     
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));

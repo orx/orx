@@ -516,15 +516,15 @@ static orxView *spoInstance;
 
 - (void) touchesBegan:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxIPHONE_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
   /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
   stPayload.poUIEvent   = _poEvent;
   stPayload.poTouchList = _poTouchList;
 
   /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_BEGIN, self, orxNULL, &stPayload);
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, self, orxNULL, &stPayload);
 
   /* Done! */
   return;
@@ -532,15 +532,15 @@ static orxView *spoInstance;
 
 - (void) touchesMoved:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxIPHONE_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
   /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
   stPayload.poUIEvent   = _poEvent;
   stPayload.poTouchList = _poTouchList;
 
   /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_MOVE, self, orxNULL, &stPayload);
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, self, orxNULL, &stPayload);
 
   /* Done! */
   return;
@@ -548,15 +548,15 @@ static orxView *spoInstance;
 
 - (void) touchesEnded:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxIPHONE_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
   /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
   stPayload.poUIEvent   = _poEvent;
   stPayload.poTouchList = _poTouchList;
 
   /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_END, self, orxNULL, &stPayload);
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, self, orxNULL, &stPayload);
 
   /* Done! */
   return;
@@ -564,15 +564,15 @@ static orxView *spoInstance;
 
 - (void) touchesCancelled:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxIPHONE_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
   /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
   stPayload.poUIEvent   = _poEvent;
   stPayload.poTouchList = _poTouchList;
 
-  /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_TOUCH_CANCEL, self, orxNULL, &stPayload);
+  /* Sends end event */
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, self, orxNULL, &stPayload);
 
   /* Done! */
   return;
@@ -585,15 +585,15 @@ static orxView *spoInstance;
   /* Shake? */
   if(_eMotion == UIEventSubtypeMotionShake)
   {
-    orxIPHONE_EVENT_PAYLOAD stPayload;
+    orxSYSTEM_EVENT_PAYLOAD stPayload;
 
     /* Inits event's payload */
-    orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
     stPayload.poUIEvent = _poEvent;
     stPayload.eMotion   = _eMotion;
 
     /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_MOTION_SHAKE, self, orxNULL, &stPayload);
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOTION_SHAKE, self, orxNULL, &stPayload);
   }
 
   /* Done! */

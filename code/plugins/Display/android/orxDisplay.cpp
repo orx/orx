@@ -93,9 +93,9 @@ do                                                                      \
 
 #endif /* __orxDEBUG__ */
 
-#define orxANDROID_EVENT_TOUCHACTION_BEGIN 0
-#define orxANDROID_EVENT_TOUCHACTION_MOVE 1
-#define orxANDROID_EVENT_TOUCHACTION_END 2
+#define orxSYSTEM_EVENT_TOUCHACTION_BEGIN 0
+#define orxSYSTEM_EVENT_TOUCHACTION_MOVE 1
+#define orxSYSTEM_EVENT_TOUCHACTION_END 2
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -279,18 +279,18 @@ void ANDROID_OnResize(int iScreenWidth, int iScreenHeight) {
 void ANDROID_OnTouch(unsigned char action, unsigned int pointId, float x,
 		float y, float p) {
 
-	orxANDROID_EVENT_PAYLOAD stPayload;
+	orxSYSTEM_EVENT_PAYLOAD stPayload;
 
-	orxANDROID_EVENT android_event;
+	orxSYSTEM_EVENT android_event;
 	switch (action) {
-	case orxANDROID_EVENT_TOUCHACTION_BEGIN:
-		android_event = orxANDROID_EVENT_TOUCH_BEGIN;
+	case orxSYSTEM_EVENT_TOUCHACTION_BEGIN:
+		android_event = orxSYSTEM_EVENT_TOUCH_BEGIN;
 		break;
-	case orxANDROID_EVENT_TOUCHACTION_MOVE:
-		android_event = orxANDROID_EVENT_TOUCH_MOVE;
+	case orxSYSTEM_EVENT_TOUCHACTION_MOVE:
+		android_event = orxSYSTEM_EVENT_TOUCH_MOVE;
 		break;
-	case orxANDROID_EVENT_TOUCHACTION_END:
-		android_event = orxANDROID_EVENT_TOUCH_END;
+	case orxSYSTEM_EVENT_TOUCHACTION_END:
+		android_event = orxSYSTEM_EVENT_TOUCH_END;
 		break;
 	default:
 		//error.....
@@ -298,14 +298,14 @@ void ANDROID_OnTouch(unsigned char action, unsigned int pointId, float x,
 	}
 
 	/* Inits event's payload */
-	orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
-	stPayload.pointId = pointId;
-	stPayload.x = x;
-	stPayload.y = y;
-	stPayload.p = p;
+	orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+	stPayload.u32PointID = (orxU32)pointId;
+	stPayload.fX = (orxFLOAT)x;
+	stPayload.fY = (orxFLOAT)y;
+	stPayload.fPressure = (orxFLOAT)p;
 
 	/* Sends it */
-	orxEVENT_SEND(orxEVENT_TYPE_ANDROID, android_event, orxNULL, orxNULL,
+	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, android_event, orxNULL, orxNULL,
 			&stPayload);
 
 	/* Done! */
@@ -315,23 +315,23 @@ void ANDROID_OnTouch(unsigned char action, unsigned int pointId, float x,
 /**
  * handle the event of accelermeter
  */
-void ANDROID_OnAccel(unsigned int accelEventPtr, float x, float y, float z) {
+void ANDROID_OnAccel(void *accelEventPtr, float x, float y, float z) {
 	if ((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
 			!= orxDISPLAY_KU32_STATIC_FLAG_READY) {
 		return;
 	}
 
-	orxANDROID_EVENT_PAYLOAD stPayload;
+	orxSYSTEM_EVENT_PAYLOAD stPayload;
 
 	/* Inits event's payload */
-	orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
-	stPayload.accelEventPtr = accelEventPtr;
-	stPayload.accelX = x;
-	stPayload.accelY = y;
-	stPayload.accelZ = z;
+	orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+	stPayload.pAccelerometer = accelEventPtr;
+	stPayload.fX = (orxFLOAT)x;
+	stPayload.fY = (orxFLOAT)y;
+	stPayload.fZ = (orxFLOAT)z;
 
 	/* Sends it */
-	orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_ACCELERATE,
+	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE,
 			accelEventPtr, orxNULL, &stPayload);
 }
 

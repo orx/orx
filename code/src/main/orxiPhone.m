@@ -147,21 +147,19 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 
 - (void) accelerometer:(UIAccelerometer *)_poAccelerometer didAccelerate:(UIAcceleration *)_poAcceleration
 {
-  orxIPHONE_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
   
   /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxIPHONE_EVENT_PAYLOAD));
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
   stPayload.poAccelerometer = _poAccelerometer;
   stPayload.poAcceleration  = _poAcceleration;
   
   /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_IPHONE, orxIPHONE_EVENT_ACCELERATE, self, orxNULL, &stPayload);
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, self, orxNULL, &stPayload);
 }
 
 - (void) MainLoop
 {
-  orxSTATUS           eClockStatus, eMainStatus;
-  orxBOOL             bStop;
   NSAutoreleasePool  *poMainPool;
 
   /* Allocates main memory pool */
@@ -173,6 +171,10 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
     /* Displays help */
     if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
     {
+      orxSTATUS               eClockStatus, eMainStatus;
+      orxBOOL                 bStop;
+      orxEVENT_SYSTEM_PAYLOAD stPayload;
+
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
@@ -213,11 +215,20 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
         /* Allocates memory pool */
         poPool = [[NSAutoreleasePool alloc] init];
 
+        /* Sends frame start event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+
         /* Runs the engine */
         eMainStatus = spfnRun();
 
         /* Updates clock system */
         eClockStatus = orxClock_Update();
+
+        /* Sends frame stop event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
+
+        /* Updates frame counter */
+        stPayload.u32FrameCounter++;
 
         /* Releases memory pool */
         [poPool release];
