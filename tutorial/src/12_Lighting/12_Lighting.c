@@ -47,11 +47,18 @@
  *
  * The whole object lighting is done in the fragment shader defined in 12_Lighting.ini.
  *
- * The performance of this tutorial can be greatly improved, for example, by calculating
- * the normal maps at load time in separate textures and transmitting them to the shader,
- * or by having tighter light control/restriction.
+ * For performance sake, the normap maps are computed for each object's texture
+ * the first time the object is loaded.
+ * This computation is made on the CPU but it could have been done on the GPU using viewports
+ * that would have textures as render target, instead of the screen. Then all the objects would be
+ * rendered separately once with a shader which would only compute the normal maps. This technique
+ * would improve "loading/init" performances but requires more code to be written.
+ * A more efficient way would be to batch the normal map creation: loading all the texture at once
+ * and creating the associated normal maps in one pass. We chose to do it on objects creations instead
+ * so as to keep this tutorial modular and allow new objects to be added in config by users
+ * without any additional knowledge on how the textures will be processed at runtime by the code.
  *
- * Please note that the lighting shader is a basic one, far from any realistic lighting,
+ * Please note that the lighting shader is a very basic one, far from any realistic lighting,
  * and has been kept simple so as to provide a good base for newcomers.
  *
  */
@@ -77,11 +84,189 @@ typedef struct __Light_t
 
 /** Local storage
  */
-static  orxVIEWPORT  *pstViewport   = orxNULL;
-static  orxOBJECT    *pstScene      = orxNULL;
-static  orxU32        u32LightIndex = 0;
+static  orxHASHTABLE *pstTextureTable = orxNULL;
+static  orxVIEWPORT  *pstViewport     = orxNULL;
+static  orxOBJECT    *pstScene        = orxNULL;
+static  orxU32        u32LightIndex   = 0;
 static  Light         astLightList[LIGHT_NUMBER];
 
+
+/** Clears all lights
+ */
+void ClearLights()
+{
+  orxU32 i;
+
+  /* Pushes lighting config section */
+  orxConfig_PushSection("Lighting");
+
+  /* For all lights */
+  for(i = 0; i < LIGHT_NUMBER; i++)
+  {
+    /* Inits it */
+    orxConfig_GetVector("Color", &(astLightList[i].stColor.vRGB));
+    astLightList[i].stColor.fAlpha = orxFLOAT_0;
+    orxVector_Copy(&(astLightList[i].vPosition), &orxVECTOR_0);
+    astLightList[i].fRadius = orxConfig_GetFloat("Radius");
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+}
+
+/** Compute a grey image
+ */
+void ComputeGreyImage(orxU8 *_pu8Buffer, orxU32 _u32BufferSize)
+{
+  orxU32 i;
+
+  /* For all pixels */
+  for(i = 0; i < _u32BufferSize; i += sizeof(orxRGBA))
+  {
+    orxCOLOR        stColor;
+    orxRGBA         u32Pixel;
+    const orxVECTOR vBW = {orx2F(0.299f), orx2F(0.587f), orx2F(0.114f)};
+
+    /* Gets pixel's value */
+    u32Pixel = orx2RGBA(_pu8Buffer[i], _pu8Buffer[i + 1], _pu8Buffer[i + 2], _pu8Buffer[i + 3]);
+
+    /* Gets normalized color */
+    orxColor_SetRGBA(&stColor, u32Pixel);
+
+    /* Gets its grey value */
+    orxVector_SetAll(&stColor.vRGB, orxVector_Dot(&stColor.vRGB, &vBW));
+
+    /* Updates pixel value */
+    u32Pixel = orxColor_ToRGBA(&stColor);
+
+    /* Stores it */
+    _pu8Buffer[i]     = orxRGBA_R(u32Pixel);
+    _pu8Buffer[i + 1] = orxRGBA_G(u32Pixel);
+    _pu8Buffer[i + 2] = orxRGBA_B(u32Pixel);
+    _pu8Buffer[i + 3] = orxRGBA_A(u32Pixel);
+  }
+}
+
+/** Compute a normal map
+ */
+void ComputeNormalMap(const orxU8 *_pu8SrcBuffer, orxU8 *_pu8DstBuffer, orxS32 _s32Width, orxS32 _s32Height)
+{
+  orxS32 i, j;
+
+  /* For all lines */
+  for(i = 0; i < _s32Height; i++)
+  {
+    /* For all columns */
+    for(j = 0; j < _s32Width; j++)
+    {
+      orxS32          s32Index, s32Left, s32Right, s32Up, s32Down;
+      orxFLOAT        fLeft, fRight, fUp, fDown;
+      orxCOLOR        stNormal;
+      orxU32          u32Pixel;
+      const orxVECTOR vHalf = {orx2F(0.5f), orx2F(0.5f), orx2F(0.5f)};
+
+      /* Gets pixel's index */
+      s32Index = (i * _s32Width + j) * sizeof(orxRGBA);
+
+      /* Gets neighbour indices */
+      s32Left   = (i * _s32Width + orxMAX(j - 1, 0)) * sizeof(orxRGBA);
+      s32Right  = (i * _s32Width + orxMIN(j + 1, _s32Width - 1)) * sizeof(orxRGBA);
+      s32Up     = (orxMAX(i - 1, 0) * _s32Width + j) * sizeof(orxRGBA);
+      s32Down   = (orxMIN(i + 1, _s32Height - 1) * _s32Width + j) * sizeof(orxRGBA);
+
+      /* Gets their normalized values */
+      fLeft   = _pu8SrcBuffer[s32Left] * orxCOLOR_NORMALIZER;
+      fRight  = _pu8SrcBuffer[s32Right] * orxCOLOR_NORMALIZER;
+      fUp     = _pu8SrcBuffer[s32Up] * orxCOLOR_NORMALIZER;
+      fDown   = _pu8SrcBuffer[s32Down] * orxCOLOR_NORMALIZER;
+
+      /* Gets normal as color */
+      orxVector_Add(&stNormal.vRGB, orxVector_Mulf(&stNormal.vRGB, orxVector_Set(&stNormal.vRGB, (fLeft - fRight), fDown - fUp, orx2F(0.5f)), orx2F(0.5f)), &vHalf);
+      stNormal.fAlpha = orxFLOAT_1;
+
+      /* Gets pixel value */
+      u32Pixel = orxColor_ToRGBA(&stNormal);
+
+      /* Stores it */
+      _pu8DstBuffer[s32Index]     = orxRGBA_R(u32Pixel);
+      _pu8DstBuffer[s32Index + 1] = orxRGBA_G(u32Pixel);
+      _pu8DstBuffer[s32Index + 2] = orxRGBA_B(u32Pixel);
+      _pu8DstBuffer[s32Index + 3] = orxRGBA_A(u32Pixel);
+    }
+  }
+}
+
+/** Create the normal map of a texture
+ */
+void CreateNormalMap(const orxTEXTURE *_pstTexture)
+{
+  const orxSTRING zName;
+
+  /* Gets its name */
+  zName = orxTexture_GetName(_pstTexture);
+
+  /* Valid? */
+  if(zName && zName != orxSTRING_EMPTY)
+  {
+    orxU32 u32CRC;
+
+    /* Gets its CRC */
+    u32CRC = orxString_ToCRC(zName);
+
+    /* Does not already exist? */
+    if(!orxHashTable_Get(pstTextureTable, u32CRC))
+    {
+      orxFLOAT    fWidth, fHeight;
+      orxU32      u32BufferSize;
+      orxBITMAP  *pstBitmap, *pstNMBitmap;
+      orxTEXTURE *pstNMTexture;
+      orxU8      *pu8SrcBuffer, *pu8DstBuffer;
+      orxCHAR     acNMName[256];
+
+      /* Gets its bitmap */
+      pstBitmap = orxTexture_GetBitmap(_pstTexture);
+
+      /* Gets it size */
+      orxDisplay_GetBitmapSize(pstBitmap, &fWidth, &fHeight);
+      u32BufferSize = (orxU32)(fWidth * fHeight) * sizeof(orxRGBA);
+
+      /* Allocates buffers */
+      pu8SrcBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+      pu8DstBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+
+      /* Gets its content */
+      orxDisplay_GetBitmapData(pstBitmap, pu8SrcBuffer, u32BufferSize);
+
+      /* Gets it in grey shades */
+      ComputeGreyImage(pu8SrcBuffer, u32BufferSize);
+
+      /* Computes normal map */
+      ComputeNormalMap(pu8SrcBuffer, pu8DstBuffer, (orxS32)fWidth, (orxS32)fHeight);
+
+      /* Creates a new bitmap */
+      pstNMBitmap = orxDisplay_CreateBitmap((orxU32)fWidth, (orxU32)fHeight);
+
+      /* Sets its content */
+      orxDisplay_SetBitmapData(pstNMBitmap, pu8DstBuffer, u32BufferSize);
+
+      /* Deletes buffers */
+      orxMemory_Free(pu8SrcBuffer);
+      orxMemory_Free(pu8DstBuffer);
+
+      /* Creates new name with prefix NM_ */
+      orxString_NPrint(acNMName, 256, "NM_%s", zName);
+
+      /* Creates a texture for the normal map */
+      pstNMTexture = orxTexture_Create();
+
+      /* Sets its bitmap */
+      orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName);
+
+      /* Add it to the table using the CRC of the original as key */
+      orxHashTable_Add(pstTextureTable, u32CRC, pstNMTexture);
+    }
+  }
+}
 
 /* Event handler
  */
@@ -142,34 +327,32 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         /* Updates light radius */
         pstPayload->fValue = astLightList[pstPayload->s32ParamIndex].fRadius;
       }
+      /* Normal map texture? */
+      else if(!orxString_Compare(pstPayload->zParamName, "NormalMap"))
+      {
+        /* Gets associated normal map */
+        pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_ToCRC(orxTexture_GetName(pstPayload->pstValue)));
+      }
+    }
+  }
+  /* Created object? */
+  else if((_pstEvent->eType == orxEVENT_TYPE_OBJECT) && (_pstEvent->eID == orxOBJECT_EVENT_CREATE))
+  {
+    orxGRAPHIC *pstGraphic;
+
+    /* Gets its graphic object */
+    pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC);
+
+    /* Valid? */
+    if(pstGraphic)
+    {
+      /* Creates associated normal map */
+      CreateNormalMap(orxTEXTURE(orxGraphic_GetData(pstGraphic)));
     }
   }
 
   /* Done! */
   return eResult;
-}
-
-/** Clears all lights
- */
-void ClearLights()
-{
-  orxU32 i;
-
-  /* Pushes lighting config section */
-  orxConfig_PushSection("Lighting");
-
-  /* For all lights */
-  for(i = 0; i < LIGHT_NUMBER; i++)
-  {
-    /* Inits it */
-    orxConfig_GetVector("Color", &(astLightList[i].stColor.vRGB));
-    astLightList[i].stColor.fAlpha = orxFLOAT_0;
-    orxVector_Copy(&(astLightList[i].vPosition), &orxVECTOR_0);
-    astLightList[i].fRadius = orxConfig_GetFloat("Radius");
-  }
-
-  /* Pops config section */
-  orxConfig_PopSection();
 }
 
 /** Init function
@@ -183,7 +366,7 @@ orxSTATUS orxFASTCALL Init()
   const orxSTRING zInputIncreaseRadius;
   const orxSTRING zInputDecreaseRadius;
   const orxSTRING zInputToggleAlpha;
-  orxSTATUS       eResult;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Gets binding names */
   orxInput_GetBinding("CreateLight", 0, &eType, &eID);
@@ -209,14 +392,18 @@ orxSTATUS orxFASTCALL Init()
          "\n- '%s' will toggle alpha on light (ie. make holes in lit objects)",
          zInputCreateLight, zInputClearLights, zInputIncreaseRadius, zInputDecreaseRadius, zInputToggleAlpha);
 
+  /* Adds event handler */
+  orxEvent_AddHandler(orxEVENT_TYPE_SHADER, EventHandler);
+  orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, EventHandler);
+
+  /* Creates texture table */
+  pstTextureTable = orxHashTable_Create(16, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
   /* Creates viewport */
   pstViewport = orxViewport_CreateFromConfig("Viewport");
 
   /* Creates scene */
   pstScene = orxObject_CreateFromConfig("Scene");
-
-  /* Adds event handler */
-  eResult = orxEvent_AddHandler(orxEVENT_TYPE_SHADER, EventHandler);
 
   /* Clear all lights */
   ClearLights();
@@ -231,17 +418,17 @@ orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Gets mouse position */
+  /* Stores mouse position as current light position */
   orxMouse_GetPosition(&(astLightList[u32LightIndex].vPosition));
 
   /* Creates a new light? */
-  if((orxInput_IsActive("CreateLight") != orxFALSE) && (orxInput_HasNewStatus("CreateLight") != orxFALSE))
+  if(orxInput_IsActive("CreateLight") && orxInput_HasNewStatus("CreateLight"))
   {
     /* Updates light index */
     u32LightIndex = orxMIN(LIGHT_NUMBER - 1, u32LightIndex + 1);
   }
   /* Clears all lights? */
-  else if((orxInput_IsActive("ClearLights") != orxFALSE) && (orxInput_HasNewStatus("ClearLights") != orxFALSE))
+  else if(orxInput_IsActive("ClearLights") && orxInput_HasNewStatus("ClearLights"))
   {
     /* Clears all lights */
     ClearLights();
@@ -250,17 +437,17 @@ orxSTATUS orxFASTCALL Run()
     u32LightIndex = 0;
   }
   /* Increases radius? */
-  else if((orxInput_IsActive("IncreaseRadius") != orxFALSE) && (orxInput_HasNewStatus("IncreaseRadius") != orxFALSE))
+  else if(orxInput_IsActive("IncreaseRadius") && orxInput_HasNewStatus("IncreaseRadius"))
   {
     astLightList[u32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
   }
   /* Decreases radius? */
-  else if((orxInput_IsActive("DecreaseRadius") != orxFALSE) && (orxInput_HasNewStatus("DecreaseRadius") != orxFALSE))
+  else if(orxInput_IsActive("DecreaseRadius") && orxInput_HasNewStatus("DecreaseRadius"))
   {
     astLightList[u32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[u32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
   }
   /* Toggle alpha? */
-  else if((orxInput_IsActive("ToggleAlpha") != orxFALSE) && (orxInput_HasNewStatus("ToggleAlpha") != orxFALSE))
+  else if(orxInput_IsActive("ToggleAlpha") && orxInput_HasNewStatus("ToggleAlpha"))
   {
     astLightList[u32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[u32LightIndex].stColor.fAlpha;
   }
@@ -279,6 +466,14 @@ orxSTATUS orxFASTCALL Run()
  */
 void orxFASTCALL Exit()
 {
+  /* Deletes scene */
+  orxObject_Delete(pstScene);
+
+  /* Deletes viewport */
+  orxViewport_Delete(pstViewport);
+
+  /* Deletes texture table */
+  orxHashTable_Delete(pstTextureTable);
 }
 
 /** Main function

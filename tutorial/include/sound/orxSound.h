@@ -75,6 +75,7 @@ typedef enum __orxSOUND_EVENT_t
 {
   orxSOUND_EVENT_START = 0,                   /**< Event sent when a sound starts */
   orxSOUND_EVENT_STOP,                        /**< Event sent when a sound stops */
+  orxSOUND_EVENT_PACKET,                      /**< Event sent when a sound packet is streamed */
   orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
   orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
   orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */
@@ -85,25 +86,25 @@ typedef enum __orxSOUND_EVENT_t
 
 } orxSOUND_EVENT;
 
-/** Sound recording info
+/** Sound stream info
  */
-typedef struct __orxSOUND_RECORDING_INFO_t
+typedef struct __orxSOUND_STREAM_INFO_t
 {
   orxU32    u32SampleRate;                    /**< The sample rate, e.g. 44100 Hertz : 4 */
   orxU32    u32ChannelNumber;                 /**< Number of channels, either mono (1) or stereo (2) : 8 */
 
-} orxSOUND_RECORDING_INFO;
+} orxSOUND_STREAM_INFO;
 
 /** Sound recording packet
  */
-typedef struct __orxSOUND_RECORDING_PACKET_t
+typedef struct __orxSOUND_STREAM_PACKET_t
 {
-  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 8 */
-  orxS16   *as16SampleList;                   /**< List of samples for this packet : 12 */
-  orxBOOL   bWriteToFile;                     /**< Write recording to sound file? : 4 */
+  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 4 */
+  orxS16   *as16SampleList;                   /**< List of samples for this packet : 8 */
+  orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
   orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
 
-} orxSOUND_RECORDING_PACKET;
+} orxSOUND_STREAM_PACKET;
 
 /** Sound event payload
  */
@@ -117,10 +118,10 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
 
     struct
     {
-      orxSOUND_RECORDING_INFO   stInfo;       /**< Sound record info : 16 */
-      orxSOUND_RECORDING_PACKET stPacket;     /**< Sound record packet : 24 */
-    } stRecording;
-  };                                          /**< Recording : 24 */
+      orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 16 */
+      orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 24 */
+    } stStream;
+  };                                          /**< Stream : 24 */
 
 } orxSOUND_EVENT_PAYLOAD;
 
