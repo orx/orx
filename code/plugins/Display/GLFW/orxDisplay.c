@@ -2056,7 +2056,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Deletes its program */
         glDeleteObjectARB(pstShader->hProgram);
         glASSERT();
-        pstShader->hProgram = (GLhandleARB)orxHANDLE_UNDEFINED;
+        pstShader->hProgram = (GLhandleARB)orxU32_UNDEFINED;
       }
     }
 
@@ -2650,7 +2650,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         orxString_NPrint(pc, s32Free, "%s\n", _zCode);
 
         /* Inits shader */
-        pstShader->hProgram               = (GLhandleARB)orxHANDLE_UNDEFINED;
+        pstShader->hProgram               = (GLhandleARB)orxU32_UNDEFINED;
         pstShader->iTextureCounter        = 0;
         pstShader->bActive                = orxFALSE;
         pstShader->bInitialized           = orxFALSE;
