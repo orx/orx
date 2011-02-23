@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include <orx.h>
 #include "string.h"
+#include "orx_apk_file.h"
 
 static jobject assetManager;
 
@@ -56,6 +57,8 @@ jmethodID midEndLoop;
 
 char basefolder[32];
 char appName[32];
+
+
 
 extern "C" int orxMain(int argc, char *argv[]);
 //extern "C" int Android_OnKeyDown(int keycode);
@@ -225,7 +228,7 @@ static orxSTATUS orxFASTCALL orxAndroid_DefaultEventHandler(const orxEVENT *_pst
   switch(_pstEvent->eID)
   {
     /* Frame start */
-    case orxSYSTEM_EVENT_GAME_LOOPSTART:
+    case orxSYSTEM_EVENT_GAME_LOOP_START:
     {
       mEnv->CallStaticIntMethod(mActivityInstance, midStartLoop);
 
@@ -233,7 +236,7 @@ static orxSTATUS orxFASTCALL orxAndroid_DefaultEventHandler(const orxEVENT *_pst
     }
 
     /* Frame stop */
-    case orxSYSTEM_EVENT_GAME_LOOPSTART:
+    case orxSYSTEM_EVENT_GAME_LOOP_STOP:
     {
       mEnv->CallStaticIntMethod(mActivityInstance, midEndLoop);
 
@@ -348,6 +351,11 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 		orxLOG( "ORX: Good mids\n");
 #endif
 	}
+
+	//init the asset
+	OrxAPKInit();
+
+
 
 
 //	ANDROID_GL_SwapBuffer = ANDROID_GL_SwapBuffer_impl;

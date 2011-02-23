@@ -17,10 +17,12 @@ endif
 LOCAL_MODULE := $(ORX_NAME)
 
 Box2D := $(LOCAL_PATH)/../../../../extern/Box2D_2.1.3
+SOIL := $(LOCAL_PATH)/../../../../extern/SOIL
 Dlmalloc := $(LOCAL_PATH)/../../../../extern/dlmalloc
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/../../../include \
 -I$(Box2D)/include \
+-I$(SOIL)/include \
 -I$(LOCAL_PATH)/include \
 -D__orxANDROID__ \
 -DNO_MALLINFO=1 \
@@ -29,6 +31,7 @@ LOCAL_CFLAGS := -I$(LOCAL_PATH)/../../../include \
 
 LOCAL_CPPFLAGS := -I$(LOCAL_PATH)/../../../include \
 -I$(Box2D)/include \
+-I$(SOIL)/include \
 -I$(LOCAL_PATH)/include \
 -I$(Dlmalloc) \
 -D__orxANDROID__ \
@@ -63,12 +66,13 @@ ORX_SRCS := ../../../src/main/orxParam.c \
 ../../../src/utils/*.c \
 ../../../plugins/Display/android/orxDisplay.cpp \
 ../../../plugins/Display/android/android-support.cpp \
+../../../plugins/Display/android/orx_apk_file.c \
 ../../../plugins/Joystick/android/orxJoystick.c \
 ../../../plugins/Keyboard/Dummy/orxKeyboard.c \
 ../../../plugins/Physics/Box2D/orxPhysics.cpp \
 ../../../plugins/Render/Home/orxRender.c \
 ../../../plugins/Sound/android/orxSoundSystem.c \
-../../../plugins/Mouse/android/orxMouse.c
+../../../plugins/Mouse/android/orxMouse.c \
 
 LOCAL_CPP_EXTENSION := .cpp
 
@@ -79,7 +83,7 @@ ifneq ($(ORX_EM),true)
 LOCAL_LDLIBS := -lGLESv2
 endif
 
-LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lgcc -lm -lBox2D  -L$(Box2D)/lib/android
+LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lgcc -lm -lBox2D -lSOIL -L$(SOIL)/lib/android -L$(Box2D)/lib/android
 
 include $(BUILD_STATIC_LIBRARY)
 

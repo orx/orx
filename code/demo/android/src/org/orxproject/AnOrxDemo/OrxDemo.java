@@ -22,7 +22,7 @@ public class OrxDemo extends AnOrxActivity {
 		// this three should be set in advance of creating father AnOrxActivity
 		isDebug = false;
 		//when you need to run in the emulator it should set to true
-		isInEmulator = true;
+		isInEmulator = false;
 		appPath = "bounce_demo";
 		appName = "orxTest";
 		orxAppLibName = "orxApp";

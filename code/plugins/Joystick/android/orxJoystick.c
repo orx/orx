@@ -80,8 +80,8 @@ static orxSTATUS orxFASTCALL orxJoystick_android_EventHandler(
 		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
 		/* Gets new position */
-		orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->accelX),
-				orx2F(pstPayload->accelY), orx2F(pstPayload->accelZ));
+		orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->stAccelerometer.fX),
+				orx2F(pstPayload->stAccelerometer.fY), orx2F(pstPayload->stAccelerometer.fZ));
 
 		break;
 	}

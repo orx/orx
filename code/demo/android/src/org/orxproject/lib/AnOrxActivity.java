@@ -146,6 +146,9 @@ public class AnOrxActivity extends Activity {
 			Log.i("orx app", "error when moving asset");
 			e.printStackTrace();
 		}
+		
+		//create the apkFileHelper
+		AnOrxAPKFileHelper.getInstance().setContext(this);
 
 	}
 

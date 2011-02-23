@@ -16,6 +16,7 @@ ORXAPP_SRCS := ../jni/*.c \
 			   ../jni/*.cpp
 			   
 ORXLIB     := ../../../lib/android
+SOILLIB    := ../../../../extern/SOIL/lib/android
 ORXINCLUDE := ../../../include
 GRAPGICJNI := ../../../../extern/jni/lib/android
 BOX2DLIB     := ../../../../extern/Box2D_2.1.3/lib/android
@@ -30,6 +31,7 @@ ORX_JAVA_ACTITY_PATH := org/orxproject/lib/AnOrxActivity
 			 
 ORX_LIB_NAME := orx
 BOX2D_LIB_NAME := Box2D
+SOIL_LIB_NAME := SOIL
 
 ifeq ($(ORX_DEBUG),true)
 ORX_MODULE_NAME := $(ORX_MODULE_NAME)d
@@ -88,6 +90,6 @@ ifneq ($(ORX_EM),true)
 LOCAL_LDLIBS := -lGLESv2
 endif
 
-LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lm -ljnigraphics -l$(ORX_LIB_NAME) -L$(LOCAL_PATH)/$(ORXLIB)  -l$(BOX2D_LIB_NAME) -L$(LOCAL_PATH)/$(BOX2DLIB) -lgcc
+LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lm -ljnigraphics -l$(ORX_LIB_NAME) -l$(SOIL_LIB_NAME) -L$(LOCAL_PATH)/$(SOILLIB) -L$(LOCAL_PATH)/$(ORXLIB)  -l$(BOX2D_LIB_NAME) -L$(LOCAL_PATH)/$(BOX2DLIB) -lgcc
 
 include $(BUILD_SHARED_LIBRARY)

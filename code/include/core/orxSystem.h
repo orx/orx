@@ -111,16 +111,16 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
     /* UI event */
     struct
     {
-      orxU32    u32PointID;
+      orxU32    u32ID;
       orxFLOAT  fX, fY, fPressure;
-    };
+    } stTouch;
 
     /* Accelerate event */
     struct
     {
       void     *pAccelerometer;
       orxFLOAT  fX, fY, fZ;
-    };
+    } stAccelerometer;
   };
 #endif
 

@@ -89,8 +89,8 @@ static orxSTATUS orxFASTCALL orxMouse_android_EventHandler(
 		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
 		/* Gets new position */
-		orxVector_Set(&vNewPosition, orx2F(pstPayload->x),
-				orx2F(pstPayload->y), orxFLOAT_0);
+		orxVector_Set(&vNewPosition, orx2F(pstPayload->stTouch.fX),
+				orx2F(pstPayload->stTouch.fY), orxFLOAT_0);
 
 		/* Updates mouse move */
 		orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove),
