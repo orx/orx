@@ -46,7 +46,6 @@
 
 
 #include "orxInclude.h"
-#include "memory/orxMemory.h"
 #include "math/orxVector.h"
 
 #ifdef __orxMSVC__
@@ -598,24 +597,13 @@ static orxINLINE orxSTRING              orxString_Copy(orxSTRING _zDstString, co
  */
 static orxINLINE orxSTRING              orxString_Duplicate(const orxSTRING _zSrcString)
 {
-  orxU32    u32Size;
   orxSTRING zResult;
 
   /* Checks */
   orxASSERT(_zSrcString != orxNULL);
 
-  /* Gets string size in bytes */
-  u32Size = (orxString_GetLength(_zSrcString) + 1) * sizeof(orxCHAR);
-
-  /* Allocates it */
-  zResult = (orxSTRING)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_TEXT);
-
-  /* Valid? */
-  if(zResult != orxNULL)
-  {
-    /* Copies source to it */
-    orxMemory_Copy(zResult, _zSrcString, u32Size);
-  }
+  /* Updates result */
+  zResult = strdup(_zSrcString);
 
   /* Done! */
   return zResult;
@@ -631,7 +619,7 @@ static orxINLINE orxSTATUS              orxString_Delete(orxSTRING _zString)
   orxASSERT(_zString != orxSTRING_EMPTY);
 
   /* Frees its memory */
-  orxMemory_Free(_zString);
+  free(_zString);
 
   /* Done! */
   return orxSTATUS_SUCCESS;
