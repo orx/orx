@@ -12,10 +12,6 @@ ifeq ($(ORX_DEBUG),true)
 ORX_NAME := $(ORX_NAME)d
 endif
 
-ifeq ($(ORX_EM),true)
-ORX_NAME := $(ORX_NAME)EM
-endif
-
 APP_MODULES := $(ORX_NAME)
 
 #the default is release, debug: debug level will be set.

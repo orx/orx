@@ -25,7 +25,7 @@ public class AnOrxActivity extends Activity {
 	//debug mode using orxd
 	protected static boolean isDebug = true;
 	//when you need to run in the emulator it should set to true
-	protected static boolean isInEmulator = false;
+	protected static boolean usingGLES1 = false;
 
 	/*
 	* first, set the app name, the main feature is to set the default .ini filename

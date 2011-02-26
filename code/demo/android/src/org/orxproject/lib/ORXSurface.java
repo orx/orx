@@ -350,7 +350,7 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 					num_config);
 
 			int numConfigs = num_config[0];
-			if (AnOrxActivity.isInEmulator){
+			if (AnOrxActivity.usingGLES1){
 				numConfigs = 0;
 			}
 

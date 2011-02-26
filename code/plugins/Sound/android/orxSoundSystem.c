@@ -166,7 +166,6 @@ static orxSTATUS orxFASTCALL orxAndroid_SoundSystemEventHandler(
 
 	/* Checks */
 	orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
-	orxLOG("system focus event handle");
 	/* Colliding? */
 	if (_pstEvent->eID == orxSYSTEM_EVENT_BACKGROUND) {
 		orxSOUND *pstSound;
@@ -202,7 +201,6 @@ static orxSTATUS orxFASTCALL orxAndroid_SoundSystemEventHandler(
 			pstSound = orxSOUND(orxStructure_GetNext(pstSound));
 		}
 	}
-	orxLOG("system focus event handle end");
 	/* Done! */
 	return eResult;
 }

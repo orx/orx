@@ -38,10 +38,6 @@ ORX_MODULE_NAME := $(ORX_MODULE_NAME)d
 ORX_LIB_NAME := $(ORX_LIB_NAME)d
 endif
 
-ifeq ($(ORX_EM),true)
-ORX_LIB_NAME := $(ORX_LIB_NAME)EM
-endif
-
 LOCAL_PATH := $(call my-dir)
 
 
@@ -86,10 +82,6 @@ endif
 # Note this "simple" makefile var substitution, you can find even more complex examples in different Android projects
 LOCAL_SRC_FILES := $(foreach F, $(ORXAPP_SRCS), $(addprefix $(dir $(F)),$(notdir $(wildcard $(LOCAL_PATH)/$(F)))))
 
-ifneq ($(ORX_EM),true)
-LOCAL_LDLIBS := -lGLESv2
-endif
-
-LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lm -ljnigraphics -l$(ORX_LIB_NAME) -l$(SOIL_LIB_NAME) -L$(LOCAL_PATH)/$(SOILLIB) -L$(LOCAL_PATH)/$(ORXLIB)  -l$(BOX2D_LIB_NAME) -L$(LOCAL_PATH)/$(BOX2DLIB) -lgcc
+LOCAL_LDLIBS += -lGLESv1_CM -ldl -llog -lm  -l$(ORX_LIB_NAME)  -l$(SOIL_LIB_NAME) -L$(LOCAL_PATH)/$(SOILLIB) -L$(LOCAL_PATH)/$(ORXLIB)  -l$(BOX2D_LIB_NAME) -L$(LOCAL_PATH)/$(BOX2DLIB) -lgcc
 
 include $(BUILD_SHARED_LIBRARY)

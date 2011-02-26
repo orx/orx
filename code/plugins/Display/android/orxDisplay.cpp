@@ -38,14 +38,12 @@
 #include <android/log.h>
 #include <android/bitmap.h>
 #include "orx_apk_file.h"
-typedef char GLchar;
+#include<dlfcn.h>
 
-#ifndef __ORX_ANDROID_EMULATOR__
+//#include <GLES2/gl2.h>
+//#include <GLES2/gl2ext.h>
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-
-#endif /* __ORX_ANDROID_EMULATOR__ */
+#include "gles2.h"
 
 /** Module flags
  */
@@ -71,6 +69,32 @@ typedef char GLchar;
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      65536
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
+
+//all of function pointers in gles2.0
+PFNGLCREATEPROGRAMPROC glCreateProgram = NULL;
+PFNGLCREATESHADERPROC glCreateShader = NULL;
+PFNGLDELETESHADERPROC glDeleteShader = NULL;
+PFNGLSHADERSOURCEPROC glShaderSource = NULL;
+PFNGLCOMPILESHADERPROC glCompileShader = NULL;
+PFNGLATTACHSHADERPROC glAttachShader = NULL;
+PFNGLLINKPROGRAMPROC glLinkProgram = NULL;
+//PFNGLGETPROGRAMIVPROC  glGetObjectParameteriv = NULL;
+//PFNGLGETINFOLOGOESPROC            glGetInfoLog           = NULL;
+PFNGLUSEPROGRAMPROC glUseProgram = NULL;
+PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = NULL;
+PFNGLUNIFORM1FPROC glUniform1f = NULL;
+PFNGLUNIFORM3FPROC glUniform3f = NULL;
+PFNGLUNIFORM1IPROC glUniform1i = NULL;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = NULL;
+PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = NULL;
+PFNGLGETSHADERIVPROC glGetShaderiv = NULL;
+PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation = NULL;
+PFNGLGETPROGRAMIVPROC glGetProgramiv = NULL;
+PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = NULL;
+PFNGLDELETEPROGRAMPROC glDeleteProgram = NULL;
+PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog = NULL;
+PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = NULL;
+//PFNGLACTIVETEXTUREOESPROC         glActiveTexture        = NULL;
 
 /**  Misc defines
  */
@@ -256,11 +280,7 @@ extern void ANDROID_saveScreenImage(const orxSTRING filename, orxBOOL bPNG);
 //#endif
 
 void ANDROID_SetShaderSupport(orxBOOL shaderSupport) {
-#ifndef __ORX_ANDROID_EMULATOR__
 	bShaderSupport = shaderSupport;
-#else
-	bShaderSupport = orxFALSE;
-#endif
 	orxLOG("shader support is %d", shaderSupport);
 }
 
@@ -301,10 +321,10 @@ void ANDROID_OnTouch(unsigned char action, unsigned int pointId, float x,
 
 	/* Inits event's payload */
 	orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-	stPayload.stTouch.u32ID = (orxU32)pointId;
-	stPayload.stTouch.fX = (orxFLOAT)x;
-	stPayload.stTouch.fY = (orxFLOAT)y;
-	stPayload.stTouch.fPressure = (orxFLOAT)p;
+	stPayload.stTouch.u32ID = (orxU32) pointId;
+	stPayload.stTouch.fX = (orxFLOAT) x;
+	stPayload.stTouch.fY = (orxFLOAT) y;
+	stPayload.stTouch.fPressure = (orxFLOAT) p;
 
 	/* Sends it */
 	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, android_event, orxNULL, orxNULL,
@@ -328,9 +348,9 @@ void ANDROID_OnAccel(void *accelEventPtr, float x, float y, float z) {
 	/* Inits event's payload */
 	orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 	stPayload.stAccelerometer.pAccelerometer = accelEventPtr;
-	stPayload.stAccelerometer.fX = (orxFLOAT)x;
-	stPayload.stAccelerometer.fY = (orxFLOAT)y;
-	stPayload.stAccelerometer.fZ = (orxFLOAT)z;
+	stPayload.stAccelerometer.fX = (orxFLOAT) x;
+	stPayload.stAccelerometer.fY = (orxFLOAT) y;
+	stPayload.stAccelerometer.fZ = (orxFLOAT) z;
 
 	/* Sends it */
 	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE,
@@ -346,7 +366,6 @@ void ANDROID_OnAccel(void *accelEventPtr, float x, float y, float z) {
  * here we only need to do some configuration
  */
 static orxINLINE orxBOOL initGLESConfig() {
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Shader support? */
 	if (bShaderSupport) {
 		/* Sets vextex attribute arrays */
@@ -369,7 +388,6 @@ static orxINLINE orxBOOL initGLESConfig() {
 		glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
 		glASSERT();
 	} else
-#endif
 	{
 		/* Inits it */
 		glEnable(GL_TEXTURE_2D);
@@ -478,7 +496,6 @@ static orxDISPLAY_PROJ_MATRIX *orxDisplay_android_OrthoProjMatrix(
 	return _pmResult;
 }
 
-#ifndef __ORX_ANDROID_EMULATOR__
 static orxSTATUS orxFASTCALL orxDisplay_android_CompileShader(
 		orxDISPLAY_SHADER *_pstShader) {
 	static const orxSTRING szVertexShaderSource =
@@ -650,9 +667,7 @@ static orxSTATUS orxFASTCALL orxDisplay_android_CompileShader(
 	return eResult;
 }
 
-#endif
 
-#ifndef __ORX_ANDROID_EMULATOR__
 static void orxFASTCALL orxDisplay_android_InitShader(
 		orxDISPLAY_SHADER *_pstShader) {
 	/* Uses shader's program */
@@ -695,11 +710,9 @@ static void orxFASTCALL orxDisplay_android_InitShader(
 	/* Done! */
 	return;
 }
-#endif
 
 static void orxFASTCALL orxDisplay_android_DrawArrays() {
 	/* Shader support? */
-#ifndef __ORX_ANDROID_EMULATOR__
 	if (bShaderSupport) {
 		/* Sets vextex attribute arrays */
 		glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2,
@@ -715,7 +728,6 @@ static void orxFASTCALL orxDisplay_android_DrawArrays() {
 				&(sstDisplay.astVertexList[0].stRGBA));
 		glASSERT();
 	} else
-#endif
 	{
 		/* Selects arrays */
 		glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX),
@@ -731,7 +743,6 @@ static void orxFASTCALL orxDisplay_android_DrawArrays() {
 	/* Has data? */
 	if (sstDisplay.s32BufferIndex > 0) {
 		/* Has active shaders? */
-#ifndef __ORX_ANDROID_EMULATOR__
 		if (sstDisplay.s32ActiveShaderCounter > 0) {
 			orxDISPLAY_SHADER *pstShader;
 
@@ -754,7 +765,6 @@ static void orxFASTCALL orxDisplay_android_DrawArrays() {
 				}
 			}
 		} else
-#endif
 		{
 			/* Draws arrays */
 			glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex
@@ -1453,7 +1463,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetDestinationBitmap(
 				sstDisplay.pstDestinationBitmap->fHeight);
 		glASSERT();
 
-#ifndef __ORX_ANDROID_EMULATOR__
 		/* Shader support? */
 		if (orxFLAG_TEST(sstDisplay.u32Flags,
 				orxDISPLAY_KU32_STATIC_FLAG_SHADER)) {
@@ -1470,7 +1479,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetDestinationBitmap(
 					GL_FALSE,
 					(GLfloat *) &(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 		} else
-#endif
 		{
 			/* Inits matrices */
 			glMatrixMode( GL_PROJECTION);
@@ -2117,6 +2125,40 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 
 			/* Creates OpenGL thread context */
 			if (ANDROID_createGLContext()) {
+
+				if (bShaderSupport) {
+									//open the gles2.0 and init its function pointers
+									void *gles2LibHandler = dlopen("libGLESv2.so", RTLD_LAZY);
+									orxLOG("pointer is 0x%x", gles2LibHandler);
+
+									if(!gles2LibHandler)
+									{
+										orxLOG("%s \n",dlerror());
+									}
+									glCreateProgram = (PFNGLCREATEPROGRAMPROC)dlsym(gles2LibHandler, "glCreateProgram");
+									glCreateShader = (PFNGLCREATESHADERPROC)dlsym(gles2LibHandler, "glCreateShader");
+									glDeleteShader = (PFNGLDELETESHADERPROC)dlsym(gles2LibHandler, "glDeleteShader");
+									glShaderSource = (PFNGLSHADERSOURCEPROC)dlsym(gles2LibHandler, "glShaderSource");
+									glCompileShader = (PFNGLCOMPILESHADERPROC)dlsym(gles2LibHandler, "glCompileShader");
+									glAttachShader = (PFNGLATTACHSHADERPROC)dlsym(gles2LibHandler, "glAttachShader");
+									glLinkProgram = (PFNGLLINKPROGRAMPROC)dlsym(gles2LibHandler, "glLinkProgram");
+									glUseProgram = (PFNGLUSEPROGRAMPROC)dlsym(gles2LibHandler, "glUseProgram");
+
+									glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)dlsym(gles2LibHandler, "glGetUniformLocation");
+									glUniform1f = (PFNGLUNIFORM1FPROC)dlsym(gles2LibHandler, "glUniform1f");
+									glUniform3f = (PFNGLUNIFORM3FPROC)dlsym(gles2LibHandler, "glUniform3f");
+									glUniform1i = (PFNGLUNIFORM1IPROC)dlsym(gles2LibHandler, "glUniform1i");
+									glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)dlsym(gles2LibHandler, "glVertexAttribPointer");
+									glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)dlsym(gles2LibHandler, "glEnableVertexAttribArray");
+									glGetShaderiv = (PFNGLGETSHADERIVPROC)dlsym(gles2LibHandler, "glGetShaderiv");
+									glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)dlsym(gles2LibHandler, "glBindAttribLocation");
+
+									glGetProgramiv = (PFNGLGETPROGRAMIVPROC)dlsym(gles2LibHandler, "glGetProgramiv");
+									glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)dlsym(gles2LibHandler, "glGetProgramInfoLog");
+									glDeleteProgram = (PFNGLDELETEPROGRAMPROC)dlsym(gles2LibHandler, "glDeleteProgram");
+									glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)dlsym(gles2LibHandler, "glGetShaderInfoLog");
+									glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)dlsym(gles2LibHandler, "glUniformMatrix4fv");
+				}
 				//				bool support = false;
 				//				bShaderSupport = support;
 				initGLESConfig();
@@ -2126,13 +2168,9 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 				orxFLAG_SET(sstDisplay.u32Flags,
 						orxDISPLAY_KU32_STATIC_FLAG_READY,
 						orxDISPLAY_KU32_STATIC_MASK_ALL);
-#ifndef __ORX_ANDROID_EMULATOR__
 				/* Gets max texture unit number */
 				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
 						&(sstDisplay.iTextureUnitNumber));
-#else
-				sstDisplay.iTextureUnitNumber = 1;
-#endif
 				glASSERT();
 
 				/* Has shader support? */
@@ -2268,7 +2306,6 @@ orxHANDLE orxFASTCALL orxDisplay_android_CreateShader(const orxSTRING _zCode,
 	/* Checks */
 	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
 			== orxDISPLAY_KU32_STATIC_FLAG_READY);
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Has shader support? */
 	if (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) {
 		/* Valid? */
@@ -2411,7 +2448,6 @@ orxHANDLE orxFASTCALL orxDisplay_android_CreateShader(const orxSTRING _zCode,
 			}
 		}
 	}
-#endif
 
 	/* Done! */
 	return hResult;
@@ -2422,7 +2458,6 @@ void orxFASTCALL orxDisplay_android_DeleteShader(orxHANDLE _hShader) {
 
 	/* Checks */
 	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Gets shader */
 	pstShader = (orxDISPLAY_SHADER *) _hShader;
 
@@ -2438,7 +2473,6 @@ void orxFASTCALL orxDisplay_android_DeleteShader(orxHANDLE _hShader) {
 
 	/* Frees it */
 	orxBank_Free(sstDisplay.pstShaderBank, pstShader);
-#endif
 	return;
 }
 
@@ -2451,7 +2485,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_StartShader(orxHANDLE _hShader) {
 			== orxDISPLAY_KU32_STATIC_FLAG_READY);
 	orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
 
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Draws remaining items */
 	orxDisplay_android_DrawArrays();
 
@@ -2472,7 +2505,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_StartShader(orxHANDLE _hShader) {
 
 	/* Updates active shader counter */
 	sstDisplay.s32ActiveShaderCounter++;
-#endif
 	/* Done! */
 	return eResult;
 }
@@ -2485,7 +2517,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_StopShader(orxHANDLE _hShader) {
 	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
 			== orxDISPLAY_KU32_STATIC_FLAG_READY);
 	orxASSERT(_hShader != orxHANDLE_UNDEFINED);
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Draws remaining items */
 	orxDisplay_android_DrawArrays();
 
@@ -2570,7 +2601,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_StopShader(orxHANDLE _hShader) {
 	/* Selects it */
 	glActiveTexture( GL_TEXTURE0);
 	glASSERT();
-#endif
 	/* Done! */
 	return eResult;
 }
@@ -2587,7 +2617,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetShaderBitmap(orxHANDLE _hShader,
 	orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
 	orxASSERT(_zParam != orxNULL);
 
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Gets shader */
 	pstShader = (orxDISPLAY_SHADER *) _hShader;
 
@@ -2768,7 +2797,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetShaderBitmap(orxHANDLE _hShader,
 		eResult = orxSTATUS_FAILURE;
 	}
 
-#endif
 	/* Done! */
 	return eResult;
 }
@@ -2785,7 +2813,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetShaderFloat(orxHANDLE _hShader,
 			== orxDISPLAY_KU32_STATIC_FLAG_READY);
 	orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
 	orxASSERT(_zParam != orxNULL);
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Gets shader */
 	pstShader = (orxDISPLAY_SHADER *) _hShader;
 
@@ -2816,7 +2843,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetShaderFloat(orxHANDLE _hShader,
 		/* Updates result */
 		eResult = orxSTATUS_FAILURE;
 	}
-#endif
 	/* Done! */
 	return eResult;
 }
@@ -2835,7 +2861,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetShaderVector(orxHANDLE _hShader,
 	orxASSERT(_zParam != orxNULL);
 	orxASSERT(_pvValue != orxNULL);
 
-#ifndef __ORX_ANDROID_EMULATOR__
 	/* Gets shader */
 	pstShader = (orxDISPLAY_SHADER *) _hShader;
 
@@ -2867,7 +2892,6 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetShaderVector(orxHANDLE _hShader,
 		/* Updates result */
 		eResult = orxSTATUS_FAILURE;
 	}
-#endif
 
 	/* Done! */
 	return eResult;
