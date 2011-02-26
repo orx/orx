@@ -70,6 +70,8 @@
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
+void *gles2LibHandler;
+
 //all of function pointers in gles2.0
 PFNGLCREATEPROGRAMPROC glCreateProgram = NULL;
 PFNGLCREATESHADERPROC glCreateShader = NULL;
@@ -666,7 +668,6 @@ static orxSTATUS orxFASTCALL orxDisplay_android_CompileShader(
 	/* Done! */
 	return eResult;
 }
-
 
 static void orxFASTCALL orxDisplay_android_InitShader(
 		orxDISPLAY_SHADER *_pstShader) {
@@ -1478,8 +1479,7 @@ orxSTATUS orxFASTCALL orxDisplay_android_SetDestinationBitmap(
 					1,
 					GL_FALSE,
 					(GLfloat *) &(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-		} else
-		{
+		} else {
 			/* Inits matrices */
 			glMatrixMode( GL_PROJECTION);
 			glASSERT();
@@ -2127,37 +2127,59 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 			if (ANDROID_createGLContext()) {
 
 				if (bShaderSupport) {
-									//open the gles2.0 and init its function pointers
-									void *gles2LibHandler = dlopen("libGLESv2.so", RTLD_LAZY);
-									orxLOG("pointer is 0x%x", gles2LibHandler);
+					//open the gles2.0 and init its function pointers
+#define orxDISPLAY_LOAD_GLES2_FUNCTION(TYPE, FN)  FN = (TYPE)dlsym(gles2LibHandler,#FN);\
+		functionStatus |= FN != NULL;
 
-									if(!gles2LibHandler)
-									{
-										orxLOG("%s \n",dlerror());
-									}
-									glCreateProgram = (PFNGLCREATEPROGRAMPROC)dlsym(gles2LibHandler, "glCreateProgram");
-									glCreateShader = (PFNGLCREATESHADERPROC)dlsym(gles2LibHandler, "glCreateShader");
-									glDeleteShader = (PFNGLDELETESHADERPROC)dlsym(gles2LibHandler, "glDeleteShader");
-									glShaderSource = (PFNGLSHADERSOURCEPROC)dlsym(gles2LibHandler, "glShaderSource");
-									glCompileShader = (PFNGLCOMPILESHADERPROC)dlsym(gles2LibHandler, "glCompileShader");
-									glAttachShader = (PFNGLATTACHSHADERPROC)dlsym(gles2LibHandler, "glAttachShader");
-									glLinkProgram = (PFNGLLINKPROGRAMPROC)dlsym(gles2LibHandler, "glLinkProgram");
-									glUseProgram = (PFNGLUSEPROGRAMPROC)dlsym(gles2LibHandler, "glUseProgram");
+					gles2LibHandler = dlopen("libGLESv2.so", RTLD_LAZY);
+					orxBOOL functionStatus = orxTRUE;
+					orxLOG("pointer is 0x%x", gles2LibHandler);
 
-									glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)dlsym(gles2LibHandler, "glGetUniformLocation");
-									glUniform1f = (PFNGLUNIFORM1FPROC)dlsym(gles2LibHandler, "glUniform1f");
-									glUniform3f = (PFNGLUNIFORM3FPROC)dlsym(gles2LibHandler, "glUniform3f");
-									glUniform1i = (PFNGLUNIFORM1IPROC)dlsym(gles2LibHandler, "glUniform1i");
-									glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)dlsym(gles2LibHandler, "glVertexAttribPointer");
-									glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)dlsym(gles2LibHandler, "glEnableVertexAttribArray");
-									glGetShaderiv = (PFNGLGETSHADERIVPROC)dlsym(gles2LibHandler, "glGetShaderiv");
-									glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)dlsym(gles2LibHandler, "glBindAttribLocation");
+					if (!gles2LibHandler) {
+						orxLOG("error when opening gles lib %s", dlerror());
+						/* Deletes banks */
+						orxBank_Delete(sstDisplay.pstBitmapBank);
+						sstDisplay.pstBitmapBank = orxNULL;
+						orxBank_Delete(sstDisplay.pstShaderBank);
+						sstDisplay.pstShaderBank = orxNULL;
 
-									glGetProgramiv = (PFNGLGETPROGRAMIVPROC)dlsym(gles2LibHandler, "glGetProgramiv");
-									glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)dlsym(gles2LibHandler, "glGetProgramInfoLog");
-									glDeleteProgram = (PFNGLDELETEPROGRAMPROC)dlsym(gles2LibHandler, "glDeleteProgram");
-									glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)dlsym(gles2LibHandler, "glGetShaderInfoLog");
-									glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)dlsym(gles2LibHandler, "glUniformMatrix4fv");
+						return orxSTATUS_FAILURE;
+					}
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLCREATEPROGRAMPROC, glCreateProgram);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLCREATESHADERPROC, glCreateShader);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLDELETESHADERPROC, glDeleteShader);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLSHADERSOURCEPROC, glShaderSource);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLCOMPILESHADERPROC, glCompileShader);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLATTACHSHADERPROC, glAttachShader);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLLINKPROGRAMPROC, glLinkProgram);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLUSEPROGRAMPROC, glUseProgram);
+
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLUNIFORM1FPROC, glUniform1f);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLUNIFORM3FPROC, glUniform3f);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLUNIFORM1IPROC, glUniform1i);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLGETSHADERIVPROC, glGetShaderiv);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLBINDATTRIBLOCATIONPROC, glBindAttribLocation);
+
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLGETPROGRAMIVPROC, glGetProgramiv);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLGETPROGRAMINFOLOGPROC, glGetProgramInfoLog);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLDELETEPROGRAMPROC, glDeleteProgram);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog);
+					orxDISPLAY_LOAD_GLES2_FUNCTION(PFNGLUNIFORMMATRIX4FVPROC, glUniformMatrix4fv);
+
+					if (functionStatus == orxFALSE) {
+						orxLOG("error when loading gles function pointer");
+
+						/* Deletes banks */
+						orxBank_Delete(sstDisplay.pstBitmapBank);
+						sstDisplay.pstBitmapBank = orxNULL;
+						orxBank_Delete(sstDisplay.pstShaderBank);
+						sstDisplay.pstShaderBank = orxNULL;
+
+						return orxSTATUS_FAILURE;
+					}
 				}
 				//				bool support = false;
 				//				bShaderSupport = support;
@@ -2285,6 +2307,8 @@ void orxFASTCALL orxDisplay_android_Exit() {/* Was initialized? */
 		if (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) {
 			/* Deletes default shader */
 			orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+
+			dlclose(gles2LibHandler);
 		}
 
 		/* Deletes banks */
