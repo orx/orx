@@ -45,6 +45,7 @@
 #define orxSPAWNER_KU32_STATIC_FLAG_NONE          0x00000000
 
 #define orxSPAWNER_KU32_STATIC_FLAG_READY         0x00000001
+#define orxSPAWNER_KU32_STATIC_FLAG_INTERNAL      0x00000002  /**< Internal flag */
 
 #define orxSPAWNER_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
@@ -490,6 +491,13 @@ orxSPAWNER *orxFASTCALL orxSpawner_Create()
 
       /* Increases counter */
       orxStructure_IncreaseCounter(pstResult);
+
+      /* Not creating it internally? */
+      if(!orxFLAG_TEST(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_INTERNAL))
+      {
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_CREATE, pstResult, orxNULL, orxNULL);
+      }
     }
     else
     {
@@ -528,8 +536,14 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
+    /* Sets internal flag */
+    orxFLAG_SET(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_INTERNAL, orxSPAWNER_KU32_STATIC_FLAG_NONE);
+
     /* Creates spawner */
     pstResult = orxSpawner_Create();
+
+    /* Removes internal flag */
+    orxFLAG_SET(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_NONE, orxSPAWNER_KU32_STATIC_FLAG_INTERNAL);
 
     /* Valid? */
     if(pstResult != orxNULL)
@@ -674,6 +688,9 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
         /* Updates status */
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SCALE, orxSPAWNER_KU32_FLAG_NONE);
       }
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_CREATE, pstResult, orxNULL, orxNULL);
     }
 
     /* Pops previous section */
