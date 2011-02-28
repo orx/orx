@@ -1,0 +1,18 @@
+run Demo
+1.import the AnOrxDemo from /path/to/orx/code/demo/android in eclipse project
+2.run the demo in eclipse
+note that you can also do it in terminal (meanwhile by ant). Besides, You had better rebuild it by ndk
+
+recompile the demo and lib
+go to /path/to/orx/code/demo/android to ndk-build to recompile the demo, while to recompile the lib,
+go to /path/to/orx/code/build/android. 
+and for lib you have to copy the liborx*.a into /path/to/orx/lib/android optionally
+(I don't know how to move it in *.mk automatically).
+
+the debug mode
+1.use ndk-build ORX_DEBUG=true -B to rebuild the whole lib or the demo in debug mode.
+2.change isDebug=true in the android activity.
+
+###IMPORTANT###
+-B means recompile the whole lib, every source will be recompile by ndk
+when change from one mode to another mode, -B is essential. Otherwise, some file may not be recompiled in current mode.

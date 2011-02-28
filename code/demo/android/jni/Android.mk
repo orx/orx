@@ -2,13 +2,6 @@
 #if set it to true if will compile in the debug mode
 #ORX_DEBUG := false
 
-# two function in this macro
-# first, set the app name, the main feature is to set the default .ini filename
-# using the last "/" token
-# second, set the res folder contain .ini, all of images and other stuff. 
-# name of folder is the remaining "/" token 
-# for exameple: orx_demo/orxDemoApp. the folder will be /sdcard/orx_demo (add /sdcard as prefix)
-# while, the app name is orxDemoApp
 #the name of the lib
 ORX_MODULE_NAME := orxApp
 #set all of sources
@@ -16,14 +9,14 @@ ORXAPP_SRCS := ../jni/*.c \
 			   ../jni/*.cpp
 			   
 ORXLIB     := ../../../lib/android
-SOILLIB    := ../../../../extern/SOIL/lib/android
 ORXINCLUDE := ../../../include
-GRAPGICJNI := ../../../../extern/jni/lib/android
 BOX2DLIB     := ../../../../extern/Box2D_2.1.3/lib/android
 BOX2DORXINCLUDE := ../../../../extern/Box2D_2.1.3/include
 			   
 			  
 #--------- end of params set----------
+
+SOILLIB    := ../../../../extern/SOIL/lib/android
 			   
 # The namespace in Java file, with dots replaced with underscores
 ORX_JAVA_PACKAGE_PATH := org_orxproject_lib_AnOrxActivity
@@ -46,12 +39,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := $(ORX_LIB_NAME)
 LOCAL_SRC_FILES := $(ORXLIB)/lib$(ORX_LIB_NAME).a
 include $(PREBUILT_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := jnigraphics
-LOCAL_SRC_FILES := $(GRAPGICJNI)/libjnigraphics.so
-include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 
