@@ -10,6 +10,7 @@ orx 1.3
 * IMPORTANT: Mingw dev package has binaries built with gcc 4.5.0 which are *NOT* compatible with older versions of gcc. Please upgrade or recompile orx and dependencies.
 * IMPORTANT: Added physics joints support and updated to Box2D 2.1.3 (svn v140, pre-release) which impacts on some physics settings (no more world boundaries, etc...)
 * IMPORTANT: a ChildJointList can be specified in config for building complex objects with joints, along the ChildList config property
+* IMPORTANT: iPhone touch, motion and accelerometer events have now been merged with android ones in orxSYSTEM_EVENT_*
 * IMPORTANT: Added sound recording (to memory and/or disk with various file format support, with possibility of analyzing/pre-processing the samples through events)
 * IMPORTANT: When playing a sound stream, the packets can be analized/altered on the fly (for realtime effects, for example)
 * IMPORTANT: Rendering to texture support is back with GLFW & iPhone plugins
@@ -42,6 +43,9 @@ orx 1.3
 * Merged orxFile and orxFileSystem modules
 * Fixed some config "block" parsing issues with multiple double-quotes
 * Fixed orxFontGen to output visually correct fonts when used with fonts that have a negative left side bearing
+* Fixed orxConfig_SetEncryptionKey() not being able to be called before orx's init
+* Added orxSPAWNER_EVENT_CREATE event
+* Body's features can now be queried with read-only flags
 * Simplified iPhone demo
 * Changed the way reference handling works for orxSTRUCTUREs so as to be more consisten
 * Fixed issues that prevented orx from being fully restarted in the same program execution

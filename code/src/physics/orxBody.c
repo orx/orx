@@ -383,8 +383,36 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    /* Inits flags */
-    orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_MASK_ALL);
+    orxU32 u32Flags = orxBODY_KU32_FLAG_NONE;
+
+    /* Inits body flags */
+    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_DYNAMIC)
+    {
+      u32Flags |= orxBODY_KU32_FLAG_DYNAMIC;
+    }
+    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_HIGH_SPEED)
+    {
+      u32Flags |= orxBODY_KU32_FLAG_HIGH_SPEED;
+    }
+    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_FIXED_ROTATION)
+    {
+      u32Flags |= orxBODY_KU32_FLAG_FIXED_ROTATION;
+    }
+    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_CAN_SLIDE)
+    {
+      u32Flags |= orxBODY_KU32_FLAG_CAN_SLIDE;
+    }
+    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_CAN_MOVE)
+    {
+      u32Flags |= orxBODY_KU32_FLAG_CAN_MOVE;
+    }
+    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP)
+    {
+      u32Flags |= orxBODY_KU32_FLAG_ALLOW_SLEEP;
+    }
+
+    /* Sets them */
+    orxStructure_SetFlags(pstBody, u32Flags, orxBODY_KU32_MASK_ALL);
 
     /* Creates physics body */
     pstBody->pstData = orxPhysics_CreateBody(pstBody, _pstBodyDef);
