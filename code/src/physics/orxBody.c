@@ -383,37 +383,6 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxU32 u32Flags = orxBODY_KU32_FLAG_NONE;
-
-    /* Inits body flags */
-    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_DYNAMIC)
-    {
-      u32Flags |= orxBODY_KU32_FLAG_DYNAMIC;
-    }
-    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_HIGH_SPEED)
-    {
-      u32Flags |= orxBODY_KU32_FLAG_HIGH_SPEED;
-    }
-    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_FIXED_ROTATION)
-    {
-      u32Flags |= orxBODY_KU32_FLAG_FIXED_ROTATION;
-    }
-    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_CAN_SLIDE)
-    {
-      u32Flags |= orxBODY_KU32_FLAG_CAN_SLIDE;
-    }
-    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_CAN_MOVE)
-    {
-      u32Flags |= orxBODY_KU32_FLAG_CAN_MOVE;
-    }
-    if(_pstBodyDef->u32Flags & orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP)
-    {
-      u32Flags |= orxBODY_KU32_FLAG_ALLOW_SLEEP;
-    }
-
-    /* Sets them */
-    orxStructure_SetFlags(pstBody, u32Flags, orxBODY_KU32_MASK_ALL);
-
     /* Creates physics body */
     pstBody->pstData = orxPhysics_CreateBody(pstBody, _pstBodyDef);
 
@@ -633,6 +602,66 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
 
   /* Done! */
   return eResult;
+}
+
+/** Tests flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_TestDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(_pstBody->u32DefFlags, _u32Flags);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Tests all flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_TestAllDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST_ALL(_pstBody->u32DefFlags, _u32Flags);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets body definition flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Mask        Mask to use for getting flags
+ * @return      orxU32
+ */
+orxU32 orxFASTCALL orxBody_GetDefFlags(const orxBODY *_pstBody, orxU32 _u32Mask)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  u32Result = orxFLAG_GET(_pstBody->u32DefFlags, _u32Mask);
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Gets a body owner

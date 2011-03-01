@@ -52,16 +52,6 @@
 #include "physics/orxPhysics.h"
 
 
-/** Body *read-only* flags
- */
-#define orxBODY_KU32_FLAG_DYNAMIC             0x10000000  /**< Dynamic body (can be moved by physics simulation) */
-#define orxBODY_KU32_FLAG_HIGH_SPEED          0x20000000  /**< High speed */
-#define orxBODY_KU32_FLAG_FIXED_ROTATION      0x40000000  /**< Body can't be rotated by physics simulation */
-#define orxBODY_KU32_FLAG_CAN_SLIDE           0x80000000  /**< Body is allowed to slide */
-#define orxBODY_KU32_FLAG_CAN_MOVE            0x01000000  /**< Static body is allowed to move by user direct access */
-#define orxBODY_KU32_FLAG_ALLOW_SLEEP         0x02000000  /**< Allow sleep */
-
-
 /** Internal Body structure
  */
 typedef struct __orxBODY_t                    orxBODY;
@@ -107,6 +97,29 @@ extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(const orx
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
+
+
+/** Tests flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags);
+
+/** Tests all flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestAllDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags);
+
+/** Gets body definition flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Mask        Mask to use for getting flags
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxBody_GetDefFlags(const orxBODY *_pstBody, orxU32 _u32Mask);
+
 
 /** Gets a body owner
  * @param[in]   _pstBody        Concerned body
