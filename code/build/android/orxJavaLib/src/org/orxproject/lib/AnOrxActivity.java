@@ -116,8 +116,6 @@ public class AnOrxActivity extends Activity {
 		Log.i("orx app", "activity create");
 		
 		fullAppPath = appPath+"/"+appName;
-		// load the lib
-		System.loadLibrary("jnigraphics");
 		if (isDebug) {
 //			System.loadLibrary("orxd");
 
