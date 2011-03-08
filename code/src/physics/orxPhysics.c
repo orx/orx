@@ -81,6 +81,10 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, const orxPHYSIC
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetAngularVelocity, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetCustomGravity, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetMassCenter, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetLinearDamping, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetAngularDamping, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetLinearDamping, orxFLOAT, const orxPHYSICS_BODY *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetAngularDamping, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_ApplyTorque, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_ApplyForce, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_ApplyImpulse, orxSTATUS, orxPHYSICS_BODY *, const  orxVECTOR *, const orxVECTOR *);
@@ -113,6 +117,10 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED, orxPhysics_GetSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ANGULAR_VELOCITY, orxPhysics_GetAngularVelocity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_CUSTOM_GRAVITY, orxPhysics_GetCustomGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_MASS_CENTER, orxPhysics_GetMassCenter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_LINEAR_DAMPING, orxPhysics_SetLinearDamping)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ANGULAR_DAMPING, orxPhysics_SetAngularDamping)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_LINEAR_DAMPING, orxPhysics_GetLinearDamping)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ANGULAR_DAMPING, orxPhysics_GetAngularDamping)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, APPLY_TORQUE, orxPhysics_ApplyTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, APPLY_FORCE, orxPhysics_ApplyForce)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, APPLY_IMPULSE, orxPhysics_ApplyImpulse)
@@ -227,6 +235,26 @@ orxVECTOR *orxFASTCALL orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBo
 orxVECTOR *orxFASTCALL orxPhysics_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetMassCenter)(_pstBody, _pvMassCenter);
+}
+
+orxSTATUS orxFASTCALL orxPhysics_SetLinearDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
+{
+   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetLinearDamping)(_pstBody, _fDamping);
+}
+
+orxSTATUS orxFASTCALL orxPhysics_SetAngularDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
+{
+   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetAngularDamping)(_pstBody, _fDamping);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetLinearDamping(const orxPHYSICS_BODY *_pstBody)
+{
+   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetLinearDamping)(_pstBody);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetAngularDamping(const orxPHYSICS_BODY *_pstBody)
+{
+   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetAngularDamping)(_pstBody);
 }
 
 orxSTATUS orxFASTCALL orxPhysics_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)

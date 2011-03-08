@@ -1913,6 +1913,84 @@ orxVECTOR *orxFASTCALL orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR 
   return pvResult;
 }
 
+/** Sets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Linear damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetLinearDamping(orxBODY *_pstBody, orxFLOAT _fDamping)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Sets linear damping */
+  eResult = orxPhysics_SetLinearDamping(_pstBody->pstData, _fDamping);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Angular damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetAngularDamping(orxBODY *_pstBody, orxFLOAT _fDamping)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Sets angular damping */
+  eResult = orxPhysics_SetAngularDamping(_pstBody->pstData, _fDamping);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's linear damping
+ */
+orxFLOAT orxFASTCALL orxBody_GetLinearDamping(const orxBODY *_pstBody)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Gets linear damping */
+  fResult = orxPhysics_GetLinearDamping(_pstBody->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's angular damping
+ */
+orxFLOAT orxFASTCALL orxBody_GetAngularDamping(const orxBODY *_pstBody)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Gets angular damping */
+  fResult = orxPhysics_GetAngularDamping(_pstBody->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
 /** Applies a torque
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _fTorque        Torque to apply

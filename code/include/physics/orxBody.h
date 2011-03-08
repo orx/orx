@@ -280,6 +280,33 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orx
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR *_pvMassCenter);
 
 
+/** Sets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Linear damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetLinearDamping(orxBODY *_pstBody, orxFLOAT _fDamping);
+
+/** Sets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Angular damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularDamping(orxBODY *_pstBody, orxFLOAT _fDamping);
+
+/** Gets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's linear damping
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetLinearDamping(const orxBODY *_pstBody);
+
+/** Gets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's angular damping
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularDamping(const orxBODY *_pstBody);
+
+
 /** Applies a torque
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _fTorque        Torque to apply

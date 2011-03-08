@@ -1433,6 +1433,82 @@ extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetMassCenter(const orxPHYSIC
   return pvResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetLinearDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Sets its linear damping */
+  poBody->SetLinearDamping(_fDamping);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Sets its angular damping */
+  poBody->SetAngularDamping(_fDamping);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetLinearDamping(const orxPHYSICS_BODY *_pstBody)
+{
+  b2Body   *poBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its linear damping */
+  fResult = orx2F(poBody->GetLinearDamping());
+
+  /* Done! */
+  return fResult;
+}
+
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularDamping(const orxPHYSICS_BODY *_pstBody)
+{
+  b2Body   *poBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its angular damping */
+  fResult = orx2F(poBody->GetAngularDamping());
+
+  /* Done! */
+  return fResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
 {
   b2Body   *poBody;
@@ -1803,12 +1879,16 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTA
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeed, PHYSICS, GET_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularVelocity, PHYSICS, GET_ANGULAR_VELOCITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetCustomGravity, PHYSICS, GET_CUSTOM_GRAVITY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MASS_CENTER)
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE)
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE)
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE)
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST)
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION)
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MASS_CENTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetLinearDamping, PHYSICS, SET_LINEAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularDamping, PHYSICS, SET_ANGULAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetLinearDamping, PHYSICS, GET_LINEAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularDamping, PHYSICS, GET_ANGULAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
 

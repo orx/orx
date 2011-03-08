@@ -440,7 +440,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVeloc
 /** Gets the custom gravity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvCustomGravity                      Custom gravity to get
- * @return      Physical body custom gravity / orxNULL is object doesn't have any
+ * @return Physical body custom gravity / orxNULL is object doesn't have any
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
@@ -450,6 +450,33 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravit
  * @return Center of mass of the physical body
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
+
+
+/** Sets linear damping of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _fDamping                             Linear damping to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetLinearDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping);
+
+/** Sets angular damping of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _fDamping                             Angular damping to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAngularDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping);
+
+/** Sets linear damping of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return Linear damping of the physical body
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetLinearDamping(const orxPHYSICS_BODY *_pstBody);
+
+/** Gets angular damping of a physical body
+ * @param[in]   _pstBody        Concerned body
+ * @return Angular damping of the physical body
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularDamping(const orxPHYSICS_BODY *_pstBody);
 
 
 /** Applies a torque to a physical body
