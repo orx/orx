@@ -76,7 +76,7 @@
 
 /** Defines
  */
-#define orxCONFIG_KU32_SECTION_BANK_SIZE          32          /**< Default section bank size */
+#define orxCONFIG_KU32_SECTION_BANK_SIZE          128         /**< Default section bank size */
 #define orxCONFIG_KU32_STACK_BANK_SIZE            8           /**< Default stack bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            8           /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          4           /**< Default history bank size */
