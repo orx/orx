@@ -173,7 +173,7 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
     {
       orxSTATUS               eClockStatus, eMainStatus;
       orxBOOL                 bStop;
-      orxEVENT_SYSTEM_PAYLOAD stPayload;
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
 
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);

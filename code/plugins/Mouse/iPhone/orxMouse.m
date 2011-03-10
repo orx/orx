@@ -83,7 +83,6 @@ static orxSTATUS orxFASTCALL orxMouse_iPhone_EventHandler(const orxEVENT *_pstEv
     case orxSYSTEM_EVENT_TOUCH_BEGIN:
     case orxSYSTEM_EVENT_TOUCH_MOVE:
     case orxSYSTEM_EVENT_TOUCH_END:
-    case orxSYSTEM_EVENT_TOUCH_CANCEL:
     {
       UITouch                  *poTouch;
       orxSYSTEM_EVENT_PAYLOAD  *pstPayload;

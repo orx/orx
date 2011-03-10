@@ -45,6 +45,12 @@
 
 #include "orxInclude.h"
 
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+
+  #import <UIKit/UIKit.h>
+
+#endif /* __orxIPHONE__ && __orxOBJC__ */
+
 
 /** Event enum
  */
@@ -80,7 +86,7 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 {
   orxU32 u32FrameCounter;
 
-#if defined(__orxIPHONE__)
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
   union
   {
     /* UI event */
