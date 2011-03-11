@@ -552,7 +552,8 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
   /* Has custom textures? */
   if(_pstShader->iTextureCounter > 0)
   {
-    GLint i;
+    GLint   i;
+    orxBOOL bCaptured = orxFALSE;
 
     /* For all defined textures */
     for(i = 0; i < _pstShader->iTextureCounter; i++)
@@ -565,12 +566,15 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
       glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
       glASSERT();
 
-      /* Screen? */
-      if(_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen)
+      /* Screen and not already captured? */
+      if((_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen) && (bCaptured == orxFALSE))
       {
         /* Copies screen content */
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, orxF2U(sstDisplay.pstScreen->fWidth), sstDisplay.pstScreen->u32RealHeight);
         glASSERT();
+
+        /* Updates captured status */
+        bCaptured = orxTRUE;
       }
     }
   }
