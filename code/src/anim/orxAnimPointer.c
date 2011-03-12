@@ -329,9 +329,6 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
     }
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Cannot process animation pointer without a current animation.");
-
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
     }
@@ -358,7 +355,10 @@ static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, 
   orxSTRUCTURE_ASSERT(pstAnimPointer);
 
   /* Computes animation pointer */
-  return(orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT));
+  orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT);
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 
@@ -689,11 +689,6 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(const orxANIMPOINTER *
   && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
   {
     hAnimHandle = _pstAnimPointer->hCurrentAnim;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
   }
 
   /* Done! */
