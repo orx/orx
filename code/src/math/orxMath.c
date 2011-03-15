@@ -42,8 +42,8 @@ void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 }
 
 /** Gets a random orxFLOAT value
- * @param[in]   _fMin                           Minimum boundary
- * @param[in]   _fMax                           Maximum boundary
+ * @param[in]   _fMin                           Minimum boundary (inclusive)
+ * @param[in]   _fMax                           Maximum boundary (inclusive)
  * @return      Random value
  */
 orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
@@ -52,8 +52,8 @@ orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
 }
 
 /** Gets a random orxU32 value
- * @param[in]   _u32Min                         Minimum boundary
- * @param[in]   _u32Max                         Maximum boundary
+ * @param[in]   _u32Min                         Minimum boundary (inclusive)
+ * @param[in]   _u32Max                         Maximum boundary (inclusive)
  * @return      Random value
  */
 orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
@@ -68,8 +68,8 @@ orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
 }
 
 /** Gets a random orxS32 value
- * @param[in]   _s32Min                         Minimum boundary
- * @param[in]   _s32Max                         Maximum boundary
+ * @param[in]   _s32Min                         Minimum boundary (inclusive)
+ * @param[in]   _s32Max                         Maximum boundary (inclusive)
  * @return      Random value
  */
 orxS32 orxFASTCALL orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)

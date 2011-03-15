@@ -186,145 +186,85 @@ public:
 
 static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
 {
-  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-  b2Body                   *poSource, *poDestination;
-  orxBOOL                   bSendEvent = orxTRUE;
+  orxBODY_PART             *pstSourceBodyPart, *pstDestinationBodyPart;
 
-  /* Gets both bodies */
-  poSource      = _poContact->GetFixtureA()->GetBody();
-  poDestination = _poContact->GetFixtureB()->GetBody();
+  /* Gets body parts */
+  pstSourceBodyPart       = (orxBODY_PART *)_poContact->GetFixtureA()->GetUserData();
+  pstDestinationBodyPart  = (orxBODY_PART *)_poContact->GetFixtureB()->GetUserData();
 
-
-  /* For all pending events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-      pstEventStorage != orxNULL;
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
+  /* Valid? */
+  if((pstSourceBodyPart != orxNULL) && (pstDestinationBodyPart != orxNULL))
   {
-    /* Same pair? */
-    if((pstEventStorage->poSource == poSource) && (pstEventStorage->poDestination == poDestination))
-    {
-      /* Depending on old event */
-      switch(pstEventStorage->eID)
-      {
-        case orxPHYSICS_EVENT_CONTACT_ADD:
-        {
-          /* Removes it */
-          orxLinkList_Remove(&(pstEventStorage->stNode));
-          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+    orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
-          /* Removing it? */
-          if(_eEventID == orxPHYSICS_EVENT_CONTACT_REMOVE)
-          {
-            /* Don't send event */
-            bSendEvent = orxFALSE;
-          }
-
-          break;
-        }
-
-        case orxPHYSICS_EVENT_CONTACT_REMOVE:
-        {
-          /* Removes it */
-          orxLinkList_Remove(&(pstEventStorage->stNode));
-          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
-
-          /* Is new one a add? */
-          if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
-          {
-            /* Don't send event */
-            bSendEvent = orxFALSE;
-          }
-
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
-
-      break;
-    }
-  }
-
-  /* Should send the event? */
-  if(bSendEvent != orxFALSE)
-  {
-    orxBODY_PART *pstSourceBodyPart, *pstDestinationBodyPart;
-
-    /* Gets body parts */
-    pstSourceBodyPart       = (orxBODY_PART *)_poContact->GetFixtureA()->GetUserData();
-    pstDestinationBodyPart  = (orxBODY_PART *)_poContact->GetFixtureB()->GetUserData();
+    /* Adds a contact event */
+    pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
 
     /* Valid? */
-    if((pstSourceBodyPart != orxNULL) && (pstDestinationBodyPart != orxNULL))
+    if(pstEventStorage != orxNULL)
     {
-      orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+      b2Body *poSource, *poDestination;
 
-      /* Adds a contact event */
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
+      /* Adds it to list */
+      orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
 
-      /* Valid? */
-      if(pstEventStorage != orxNULL)
+      /* Gets both bodies */
+      poSource      = _poContact->GetFixtureA()->GetBody();
+      poDestination = _poContact->GetFixtureB()->GetBody();
+
+      /* Inits it */
+      pstEventStorage->eID            = _eEventID;
+      pstEventStorage->poSource       = poSource;
+      pstEventStorage->poDestination  = poDestination;
+
+      /* Contact add? */
+      if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
       {
-        /* Adds it to list */
-        orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+        const b2Manifold *poManifold;
 
-        /* Inits it */
-        pstEventStorage->eID            = _eEventID;
-        pstEventStorage->poSource       = poSource;
-        pstEventStorage->poDestination  = poDestination;
+        /* Gets local manifold */
+        poManifold = _poContact->GetManifold();
 
-        /* Contact add? */
-        if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+        /* 2 contacts? */
+        if(poManifold->pointCount > 1)
         {
-          const b2Manifold *poManifold;
+          b2WorldManifold oManifold;
 
-          /* Gets local manifold */
-          poManifold = _poContact->GetManifold();
+          /* Gets global manifold */
+          _poContact->GetWorldManifold(&oManifold);
 
-          /* 2 contacts? */
-          if(poManifold->pointCount > 1)
-          {
-            b2WorldManifold oManifold;
-
-            /* Gets global manifold */
-            _poContact->GetWorldManifold(&oManifold);
-
-            /* Updates values */
-            orxVector_Set(&(pstEventStorage->stPayload.vPosition), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].x + oManifold.points[1].x), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].y + oManifold.points[1].y), orxFLOAT_0);
-            orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
-          }
-          /* 1 contact? */
-          else if(poManifold->pointCount == 1)
-          {
-            b2WorldManifold oManifold;
-
-            /* Gets global manifold */
-            _poContact->GetWorldManifold(&oManifold);
-
-            /* Updates values */
-            orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.points[0].x, sstPhysics.fRecDimensionRatio * oManifold.points[0].y, orxFLOAT_0);
-            orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
-          }
-          /* 0 contact */
-          else
-          {
-            orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
-            orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
-          }
+          /* Updates values */
+          orxVector_Set(&(pstEventStorage->stPayload.vPosition), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].x + oManifold.points[1].x), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].y + oManifold.points[1].y), orxFLOAT_0);
+          orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
         }
+        /* 1 contact? */
+        else if(poManifold->pointCount == 1)
+        {
+          b2WorldManifold oManifold;
+
+          /* Gets global manifold */
+          _poContact->GetWorldManifold(&oManifold);
+
+          /* Updates values */
+          orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.points[0].x, sstPhysics.fRecDimensionRatio * oManifold.points[0].y, orxFLOAT_0);
+          orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
+        }
+        /* 0 contact */
         else
         {
           orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
           orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
         }
-
-        /* Updates part names */
-        pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(pstSourceBodyPart);
-        pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(pstDestinationBodyPart);
       }
+      else
+      {
+        orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
+        orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
+      }
+
+      /* Updates part names */
+      pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(pstSourceBodyPart);
+      pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(pstDestinationBodyPart);
     }
   }
 
@@ -350,7 +290,7 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 
 /** Update (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
- * @param[in]   _pContext     Context sent when registering callback to the clock
+ * @param[in]   _pContext       Context sent when registering callback to the clock
  */
 static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
