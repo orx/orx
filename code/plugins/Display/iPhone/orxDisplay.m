@@ -42,8 +42,7 @@
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000002  /**< Shader support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_LOCATION    0x00000004  /**< Has location support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER	0x00000008  /**< Has depth buffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER	0x00000004  /**< Has depth buffer support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -148,6 +147,8 @@ typedef struct __orxDISPLAY_TEXTURE_INFO_t
 typedef struct __orxDISPLAY_SHADER_t
 {
   GLuint                    uiProgram;
+  GLuint                    uiTextureLocation;
+  GLuint                    uiProjectionMatrixLocation;
   GLint                     iTextureCounter;
   orxBOOL                   bActive;
   orxBOOL                   bInitialized;
@@ -169,9 +170,6 @@ typedef struct __orxDISPLAY_STATIC_t
   orxCOLOR                  stLastColor;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxDISPLAY_SHADER        *pstDefaultShader;
-  GLuint                    uiColorLocation;
-  GLuint                    uiTextureLocation;
-  GLuint                    uiProjectionMatrixLocation;
   GLint                     iTextureUnitNumber;
   orxS32                    s32ActiveShaderCounter;
   orxS32                    s32BufferIndex;
@@ -756,20 +754,13 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
       glLinkProgram(uiProgram);
       glASSERT();
 
-      /* Doesn't have default location? */
-      if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_LOCATION))
-      {
-        /* Gets texture location */
-        sstDisplay.uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
-        glASSERT();
+      /* Gets texture location */
+      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
+      glASSERT();
 
-        /* Gets projection matrix location */
-        sstDisplay.uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
-        glASSERT();
-
-        /* Updates status */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_LOCATION, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-      }
+      /* Gets projection matrix location */
+      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
+      glASSERT();
 
       /* Gets linking status */
       glGetProgramiv(uiProgram, GL_LINK_STATUS, &iSuccess);
@@ -1669,7 +1660,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
       orxDisplay_iPhone_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
       /* Passes it to shader */
-      glUniformMatrix4fv(sstDisplay.uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+      glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
     }
     else
     {
@@ -2660,7 +2651,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StartShader(orxHANDLE _hShader)
   glASSERT();
 
   /* Updates projection matrix */
-  glUniformMatrix4fv(sstDisplay.uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+  glUniformMatrix4fv(pstShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Updates its status */
   pstShader->bActive      = orxTRUE;
@@ -2748,11 +2739,11 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
   glASSERT();
 
   /* Updates first texture unit */
-  glUniform1i(sstDisplay.uiTextureLocation, 0);
+  glUniform1i(sstDisplay.pstDefaultShader->uiTextureLocation, 0);
   glASSERT();
 
   /* Updates projection matrix */
-  glUniformMatrix4fv(sstDisplay.uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+  glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Selects it */
   glActiveTexture(GL_TEXTURE0);
