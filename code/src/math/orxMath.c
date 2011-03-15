@@ -64,7 +64,7 @@ orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
   u32Rand = rand();
 
   /* Done! */
-  return (u32Rand == RAND_MAX) ? _u32Max : (orxF2U((orx2F(u32Rand) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(_u32Max) + 1 - orxU2F(_u32Min))) + orxS2F(_u32Min)));
+  return (u32Rand == RAND_MAX) ? _u32Max : (orxF2U((orx2F(u32Rand) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(_u32Max) + orxFLOAT_1 - orxU2F(_u32Min))) + orxS2F(_u32Min)));
 }
 
 /** Gets a random orxS32 value
@@ -80,5 +80,5 @@ orxS32 orxFASTCALL orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)
   u32Rand = rand();
 
   /* Done! */
-  return (u32Rand == RAND_MAX) ? _s32Max : (orxF2S((orx2F(u32Rand) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(_s32Max) + 1 - orxS2F(_s32Min))) + orxS2F(_s32Min)));
+  return (u32Rand == RAND_MAX) ? _s32Max : (orxF2S((orx2F(u32Rand) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(_s32Max) + orxFLOAT_1 - orxS2F(_s32Min))) + orxS2F(_s32Min)));
 }
