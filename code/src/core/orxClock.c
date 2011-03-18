@@ -79,6 +79,8 @@
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
+#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.015f)
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -580,7 +582,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
     /* Waits for next time slice */
-    orxSystem_Delay(fDelay);
+    //orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
   }
 
   /* Done! */
