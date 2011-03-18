@@ -87,15 +87,16 @@ typedef struct __orxSHADER_PARAM_VALUE_t
 {
   orxLINKLIST_NODE    stNode;                             /**< Linklist node : 12 */
   orxSHADER_PARAM    *pstParam;                           /**< Param definition : 16 */
+  orxS32              s32ID;                              /**< Param ID : 20 */
 
-  orxS32              s32Index;                           /**< Param index : 20 */
+  orxS32              s32Index;                           /**< Param index : 24 */
 
   union
   {
-    orxFLOAT          fValue;                             /**< Float value : 24 */
-    const orxTEXTURE *pstValue;                           /**< Texture value : 24 */
-    orxVECTOR         vValue;                             /**< Vector value : 24 */
-  };                                                      /**< Union value : 32 */
+    orxFLOAT          fValue;                             /**< Float value : 28 */
+    const orxTEXTURE *pstValue;                           /**< Texture value : 28 */
+    orxVECTOR         vValue;                             /**< Vector value : 36 */
+  };                                                      /**< Union value : 36 */
 
 } orxSHADER_PARAM_VALUE;
 
@@ -605,7 +606,7 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
         }
       }
 
-      /* For all parameter values */
+      /* For all parameters */
       for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
           pstParam != orxNULL;
           pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
@@ -722,7 +723,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             case orxSHADER_PARAM_TYPE_FLOAT:
             {
               /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->pstParam->zName, pstParamValue->s32Index, pstParamValue->fValue);
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, pstParamValue->fValue);
 
               break;
             }
@@ -750,7 +751,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               }
 
               /* Sets it */
-              orxDisplay_SetShaderBitmap(_pstShader->hData, pstParamValue->pstParam->zName, pstParamValue->s32Index, pstBitmap);
+              orxDisplay_SetShaderBitmap(_pstShader->hData, pstParamValue->s32ID, pstBitmap);
 
               break;
             }
@@ -758,7 +759,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             case orxSHADER_PARAM_TYPE_VECTOR:
             {
               /* Sets it */
-              orxDisplay_SetShaderVector(_pstShader->hData, pstParamValue->pstParam->zName, pstParamValue->s32Index, &(pstParamValue->vValue));
+              orxDisplay_SetShaderVector(_pstShader->hData, pstParamValue->s32ID, &(pstParamValue->vValue));
 
               break;
             }
@@ -798,7 +799,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
 
               /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, stPayload.zParamName, stPayload.s32ParamIndex, stPayload.fValue);
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, stPayload.fValue);
 
               break;
             }
@@ -812,7 +813,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
 
               /* Sets it */
-              orxDisplay_SetShaderBitmap(_pstShader->hData, stPayload.zParamName, stPayload.s32ParamIndex, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
+              orxDisplay_SetShaderBitmap(_pstShader->hData, pstParamValue->s32ID, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
 
               break;
             }
@@ -826,7 +827,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
 
               /* Sets it */
-              orxDisplay_SetShaderVector(_pstShader->hData, stPayload.zParamName, stPayload.s32ParamIndex, &(stPayload.vValue));
+              orxDisplay_SetShaderVector(_pstShader->hData, pstParamValue->s32ID, &(stPayload.vValue));
 
               break;
             }
@@ -1150,8 +1151,19 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
     /* Success? */
     if(_pstShader->hData != orxHANDLE_UNDEFINED)
     {
+      orxSHADER_PARAM_VALUE *pstParamValue;
+
       /* Updates flags */
       orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_COMPILED, orxSHADER_KU32_FLAG_NONE);
+
+      /* For all parameter values */
+      for(pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamValueList));
+          pstParamValue != orxNULL;
+          pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
+      {
+        /* Gets its ID */
+        pstParamValue->s32ID = orxDisplay_GetParameterID(_pstShader->hData, pstParamValue->pstParam->zName, pstParamValue->s32Index, (pstParamValue->pstParam->eType == orxSHADER_PARAM_TYPE_TEXTURE) ? orxTRUE : orxFALSE);
+      }
     }
     else
     {
