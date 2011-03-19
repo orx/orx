@@ -298,11 +298,11 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
           }
         }
 
-        /* Has frame? */
-        if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
+        /* Has no body? */
+        if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
         {
-          /* Has no body? */
-          if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
+          /* Has frame? */
+          if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
           {
             /* Has speed? */
             if(orxVector_IsNull(&(pstObject->vSpeed)) == orxFALSE)
