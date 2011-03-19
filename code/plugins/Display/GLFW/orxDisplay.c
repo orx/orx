@@ -95,11 +95,7 @@ do                                                                        \
 
 #else /* __orxDEBUG__ */
 
-#define glASSERT()                                                        \
-do                                                                        \
-{                                                                         \
-  glGetError();                                                           \
-} while(orxFALSE)
+#define glASSERT()
 
 #endif /* __orxDEBUG__ */
 
