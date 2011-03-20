@@ -190,8 +190,8 @@ public class AnOrxActivity extends Activity {
 	}
 
 	// Java functions called from C
-	private static void createGLContext() {
-		mSurface.initEGL();
+	public static void createGLContext(int colorDepth, boolean depthBuffer) {
+		mSurface.initEGL(colorDepth, depthBuffer);
 		mInit = true;
 	}
 

@@ -72,7 +72,7 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		// Set the width and height variables in C before we start ORX so we
 		// haveit available on init
-		//AnOrxActivity.onNativeResize(width, height);
+		// AnOrxActivity.onNativeResize(width, height);
 
 		mORXThread = new Thread(new ORXRunner(), "ORXThread");
 		mORXThread.start();
@@ -115,18 +115,17 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 			setFocusableInTouchMode(true);
 			requestFocus();
 			AnOrxActivity.ORXThreadLock.notifyAll(); // to wake up the game
-														// thread
+			// thread
 		}
 	}
 
 	// Called when we lose the surface
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.v("ORX", "Surface destroyed");
-		
+
 		synchronized (AnOrxActivity.ORXThreadLock) {
 			AnOrxActivity.mHasSurface = false;
 		}
-
 
 	}
 
@@ -142,10 +141,9 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 			AnOrxActivity.mSizeChange = true;
 			AnOrxActivity.onNativeResize(width, height);
 			AnOrxActivity.ORXThreadLock.notify();
-			
+
 		}
-		
-		
+
 	}
 
 	// unused
@@ -200,10 +198,29 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 	}
 
 	// EGL functions
-	public boolean initEGL() {
-		Log.v("ORX", "Starting up");
+	public boolean initEGL(int colorDepth, boolean depthBuffer) {
+		int depthBufferSize = depthBuffer ? 16 : 0;
+		int r = 0, g = 0, b = 0, a = 0;
+		if (colorDepth == 16) {
+			r = 5;
+			g = 6;
+			b = 5;
+		} else if (colorDepth == 24) {
+			r = 8;
+			g = 8;
+			b = 8;
+		} else if (colorDepth == 32) {
+			r = 8;
+			g = 8;
+			b = 8;
+			a = 8;
+		}
 
-		this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		Log.v("ORX", "Starting up " + r + ", " + g + ", " + b + ", " + a + ", "
+				+ depthBufferSize);
+		if (a > 0) {
+			this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		}
 
 		try {
 
@@ -214,7 +231,8 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 			int[] version = new int[2];
 			egl.eglInitialize(dpy, version);
 
-			ConfigChooser configChooser = new ConfigChooser(8, 8, 8, 8, 16, 0);
+			ConfigChooser configChooser = new ConfigChooser(r, g, b, a,
+					depthBufferSize, 0);
 
 			EGLConfig config = configChooser.chooseConfig(egl, dpy);
 
@@ -350,7 +368,7 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 					num_config);
 
 			int numConfigs = num_config[0];
-			if (AnOrxActivity.usingGLES1){
+			if (AnOrxActivity.usingGLES1) {
 				numConfigs = 0;
 			}
 
@@ -505,8 +523,8 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 				int attribute = attributes[i];
 				String name = names[i];
 				if (egl.eglGetConfigAttrib(display, config, attribute, value)) {
-					Log.w("orxJAVA",
-							String.format("  %s: %d\n", name, value[0]));
+					Log.w("orxJAVA", String
+							.format("  %s: %d\n", name, value[0]));
 				} else {
 					// Log.w(TAG, String.format("  %s: failed\n", name));
 					while (egl.eglGetError() != EGL10.EGL_SUCCESS)
@@ -556,13 +574,12 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 				action = 1;
 			if (action >= 0) {
 				AnOrxActivity.onNativeTouch(action, event.getPointerId(i),
-						event.getX(i), event.getY(i),
-						(float) (event.getPressure(i) * 1000.0));
+						event.getX(i), event.getY(i), (float) (event
+								.getPressure(i) * 1000.0));
 
 			}
 		}
 
-		
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
@@ -577,12 +594,12 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void enableSensor(int sensortype, boolean enabled) {
 		// TODO: This uses getDefaultSensor - what if we have >1 accels?
 		if (enabled) {
-			mSensorManager.registerListener(this,
-					mSensorManager.getDefaultSensor(sensortype),
+			mSensorManager.registerListener(this, mSensorManager
+					.getDefaultSensor(sensortype),
 					SensorManager.SENSOR_DELAY_GAME, null);
 		} else {
-			mSensorManager.unregisterListener(this,
-					mSensorManager.getDefaultSensor(sensortype));
+			mSensorManager.unregisterListener(this, mSensorManager
+					.getDefaultSensor(sensortype));
 		}
 	}
 

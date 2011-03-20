@@ -253,7 +253,7 @@ static orxSTATUS orxFASTCALL orxAndroid_DefaultEventHandler(const orxEVENT *_pst
   return eResult;
 }
 
-orxBOOL ANDROID_createGLContext() {
+orxBOOL ANDROID_createGLContext(orxU32 u32Depth, orxBOOL depthBuffer) {
 	orxLOG( "ORX: ORX_create_context()\n");
 
   /* Registers default event handler */
@@ -261,7 +261,7 @@ orxBOOL ANDROID_createGLContext() {
 
 	bRenderingEnabled = true;
 
-	mEnv->CallStaticVoidMethod(mActivityInstance, midCreateGLContext);
+	mEnv->CallStaticVoidMethod(mActivityInstance, midCreateGLContext, u32Depth, depthBuffer!=orxFALSE);
 
 	//no use just a test could be deleted
 
@@ -328,7 +328,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 	//converte the ORX_JAVA_PACKAGE_PATH into string(the name of the method)
 	jclass cls = mEnv->FindClass(STR(ORX_JAVA_ACTITY_PATH));
 	mActivityInstance = cls;
-	midCreateGLContext = mEnv->GetStaticMethodID(cls, "createGLContext", "()V");
+	midCreateGLContext = mEnv->GetStaticMethodID(cls, "createGLContext", "(IZ)V");
 	midFlipBuffers = mEnv->GetStaticMethodID(cls, "flipBuffers", "()V");
 	orxLOG( "ORX:ok other\n");
 	//	midUpdateAudio = mEnv->GetStaticMethodID(cls, "updateAudio", "([B)V");

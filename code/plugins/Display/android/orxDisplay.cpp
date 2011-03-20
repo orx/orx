@@ -232,6 +232,7 @@ typedef struct __orxDISPLAY_STATIC_t {
 	orxDISPLAY_VERTEX astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
 	GLushort au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
 	orxCHAR acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
+	orxU32 u32Depth;
 
 } orxDISPLAY_STATIC;
 
@@ -265,7 +266,7 @@ extern void ANDROID_GL_SwapBuffer();
 /**
  * create egl context defined in jni and will call actual method in java
  */
-extern orxBOOL ANDROID_createGLContext();
+extern orxBOOL ANDROID_createGLContext(orxU32 u32Depth, orxBOOL depthBuffer);
 //orxBOOL (*ANDROID_createGLContext)();
 
 /**
@@ -1399,33 +1400,33 @@ orxSTATUS orxFASTCALL orxDisplay_android_GetBitmapData(orxBITMAP *_pstBitmap, or
 {
 	orxU32 u32BufferSize;
 	orxSTATUS eResult;
- 	
+
  	/* Checks */
  	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 	orxASSERT(_pstBitmap != orxNULL);
  	orxASSERT(_au8Data != orxNULL);
- 	
+
  	/* Gets buffer size */
  	u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
- 	
+
  	/* Is size matching? */
  	if(_u32ByteNumber == u32BufferSize)
  	{
  	GLuint uiFrameBuffer;
- 	
+
  	/* Generates frame buffer */
  	glGenFramebuffers(1, &uiFrameBuffer);
  	glASSERT();
-	
+
  	/* Binds frame buffer */
  	glBindFramebuffer(GL_FRAMEBUFFER, uiFrameBuffer);
  	glASSERT();
- 	
+
  	/* Links it to frame buffer */
  	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
 	glASSERT();
 	/* Updates result */
- 	
+
 	eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 	glASSERT();
 	/* Success? */
@@ -1446,10 +1447,10 @@ orxSTATUS orxFASTCALL orxDisplay_android_GetBitmapData(orxBITMAP *_pstBitmap, or
  	/* Gets line sizes */
  	u32LineSize = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
  	u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
- 	
+
  	/* Clears padding */
  	orxMemory_Zero(_au8Data, u32LineSize * orxF2U(_pstBitmap->fHeight));
- 	
+
  	/* For all lines */
  	for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
  	i < orxF2U(_pstBitmap->fHeight);
@@ -1458,19 +1459,19 @@ orxSTATUS orxFASTCALL orxDisplay_android_GetBitmapData(orxBITMAP *_pstBitmap, or
  	/* Copies data */
  	orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
  	}
- 	
+
  	/* Frees buffers */
  	orxMemory_Free(pu8ImageData);
  	}
- 	
+
  	/* unBinds frame buffer */
  	glBindFramebuffer(GL_FRAMEBUFFER, 0);
  	glASSERT();
- 	
+
  	/* Deletes it */
  	glDeleteFramebuffers(1, &uiFrameBuffer);
  	glASSERT();
- 	
+
  	/* Clears destination bitmap for a rebind */
  	sstDisplay.pstDestinationBitmap = orxNULL;
  	}
@@ -1478,13 +1479,13 @@ orxSTATUS orxFASTCALL orxDisplay_android_GetBitmapData(orxBITMAP *_pstBitmap, or
  	{
  	/* Logs message */
  	orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap's data <0x%X> as the buffer size is %ld when it should be %ls.", _pstBitmap, _u32ByteNumber, u32BufferSize);
- 	
+
  	/* Updates result */
  	eResult = orxSTATUS_FAILURE;
  	}
- 	
+
  	/* Done! */
- 	return eResult; 
+ 	return eResult;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_android_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
@@ -2203,7 +2204,13 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 					sstDisplay.pstScreen->fWidth);
 			orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT,
 					sstDisplay.pstScreen->fHeight);
-			orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
+//			orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
+
+			//set depth from config and default depth is 24bits.
+			sstDisplay.u32Depth = orxConfig_HasValue(
+					orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(
+					orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+
 
 			/* Depth buffer? */
 			if (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE) {
@@ -2214,14 +2221,15 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 				sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
 			}
 
-			orxLOG("display size %f,%f", sstDisplay.pstScreen->fWidth,
+			orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"display size %f,%f", sstDisplay.pstScreen->fWidth,
 					sstDisplay.pstScreen->fHeight);
 
 			/* Pops config section */
 			orxConfig_PopSection();
 
 			/* Creates OpenGL thread context */
-			if (ANDROID_createGLContext()) {
+			if (ANDROID_createGLContext(sstDisplay.u32Depth,(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER)
+					== orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER)) {
 
 				if (bShaderSupport) {
 					//open the gles2.0 and init its function pointers

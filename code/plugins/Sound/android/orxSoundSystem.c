@@ -436,7 +436,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_ANDROID_CreateFromSample(
 		const orxSOUNDSYSTEM_SAMPLE *_pstSample) {
 	orxSOUNDSYSTEM_SOUND *pstResult;
 
-	orxLOG("sound orx create from sample %d %x", _pstSample->bufferID,_pstSample);
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"sound orx create from sample %d %x", _pstSample->bufferID,_pstSample);
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSample != orxNULL);
 
@@ -500,7 +500,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_ANDROID_Delete(
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSound != orxNULL);
 
-	orxLOG("sound orx delete from sample");
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"sound orx delete from sample");
 	/* Is a music? */
 	if (_pstSound->sampleBuffer->bIsUsingMediaPlayer) {
 		(*globalEnv)->CallNonvirtualVoidMethod(globalEnv,
@@ -529,7 +529,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_ANDROID_Play(
 		orxSOUNDSYSTEM_SOUND *_pstSound) {
 	orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	orxLOG("sound orx play from sample %d %x",_pstSound->sampleBuffer->bufferID, _pstSound->sampleBuffer );
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"sound orx play from sample %d %x",_pstSound->sampleBuffer->bufferID, _pstSound->sampleBuffer );
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSound != orxNULL);
 
