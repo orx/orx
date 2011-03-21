@@ -997,22 +997,26 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if(pstChild != orxNULL)
           {
-            orxBODY *pstChildBody;
-
             /* Sets its owner */
             orxObject_SetOwner(pstChild, pstResult);
 
-            /* Gets its body */
-            pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
-
-            /* No valid joint can be added? */
-            if((pstBody == orxNULL)
-            || (pstChildBody == orxNULL)
-            || (i >= s32JointNumber)
-            || (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) == orxNULL))
+            /* Doesn't already have a parent? */
+            if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE(pstChild, FRAME)) != orxFALSE)
             {
-              /* Sets its parent */
-              orxObject_SetParent(pstChild, pstResult);
+              orxBODY *pstChildBody;
+
+              /* Gets its body */
+              pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
+
+              /* No valid joint can be added? */
+              if((pstBody == orxNULL)
+              || (pstChildBody == orxNULL)
+              || (i >= s32JointNumber)
+              || (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) == orxNULL))
+              {
+                /* Sets its parent */
+                orxObject_SetParent(pstChild, pstResult);
+              }
             }
 
             /* Updates flags */
