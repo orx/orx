@@ -53,6 +53,7 @@ extern "C" {
 #include "orxKernel.h"
 #include "orxUtils.h"
 
+#ifndef __orxPLUGIN__
 
 /***************************************************************************
  * Static variables                                                        *
@@ -344,6 +345,8 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
   #endif /* __orxMSVC__ */
 
 #endif /* __orxIPHONE__ */
+
+#endif /* __orxPLUGIN__ */
 
 #endif /*_orx_H_*/
 
