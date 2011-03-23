@@ -855,7 +855,7 @@ void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   /* Resets counters */
   _pstSpawner->u16ActiveObjectCounter = 0;
   _pstSpawner->u16TotalObjectCounter  = 0;
-  _pstSpawner->fWaveTimer             = _pstSpawner->fWaveDelay;
+  _pstSpawner->fWaveTimer             = orxFLOAT_0;
 
   /* For all objects */
   for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
@@ -1069,8 +1069,11 @@ orxSTATUS orxFASTCALL orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT 
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
-  /* Stores wave delay and timer */
-  _pstSpawner->fWaveTimer = _pstSpawner->fWaveDelay = (_fWaveDelay >= orxFLOAT_0) ? _fWaveDelay : orx2F(-1.0f);
+  /* Stores wave delay */
+  _pstSpawner->fWaveDelay = (_fWaveDelay >= orxFLOAT_0) ? _fWaveDelay : orx2F(-1.0f);
+
+  /* Resets wave timer */
+  _pstSpawner->fWaveTimer = orxFLOAT_0;
 
   /* Active? */
   if((_pstSpawner->fWaveDelay >= orxFLOAT_0) && (_pstSpawner->u32WaveSize > 0))
