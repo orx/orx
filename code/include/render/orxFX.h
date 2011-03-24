@@ -257,6 +257,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX,
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSpeed(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
+/** Adds a slot to an FX from config
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _zSlotID        Config ID
+ * return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zSlotID);
+
 /** Gets FX duration
  * @param[in]   _pstFX          Concerned FX
  * @return      orxFLOAT
