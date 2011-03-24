@@ -404,7 +404,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     }
     else
     {
-      __android_log_print(ANDROID_LOG_ERROR, "ORX", zBuffer);
+      __android_log_print(ANDROID_LOG_DEBUG, "ORX", zBuffer);
     }
 
 #else /* __orxANDROID__ */
