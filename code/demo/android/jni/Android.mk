@@ -12,11 +12,12 @@ ORXLIB     := ../../../lib/android
 ORXINCLUDE := ../../../include
 BOX2DLIB     := ../../../../extern/Box2D_2.1.3/lib/android
 BOX2DORXINCLUDE := ../../../../extern/Box2D_2.1.3/include
+SOILLIB    := ../../../../extern/SOIL/lib/android
 			   
 			  
 #--------- end of params set----------
 
-SOILLIB    := ../../../../extern/SOIL/lib/android
+
 			   
 # The namespace in Java file, with dots replaced with underscores
 ORX_JAVA_PACKAGE_PATH := org_orxproject_lib_AnOrxActivity

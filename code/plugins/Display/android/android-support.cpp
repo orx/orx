@@ -49,16 +49,12 @@ jclass mActivityInstance;
 //method signatures
 jmethodID midCreateGLContext;
 jmethodID midFlipBuffers;
-jmethodID midLoadImage;
 jmethodID midSaveScreenImage;
-jmethodID midRemoveImage;
 jmethodID midStartLoop;
 jmethodID midEndLoop;
 
 char basefolder[32];
 char appName[32];
-
-
 
 extern "C" int orxMain(int argc, char *argv[]);
 //extern "C" int Android_OnKeyDown(int keycode);
@@ -69,8 +65,8 @@ extern void ANDROID_OnResize(int iScreenWidth, int iScreenHeight);
 
 extern void ANDROID_SetShaderSupport(orxBOOL shaderSupport);
 
-extern void ANDROID_OnTouch(unsigned char action, unsigned int pointId, float x,
-    float y, float p);
+extern void ANDROID_OnTouch(unsigned char action, unsigned int pointId,
+		float x, float y, float p);
 
 extern void ANDROID_OnAccel(void *accelEventPtr, float x, float y, float z);
 
@@ -87,18 +83,15 @@ const char* mainAppPathStr;
 //Start up the ORX app
 extern "C" void JAVA_EXPORT_NAME(nativeInit)(JNIEnv* env, jobject obj) {
 
-	orxLOG( "orx init 0x%x", jAppPath);
-
 	mEnv = env;
 	bRenderingEnabled = true;
 	//	ANDROID_createGLContext();
 	jboolean isCopy = false;
-//	const char* mainAppPathStr = mEnv->GetStringUTFChars(jAppPath,NULL);
+	//	const char* mainAppPathStr = mEnv->GetStringUTFChars(jAppPath,NULL);
 
 	char* argv = (char*) malloc(64 * sizeof(argv));
 	sprintf(argv, "/sdcard/%s", mainAppPathStr);
-	orxLOG("the app path is %s", argv);
-//	mEnv->ReleaseStringUTFChars(jAppPath, mainAppPathStr);
+	//	mEnv->ReleaseStringUTFChars(jAppPath, mainAppPathStr);
 
 	orxMain(1, &argv);
 	free(argv);
@@ -107,16 +100,15 @@ extern "C" void JAVA_EXPORT_NAME(nativeInit)(JNIEnv* env, jobject obj) {
 extern "C" void JAVA_EXPORT_NAME(nativeSetShaderSupport)(JNIEnv* env,
 		jobject obj, bool bShaderSupport) {
 	if (bShaderSupport) {
-		ANDROID_SetShaderSupport( orxTRUE);
+		ANDROID_SetShaderSupport(orxTRUE);
 	} else {
-		ANDROID_SetShaderSupport( orxFALSE);
+		ANDROID_SetShaderSupport(orxFALSE);
 	}
 }
 
 extern "C" void JAVA_EXPORT_NAME(nativeSendFocusEvent)(JNIEnv* env,
 		jobject obj, int focusEventID) {
 
-	orxLOG("send event id is %d", focusEventID);
 	if (focusEventID == 0) {
 		//send background
 		if (orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND)
@@ -138,10 +130,6 @@ extern "C" void JAVA_EXPORT_NAME(onNativeKeyDown)(JNIEnv* env, jobject obj,
 		jint keycode) {
 
 	//	int r = Android_OnKeyDown(keycode);
-#ifdef DEBUG
-	orxLOG(
-			"ORX: native key down %d\n", keycode);
-#endif
 
 }
 
@@ -150,22 +138,12 @@ extern "C" void JAVA_EXPORT_NAME(onNativeKeyUp)(JNIEnv* env, jobject obj,
 		jint keycode) {
 
 	//	int r = Android_OnKeyUp(keycode);
-#ifdef DEBUG
-	orxLOG(
-			"ORX: native key up %d\n", keycode);
-#endif
 
 }
 
 //Touch
 extern "C" void JAVA_EXPORT_NAME(onNativeTouch)(JNIEnv* env, jobject obj,
 		jint action, int pointId, jfloat x, jfloat y, jfloat p) {
-
-#ifdef DEBUG
-	//	orxLOG( "ORX",
-	//			"ORX: native touch event %d @ %f/%f, pressure %f\n",
-	//			action, x, y, p);
-#endif
 
 	//TODO: Pass this off to the ORX multitouch stuff
 
@@ -183,14 +161,11 @@ extern "C" void JAVA_EXPORT_NAME(nativeQuit)(JNIEnv* env, jobject obj) {
 	//Inject a ORX_QUIT event
 	orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
 
-	orxLOG( "ORX: Native quit");
 }
 
 //Resize
 extern "C" void JAVA_EXPORT_NAME(onNativeResize)(JNIEnv* env, jobject obj,
 		jint width, jint height) {
-	orxLOG(
-			"ORX: Set screen size on init: %d/%d\n", width, height);
 	ANDROID_OnResize(width, height);
 }
 
@@ -211,57 +186,53 @@ extern "C" void JAVA_EXPORT_NAME(nativeSetAssetManager)(JNIEnv* env,
 extern "C" void JAVA_EXPORT_NAME(nativeSetMainAppPath)(JNIEnv* env,
 		jclass clazz, jstring mainAppPath) {
 	jAppPath = mainAppPath;
-	mainAppPathStr = mEnv->GetStringUTFChars(jAppPath,NULL);
+	mainAppPathStr = mEnv->GetStringUTFChars(jAppPath, NULL);
 }
 
 /*******************************************************************************
  Functions called by ORX into Java
  *******************************************************************************/
-static orxSTATUS orxFASTCALL orxAndroid_DefaultEventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+static orxSTATUS orxFASTCALL orxAndroid_DefaultEventHandler(
+		const orxEVENT *_pstEvent) {
+	orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+	/* Checks */
+	orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Frame start */
-    case orxSYSTEM_EVENT_GAME_LOOP_START:
-    {
-      mEnv->CallStaticIntMethod(mActivityInstance, midStartLoop);
+	/* Depending on event ID */
+	switch (_pstEvent->eID) {
+	/* Frame start */
+	case orxSYSTEM_EVENT_GAME_LOOP_START: {
+		mEnv->CallStaticIntMethod(mActivityInstance, midStartLoop);
 
-      break;
-    }
+		break;
+	}
 
-    /* Frame stop */
-    case orxSYSTEM_EVENT_GAME_LOOP_STOP:
-    {
-      mEnv->CallStaticIntMethod(mActivityInstance, midEndLoop);
+		/* Frame stop */
+	case orxSYSTEM_EVENT_GAME_LOOP_STOP: {
+		mEnv->CallStaticIntMethod(mActivityInstance, midEndLoop);
 
-      break;
-    }
+		break;
+	}
 
-    default:
-    {
-      break;
-    }
-  }
+	default: {
+		break;
+	}
+	}
 
-  /* Done! */
-  return eResult;
+	/* Done! */
+	return eResult;
 }
 
 orxBOOL ANDROID_createGLContext(orxU32 u32Depth, orxBOOL depthBuffer) {
-	orxLOG( "ORX: ORX_create_context()\n");
 
-  /* Registers default event handler */
-  orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxAndroid_DefaultEventHandler);
+	/* Registers default event handler */
+	orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxAndroid_DefaultEventHandler);
 
 	bRenderingEnabled = true;
 
-	mEnv->CallStaticVoidMethod(mActivityInstance, midCreateGLContext, u32Depth, depthBuffer!=orxFALSE);
+	mEnv->CallStaticVoidMethod(mActivityInstance, midCreateGLContext, u32Depth,
+			depthBuffer != orxFALSE);
 
 	//no use just a test could be deleted
 
@@ -278,23 +249,7 @@ void ANDROID_GL_SwapBuffer() {
 	mEnv->CallStaticVoidMethod(mActivityInstance, midFlipBuffers);
 }
 
-jobject ANDROID_loadImage(JNIEnv** env,
-		const orxSTRING filename) {
-	*env = mEnv;
-	static char filenamex[128];
-	sprintf(filenamex, "%s", filename);
-	orxLOG("image path is %s\n", filenamex );
-	jstring filePath = mEnv->NewStringUTF(filenamex);
-	return mEnv->CallStaticObjectMethod(mActivityInstance, midLoadImage,
-			filePath);
-}
-
-void ANDROID_removeImage() {
-	mEnv->CallStaticVoidMethod(mActivityInstance, midRemoveImage);
-}
-
-void ANDROID_saveScreenImage(const orxSTRING filename,
-		orxBOOL bPNG) {
+void ANDROID_saveScreenImage(const orxSTRING filename, orxBOOL bPNG) {
 	jstring filenamex = mEnv->NewStringUTF(filename);
 	mEnv->CallStaticVoidMethod(mActivityInstance, midSaveScreenImage,
 			filenamex, bPNG != 0);
@@ -323,50 +278,23 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 	globalEnv = mEnv;
 	globalVM = vm;
 
-	orxLOG( "JNI: OnLoad class is %s", STR(ORX_JAVA_ACTITY_PATH));
-
 	//converte the ORX_JAVA_PACKAGE_PATH into string(the name of the method)
 	jclass cls = mEnv->FindClass(STR(ORX_JAVA_ACTITY_PATH));
 	mActivityInstance = cls;
-	midCreateGLContext = mEnv->GetStaticMethodID(cls, "createGLContext", "(IZ)V");
+	midCreateGLContext = mEnv->GetStaticMethodID(cls, "createGLContext",
+			"(IZ)V");
 	midFlipBuffers = mEnv->GetStaticMethodID(cls, "flipBuffers", "()V");
-	orxLOG( "ORX:ok other\n");
-	//	midUpdateAudio = mEnv->GetStaticMethodID(cls, "updateAudio", "([B)V");
-	midLoadImage = mEnv->GetStaticMethodID(cls, "loadImage",
-			"(Ljava/lang/String;)Ljava/lang/Object;");
-	orxLOG( "ORX: loadImage\n");
 	midSaveScreenImage = mEnv->GetStaticMethodID(cls, "saveScreenImage",
 			"(Ljava/lang/String;Z)V");
-	orxLOG( "ORX: saveScreenImage\n");
-	midRemoveImage = mEnv->GetStaticMethodID(cls, "removeImage", "()V");
-	orxLOG( "ORX: removeImage\n");
 	midStartLoop = mEnv->GetStaticMethodID(cls, "startLoop", "()I");
 	midEndLoop = mEnv->GetStaticMethodID(cls, "endLoop", "()I");
 
-	if (!midCreateGLContext || !midFlipBuffers || !midLoadImage
-			|| !midSaveScreenImage || !midStartLoop || !midEndLoop) {
-		orxLOG( "ORX: Bad mids\n");
-	} else {
-#ifdef DEBUG
-		orxLOG( "ORX: Good mids\n");
-#endif
+	if (!midCreateGLContext || !midFlipBuffers || !midSaveScreenImage
+			|| !midStartLoop || !midEndLoop) {
+		orxLOG("ORX: Bad mids\n midCreateGLContext %d midFlipBuffers, %d",midCreateGLContext,midFlipBuffers);
 	}
-
 	//init the asset
 	OrxAPKInit();
-
-
-
-
-//	ANDROID_GL_SwapBuffer = ANDROID_GL_SwapBuffer_impl;
-//	ANDROID_createGLContext = ANDROID_createGLContext_impl;
-//	ANDROID_loadImage = ANDROID_loadImage_impl;
-//	ANDROID_removeImage = ANDROID_removeImage_impl;
-//	ANDROID_saveScreenImage = ANDROID_saveScreenImage_impl;
-
-	//	JNI_OnStaticLoad_openal(vm, reserved);
-	//	globalEnv = mEnv;
-	orxLOG("sound orx jni load end %x  %x ", globalEnv, mEnv);
 
 	return JNI_VERSION_1_4;
 }

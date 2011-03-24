@@ -20,7 +20,7 @@ public class OrxDemo extends AnOrxActivity {
 		// orxAppLibName = "orxApp";
 		// the lib name of this application
 		// this three should be set in advance of creating father AnOrxActivity
-		isDebug = false;
+		isDebug = false; 
 		//when you need to run in the emulator it should set to true
 		usingGLES1 = false;
 		appPath = "bounce_demo";

@@ -131,23 +131,6 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 extern "C" {
 #endif
 
-//#ifdef __dylib__
-//jint JNI_OnLoad(JavaVM* vm, void* reserved) {
-//#endif
-//#ifdef __stlib__
-//jint JNI_OnStaticLoad_ORX(JavaVM* vm, void* reserved) {
-//#endif
-//globalVM = vm;
-//jint result = -1;
-//
-//if ((*vm)->GetEnv(vm, (void **) &globalEnv, JNI_VERSION_1_2) != JNI_OK) {
-//	orxLOG("sound orx jni load error");
-//	return result;
-//}
-//
-//return JNI_VERSION_1_2;
-//}
-
 static JNIEnv* GetEnv() {
 	JNIEnv* env = NULL;
 	if (globalVM)
@@ -155,8 +138,6 @@ static JNIEnv* GetEnv() {
 	return env;
 }
 
-//typedef struct __orxSOUNDSYSTEM_SOUND_t   orxSOUNDSYSTEM_SOUND;
-//typedef struct __orxSOUNDSYSTEM_SAMPLE_t  orxSOUNDSYSTEM_SAMPLE;
 /**
  * to stop the sound  and music after the game is pausing
  */
@@ -223,22 +204,6 @@ orxSTATUS /*orxFASTCALL*/orxSoundSystem_ANDROID_Init() {
 
 		/* Gets dimension ratio */
 		orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
-		//		fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
-		//
-		//		/* Valid? */
-		//		if(fRatio > orxFLOAT_0)
-		//		{
-		//			/* Stores it */
-		//			sstSoundSystem.fDimensionRatio = fRatio;
-		//		}
-		//		else
-		//		{
-		//			/* Stores default one */
-		//			sstSoundSystem.fDimensionRatio = (orxFLOAT)orxSoundSystem::sfDefaultDimensionRatio;
-		//		}
-		//
-		//		/* Stores reciprocal dimenstion ratio */
-		//		sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
 		/**
 		 * the ratio and DimensionRatio can not be set when using mediaplayer and soundpool
@@ -272,9 +237,6 @@ orxSTATUS /*orxFASTCALL*/orxSoundSystem_ANDROID_Init() {
 					mediaPlayerMethodList.cMediaPlayer, "prepare", "()V");
 			mediaPlayerMethodList.mUnLoad = (*env)->GetMethodID(env,
 					mediaPlayerMethodList.cMediaPlayer, "release", "()V");
-			//			mediaPlayerMethodList.mSetDataSource = (*env)->GetMethodID(env,
-			//					mediaPlayerMethodList.cMediaPlayer, "setDataSource",
-			//					"(Ljava/lang/String;)V");
 
 			mediaPlayerMethodList.mSetDataSource = (*env)->GetStaticMethodID(
 					env, cls, "setMediaPlayerDataSource",
@@ -349,6 +311,10 @@ orxSTATUS /*orxFASTCALL*/orxSoundSystem_ANDROID_Init() {
 		eResult = orxSTATUS_SUCCESS;
 	}
 
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND,"NO support to set/get Listener Position \n O support to Set/Get global volumn, you can use android system button to replace it");
+
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "NO support to get/set Attenuation");
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "NO support to Set/get Reference Distance");
 	/* Done! */
 	return eResult;
 }
@@ -378,7 +344,6 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_ANDROID_LoadSample(
 	static char filenamex[128] = { 0 };
 
 	sprintf(filenamex, "%s", _zFilename);
-	orxLOG("load sample %s\n", filenamex);
 
 	jstring filenameStr = (*globalEnv)->NewStringUTF(globalEnv, filenamex);
 
@@ -399,7 +364,6 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_ANDROID_LoadSample(
 	pstResult = orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SAMPLE),
 			orxMEMORY_TYPE_MAIN);
 	pstResult->bufferID = soundId;
-	orxLOG("the sample is %d %x\n", pstResult->bufferID, pstResult );
 
 	pstResult->bIsUsingMediaPlayer = orxFALSE;
 	//	usleep(5);
@@ -436,7 +400,6 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_ANDROID_CreateFromSample(
 		const orxSOUNDSYSTEM_SAMPLE *_pstSample) {
 	orxSOUNDSYSTEM_SOUND *pstResult;
 
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"sound orx create from sample %d %x", _pstSample->bufferID,_pstSample);
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSample != orxNULL);
 
@@ -460,7 +423,6 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_ANDROID_CreateStreamFromFile(
 	static char filenamex[128] = { 0 };
 
 	sprintf(filenamex, "%s", _zFilename);
-	orxLOG("load sample from file %s\n", filenamex);
 
 	jstring filenameStr = (*globalEnv)->NewStringUTF(globalEnv, filenamex);
 
@@ -500,7 +462,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_ANDROID_Delete(
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSound != orxNULL);
 
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"sound orx delete from sample");
 	/* Is a music? */
 	if (_pstSound->sampleBuffer->bIsUsingMediaPlayer) {
 		(*globalEnv)->CallNonvirtualVoidMethod(globalEnv,
@@ -529,7 +490,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_ANDROID_Play(
 		orxSOUNDSYSTEM_SOUND *_pstSound) {
 	orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"sound orx play from sample %d %x",_pstSound->sampleBuffer->bufferID, _pstSound->sampleBuffer );
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSound != orxNULL);
 
@@ -546,7 +506,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_ANDROID_Play(
 				soundpoolMethodList.mPlay, _pstSound->sampleBuffer->bufferID,
 				_pstSound->volumn, _pstSound->volumn, 1, 0, _pstSound->pitch);
 		if (streamId == 0) {
-			orxLOG("failure maybe it is not ready");
+			orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "sound play failure maybe it is not ready");
 			return orxSTATUS_FAILURE;
 		}
 		_pstSound->soundPoolStreamID = streamId;
@@ -803,67 +763,6 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_ANDROID_GetStatus(
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSound != orxNULL);
 
-	//	/* Is a music? */
-	//	if (_pstSound->bIsMusic != false) {
-	//		/* Depending on music status */
-	//		switch (_pstSound->poMusic->GetStatus()) {
-	//case		sf::Music::Playing:
-	//		{
-	//			/* Updates result */
-	//			eResult = orxSOUNDSYSTEM_STATUS_PLAY;
-	//
-	//			break;
-	//		}
-	//
-	//		case sf::Music::Paused:
-	//		{
-	//			/* Updates result */
-	//			eResult = orxSOUNDSYSTEM_STATUS_PAUSE;
-	//
-	//			break;
-	//		}
-	//
-	//		case sf::Music::Stopped:
-	//		default:
-	//		{
-	//			/* Updates result */
-	//			eResult = orxSOUNDSYSTEM_STATUS_STOP;
-	//
-	//			break;
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	/* Depending on sound status */
-	//	switch(_pstSound->poSound->GetStatus())
-	//	{
-	//		case sf::Sound::Playing:
-	//		{
-	//			/* Updates result */
-	//			eResult = orxSOUNDSYSTEM_STATUS_PLAY;
-	//
-	//			break;
-	//		}
-	//
-	//		case sf::Sound::Paused:
-	//		{
-	//			/* Updates result */
-	//			eResult = orxSOUNDSYSTEM_STATUS_PAUSE;
-	//
-	//			break;
-	//		}
-	//
-	//		case sf::Sound::Stopped:
-	//		default:
-	//		{
-	//			/* Updates result */
-	//			eResult = orxSOUNDSYSTEM_STATUS_STOP;
-	//
-	//			break;
-	//		}
-	//	}
-	//}
 
 	/* Done! */
 	return eResult;

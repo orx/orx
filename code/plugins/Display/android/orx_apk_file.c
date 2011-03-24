@@ -60,16 +60,10 @@ extern JNIEnv *mEnv;
 extern JavaVM *mVM;
 
 void OrxAPKInit() {
-	__android_log_print(ANDROID_LOG_DEBUG, "apk", "apk init\n");
 	JNIEnv *env = mEnv;
-	__android_log_print(ANDROID_LOG_DEBUG, "apk", "env = %p\n", env);
 	fileHelper = (*env)->FindClass(env, "org/orxproject/lib/AnOrxAPKFileHelper");
-	__android_log_print(ANDROID_LOG_DEBUG, "apk", "class = %s\n",
-			"org/orxproject/lib/AnOrxAPKFileHelper");
-	__android_log_print(ANDROID_LOG_DEBUG, "apk", "class = %d\n", fileHelper);
 	jmethodID getInstance = (*env)->GetStaticMethodID(env, fileHelper,
 			"getInstance", "()Lorg/orxproject/lib/AnOrxAPKFileHelper;");
-	__android_log_print(ANDROID_LOG_DEBUG, "apk", "inst = %d\n", getInstance);
 	AnOrxAPKFileClass
 			= (*env)->FindClass(
 					env,"org/orxproject/lib/AnOrxAPKFileHelper$AnOrxAPKFile");

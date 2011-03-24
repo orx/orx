@@ -260,37 +260,18 @@ static orxBOOL bShaderSupport = orxFALSE;
  * on jni, it will be implemented and invoke the actual method defined in java module.
  * to swap the buffer.
  */
-//extern void ANDROID_GL_SwapBuffer();
 extern void ANDROID_GL_SwapBuffer();
 
 /**
  * create egl context defined in jni and will call actual method in java
  */
 extern orxBOOL ANDROID_createGLContext(orxU32 u32Depth, orxBOOL depthBuffer);
-//orxBOOL (*ANDROID_createGLContext)();
-
-/**
- * implement it in jni. and will call actual method in java
- * @filename: the path of the image and the base path is on the asset folder
- * return bitmap object
- */
-extern jobject ANDROID_loadImage(JNIEnv** env, const orxSTRING filename);
-//jobject (*ANDROID_loadImage)(JNIEnv** env, const orxSTRING filename);
-
-/**
- * in order to release the image resource in Java, it will be called by orx
- * and release the last loaded image resource
- * so don't forget to invoke it after finishing getting image pixel.
- */
-extern void ANDROID_removeImage();
-//void (*ANDROID_removeImage)();
 
 /**
  * implement in jni and call actual method in java
  * save the image in java
  */
 extern void ANDROID_saveScreenImage(const orxSTRING filename, orxBOOL bPNG);
-//void (*ANDROID_saveScreenImage)(const orxSTRING filename, orxBOOL bPNG);
 
 //#ifdef __cplusplus
 //extern "C" {
@@ -298,17 +279,15 @@ extern void ANDROID_saveScreenImage(const orxSTRING filename, orxBOOL bPNG);
 
 void ANDROID_SetShaderSupport(orxBOOL shaderSupport) {
 	bShaderSupport = shaderSupport;
-	orxLOG("shader support is %d", shaderSupport);
 }
 
 /**
  * will be called in jni module.
  */
 void ANDROID_OnResize(int iScreenWidth, int iScreenHeight) {
-	orxLOG("resize %d,%d start", orxAndroidScreenWidth, orxAndroidScreenHeight);
 	orxAndroidScreenWidth = iScreenWidth;
 	orxAndroidScreenHeight = iScreenHeight;
-	orxLOG("resize %d,%d", orxAndroidScreenWidth, orxAndroidScreenHeight);
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY,"resize %d,%d", orxAndroidScreenWidth, orxAndroidScreenHeight);
 
 }
 
@@ -1829,7 +1808,6 @@ orxBITMAP *orxFASTCALL orxDisplay_android_LoadBitmap(const orxSTRING _zFilename)
 	/* Checks */
 	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-	orxLOG("load the bitmap %s", _zFilename);
 
 	//open the asset file and save them into memory
 	apkFile = OrxAPKOpen(_zFilename);
@@ -1847,7 +1825,6 @@ orxBITMAP *orxFASTCALL orxDisplay_android_LoadBitmap(const orxSTRING _zFilename)
 	/* Valid? */
 	if(pu8ImageData != NULL)
 	{
-		orxLOG("start loading data no problems", _zFilename);
 		/* Allocates bitmap */
 		pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
@@ -1938,7 +1915,7 @@ orxBITMAP *orxFASTCALL orxDisplay_android_LoadBitmap(const orxSTRING _zFilename)
 		SOIL_free_image_data(pu8ImageData);
 	}
 
-	orxLOG("loading %d", pstResult);
+	orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY,"loading %d", pstResult);
 
 	/* Done! */
 	return pstResult;
@@ -2209,7 +2186,7 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 			//set depth from config and default depth is 24bits.
 			sstDisplay.u32Depth = orxConfig_HasValue(
 					orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(
-					orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+					orxDISPLAY_KZ_CONFIG_DEPTH) : 32;
 
 
 			/* Depth buffer? */
@@ -2221,7 +2198,7 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 				sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
 			}
 
-			orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM,"display size %f,%f", sstDisplay.pstScreen->fWidth,
+			orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY,"display size %f,%f", sstDisplay.pstScreen->fWidth,
 					sstDisplay.pstScreen->fHeight);
 
 			/* Pops config section */
@@ -2238,10 +2215,9 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 
 					gles2LibHandler = dlopen("libGLESv2.so", RTLD_LAZY);
 					orxBOOL functionStatus = orxTRUE;
-					orxLOG("pointer is 0x%x", gles2LibHandler);
 
 					if (!gles2LibHandler) {
-						orxLOG("error when opening gles lib %s", dlerror());
+						orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY,"error when opening gles lib %s", dlerror());
 						/* Deletes banks */
 						orxBank_Delete(sstDisplay.pstBitmapBank);
 						sstDisplay.pstBitmapBank = orxNULL;
@@ -2282,7 +2258,7 @@ orxSTATUS orxFASTCALL orxDisplay_android_Init() {
 
 
 					if (functionStatus == orxFALSE) {
-						orxLOG("error when loading gles function pointer");
+						orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY,"error when loading gles function pointer");
 
 						/* Deletes banks */
 						orxBank_Delete(sstDisplay.pstBitmapBank);
