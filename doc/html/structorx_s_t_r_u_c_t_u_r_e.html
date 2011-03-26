@@ -11,7 +11,7 @@
 <div class="navigation" id="top">
   <div class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="main.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
@@ -37,17 +37,19 @@
 </div>
 <div class="contents">
 <!-- doxytag: class="orxSTRUCTURE" -->
-<p><code>#include &lt;orxStructure.h&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ac258b6e7e5c43edcf15b8adba02c3553">eID</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxHANDLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723">hStorageNode</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ac60583c7abbfc6d1349862079943605f">s32RefCounter</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef">u32Flags</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#a0b9023956a7ed7f0aac9e7dec8f45ffb">u32RefCounter</a></td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>Public structure (Must be first derived structure member!) </p>
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00156">156</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 <hr/><h2>Field Documentation</h2>
 <a class="anchor" id="ac258b6e7e5c43edcf15b8adba02c3553"></a><!-- doxytag: member="orxSTRUCTURE::eID" ref="ac258b6e7e5c43edcf15b8adba02c3553" args="" -->
 <div class="memitem">
@@ -60,6 +62,8 @@ Data Fields</h2></td></tr>
 </div>
 <div class="memdoc">
 <p>Structure ID : 4 </p>
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00158">158</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -75,6 +79,24 @@ Data Fields</h2></td></tr>
 <div class="memdoc">
 <p>Internal storage node handle : 16 </p>
 
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00161">161</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac60583c7abbfc6d1349862079943605f"></a><!-- doxytag: member="orxSTRUCTURE::s32RefCounter" ref="ac60583c7abbfc6d1349862079943605f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxU32 <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ac60583c7abbfc6d1349862079943605f">orxSTRUCTURE::s32RefCounter</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Reference counter : 8 </p>
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00159">159</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="ae8d2ddfc9af63e37ccf5b6b11f3501ef"></a><!-- doxytag: member="orxSTRUCTURE::u32Flags" ref="ae8d2ddfc9af63e37ccf5b6b11f3501ef" args="" -->
@@ -89,24 +111,12 @@ Data Fields</h2></td></tr>
 <div class="memdoc">
 <p>Flags : 12 </p>
 
-</div>
-</div>
-<a class="anchor" id="a0b9023956a7ed7f0aac9e7dec8f45ffb"></a><!-- doxytag: member="orxSTRUCTURE::u32RefCounter" ref="a0b9023956a7ed7f0aac9e7dec8f45ffb" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxU32 <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#a0b9023956a7ed7f0aac9e7dec8f45ffb">orxSTRUCTURE::u32RefCounter</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Reference counter : 8 </p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00160">160</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/object/<a class="el" href="orx_structure_8h.html">orxStructure.h</a></li>
+<li>include/object/<a class="el" href="orx_structure_8h_source.html">orxStructure.h</a></li>
 </ul>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

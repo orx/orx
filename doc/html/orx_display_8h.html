@@ -11,7 +11,7 @@
 <div class="navigation" id="top">
   <div class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="main.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
@@ -36,13 +36,15 @@
 <h1>include/display/orxDisplay.h File Reference</h1>  </div>
 </div>
 <div class="contents">
-<code>#include &quot;<a class="el" href="orx_include_8h.html">orxInclude.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="orx_plugin_core_8h.html">plugin/orxPluginCore.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="orx_bank_8h.html">memory/orxBank.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="orx_hash_table_8h.html">utils/orxHashTable.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="orx_string_8h.html">utils/orxString.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="orx_link_list_8h.html">utils/orxLinkList.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_include_8h_source.html">orxInclude.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_plugin_core_8h_source.html">plugin/orxPluginCore.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_vector_8h_source.html">math/orxVector.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_bank_8h_source.html">memory/orxBank.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_hash_table_8h_source.html">utils/orxHashTable.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_string_8h_source.html">utils/orxString.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_link_list_8h_source.html">utils/orxLinkList.h</a>&quot;</code><br/>
+
+<p><a href="orx_display_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -127,6 +129,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad115c2a3c5a27410cc1509bb100bf44c">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae1da1268cc2137d50a7026d1c29e3a2a">orxDisplay_GetBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad88758772634d94e250d0163567af051">orxDisplay_GetBitmapSize</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab67814d8200a6d3f0348fba25be8981d">orxDisplay_GetParameterID</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga023526bf404541a05221652a94850c34">orxDisplay_GetScreenBitmap</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga16f67c9a5e6bd6bf733c3bc2bc4c7522">orxDisplay_GetScreenSize</a> (orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <br class="typebreak"/>
@@ -145,9 +148,9 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239">orxDisplay_SetBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad4098ceb20034f92eabf178087d29b27">orxDisplay_SetDestinationBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga26e2f135b978a2dc39e53a8465940e42">orxDisplay_SetFullScreen</a> (orxBOOL _bFullScreen)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae4fadb5057ddccfb2d4eee3a5343d094">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga8411f4a23ff79e6e803fd6adc064a069">orxDisplay_SetShaderFloat</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga2a66739a32b74ca8e3722153eb3e9833">orxDisplay_SetShaderVector</a> (orxHANDLE _hShader, const orxSTRING _zParam, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvValue)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae35b6b44dc14c72c07b9eac939938653">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, orxS32 _s32ID, const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga6713394aee70a8c115ff79ac41f01b68">orxDisplay_SetShaderFloat</a> (orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga00911c79d8a038e402e118b8cb6098c0">orxDisplay_SetShaderVector</a> (orxHANDLE _hShader, orxS32 _s32ID, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvValue)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga8484ff566cd9b6d1d352de05f7c889d6">orxDisplay_Setup</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9d682325a94ee3d0c1d9ae22c3ba3ed2">orxDisplay_SetVideoMode</a> (const <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaaca19838576b060931165457e0cd31b4">orxDisplay_StartShader</a> (const orxHANDLE _hShader)</td></tr>
@@ -160,6 +163,8 @@ Functions</h2></td></tr>
 <dl class="date"><dt><b>Date:</b></dt><dd>23/04/2003 </dd></dl>
 <dl class="author"><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd></dd></dl>
+
+<p>Definition in file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 <hr/><h2>Define Documentation</h2>
 <a class="anchor" id="a39fb6fe2eb922c1b9f6d4434cd4f7d0a"></a><!-- doxytag: member="orxDisplay.h::orxCOLOR_GET_RGB_COMPONENT" ref="a39fb6fe2eb922c1b9f6d4434cd4f7d0a" args="(RESULT, ALT, CHROMA, HUE)" -->
 <div class="memitem">

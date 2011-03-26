@@ -11,7 +11,7 @@
 <div class="navigation" id="top">
   <div class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="main.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
@@ -37,21 +37,23 @@
 </div>
 <div class="contents">
 <!-- doxytag: class="orxSOUND_EVENT_PAYLOAD" -->
-<p><code>#include &lt;orxSound.h&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="orx_sound_8h_source.html">orxSound.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr><td class="memItemLeft" >union {</td></tr>
 <tr><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a4d5dfe7a57f3ddcf6be0c804e3d0f023">pstSound</a></td></tr>
 <tr><td class="memItemLeft" >&#160;&#160;&#160;struct {</td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___r_e_c_o_r_d_i_n_g___i_n_f_o.html">orxSOUND_RECORDING_INFO</a>&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a1af267de5a2914f7d739b3b11401ed87">stInfo</a></td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___r_e_c_o_r_d_i_n_g___p_a_c_k_e_t.html">orxSOUND_RECORDING_PACKET</a>&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ab049e5cd92301514a494b8e1f169a13f">stPacket</a></td></tr>
-<tr><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a9bdf8649c2c462e1611c144f2e0ddc5e">stRecording</a></td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o.html">orxSOUND_STREAM_INFO</a>&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad09d9ed476407093979ce0038a3db767">stInfo</a></td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html">orxSOUND_STREAM_PACKET</a>&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a84e438192a0b369699f3d96d510fda17">stPacket</a></td></tr>
+<tr><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a88ed130fc60d8c89a6d24e93a7ea9018">stStream</a></td></tr>
 <tr><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a668d783111061ec60e45f34789b46c2b">zSoundName</a></td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>Sound event payload </p>
+
+<p>Definition at line <a class="el" href="orx_sound_8h_source.html#l00111">111</a> of file <a class="el" href="orx_sound_8h_source.html">orxSound.h</a>.</p>
 <hr/><h2>Field Documentation</h2>
 <a class="anchor" id="a13174473160e96497466f6fad73bf7d1"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::@27" ref="a13174473160e96497466f6fad73bf7d1" args="" -->
 <div class="memitem">
@@ -63,7 +65,7 @@ Data Fields</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Recording : 24 </p>
+<p>Stream : 24 </p>
 
 </div>
 </div>
@@ -79,42 +81,48 @@ Data Fields</h2></td></tr>
 <div class="memdoc">
 <p>Sound reference : 8 </p>
 
+<p>Definition at line <a class="el" href="orx_sound_8h_source.html#l00117">117</a> of file <a class="el" href="orx_sound_8h_source.html">orxSound.h</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="a1af267de5a2914f7d739b3b11401ed87"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::stInfo" ref="a1af267de5a2914f7d739b3b11401ed87" args="" -->
+<a class="anchor" id="ad09d9ed476407093979ce0038a3db767"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::stInfo" ref="ad09d9ed476407093979ce0038a3db767" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structorx_s_o_u_n_d___r_e_c_o_r_d_i_n_g___i_n_f_o.html">orxSOUND_RECORDING_INFO</a> <a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a1af267de5a2914f7d739b3b11401ed87">orxSOUND_EVENT_PAYLOAD::stInfo</a></td>
+          <td class="memname"><a class="el" href="structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o.html">orxSOUND_STREAM_INFO</a> <a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad09d9ed476407093979ce0038a3db767">orxSOUND_EVENT_PAYLOAD::stInfo</a></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Sound record info : 16 </p>
 
+<p>Definition at line <a class="el" href="orx_sound_8h_source.html#l00121">121</a> of file <a class="el" href="orx_sound_8h_source.html">orxSound.h</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="ab049e5cd92301514a494b8e1f169a13f"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::stPacket" ref="ab049e5cd92301514a494b8e1f169a13f" args="" -->
+<a class="anchor" id="a84e438192a0b369699f3d96d510fda17"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::stPacket" ref="a84e438192a0b369699f3d96d510fda17" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structorx_s_o_u_n_d___r_e_c_o_r_d_i_n_g___p_a_c_k_e_t.html">orxSOUND_RECORDING_PACKET</a> <a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ab049e5cd92301514a494b8e1f169a13f">orxSOUND_EVENT_PAYLOAD::stPacket</a></td>
+          <td class="memname"><a class="el" href="structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html">orxSOUND_STREAM_PACKET</a> <a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a84e438192a0b369699f3d96d510fda17">orxSOUND_EVENT_PAYLOAD::stPacket</a></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 <p>Sound record packet : 24 </p>
 
+<p>Definition at line <a class="el" href="orx_sound_8h_source.html#l00122">122</a> of file <a class="el" href="orx_sound_8h_source.html">orxSound.h</a>.</p>
+
 </div>
 </div>
-<a class="anchor" id="a9bdf8649c2c462e1611c144f2e0ddc5e"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::stRecording" ref="a9bdf8649c2c462e1611c144f2e0ddc5e" args="" -->
+<a class="anchor" id="a88ed130fc60d8c89a6d24e93a7ea9018"></a><!-- doxytag: member="orxSOUND_EVENT_PAYLOAD::stStream" ref="a88ed130fc60d8c89a6d24e93a7ea9018" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct { ... }   <a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a9bdf8649c2c462e1611c144f2e0ddc5e">orxSOUND_EVENT_PAYLOAD::stRecording</a></td>
+          <td class="memname">struct { ... }   <a class="el" href="structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a88ed130fc60d8c89a6d24e93a7ea9018">orxSOUND_EVENT_PAYLOAD::stStream</a></td>
         </tr>
       </table>
 </div>
@@ -134,10 +142,12 @@ Data Fields</h2></td></tr>
 <div class="memdoc">
 <p>Sound name : 4 </p>
 
+<p>Definition at line <a class="el" href="orx_sound_8h_source.html#l00113">113</a> of file <a class="el" href="orx_sound_8h_source.html">orxSound.h</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/sound/<a class="el" href="orx_sound_8h.html">orxSound.h</a></li>
+<li>include/sound/<a class="el" href="orx_sound_8h_source.html">orxSound.h</a></li>
 </ul>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

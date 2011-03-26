@@ -2104,6 +2104,84 @@ orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_
   return eResult;
 }
 
+/** Sets self flags of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _u16SelfFlags   Self flags to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Sets self flags */
+  eResult = orxPhysics_SetSelfFlags(_pstBodyPart->pstData, _u16SelfFlags);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets check mask of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _u16CheckMask   Check mask to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Sets check mask */
+  eResult = orxPhysics_SetCheckMask(_pstBodyPart->pstData, _u16CheckMask);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets self flags of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @return Self flags of the physical body part
+ */
+orxU16 orxFASTCALL orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart)
+{
+  orxU16 u16Result;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets self flags */
+  u16Result = orxPhysics_GetSelfFlags(_pstBodyPart->pstData);
+
+  /* Done! */
+  return u16Result;
+}
+
+/** Gets check mask of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @return Check mask of the physical body part
+ */
+orxU16 orxFASTCALL orxBody_GetCheckMask(const orxBODY_PART *_pstBodyPart)
+{
+  orxU16 u16Result;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets check mask */
+  u16Result = orxPhysics_GetCheckMask(_pstBodyPart->pstData);
+
+  /* Done! */
+  return u16Result;
+}
+
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvStart        Start of raycast
  * @param[in]   _pvEnd          End of raycast

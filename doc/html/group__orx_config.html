@@ -11,7 +11,7 @@
 <div class="navigation" id="top">
   <div class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="main.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
@@ -80,6 +80,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gad42bd0a8612fbe43d17a887f7149e4a0">orxConfig_HasSection</a> (const orxSTRING _zSectionName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gad57211f9017325df09ecc0fd4414eef3">orxConfig_HasValue</a> (const orxSTRING _zKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5f188331baaf549aa47f31375cb79016">orxConfig_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga365019394fbad0e1d52f88edf4da7ab5">orxConfig_IsInheritedValue</a> (const orxSTRING _zKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gab7d1fdec8e820cd684cef7987cf73ba0">orxConfig_IsList</a> (const orxSTRING _zKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaf36ad6ebff7b59ac6d6c03647786d174">orxConfig_Load</a> (const orxSTRING _zFileName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9bfdc91a8ec4fafb71209bb87fafa60e">orxConfig_PopSection</a> ()</td></tr>
@@ -117,6 +118,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="memdoc">
 <p>Config callback function type to use with save function </p>
 
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00068">68</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+
 </div>
 </div>
 <hr/><h2>Enumeration Type Documentation</h2>
@@ -148,6 +151,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </dd>
 </dl>
+
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00054">54</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
 </div>
 </div>
@@ -882,6 +887,31 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="memdoc">
 <p>Initializes the Config Module </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga365019394fbad0e1d52f88edf4da7ab5"></a><!-- doxytag: member="orxConfig.h::orxConfig_IsInheritedValue" ref="ga365019394fbad0e1d52f88edf4da7ab5" args="(const orxSTRING _zKey)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxConfig_IsInheritedValue </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"> <em>_zKey</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Is this value inherited from another one? </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxTRUE / orxFALSE </dd></dl>
 
 </div>
 </div>

@@ -11,7 +11,7 @@
 <div class="navigation" id="top">
   <div class="tabs">
     <ul class="tablist">
-      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="main.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
@@ -56,7 +56,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> <br class="typebreak"/>
 *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaa8ec8dbf1b5c62e983a6c4ea9e8b270b">orxSoundSystem_CreateFromSample</a> (const <a class="el" href="group__orx_sound_system.html#ga538302084499f65dee3d0228cb9cc0d8">orxSOUNDSYSTEM_SAMPLE</a> *_pstSample)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> <br class="typebreak"/>
-*orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gae59f655623d9bff3bc477044e0ee0f90">orxSoundSystem_CreateStreamFromFile</a> (const orxSTRING _zFilename)</td></tr>
+*orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga79dbe0b465090ff02504bef014eae11e">orxSoundSystem_CreateStreamFromFile</a> (const orxSTRING _zFilename, const orxSTRING _zReference)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga614d73a798aa537b7a154774ab623dd2">orxSoundSystem_Delete</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaac66b824ebaeea2e7b32a33e10413d47">orxSoundSystem_Exit</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gab4b9b6aee2d873bccbbf8ec4f0417431">orxSoundSystem_GetAttenuation</a> (const <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
@@ -87,7 +87,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f">orxSoundSystem_SetReferenceDistance</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound, orxFLOAT _fDistance)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga4fe88ac284a248e180404ee43dbf8eed">orxSoundSystem_Setup</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gad87e9057a6687f1b1fe1e54caf3a26a9">orxSoundSystem_SetVolume</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound, orxFLOAT _fVolume)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gac40d5f262982f505ea5754690c4d1b70">orxSoundSystem_StartRecording</a> (const orxCHAR *_zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga34f2d50b7dfed289250790b0cbe724d7">orxSoundSystem_StartRecording</a> (const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaf3c36a83f830377130999a73013fe4fb">orxSoundSystem_Stop</a> (<a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a> *_pstSound)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#ga211e61d56febbe41ad5c855ed704a3be">orxSoundSystem_StopRecording</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound_system.html#gaecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem_UnloadSample</a> (<a class="el" href="group__orx_sound_system.html#ga538302084499f65dee3d0228cb9cc0d8">orxSOUNDSYSTEM_SAMPLE</a> *_pstSample)</td></tr>
@@ -106,6 +106,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 
+<p>Definition at line <a class="el" href="orx_sound_system_8h_source.html#l00078">78</a> of file <a class="el" href="orx_sound_system_8h_source.html">orxSoundSystem.h</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="ga180120f04cd8b042cdfa0bdff3f3f9d8"></a><!-- doxytag: member="orxSoundSystem.h::orxSOUNDSYSTEM_KZ_CONFIG_SECTION" ref="ga180120f04cd8b042cdfa0bdff3f3f9d8" args="" -->
@@ -119,6 +121,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 <p>Config defines </p>
+
+<p>Definition at line <a class="el" href="orx_sound_system_8h_source.html#l00077">77</a> of file <a class="el" href="orx_sound_system_8h_source.html">orxSoundSystem.h</a>.</p>
 
 </div>
 </div>
@@ -134,6 +138,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 
+<p>Definition at line <a class="el" href="orx_sound_system_8h_source.html#l00058">58</a> of file <a class="el" href="orx_sound_system_8h_source.html">orxSoundSystem.h</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="gade9338d9aa0f7ccc1ac5b147d3ff589f"></a><!-- doxytag: member="orxSoundSystem.h::orxSOUNDSYSTEM_SOUND" ref="gade9338d9aa0f7ccc1ac5b147d3ff589f" args="" -->
@@ -147,6 +153,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 <p>Abstract sound structures </p>
+
+<p>Definition at line <a class="el" href="orx_sound_system_8h_source.html#l00057">57</a> of file <a class="el" href="orx_sound_system_8h_source.html">orxSoundSystem.h</a>.</p>
 
 </div>
 </div>
@@ -177,6 +185,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dd>
 </dl>
 
+<p>Definition at line <a class="el" href="orx_sound_system_8h_source.html#l00062">62</a> of file <a class="el" href="orx_sound_system_8h_source.html">orxSoundSystem.h</a>.</p>
+
 </div>
 </div>
 <hr/><h2>Function Documentation</h2>
@@ -205,7 +215,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gae59f655623d9bff3bc477044e0ee0f90"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_CreateStreamFromFile" ref="gae59f655623d9bff3bc477044e0ee0f90" args="(const orxSTRING _zFilename)" -->
+<a class="anchor" id="ga79dbe0b465090ff02504bef014eae11e"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_CreateStreamFromFile" ref="ga79dbe0b465090ff02504bef014eae11e" args="(const orxSTRING _zFilename, const orxSTRING _zReference)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -213,8 +223,18 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f">orxSOUNDSYSTEM_SOUND</a>* orxFASTCALL orxSoundSystem_CreateStreamFromFile </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"> <em>_zFilename</em>&#160;)</td>
+          <td class="paramname"> <em>_zFilename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"> <em>_zReference</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -223,6 +243,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFilename</td><td>Name of the file to load as a stream (won't be completely loaded in memory, useful for musics) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zReference</td><td>Reference name used for streaming events (usually the corresponding config ID) </td></tr>
   </table>
   </dd>
 </dl>
@@ -919,7 +940,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gac40d5f262982f505ea5754690c4d1b70"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_StartRecording" ref="gac40d5f262982f505ea5754690c4d1b70" args="(const orxCHAR *_zName, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)" -->
+<a class="anchor" id="ga34f2d50b7dfed289250790b0cbe724d7"></a><!-- doxytag: member="orxSoundSystem.h::orxSoundSystem_StartRecording" ref="ga34f2d50b7dfed289250790b0cbe724d7" args="(const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -928,6 +949,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td>(</td>
           <td class="paramtype">const orxCHAR *&#160;</td>
           <td class="paramname"> <em>_zName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"> <em>_bWriteToFile</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -953,6 +980,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Name for the recorded sound/file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bWriteToFile</td><td>Should write to file? </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32SampleRate</td><td>Sample rate, 0 for default rate (44100Hz) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32ChannelNumber</td><td>Channel number, 0 for default mono channel </td></tr>
   </table>

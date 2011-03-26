@@ -1533,6 +1533,96 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   return eResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+{
+  b2Fixture  *poFixture;
+  b2Filter    oFilter;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Gets its current filter */
+  oFilter = poFixture->GetFilterData();
+
+  /* Updates it */
+  oFilter.categoryBits = _u16SelfFlags;
+
+  /* Sets new filter */
+  poFixture->SetFilterData(oFilter);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+{
+  b2Fixture  *poFixture;
+  b2Filter    oFilter;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Gets its current filter */
+  oFilter = poFixture->GetFilterData();
+
+  /* Updates it */
+  oFilter.maskBits = _u16CheckMask;
+
+  /* Sets new filter */
+  poFixture->SetFilterData(oFilter);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxU16 orxFASTCALL orxPhysics_Box2D_GetSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  const b2Fixture  *poFixture;
+  orxU16            u16Result;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates result */
+  u16Result = poFixture->GetFilterData().categoryBits;
+
+  /* Done! */
+  return u16Result;
+}
+
+extern "C" orxU16 orxFASTCALL orxPhysics_Box2D_GetCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  const b2Fixture  *poFixture;
+  orxU16            u16Result;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates result */
+  u16Result = poFixture->GetFilterData().maskBits;
+
+  /* Done! */
+  return u16Result;
+}
+
 extern "C" orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   b2Vec2          vStart, vEnd;
@@ -1827,6 +1917,10 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularDamping, PHYSICS, GE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetSelfFlags, PHYSICS, SET_SELF_FLAGS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetCheckMask, PHYSICS, SET_CHECK_MASK);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSelfFlags, PHYSICS, GET_SELF_FLAGS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetCheckMask, PHYSICS, GET_CHECK_MASK);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
