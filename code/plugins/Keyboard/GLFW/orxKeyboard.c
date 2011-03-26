@@ -176,7 +176,7 @@ static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_G:             {eResult = (GLFWKey)'G'; break;}
     case orxKEYBOARD_KEY_H:             {eResult = (GLFWKey)'H'; break;}
     case orxKEYBOARD_KEY_J:             {eResult = (GLFWKey)'J'; break;}
-    case orxKEYBOARD_KEY_K:             {eResult = (GLFWKey)'k'; break;}
+    case orxKEYBOARD_KEY_K:             {eResult = (GLFWKey)'K'; break;}
     case orxKEYBOARD_KEY_L:             {eResult = (GLFWKey)'L'; break;}
     case orxKEYBOARD_KEY_M:             {eResult = (GLFWKey)'M'; break;}
     case orxKEYBOARD_KEY_W:             {eResult = (GLFWKey)'W'; break;}
