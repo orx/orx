@@ -67,7 +67,7 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   CGRect stFrame;
 
   /* Gets application's size */
-  stFrame = [[UIScreen mainScreen] applicationFrame];
+  stFrame = [[UIScreen mainScreen] bounds];
 
   /* Creates main window */
   self.poWindow = [[UIWindow alloc] initWithFrame:stFrame]; 
@@ -76,14 +76,17 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   stFrame.origin.y = 0.0;
   poView = [[orxView alloc] initWithFrame:stFrame];
 
+  /* Sets black background color */
+  [poWindow setBackgroundColor: [UIColor blackColor]];
+
   /* Attaches its window */
   [poWindow addSubview:poView];
 
-  /* Assigns main loop to a new thread */
-  [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
-
   /* Activates window */
   [poWindow makeKeyAndVisible];
+
+  /* Assigns main loop to a new thread */
+  [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
 }
 
 - (void) dealloc

@@ -213,6 +213,7 @@ static orxView *spoInstance;
 - (BOOL) CreateThreadContext;
 - (BOOL) CreateBuffers;
 - (BOOL) CreateRenderTarget:(const orxBITMAP *)_pstBitmap;
+- (void) Swap;
 
 @end
 
@@ -251,6 +252,12 @@ static orxView *spoInstance;
     poLayer.opaque = YES;
     poLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
+
+    /* Sets scale factor */
+    self.contentScaleFactor = (([UIScreen respondsToSelector:@selector(scale)] != NO)
+                            && ([UIScreen mainScreen].scale == 2.0f))
+                            ? 2.0f
+                            : 1.0f;
 
     /* Creates main OpenGL ES 2.0 context */
     poMainContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
@@ -322,7 +329,10 @@ static orxView *spoInstance;
       /* Releases self */
       [self release];
     }
-  }
+
+    /* Creates frame & render buffers */
+    [self CreateBuffers];
+}
 
   /* Done! */
   return oResult;
@@ -392,8 +402,9 @@ static orxView *spoInstance;
       glDisable(GL_STENCIL_TEST);
       glASSERT();
 
-      /* Creates frame & render buffers */
-      [self CreateBuffers];
+      /* Binds frame and render buffers */
+      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
+      glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
 
       /* Updates result */
       bResult = YES;
@@ -425,7 +436,7 @@ static orxView *spoInstance;
   glASSERT();
 
   /* Links render buffer to layer */
-  bResult = [poThreadContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer];
+  bResult = [[EAGLContext currentContext] renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer];
 
   /* Uses depth buffer? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
@@ -516,6 +527,12 @@ static orxView *spoInstance;
 
   /* Done! */
   return bResult;
+}
+
+- (void) Swap
+{
+  /* Swaps */
+  [[EAGLContext currentContext] presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
 - (void) touchesBegan:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
@@ -1323,8 +1340,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     glASSERT();
     glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
     glASSERT();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -1332,6 +1347,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
     glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glASSERT();
 
     /* Restores previous texture */
@@ -1419,7 +1436,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
   orxDisplay_iPhone_DrawArrays();
 
   /* Swaps */
-  [sstDisplay.poView.poThreadContext presentRenderbuffer:GL_RENDERBUFFER_OES];
+  [sstDisplay.poView Swap];
 
   /* Done! */
   return eResult;
@@ -2065,8 +2082,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         glASSERT();
         glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
         glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, au8ImageBuffer);
-        glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -2074,6 +2089,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
         glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, au8ImageBuffer);
         glASSERT();
 
         /* Restores previous texture */
@@ -2389,8 +2406,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         glASSERT();
         glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
         glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -2398,6 +2413,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
         glASSERT();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
         glASSERT();
 
         /* Creates default shader */
