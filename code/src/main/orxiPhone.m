@@ -67,7 +67,7 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   CGRect stFrame;
 
   /* Gets application's size */
-  stFrame = [[UIScreen mainScreen] bounds];
+  stFrame = [[UIScreen mainScreen] applicationFrame];
 
   /* Creates main window */
   self.poWindow = [[UIWindow alloc] initWithFrame:stFrame]; 

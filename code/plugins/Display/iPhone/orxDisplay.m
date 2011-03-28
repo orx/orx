@@ -332,7 +332,7 @@ static orxView *spoInstance;
 
     /* Creates frame & render buffers */
     [self CreateBuffers];
-}
+  }
 
   /* Done! */
   return oResult;
