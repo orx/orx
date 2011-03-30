@@ -328,7 +328,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 }
 
 /* Save filter callback */
-static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)
+static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
 {
   orxBOOL bResult = orxFALSE;
 

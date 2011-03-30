@@ -22,6 +22,7 @@ orx 1.3
 * IMPORTANT: UseRotation/UseScale in spawner config changed: when set to false, no rotation/scale will be applied to the created object by the spawner and UseRelativeSpeed will always use spawner's parent orientation/scale
 * IMPORTANT: Added Tutorial #12, Shader and Lighting
 * IMPORTANT: Added Smooth(step) curve for orxFXs
+* IMPORTANT: Config save callback now takes an extra parameter: the file name
 * Optimized home render plugin to batch objects by texture (5-15% FPS boost, depending on scenes)
 * Optimized frame update for orphan objects (6-8% FPS boost)
 * Optimized GLFW and iPhone rendering: batching + indexing + interlacing -> 10 - 100% FPS boost

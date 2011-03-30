@@ -2967,7 +2967,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
       {
         /* No callback or should save it? */
-        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL, _bUseEncryption) != orxFALSE))
+        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL, _zFileName, _bUseEncryption) != orxFALSE))
         {
           orxCONFIG_SECTION *pstParentSection = orxNULL;
           orxCONFIG_ENTRY   *pstEntry;
@@ -3007,7 +3007,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
           {
             /* No callback or should save it? */
-            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey, _bUseEncryption) != orxFALSE))
+            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey, _zFileName, _bUseEncryption) != orxFALSE))
             {
               /* Not in block mode? */
               if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
