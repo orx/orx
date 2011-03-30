@@ -2076,6 +2076,12 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
         /* Stores new name */
         pstSection->zName = orxString_Duplicate(_zNewSectionName);
 
+        /* Removes it from table */
+        orxHashTable_Remove(sstConfig.pstSectionTable, u32ID);
+
+        /* Adds it again with the new ID */
+        orxHashTable_Add(sstConfig.pstSectionTable, u32NewID, pstSection);
+
         /* For all sections */
         for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
             pstSection != orxNULL;
