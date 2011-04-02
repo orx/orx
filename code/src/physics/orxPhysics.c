@@ -80,6 +80,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, const orxPHYSIC
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetAngularVelocity, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetCustomGravity, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetMass, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetMassCenter, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetLinearDamping, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetAngularDamping, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
@@ -120,6 +121,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ROTATION, orxPhysics_GetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED, orxPhysics_GetSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ANGULAR_VELOCITY, orxPhysics_GetAngularVelocity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_CUSTOM_GRAVITY, orxPhysics_GetCustomGravity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_MASS, orxPhysics_GetMass)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_MASS_CENTER, orxPhysics_GetMassCenter)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_LINEAR_DAMPING, orxPhysics_SetLinearDamping)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ANGULAR_DAMPING, orxPhysics_SetAngularDamping)
@@ -238,6 +240,11 @@ orxFLOAT orxFASTCALL orxPhysics_GetAngularVelocity(const orxPHYSICS_BODY *_pstBo
 orxVECTOR *orxFASTCALL orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetCustomGravity)(_pstBody, _pvCustomGravity);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetMass(const orxPHYSICS_BODY *_pstBody)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetMass)(_pstBody);
 }
 
 orxVECTOR *orxFASTCALL orxPhysics_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)

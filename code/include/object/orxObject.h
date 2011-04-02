@@ -446,6 +446,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(const o
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetCustomGravity(const orxOBJECT *_pstObject, orxVECTOR *_pvCustomGravity);
 
+/** Gets an object mass
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object mass
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetMass(const orxOBJECT *_pstObject);
+
 /** Gets an object center of mass
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get

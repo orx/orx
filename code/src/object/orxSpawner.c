@@ -1069,11 +1069,8 @@ orxSTATUS orxFASTCALL orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT 
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
-  /* Stores wave delay */
-  _pstSpawner->fWaveDelay = (_fWaveDelay >= orxFLOAT_0) ? _fWaveDelay : orx2F(-1.0f);
-
-  /* Resets wave timer */
-  _pstSpawner->fWaveTimer = orxFLOAT_0;
+  /* Stores wave delay & timer */
+  _pstSpawner->fWaveTimer = _pstSpawner->fWaveDelay = (_fWaveDelay >= orxFLOAT_0) ? _fWaveDelay : orx2F(-1.0f);
 
   /* Active? */
   if((_pstSpawner->fWaveDelay >= orxFLOAT_0) && (_pstSpawner->u32WaveSize > 0))
@@ -1104,7 +1101,7 @@ orxU32 orxFASTCALL orxSpawner_GetWaveSize(const orxSPAWNER *_pstSpawner)
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
   /* Updates result */
-  u32Result = _pstSpawner->u32WaveSize;
+  u32Result = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_WAVE_MODE) ? _pstSpawner->u32WaveSize : 0;
 
   /* Done! */
   return u32Result;
@@ -1123,7 +1120,26 @@ orxFLOAT orxFASTCALL orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner)
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
   /* Updates result */
-  fResult = _pstSpawner->fWaveDelay;
+  fResult = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_WAVE_MODE) ? _pstSpawner->fWaveDelay : orx2F(-1.0f);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets spawner next wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Delay before next wave is spawned / -1 if not in wave mode
+ */
+orxFLOAT orxFASTCALL orxSpawner_GetNextWaveDelay(const orxSPAWNER *_pstSpawner)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Updates result */
+  fResult = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_WAVE_MODE) ? _pstSpawner->fWaveTimer : orx2F(-1.0f);
 
   /* Done! */
   return fResult;

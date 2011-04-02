@@ -116,6 +116,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga7ae6c8d8d9ac108d9749e99131347bb5">orxPhysics_GetCustomGravity</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCustomGravity)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga4f5cef16bea9bfb5be65e31c96876d9a">orxPhysics_GetGravity</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvGravity)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga6fb24bdbb705cb8fc0f5cd79f7ab20dc">orxPhysics_GetLinearDamping</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga062a4703991ccb8642032451adfb5f38">orxPhysics_GetMass</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gaca6fa6728a3c527c57cc54f8465a9fa3">orxPhysics_GetMassCenter</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvMassCenter)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga1a06a020ce8f680c9bab871fc1506048">orxPhysics_GetPosition</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga50aaba3775c4a6ea1ad29344bdb5a87e">orxPhysics_GetRotation</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
@@ -1373,6 +1374,31 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Linear damping of the physical body </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga062a4703991ccb8642032451adfb5f38"></a><!-- doxytag: member="orxPhysics.h::orxPhysics_GetMass" ref="ga062a4703991ccb8642032451adfb5f38" args="(const orxPHYSICS_BODY *_pstBody)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxPhysics_GetMass </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&#160;</td>
+          <td class="paramname"> <em>_pstBody</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Gets the mass of a physical body </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned physical body </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Mass of the physical body </dd></dl>
 
 </div>
 </div>

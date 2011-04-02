@@ -444,6 +444,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVeloc
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
+/** Gets the mass of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return Mass of the physical body
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetMass(const orxPHYSICS_BODY *_pstBody);
+
 /** Gets the center of mass of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvMassCenter                         Center of mass to get

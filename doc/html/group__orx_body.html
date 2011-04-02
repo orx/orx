@@ -57,6 +57,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga79d37130ab40eb8e4617ebe23b7ac6f8">orxBody_GetJointName</a> (const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga74e07998f3b1303b4592372d8e306b5a">orxBody_GetLinearDamping</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga9382982502a79dd94490893ac1326b00">orxBody_GetMass</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga7968024ef3058cdbcc5e9ba863d5b69b">orxBody_GetMassCenter</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvMassCenter)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> <br class="typebreak"/>
 *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga6fd50b5f766ed0b046270e174ad4fd0f">orxBody_GetNextJoint</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint)</td></tr>
@@ -751,6 +752,31 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Body's linear damping </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga9382982502a79dd94490893ac1326b00"></a><!-- doxytag: member="orxBody.h::orxBody_GetMass" ref="ga9382982502a79dd94490893ac1326b00" args="(const orxBODY *_pstBody)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxBody_GetMass </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&#160;</td>
+          <td class="paramname"> <em>_pstBody</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Gets a body mass </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Body mass </dd></dl>
 
 </div>
 </div>

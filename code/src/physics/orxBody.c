@@ -1883,6 +1883,34 @@ orxVECTOR *orxFASTCALL orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECT
   return pvResult;
 }
 
+/** Gets a body mass
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body mass
+ */
+orxFLOAT orxFASTCALL orxBody_GetMass(const orxBODY *_pstBody)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Gets mass center */
+    fResult = orxPhysics_GetMass(_pstBody->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 /** Gets a body center of mass
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get

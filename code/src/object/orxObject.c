@@ -3010,6 +3010,41 @@ orxVECTOR *orxFASTCALL orxObject_GetCustomGravity(const orxOBJECT *_pstObject, o
   return pvResult;
 }
 
+/** Gets an object mass
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object mass
+ */
+orxFLOAT orxFASTCALL orxObject_GetMass(const orxOBJECT *_pstObject)
+{
+  orxBODY  *pstBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Gets its mass */
+    fResult = orxBody_GetMass(pstBody);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object.");
+
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 /** Gets an object center of mass
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get

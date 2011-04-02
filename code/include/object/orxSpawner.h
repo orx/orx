@@ -204,6 +204,12 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetWaveSize(const orxSPAW
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner);
 
+/** Gets spawner next wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Delay before next wave is spawned / -1 if not in wave mode
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetNextWaveDelay(const orxSPAWNER *_pstSpawner);
+
 
 /** Sets spawner object speed
  * @param[in]   _pstSpawner     Concerned spawner
