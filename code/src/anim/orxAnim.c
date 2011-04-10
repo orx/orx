@@ -556,7 +556,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
     }
 
     /* Valid? */
-    if(u32EventCounter > 1)
+    if(u32KeyCounter > 1)
     {
       /* Creates 2D animation */
       pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter, --u32EventCounter);
