@@ -761,7 +761,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
   orxASSERT(_pstTransform != orxNULL);
 
   /* Translates it */
-  glTranslatef(orxMath_Floor(_pstTransform->fDstX), orxMath_Floor(_pstTransform->fDstY), 0.0f);
+  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
   glASSERT();
 
   /* Applies rotation */

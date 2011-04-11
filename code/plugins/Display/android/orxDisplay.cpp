@@ -994,8 +994,8 @@ orxSTATUS orxFASTCALL orxDisplay_android_TransformText(
 	orxASSERT(_pstTransform != orxNULL);
 
 	/* Inits matrix */
-	orxDisplay_android_InitMatrix(&mTransform, orxMath_Floor(
-			_pstTransform->fDstX), orxMath_Floor(_pstTransform->fDstY),
+	orxDisplay_android_InitMatrix(&mTransform,
+			_pstTransform->fDstX, _pstTransform->fDstY,
 			_pstTransform->fScaleX, _pstTransform->fScaleY,
 			_pstTransform->fRotation, _pstTransform->fSrcX,
 			_pstTransform->fSrcY);
