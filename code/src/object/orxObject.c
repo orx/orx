@@ -271,6 +271,13 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
           if(pstObject == orxNULL)
           {
             pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+
+            /* Was the last one? */
+            if(pstObject == orxNULL)
+            {
+              /* Stops */
+              break;
+            }
           }
 
           continue;
