@@ -864,7 +864,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
   orxASSERT(_pstTransform != orxNULL);
 
   /* Inits matrix */
-  orxDisplay_GLFW_InitMatrix(&mTransform, orxMath_Floor(_pstTransform->fDstX), orxMath_Floor(_pstTransform->fDstY), _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
+  orxDisplay_GLFW_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
   /* Gets character's size */
   fWidth  = _pstMap->vCharacterSize.fX;

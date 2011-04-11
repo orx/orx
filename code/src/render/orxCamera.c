@@ -578,19 +578,14 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
  */
 orxAABOX *orxFASTCALL orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
 {
-  orxVECTOR vPosition;
-
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
   orxASSERT(_pstFrustum != orxNULL);
 
-  /* Gets camera position */
-  orxFrame_GetPosition(_pstCamera->pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
   /* Stores frustum */
-  orxVector_Add(&(_pstFrustum->vTL), &(_pstCamera->stFrustum.vTL), &vPosition);
-  orxVector_Add(&(_pstFrustum->vBR), &(_pstCamera->stFrustum.vBR), &vPosition);
+  orxVector_Copy(&(_pstFrustum->vTL), &(_pstCamera->stFrustum.vTL));
+  orxVector_Copy(&(_pstFrustum->vBR), &(_pstCamera->stFrustum.vBR));
 
   /* Done! */
   return _pstFrustum;

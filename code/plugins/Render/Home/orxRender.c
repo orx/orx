@@ -554,7 +554,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 
               /* Sets bitmap clipping */
               orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
-              
+
               /* Does viewport have a background color? */
               if(orxViewport_HasBackgroundColor(_pstViewport) != orxFALSE)
               {
@@ -583,12 +583,16 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 /* Gets camera frame */
                 pstCameraFrame = orxCamera_GetFrame(pstCamera);
 
+                /* Gets camera position */
+                orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+                /* Gets camera world frustum */
+                orxVector_Add(&(stFrustum.vTL), &(stFrustum.vTL), &vCameraPosition);
+                orxVector_Add(&(stFrustum.vBR), &(stFrustum.vBR), &vCameraPosition);
+
                 /* Gets camera center */
                 orxVector_Add(&vCameraCenter, &(stFrustum.vTL), &(stFrustum.vBR));
                 orxVector_Mulf(&vCameraCenter, &vCameraCenter, orx2F(0.5f));
-
-                /* Gets camera position */
-                orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
 
                 /* Gets camera depth */
                 fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
@@ -1188,15 +1192,20 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
       && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
       && (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
       {
-        orxVECTOR vLocalPosition, vCenter, vCameraCenter;
+        orxVECTOR vLocalPosition, vCenter, vCameraCenter, vCameraPosition;
         orxAABOX  stCameraFrustum;
         orxFLOAT  fZoom, fRotation;
 
         /* Gets viewport center */
         orxVector_Mulf(&vCenter, orxVector_Add(&vCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
 
-        /* Gets camera frustum */
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets camera world frustum */
         orxCamera_GetFrustum(pstCamera, &stCameraFrustum);
+        orxVector_Add(&(stCameraFrustum.vTL), &(stCameraFrustum.vTL), &vCameraPosition);
+        orxVector_Add(&(stCameraFrustum.vBR), &(stCameraFrustum.vBR), &vCameraPosition);
 
         /* Gets camera position */
         orxVector_Mulf(&vCameraCenter, orxVector_Add(&vCameraCenter, &(stCameraFrustum.vBR), &(stCameraFrustum.vTL)), orx2F(0.5f));
