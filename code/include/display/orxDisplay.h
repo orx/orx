@@ -105,7 +105,7 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
  */
 typedef struct __orxCHARACTER_GLYPH_t
 {
-  orxFLOAT fX, fY;
+  orxFLOAT fX, fY, fWidth;
 
 } orxCHARACTER_GLYPH;
 
@@ -113,10 +113,10 @@ typedef struct __orxCHARACTER_GLYPH_t
  */
 typedef struct __orxCHARACTER_MAP_t
 {
-  orxVECTOR           vCharacterSize;
+  orxFLOAT      fCharacterHeight;
 
-  orxBANK            *pstCharacterBank;
-  orxHASHTABLE       *pstCharacterTable;
+  orxBANK      *pstCharacterBank;
+  orxHASHTABLE *pstCharacterTable;
 
 } orxCHARACTER_MAP;
 

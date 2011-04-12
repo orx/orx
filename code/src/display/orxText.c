@@ -238,16 +238,15 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
   /* Has string and font? */
   if((_pstText->zString != orxNULL) && (_pstText->zString != orxSTRING_EMPTY) && (_pstText->pstFont != orxNULL))
   {
-    orxFLOAT        fWidth, fMaxWidth, fHeight;
-    orxVECTOR       vCharacterSize;
+    orxFLOAT        fWidth, fMaxWidth, fHeight, fCharacterHeight;
     orxU32          u32CharacterCodePoint;
     const orxCHAR  *pc;
 
-    /* Gets font's character size */
-    orxFont_GetCharacterSize(_pstText->pstFont, &vCharacterSize);
+    /* Gets character height */
+    fCharacterHeight = orxFont_GetCharacterHeight(_pstText->pstFont);
 
     /* For all characters */
-    for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = vCharacterSize.fY, fWidth = fMaxWidth = orxFLOAT_0;
+    for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = fCharacterHeight, fWidth = fMaxWidth = orxFLOAT_0;
         u32CharacterCodePoint != orxCHAR_NULL;
         u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
     {
@@ -269,7 +268,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
         case orxCHAR_LF:
         {
           /* Updates height */
-          fHeight += vCharacterSize.fY;
+          fHeight += fCharacterHeight;
 
           /* Updates max width */
           fMaxWidth = orxMAX(fMaxWidth, fWidth);
@@ -283,7 +282,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
         default:
         {
           /* Updates width */
-          fWidth += vCharacterSize.fX;
+          fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
 
           break;
         }

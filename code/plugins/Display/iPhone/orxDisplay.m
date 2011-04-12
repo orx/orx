@@ -1173,7 +1173,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   orxDISPLAY_MATRIX mTransform;
   const orxCHAR    *pc;
   orxU32            u32CharacterCodePoint;
-  GLfloat           fX, fY, fWidth, fHeight;
+  GLfloat           fX, fY, fHeight;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1186,9 +1186,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   /* Inits matrix */
   orxDisplay_iPhone_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
-  /* Gets character's size */
-  fWidth  = _pstMap->vCharacterSize.fX;
-  fHeight = _pstMap->vCharacterSize.fY;
+  /* Gets character's height */
+  fHeight = _pstMap->fCharacterHeight;
 
   /* Prepares font for drawing */
   orxDisplay_iPhone_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
@@ -1227,6 +1226,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
       default:
       {
         const orxCHARACTER_GLYPH *pstGlyph;
+        orxFLOAT                  fWidth;
 
         /* Gets glyph from table */
         pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
@@ -1234,6 +1234,9 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
         /* Valid? */
         if(pstGlyph != orxNULL)
         {
+          /* Gets character width */
+          fWidth = pstGlyph->fWidth;
+
           /* End of buffer? */
           if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
           {
@@ -1269,10 +1272,15 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
           /* Updates counter */
           sstDisplay.s32BufferIndex += 4;
         }
-      }
+        else
+        {
+          /* Gets default width */
+          fWidth = fHeight;
+        }
 
-      /* Updates X position */
-      fX += fWidth;
+		/* Updates X position */
+		fX += fWidth;
+      }
     }
   }
 
