@@ -960,6 +960,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
 
         /* Updates X position */
         fX += fWidth;
+
+        break;
       }
     }
   }

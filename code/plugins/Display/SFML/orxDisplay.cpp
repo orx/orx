@@ -655,15 +655,14 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
   /* Updates its rotation */
   poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
 
-  /* Gets spacing */
-  orxVector_Neg(&vSpacing, &(_pstMap->vCharacterSize));
+  /* Gets vertical spacing */
+  vSpacing.fY = -_pstMap->fCharacterHeight;
   
   /* Updates its flipping */
   if(_pstTransform->fScaleX < 0.0f)
   {
     poSprite->FlipX(true);
-    vSpacing.fX = -vSpacing.fX;
-    fStartX     = -_pstTransform->fSrcX + vSpacing.fX;
+    fStartX     = -_pstTransform->fSrcX - vSpacing.fY;
   }
   else
   {
@@ -725,14 +724,28 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _
         /* Valid? */
         if(pstGlyph != orxNULL)
         {
+          /* Gets horizontal spacing */
+          vSpacing.fX = -pstGlyph->fWidth;
+
           /* Sets sub rectangle for sprite */
-          poSprite->SetSubRect(sf::IntRect(orxF2S(pstGlyph->fX), orxF2S(pstGlyph->fY), orxF2S(pstGlyph->fX + _pstMap->vCharacterSize.fX), orxF2S(pstGlyph->fY + _pstMap->vCharacterSize.fY)));
+          poSprite->SetSubRect(sf::IntRect(orxF2S(pstGlyph->fX), orxF2S(pstGlyph->fY), orxF2S(pstGlyph->fX + pstGlyph->fWidth), orxF2S(pstGlyph->fY + _pstMap->fCharacterHeight)));
 
           /* Updates its center */
           poSprite->SetCenter(fX, fY);
 
           /* Blits it */
           eResult = orxDisplay_SFML_BlitBitmap(_pstFont, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
+        }
+        else
+        {
+          /* Gets default horizontal spacing */
+          vSpacing.fX = -_pstMap->fCharacterHeight;
+        }
+
+        /* Updates its flipping */
+        if(_pstTransform->fScaleX < 0.0f)
+        {
+          vSpacing.fX = -vSpacing.fX;
         }
 
         /* Updates X position */

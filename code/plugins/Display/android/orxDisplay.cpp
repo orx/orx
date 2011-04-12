@@ -1120,6 +1120,8 @@ orxSTATUS orxFASTCALL orxDisplay_android_TransformText(
 
 			/* Updates X position */
 			fX += fWidth;
+			
+			break;
 		}
 		}
 	}

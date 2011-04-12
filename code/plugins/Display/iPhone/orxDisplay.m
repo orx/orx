@@ -1280,6 +1280,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
 
 		/* Updates X position */
 		fX += fWidth;
+		
+		break;
       }
     }
   }

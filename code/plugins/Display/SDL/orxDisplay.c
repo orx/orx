@@ -903,6 +903,8 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, con
 
         /* Updates X position */
         fX += fWidth;
+
+        break;
       }
     }
   }
