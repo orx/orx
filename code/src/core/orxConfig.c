@@ -103,7 +103,7 @@
 #define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH      4           /**< Encryption file tag length */
 
 #define orxCONFIG_KZ_UTF8_BOM                     "\xEF\xBB\xBF" /**< UTF-8 BOM */
-#define orxCONFIG_KU32_UTF8_BOM_LENGTH            3           /**< UTF-8 BON length */
+#define orxCONFIG_KU32_UTF8_BOM_LENGTH            3           /**< UTF-8 BOM length */
 
 #ifdef __orxDEBUG__
 
