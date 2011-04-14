@@ -698,7 +698,7 @@ static void Run()
           orxASSERT(!eError);
 
           // Gets character width
-          s32CharacterWidth = (orxS32)(sstFontGen.pstFontFace->glyph->bitmap_left + sstFontGen.pstFontFace->glyph->bitmap.width);
+          s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
 
           // Updates largest character width
           s32LargestWidth = orxMAX(s32LargestWidth, s32CharacterWidth);
@@ -733,7 +733,7 @@ static void Run()
           orxASSERT(!eError);
 
           // Gets character width
-          s32CharacterWidth = (orxS32)(sstFontGen.pstFontFace->glyph->bitmap_left + sstFontGen.pstFontFace->glyph->bitmap.width);
+          s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
           s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
 
           // Next line?
@@ -802,7 +802,7 @@ static void Run()
             else
             {
               // Gets character width
-              s32CharacterWidth = (orxS32)(sstFontGen.pstFontFace->glyph->bitmap_left + sstFontGen.pstFontFace->glyph->bitmap.width);
+              s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
               s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
 
               // Stores its value
