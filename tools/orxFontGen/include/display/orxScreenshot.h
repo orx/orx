@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -49,21 +49,28 @@
 /** Misc
  */
 
-#ifdef __orxIPHONE__
+#if defined(__orxIPHONE__)
 
   #define orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME "../Documents"
   #define orxSCREENSHOT_KZ_DEFAULT_BASE_NAME      "screenshot-"
   #define orxSCREENSHOT_KZ_DEFAULT_EXTENSION      "png"
   #define orxSCREENSHOT_KU32_DEFAULT_DIGITS       4
 
-#else /* __orxIPHONE__ */
+#elif defined(__orxANDROID__)
+
+  #define orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME "."
+  #define orxSCREENSHOT_KZ_DEFAULT_BASE_NAME      "screenshot-"
+  #define orxSCREENSHOT_KZ_DEFAULT_EXTENSION      "png"
+  #define orxSCREENSHOT_KU32_DEFAULT_DIGITS       4
+
+#else
 
   #define orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME "."
   #define orxSCREENSHOT_KZ_DEFAULT_BASE_NAME      "screenshot-"
   #define orxSCREENSHOT_KZ_DEFAULT_EXTENSION      "tga"
   #define orxSCREENSHOT_KU32_DEFAULT_DIGITS       4
 
-#endif /* __orxIPHONE__ */
+#endif
 
 
 /** Screenshot module setup

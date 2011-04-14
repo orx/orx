@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -187,6 +187,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT
 /** Sets associated clock for an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pstClock     Clock to associate / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
 
@@ -445,6 +446,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(const o
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetCustomGravity(const orxOBJECT *_pstObject, orxVECTOR *_pvCustomGravity);
 
+/** Gets an object mass
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object mass
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetMass(const orxOBJECT *_pstObject);
+
 /** Gets an object center of mass
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get
@@ -490,11 +497,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Sets object color

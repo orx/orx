@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,7 +29,7 @@
  *
  * @todo
  * - Manage memory alignment
- * - Allow to specifiy memory starting address & maximum size for each memory type
+ * - Allow to specify memory starting address & maximum size for each memory type
  */
 
 /**
@@ -116,7 +116,7 @@ extern orxDLLAPI void *orxFASTCALL      orxMemory_Move(void *_pDest, void *_pSrc
  * @param[in]  _pMem1   First potion to test
  * @param[in]  _pMem2   Second portion to test
  * @param[in]  _u32Size Size of data to test
- * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
+ * @return returns a value less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size);
 

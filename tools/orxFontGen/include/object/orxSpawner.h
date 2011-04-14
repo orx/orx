@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -63,6 +63,7 @@
 #define orxSPAWNER_KU32_FLAG_USE_SCALE            0x00000020  /**< Use scale flag */
 #define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000040  /**< Use relative speed flag */
 #define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000080  /**< Use self as parent flag */
+#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE      0x00000100  /**< Clean on delete flag */
 
 #define orxSPAWNER_KU32_MASK_USER_ALL             0x000000FF  /**< All mask */
 
@@ -72,6 +73,7 @@
 typedef enum __orxSPAWNER_EVENT_t
 {
   orxSPAWNER_EVENT_SPAWN = 0,
+  orxSPAWNER_EVENT_CREATE,
   orxSPAWNER_EVENT_DELETE,
   orxSPAWNER_EVENT_RESET,
   orxSPAWNER_EVENT_EMPTY,
@@ -163,6 +165,18 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectLimit(const
  */
 extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner);
 
+/** Gets spawner total object counter
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Total object counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectCounter(const orxSPAWNER *_pstSpawner);
+
+/** Gets spawner active object counter
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Active object counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectCounter(const orxSPAWNER *_pstSpawner);
+
 
 /** Sets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner
@@ -189,6 +203,12 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetWaveSize(const orxSPAW
  * @return      Delay between two waves / -1 if not in wave mode
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner);
+
+/** Gets spawner next wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Delay before next wave is spawned / -1 if not in wave mode
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetNextWaveDelay(const orxSPAWNER *_pstSpawner);
 
 
 /** Sets spawner object speed

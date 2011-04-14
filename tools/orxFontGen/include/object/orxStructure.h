@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -156,7 +156,7 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
 typedef struct __orxSTRUCTURE_t
 {
   orxSTRUCTURE_ID eID;            /**< Structure ID : 4 */
-  orxU32          u32RefCounter;  /**< Reference counter : 8 */
+  orxU32          s32RefCounter;  /**< Reference counter : 8 */
   orxU32          u32Flags;       /**< Flags : 12 */
   orxHANDLE       hStorageNode;   /**< Internal storage node handle : 16 */
 
@@ -315,7 +315,7 @@ static orxINLINE void                                   orxStructure_IncreaseCou
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Increases it */
-  (orxSTRUCTURE(_pStructure))->u32RefCounter++;
+  (orxSTRUCTURE(_pStructure))->s32RefCounter++;
 
   return;
 }
@@ -327,25 +327,25 @@ static orxINLINE void                                   orxStructure_DecreaseCou
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
-  orxASSERT(orxSTRUCTURE(_pStructure)->u32RefCounter > 0);
+  orxASSERT(orxSTRUCTURE(_pStructure)->s32RefCounter > 0);
 
   /* Decreases it */
-  orxSTRUCTURE(_pStructure)->u32RefCounter--;
+  orxSTRUCTURE(_pStructure)->s32RefCounter--;
 
   return;
 }
 
 /** Gets structure reference counter
  * @param[in]   _pStructure    Concerned structure
- * @return      orxU32
+ * @return      orxS32
  */
-static orxINLINE orxU32                                 orxStructure_GetRefCounter(const void *_pStructure)
+static orxINLINE orxS32                                 orxStructure_GetRefCounter(const void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Returns it */
-  return(orxSTRUCTURE(_pStructure)->u32RefCounter);
+  return(orxSTRUCTURE(_pStructure)->s32RefCounter);
 }
 
 /** Gets structure ID
@@ -363,7 +363,7 @@ static orxINLINE orxSTRUCTURE_ID                        orxStructure_GetID(const
 
 /** Tests flags against structure ones
  * @param[in]   _pStructure    Concerned structure
- * @param[in]   _u32Flags       Flags to test
+ * @param[in]   _u32Flags      Flags to test
  * @return      orxTRUE / orxFALSE
  */
 static orxINLINE orxBOOL                                orxStructure_TestFlags(const void *_pStructure, orxU32 _u32Flags)
@@ -377,7 +377,7 @@ static orxINLINE orxBOOL                                orxStructure_TestFlags(c
 
 /** Tests all flags against structure ones
  * @param[in]   _pStructure    Concerned structure
- * @param[in]   _u32Flags       Flags to test
+ * @param[in]   _u32Flags      Flags to test
  * @return      orxTRUE / orxFALSE
  */
 static orxINLINE orxBOOL                                orxStructure_TestAllFlags(const void *_pStructure, orxU32 _u32Flags)

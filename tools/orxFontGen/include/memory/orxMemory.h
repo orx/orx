@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,7 +29,7 @@
  *
  * @todo
  * - Manage memory alignment
- * - Allow to specifiy memory starting address & maximum size for each memory type
+ * - Allow to specify memory starting address & maximum size for each memory type
  */
 
 /**

@@ -170,18 +170,11 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint, pstGlyph);
       }
 
-      /* Stores its origin */
-      pstGlyph->fX = vOrigin.fX;
-      pstGlyph->fY = vOrigin.fY;
-
       /* Stores its width */
       pstGlyph->fWidth = _pstFont->afCharacterWidthList[s32Index];
 
-      /* Updates current origin X value */
-      vOrigin.fX += pstGlyph->fWidth + _pstFont->vCharacterSpacing.fX;
-
       /* Out of bound? */
-      if(vOrigin.fX >= _pstFont->fLeft + _pstFont->fWidth)
+      if(vOrigin.fX + pstGlyph->fWidth > _pstFont->fLeft + _pstFont->fWidth)
       {
         /* Reinits its X value */
         vOrigin.fX = _pstFont->fLeft;
@@ -189,6 +182,13 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         /* Updates its Y value */
         vOrigin.fY += _pstFont->fCharacterHeight + _pstFont->vCharacterSpacing.fY;
       }
+
+      /* Stores its origin */
+      pstGlyph->fX = vOrigin.fX;
+      pstGlyph->fY = vOrigin.fY;
+
+      /* Updates current origin X value */
+      vOrigin.fX += pstGlyph->fWidth + _pstFont->vCharacterSpacing.fX;
     }
 
     /* Stores character height */

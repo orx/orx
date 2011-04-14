@@ -11,6 +11,7 @@ orx 1.3
 * IMPORTANT: Added physics joints support and updated to Box2D 2.1.3 (svn v140, pre-release) which impacts on some physics settings (no more world boundaries, etc...)
 * IMPORTANT: a ChildJointList can be specified in config for building complex objects with joints, along the ChildList config property
 * IMPORTANT: iPhone touch, motion and accelerometer events have now been merged with android ones in orxSYSTEM_EVENT_*
+* IMPORTANT: Added non-monospace (ie. non-fixed width) font support + updated orxFontGen to generate both monospace and non-monospace fonts
 * IMPORTANT: Added sound recording (to memory and/or disk with various file format support, with possibility of analyzing/pre-processing the samples through events)
 * IMPORTANT: When playing a sound stream, the packets can be analized/altered on the fly (for realtime effects, for example)
 * IMPORTANT: Rendering to texture support is back with GLFW & iPhone plugins
@@ -22,6 +23,7 @@ orx 1.3
 * IMPORTANT: UseRotation/UseScale in spawner config changed: when set to false, no rotation/scale will be applied to the created object by the spawner and UseRelativeSpeed will always use spawner's parent orientation/scale
 * IMPORTANT: Added Tutorial #12, Shader and Lighting
 * IMPORTANT: Added Smooth(step) curve for orxFXs
+* IMPORTANT: orxCamera_GetFrustum now returns a frustum in camera's local space
 * IMPORTANT: Config save callback now takes an extra parameter: the file name
 * Optimized home render plugin to batch objects by texture (5-15% FPS boost, depending on scenes)
 * Optimized frame update for orphan objects (6-8% FPS boost)
@@ -32,6 +34,7 @@ orx 1.3
 * Better mouse axis handling in the input module: when user manually moves the cursor to simulate a capture, this won't affect input's values
 * Added JoystickMultiplier to input module: all joystick axis values will be multiplied by this value to allow scaling and a more seamless joystick/mouse input integration
 * Anims can now contain 65535 keys and 65535 events
+* Config lists can now contain 65535 values
 * Added orxDisplay_GetBitmapData()
 * Added optional depth buffer creation + better user-defined external rendering support (such as custom 3D rendering)
 * Added CleanOnDelete in spawner config to delete all alive spawned objects when their spawner is deleted

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -52,11 +52,6 @@
 #include "physics/orxPhysics.h"
 
 
-/** Misc defines
- */
-#define orxBODY_KU32_PART_MAX_NUMBER          8
-
-
 /** Internal Body structure
  */
 typedef struct __orxBODY_t                    orxBODY;
@@ -64,6 +59,10 @@ typedef struct __orxBODY_t                    orxBODY;
 /** Internal Body part structure
  */
 typedef struct __orxBODY_PART_t               orxBODY_PART;
+
+/** Internal Body joint structure
+ */
+typedef struct __orxBODY_JOINT_t              orxBODY_JOINT;
 
 
 /** Body module setup
@@ -99,6 +98,29 @@ extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 
+
+/** Tests flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags);
+
+/** Tests all flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestAllDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags);
+
+/** Gets body definition flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Mask        Mask to use for getting flags
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxBody_GetDefFlags(const orxBODY *_pstBody, orxU32 _u32Mask);
+
+
 /** Gets a body owner
  * @param[in]   _pstBody        Concerned body
  * @return      orxSTRUCTURE / orxNULL
@@ -107,65 +129,73 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(const orxBODY *_p
 
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _pstBodyPartDef Body part definition
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxBODY_PART / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Adds a part to body from config
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _zConfigID      Body part config ID
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxBODY_PART / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, const orxSTRING _zConfigID);
+extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_AddPartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID);
 
-/** Gets a body part
+/** Gets next body part
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      orxPHYSICS_BODY_PART / orxNULL
+ * @param[in]   _pstBodyPart    Current body part (orxNULL to get the first one)
+ * @return      orxBODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_GetNextPart(const orxBODY *_pstBody, const orxBODY_PART *_pstBodyPart);
 
 /** Gets a body part name
- * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _pstBodyPart    Concerned body part
  * @return      orxSTRING / orxNULL
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetPartName(const orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetPartName(const orxBODY_PART *_pstBodyPart);
 
 /** Removes a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY_PART *_pstBodyPart);
+
+
+/** Adds a joint to link two bodies together
+ * @param[in]   _pstSrcBody       Concerned source body
+ * @param[in]   _pstDstBody       Concerned destination body
+ * @param[in]   _pstBodyJointDef  Body joint definition
+ * @return      orxBODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxBODY_JOINT *orxFASTCALL   orxBody_AddJoint(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxBODY_JOINT_DEF *_pstBodyJointDef);
+
+/** Adds a joint from config to link two bodies together
+ * @param[in]   _pstSrcBody     Concerned source body
+ * @param[in]   _pstDstBody     Concerned destination body
+ * @param[in]   _zConfigID      Body joint config ID
+ * @return      orxBODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxBODY_JOINT *orxFASTCALL   orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxBODY *_pstDstBody, const orxSTRING _zConfigID);
+
+/** Gets next body joint
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _pstBodyJoint   Current body joint (orxNULL to get the first one)
+ * @return      orxBODY_JOINT / orxNULL
+ */
+extern orxDLLAPI orxBODY_JOINT *orxFASTCALL   orxBody_GetNextJoint(const orxBODY *_pstBody, const orxBODY_JOINT *_pstBodyJoint);
+
+/** Gets a body joint name
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @return      orxSTRING / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetJointName(const orxBODY_JOINT *_pstBodyJoint);
+
+/** Removes a body joint
+ * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint);
 
-
-/** Sets a body template
- * @param[in]   _pstBodyTemplate  Body template to set / orxNULL to remove it
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetTemplate(const orxBODY_DEF *_pstBodyTemplate);
-
-/** Sets a body part template
- * @param[in]   _pstBodyPartTemplate  Body part template to set / orxNULL to remove it
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartTemplate(const orxBODY_PART_DEF *_pstBodyPartTemplate);
-
-/** Gets the body template
- * @param[out]  _pstBodyTemplate  Body template to get
- * @return      orxBODY_DEF / orxNULL
- */
-extern orxDLLAPI orxBODY_DEF *orxFASTCALL     orxBody_GetTemplate(orxBODY_DEF *_pstBodyTemplate);
-
-/** Gets the body part template
- * @param[out]  _pstBodyPartTemplate  Body part template to get
- * @return      orxBODY_PART_DEF / orxNULL
- */
-extern orxDLLAPI orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartTemplate(orxBODY_PART_DEF *_pstBodyPartTemplate);
 
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
@@ -242,12 +272,45 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(const o
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
+/** Gets a body mass
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body mass
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetMass(const orxBODY *_pstBody);
+
 /** Gets a body center of mass
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR *_pvMassCenter);
+
+
+/** Sets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Linear damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetLinearDamping(orxBODY *_pstBody, orxFLOAT _fDamping);
+
+/** Sets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Angular damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularDamping(orxBODY *_pstBody, orxFLOAT _fDamping);
+
+/** Gets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's linear damping
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetLinearDamping(const orxBODY *_pstBody);
+
+/** Gets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's angular damping
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularDamping(const orxBODY *_pstBody);
 
 
 /** Applies a torque
@@ -274,16 +337,44 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
 
 
+/** Sets self flags of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _u16SelfFlags   Self flags to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
+
+/** Sets check mask of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _u16CheckMask   Check mask to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
+
+/** Gets self flags of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @return Self flags of the physical body part
+ */
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart);
+
+/** Gets check mask of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @return Check mask of the physical body part
+ */
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetCheckMask(const orxBODY_PART *_pstBodyPart);
+
+
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvStart        Start of raycast
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Applies physics simulation result to the Body

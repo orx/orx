@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -61,6 +61,7 @@
  typedef enum __orxFX_CURVE_t
  {
    orxFX_CURVE_LINEAR = 0,
+   orxFX_CURVE_SMOOTH,
    orxFX_CURVE_TRIANGLE,
    orxFX_CURVE_SINE,
    orxFX_CURVE_SQUARE,
@@ -255,6 +256,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX,
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSpeed(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+
+/** Adds a slot to an FX from config
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _zSlotID        Config ID
+ * return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zSlotID);
 
 /** Gets FX duration
  * @param[in]   _pstFX          Concerned FX

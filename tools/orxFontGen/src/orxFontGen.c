@@ -44,6 +44,7 @@
 
 #define orxFONTGEN_KU32_STATIC_FLAG_FONT            0x00000001  /**< Font flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_SIZE            0x00000002  /**< Size flag */
+#define orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE       0x00000004  /**< Monospace flag */
 
 #define orxFONTGEN_KU32_STATIC_MASK_READY           0x00000003  /**< Ready mask */
 
@@ -84,6 +85,7 @@ typedef struct __orxFONTGEN_STATIC_t
   orxVECTOR       vCharacterSize;
   orxVECTOR       vCharacterSpacing;
   orxFLOAT        fFontScale;
+  orxFLOAT        fPadding;
   orxHASHTABLE   *pstCharacterTable;
   orxBANK        *pstGlyphBank;
   orxU32          u32Flags;
@@ -107,7 +109,7 @@ static orxFONTGEN_STATIC sstFontGen;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)
+static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
 {
   orxBOOL bResult = orxTRUE;
 
@@ -367,7 +369,7 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
     else
     {
       // Logs message
-      orxLOG("[SIZE]    Invalid character size found '%s', aborting.", _azParams[1]);
+      orxLOG("[SIZE]    Invalid character size found in '%s', aborting.", _azParams[1]);
     }
   }
   else
@@ -377,6 +379,40 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
 
     // Updates result
     eResult = orxSTATUS_FAILURE;
+  }
+
+  // Done!
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL ProcessPaddingParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+{
+  orxSTATUS eResult;
+
+  // Has a valid size parameter?
+  if(_u32ParamCount > 1)
+  {
+    orxFLOAT fPadding;
+
+    // Gets it
+    if((eResult = orxString_ToFloat(_azParams[1], &fPadding, orxNULL)) != orxSTATUS_FAILURE)
+    {
+      // Stores it
+      sstFontGen.fPadding = orx2F(2.0f) * fPadding;
+
+      // Logs message
+      orxLOG("[PADDING] Character padding set to '%g'.", fPadding);
+    }
+    else
+    {
+      // Logs message
+      orxLOG("[PADDING] Invalid character padding found in '%s', aborting.", _azParams[1]);
+    }
+  }
+  else
+  {
+    // Updates result
+    eResult = orxSTATUS_SUCCESS;
   }
 
   // Done!
@@ -440,6 +476,21 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
   return eResult;
 }
 
+static orxSTATUS orxFASTCALL ProcessMonospaceParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Defined?
+  if(_u32ParamCount > 0)
+  {
+    // Updates status flags
+    orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
+  }
+
+  // Done!
+  return eResult;
+}
+
 static void orxFASTCALL Setup()
 {
   // Adds module dependencies
@@ -486,16 +537,16 @@ static orxSTATUS orxFASTCALL Init()
     // Registers params
     eResult = orxParam_Register(&stParams);
 
-    // Success?
+    // Valid?
     if(eResult != orxSTATUS_FAILURE)
     {
-      // Asks for command line decrypt parameter
+      // Asks for command line padding parameter
       stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-      stParams.zShortName = "f";
-      stParams.zLongName  = "font";
-      stParams.zShortDesc = "Input font file";
-      stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs. Only monospaced fonts are truely supported. Other fonts should produce visually correct glyphs but the end result text will differ in spacing.";
-      stParams.pfnParser  = ProcessFontParams;
+      stParams.zShortName = "p";
+      stParams.zLongName  = "padding";
+      stParams.zShortDesc = "Character padding";
+      stParams.zLongDesc  = "Extra padding added to all characters on both dimensions (width and height)";
+      stParams.pfnParser  = ProcessPaddingParams;
 
       // Registers params
       eResult = orxParam_Register(&stParams);
@@ -503,16 +554,46 @@ static orxSTATUS orxFASTCALL Init()
       // Success?
       if(eResult != orxSTATUS_FAILURE)
       {
-        // Asks for command line input file parameter
+        // Asks for command line decrypt parameter
         stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-        stParams.zShortName = "t";
-        stParams.zLongName  = "textlist";
-        stParams.zShortDesc = "List of input text files";
-        stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
-        stParams.pfnParser  = ProcessInputParams;
+        stParams.zShortName = "f";
+        stParams.zLongName  = "font";
+        stParams.zShortDesc = "Input font file";
+        stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs. Only monospaced fonts are truely supported. Other fonts should produce visually correct glyphs but the end result text will differ in spacing.";
+        stParams.pfnParser  = ProcessFontParams;
 
         // Registers params
         eResult = orxParam_Register(&stParams);
+
+        // Success?
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          // Asks for command line input file parameter
+          stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+          stParams.zShortName = "t";
+          stParams.zLongName  = "textlist";
+          stParams.zShortDesc = "List of input text files";
+          stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
+          stParams.pfnParser  = ProcessInputParams;
+
+          // Registers params
+          eResult = orxParam_Register(&stParams);
+
+          // Valid?
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            // Asks for command line monospaced parameter
+            stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+            stParams.zShortName = "m";
+            stParams.zLongName  = "monospace";
+            stParams.zShortDesc = "Monospaced font";
+            stParams.zLongDesc  = "Should output a monospaced (ie. fixed-width) font";
+            stParams.pfnParser  = ProcessMonospaceParams;
+
+            // Registers params
+            eResult = orxParam_Register(&stParams);
+          }
+        }
       }
     }
   }
@@ -565,9 +646,28 @@ static void Run()
     // Valid?
     if(u32Counter)
     {
-      orxS32    s32Width, s32Height, s32BaseLine;
-      orxFLOAT  fWidth, fHeight;
-      orxU8    *pu8ImageBuffer;
+      orxS32      s32Width, s32Height, s32BaseLine;
+      orxSTRING  *azWidthList = orxNULL;
+      orxFLOAT    fWidth, fHeight;
+      orxU8      *pu8ImageBuffer;
+
+      // Not monospaced?
+      if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+      {
+        orxU32 i;
+
+        // Allocates width list
+        azWidthList = (orxSTRING *)orxMemory_Allocate(u32Counter * sizeof(orxSTRING), orxMEMORY_TYPE_MAIN);
+
+        // Checks
+        orxASSERT(azWidthList);
+
+        // For all strings
+        for(i = 0; i < u32Counter; i++)
+        {
+          azWidthList[i] = (orxSTRING)orxMemory_Allocate(8 * sizeof(orxCHAR), orxMEMORY_TYPE_MAIN);
+        }
+      }
 
       // No font name?
       if(!sstFontGen.zFontName)
@@ -578,15 +678,81 @@ static void Run()
         // Logs message
         orxLOG("[OUTPUT]  No output name specified, defaulting to '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
       }
-      
+
+      // Is not monospaced?
+      if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+      {
+        orxFONTGEN_GLYPH *pstGlyph;
+        orxS32            s32LargestWidth = 0;
+
+        // For all defined glyphs
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList);
+            pstGlyph;
+            pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
+        {
+          orxS32    s32CharacterWidth;
+          FT_Error  eError;
+
+          // Loads rendered glyph
+          eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
+          orxASSERT(!eError);
+
+          // Gets character width
+          s32CharacterWidth = (orxS32)(sstFontGen.pstFontFace->glyph->bitmap_left + sstFontGen.pstFontFace->glyph->bitmap.width);
+
+          // Updates largest character width
+          s32LargestWidth = orxMAX(s32LargestWidth, s32CharacterWidth);
+        }
+
+        // Updates character width
+        sstFontGen.vCharacterSize.fX = orxS2F(s32LargestWidth);
+      }
+
       // Gets width & height
       fWidth  = orxMath_Floor(orxMath_Sqrt(orxU2F(u32Counter)));
       fHeight = orxMath_Ceil(orxU2F(u32Counter) / fWidth);
-      s32Width  = orxF2S((fWidth * sstFontGen.vCharacterSize.fX) + (sstFontGen.vCharacterSpacing.fX * orxMAX(fWidth - orxFLOAT_1, orxFLOAT_0)));
-      s32Height = orxF2S((fHeight * sstFontGen.vCharacterSize.fY) + (sstFontGen.vCharacterSpacing.fY * orxMAX(fHeight - orxFLOAT_1, orxFLOAT_0)));
+      s32Width  = orxF2S((fWidth * (sstFontGen.vCharacterSize.fX + sstFontGen.fPadding)) + (sstFontGen.vCharacterSpacing.fX * orxMAX(fWidth - orxFLOAT_1, orxFLOAT_0)));
+      s32Height = orxF2S((fHeight * (sstFontGen.vCharacterSize.fY + sstFontGen.fPadding)) + (sstFontGen.vCharacterSpacing.fY * orxMAX(fHeight - orxFLOAT_1, orxFLOAT_0)));
+
+      // Is not monospaced?
+      if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+      {
+        orxS32            s32X, s32Y;
+        orxFONTGEN_GLYPH *pstGlyph;
+
+        // For all defined glyphs
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0;
+            pstGlyph;
+            pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
+        {
+          orxS32    s32CharacterWidth;
+          FT_Error  eError;
+
+          // Loads rendered glyph
+          eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
+          orxASSERT(!eError);
+
+          // Gets character width
+          s32CharacterWidth = (orxS32)(sstFontGen.pstFontFace->glyph->bitmap_left + sstFontGen.pstFontFace->glyph->bitmap.width);
+          s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
+
+          // Next line?
+          if(s32X + s32CharacterWidth > s32Width)
+          {
+            s32X  = 0;
+            s32Y += orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding + sstFontGen.vCharacterSpacing.fY);
+          }
+
+          // Updates position
+          s32X += s32CharacterWidth + orxF2S(sstFontGen.vCharacterSpacing.fX);
+        }
+
+        // Updates height
+        s32Height = s32Y + orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding + sstFontGen.vCharacterSpacing.fY);
+      }
 
       // Logs messages
-      orxLOG("[PROCESS] Calculated character size:    %4g x %g.", sstFontGen.vCharacterSize.fX, sstFontGen.vCharacterSize.fY);
+      orxLOG("[PROCESS] Calculated character size:    %4g x %g.", sstFontGen.vCharacterSize.fX + sstFontGen.fPadding, sstFontGen.vCharacterSize.fY + sstFontGen.fPadding);
       orxLOG("[PROCESS] Calculated character spacing: %4g x %g.", sstFontGen.vCharacterSpacing.fX, sstFontGen.vCharacterSpacing.fY);
       orxLOG("[PROCESS] Calculated texture size:      %4ld x %ld.", s32Width, s32Height);
 
@@ -599,7 +765,7 @@ static void Run()
       // Valid?
       if(pu8ImageBuffer)
       {
-        orxU32            u32Size;
+        orxU32            u32Size, s32Index;
         orxS32            s32X, s32Y;
         orxFONTGEN_GLYPH *pstGlyph;
         orxCHAR           acBuffer[orxFONTGEN_KU32_BUFFER_SIZE], *pc;
@@ -608,9 +774,9 @@ static void Run()
         orxMemory_Zero(pu8ImageBuffer, s32Width * s32Height * sizeof(orxRGBA));
 
         // For all defined glyphs
-        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), pc = acBuffer, u32Size = orxFONTGEN_KU32_BUFFER_SIZE - 1, s32X = 0, s32Y = s32BaseLine;
+        for(s32Index = 0, pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), pc = acBuffer, u32Size = orxFONTGEN_KU32_BUFFER_SIZE - 1, s32X = 0, s32Y = s32BaseLine;
             pstGlyph;
-            pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
+            s32Index++, pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
         {
           orxU32 u32Offset;
 
@@ -620,11 +786,35 @@ static void Run()
           // Success?
           if(u32Offset != orxU32_UNDEFINED)
           {
-            FT_Error eError;
+            FT_Error  eError;
+            orxS32    s32CharacterWidth;
 
             // Loads rendered glyph
             eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
             orxASSERT(!eError);
+
+            // Is monospaced?
+            if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+            {
+              // Updates position
+              s32CharacterWidth = orxF2S(sstFontGen.vCharacterSize.fX + sstFontGen.fPadding);
+            }
+            else
+            {
+              // Gets character width
+              s32CharacterWidth = (orxS32)(sstFontGen.pstFontFace->glyph->bitmap_left + sstFontGen.pstFontFace->glyph->bitmap.width);
+              s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
+
+              // Stores its value
+              orxString_NPrint(azWidthList[s32Index], 8, "%ld", s32CharacterWidth);
+            }
+
+            // Next line?
+            if(s32X + s32CharacterWidth > s32Width)
+            {
+              s32X  = 0;
+              s32Y += orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding + sstFontGen.vCharacterSpacing.fY);
+            }
 
             // Has data?
             if(sstFontGen.pstFontFace->glyph->bitmap.buffer)
@@ -633,8 +823,8 @@ static void Run()
               orxU8  *pu8Src, *pu8Dst;
 
               // Gets adjusted position
-              s32AdjustedX  = s32X + orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0);
-              s32AdjustedY  = s32Y - orxMIN((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top, s32BaseLine);
+              s32AdjustedX  = s32X + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) + orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0);
+              s32AdjustedY  = s32Y + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) - orxMIN((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top, s32BaseLine);
 
               // For all rows
               for(i = 0, pu8Src = (orxU8 *)sstFontGen.pstFontFace->glyph->bitmap.buffer, pu8Dst = pu8ImageBuffer + sizeof(orxRGBA) * ((s32AdjustedY * s32Width) + s32AdjustedX);
@@ -656,14 +846,7 @@ static void Run()
             }
 
             // Updates position
-            s32X += orxF2S(sstFontGen.vCharacterSize.fX + sstFontGen.vCharacterSpacing.fX);
-
-            // Next line?
-            if(s32X >= s32Width)
-            {
-              s32X  = 0;
-              s32Y += orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.vCharacterSpacing.fY);
-            }
+            s32X += s32CharacterWidth + orxF2S(sstFontGen.vCharacterSpacing.fX);
 
             // Updates character pointer & size
             pc      += u32Offset;
@@ -684,12 +867,42 @@ static void Run()
         // Pushes font section
         orxConfig_PushSection(sstFontGen.zFontName);
 
-        // Stores font info
-        orxConfig_SetStringBlock("CharacterList", acBuffer);
-        orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
-        orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
-        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.tga", sstFontGen.zFontName);
-        orxConfig_SetString("Texture", acBuffer);
+        // Updates character size with padding
+        sstFontGen.vCharacterSize.fX += sstFontGen.fPadding;
+        sstFontGen.vCharacterSize.fY += sstFontGen.fPadding;
+
+        // Is monospaced?
+        if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+        {
+          // Stores font info
+          orxConfig_SetStringBlock("CharacterList", acBuffer);
+          orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
+          orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
+          orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.tga", sstFontGen.zFontName);
+          orxConfig_SetString("Texture", acBuffer);
+        }
+        else
+        {
+          orxU32 i;
+
+          // Stores font info
+          orxConfig_SetStringBlock("CharacterList", acBuffer);
+          orxConfig_SetStringList("CharacterWidthList", azWidthList, u32Counter);
+          orxConfig_SetFloat("CharacterHeight", sstFontGen.vCharacterSize.fY);
+          orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
+          orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.tga", sstFontGen.zFontName);
+          orxConfig_SetString("Texture", acBuffer);
+
+          // For all width strings
+          for(i = 0; i < u32Counter; i++)
+          {
+            // Deletes it
+            orxMemory_Free(azWidthList[i]);
+          }
+
+          // Deletes width list
+          orxMemory_Free(azWidthList);
+        }
 
         // Pops config
         orxConfig_PopSection();

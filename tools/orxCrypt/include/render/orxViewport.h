@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -122,7 +122,19 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxViewport_GetTexture(const orxVI
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, const orxCOLOR *_pstColor);
 
-/** Gets a viewport texture
+/** Clears viewport background color
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_ClearBackgroundColor(orxVIEWPORT *_pstViewport);
+
+/** Viewport has background color accessor
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_HasBackgroundColor(const orxVIEWPORT *_pstViewport);
+
+/** Gets a viewport background color
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pstColor       Viewport's color
  * @return      Current background color
@@ -141,19 +153,6 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_Enable(orxVIEWPORT *_p
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsEnabled(const orxVIEWPORT *_pstViewport);
-
-
-/** Enables / disables background clearing for a viewport
- * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _bEnable        Enable / disable
- */
-extern orxDLLAPI void orxFASTCALL             orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
-
-/** Has a viewport background clearing enabled?
- * @param[in]   _pstViewport    Concerned viewport
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsBackgroundClearingEnabled(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport camera

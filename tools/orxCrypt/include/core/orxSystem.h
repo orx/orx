@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -45,6 +45,12 @@
 
 #include "orxInclude.h"
 
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+
+  #import <UIKit/UIKit.h>
+
+#endif /* __orxIPHONE__ && __orxOBJC__ */
+
 
 /** Event enum
  */
@@ -56,11 +62,75 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_MOUSE_IN,
   orxSYSTEM_EVENT_MOUSE_OUT,
 
+  orxSYSTEM_EVENT_BACKGROUND,
+  orxSYSTEM_EVENT_FOREGROUND,
+
+  orxSYSTEM_EVENT_GAME_LOOP_START,
+  orxSYSTEM_EVENT_GAME_LOOP_STOP,
+
+  orxSYSTEM_EVENT_TOUCH_BEGIN,
+  orxSYSTEM_EVENT_TOUCH_MOVE,
+  orxSYSTEM_EVENT_TOUCH_END,
+  orxSYSTEM_EVENT_ACCELERATE,
+  orxSYSTEM_EVENT_MOTION_SHAKE,
+
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
 
 } orxSYSTEM_EVENT;
+
+/** System event payload
+ */
+typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
+{
+  orxU32 u32FrameCounter;
+
+#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+  union
+  {
+    /* UI event */
+    struct
+    {
+      UIEvent *poUIEvent;
+
+      union
+      {
+        /* Touch event */
+        NSSet          *poTouchList;
+
+        /* Motion event */
+        UIEventSubtype  eMotion;
+      };
+    };
+
+    /* Accelerate event */
+    struct
+    {
+      UIAccelerometer *poAccelerometer;
+      UIAcceleration  *poAcceleration;
+    };
+  };
+#elif defined(__orxANDROID__)
+  union
+  {
+    /* UI event */
+    struct
+    {
+      orxU32    u32ID;
+      orxFLOAT  fX, fY, fPressure;
+    } stTouch;
+
+    /* Accelerate event */
+    struct
+    {
+      void     *pAccelerometer;
+      orxFLOAT  fX, fY, fZ;
+    } stAccelerometer;
+  };
+#endif
+
+} orxSYSTEM_EVENT_PAYLOAD;
 
 
 /** System module setup

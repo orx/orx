@@ -75,7 +75,7 @@ static orxCRYPT_STATIC sstCrypt;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)
+static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
 {
   orxBOOL bResult = orxTRUE;
 

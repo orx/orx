@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -45,6 +45,7 @@
 
 
 #include "orxInclude.h"
+#include "sound/orxSoundSystem.h"
 #include "math/orxVector.h"
 
 
@@ -74,6 +75,10 @@ typedef enum __orxSOUND_EVENT_t
 {
   orxSOUND_EVENT_START = 0,                   /**< Event sent when a sound starts */
   orxSOUND_EVENT_STOP,                        /**< Event sent when a sound stops */
+  orxSOUND_EVENT_PACKET,                      /**< Event sent when a sound packet is streamed */
+  orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
+  orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
+  orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */
 
   orxSOUND_EVENT_NUMBER,
 
@@ -81,12 +86,42 @@ typedef enum __orxSOUND_EVENT_t
 
 } orxSOUND_EVENT;
 
+/** Sound stream info
+ */
+typedef struct __orxSOUND_STREAM_INFO_t
+{
+  orxU32    u32SampleRate;                    /**< The sample rate, e.g. 44100 Hertz : 4 */
+  orxU32    u32ChannelNumber;                 /**< Number of channels, either mono (1) or stereo (2) : 8 */
+
+} orxSOUND_STREAM_INFO;
+
+/** Sound recording packet
+ */
+typedef struct __orxSOUND_STREAM_PACKET_t
+{
+  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 4 */
+  orxS16   *as16SampleList;                   /**< List of samples for this packet : 8 */
+  orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
+  orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
+
+} orxSOUND_STREAM_PACKET;
+
 /** Sound event payload
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  orxSOUND       *pstSound;                   /**< Sound reference : 4 */
-  const orxSTRING zSoundName;                 /**< Sound name : 8 */
+  const orxSTRING               zSoundName;   /**< Sound name : 4 */
+
+  union
+  {
+    orxSOUND                   *pstSound;     /**< Sound reference : 8 */
+
+    struct
+    {
+      orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 16 */
+      orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 24 */
+    } stStream;
+  };                                          /**< Stream : 24 */
 
 } orxSOUND_EVENT_PAYLOAD;
 
@@ -118,6 +153,13 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const or
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Delete(orxSOUND *_pstSound);
 
 
+/** Is a stream (ie. music)?
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_IsStream(orxSOUND *_pstSound);
+
+
 /** Plays sound
  * @param[in] _pstSound       Concerned Sound
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -135,6 +177,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Pause(orxSOUND *_pstSound
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Stop(orxSOUND *_pstSound);
+
+
+/** Starts recording
+ * @param[in] _zName             Name for the recorded sound/file
+ * @param[in] _bWriteToFile      Should write to file?
+ * @param[in] _u32SampleRate     Sample rate, 0 for default rate (44100Hz)
+ * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSound_StartRecording(const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber);
+
+/** Stops recording
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSound_StopRecording();
+
+/** Is recording possible on the current system?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxSound_HasRecordingSupport();
 
 
 /** Sets sound volume

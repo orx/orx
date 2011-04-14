@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -39,7 +39,7 @@
  */
 
 #ifdef __cplusplus
-  extern "C" {
+extern "C" {
 #endif /* __cplusplus */
 
 #ifndef _orx_H_
@@ -50,11 +50,10 @@
 
 
 #include "orxInclude.h"
-
 #include "orxKernel.h"
-
 #include "orxUtils.h"
 
+#ifndef __orxPLUGIN__
 
 /***************************************************************************
  * Static variables                                                        *
@@ -122,59 +121,29 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
+#ifdef __orxANDROID__
+
+#include <jni.h>
+#include <android/log.h>
+
+/** JNI environment
+ *  This will be loaded in android-support.cpp.
+ */
+extern JNIEnv *mEnv;
+extern JavaVM *mVM;
+extern JNIEnv *globalEnv;
+
+/****************in android there is no actual main, so define it as orxMain will be called by jni******/
+#define main orxMain
+/****************end******************/
+
+#endif /* __orxANDROID__ */
+
 #ifdef __orxIPHONE__
 
   #ifdef __orxOBJC__
 
-  #import <UIKit/UIKit.h>
-
-  #define orxEVENT_TYPE_IPHONE          orxEVENT_TYPE_FIRST_RESERVED
-
-/** Event enum
-  */
-typedef enum __orxIPHONE_EVENT_t
-{
-  orxIPHONE_EVENT_TOUCH_BEGIN = 0,
-  orxIPHONE_EVENT_TOUCH_MOVE,
-  orxIPHONE_EVENT_TOUCH_END,
-  orxIPHONE_EVENT_TOUCH_CANCEL,
-  orxIPHONE_EVENT_ACCELERATE,
-  orxIPHONE_EVENT_MOTION_SHAKE,
-
-  orxIPHONE_EVENT_NUMBER,
-
-} orxIPHONE_EVENT;
-
-/** Locale event payload
- */
-typedef struct __orxIPHONE_EVENT_PAYLOAD_t
-{
-  union
-  {
-    /* UI event */
-    struct
-    {
-      UIEvent *poUIEvent;
-
-      union
-      {
-        /* Touch event */
-        NSSet          *poTouchList;
-
-        /* Motion event */
-        UIEventSubtype  eMotion;
-      };
-    };
-
-    /* Accelerate event */
-    struct
-    {
-      UIAccelerometer *poAccelerometer;
-      UIAcceleration  *poAcceleration;
-    };
-  };
-
-} orxIPHONE_EVENT_PAYLOAD;
+#import <UIKit/UIKit.h>
 
 /** Orx application interface
  */
@@ -244,7 +213,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   #endif /* __orxOBJC__ */
 
 #else /* __orxIPHONE__ */
-    
+
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
  * @param[in]   _azParams                     Main function parameter list (argv)
@@ -283,19 +252,32 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       /* Displays help */
       if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
       {
-        orxSTATUS eClockStatus, eMainStatus;
-        orxBOOL   bStop;
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
+        orxSTATUS               eClockStatus, eMainStatus;
+        orxBOOL                 bStop;
+
+        /* Clears payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
         /* Main loop */
-        for(bStop = orxFALSE;
+        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
             bStop == orxFALSE;
             bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
         {
+          /* Sends frame start event */
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+
           /* Runs the engine */
           eMainStatus = _pfnRun();
 
           /* Updates clock system */
           eClockStatus = orxClock_Update();
+
+          /* Sends frame stop event */
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
+
+          /* Updates frame counter */
+          stPayload.u32FrameCounter++;
         }
       }
 
@@ -313,10 +295,11 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
 }
-    
+
   #ifdef __orxMSVC__
 
-  #include "windows.h"
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
 
 /** Orx main execution function (console-less windows application)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
@@ -360,13 +343,15 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 }
 
   #endif /* __orxMSVC__ */
-    
+
 #endif /* __orxIPHONE__ */
+
+#endif /* __orxPLUGIN__ */
 
 #endif /*_orx_H_*/
 
 #ifdef __cplusplus
-  }
+}
 #endif /* __cplusplus */
 
 /** @} */

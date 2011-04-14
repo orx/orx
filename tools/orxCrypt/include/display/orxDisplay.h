@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -105,7 +105,7 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
  */
 typedef struct __orxCHARACTER_GLYPH_t
 {
-  orxFLOAT fX, fY;
+  orxFLOAT fX, fY, fWidth;
 
 } orxCHARACTER_GLYPH;
 
@@ -113,10 +113,10 @@ typedef struct __orxCHARACTER_GLYPH_t
  */
 typedef struct __orxCHARACTER_MAP_t
 {
-  orxVECTOR           vCharacterSize;
+  orxFLOAT      fCharacterHeight;
 
-  orxBANK            *pstCharacterBank;
-  orxHASHTABLE       *pstCharacterTable;
+  orxBANK      *pstCharacterBank;
+  orxHASHTABLE *pstCharacterTable;
 
 } orxCHARACTER_MAP;
 
@@ -174,6 +174,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_TITLE          "Title"
 #define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
 #define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
+#define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
 
 
 /** Shader texture suffixes
@@ -227,7 +228,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 {
 @private
   EAGLContext  *poMainContext, *poThreadContext;
-  GLuint        uiRenderBuffer, uiFrameBuffer;
+  GLuint        uiRenderBuffer, uiFrameBuffer, uiDepthBuffer;
   BOOL          bShaderSupport;
 }
 
@@ -238,7 +239,17 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 @end
 
 #endif /* __orxIPHONE__ && __orxOBJC__ */
+//xp add
+#if defined(__orxANDROID__)
 
+
+#include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <jni.h>
+#include <android/log.h>
+typedef char GLchar;
+#endif
+//~xp add
 
 /** Display module setup
  */
@@ -481,11 +492,11 @@ do                                                                              
   {                                                                               \
     RESULT = ALT;                                                                 \
   }                                                                               \
-  if((RESULT < orxFLOAT_0) || (RESULT < orxMATH_KF_EPSILON))                      \
+  if(RESULT < orxMATH_KF_EPSILON)                                                 \
   {                                                                               \
     RESULT = orxFLOAT_0;                                                          \
   }                                                                               \
-  else if((RESULT > orxFLOAT_1) || (RESULT > orxFLOAT_1 - orxMATH_KF_EPSILON))    \
+  else if(RESULT > orxFLOAT_1 - orxMATH_KF_EPSILON)                               \
   {                                                                               \
     RESULT = orxFLOAT_1;                                                          \
   }                                                                               \
@@ -917,29 +928,38 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StartShader(con
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StopShader(const orxHANDLE _hShader);
 
+/** Gets a shader parameter's ID
+ * @param[in]   _hShader                              Concerned shader
+ * @param[in]   _zParam                               Parameter name
+ * @param[in]   _s32Index                             Parameter index, -1 for non-array types
+ * @param[in]   _bIsTexture                           Is parameter a texture?
+ * @return Parameter ID
+ */
+extern orxDLLAPI orxS32 orxFASTCALL                   orxDisplay_GetParameterID(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture);
+
 /** Sets a shader parameter (orxBITMAP)
  * @param[in]   _hShader                              Concerned shader
- * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _s32ID                                ID of parameter to set
  * @param[in]   _pstValue                             Value (orxBITMAP) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, const orxBITMAP *_pstValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, orxS32 _s32ID, const orxBITMAP *_pstValue);
 
 /** Sets a shader parameter (orxFLOAT)
  * @param[in]   _hShader                              Concerned shader
- * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _s32ID                                ID of parameter to set
  * @param[in]   _fValue                               Value (orxFLOAT) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue);
 
 /** Sets a shader parameter (orxVECTOR)
  * @param[in]   _hShader                              Concerned shader
- * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _s32ID                                ID of parameter to set
  * @param[in]   _pvValue                              Value (orxVECTOR) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue);
 
 
 /** Enables / disables vertical synchro

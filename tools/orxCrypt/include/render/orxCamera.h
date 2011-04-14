@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -54,11 +54,11 @@
 
 /** Anim flags
  */
-#define orxCAMERA_KU32_FLAG_NONE              0x00000000 /**< No flags */
+#define orxCAMERA_KU32_FLAG_NONE        0x00000000 /**< No flags */
 
-#define orxCAMERA_KU32_FLAG_2D                0x00000001 /**< 2D flag */
+#define orxCAMERA_KU32_FLAG_2D          0x00000001 /**< 2D flag */
 
-#define orxCAMERA_KU32_MASK_USER_ALL          0x000000FF /**< User all mask */
+#define orxCAMERA_KU32_MASK_USER_ALL   	0x000000FF /**< User all mask */
 
 
 /** Internal camera structure

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -71,6 +71,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_t
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_SHADER,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_START_SHADER,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_STOP_SHADER,
+  orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_PARAMETER_ID,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR,

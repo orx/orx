@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -104,7 +104,7 @@
 
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__) && !defined(__orxIPHONE__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__) && !defined(__orxIPHONE__) && !defined(__orxANDROID__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -126,6 +126,11 @@
 
     #define __orxIPHONE__
 
+  /* Android */
+  #elif defined(TARGET_OS_ANDROID)
+
+    #define __orxANDROID__
+
   /* Mac? */
   #elif defined(__APPLE__)
 
@@ -138,7 +143,7 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__/__orxANDROID__)"
 
   #endif
 
@@ -213,9 +218,9 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / GP2X / Wii / iPhone */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
-    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__)
+    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
       #define orxFASTCALL
 
@@ -261,7 +266,7 @@
     /** The null address */
     #define orxNULL             (0)
 
-    #if defined(__orxWII__) || defined(__orxIPHONE__)
+    #if defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
 
       /* Wii and IPhone versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -28,7 +28,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Need to refactor value getters (lot of duplicated code to handle random and lists)
  */
 
 /**
@@ -55,7 +54,7 @@
 typedef enum __orxCONFIG_EVENT_t
 {
   orxCONFIG_EVENT_RELOAD_START = 0,                     /**< Event sent when reloading config starts */
-  orxCONFIG_EVENT_RELOAD_END,                           /**< Event sent when reloading config starts */
+  orxCONFIG_EVENT_RELOAD_STOP,                          /**< Event sent when reloading config stops */
   orxCONFIG_EVENT_INVALID_TYPE_ACCESS,                  /**< Event sent when accessing a value with an invalid type getter */
 
   orxCONFIG_EVENT_NUMBER,
@@ -66,7 +65,7 @@ typedef enum __orxCONFIG_EVENT_t
 
 
 /** Config callback function type to use with save function */
-typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption);
+typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
 
 
 /** Config module setup
@@ -198,6 +197,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearSection(const orxST
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearValue(const orxSTRING _zKey);
+
+
+/** Is this value inherited from another one?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsInheritedValue(const orxSTRING _zKey);
 
 
 /** Has specified value for the given key?

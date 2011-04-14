@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -46,7 +46,6 @@
 
 
 #include "orxInclude.h"
-#include "memory/orxMemory.h"
 #include "math/orxVector.h"
 
 #ifdef __orxMSVC__
@@ -598,24 +597,13 @@ static orxINLINE orxSTRING              orxString_Copy(orxSTRING _zDstString, co
  */
 static orxINLINE orxSTRING              orxString_Duplicate(const orxSTRING _zSrcString)
 {
-  orxU32    u32Size;
   orxSTRING zResult;
 
   /* Checks */
   orxASSERT(_zSrcString != orxNULL);
 
-  /* Gets string size in bytes */
-  u32Size = (orxString_GetLength(_zSrcString) + 1) * sizeof(orxCHAR);
-
-  /* Allocates it */
-  zResult = (orxSTRING)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_TEXT);
-
-  /* Valid? */
-  if(zResult != orxNULL)
-  {
-    /* Copies source to it */
-    orxMemory_Copy(zResult, _zSrcString, u32Size);
-  }
+  /* Updates result */
+  zResult = strdup(_zSrcString);
 
   /* Done! */
   return zResult;
@@ -631,7 +619,7 @@ static orxINLINE orxSTATUS              orxString_Delete(orxSTRING _zString)
   orxASSERT(_zString != orxSTRING_EMPTY);
 
   /* Frees its memory */
-  orxMemory_Free(_zString);
+  free(_zString);
 
   /* Done! */
   return orxSTATUS_SUCCESS;
@@ -922,18 +910,18 @@ static orxINLINE orxSTATUS              orxString_ToFloat(const orxSTRING _zStri
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
-  /* Linux / Mac / GP2X / Wii / IPhone / MSVC? */
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__)
+  /* Linux / Mac / GP2X / Wii / IPhone / Android / MSVC? */
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__) || defined(__orxANDROID__)
 
   /* Converts it */
   *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ */
+#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */
 
   /* Converts it */
   *_pfOutValue = strtof(_zString, &pcEnd);
 
-#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
