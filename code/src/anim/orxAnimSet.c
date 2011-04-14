@@ -1676,8 +1676,8 @@ void orxFASTCALL    orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
   /* Updates reference counter */
   orxStructure_DecreaseCounter(_pstAnimSet);
 
-  /* No reference left? */
-  if(orxStructure_GetRefCounter(_pstAnimSet) == 0)
+  /* No extra reference left? */
+  if(orxStructure_GetRefCounter(_pstAnimSet) <= 1)
   {
     /* Unlocks animset */
     orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_REFERENCE_LOCK);
