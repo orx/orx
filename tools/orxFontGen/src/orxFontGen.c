@@ -45,6 +45,7 @@
 #define orxFONTGEN_KU32_STATIC_FLAG_FONT            0x00000001  /**< Font flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_SIZE            0x00000002  /**< Size flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE       0x00000004  /**< Monospace flag */
+#define orxFONTGEN_KU32_STATIC_FLAG_ADVANCE         0x00000008  /**< Advance flag */
 
 #define orxFONTGEN_KU32_STATIC_MASK_READY           0x00000003  /**< Ready mask */
 
@@ -485,6 +486,27 @@ static orxSTATUS orxFASTCALL ProcessMonospaceParams(orxU32 _u32ParamCount, const
   {
     // Updates status flags
     orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
+
+    // Logs message
+    orxLOG("[MODE]    Output mode set to monospace.");
+  }
+
+  // Done!
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL ProcessAdvanceParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Defined?
+  if(_u32ParamCount > 0)
+  {
+    // Updates status flags
+    orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
+
+    // Logs message
+    orxLOG("[PACKING] Using original glyph advance values.");
   }
 
   // Done!
@@ -592,6 +614,31 @@ static orxSTATUS orxFASTCALL Init()
 
             // Registers params
             eResult = orxParam_Register(&stParams);
+
+            // Not monospaced?
+            if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+            {
+              // Logs message
+              orxLOG("[MODE]    Output mode set to non-monospace.");
+
+              // Asks for command line advance parameter
+              stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+              stParams.zShortName = "a";
+              stParams.zLongName  = "advance";
+              stParams.zShortDesc = "Use glyph advance values for non-monospace fonts";
+              stParams.zLongDesc  = "In non-monospace mode only: the font's original glyph advance values will be used instead of packing glyphs as much as possible";
+              stParams.pfnParser  = ProcessAdvanceParams;
+
+              // Registers params
+              eResult = orxParam_Register(&stParams);
+
+              // Not using original advance values?
+              if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
+              {
+                // Logs message
+                orxLOG("[PACKING] Characters will be packed.");
+              }
+            }
           }
         }
       }
@@ -697,8 +744,17 @@ static void Run()
           eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
           orxASSERT(!eError);
 
-          // Gets character width
-          s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+          // Use original advance value?
+          if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
+          {
+            // Gets character width
+            s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+          }
+          else
+          {
+            // Gets character width
+            s32CharacterWidth = orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0) + (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width;
+          }
 
           // Updates largest character width
           s32LargestWidth = orxMAX(s32LargestWidth, s32CharacterWidth);
@@ -732,8 +788,19 @@ static void Run()
           eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
           orxASSERT(!eError);
 
-          // Gets character width
-          s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+          // Use original advance value?
+          if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
+          {
+            // Gets character width
+            s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+          }
+          else
+          {
+            // Gets character width
+            s32CharacterWidth = orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0) + (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width;
+          }
+
+          // Adds padding
           s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
 
           // Next line?
@@ -801,8 +868,19 @@ static void Run()
             }
             else
             {
-              // Gets character width
-              s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+              // Use original advance value?
+              if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
+              {
+                // Gets character width
+                s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+              }
+              else
+              {
+                // Gets character width
+                s32CharacterWidth = orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0) + (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width;
+              }
+
+              // Adds padding
               s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
 
               // Stores its value
