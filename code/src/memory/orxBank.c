@@ -32,14 +32,12 @@
 
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
+#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 #define orxBANK_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxBANK_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
-#define orxBANK_KU32_UNALLOCATION_HYSTERESIS  5           /**< The next segment will be unallocated when the current */
-                                                          /**< segment will have orxBANK_KU32_UNALLOCATION_HYSTERESYS */
-                                                          /**< free cells */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -55,18 +53,20 @@ typedef struct __orxBANK_SEGMENT_t
 
 struct __orxBANK_t
 {
+  orxLINKLIST_NODE  stNode;                 /**< Linklist node */
   orxBANK_SEGMENT  *pstFirstSegment;        /**< First segment used in the bank */
-  orxU32            u32Flags;               /**< Flags set for the memory bank */
-  orxMEMORY_TYPE    eMemType;               /**< Memory type that will be used by the memory allocation */
+  orxU32            u32Counter;             /**< Number of allocated cells */
   orxU32            u32ElemSize;            /**< Size of a cell */
   orxU16            u16NbCellPerSegments;   /**< Number of cells per banks */
   orxU16            u16SizeSegmentBitField; /**< Number of u32 (4 bytes) to represent a segment */
-  orxU32            u32Counter;             /**< Number of allocated cells */
+  orxU32            u32Flags;               /**< Flags set for the memory bank */
+  orxMEMORY_TYPE    eMemType;               /**< Memory type that will be used by the memory allocation */
 };
 
 typedef struct __orxBANK_STATIC_t
 {
-  orxU32 u32Flags;                      /**< Flags set by the memory module */
+  orxLINKLIST       stBankList;             /**< Bank linklist */
+  orxU32            u32Flags;               /**< Flags set by the memory module */
 
 } orxBANK_STATIC;
 
@@ -83,7 +83,7 @@ static orxBANK_STATIC sstBank;
  * @param[in] _pstBank    Concerned bank
  * @return  returns a pointer on the memory segment (orxNULL if an error occured)
  */
-static orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(const orxBANK *_pstBank)
+static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
 {
   orxBANK_SEGMENT *pstSegment;  /* Pointer on the segment of memory */
   orxU32 u32SegmentSize;        /* Size of segment allocation */
@@ -112,28 +112,6 @@ static orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(const orxBANK *_pstBank)
   }
 
   return pstSegment;
-}
-
-/** Free a segment of memory (and recursively all next segments)
- * @param[in] _pstSegment  Allocated segment of memory
- */
-static orxINLINE void orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
-{
-  /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
-  orxASSERT(_pstSegment != orxNULL);
-
-  /* Are there another segments linked to this one ? */
-  if(_pstSegment->pstNext != orxNULL)
-  {
-    /* Yes, free it */
-    orxBank_SegmentDelete(_pstSegment->pstNext);
-  }
-
-  /* Free the current segment */
-  orxMemory_Free(_pstSegment);
 }
 
 /** Returns the segment where is stored _pCell
@@ -259,20 +237,25 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
   {
     /* Set initial values */
     orxMemory_Zero(pstBank, sizeof(orxBANK));
-    pstBank->eMemType                 = _eMemType;
+    pstBank->u32Counter               = 0;
     pstBank->u32ElemSize              = _u32Size;
     pstBank->u32Flags                 = _u32Flags;
     pstBank->u16NbCellPerSegments     = _u16NbElem;
-    pstBank->u32Counter               = 0;
+    pstBank->eMemType                 = _eMemType;
 
     /* Compute the necessary number of 32 bits packs */
     pstBank->u16SizeSegmentBitField   = orxALIGN32(_u16NbElem) >> 5;
 
     /* Allocate the first segment, and select it as current */
-    pstBank->pstFirstSegment    = orxBank_SegmentCreate(pstBank);
+    pstBank->pstFirstSegment          = orxBank_CreateSegment(pstBank);
 
-    /* No allocation problem ? */
-    if(pstBank->pstFirstSegment == orxNULL)
+    /* Success? */
+    if(pstBank->pstFirstSegment != orxNULL)
+    {
+      /* Add it to the list */
+      orxLinkList_AddEnd(&(sstBank.stBankList), &(pstBank->stNode));
+    }
+    else
     {
       /* Can't allocate segment, cancel bank allocation */
       orxMemory_Free(pstBank);
@@ -288,14 +271,21 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
  */
 void orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 {
+  orxBANK_SEGMENT *pstSegment, *pstSegmentToDelete;
+
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
 
-  /* Delete segment(s) (This segment is the first one, it can't be orxNULL) */
-  orxBank_SegmentDelete(_pstBank->pstFirstSegment);
+  /* Removes it from the list */
+  orxLinkList_Remove(&(_pstBank->stNode));
+
+  /* Deletes all segments */
+  for(pstSegment = _pstBank->pstFirstSegment;
+      pstSegment != orxNULL;
+      pstSegmentToDelete = pstSegment, pstSegment = pstSegment->pstNext, orxMemory_Free(pstSegmentToDelete)); 
 
   /* Completly Free Bank */
   orxMemory_Free(_pstBank);
@@ -327,7 +317,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
   if((pstCurrentSegment->u16NbFree == 0) && (!(_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE)))
   {
     /* No, Try to allocate a new segment */
-    pstCurrentSegment->pstNext = orxBank_SegmentCreate(_pstBank);
+    pstCurrentSegment->pstNext = orxBank_CreateSegment(_pstBank);
 
     /* Correct segment allocation ? */
     if(pstCurrentSegment->pstNext != orxNULL)
@@ -367,7 +357,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     /* If bFound is false, It means that there are no more free segments that we can allocate.
      * It can be volunteer (orxBANK_KU32_FLAG_NOT_EXPANDABLE) or a problem in the code => assert
      */
-    orxASSERT(bFound || (!bFound && ((_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE) == orxBANK_KU32_FLAG_NOT_EXPANDABLE)));
+    orxASSERT(bFound || ((_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE) == orxBANK_KU32_FLAG_NOT_EXPANDABLE));
 
     /* Found a free element ? */
     if(bFound)
@@ -474,6 +464,59 @@ void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
 
   /* Clears bank counter */
   _pstBank->u32Counter = 0;
+}
+
+/** Compacts a bank by removing all its unused segments
+ * @param[in] _pstBank    Bank of memory to compact
+ */
+void orxFASTCALL orxBank_Compact(orxBANK *_pstBank)
+{
+  orxBANK_SEGMENT *pstSegment, *pstPreviousSegment;
+
+  /* Checks */
+  orxASSERT(sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBank != orxNULL);
+
+  /* For all segments */
+  for(pstPreviousSegment = _pstBank->pstFirstSegment, pstSegment = pstPreviousSegment->pstNext;
+      pstSegment != orxNULL;
+      pstPreviousSegment = pstSegment, pstSegment = pstSegment->pstNext)
+  {
+    /* Is empty? */
+    if(pstSegment->u16NbFree == _pstBank->u16NbCellPerSegments)
+    {
+      /* Updates previous segment's next */
+      pstPreviousSegment->pstNext = pstSegment->pstNext;
+
+      /* Frees it */
+      orxMemory_Free(pstSegment);
+
+      /* Reverts back to previous */
+      pstSegment = pstPreviousSegment;
+    }
+  }
+}
+
+/** Compacts all banks by removing all their unused segments
+ */
+void orxFASTCALL orxBank_CompactAll()
+{
+  orxBANK *pstBank;
+
+  /* Checks */
+  orxASSERT(sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY);
+
+  /* For all banks */
+  for(pstBank = (orxBANK *)orxLinkList_GetFirst(&(sstBank.stBankList));
+      pstBank != orxNULL;
+      pstBank = (orxBANK *)orxLinkList_GetNext(&(pstBank->stNode)))
+  {
+    /* Compacts it */
+    orxBank_Compact(pstBank);
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Get the next cell

@@ -104,6 +104,15 @@ extern orxDLLAPI void orxFASTCALL           orxBank_Free(orxBANK *_pstBank, void
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Clear(orxBANK *_pstBank);
 
+/** Compacts a bank by removing all its unused segments
+ * @param[in] _pstBank    Bank of memory to compact
+ */
+extern orxDLLAPI void orxFASTCALL           orxBank_Compact(orxBANK *_pstBank);
+
+/** Compacts all banks by removing all their unused segments
+ */
+extern orxDLLAPI void orxFASTCALL           orxBank_CompactAll();
+
 /** Gets the next cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
  * @param[in] _pCell      Pointer on the current cell of memory
