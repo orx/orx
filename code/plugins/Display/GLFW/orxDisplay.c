@@ -2132,6 +2132,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   {
     orxDISPLAY_EVENT_PAYLOAD stPayload;
 
+    /* Updates actual size */
+    glfwGetWindowSize(&iWidth, &iHeight);
+
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -2176,10 +2179,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     /* Updates screen info */
     if(_pstVideoMode != orxNULL)
     {
-      sstDisplay.pstScreen->fWidth          = orx2F(_pstVideoMode->u32Width);
-      sstDisplay.pstScreen->fHeight         = orx2F(_pstVideoMode->u32Height);
-      sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _pstVideoMode->u32Width : orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Width);
-      sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _pstVideoMode->u32Height : orxMath_GetNextPowerOfTwo(_pstVideoMode->u32Height);
+      sstDisplay.pstScreen->fWidth          = orx2F(iWidth);
+      sstDisplay.pstScreen->fHeight         = orx2F(iHeight);
+      sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? (orxU32)iWidth : orxMath_GetNextPowerOfTwo((orxU32)iWidth);
+      sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? (orxU32)iHeight : orxMath_GetNextPowerOfTwo((orxU32)iHeight);
       sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
       sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
       sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
