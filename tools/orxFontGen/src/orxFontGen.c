@@ -798,6 +798,13 @@ static void Run()
           {
             // Gets character width
             s32CharacterWidth = orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0) + (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width;
+
+            // No width?
+            if(s32CharacterWidth == 0)
+            {
+              // Uses its advance value
+              s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+            }
           }
 
           // Adds padding
@@ -878,6 +885,13 @@ static void Run()
               {
                 // Gets character width
                 s32CharacterWidth = orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0) + (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width;
+
+                // No width?
+                if(s32CharacterWidth == 0)
+                {
+                  // Uses its advance value
+                  s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+                }
               }
 
               // Adds padding
