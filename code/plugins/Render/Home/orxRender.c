@@ -1178,12 +1178,25 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
       {
         orxFLOAT fDelta;
 
-        /* Gets rendering limit delta using correction ratio */
-        fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+        /* Should correct horizontally? */
+        if(fCorrectionRatio < orxFLOAT_1)
+        {
+          /* Gets rendering limit delta using correction ratio */
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
 
-        /* Updates viewport */
-        stViewportBox.vTL.fX += fDelta;
-        stViewportBox.vBR.fX -= fDelta;
+          /* Updates viewport */
+          stViewportBox.vTL.fX += fDelta;
+          stViewportBox.vBR.fX -= fDelta;
+        }
+        else
+        {
+          /* Gets rendering limit delta using correction ratio */
+          fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+
+          /* Updates viewport */
+          stViewportBox.vTL.fY += fDelta;
+          stViewportBox.vBR.fY -= fDelta;
+        }
       }
 
       /* Is position in box? */
