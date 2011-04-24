@@ -113,6 +113,12 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 			requestFocus();
 			AnOrxActivity.ORXThreadLock.notifyAll(); // to wake up the game
 			// thread
+			
+			//set the translucent
+			if (AnOrxActivity.isTranslucent){
+				this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+			}
+			
 		}
 	}
 
@@ -212,7 +218,7 @@ public class ORXSurface extends SurfaceView implements SurfaceHolder.Callback,
 		Log.d("ORX", "Starting up " + r + ", " + g + ", " + b + ", " + a + ", "
 				+ depthBufferSize);
 		if (a > 0) {
-			this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+			AnOrxActivity.isTranslucent = true;
 		}
 
 		try {

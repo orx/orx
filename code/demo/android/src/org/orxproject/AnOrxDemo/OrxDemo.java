@@ -23,6 +23,7 @@ public class OrxDemo extends AnOrxActivity {
 		isDebug = false; 
 		//when you need to run in the emulator it should set to true
 		usingGLES1 = false;
+		isTranslucent = true;
 		appPath = "bounce_demo";
 		appName = "orxTest";
 		orxAppLibName = "orxApp";

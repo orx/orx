@@ -26,6 +26,8 @@ public class AnOrxActivity extends Activity {
 	protected static boolean isDebug = true;
 	//when you need to run in the emulator it should set to true
 	protected static boolean usingGLES1 = false;
+	
+	protected static boolean isTranslucent = true;
 
 	/*
 	* first, set the app name, the main feature is to set the default .ini filename
