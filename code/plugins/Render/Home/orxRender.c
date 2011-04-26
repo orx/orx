@@ -612,9 +612,6 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                     pstObject != orxNULL;
                     pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
                 {
-                  /* Updates its render status */
-                  orxObject_SetRendered(pstObject, orxFALSE);
-
                   /* Is object enabled? */
                   if(orxObject_IsEnabled(pstObject) != orxFALSE)
                   {
@@ -996,10 +993,20 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   if(bRender != orxFALSE)
   {
     orxVIEWPORT  *pstViewport;
+    orxOBJECT    *pstObject;
     orxFLOAT      fWidth, fHeight;
 
     /* Clears screen */
     orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+
+    /* For all objects */
+    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+        pstObject != orxNULL;
+        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+    {
+       /* Clears its render status */
+       orxObject_SetRendered(pstObject, orxFALSE);
+    }
 
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));

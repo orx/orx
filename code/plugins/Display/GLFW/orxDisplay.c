@@ -1236,6 +1236,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(orxBITMAP *_pstBitmap, orxU8
     orxU8  *pu8ImageData;
     GLint   iTexture;
 
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
     /* Allocates buffer */
     pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
 
