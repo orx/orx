@@ -910,12 +910,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   orxFrame_SetScale(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vObjectScale);
 
                   /* Renders it */
-                  if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) != orxSTATUS_FAILURE)
-                  {
-                    /* Updates its render status */
-                    orxObject_SetRendered(pstObject, orxTRUE);
-                  }
-                  else
+                  if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
                   {
                     /* Prints error message */
                     orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s -> orxBITMAP %p] couldn't be rendered.", pstObject, orxObject_GetName(pstObject), pstBitmap);
@@ -993,20 +988,10 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   if(bRender != orxFALSE)
   {
     orxVIEWPORT  *pstViewport;
-    orxOBJECT    *pstObject;
     orxFLOAT      fWidth, fHeight;
 
     /* Clears screen */
     orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
-
-    /* For all objects */
-    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
-        pstObject != orxNULL;
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
-    {
-       /* Clears its render status */
-       orxObject_SetRendered(pstObject, orxFALSE);
-    }
 
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));

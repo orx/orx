@@ -67,8 +67,7 @@
 #define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000020  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
-#define orxOBJECT_KU32_FLAG_RENDERED            0x40000000  /**< Rendered flag */
-#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x80000000  /**< Has lifetime flag  */
+#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
 #define orxOBJECT_KU32_FLAG_HAS_CHILD           0x04000000  /**< Has child flag */
@@ -1440,45 +1439,6 @@ orxBOOL orxFASTCALL orxObject_IsPaused(const orxOBJECT *_pstObject)
 
   /* Done! */
   return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED));
-}
-
-/** Sets render status of an object
- * @param[in]   _pstObject    Concerned object
- * @param[in]   _bRendered    Rendered or not this frame
- */
-void orxFASTCALL    orxObject_SetRendered(orxOBJECT *_pstObject, orxBOOL _bRendered)
-{
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Rendered? */
-  if(_bRendered != orxFALSE)
-  {
-    /* Updates status flags */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_RENDERED, orxOBJECT_KU32_FLAG_NONE);
-  }
-  else
-  {
-    /* Updates status flags */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_RENDERED);
-  }
-
-  return;
-}
-
-/** Is object rendered this frame?
- * @param[in]   _pstObject    Concerned object
- * @return      orxTRUE if rendered, orxFALSE otherwise
- */
-orxBOOL orxFASTCALL orxObject_IsRendered(const orxOBJECT *_pstObject)
-{
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Done! */
-  return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_RENDERED));
 }
 
 /** Sets user data for an object
