@@ -1607,7 +1607,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     /* Creates stack bank & section bank/table */
     sstConfig.pstStackBank    = orxBank_Create(orxCONFIG_KU32_STACK_BANK_SIZE, sizeof(orxCONFIG_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
-    sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
     if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
@@ -1767,15 +1767,16 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
   if(sstConfig.zEncryptionKey != orxNULL)
   {
     /* Deletes it */
-    orxString_Delete(sstConfig.zEncryptionKey);
+    free(sstConfig.zEncryptionKey);
   }
 
   /* Has new key? */
   if((_zEncryptionKey != orxNULL) && (_zEncryptionKey != orxSTRING_EMPTY))
   {
     /* Updates values */
-    sstConfig.zEncryptionKey        = orxString_Duplicate(_zEncryptionKey);
-    sstConfig.u32EncryptionKeySize  = orxString_GetLength(sstConfig.zEncryptionKey);
+    sstConfig.u32EncryptionKeySize  = strlen(_zEncryptionKey);
+    sstConfig.zEncryptionKey        = (orxSTRING)malloc(sstConfig.u32EncryptionKeySize + 1);
+    memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, sstConfig.u32EncryptionKeySize + 1);
     sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
   }
   else
