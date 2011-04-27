@@ -582,7 +582,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
     /* Waits for next time slice */
-    //orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
+    orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
   }
 
   /* Done! */
