@@ -133,19 +133,6 @@ extern orxDLLAPI void orxFASTCALL           orxObject_Pause(orxOBJECT *_pstObjec
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsPaused(const orxOBJECT *_pstObject);
 
 
-/** Sets render status of an object
- * @param[in]   _pstObject    Concerned object
- * @param[in]   _bRendered    Rendered or not this frame
- */
-extern orxDLLAPI void orxFASTCALL           orxObject_SetRendered(orxOBJECT *_pstObject, orxBOOL _bRendered);
-
-/** Is object rendered this frame?
- * @param[in]   _pstObject    Concerned object
- * @return      orxTRUE if rendered, orxFALSE otherwise
- */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsRendered(const orxOBJECT *_pstObject);
-
-
 /** Sets user data for an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pUserData    User data to store / orxNULL
@@ -445,6 +432,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(const o
  * @return      Object custom gravity / orxNULL is object doesn't have any
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetCustomGravity(const orxOBJECT *_pstObject, orxVECTOR *_pvCustomGravity);
+
+/** Gets an object mass
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object mass
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetMass(const orxOBJECT *_pstObject);
 
 /** Gets an object center of mass
  * @param[in]   _pstObject      Concerned object

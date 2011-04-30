@@ -53,6 +53,7 @@ extern "C" {
 #include "orxKernel.h"
 #include "orxUtils.h"
 
+#ifndef __orxPLUGIN__
 
 /***************************************************************************
  * Static variables                                                        *
@@ -114,6 +115,7 @@ static void orxFASTCALL orx_MainSetup()
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PROFILER);
 
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
@@ -344,6 +346,8 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
   #endif /* __orxMSVC__ */
 
 #endif /* __orxIPHONE__ */
+
+#endif /* __orxPLUGIN__ */
 
 #endif /*_orx_H_*/
 

@@ -108,7 +108,7 @@ typedef struct __orxANIM_CUSTOM_EVENT_t
 {
   const orxSTRING zName;                      /**< Event name : 4 */
   orxFLOAT        fValue;                     /**< Event value : 8 */
-  orxFLOAT        fTimeStamp;                 /**< Timestamo : 12 */
+  orxFLOAT        fTimeStamp;                 /**< Timestamp : 12 */
 
 } orxANIM_CUSTOM_EVENT;
 

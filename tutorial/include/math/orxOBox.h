@@ -368,7 +368,7 @@ static orxINLINE orxBOOL                      orxOBox_ZAlignedTestIntersection(c
   }
   else
   {
-    // Updates result
+    /* Updates result */
     bResult = orxFALSE;
   }
 

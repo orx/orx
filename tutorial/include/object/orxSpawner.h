@@ -73,6 +73,7 @@
 typedef enum __orxSPAWNER_EVENT_t
 {
   orxSPAWNER_EVENT_SPAWN = 0,
+  orxSPAWNER_EVENT_CREATE,
   orxSPAWNER_EVENT_DELETE,
   orxSPAWNER_EVENT_RESET,
   orxSPAWNER_EVENT_EMPTY,
@@ -202,6 +203,12 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetWaveSize(const orxSPAW
  * @return      Delay between two waves / -1 if not in wave mode
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWaveDelay(const orxSPAWNER *_pstSpawner);
+
+/** Gets spawner next wave delay
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Delay before next wave is spawned / -1 if not in wave mode
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetNextWaveDelay(const orxSPAWNER *_pstSpawner);
 
 
 /** Sets spawner object speed

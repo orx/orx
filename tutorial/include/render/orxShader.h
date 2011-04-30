@@ -182,7 +182,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTextureParam(orxSHA
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable
- * @param[in] _apValueList            Parameter's vector value list
+ * @param[in] _avValueList            Parameter's vector value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList);

@@ -32,7 +32,7 @@
 
 #include "io/orxJoystick.h"
 #include "plugin/orxPluginCore.h"
-#include "debug//orxDebug.h"
+#include "debug/orxDebug.h"
 
 
 /** Misc defines

@@ -281,9 +281,9 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_MOUSE,                       /**< Mouse Debug */
   orxDEBUG_LEVEL_OBJECT,                      /**< Object Debug */
   orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
-  orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PHYSICS,                     /**< Physics Debug */
   orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
+  orxDEBUG_LEVEL_PROFILER,                    /**< Profiler Debug */
   orxDEBUG_LEVEL_RENDER,                      /**< Render Debug */
   orxDEBUG_LEVEL_SCREENSHOT,                  /**< Screenshot Debug */
   orxDEBUG_LEVEL_SOUND,                       /**< Sound Debug */

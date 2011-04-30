@@ -419,7 +419,6 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
  * Search functions
  ******************************************************************************/
 
-// Find a the first item of the hashtable and return the iterator corresponding to the search.
 orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
@@ -451,7 +450,6 @@ orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32
   return hResult;
 }
 
-// Find a the next item of the hashtable and return the iterator corresponding to the search.
 orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)
 {
   orxHASHTABLE_CELL *pIter = (orxHASHTABLE_CELL*)_hIterator;

@@ -65,7 +65,7 @@ typedef enum __orxCONFIG_EVENT_t
 
 
 /** Config callback function type to use with save function */
-typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption);
+typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
 
 
 /** Config module setup

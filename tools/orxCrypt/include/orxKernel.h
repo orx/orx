@@ -58,6 +58,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxFPS.h"
+#include "debug/orxProfiler.h"
 
 #include "display/orxGraphic.h"
 #include "display/orxDisplay.h"

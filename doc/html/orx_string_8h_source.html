@@ -58,1092 +58,1104 @@
 <a name="l00046"></a>00046 <span class="preprocessor"></span>
 <a name="l00047"></a>00047 
 <a name="l00048"></a>00048 <span class="preprocessor">#include &quot;<a class="code" href="orx_include_8h.html">orxInclude.h</a>&quot;</span>
-<a name="l00049"></a>00049 <span class="preprocessor">#include &quot;<a class="code" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</span>
-<a name="l00050"></a>00050 
-<a name="l00051"></a>00051 <span class="preprocessor">#ifdef __orxMSVC__</span>
-<a name="l00052"></a>00052 <span class="preprocessor"></span>
-<a name="l00053"></a>00053 <span class="preprocessor">  #pragma warning(disable : 4996)</span>
-<a name="l00054"></a>00054 <span class="preprocessor"></span>
-<a name="l00055"></a>00055 <span class="preprocessor">#endif </span><span class="comment">/* __orxMSVC__ */</span>
-<a name="l00056"></a>00056 
-<a name="l00057"></a>00057 <span class="preprocessor">#include &lt;stdio.h&gt;</span>
-<a name="l00058"></a>00058 <span class="preprocessor">#include &lt;stdarg.h&gt;</span>
-<a name="l00059"></a>00059 <span class="preprocessor">#include &lt;string.h&gt;</span>
-<a name="l00060"></a>00060 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
-<a name="l00061"></a>00061 
-<a name="l00062"></a>00062 <span class="preprocessor">#include &quot;<a class="code" href="orx_debug_8h.html">debug/orxDebug.h</a>&quot;</span>
-<a name="l00063"></a>00063 
+<a name="l00049"></a>00049 <span class="preprocessor">#include &quot;<a class="code" href="orx_memory_8h.html">memory/orxMemory.h</a>&quot;</span>
+<a name="l00050"></a>00050 <span class="preprocessor">#include &quot;<a class="code" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</span>
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052 <span class="preprocessor">#ifdef __orxMSVC__</span>
+<a name="l00053"></a>00053 <span class="preprocessor"></span>
+<a name="l00054"></a>00054 <span class="preprocessor">  #pragma warning(disable : 4996)</span>
+<a name="l00055"></a>00055 <span class="preprocessor"></span>
+<a name="l00056"></a>00056 <span class="preprocessor">#endif </span><span class="comment">/* __orxMSVC__ */</span>
+<a name="l00057"></a>00057 
+<a name="l00058"></a>00058 <span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<a name="l00059"></a>00059 <span class="preprocessor">#include &lt;stdarg.h&gt;</span>
+<a name="l00060"></a>00060 <span class="preprocessor">#include &lt;string.h&gt;</span>
+<a name="l00061"></a>00061 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
+<a name="l00062"></a>00062 
+<a name="l00063"></a>00063 <span class="preprocessor">#include &quot;<a class="code" href="orx_debug_8h.html">debug/orxDebug.h</a>&quot;</span>
 <a name="l00064"></a>00064 
-<a name="l00065"></a><a class="code" href="group__orx_string.html#ga642c9bffe67569c7fb80665b6f42c499">00065</a> <span class="preprocessor">#define orxSTRING_KC_VECTOR_START       &#39;(&#39;</span>
-<a name="l00066"></a><a class="code" href="group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6">00066</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_START_ALT   &#39;{&#39;</span>
-<a name="l00067"></a><a class="code" href="group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617">00067</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_SEPARATOR   &#39;,&#39;</span>
-<a name="l00068"></a><a class="code" href="group__orx_string.html#gac8646f825bc6df7e387d877970d56e91">00068</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_END         &#39;)&#39;</span>
-<a name="l00069"></a><a class="code" href="group__orx_string.html#gaa2a656e10d7ec4fe736684cc5e4828ae">00069</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_END_ALT     &#39;}&#39;</span>
-<a name="l00070"></a>00070 <span class="preprocessor"></span>
-<a name="l00071"></a>00071 
-<a name="l00072"></a>00072 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxU32 <a class="code" href="group__orx_string.html#ga73224238694302a058d934102e6a84d1">sau32CRCTable</a>[256];
-<a name="l00073"></a>00073 
+<a name="l00065"></a>00065 
+<a name="l00066"></a><a class="code" href="group__orx_string.html#ga642c9bffe67569c7fb80665b6f42c499">00066</a> <span class="preprocessor">#define orxSTRING_KC_VECTOR_START       &#39;(&#39;</span>
+<a name="l00067"></a><a class="code" href="group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6">00067</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_START_ALT   &#39;{&#39;</span>
+<a name="l00068"></a><a class="code" href="group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617">00068</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_SEPARATOR   &#39;,&#39;</span>
+<a name="l00069"></a><a class="code" href="group__orx_string.html#gac8646f825bc6df7e387d877970d56e91">00069</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_END         &#39;)&#39;</span>
+<a name="l00070"></a><a class="code" href="group__orx_string.html#gaa2a656e10d7ec4fe736684cc5e4828ae">00070</a> <span class="preprocessor"></span><span class="preprocessor">#define orxSTRING_KC_VECTOR_END_ALT     &#39;}&#39;</span>
+<a name="l00071"></a>00071 <span class="preprocessor"></span>
+<a name="l00072"></a>00072 
+<a name="l00073"></a>00073 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxU32 <a class="code" href="group__orx_string.html#ga73224238694302a058d934102e6a84d1">sau32CRCTable</a>[256];
 <a name="l00074"></a>00074 
-<a name="l00075"></a>00075 <span class="comment">/* *** String inlined functions *** */</span>
-<a name="l00076"></a>00076 
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076 <span class="comment">/* *** String inlined functions *** */</span>
 <a name="l00077"></a>00077 
-<a name="l00083"></a><a class="code" href="group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637">00083</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637">orxString_ContinueCRC</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32CRC)
-<a name="l00084"></a>00084 {
-<a name="l00085"></a>00085   orxU32          u32CRC;
-<a name="l00086"></a>00086   <span class="keyword">const</span> orxCHAR  *pc;
-<a name="l00087"></a>00087 
-<a name="l00088"></a>00088   <span class="comment">/* Checks */</span>
-<a name="l00089"></a>00089   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00090"></a>00090 
-<a name="l00091"></a>00091   <span class="comment">/* Inits CRC */</span>
-<a name="l00092"></a>00092   u32CRC = _u32CRC ^ 0xFFFFFFFFL;
-<a name="l00093"></a>00093 
-<a name="l00094"></a>00094   <span class="comment">/* For the whole string */</span>
-<a name="l00095"></a>00095   <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
-<a name="l00096"></a>00096   {
-<a name="l00097"></a>00097     <span class="comment">/* Computes the CRC */</span>
-<a name="l00098"></a>00098     u32CRC = <a class="code" href="group__orx_string.html#ga73224238694302a058d934102e6a84d1">sau32CRCTable</a>[(u32CRC ^ *pc) &amp; 0xFF] ^ (u32CRC &gt;&gt; 8);
-<a name="l00099"></a>00099   }
-<a name="l00100"></a>00100 
-<a name="l00101"></a>00101   <span class="comment">/* Done! */</span>
-<a name="l00102"></a>00102   <span class="keywordflow">return</span>(u32CRC ^ 0xFFFFFFFFL);
-<a name="l00103"></a>00103 }
-<a name="l00104"></a>00104 
-<a name="l00111"></a><a class="code" href="group__orx_string.html#ga6f2d9f112ec01738725cd001d7d17ae6">00111</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga6f2d9f112ec01738725cd001d7d17ae6">orxString_NContinueCRC</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
-<a name="l00112"></a>00112 {
-<a name="l00113"></a>00113   orxU32          u32CRC;
-<a name="l00114"></a>00114   orxU32          u32Counter;
-<a name="l00115"></a>00115   <span class="keyword">const</span> orxCHAR  *pc;
-<a name="l00116"></a>00116 
-<a name="l00117"></a>00117   <span class="comment">/* Checks */</span>
-<a name="l00118"></a>00118   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00119"></a>00119 
-<a name="l00120"></a>00120   <span class="comment">/* Inits CRC */</span>
-<a name="l00121"></a>00121   u32CRC = _u32CRC ^ 0xFFFFFFFFL;
-<a name="l00122"></a>00122 
-<a name="l00123"></a>00123   <span class="comment">/* For the whole string */</span>
-<a name="l00124"></a>00124   <span class="keywordflow">for</span>(pc = _zString, u32Counter = 0; (*pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>) &amp;&amp; (u32Counter &lt; _u32CharNumber); pc++, u32Counter++)
-<a name="l00125"></a>00125   {
-<a name="l00126"></a>00126     <span class="comment">/* Computes the CRC */</span>
-<a name="l00127"></a>00127     u32CRC = <a class="code" href="group__orx_string.html#ga73224238694302a058d934102e6a84d1">sau32CRCTable</a>[(u32CRC ^ *pc) &amp; 0xFF] ^ (u32CRC &gt;&gt; 8);
-<a name="l00128"></a>00128   }
-<a name="l00129"></a>00129 
-<a name="l00130"></a>00130   <span class="comment">/* Done! */</span>
-<a name="l00131"></a>00131   <span class="keywordflow">return</span>(u32CRC ^ 0xFFFFFFFFL);
-<a name="l00132"></a>00132 }
-<a name="l00133"></a>00133 
-<a name="l00138"></a><a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">00138</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(<span class="keyword">const</span> orxSTRING _zString)
-<a name="l00139"></a>00139 {
-<a name="l00140"></a>00140   <span class="keyword">const</span> orxSTRING zResult;
-<a name="l00141"></a>00141 
-<a name="l00142"></a>00142   <span class="comment">/* Non null? */</span>
-<a name="l00143"></a>00143   <span class="keywordflow">if</span>(_zString != orxNULL)
-<a name="l00144"></a>00144   {
-<a name="l00145"></a>00145     <span class="comment">/* Skips all white spaces */</span>
-<a name="l00146"></a>00146     <span class="keywordflow">for</span>(zResult = _zString; (*zResult == <span class="charliteral">&#39; &#39;</span>) || (*zResult == <span class="charliteral">&#39;\t&#39;</span>); zResult++);
-<a name="l00147"></a>00147 
-<a name="l00148"></a>00148     <span class="comment">/* Empty? */</span>
-<a name="l00149"></a>00149     <span class="keywordflow">if</span>(*zResult == <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>)
-<a name="l00150"></a>00150     {
-<a name="l00151"></a>00151       <span class="comment">/* Updates result */</span>
-<a name="l00152"></a>00152       zResult = <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>;
-<a name="l00153"></a>00153     }
-<a name="l00154"></a>00154   }
-<a name="l00155"></a>00155   <span class="keywordflow">else</span>
-<a name="l00156"></a>00156   {
-<a name="l00157"></a>00157     <span class="comment">/* Updates result */</span>
-<a name="l00158"></a>00158     zResult = orxNULL;
-<a name="l00159"></a>00159   }
-<a name="l00160"></a>00160 
-<a name="l00161"></a>00161   <span class="comment">/* Done! */</span>
-<a name="l00162"></a>00162   <span class="keywordflow">return</span> zResult;
-<a name="l00163"></a>00163 }
-<a name="l00164"></a>00164 
-<a name="l00169"></a><a class="code" href="group__orx_string.html#gaece5f2c89893b93ba77d21a85149017d">00169</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#gaece5f2c89893b93ba77d21a85149017d">orxString_SkipPath</a>(<span class="keyword">const</span> orxSTRING _zString)
-<a name="l00170"></a>00170 {
-<a name="l00171"></a>00171   <span class="keyword">const</span> orxSTRING zResult;
-<a name="l00172"></a>00172 
-<a name="l00173"></a>00173   <span class="comment">/* Non null? */</span>
-<a name="l00174"></a>00174   <span class="keywordflow">if</span>(_zString != orxNULL)
-<a name="l00175"></a>00175   {
-<a name="l00176"></a>00176     <span class="keyword">const</span> orxCHAR *pc;
-<a name="l00177"></a>00177 
-<a name="l00178"></a>00178     <span class="comment">/* Updates result */</span>
-<a name="l00179"></a>00179     zResult = _zString;
-<a name="l00180"></a>00180 
-<a name="l00181"></a>00181     <span class="comment">/* For all characters */</span>
-<a name="l00182"></a>00182     <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
-<a name="l00183"></a>00183     {
-<a name="l00184"></a>00184       <span class="comment">/* Is a directory separator? */</span>
-<a name="l00185"></a>00185       <span class="keywordflow">if</span>((*pc == <a class="code" href="group__orx_type.html#gab9132a1cc1b4925f5dfeb46d05e580d9">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) || (*pc == <a class="code" href="group__orx_type.html#ga18c1971c82b619b1f51d9886dda687e2">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))
-<a name="l00186"></a>00186       {
-<a name="l00187"></a>00187         orxCHAR cNextChar = *(pc + 1);
-<a name="l00188"></a>00188 
-<a name="l00189"></a>00189         <span class="comment">/* Non terminal and not a directory separator? */</span>
-<a name="l00190"></a>00190         <span class="keywordflow">if</span>((cNextChar != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#gab9132a1cc1b4925f5dfeb46d05e580d9">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#ga18c1971c82b619b1f51d9886dda687e2">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))
-<a name="l00191"></a>00191         {
-<a name="l00192"></a>00192           <span class="comment">/* Updates result */</span>
-<a name="l00193"></a>00193           zResult = pc + 1;
-<a name="l00194"></a>00194         }
-<a name="l00195"></a>00195       }
-<a name="l00196"></a>00196     }
-<a name="l00197"></a>00197   }
-<a name="l00198"></a>00198   <span class="keywordflow">else</span>
-<a name="l00199"></a>00199   {
-<a name="l00200"></a>00200     <span class="comment">/* Updates result */</span>
-<a name="l00201"></a>00201     zResult = orxNULL;
-<a name="l00202"></a>00202   }
-<a name="l00203"></a>00203 
-<a name="l00204"></a>00204   <span class="comment">/* Done! */</span>
-<a name="l00205"></a>00205   <span class="keywordflow">return</span> zResult;
-<a name="l00206"></a>00206 }
-<a name="l00207"></a>00207 
-<a name="l00212"></a><a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">00212</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(<span class="keyword">const</span> orxSTRING _zString)
-<a name="l00213"></a>00213 {
-<a name="l00214"></a>00214   <span class="comment">/* Checks */</span>
-<a name="l00215"></a>00215   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00216"></a>00216 
-<a name="l00217"></a>00217   <span class="comment">/* Done! */</span>
-<a name="l00218"></a>00218   <span class="keywordflow">return</span>((orxU32)strlen(_zString));
-<a name="l00219"></a>00219 }
-<a name="l00220"></a>00220 
-<a name="l00225"></a><a class="code" href="group__orx_string.html#gaf875887c7a49a423aefcacdfa143bc5d">00225</a> <span class="keyword">static</span> orxINLINE orxBOOL                <a class="code" href="group__orx_string.html#gaf875887c7a49a423aefcacdfa143bc5d">orxString_IsCharacterASCII</a>(orxU32 _u32CharacterCodePoint)
-<a name="l00226"></a>00226 {
-<a name="l00227"></a>00227   <span class="keywordflow">return</span>((_u32CharacterCodePoint &lt; 0x80) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>);
-<a name="l00228"></a>00228 }
-<a name="l00229"></a>00229 
-<a name="l00234"></a><a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">00234</a> <span class="keyword">static</span> orxINLINE orxBOOL                <a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">orxString_GetUTF8CharacterLength</a>(orxU32 _u32CharacterCodePoint)
-<a name="l00235"></a>00235 {
-<a name="l00236"></a>00236   orxU32 u32Result;
-<a name="l00237"></a>00237 
-<a name="l00238"></a>00238   <span class="comment">/* 1-byte long? */</span>
-<a name="l00239"></a>00239   <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x80)
-<a name="l00240"></a>00240   {
-<a name="l00241"></a>00241     <span class="comment">/* Updates result */</span>
-<a name="l00242"></a>00242     u32Result = 1;
-<a name="l00243"></a>00243   }
-<a name="l00244"></a>00244   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x0800)
-<a name="l00245"></a>00245   {
-<a name="l00246"></a>00246     <span class="comment">/* Updates result */</span>
-<a name="l00247"></a>00247     u32Result = 2;
-<a name="l00248"></a>00248   }
-<a name="l00249"></a>00249   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x00010000)
-<a name="l00250"></a>00250   {
-<a name="l00251"></a>00251     <span class="comment">/* Updates result */</span>
-<a name="l00252"></a>00252     u32Result = 3;
-<a name="l00253"></a>00253   }
-<a name="l00254"></a>00254   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x00110000)
-<a name="l00255"></a>00255   {
-<a name="l00256"></a>00256     <span class="comment">/* Updates result */</span>
-<a name="l00257"></a>00257     u32Result = 4;
-<a name="l00258"></a>00258   }
-<a name="l00259"></a>00259   <span class="keywordflow">else</span>
-<a name="l00260"></a>00260   {
-<a name="l00261"></a>00261     <span class="comment">/* Updates result */</span>
-<a name="l00262"></a>00262     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00263"></a>00263   }
-<a name="l00264"></a>00264 
-<a name="l00265"></a>00265   <span class="comment">/* Done! */</span>
-<a name="l00266"></a>00266   <span class="keywordflow">return</span> u32Result;
-<a name="l00267"></a>00267 }
-<a name="l00268"></a>00268 
-<a name="l00275"></a><a class="code" href="group__orx_string.html#ga73609453472017913e3e329ce2c12ff4">00275</a> <span class="keyword">static</span> orxU32 orxFASTCALL               <a class="code" href="group__orx_string.html#ga73609453472017913e3e329ce2c12ff4">orxString_PrintUTF8Character</a>(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCodePoint)
-<a name="l00276"></a>00276 {
-<a name="l00277"></a>00277   orxU32 u32Result;
-<a name="l00278"></a>00278 
-<a name="l00279"></a>00279   <span class="comment">/* Gets character&#39;s encoded length */</span>
-<a name="l00280"></a>00280   u32Result = <a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">orxString_GetUTF8CharacterLength</a>(_u32CharacterCodePoint);
-<a name="l00281"></a>00281 
-<a name="l00282"></a>00282   <span class="comment">/* Enough room? */</span>
-<a name="l00283"></a>00283   <span class="keywordflow">if</span>(u32Result &lt;= _u32Size)
-<a name="l00284"></a>00284   {
-<a name="l00285"></a>00285     <span class="comment">/* Depending on character&#39;s length */</span>
-<a name="l00286"></a>00286     <span class="keywordflow">switch</span>(u32Result)
-<a name="l00287"></a>00287     {
-<a name="l00288"></a>00288       <span class="keywordflow">case</span> 1:
-<a name="l00289"></a>00289       {
-<a name="l00290"></a>00290         <span class="comment">/* Writes character */</span>
-<a name="l00291"></a>00291         *_zDstString = (orxCHAR)_u32CharacterCodePoint;
-<a name="l00292"></a>00292 
-<a name="l00293"></a>00293         <span class="keywordflow">break</span>;
-<a name="l00294"></a>00294       }
-<a name="l00295"></a>00295 
-<a name="l00296"></a>00296       <span class="keywordflow">case</span> 2:
-<a name="l00297"></a>00297       {
-<a name="l00298"></a>00298         <span class="comment">/* Writes first character */</span>
-<a name="l00299"></a>00299         *_zDstString++ = (orxCHAR)(0xC0 | ((_u32CharacterCodePoint &amp; 0x07C0) &gt;&gt; 6));
-<a name="l00300"></a>00300 
-<a name="l00301"></a>00301         <span class="comment">/* Writes second character */</span>
-<a name="l00302"></a>00302         *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint &amp; 0x3F));
-<a name="l00303"></a>00303 
-<a name="l00304"></a>00304         <span class="keywordflow">break</span>;
-<a name="l00305"></a>00305       }
-<a name="l00306"></a>00306 
-<a name="l00307"></a>00307       <span class="keywordflow">case</span> 3:
-<a name="l00308"></a>00308       {
-<a name="l00309"></a>00309         <span class="comment">/* Writes first character */</span>
-<a name="l00310"></a>00310         *_zDstString++ = (orxCHAR)(0xE0 | ((_u32CharacterCodePoint &amp; 0xF000) &gt;&gt; 12));
-<a name="l00311"></a>00311 
-<a name="l00312"></a>00312         <span class="comment">/* Writes second character */</span>
-<a name="l00313"></a>00313         *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint &amp; 0x0FC0) &gt;&gt; 6));
-<a name="l00314"></a>00314 
-<a name="l00315"></a>00315         <span class="comment">/* Writes third character */</span>
-<a name="l00316"></a>00316         *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint &amp; 0x3F));
-<a name="l00317"></a>00317 
-<a name="l00318"></a>00318         <span class="keywordflow">break</span>;
-<a name="l00319"></a>00319       }
-<a name="l00320"></a>00320 
-<a name="l00321"></a>00321       <span class="keywordflow">case</span> 4:
-<a name="l00322"></a>00322       {
-<a name="l00323"></a>00323         <span class="comment">/* Writes first character */</span>
-<a name="l00324"></a>00324         *_zDstString++ = (orxCHAR)(0xF0 | ((_u32CharacterCodePoint &amp; 0x001C0000) &gt;&gt; 18));
-<a name="l00325"></a>00325 
-<a name="l00326"></a>00326         <span class="comment">/* Writes second character */</span>
-<a name="l00327"></a>00327         *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint &amp; 0x0003F000) &gt;&gt; 12));
-<a name="l00328"></a>00328 
-<a name="l00329"></a>00329         <span class="comment">/* Writes third character */</span>
-<a name="l00330"></a>00330         *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint &amp; 0x00000FC0) &gt;&gt; 6));
-<a name="l00331"></a>00331 
-<a name="l00332"></a>00332         <span class="comment">/* Writes fourth character */</span>
-<a name="l00333"></a>00333         *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint &amp; 0x3F));
-<a name="l00334"></a>00334 
-<a name="l00335"></a>00335         <span class="keywordflow">break</span>;
-<a name="l00336"></a>00336       }
-<a name="l00337"></a>00337 
-<a name="l00338"></a>00338       <span class="keywordflow">default</span>:
-<a name="l00339"></a>00339       {
-<a name="l00340"></a>00340         <span class="comment">/* Logs message */</span>
-<a name="l00341"></a>00341         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Can&#39;t print invalid unicode character &lt;0x%X&gt; to string.&quot;</span>, _u32CharacterCodePoint);
-<a name="l00342"></a>00342 
-<a name="l00343"></a>00343         <span class="comment">/* Updates result */</span>
-<a name="l00344"></a>00344         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00345"></a>00345 
-<a name="l00346"></a>00346         <span class="keywordflow">break</span>;
-<a name="l00347"></a>00347       }
-<a name="l00348"></a>00348     }
-<a name="l00349"></a>00349   }
-<a name="l00350"></a>00350   <span class="keywordflow">else</span>
-<a name="l00351"></a>00351   {
-<a name="l00352"></a>00352     <span class="comment">/* Logs message */</span>
-<a name="l00353"></a>00353     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Can&#39;t print unicode character &lt;0x%X&gt; to string as there isn&#39;t enough space for it.&quot;</span>, _u32CharacterCodePoint);
-<a name="l00354"></a>00354 
-<a name="l00355"></a>00355     <span class="comment">/* Updates result */</span>
-<a name="l00356"></a>00356     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00357"></a>00357   }
-<a name="l00358"></a>00358 
-<a name="l00359"></a>00359   <span class="comment">/* Done! */</span>
-<a name="l00360"></a>00360   <span class="keywordflow">return</span> u32Result;
-<a name="l00361"></a>00361 }
-<a name="l00362"></a>00362 
-<a name="l00368"></a><a class="code" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">00368</a> <span class="keyword">static</span> orxU32 orxFASTCALL               <a class="code" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">orxString_GetFirstCharacterCodePoint</a>(<span class="keyword">const</span> orxSTRING _zString, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00369"></a>00369 {
-<a name="l00370"></a>00370   orxU8  *pu8Byte;
-<a name="l00371"></a>00371   orxU32  u32Result;
-<a name="l00372"></a>00372 
-<a name="l00373"></a>00373   <span class="comment">/* Checks */</span>
-<a name="l00374"></a>00374   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00375"></a>00375 
-<a name="l00376"></a>00376   <span class="comment">/* Gets the first byte */</span>
-<a name="l00377"></a>00377   pu8Byte = (orxU8 *)_zString;
-<a name="l00378"></a>00378 
-<a name="l00379"></a>00379   <span class="comment">/* ASCII? */</span>
-<a name="l00380"></a>00380   <span class="keywordflow">if</span>(*pu8Byte &lt; 0x80)
-<a name="l00381"></a>00381   {
-<a name="l00382"></a>00382     <span class="comment">/* Updates result */</span>
-<a name="l00383"></a>00383     u32Result = *pu8Byte;
-<a name="l00384"></a>00384   }
-<a name="l00385"></a>00385   <span class="comment">/* Invalid UTF-8 byte sequence */</span>
-<a name="l00386"></a>00386   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xC0)
-<a name="l00387"></a>00387   {
-<a name="l00388"></a>00388     <span class="comment">/* Logs message */</span>
-<a name="l00389"></a>00389     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: multi-byte sequence non-leading byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00390"></a>00390 
-<a name="l00391"></a>00391     <span class="comment">/* Updates result */</span>
-<a name="l00392"></a>00392     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00393"></a>00393   }
-<a name="l00394"></a>00394   <span class="comment">/* Overlong UTF-8 2-byte sequence */</span>
-<a name="l00395"></a>00395   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xC2)
-<a name="l00396"></a>00396   {
-<a name="l00397"></a>00397     <span class="comment">/* Logs message */</span>
-<a name="l00398"></a>00398     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: overlong 2-byte sequence starting with byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00399"></a>00399 
-<a name="l00400"></a>00400     <span class="comment">/* Updates result */</span>
-<a name="l00401"></a>00401     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00402"></a>00402   }
-<a name="l00403"></a>00403   <span class="comment">/* 2-byte sequence */</span>
-<a name="l00404"></a>00404   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xE0)
-<a name="l00405"></a>00405   {
-<a name="l00406"></a>00406     <span class="comment">/* Updates result with first character */</span>
-<a name="l00407"></a>00407     u32Result = *pu8Byte++ &amp; 0x1F;
-<a name="l00408"></a>00408 
-<a name="l00409"></a>00409     <span class="comment">/* Valid second character? */</span>
-<a name="l00410"></a>00410     <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
-<a name="l00411"></a>00411     {
-<a name="l00412"></a>00412       <span class="comment">/* Updates result */</span>
-<a name="l00413"></a>00413       u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte &amp; 0x3F);
-<a name="l00414"></a>00414     }
-<a name="l00415"></a>00415     <span class="keywordflow">else</span>
-<a name="l00416"></a>00416     {
-<a name="l00417"></a>00417       <span class="comment">/* Logs message */</span>
-<a name="l00418"></a>00418       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 2-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00419"></a>00419 
-<a name="l00420"></a>00420       <span class="comment">/* Updates result */</span>
-<a name="l00421"></a>00421       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00422"></a>00422     }
-<a name="l00423"></a>00423   }
-<a name="l00424"></a>00424   <span class="comment">/* 3-byte sequence */</span>
-<a name="l00425"></a>00425   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xF0)
-<a name="l00426"></a>00426   {
-<a name="l00427"></a>00427     <span class="comment">/* Updates result with first character */</span>
-<a name="l00428"></a>00428     u32Result = *pu8Byte++ &amp; 0x0F;
-<a name="l00429"></a>00429 
-<a name="l00430"></a>00430     <span class="comment">/* Valid second character? */</span>
-<a name="l00431"></a>00431     <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
-<a name="l00432"></a>00432     {
-<a name="l00433"></a>00433       <span class="comment">/* Updates result */</span>
-<a name="l00434"></a>00434       u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte++ &amp; 0x3F);
-<a name="l00435"></a>00435 
-<a name="l00436"></a>00436       <span class="comment">/* Valid third character? */</span>
-<a name="l00437"></a>00437       <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
-<a name="l00438"></a>00438       {
-<a name="l00439"></a>00439         <span class="comment">/* Updates result */</span>
-<a name="l00440"></a>00440         u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte &amp; 0x3F);
-<a name="l00441"></a>00441       }
-<a name="l00442"></a>00442       <span class="keywordflow">else</span>
-<a name="l00443"></a>00443       {
-<a name="l00444"></a>00444         <span class="comment">/* Logs message */</span>
-<a name="l00445"></a>00445         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00446"></a>00446 
-<a name="l00447"></a>00447         <span class="comment">/* Updates result */</span>
-<a name="l00448"></a>00448         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00449"></a>00449       }
-<a name="l00450"></a>00450     }
-<a name="l00451"></a>00451     <span class="keywordflow">else</span>
-<a name="l00452"></a>00452     {
-<a name="l00453"></a>00453       <span class="comment">/* Logs message */</span>
-<a name="l00454"></a>00454       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00455"></a>00455 
-<a name="l00456"></a>00456       <span class="comment">/* Updates result */</span>
-<a name="l00457"></a>00457       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00458"></a>00458     }
-<a name="l00459"></a>00459   }
-<a name="l00460"></a>00460   <span class="comment">/* 4-byte sequence */</span>
-<a name="l00461"></a>00461   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xF5)
-<a name="l00462"></a>00462   {
-<a name="l00463"></a>00463     <span class="comment">/* Updates result with first character */</span>
-<a name="l00464"></a>00464     u32Result = *pu8Byte++ &amp; 0x07;
-<a name="l00465"></a>00465 
-<a name="l00466"></a>00466     <span class="comment">/* Valid second character? */</span>
-<a name="l00467"></a>00467     <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
-<a name="l00468"></a>00468     {
-<a name="l00469"></a>00469       <span class="comment">/* Updates result */</span>
-<a name="l00470"></a>00470       u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte++ &amp; 0x3F);
-<a name="l00471"></a>00471 
-<a name="l00472"></a>00472       <span class="comment">/* Valid third character? */</span>
-<a name="l00473"></a>00473       <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
-<a name="l00474"></a>00474       {
-<a name="l00475"></a>00475         <span class="comment">/* Updates result */</span>
-<a name="l00476"></a>00476         u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte++ &amp; 0x3F);
-<a name="l00477"></a>00477 
-<a name="l00478"></a>00478         <span class="comment">/* Valid fourth character? */</span>
-<a name="l00479"></a>00479         <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
-<a name="l00480"></a>00480         {
-<a name="l00481"></a>00481           <span class="comment">/* Updates result */</span>
-<a name="l00482"></a>00482           u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte &amp; 0x3F);
-<a name="l00483"></a>00483         }
-<a name="l00484"></a>00484         <span class="keywordflow">else</span>
-<a name="l00485"></a>00485         {
-<a name="l00486"></a>00486           <span class="comment">/* Logs message */</span>
-<a name="l00487"></a>00487           <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00488"></a>00488 
-<a name="l00489"></a>00489           <span class="comment">/* Updates result */</span>
-<a name="l00490"></a>00490           u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00491"></a>00491         }
-<a name="l00492"></a>00492       }
-<a name="l00493"></a>00493       <span class="keywordflow">else</span>
-<a name="l00494"></a>00494       {
-<a name="l00495"></a>00495         <span class="comment">/* Logs message */</span>
-<a name="l00496"></a>00496         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00497"></a>00497 
-<a name="l00498"></a>00498         <span class="comment">/* Updates result */</span>
-<a name="l00499"></a>00499         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00500"></a>00500       }
-<a name="l00501"></a>00501     }
-<a name="l00502"></a>00502     <span class="keywordflow">else</span>
-<a name="l00503"></a>00503     {
-<a name="l00504"></a>00504       <span class="comment">/* Logs message */</span>
-<a name="l00505"></a>00505       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00506"></a>00506 
-<a name="l00507"></a>00507       <span class="comment">/* Updates result */</span>
-<a name="l00508"></a>00508       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00509"></a>00509     }
-<a name="l00510"></a>00510   }
-<a name="l00511"></a>00511   <span class="keywordflow">else</span>
-<a name="l00512"></a>00512   {
-<a name="l00513"></a>00513     <span class="comment">/* Logs message */</span>
-<a name="l00514"></a>00514     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: invalid out-of-bound byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
-<a name="l00515"></a>00515 
-<a name="l00516"></a>00516     <span class="comment">/* Updates result */</span>
-<a name="l00517"></a>00517     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00518"></a>00518   }
-<a name="l00519"></a>00519 
-<a name="l00520"></a>00520   <span class="comment">/* Asks for remaining string? */</span>
-<a name="l00521"></a>00521   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
-<a name="l00522"></a>00522   {
-<a name="l00523"></a>00523     <span class="comment">/* Stores it */</span>
-<a name="l00524"></a>00524     *_pzRemaining = (orxSTRING)(pu8Byte + 1);
-<a name="l00525"></a>00525   }
-<a name="l00526"></a>00526 
-<a name="l00527"></a>00527   <span class="comment">/* Done! */</span>
-<a name="l00528"></a>00528   <span class="keywordflow">return</span> u32Result;
-<a name="l00529"></a>00529 }
-<a name="l00530"></a>00530 
-<a name="l00535"></a><a class="code" href="group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998">00535</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998">orxString_GetCharacterCounter</a>(<span class="keyword">const</span> orxSTRING _zString)
-<a name="l00536"></a>00536 {
-<a name="l00537"></a>00537   <span class="keyword">const</span> orxCHAR  *pc;
-<a name="l00538"></a>00538   orxU32          u32Result;
-<a name="l00539"></a>00539 
-<a name="l00540"></a>00540   <span class="comment">/* Checks */</span>
-<a name="l00541"></a>00541   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00542"></a>00542 
-<a name="l00543"></a>00543   <span class="comment">/* For all characters */</span>
-<a name="l00544"></a>00544   <span class="keywordflow">for</span>(pc = _zString, u32Result = 0; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; u32Result++)
-<a name="l00545"></a>00545   {
-<a name="l00546"></a>00546     <span class="comment">/* Invalid current character ID */</span>
-<a name="l00547"></a>00547     <span class="keywordflow">if</span>(<a class="code" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">orxString_GetFirstCharacterCodePoint</a>(pc, &amp;pc) == <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>)
-<a name="l00548"></a>00548     {
-<a name="l00549"></a>00549       <span class="comment">/* Updates result */</span>
-<a name="l00550"></a>00550       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
-<a name="l00551"></a>00551 
-<a name="l00552"></a>00552       <span class="comment">/* Logs message */</span>
-<a name="l00553"></a>00553       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF8 string &lt;%s&gt;, can&#39;t count characters.&quot;</span>, _zString);
-<a name="l00554"></a>00554 
-<a name="l00555"></a>00555       <span class="keywordflow">break</span>;
-<a name="l00556"></a>00556     }
-<a name="l00557"></a>00557   }
-<a name="l00558"></a>00558 
-<a name="l00559"></a>00559   <span class="comment">/* Done! */</span>
-<a name="l00560"></a>00560   <span class="keywordflow">return</span> u32Result;
-<a name="l00561"></a>00561 }
-<a name="l00562"></a>00562 
-<a name="l00569"></a><a class="code" href="group__orx_string.html#ga79b5537709b17a25daaa794769112723">00569</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#ga79b5537709b17a25daaa794769112723">orxString_NCopy</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString, orxU32 _u32CharNumber)
-<a name="l00570"></a>00570 {
-<a name="l00571"></a>00571   <span class="comment">/* Checks */</span>
-<a name="l00572"></a>00572   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
-<a name="l00573"></a>00573   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
-<a name="l00574"></a>00574 
-<a name="l00575"></a>00575   <span class="comment">/* Done! */</span>
-<a name="l00576"></a>00576   <span class="keywordflow">return</span>(strncpy(_zDstString, _zSrcString, _u32CharNumber));
-<a name="l00577"></a>00577 }
-<a name="l00578"></a>00578 
-<a name="l00584"></a><a class="code" href="group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16">00584</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16">orxString_Copy</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString)
-<a name="l00585"></a>00585 {
-<a name="l00586"></a>00586   <span class="comment">/* Checks */</span>
-<a name="l00587"></a>00587   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
-<a name="l00588"></a>00588   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
-<a name="l00589"></a>00589 
-<a name="l00590"></a>00590   <span class="comment">/* Done! */</span>
-<a name="l00591"></a>00591   <span class="keywordflow">return</span>(strcpy(_zDstString, _zSrcString));
-<a name="l00592"></a>00592 }
-<a name="l00593"></a>00593 
-<a name="l00598"></a><a class="code" href="group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd">00598</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd">orxString_Duplicate</a>(<span class="keyword">const</span> orxSTRING _zSrcString)
-<a name="l00599"></a>00599 {
-<a name="l00600"></a>00600   orxSTRING zResult;
-<a name="l00601"></a>00601 
-<a name="l00602"></a>00602   <span class="comment">/* Checks */</span>
-<a name="l00603"></a>00603   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
-<a name="l00604"></a>00604 
-<a name="l00605"></a>00605   <span class="comment">/* Updates result */</span>
-<a name="l00606"></a>00606   zResult = strdup(_zSrcString);
-<a name="l00607"></a>00607 
-<a name="l00608"></a>00608   <span class="comment">/* Done! */</span>
-<a name="l00609"></a>00609   <span class="keywordflow">return</span> zResult;
-<a name="l00610"></a>00610 }
-<a name="l00611"></a>00611 
-<a name="l00615"></a><a class="code" href="group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28">00615</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28">orxString_Delete</a>(orxSTRING _zString)
-<a name="l00616"></a>00616 {
-<a name="l00617"></a>00617   <span class="comment">/* Checks */</span>
-<a name="l00618"></a>00618   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00619"></a>00619   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>);
-<a name="l00620"></a>00620 
-<a name="l00621"></a>00621   <span class="comment">/* Frees its memory */</span>
-<a name="l00622"></a>00622   free(_zString);
+<a name="l00078"></a>00078 
+<a name="l00084"></a><a class="code" href="group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637">00084</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637">orxString_ContinueCRC</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32CRC)
+<a name="l00085"></a>00085 {
+<a name="l00086"></a>00086   orxU32          u32CRC;
+<a name="l00087"></a>00087   <span class="keyword">const</span> orxCHAR  *pc;
+<a name="l00088"></a>00088 
+<a name="l00089"></a>00089   <span class="comment">/* Checks */</span>
+<a name="l00090"></a>00090   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00091"></a>00091 
+<a name="l00092"></a>00092   <span class="comment">/* Inits CRC */</span>
+<a name="l00093"></a>00093   u32CRC = _u32CRC ^ 0xFFFFFFFFL;
+<a name="l00094"></a>00094 
+<a name="l00095"></a>00095   <span class="comment">/* For the whole string */</span>
+<a name="l00096"></a>00096   <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
+<a name="l00097"></a>00097   {
+<a name="l00098"></a>00098     <span class="comment">/* Computes the CRC */</span>
+<a name="l00099"></a>00099     u32CRC = <a class="code" href="group__orx_string.html#ga73224238694302a058d934102e6a84d1">sau32CRCTable</a>[(u32CRC ^ *pc) &amp; 0xFF] ^ (u32CRC &gt;&gt; 8);
+<a name="l00100"></a>00100   }
+<a name="l00101"></a>00101 
+<a name="l00102"></a>00102   <span class="comment">/* Done! */</span>
+<a name="l00103"></a>00103   <span class="keywordflow">return</span>(u32CRC ^ 0xFFFFFFFFL);
+<a name="l00104"></a>00104 }
+<a name="l00105"></a>00105 
+<a name="l00112"></a><a class="code" href="group__orx_string.html#ga6f2d9f112ec01738725cd001d7d17ae6">00112</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga6f2d9f112ec01738725cd001d7d17ae6">orxString_NContinueCRC</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
+<a name="l00113"></a>00113 {
+<a name="l00114"></a>00114   orxU32          u32CRC;
+<a name="l00115"></a>00115   orxU32          u32Counter;
+<a name="l00116"></a>00116   <span class="keyword">const</span> orxCHAR  *pc;
+<a name="l00117"></a>00117 
+<a name="l00118"></a>00118   <span class="comment">/* Checks */</span>
+<a name="l00119"></a>00119   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00120"></a>00120 
+<a name="l00121"></a>00121   <span class="comment">/* Inits CRC */</span>
+<a name="l00122"></a>00122   u32CRC = _u32CRC ^ 0xFFFFFFFFL;
+<a name="l00123"></a>00123 
+<a name="l00124"></a>00124   <span class="comment">/* For the whole string */</span>
+<a name="l00125"></a>00125   <span class="keywordflow">for</span>(pc = _zString, u32Counter = 0; (*pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>) &amp;&amp; (u32Counter &lt; _u32CharNumber); pc++, u32Counter++)
+<a name="l00126"></a>00126   {
+<a name="l00127"></a>00127     <span class="comment">/* Computes the CRC */</span>
+<a name="l00128"></a>00128     u32CRC = <a class="code" href="group__orx_string.html#ga73224238694302a058d934102e6a84d1">sau32CRCTable</a>[(u32CRC ^ *pc) &amp; 0xFF] ^ (u32CRC &gt;&gt; 8);
+<a name="l00129"></a>00129   }
+<a name="l00130"></a>00130 
+<a name="l00131"></a>00131   <span class="comment">/* Done! */</span>
+<a name="l00132"></a>00132   <span class="keywordflow">return</span>(u32CRC ^ 0xFFFFFFFFL);
+<a name="l00133"></a>00133 }
+<a name="l00134"></a>00134 
+<a name="l00139"></a><a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">00139</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(<span class="keyword">const</span> orxSTRING _zString)
+<a name="l00140"></a>00140 {
+<a name="l00141"></a>00141   <span class="keyword">const</span> orxSTRING zResult;
+<a name="l00142"></a>00142 
+<a name="l00143"></a>00143   <span class="comment">/* Non null? */</span>
+<a name="l00144"></a>00144   <span class="keywordflow">if</span>(_zString != orxNULL)
+<a name="l00145"></a>00145   {
+<a name="l00146"></a>00146     <span class="comment">/* Skips all white spaces */</span>
+<a name="l00147"></a>00147     <span class="keywordflow">for</span>(zResult = _zString; (*zResult == <span class="charliteral">&#39; &#39;</span>) || (*zResult == <span class="charliteral">&#39;\t&#39;</span>); zResult++);
+<a name="l00148"></a>00148 
+<a name="l00149"></a>00149     <span class="comment">/* Empty? */</span>
+<a name="l00150"></a>00150     <span class="keywordflow">if</span>(*zResult == <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>)
+<a name="l00151"></a>00151     {
+<a name="l00152"></a>00152       <span class="comment">/* Updates result */</span>
+<a name="l00153"></a>00153       zResult = <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>;
+<a name="l00154"></a>00154     }
+<a name="l00155"></a>00155   }
+<a name="l00156"></a>00156   <span class="keywordflow">else</span>
+<a name="l00157"></a>00157   {
+<a name="l00158"></a>00158     <span class="comment">/* Updates result */</span>
+<a name="l00159"></a>00159     zResult = orxNULL;
+<a name="l00160"></a>00160   }
+<a name="l00161"></a>00161 
+<a name="l00162"></a>00162   <span class="comment">/* Done! */</span>
+<a name="l00163"></a>00163   <span class="keywordflow">return</span> zResult;
+<a name="l00164"></a>00164 }
+<a name="l00165"></a>00165 
+<a name="l00170"></a><a class="code" href="group__orx_string.html#gaece5f2c89893b93ba77d21a85149017d">00170</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#gaece5f2c89893b93ba77d21a85149017d">orxString_SkipPath</a>(<span class="keyword">const</span> orxSTRING _zString)
+<a name="l00171"></a>00171 {
+<a name="l00172"></a>00172   <span class="keyword">const</span> orxSTRING zResult;
+<a name="l00173"></a>00173 
+<a name="l00174"></a>00174   <span class="comment">/* Non null? */</span>
+<a name="l00175"></a>00175   <span class="keywordflow">if</span>(_zString != orxNULL)
+<a name="l00176"></a>00176   {
+<a name="l00177"></a>00177     <span class="keyword">const</span> orxCHAR *pc;
+<a name="l00178"></a>00178 
+<a name="l00179"></a>00179     <span class="comment">/* Updates result */</span>
+<a name="l00180"></a>00180     zResult = _zString;
+<a name="l00181"></a>00181 
+<a name="l00182"></a>00182     <span class="comment">/* For all characters */</span>
+<a name="l00183"></a>00183     <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
+<a name="l00184"></a>00184     {
+<a name="l00185"></a>00185       <span class="comment">/* Is a directory separator? */</span>
+<a name="l00186"></a>00186       <span class="keywordflow">if</span>((*pc == <a class="code" href="group__orx_type.html#gab9132a1cc1b4925f5dfeb46d05e580d9">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) || (*pc == <a class="code" href="group__orx_type.html#ga18c1971c82b619b1f51d9886dda687e2">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))
+<a name="l00187"></a>00187       {
+<a name="l00188"></a>00188         orxCHAR cNextChar = *(pc + 1);
+<a name="l00189"></a>00189 
+<a name="l00190"></a>00190         <span class="comment">/* Non terminal and not a directory separator? */</span>
+<a name="l00191"></a>00191         <span class="keywordflow">if</span>((cNextChar != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#gab9132a1cc1b4925f5dfeb46d05e580d9">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#ga18c1971c82b619b1f51d9886dda687e2">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))
+<a name="l00192"></a>00192         {
+<a name="l00193"></a>00193           <span class="comment">/* Updates result */</span>
+<a name="l00194"></a>00194           zResult = pc + 1;
+<a name="l00195"></a>00195         }
+<a name="l00196"></a>00196       }
+<a name="l00197"></a>00197     }
+<a name="l00198"></a>00198   }
+<a name="l00199"></a>00199   <span class="keywordflow">else</span>
+<a name="l00200"></a>00200   {
+<a name="l00201"></a>00201     <span class="comment">/* Updates result */</span>
+<a name="l00202"></a>00202     zResult = orxNULL;
+<a name="l00203"></a>00203   }
+<a name="l00204"></a>00204 
+<a name="l00205"></a>00205   <span class="comment">/* Done! */</span>
+<a name="l00206"></a>00206   <span class="keywordflow">return</span> zResult;
+<a name="l00207"></a>00207 }
+<a name="l00208"></a>00208 
+<a name="l00213"></a><a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">00213</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(<span class="keyword">const</span> orxSTRING _zString)
+<a name="l00214"></a>00214 {
+<a name="l00215"></a>00215   <span class="comment">/* Checks */</span>
+<a name="l00216"></a>00216   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00217"></a>00217 
+<a name="l00218"></a>00218   <span class="comment">/* Done! */</span>
+<a name="l00219"></a>00219   <span class="keywordflow">return</span>((orxU32)strlen(_zString));
+<a name="l00220"></a>00220 }
+<a name="l00221"></a>00221 
+<a name="l00226"></a><a class="code" href="group__orx_string.html#gaf875887c7a49a423aefcacdfa143bc5d">00226</a> <span class="keyword">static</span> orxINLINE orxBOOL                <a class="code" href="group__orx_string.html#gaf875887c7a49a423aefcacdfa143bc5d">orxString_IsCharacterASCII</a>(orxU32 _u32CharacterCodePoint)
+<a name="l00227"></a>00227 {
+<a name="l00228"></a>00228   <span class="keywordflow">return</span>((_u32CharacterCodePoint &lt; 0x80) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>);
+<a name="l00229"></a>00229 }
+<a name="l00230"></a>00230 
+<a name="l00235"></a><a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">00235</a> <span class="keyword">static</span> orxINLINE orxBOOL                <a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">orxString_GetUTF8CharacterLength</a>(orxU32 _u32CharacterCodePoint)
+<a name="l00236"></a>00236 {
+<a name="l00237"></a>00237   orxU32 u32Result;
+<a name="l00238"></a>00238 
+<a name="l00239"></a>00239   <span class="comment">/* 1-byte long? */</span>
+<a name="l00240"></a>00240   <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x80)
+<a name="l00241"></a>00241   {
+<a name="l00242"></a>00242     <span class="comment">/* Updates result */</span>
+<a name="l00243"></a>00243     u32Result = 1;
+<a name="l00244"></a>00244   }
+<a name="l00245"></a>00245   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x0800)
+<a name="l00246"></a>00246   {
+<a name="l00247"></a>00247     <span class="comment">/* Updates result */</span>
+<a name="l00248"></a>00248     u32Result = 2;
+<a name="l00249"></a>00249   }
+<a name="l00250"></a>00250   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x00010000)
+<a name="l00251"></a>00251   {
+<a name="l00252"></a>00252     <span class="comment">/* Updates result */</span>
+<a name="l00253"></a>00253     u32Result = 3;
+<a name="l00254"></a>00254   }
+<a name="l00255"></a>00255   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_u32CharacterCodePoint &lt; 0x00110000)
+<a name="l00256"></a>00256   {
+<a name="l00257"></a>00257     <span class="comment">/* Updates result */</span>
+<a name="l00258"></a>00258     u32Result = 4;
+<a name="l00259"></a>00259   }
+<a name="l00260"></a>00260   <span class="keywordflow">else</span>
+<a name="l00261"></a>00261   {
+<a name="l00262"></a>00262     <span class="comment">/* Updates result */</span>
+<a name="l00263"></a>00263     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00264"></a>00264   }
+<a name="l00265"></a>00265 
+<a name="l00266"></a>00266   <span class="comment">/* Done! */</span>
+<a name="l00267"></a>00267   <span class="keywordflow">return</span> u32Result;
+<a name="l00268"></a>00268 }
+<a name="l00269"></a>00269 
+<a name="l00276"></a><a class="code" href="group__orx_string.html#ga73609453472017913e3e329ce2c12ff4">00276</a> <span class="keyword">static</span> orxU32 orxFASTCALL               <a class="code" href="group__orx_string.html#ga73609453472017913e3e329ce2c12ff4">orxString_PrintUTF8Character</a>(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCodePoint)
+<a name="l00277"></a>00277 {
+<a name="l00278"></a>00278   orxU32 u32Result;
+<a name="l00279"></a>00279 
+<a name="l00280"></a>00280   <span class="comment">/* Gets character&#39;s encoded length */</span>
+<a name="l00281"></a>00281   u32Result = <a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">orxString_GetUTF8CharacterLength</a>(_u32CharacterCodePoint);
+<a name="l00282"></a>00282 
+<a name="l00283"></a>00283   <span class="comment">/* Enough room? */</span>
+<a name="l00284"></a>00284   <span class="keywordflow">if</span>(u32Result &lt;= _u32Size)
+<a name="l00285"></a>00285   {
+<a name="l00286"></a>00286     <span class="comment">/* Depending on character&#39;s length */</span>
+<a name="l00287"></a>00287     <span class="keywordflow">switch</span>(u32Result)
+<a name="l00288"></a>00288     {
+<a name="l00289"></a>00289       <span class="keywordflow">case</span> 1:
+<a name="l00290"></a>00290       {
+<a name="l00291"></a>00291         <span class="comment">/* Writes character */</span>
+<a name="l00292"></a>00292         *_zDstString = (orxCHAR)_u32CharacterCodePoint;
+<a name="l00293"></a>00293 
+<a name="l00294"></a>00294         <span class="keywordflow">break</span>;
+<a name="l00295"></a>00295       }
+<a name="l00296"></a>00296 
+<a name="l00297"></a>00297       <span class="keywordflow">case</span> 2:
+<a name="l00298"></a>00298       {
+<a name="l00299"></a>00299         <span class="comment">/* Writes first character */</span>
+<a name="l00300"></a>00300         *_zDstString++ = (orxCHAR)(0xC0 | ((_u32CharacterCodePoint &amp; 0x07C0) &gt;&gt; 6));
+<a name="l00301"></a>00301 
+<a name="l00302"></a>00302         <span class="comment">/* Writes second character */</span>
+<a name="l00303"></a>00303         *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint &amp; 0x3F));
+<a name="l00304"></a>00304 
+<a name="l00305"></a>00305         <span class="keywordflow">break</span>;
+<a name="l00306"></a>00306       }
+<a name="l00307"></a>00307 
+<a name="l00308"></a>00308       <span class="keywordflow">case</span> 3:
+<a name="l00309"></a>00309       {
+<a name="l00310"></a>00310         <span class="comment">/* Writes first character */</span>
+<a name="l00311"></a>00311         *_zDstString++ = (orxCHAR)(0xE0 | ((_u32CharacterCodePoint &amp; 0xF000) &gt;&gt; 12));
+<a name="l00312"></a>00312 
+<a name="l00313"></a>00313         <span class="comment">/* Writes second character */</span>
+<a name="l00314"></a>00314         *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint &amp; 0x0FC0) &gt;&gt; 6));
+<a name="l00315"></a>00315 
+<a name="l00316"></a>00316         <span class="comment">/* Writes third character */</span>
+<a name="l00317"></a>00317         *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint &amp; 0x3F));
+<a name="l00318"></a>00318 
+<a name="l00319"></a>00319         <span class="keywordflow">break</span>;
+<a name="l00320"></a>00320       }
+<a name="l00321"></a>00321 
+<a name="l00322"></a>00322       <span class="keywordflow">case</span> 4:
+<a name="l00323"></a>00323       {
+<a name="l00324"></a>00324         <span class="comment">/* Writes first character */</span>
+<a name="l00325"></a>00325         *_zDstString++ = (orxCHAR)(0xF0 | ((_u32CharacterCodePoint &amp; 0x001C0000) &gt;&gt; 18));
+<a name="l00326"></a>00326 
+<a name="l00327"></a>00327         <span class="comment">/* Writes second character */</span>
+<a name="l00328"></a>00328         *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint &amp; 0x0003F000) &gt;&gt; 12));
+<a name="l00329"></a>00329 
+<a name="l00330"></a>00330         <span class="comment">/* Writes third character */</span>
+<a name="l00331"></a>00331         *_zDstString++ = (orxCHAR)(0x80 | ((_u32CharacterCodePoint &amp; 0x00000FC0) &gt;&gt; 6));
+<a name="l00332"></a>00332 
+<a name="l00333"></a>00333         <span class="comment">/* Writes fourth character */</span>
+<a name="l00334"></a>00334         *_zDstString = (orxCHAR)(0x80 | (_u32CharacterCodePoint &amp; 0x3F));
+<a name="l00335"></a>00335 
+<a name="l00336"></a>00336         <span class="keywordflow">break</span>;
+<a name="l00337"></a>00337       }
+<a name="l00338"></a>00338 
+<a name="l00339"></a>00339       <span class="keywordflow">default</span>:
+<a name="l00340"></a>00340       {
+<a name="l00341"></a>00341         <span class="comment">/* Logs message */</span>
+<a name="l00342"></a>00342         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Can&#39;t print invalid unicode character &lt;0x%X&gt; to string.&quot;</span>, _u32CharacterCodePoint);
+<a name="l00343"></a>00343 
+<a name="l00344"></a>00344         <span class="comment">/* Updates result */</span>
+<a name="l00345"></a>00345         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00346"></a>00346 
+<a name="l00347"></a>00347         <span class="keywordflow">break</span>;
+<a name="l00348"></a>00348       }
+<a name="l00349"></a>00349     }
+<a name="l00350"></a>00350   }
+<a name="l00351"></a>00351   <span class="keywordflow">else</span>
+<a name="l00352"></a>00352   {
+<a name="l00353"></a>00353     <span class="comment">/* Logs message */</span>
+<a name="l00354"></a>00354     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Can&#39;t print unicode character &lt;0x%X&gt; to string as there isn&#39;t enough space for it.&quot;</span>, _u32CharacterCodePoint);
+<a name="l00355"></a>00355 
+<a name="l00356"></a>00356     <span class="comment">/* Updates result */</span>
+<a name="l00357"></a>00357     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00358"></a>00358   }
+<a name="l00359"></a>00359 
+<a name="l00360"></a>00360   <span class="comment">/* Done! */</span>
+<a name="l00361"></a>00361   <span class="keywordflow">return</span> u32Result;
+<a name="l00362"></a>00362 }
+<a name="l00363"></a>00363 
+<a name="l00369"></a><a class="code" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">00369</a> <span class="keyword">static</span> orxU32 orxFASTCALL               <a class="code" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">orxString_GetFirstCharacterCodePoint</a>(<span class="keyword">const</span> orxSTRING _zString, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00370"></a>00370 {
+<a name="l00371"></a>00371   orxU8  *pu8Byte;
+<a name="l00372"></a>00372   orxU32  u32Result;
+<a name="l00373"></a>00373 
+<a name="l00374"></a>00374   <span class="comment">/* Checks */</span>
+<a name="l00375"></a>00375   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00376"></a>00376 
+<a name="l00377"></a>00377   <span class="comment">/* Gets the first byte */</span>
+<a name="l00378"></a>00378   pu8Byte = (orxU8 *)_zString;
+<a name="l00379"></a>00379 
+<a name="l00380"></a>00380   <span class="comment">/* ASCII? */</span>
+<a name="l00381"></a>00381   <span class="keywordflow">if</span>(*pu8Byte &lt; 0x80)
+<a name="l00382"></a>00382   {
+<a name="l00383"></a>00383     <span class="comment">/* Updates result */</span>
+<a name="l00384"></a>00384     u32Result = *pu8Byte;
+<a name="l00385"></a>00385   }
+<a name="l00386"></a>00386   <span class="comment">/* Invalid UTF-8 byte sequence */</span>
+<a name="l00387"></a>00387   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xC0)
+<a name="l00388"></a>00388   {
+<a name="l00389"></a>00389     <span class="comment">/* Logs message */</span>
+<a name="l00390"></a>00390     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: multi-byte sequence non-leading byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00391"></a>00391 
+<a name="l00392"></a>00392     <span class="comment">/* Updates result */</span>
+<a name="l00393"></a>00393     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00394"></a>00394   }
+<a name="l00395"></a>00395   <span class="comment">/* Overlong UTF-8 2-byte sequence */</span>
+<a name="l00396"></a>00396   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xC2)
+<a name="l00397"></a>00397   {
+<a name="l00398"></a>00398     <span class="comment">/* Logs message */</span>
+<a name="l00399"></a>00399     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: overlong 2-byte sequence starting with byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00400"></a>00400 
+<a name="l00401"></a>00401     <span class="comment">/* Updates result */</span>
+<a name="l00402"></a>00402     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00403"></a>00403   }
+<a name="l00404"></a>00404   <span class="comment">/* 2-byte sequence */</span>
+<a name="l00405"></a>00405   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xE0)
+<a name="l00406"></a>00406   {
+<a name="l00407"></a>00407     <span class="comment">/* Updates result with first character */</span>
+<a name="l00408"></a>00408     u32Result = *pu8Byte++ &amp; 0x1F;
+<a name="l00409"></a>00409 
+<a name="l00410"></a>00410     <span class="comment">/* Valid second character? */</span>
+<a name="l00411"></a>00411     <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
+<a name="l00412"></a>00412     {
+<a name="l00413"></a>00413       <span class="comment">/* Updates result */</span>
+<a name="l00414"></a>00414       u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte &amp; 0x3F);
+<a name="l00415"></a>00415     }
+<a name="l00416"></a>00416     <span class="keywordflow">else</span>
+<a name="l00417"></a>00417     {
+<a name="l00418"></a>00418       <span class="comment">/* Logs message */</span>
+<a name="l00419"></a>00419       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 2-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00420"></a>00420 
+<a name="l00421"></a>00421       <span class="comment">/* Updates result */</span>
+<a name="l00422"></a>00422       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00423"></a>00423     }
+<a name="l00424"></a>00424   }
+<a name="l00425"></a>00425   <span class="comment">/* 3-byte sequence */</span>
+<a name="l00426"></a>00426   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xF0)
+<a name="l00427"></a>00427   {
+<a name="l00428"></a>00428     <span class="comment">/* Updates result with first character */</span>
+<a name="l00429"></a>00429     u32Result = *pu8Byte++ &amp; 0x0F;
+<a name="l00430"></a>00430 
+<a name="l00431"></a>00431     <span class="comment">/* Valid second character? */</span>
+<a name="l00432"></a>00432     <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
+<a name="l00433"></a>00433     {
+<a name="l00434"></a>00434       <span class="comment">/* Updates result */</span>
+<a name="l00435"></a>00435       u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte++ &amp; 0x3F);
+<a name="l00436"></a>00436 
+<a name="l00437"></a>00437       <span class="comment">/* Valid third character? */</span>
+<a name="l00438"></a>00438       <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
+<a name="l00439"></a>00439       {
+<a name="l00440"></a>00440         <span class="comment">/* Updates result */</span>
+<a name="l00441"></a>00441         u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte &amp; 0x3F);
+<a name="l00442"></a>00442       }
+<a name="l00443"></a>00443       <span class="keywordflow">else</span>
+<a name="l00444"></a>00444       {
+<a name="l00445"></a>00445         <span class="comment">/* Logs message */</span>
+<a name="l00446"></a>00446         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00447"></a>00447 
+<a name="l00448"></a>00448         <span class="comment">/* Updates result */</span>
+<a name="l00449"></a>00449         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00450"></a>00450       }
+<a name="l00451"></a>00451     }
+<a name="l00452"></a>00452     <span class="keywordflow">else</span>
+<a name="l00453"></a>00453     {
+<a name="l00454"></a>00454       <span class="comment">/* Logs message */</span>
+<a name="l00455"></a>00455       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00456"></a>00456 
+<a name="l00457"></a>00457       <span class="comment">/* Updates result */</span>
+<a name="l00458"></a>00458       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00459"></a>00459     }
+<a name="l00460"></a>00460   }
+<a name="l00461"></a>00461   <span class="comment">/* 4-byte sequence */</span>
+<a name="l00462"></a>00462   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xF5)
+<a name="l00463"></a>00463   {
+<a name="l00464"></a>00464     <span class="comment">/* Updates result with first character */</span>
+<a name="l00465"></a>00465     u32Result = *pu8Byte++ &amp; 0x07;
+<a name="l00466"></a>00466 
+<a name="l00467"></a>00467     <span class="comment">/* Valid second character? */</span>
+<a name="l00468"></a>00468     <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
+<a name="l00469"></a>00469     {
+<a name="l00470"></a>00470       <span class="comment">/* Updates result */</span>
+<a name="l00471"></a>00471       u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte++ &amp; 0x3F);
+<a name="l00472"></a>00472 
+<a name="l00473"></a>00473       <span class="comment">/* Valid third character? */</span>
+<a name="l00474"></a>00474       <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
+<a name="l00475"></a>00475       {
+<a name="l00476"></a>00476         <span class="comment">/* Updates result */</span>
+<a name="l00477"></a>00477         u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte++ &amp; 0x3F);
+<a name="l00478"></a>00478 
+<a name="l00479"></a>00479         <span class="comment">/* Valid fourth character? */</span>
+<a name="l00480"></a>00480         <span class="keywordflow">if</span>((*pu8Byte &amp; 0xC0) == 0x80)
+<a name="l00481"></a>00481         {
+<a name="l00482"></a>00482           <span class="comment">/* Updates result */</span>
+<a name="l00483"></a>00483           u32Result = (u32Result &lt;&lt; 6) | (*pu8Byte &amp; 0x3F);
+<a name="l00484"></a>00484         }
+<a name="l00485"></a>00485         <span class="keywordflow">else</span>
+<a name="l00486"></a>00486         {
+<a name="l00487"></a>00487           <span class="comment">/* Logs message */</span>
+<a name="l00488"></a>00488           <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00489"></a>00489 
+<a name="l00490"></a>00490           <span class="comment">/* Updates result */</span>
+<a name="l00491"></a>00491           u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00492"></a>00492         }
+<a name="l00493"></a>00493       }
+<a name="l00494"></a>00494       <span class="keywordflow">else</span>
+<a name="l00495"></a>00495       {
+<a name="l00496"></a>00496         <span class="comment">/* Logs message */</span>
+<a name="l00497"></a>00497         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00498"></a>00498 
+<a name="l00499"></a>00499         <span class="comment">/* Updates result */</span>
+<a name="l00500"></a>00500         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00501"></a>00501       }
+<a name="l00502"></a>00502     }
+<a name="l00503"></a>00503     <span class="keywordflow">else</span>
+<a name="l00504"></a>00504     {
+<a name="l00505"></a>00505       <span class="comment">/* Logs message */</span>
+<a name="l00506"></a>00506       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00507"></a>00507 
+<a name="l00508"></a>00508       <span class="comment">/* Updates result */</span>
+<a name="l00509"></a>00509       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00510"></a>00510     }
+<a name="l00511"></a>00511   }
+<a name="l00512"></a>00512   <span class="keywordflow">else</span>
+<a name="l00513"></a>00513   {
+<a name="l00514"></a>00514     <span class="comment">/* Logs message */</span>
+<a name="l00515"></a>00515     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: invalid out-of-bound byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00516"></a>00516 
+<a name="l00517"></a>00517     <span class="comment">/* Updates result */</span>
+<a name="l00518"></a>00518     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00519"></a>00519   }
+<a name="l00520"></a>00520 
+<a name="l00521"></a>00521   <span class="comment">/* Asks for remaining string? */</span>
+<a name="l00522"></a>00522   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00523"></a>00523   {
+<a name="l00524"></a>00524     <span class="comment">/* Stores it */</span>
+<a name="l00525"></a>00525     *_pzRemaining = (orxSTRING)(pu8Byte + 1);
+<a name="l00526"></a>00526   }
+<a name="l00527"></a>00527 
+<a name="l00528"></a>00528   <span class="comment">/* Done! */</span>
+<a name="l00529"></a>00529   <span class="keywordflow">return</span> u32Result;
+<a name="l00530"></a>00530 }
+<a name="l00531"></a>00531 
+<a name="l00536"></a><a class="code" href="group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998">00536</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998">orxString_GetCharacterCounter</a>(<span class="keyword">const</span> orxSTRING _zString)
+<a name="l00537"></a>00537 {
+<a name="l00538"></a>00538   <span class="keyword">const</span> orxCHAR  *pc;
+<a name="l00539"></a>00539   orxU32          u32Result;
+<a name="l00540"></a>00540 
+<a name="l00541"></a>00541   <span class="comment">/* Checks */</span>
+<a name="l00542"></a>00542   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00543"></a>00543 
+<a name="l00544"></a>00544   <span class="comment">/* For all characters */</span>
+<a name="l00545"></a>00545   <span class="keywordflow">for</span>(pc = _zString, u32Result = 0; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; u32Result++)
+<a name="l00546"></a>00546   {
+<a name="l00547"></a>00547     <span class="comment">/* Invalid current character ID */</span>
+<a name="l00548"></a>00548     <span class="keywordflow">if</span>(<a class="code" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">orxString_GetFirstCharacterCodePoint</a>(pc, &amp;pc) == <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>)
+<a name="l00549"></a>00549     {
+<a name="l00550"></a>00550       <span class="comment">/* Updates result */</span>
+<a name="l00551"></a>00551       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
+<a name="l00552"></a>00552 
+<a name="l00553"></a>00553       <span class="comment">/* Logs message */</span>
+<a name="l00554"></a>00554       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF8 string &lt;%s&gt;, can&#39;t count characters.&quot;</span>, _zString);
+<a name="l00555"></a>00555 
+<a name="l00556"></a>00556       <span class="keywordflow">break</span>;
+<a name="l00557"></a>00557     }
+<a name="l00558"></a>00558   }
+<a name="l00559"></a>00559 
+<a name="l00560"></a>00560   <span class="comment">/* Done! */</span>
+<a name="l00561"></a>00561   <span class="keywordflow">return</span> u32Result;
+<a name="l00562"></a>00562 }
+<a name="l00563"></a>00563 
+<a name="l00570"></a><a class="code" href="group__orx_string.html#ga79b5537709b17a25daaa794769112723">00570</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#ga79b5537709b17a25daaa794769112723">orxString_NCopy</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString, orxU32 _u32CharNumber)
+<a name="l00571"></a>00571 {
+<a name="l00572"></a>00572   <span class="comment">/* Checks */</span>
+<a name="l00573"></a>00573   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
+<a name="l00574"></a>00574   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
+<a name="l00575"></a>00575 
+<a name="l00576"></a>00576   <span class="comment">/* Done! */</span>
+<a name="l00577"></a>00577   <span class="keywordflow">return</span>(strncpy(_zDstString, _zSrcString, _u32CharNumber));
+<a name="l00578"></a>00578 }
+<a name="l00579"></a>00579 
+<a name="l00585"></a><a class="code" href="group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16">00585</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16">orxString_Copy</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString)
+<a name="l00586"></a>00586 {
+<a name="l00587"></a>00587   <span class="comment">/* Checks */</span>
+<a name="l00588"></a>00588   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
+<a name="l00589"></a>00589   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
+<a name="l00590"></a>00590 
+<a name="l00591"></a>00591   <span class="comment">/* Done! */</span>
+<a name="l00592"></a>00592   <span class="keywordflow">return</span>(strcpy(_zDstString, _zSrcString));
+<a name="l00593"></a>00593 }
+<a name="l00594"></a>00594 
+<a name="l00599"></a><a class="code" href="group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd">00599</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd">orxString_Duplicate</a>(<span class="keyword">const</span> orxSTRING _zSrcString)
+<a name="l00600"></a>00600 {
+<a name="l00601"></a>00601   orxU32    u32Size;
+<a name="l00602"></a>00602   orxSTRING zResult;
+<a name="l00603"></a>00603 
+<a name="l00604"></a>00604   <span class="comment">/* Checks */</span>
+<a name="l00605"></a>00605   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
+<a name="l00606"></a>00606 
+<a name="l00607"></a>00607   <span class="comment">/* Gets string size in bytes */</span>
+<a name="l00608"></a>00608   u32Size = (<a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(_zSrcString) + 1) * <span class="keyword">sizeof</span>(orxCHAR);
+<a name="l00609"></a>00609 
+<a name="l00610"></a>00610   <span class="comment">/* Allocates it */</span>
+<a name="l00611"></a>00611   zResult = (orxSTRING)<a class="code" href="group__orx_memory.html#ga74fb333b07c13bf3a668c5ee88204ea8">orxMemory_Allocate</a>(u32Size, <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72">orxMEMORY_TYPE_TEXT</a>);
+<a name="l00612"></a>00612 
+<a name="l00613"></a>00613   <span class="comment">/* Valid? */</span>
+<a name="l00614"></a>00614   <span class="keywordflow">if</span>(zResult != orxNULL)
+<a name="l00615"></a>00615   {
+<a name="l00616"></a>00616     <span class="comment">/* Copies source to it */</span>
+<a name="l00617"></a>00617     <a class="code" href="group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c">orxMemory_Copy</a>(zResult, _zSrcString, u32Size);
+<a name="l00618"></a>00618   }
+<a name="l00619"></a>00619 
+<a name="l00620"></a>00620   <span class="comment">/* Done! */</span>
+<a name="l00621"></a>00621   <span class="keywordflow">return</span> zResult;
+<a name="l00622"></a>00622 }
 <a name="l00623"></a>00623 
-<a name="l00624"></a>00624   <span class="comment">/* Done! */</span>
-<a name="l00625"></a>00625   <span class="keywordflow">return</span> <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
-<a name="l00626"></a>00626 }
-<a name="l00627"></a>00627 
-<a name="l00634"></a><a class="code" href="group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c">00634</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c">orxString_Compare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
-<a name="l00635"></a>00635 {
-<a name="l00636"></a>00636   <span class="comment">/* Checks */</span>
-<a name="l00637"></a>00637   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
-<a name="l00638"></a>00638   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l00627"></a><a class="code" href="group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28">00627</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28">orxString_Delete</a>(orxSTRING _zString)
+<a name="l00628"></a>00628 {
+<a name="l00629"></a>00629   <span class="comment">/* Checks */</span>
+<a name="l00630"></a>00630   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00631"></a>00631   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>);
+<a name="l00632"></a>00632 
+<a name="l00633"></a>00633   <span class="comment">/* Frees its memory */</span>
+<a name="l00634"></a>00634   <a class="code" href="group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d">orxMemory_Free</a>(_zString);
+<a name="l00635"></a>00635 
+<a name="l00636"></a>00636   <span class="comment">/* Done! */</span>
+<a name="l00637"></a>00637   <span class="keywordflow">return</span> <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
+<a name="l00638"></a>00638 }
 <a name="l00639"></a>00639 
-<a name="l00640"></a>00640   <span class="comment">/* Done! */</span>
-<a name="l00641"></a>00641   <span class="keywordflow">return</span>(strcmp(_zString1, _zString2));
-<a name="l00642"></a>00642 }
-<a name="l00643"></a>00643 
-<a name="l00652"></a><a class="code" href="group__orx_string.html#gae19745a57dd2d6f3769a4ce4ce608657">00652</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#gae19745a57dd2d6f3769a4ce4ce608657">orxString_NCompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2, orxU32 _u32CharNumber)
-<a name="l00653"></a>00653 {
-<a name="l00654"></a>00654   <span class="comment">/* Checks */</span>
-<a name="l00655"></a>00655   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
-<a name="l00656"></a>00656   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
-<a name="l00657"></a>00657 
-<a name="l00658"></a>00658   <span class="comment">/* Done! */</span>
-<a name="l00659"></a>00659   <span class="keywordflow">return</span> strncmp(_zString1, _zString2, _u32CharNumber);
-<a name="l00660"></a>00660 }
-<a name="l00661"></a>00661 
-<a name="l00668"></a><a class="code" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">00668</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">orxString_ICompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
-<a name="l00669"></a>00669 {
-<a name="l00670"></a>00670   <span class="comment">/* Checks */</span>
-<a name="l00671"></a>00671   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
-<a name="l00672"></a>00672   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l00646"></a><a class="code" href="group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c">00646</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c">orxString_Compare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
+<a name="l00647"></a>00647 {
+<a name="l00648"></a>00648   <span class="comment">/* Checks */</span>
+<a name="l00649"></a>00649   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
+<a name="l00650"></a>00650   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l00651"></a>00651 
+<a name="l00652"></a>00652   <span class="comment">/* Done! */</span>
+<a name="l00653"></a>00653   <span class="keywordflow">return</span>(strcmp(_zString1, _zString2));
+<a name="l00654"></a>00654 }
+<a name="l00655"></a>00655 
+<a name="l00664"></a><a class="code" href="group__orx_string.html#gae19745a57dd2d6f3769a4ce4ce608657">00664</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#gae19745a57dd2d6f3769a4ce4ce608657">orxString_NCompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2, orxU32 _u32CharNumber)
+<a name="l00665"></a>00665 {
+<a name="l00666"></a>00666   <span class="comment">/* Checks */</span>
+<a name="l00667"></a>00667   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
+<a name="l00668"></a>00668   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l00669"></a>00669 
+<a name="l00670"></a>00670   <span class="comment">/* Done! */</span>
+<a name="l00671"></a>00671   <span class="keywordflow">return</span> strncmp(_zString1, _zString2, _u32CharNumber);
+<a name="l00672"></a>00672 }
 <a name="l00673"></a>00673 
-<a name="l00674"></a>00674 <span class="preprocessor">#ifdef __orxWINDOWS__</span>
-<a name="l00675"></a>00675 <span class="preprocessor"></span>
-<a name="l00676"></a>00676   <span class="comment">/* Done! */</span>
-<a name="l00677"></a>00677   <span class="keywordflow">return</span>(stricmp(_zString1, _zString2));
-<a name="l00678"></a>00678 
-<a name="l00679"></a>00679 <span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span>
-<a name="l00680"></a>00680 
-<a name="l00681"></a>00681   <span class="comment">/* Done! */</span>
-<a name="l00682"></a>00682   <span class="keywordflow">return</span> strcasecmp(_zString1, _zString2);
-<a name="l00683"></a>00683 
-<a name="l00684"></a>00684 <span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span>
-<a name="l00685"></a>00685 }
-<a name="l00686"></a>00686 
-<a name="l00695"></a><a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">00695</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2, orxU32 _u32CharNumber)
-<a name="l00696"></a>00696 {
-<a name="l00697"></a>00697   <span class="comment">/* Checks */</span>
-<a name="l00698"></a>00698   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
-<a name="l00699"></a>00699   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
-<a name="l00700"></a>00700 
-<a name="l00701"></a>00701 <span class="preprocessor">#ifdef __orxWINDOWS__</span>
-<a name="l00702"></a>00702 <span class="preprocessor"></span>
-<a name="l00703"></a>00703   <span class="comment">/* Done! */</span>
-<a name="l00704"></a>00704   <span class="keywordflow">return</span> strnicmp(_zString1, _zString2, _u32CharNumber);
-<a name="l00705"></a>00705 
-<a name="l00706"></a>00706 <span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span>
-<a name="l00707"></a>00707 
-<a name="l00708"></a>00708   <span class="comment">/* Done! */</span>
-<a name="l00709"></a>00709   <span class="keywordflow">return</span> strncasecmp(_zString1, _zString2, _u32CharNumber);
-<a name="l00710"></a>00710 
-<a name="l00711"></a>00711 <span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span>
-<a name="l00712"></a>00712 }
-<a name="l00713"></a>00713 
-<a name="l00721"></a><a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">00721</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00722"></a>00722 {
-<a name="l00723"></a>00723   orxCHAR    *pcEnd;
-<a name="l00724"></a>00724   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>   eResult;
+<a name="l00680"></a><a class="code" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">00680</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">orxString_ICompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
+<a name="l00681"></a>00681 {
+<a name="l00682"></a>00682   <span class="comment">/* Checks */</span>
+<a name="l00683"></a>00683   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
+<a name="l00684"></a>00684   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l00685"></a>00685 
+<a name="l00686"></a>00686 <span class="preprocessor">#ifdef __orxWINDOWS__</span>
+<a name="l00687"></a>00687 <span class="preprocessor"></span>
+<a name="l00688"></a>00688   <span class="comment">/* Done! */</span>
+<a name="l00689"></a>00689   <span class="keywordflow">return</span>(stricmp(_zString1, _zString2));
+<a name="l00690"></a>00690 
+<a name="l00691"></a>00691 <span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span>
+<a name="l00692"></a>00692 
+<a name="l00693"></a>00693   <span class="comment">/* Done! */</span>
+<a name="l00694"></a>00694   <span class="keywordflow">return</span> strcasecmp(_zString1, _zString2);
+<a name="l00695"></a>00695 
+<a name="l00696"></a>00696 <span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span>
+<a name="l00697"></a>00697 }
+<a name="l00698"></a>00698 
+<a name="l00707"></a><a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">00707</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2, orxU32 _u32CharNumber)
+<a name="l00708"></a>00708 {
+<a name="l00709"></a>00709   <span class="comment">/* Checks */</span>
+<a name="l00710"></a>00710   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
+<a name="l00711"></a>00711   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l00712"></a>00712 
+<a name="l00713"></a>00713 <span class="preprocessor">#ifdef __orxWINDOWS__</span>
+<a name="l00714"></a>00714 <span class="preprocessor"></span>
+<a name="l00715"></a>00715   <span class="comment">/* Done! */</span>
+<a name="l00716"></a>00716   <span class="keywordflow">return</span> strnicmp(_zString1, _zString2, _u32CharNumber);
+<a name="l00717"></a>00717 
+<a name="l00718"></a>00718 <span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span>
+<a name="l00719"></a>00719 
+<a name="l00720"></a>00720   <span class="comment">/* Done! */</span>
+<a name="l00721"></a>00721   <span class="keywordflow">return</span> strncasecmp(_zString1, _zString2, _u32CharNumber);
+<a name="l00722"></a>00722 
+<a name="l00723"></a>00723 <span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span>
+<a name="l00724"></a>00724 }
 <a name="l00725"></a>00725 
-<a name="l00726"></a>00726   <span class="comment">/* Checks */</span>
-<a name="l00727"></a>00727   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_ps32OutValue != orxNULL);
-<a name="l00728"></a>00728   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00729"></a>00729 
-<a name="l00730"></a>00730   <span class="comment">/* Convert */</span>
-<a name="l00731"></a>00731   *_ps32OutValue = strtol(_zString, &amp;pcEnd, _u32Base);
-<a name="l00732"></a>00732   
-<a name="l00733"></a>00733   <span class="comment">/* Valid conversion ? */</span>
-<a name="l00734"></a>00734   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
-<a name="l00735"></a>00735   {
-<a name="l00736"></a>00736     <span class="comment">/* Updates result */</span>
-<a name="l00737"></a>00737     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
-<a name="l00738"></a>00738   }
-<a name="l00739"></a>00739   <span class="keywordflow">else</span>
-<a name="l00740"></a>00740   {
-<a name="l00741"></a>00741     <span class="comment">/* Updates result */</span>
-<a name="l00742"></a>00742     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
-<a name="l00743"></a>00743   }
-<a name="l00744"></a>00744 
-<a name="l00745"></a>00745   <span class="comment">/* Asks for remaining string? */</span>
-<a name="l00746"></a>00746   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00733"></a><a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">00733</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00734"></a>00734 {
+<a name="l00735"></a>00735   orxCHAR    *pcEnd;
+<a name="l00736"></a>00736   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>   eResult;
+<a name="l00737"></a>00737 
+<a name="l00738"></a>00738   <span class="comment">/* Checks */</span>
+<a name="l00739"></a>00739   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_ps32OutValue != orxNULL);
+<a name="l00740"></a>00740   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00741"></a>00741 
+<a name="l00742"></a>00742   <span class="comment">/* Convert */</span>
+<a name="l00743"></a>00743   *_ps32OutValue = strtol(_zString, &amp;pcEnd, _u32Base);
+<a name="l00744"></a>00744   
+<a name="l00745"></a>00745   <span class="comment">/* Valid conversion ? */</span>
+<a name="l00746"></a>00746   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
 <a name="l00747"></a>00747   {
-<a name="l00748"></a>00748     <span class="comment">/* Stores it */</span>
-<a name="l00749"></a>00749     *_pzRemaining = pcEnd;
+<a name="l00748"></a>00748     <span class="comment">/* Updates result */</span>
+<a name="l00749"></a>00749     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
 <a name="l00750"></a>00750   }
-<a name="l00751"></a>00751 
-<a name="l00752"></a>00752   <span class="comment">/* Done! */</span>
-<a name="l00753"></a>00753   <span class="keywordflow">return</span> eResult;
-<a name="l00754"></a>00754 }
-<a name="l00755"></a>00755 
-<a name="l00762"></a><a class="code" href="group__orx_string.html#ga12dff19357cd18ca1832e3cf83e555e0">00762</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga12dff19357cd18ca1832e3cf83e555e0">orxString_ToS32</a>(<span class="keyword">const</span> orxSTRING _zString, orxS32 *_ps32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00763"></a>00763 {
-<a name="l00764"></a>00764   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;
-<a name="l00765"></a>00765 
-<a name="l00766"></a>00766   <span class="comment">/* Checks */</span>
-<a name="l00767"></a>00767   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_ps32OutValue != orxNULL);
-<a name="l00768"></a>00768   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00769"></a>00769 
-<a name="l00770"></a>00770   <span class="comment">/* Hexadecimal? */</span>
-<a name="l00771"></a>00771   <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00772"></a>00772   &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
-<a name="l00773"></a>00773   &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00774"></a>00774   &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))
-<a name="l00775"></a>00775   {
-<a name="l00776"></a>00776     <span class="comment">/* Gets hexa value */</span>
-<a name="l00777"></a>00777     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 2, 16, _ps32OutValue, _pzRemaining);
-<a name="l00778"></a>00778   }
-<a name="l00779"></a>00779   <span class="comment">/* Binary? */</span>
-<a name="l00780"></a>00780   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00781"></a>00781        &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
-<a name="l00782"></a>00782        &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00783"></a>00783        &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))
-<a name="l00784"></a>00784   {
-<a name="l00785"></a>00785     <span class="comment">/* Gets binary value */</span>
-<a name="l00786"></a>00786     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 2, 2, _ps32OutValue, _pzRemaining);
-<a name="l00787"></a>00787   }
-<a name="l00788"></a>00788   <span class="comment">/* Octal? */</span>
-<a name="l00789"></a>00789   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00790"></a>00790   &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>))
-<a name="l00791"></a>00791   {
-<a name="l00792"></a>00792     <span class="comment">/* Gets octal value */</span>
-<a name="l00793"></a>00793     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 1, 8, _ps32OutValue, _pzRemaining);
-<a name="l00794"></a>00794   }
-<a name="l00795"></a>00795   <span class="comment">/* Decimal */</span>
-<a name="l00796"></a>00796   <span class="keywordflow">else</span>
-<a name="l00797"></a>00797   {
-<a name="l00798"></a>00798     <span class="comment">/* Gets decimal value */</span>
-<a name="l00799"></a>00799     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString, 10, _ps32OutValue, _pzRemaining);
-<a name="l00800"></a>00800   }
-<a name="l00801"></a>00801 
-<a name="l00802"></a>00802   <span class="comment">/* Done! */</span>
-<a name="l00803"></a>00803   <span class="keywordflow">return</span> eResult;
-<a name="l00804"></a>00804 }
-<a name="l00805"></a>00805 
-<a name="l00813"></a><a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">00813</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32Base, orxU32 *_pu32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00814"></a>00814 {
-<a name="l00815"></a>00815   orxCHAR    *pcEnd;
-<a name="l00816"></a>00816   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>   eResult;
+<a name="l00751"></a>00751   <span class="keywordflow">else</span>
+<a name="l00752"></a>00752   {
+<a name="l00753"></a>00753     <span class="comment">/* Updates result */</span>
+<a name="l00754"></a>00754     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
+<a name="l00755"></a>00755   }
+<a name="l00756"></a>00756 
+<a name="l00757"></a>00757   <span class="comment">/* Asks for remaining string? */</span>
+<a name="l00758"></a>00758   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00759"></a>00759   {
+<a name="l00760"></a>00760     <span class="comment">/* Stores it */</span>
+<a name="l00761"></a>00761     *_pzRemaining = pcEnd;
+<a name="l00762"></a>00762   }
+<a name="l00763"></a>00763 
+<a name="l00764"></a>00764   <span class="comment">/* Done! */</span>
+<a name="l00765"></a>00765   <span class="keywordflow">return</span> eResult;
+<a name="l00766"></a>00766 }
+<a name="l00767"></a>00767 
+<a name="l00774"></a><a class="code" href="group__orx_string.html#ga12dff19357cd18ca1832e3cf83e555e0">00774</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga12dff19357cd18ca1832e3cf83e555e0">orxString_ToS32</a>(<span class="keyword">const</span> orxSTRING _zString, orxS32 *_ps32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00775"></a>00775 {
+<a name="l00776"></a>00776   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;
+<a name="l00777"></a>00777 
+<a name="l00778"></a>00778   <span class="comment">/* Checks */</span>
+<a name="l00779"></a>00779   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_ps32OutValue != orxNULL);
+<a name="l00780"></a>00780   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00781"></a>00781 
+<a name="l00782"></a>00782   <span class="comment">/* Hexadecimal? */</span>
+<a name="l00783"></a>00783   <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00784"></a>00784   &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
+<a name="l00785"></a>00785   &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00786"></a>00786   &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))
+<a name="l00787"></a>00787   {
+<a name="l00788"></a>00788     <span class="comment">/* Gets hexa value */</span>
+<a name="l00789"></a>00789     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 2, 16, _ps32OutValue, _pzRemaining);
+<a name="l00790"></a>00790   }
+<a name="l00791"></a>00791   <span class="comment">/* Binary? */</span>
+<a name="l00792"></a>00792   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00793"></a>00793        &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
+<a name="l00794"></a>00794        &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00795"></a>00795        &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))
+<a name="l00796"></a>00796   {
+<a name="l00797"></a>00797     <span class="comment">/* Gets binary value */</span>
+<a name="l00798"></a>00798     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 2, 2, _ps32OutValue, _pzRemaining);
+<a name="l00799"></a>00799   }
+<a name="l00800"></a>00800   <span class="comment">/* Octal? */</span>
+<a name="l00801"></a>00801   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00802"></a>00802   &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>))
+<a name="l00803"></a>00803   {
+<a name="l00804"></a>00804     <span class="comment">/* Gets octal value */</span>
+<a name="l00805"></a>00805     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 1, 8, _ps32OutValue, _pzRemaining);
+<a name="l00806"></a>00806   }
+<a name="l00807"></a>00807   <span class="comment">/* Decimal */</span>
+<a name="l00808"></a>00808   <span class="keywordflow">else</span>
+<a name="l00809"></a>00809   {
+<a name="l00810"></a>00810     <span class="comment">/* Gets decimal value */</span>
+<a name="l00811"></a>00811     eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString, 10, _ps32OutValue, _pzRemaining);
+<a name="l00812"></a>00812   }
+<a name="l00813"></a>00813 
+<a name="l00814"></a>00814   <span class="comment">/* Done! */</span>
+<a name="l00815"></a>00815   <span class="keywordflow">return</span> eResult;
+<a name="l00816"></a>00816 }
 <a name="l00817"></a>00817 
-<a name="l00818"></a>00818   <span class="comment">/* Checks */</span>
-<a name="l00819"></a>00819   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pu32OutValue != orxNULL);
-<a name="l00820"></a>00820   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00821"></a>00821 
-<a name="l00822"></a>00822   <span class="comment">/* Convert */</span>
-<a name="l00823"></a>00823   *_pu32OutValue = strtoul(_zString, &amp;pcEnd, _u32Base);
-<a name="l00824"></a>00824   
-<a name="l00825"></a>00825   <span class="comment">/* Valid conversion ? */</span>
-<a name="l00826"></a>00826   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
-<a name="l00827"></a>00827   {
-<a name="l00828"></a>00828     <span class="comment">/* Updates result */</span>
-<a name="l00829"></a>00829     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
-<a name="l00830"></a>00830   }
-<a name="l00831"></a>00831   <span class="keywordflow">else</span>
-<a name="l00832"></a>00832   {
-<a name="l00833"></a>00833     <span class="comment">/* Updates result */</span>
-<a name="l00834"></a>00834     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
-<a name="l00835"></a>00835   }
-<a name="l00836"></a>00836 
-<a name="l00837"></a>00837   <span class="comment">/* Asks for remaining string? */</span>
-<a name="l00838"></a>00838   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00825"></a><a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">00825</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32Base, orxU32 *_pu32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00826"></a>00826 {
+<a name="l00827"></a>00827   orxCHAR    *pcEnd;
+<a name="l00828"></a>00828   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>   eResult;
+<a name="l00829"></a>00829 
+<a name="l00830"></a>00830   <span class="comment">/* Checks */</span>
+<a name="l00831"></a>00831   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pu32OutValue != orxNULL);
+<a name="l00832"></a>00832   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00833"></a>00833 
+<a name="l00834"></a>00834   <span class="comment">/* Convert */</span>
+<a name="l00835"></a>00835   *_pu32OutValue = strtoul(_zString, &amp;pcEnd, _u32Base);
+<a name="l00836"></a>00836   
+<a name="l00837"></a>00837   <span class="comment">/* Valid conversion ? */</span>
+<a name="l00838"></a>00838   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
 <a name="l00839"></a>00839   {
-<a name="l00840"></a>00840     <span class="comment">/* Stores it */</span>
-<a name="l00841"></a>00841     *_pzRemaining = pcEnd;
+<a name="l00840"></a>00840     <span class="comment">/* Updates result */</span>
+<a name="l00841"></a>00841     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
 <a name="l00842"></a>00842   }
-<a name="l00843"></a>00843 
-<a name="l00844"></a>00844   <span class="comment">/* Done! */</span>
-<a name="l00845"></a>00845   <span class="keywordflow">return</span> eResult;
-<a name="l00846"></a>00846 }
-<a name="l00847"></a>00847 
-<a name="l00854"></a><a class="code" href="group__orx_string.html#gaa669788a1ddcb93b49b4a76711cb6f7b">00854</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#gaa669788a1ddcb93b49b4a76711cb6f7b">orxString_ToU32</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 *_pu32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00855"></a>00855 {
-<a name="l00856"></a>00856   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;
-<a name="l00857"></a>00857 
-<a name="l00858"></a>00858   <span class="comment">/* Checks */</span>
-<a name="l00859"></a>00859   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pu32OutValue != orxNULL);
-<a name="l00860"></a>00860   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00861"></a>00861 
-<a name="l00862"></a>00862   <span class="comment">/* Hexadecimal? */</span>
-<a name="l00863"></a>00863   <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00864"></a>00864   &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
-<a name="l00865"></a>00865   &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00866"></a>00866   &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))
-<a name="l00867"></a>00867   {
-<a name="l00868"></a>00868     <span class="comment">/* Gets hexa value */</span>
-<a name="l00869"></a>00869     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 2, 16, _pu32OutValue, _pzRemaining);
-<a name="l00870"></a>00870   }
-<a name="l00871"></a>00871   <span class="comment">/* Binary? */</span>
-<a name="l00872"></a>00872   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00873"></a>00873        &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
-<a name="l00874"></a>00874        &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00875"></a>00875        &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))
-<a name="l00876"></a>00876   {
-<a name="l00877"></a>00877     <span class="comment">/* Gets binary value */</span>
-<a name="l00878"></a>00878     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 2, 2, _pu32OutValue, _pzRemaining);
-<a name="l00879"></a>00879   }
-<a name="l00880"></a>00880   <span class="comment">/* Octal? */</span>
-<a name="l00881"></a>00881   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
-<a name="l00882"></a>00882   &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>))
-<a name="l00883"></a>00883   {
-<a name="l00884"></a>00884     <span class="comment">/* Gets octal value */</span>
-<a name="l00885"></a>00885     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 1, 8, _pu32OutValue, _pzRemaining);
-<a name="l00886"></a>00886   }
-<a name="l00887"></a>00887   <span class="comment">/* Decimal */</span>
-<a name="l00888"></a>00888   <span class="keywordflow">else</span>
-<a name="l00889"></a>00889   {
-<a name="l00890"></a>00890     <span class="comment">/* Gets decimal value */</span>
-<a name="l00891"></a>00891     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString, 10, _pu32OutValue, _pzRemaining);
-<a name="l00892"></a>00892   }
-<a name="l00893"></a>00893 
-<a name="l00894"></a>00894   <span class="comment">/* Done! */</span>
-<a name="l00895"></a>00895   <span class="keywordflow">return</span> eResult;
-<a name="l00896"></a>00896 }
-<a name="l00897"></a>00897 
-<a name="l00904"></a><a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">00904</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(<span class="keyword">const</span> orxSTRING _zString, orxFLOAT *_pfOutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00905"></a>00905 {
-<a name="l00906"></a>00906   orxCHAR    *pcEnd;
-<a name="l00907"></a>00907   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>   eResult;
-<a name="l00908"></a>00908 
-<a name="l00909"></a>00909   <span class="comment">/* Checks */</span>
-<a name="l00910"></a>00910   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pfOutValue != orxNULL);
-<a name="l00911"></a>00911   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00912"></a>00912 
-<a name="l00913"></a>00913   <span class="comment">/* Linux / Mac / GP2X / Wii / IPhone / Android / MSVC? */</span>
-<a name="l00914"></a>00914 <span class="preprocessor">#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__) || defined(__orxANDROID__)</span>
-<a name="l00915"></a>00915 <span class="preprocessor"></span>
-<a name="l00916"></a>00916   <span class="comment">/* Converts it */</span>
-<a name="l00917"></a>00917   *_pfOutValue = (orxFLOAT)strtod(_zString, &amp;pcEnd);
-<a name="l00918"></a>00918 
-<a name="l00919"></a>00919 <span class="preprocessor">#else </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */</span>
+<a name="l00843"></a>00843   <span class="keywordflow">else</span>
+<a name="l00844"></a>00844   {
+<a name="l00845"></a>00845     <span class="comment">/* Updates result */</span>
+<a name="l00846"></a>00846     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
+<a name="l00847"></a>00847   }
+<a name="l00848"></a>00848 
+<a name="l00849"></a>00849   <span class="comment">/* Asks for remaining string? */</span>
+<a name="l00850"></a>00850   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00851"></a>00851   {
+<a name="l00852"></a>00852     <span class="comment">/* Stores it */</span>
+<a name="l00853"></a>00853     *_pzRemaining = pcEnd;
+<a name="l00854"></a>00854   }
+<a name="l00855"></a>00855 
+<a name="l00856"></a>00856   <span class="comment">/* Done! */</span>
+<a name="l00857"></a>00857   <span class="keywordflow">return</span> eResult;
+<a name="l00858"></a>00858 }
+<a name="l00859"></a>00859 
+<a name="l00866"></a><a class="code" href="group__orx_string.html#gaa669788a1ddcb93b49b4a76711cb6f7b">00866</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#gaa669788a1ddcb93b49b4a76711cb6f7b">orxString_ToU32</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 *_pu32OutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00867"></a>00867 {
+<a name="l00868"></a>00868   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;
+<a name="l00869"></a>00869 
+<a name="l00870"></a>00870   <span class="comment">/* Checks */</span>
+<a name="l00871"></a>00871   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pu32OutValue != orxNULL);
+<a name="l00872"></a>00872   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00873"></a>00873 
+<a name="l00874"></a>00874   <span class="comment">/* Hexadecimal? */</span>
+<a name="l00875"></a>00875   <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00876"></a>00876   &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
+<a name="l00877"></a>00877   &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00878"></a>00878   &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))
+<a name="l00879"></a>00879   {
+<a name="l00880"></a>00880     <span class="comment">/* Gets hexa value */</span>
+<a name="l00881"></a>00881     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 2, 16, _pu32OutValue, _pzRemaining);
+<a name="l00882"></a>00882   }
+<a name="l00883"></a>00883   <span class="comment">/* Binary? */</span>
+<a name="l00884"></a>00884   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00885"></a>00885        &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)
+<a name="l00886"></a>00886        &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00887"></a>00887        &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))
+<a name="l00888"></a>00888   {
+<a name="l00889"></a>00889     <span class="comment">/* Gets binary value */</span>
+<a name="l00890"></a>00890     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 2, 2, _pu32OutValue, _pzRemaining);
+<a name="l00891"></a>00891   }
+<a name="l00892"></a>00892   <span class="comment">/* Octal? */</span>
+<a name="l00893"></a>00893   <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)
+<a name="l00894"></a>00894   &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>))
+<a name="l00895"></a>00895   {
+<a name="l00896"></a>00896     <span class="comment">/* Gets octal value */</span>
+<a name="l00897"></a>00897     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 1, 8, _pu32OutValue, _pzRemaining);
+<a name="l00898"></a>00898   }
+<a name="l00899"></a>00899   <span class="comment">/* Decimal */</span>
+<a name="l00900"></a>00900   <span class="keywordflow">else</span>
+<a name="l00901"></a>00901   {
+<a name="l00902"></a>00902     <span class="comment">/* Gets decimal value */</span>
+<a name="l00903"></a>00903     eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString, 10, _pu32OutValue, _pzRemaining);
+<a name="l00904"></a>00904   }
+<a name="l00905"></a>00905 
+<a name="l00906"></a>00906   <span class="comment">/* Done! */</span>
+<a name="l00907"></a>00907   <span class="keywordflow">return</span> eResult;
+<a name="l00908"></a>00908 }
+<a name="l00909"></a>00909 
+<a name="l00916"></a><a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">00916</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(<span class="keyword">const</span> orxSTRING _zString, orxFLOAT *_pfOutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00917"></a>00917 {
+<a name="l00918"></a>00918   orxCHAR    *pcEnd;
+<a name="l00919"></a>00919   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>   eResult;
 <a name="l00920"></a>00920 
-<a name="l00921"></a>00921   <span class="comment">/* Converts it */</span>
-<a name="l00922"></a>00922   *_pfOutValue = strtof(_zString, &amp;pcEnd);
-<a name="l00923"></a>00923 
-<a name="l00924"></a>00924 <span class="preprocessor">#endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */</span>
-<a name="l00925"></a>00925 
-<a name="l00926"></a>00926   <span class="comment">/* Valid conversion ? */</span>
-<a name="l00927"></a>00927   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
-<a name="l00928"></a>00928   {
-<a name="l00929"></a>00929     <span class="comment">/* Updates result */</span>
-<a name="l00930"></a>00930     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
-<a name="l00931"></a>00931   }
-<a name="l00932"></a>00932   <span class="keywordflow">else</span>
-<a name="l00933"></a>00933   {
-<a name="l00934"></a>00934     <span class="comment">/* Updates result */</span>
-<a name="l00935"></a>00935     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
-<a name="l00936"></a>00936   }
+<a name="l00921"></a>00921   <span class="comment">/* Checks */</span>
+<a name="l00922"></a>00922   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pfOutValue != orxNULL);
+<a name="l00923"></a>00923   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00924"></a>00924 
+<a name="l00925"></a>00925   <span class="comment">/* Linux / Mac / GP2X / Wii / IPhone / Android / MSVC? */</span>
+<a name="l00926"></a>00926 <span class="preprocessor">#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__) || defined(__orxANDROID__)</span>
+<a name="l00927"></a>00927 <span class="preprocessor"></span>
+<a name="l00928"></a>00928   <span class="comment">/* Converts it */</span>
+<a name="l00929"></a>00929   *_pfOutValue = (orxFLOAT)strtod(_zString, &amp;pcEnd);
+<a name="l00930"></a>00930 
+<a name="l00931"></a>00931 <span class="preprocessor">#else </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */</span>
+<a name="l00932"></a>00932 
+<a name="l00933"></a>00933   <span class="comment">/* Converts it */</span>
+<a name="l00934"></a>00934   *_pfOutValue = strtof(_zString, &amp;pcEnd);
+<a name="l00935"></a>00935 
+<a name="l00936"></a>00936 <span class="preprocessor">#endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */</span>
 <a name="l00937"></a>00937 
-<a name="l00938"></a>00938   <span class="comment">/* Asks for remaining string? */</span>
-<a name="l00939"></a>00939   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00938"></a>00938   <span class="comment">/* Valid conversion ? */</span>
+<a name="l00939"></a>00939   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
 <a name="l00940"></a>00940   {
-<a name="l00941"></a>00941     <span class="comment">/* Stores it */</span>
-<a name="l00942"></a>00942     *_pzRemaining = pcEnd;
+<a name="l00941"></a>00941     <span class="comment">/* Updates result */</span>
+<a name="l00942"></a>00942     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
 <a name="l00943"></a>00943   }
-<a name="l00944"></a>00944 
-<a name="l00945"></a>00945   <span class="comment">/* Done! */</span>
-<a name="l00946"></a>00946   <span class="keywordflow">return</span> eResult;
-<a name="l00947"></a>00947 }
-<a name="l00948"></a>00948 
-<a name="l00955"></a><a class="code" href="group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15">00955</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15">orxString_ToVector</a>(<span class="keyword">const</span> orxSTRING _zString, <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l00956"></a>00956 {
-<a name="l00957"></a>00957   <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>       stValue;
-<a name="l00958"></a>00958   <span class="keyword">const</span> orxSTRING zString;
-<a name="l00959"></a>00959   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>       eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
+<a name="l00944"></a>00944   <span class="keywordflow">else</span>
+<a name="l00945"></a>00945   {
+<a name="l00946"></a>00946     <span class="comment">/* Updates result */</span>
+<a name="l00947"></a>00947     eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
+<a name="l00948"></a>00948   }
+<a name="l00949"></a>00949 
+<a name="l00950"></a>00950   <span class="comment">/* Asks for remaining string? */</span>
+<a name="l00951"></a>00951   <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l00952"></a>00952   {
+<a name="l00953"></a>00953     <span class="comment">/* Stores it */</span>
+<a name="l00954"></a>00954     *_pzRemaining = pcEnd;
+<a name="l00955"></a>00955   }
+<a name="l00956"></a>00956 
+<a name="l00957"></a>00957   <span class="comment">/* Done! */</span>
+<a name="l00958"></a>00958   <span class="keywordflow">return</span> eResult;
+<a name="l00959"></a>00959 }
 <a name="l00960"></a>00960 
-<a name="l00961"></a>00961   <span class="comment">/* Checks */</span>
-<a name="l00962"></a>00962   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOutValue != orxNULL);
-<a name="l00963"></a>00963   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l00964"></a>00964 
-<a name="l00965"></a>00965   <span class="comment">/* Skips all white spaces */</span>
-<a name="l00966"></a>00966   zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(_zString);
-<a name="l00967"></a>00967 
-<a name="l00968"></a>00968   <span class="comment">/* Is a vector start character? */</span>
-<a name="l00969"></a>00969   <span class="keywordflow">if</span>((*zString == <a class="code" href="group__orx_string.html#ga642c9bffe67569c7fb80665b6f42c499">orxSTRING_KC_VECTOR_START</a>)
-<a name="l00970"></a>00970   || (*zString == <a class="code" href="group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6">orxSTRING_KC_VECTOR_START_ALT</a>))
-<a name="l00971"></a>00971   {
-<a name="l00972"></a>00972     <span class="comment">/* Skips all white spaces */</span>
-<a name="l00973"></a>00973     zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString + 1);
-<a name="l00974"></a>00974 
-<a name="l00975"></a>00975     <span class="comment">/* Gets X value */</span>
-<a name="l00976"></a>00976     eResult = <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(zString, &amp;(stValue.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>), &amp;zString);
-<a name="l00977"></a>00977 
-<a name="l00978"></a>00978     <span class="comment">/* Success? */</span>
-<a name="l00979"></a>00979     <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l00980"></a>00980     {
-<a name="l00981"></a>00981       <span class="comment">/* Skips all white spaces */</span>
-<a name="l00982"></a>00982       zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString);
-<a name="l00983"></a>00983 
-<a name="l00984"></a>00984       <span class="comment">/* Is a vector separator character? */</span>
-<a name="l00985"></a>00985       <span class="keywordflow">if</span>(*zString == <a class="code" href="group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617">orxSTRING_KC_VECTOR_SEPARATOR</a>)
-<a name="l00986"></a>00986       {
-<a name="l00987"></a>00987         <span class="comment">/* Skips all white spaces */</span>
-<a name="l00988"></a>00988         zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString + 1);
+<a name="l00967"></a><a class="code" href="group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15">00967</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15">orxString_ToVector</a>(<span class="keyword">const</span> orxSTRING _zString, <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l00968"></a>00968 {
+<a name="l00969"></a>00969   <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>       stValue;
+<a name="l00970"></a>00970   <span class="keyword">const</span> orxSTRING zString;
+<a name="l00971"></a>00971   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>       eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
+<a name="l00972"></a>00972 
+<a name="l00973"></a>00973   <span class="comment">/* Checks */</span>
+<a name="l00974"></a>00974   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOutValue != orxNULL);
+<a name="l00975"></a>00975   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l00976"></a>00976 
+<a name="l00977"></a>00977   <span class="comment">/* Skips all white spaces */</span>
+<a name="l00978"></a>00978   zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(_zString);
+<a name="l00979"></a>00979 
+<a name="l00980"></a>00980   <span class="comment">/* Is a vector start character? */</span>
+<a name="l00981"></a>00981   <span class="keywordflow">if</span>((*zString == <a class="code" href="group__orx_string.html#ga642c9bffe67569c7fb80665b6f42c499">orxSTRING_KC_VECTOR_START</a>)
+<a name="l00982"></a>00982   || (*zString == <a class="code" href="group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6">orxSTRING_KC_VECTOR_START_ALT</a>))
+<a name="l00983"></a>00983   {
+<a name="l00984"></a>00984     <span class="comment">/* Skips all white spaces */</span>
+<a name="l00985"></a>00985     zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString + 1);
+<a name="l00986"></a>00986 
+<a name="l00987"></a>00987     <span class="comment">/* Gets X value */</span>
+<a name="l00988"></a>00988     eResult = <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(zString, &amp;(stValue.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>), &amp;zString);
 <a name="l00989"></a>00989 
-<a name="l00990"></a>00990         <span class="comment">/* Gets Y value */</span>
-<a name="l00991"></a>00991         eResult = <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(zString, &amp;(stValue.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>), &amp;zString);
-<a name="l00992"></a>00992 
-<a name="l00993"></a>00993         <span class="comment">/* Success? */</span>
-<a name="l00994"></a>00994         <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l00995"></a>00995         {
-<a name="l00996"></a>00996           <span class="comment">/* Skips all white spaces */</span>
-<a name="l00997"></a>00997           zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString);
-<a name="l00998"></a>00998 
-<a name="l00999"></a>00999           <span class="comment">/* Is a vector separator character? */</span>
-<a name="l01000"></a>01000           <span class="keywordflow">if</span>(*zString == <a class="code" href="group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617">orxSTRING_KC_VECTOR_SEPARATOR</a>)
-<a name="l01001"></a>01001           {
-<a name="l01002"></a>01002             <span class="comment">/* Skips all white spaces */</span>
-<a name="l01003"></a>01003             zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString + 1);
+<a name="l00990"></a>00990     <span class="comment">/* Success? */</span>
+<a name="l00991"></a>00991     <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l00992"></a>00992     {
+<a name="l00993"></a>00993       <span class="comment">/* Skips all white spaces */</span>
+<a name="l00994"></a>00994       zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString);
+<a name="l00995"></a>00995 
+<a name="l00996"></a>00996       <span class="comment">/* Is a vector separator character? */</span>
+<a name="l00997"></a>00997       <span class="keywordflow">if</span>(*zString == <a class="code" href="group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617">orxSTRING_KC_VECTOR_SEPARATOR</a>)
+<a name="l00998"></a>00998       {
+<a name="l00999"></a>00999         <span class="comment">/* Skips all white spaces */</span>
+<a name="l01000"></a>01000         zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString + 1);
+<a name="l01001"></a>01001 
+<a name="l01002"></a>01002         <span class="comment">/* Gets Y value */</span>
+<a name="l01003"></a>01003         eResult = <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(zString, &amp;(stValue.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>), &amp;zString);
 <a name="l01004"></a>01004 
-<a name="l01005"></a>01005             <span class="comment">/* Gets Z value */</span>
-<a name="l01006"></a>01006             eResult = <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(zString, &amp;(stValue.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>), &amp;zString);
-<a name="l01007"></a>01007 
-<a name="l01008"></a>01008             <span class="comment">/* Success? */</span>
-<a name="l01009"></a>01009             <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l01010"></a>01010             {
-<a name="l01011"></a>01011               <span class="comment">/* Skips all white spaces */</span>
-<a name="l01012"></a>01012               zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString);
-<a name="l01013"></a>01013 
-<a name="l01014"></a>01014               <span class="comment">/* Is not a vector end character? */</span>
-<a name="l01015"></a>01015               <span class="keywordflow">if</span>((*zString != <a class="code" href="group__orx_string.html#gac8646f825bc6df7e387d877970d56e91">orxSTRING_KC_VECTOR_END</a>)
-<a name="l01016"></a>01016               &amp;&amp; (*zString != <a class="code" href="group__orx_string.html#gaa2a656e10d7ec4fe736684cc5e4828ae">orxSTRING_KC_VECTOR_END_ALT</a>))
-<a name="l01017"></a>01017               {
-<a name="l01018"></a>01018                 <span class="comment">/* Updates result */</span>
-<a name="l01019"></a>01019                 eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
-<a name="l01020"></a>01020               }
-<a name="l01021"></a>01021             }
-<a name="l01022"></a>01022           }
-<a name="l01023"></a>01023         }
-<a name="l01024"></a>01024       }
-<a name="l01025"></a>01025     }
-<a name="l01026"></a>01026   }
-<a name="l01027"></a>01027 
-<a name="l01028"></a>01028   <span class="comment">/* Valid? */</span>
-<a name="l01029"></a>01029   <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l01030"></a>01030   {
-<a name="l01031"></a>01031     <span class="comment">/* Updates vector */</span>
-<a name="l01032"></a>01032     <a class="code" href="group__orx_vector.html#ga8412bc334ebe4bda4593b25309d5f022">orxVector_Copy</a>(_pvOutValue, &amp;stValue);
-<a name="l01033"></a>01033 
-<a name="l01034"></a>01034     <span class="comment">/* Asks for remaining string? */</span>
-<a name="l01035"></a>01035     <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
-<a name="l01036"></a>01036     {
-<a name="l01037"></a>01037       <span class="comment">/* Stores it */</span>
-<a name="l01038"></a>01038       *_pzRemaining = zString + 1;
-<a name="l01039"></a>01039     }
-<a name="l01040"></a>01040   }
-<a name="l01041"></a>01041 
-<a name="l01042"></a>01042   <span class="comment">/* Done! */</span>
-<a name="l01043"></a>01043   <span class="keywordflow">return</span> eResult;
-<a name="l01044"></a>01044 }
+<a name="l01005"></a>01005         <span class="comment">/* Success? */</span>
+<a name="l01006"></a>01006         <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l01007"></a>01007         {
+<a name="l01008"></a>01008           <span class="comment">/* Skips all white spaces */</span>
+<a name="l01009"></a>01009           zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString);
+<a name="l01010"></a>01010 
+<a name="l01011"></a>01011           <span class="comment">/* Is a vector separator character? */</span>
+<a name="l01012"></a>01012           <span class="keywordflow">if</span>(*zString == <a class="code" href="group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617">orxSTRING_KC_VECTOR_SEPARATOR</a>)
+<a name="l01013"></a>01013           {
+<a name="l01014"></a>01014             <span class="comment">/* Skips all white spaces */</span>
+<a name="l01015"></a>01015             zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString + 1);
+<a name="l01016"></a>01016 
+<a name="l01017"></a>01017             <span class="comment">/* Gets Z value */</span>
+<a name="l01018"></a>01018             eResult = <a class="code" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a>(zString, &amp;(stValue.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>), &amp;zString);
+<a name="l01019"></a>01019 
+<a name="l01020"></a>01020             <span class="comment">/* Success? */</span>
+<a name="l01021"></a>01021             <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l01022"></a>01022             {
+<a name="l01023"></a>01023               <span class="comment">/* Skips all white spaces */</span>
+<a name="l01024"></a>01024               zString = <a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(zString);
+<a name="l01025"></a>01025 
+<a name="l01026"></a>01026               <span class="comment">/* Is not a vector end character? */</span>
+<a name="l01027"></a>01027               <span class="keywordflow">if</span>((*zString != <a class="code" href="group__orx_string.html#gac8646f825bc6df7e387d877970d56e91">orxSTRING_KC_VECTOR_END</a>)
+<a name="l01028"></a>01028               &amp;&amp; (*zString != <a class="code" href="group__orx_string.html#gaa2a656e10d7ec4fe736684cc5e4828ae">orxSTRING_KC_VECTOR_END_ALT</a>))
+<a name="l01029"></a>01029               {
+<a name="l01030"></a>01030                 <span class="comment">/* Updates result */</span>
+<a name="l01031"></a>01031                 eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>;
+<a name="l01032"></a>01032               }
+<a name="l01033"></a>01033             }
+<a name="l01034"></a>01034           }
+<a name="l01035"></a>01035         }
+<a name="l01036"></a>01036       }
+<a name="l01037"></a>01037     }
+<a name="l01038"></a>01038   }
+<a name="l01039"></a>01039 
+<a name="l01040"></a>01040   <span class="comment">/* Valid? */</span>
+<a name="l01041"></a>01041   <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l01042"></a>01042   {
+<a name="l01043"></a>01043     <span class="comment">/* Updates vector */</span>
+<a name="l01044"></a>01044     <a class="code" href="group__orx_vector.html#ga8412bc334ebe4bda4593b25309d5f022">orxVector_Copy</a>(_pvOutValue, &amp;stValue);
 <a name="l01045"></a>01045 
-<a name="l01052"></a><a class="code" href="group__orx_string.html#ga675eb3b066ac037e9815c565c4ddbe1c">01052</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga675eb3b066ac037e9815c565c4ddbe1c">orxString_ToBool</a>(<span class="keyword">const</span> orxSTRING _zString, orxBOOL *_pbOutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
-<a name="l01053"></a>01053 {
-<a name="l01054"></a>01054   orxS32    s32Value;
-<a name="l01055"></a>01055   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;
-<a name="l01056"></a>01056 
-<a name="l01057"></a>01057   <span class="comment">/* Checks */</span>
-<a name="l01058"></a>01058   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pbOutValue != orxNULL);
-<a name="l01059"></a>01059   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l01060"></a>01060 
-<a name="l01061"></a>01061   <span class="comment">/* Tries numeric value */</span>
-<a name="l01062"></a>01062   eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString, 10, &amp;s32Value, _pzRemaining);
-<a name="l01063"></a>01063 
-<a name="l01064"></a>01064   <span class="comment">/* Valid? */</span>
-<a name="l01065"></a>01065   <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l01066"></a>01066   {
-<a name="l01067"></a>01067     <span class="comment">/* Updates boolean */</span>
-<a name="l01068"></a>01068     *_pbOutValue = (s32Value != 0) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
-<a name="l01069"></a>01069   }
-<a name="l01070"></a>01070   <span class="keywordflow">else</span>
-<a name="l01071"></a>01071   {
-<a name="l01072"></a>01072     orxU32 u32Length;
-<a name="l01073"></a>01073 
-<a name="l01074"></a>01074     <span class="comment">/* Gets length of false */</span>
-<a name="l01075"></a>01075     u32Length = <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(<a class="code" href="group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb">orxSTRING_FALSE</a>);
-<a name="l01076"></a>01076 
-<a name="l01077"></a>01077     <span class="comment">/* Is false? */</span>
-<a name="l01078"></a>01078     <span class="keywordflow">if</span>(<a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a>(_zString, <a class="code" href="group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb">orxSTRING_FALSE</a>, u32Length) == 0)
-<a name="l01079"></a>01079     {
-<a name="l01080"></a>01080       <span class="comment">/* Updates boolean */</span>
-<a name="l01081"></a>01081       *_pbOutValue = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
-<a name="l01082"></a>01082 
-<a name="l01083"></a>01083       <span class="comment">/* Has remaining? */</span>
-<a name="l01084"></a>01084       <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
-<a name="l01085"></a>01085       {
-<a name="l01086"></a>01086         <span class="comment">/* Updates it */</span>
-<a name="l01087"></a>01087         *_pzRemaining += u32Length;
-<a name="l01088"></a>01088       }
-<a name="l01089"></a>01089 
-<a name="l01090"></a>01090       <span class="comment">/* Updates result */</span>
-<a name="l01091"></a>01091       eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
-<a name="l01092"></a>01092     }
-<a name="l01093"></a>01093     <span class="keywordflow">else</span>
-<a name="l01094"></a>01094     {
-<a name="l01095"></a>01095       <span class="comment">/* Gets length of true */</span>
-<a name="l01096"></a>01096       u32Length = <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(<a class="code" href="group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182">orxSTRING_TRUE</a>);
-<a name="l01097"></a>01097 
-<a name="l01098"></a>01098       <span class="comment">/* Is true? */</span>
-<a name="l01099"></a>01099       <span class="keywordflow">if</span>(<a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a>(_zString, <a class="code" href="group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182">orxSTRING_TRUE</a>, u32Length) == 0)
-<a name="l01100"></a>01100       {
-<a name="l01101"></a>01101         <span class="comment">/* Updates boolean */</span>
-<a name="l01102"></a>01102         *_pbOutValue = <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>;
-<a name="l01103"></a>01103 
-<a name="l01104"></a>01104         <span class="comment">/* Has remaining? */</span>
-<a name="l01105"></a>01105         <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
-<a name="l01106"></a>01106         {
-<a name="l01107"></a>01107           <span class="comment">/* Updates it */</span>
-<a name="l01108"></a>01108           *_pzRemaining += u32Length;
-<a name="l01109"></a>01109         }
-<a name="l01110"></a>01110 
-<a name="l01111"></a>01111         <span class="comment">/* Updates result */</span>
-<a name="l01112"></a>01112         eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
-<a name="l01113"></a>01113       }
-<a name="l01114"></a>01114     }
-<a name="l01115"></a>01115   }
-<a name="l01116"></a>01116 
-<a name="l01117"></a>01117   <span class="comment">/* Done! */</span>
-<a name="l01118"></a>01118   <span class="keywordflow">return</span> eResult;
-<a name="l01119"></a>01119 }
-<a name="l01120"></a>01120 
-<a name="l01125"></a><a class="code" href="group__orx_string.html#ga688414a65e9accbe3faa0f5d78b7316d">01125</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#ga688414a65e9accbe3faa0f5d78b7316d">orxString_LowerCase</a>(orxSTRING _zString)
-<a name="l01126"></a>01126 {
-<a name="l01127"></a>01127   orxCHAR *pc;
+<a name="l01046"></a>01046     <span class="comment">/* Asks for remaining string? */</span>
+<a name="l01047"></a>01047     <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l01048"></a>01048     {
+<a name="l01049"></a>01049       <span class="comment">/* Stores it */</span>
+<a name="l01050"></a>01050       *_pzRemaining = zString + 1;
+<a name="l01051"></a>01051     }
+<a name="l01052"></a>01052   }
+<a name="l01053"></a>01053 
+<a name="l01054"></a>01054   <span class="comment">/* Done! */</span>
+<a name="l01055"></a>01055   <span class="keywordflow">return</span> eResult;
+<a name="l01056"></a>01056 }
+<a name="l01057"></a>01057 
+<a name="l01064"></a><a class="code" href="group__orx_string.html#ga675eb3b066ac037e9815c565c4ddbe1c">01064</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>              <a class="code" href="group__orx_string.html#ga675eb3b066ac037e9815c565c4ddbe1c">orxString_ToBool</a>(<span class="keyword">const</span> orxSTRING _zString, orxBOOL *_pbOutValue, <span class="keyword">const</span> orxSTRING *_pzRemaining)
+<a name="l01065"></a>01065 {
+<a name="l01066"></a>01066   orxS32    s32Value;
+<a name="l01067"></a>01067   <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eResult;
+<a name="l01068"></a>01068 
+<a name="l01069"></a>01069   <span class="comment">/* Checks */</span>
+<a name="l01070"></a>01070   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pbOutValue != orxNULL);
+<a name="l01071"></a>01071   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01072"></a>01072 
+<a name="l01073"></a>01073   <span class="comment">/* Tries numeric value */</span>
+<a name="l01074"></a>01074   eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString, 10, &amp;s32Value, _pzRemaining);
+<a name="l01075"></a>01075 
+<a name="l01076"></a>01076   <span class="comment">/* Valid? */</span>
+<a name="l01077"></a>01077   <span class="keywordflow">if</span>(eResult != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l01078"></a>01078   {
+<a name="l01079"></a>01079     <span class="comment">/* Updates boolean */</span>
+<a name="l01080"></a>01080     *_pbOutValue = (s32Value != 0) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
+<a name="l01081"></a>01081   }
+<a name="l01082"></a>01082   <span class="keywordflow">else</span>
+<a name="l01083"></a>01083   {
+<a name="l01084"></a>01084     orxU32 u32Length;
+<a name="l01085"></a>01085 
+<a name="l01086"></a>01086     <span class="comment">/* Gets length of false */</span>
+<a name="l01087"></a>01087     u32Length = <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(<a class="code" href="group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb">orxSTRING_FALSE</a>);
+<a name="l01088"></a>01088 
+<a name="l01089"></a>01089     <span class="comment">/* Is false? */</span>
+<a name="l01090"></a>01090     <span class="keywordflow">if</span>(<a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a>(_zString, <a class="code" href="group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb">orxSTRING_FALSE</a>, u32Length) == 0)
+<a name="l01091"></a>01091     {
+<a name="l01092"></a>01092       <span class="comment">/* Updates boolean */</span>
+<a name="l01093"></a>01093       *_pbOutValue = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
+<a name="l01094"></a>01094 
+<a name="l01095"></a>01095       <span class="comment">/* Has remaining? */</span>
+<a name="l01096"></a>01096       <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l01097"></a>01097       {
+<a name="l01098"></a>01098         <span class="comment">/* Updates it */</span>
+<a name="l01099"></a>01099         *_pzRemaining += u32Length;
+<a name="l01100"></a>01100       }
+<a name="l01101"></a>01101 
+<a name="l01102"></a>01102       <span class="comment">/* Updates result */</span>
+<a name="l01103"></a>01103       eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
+<a name="l01104"></a>01104     }
+<a name="l01105"></a>01105     <span class="keywordflow">else</span>
+<a name="l01106"></a>01106     {
+<a name="l01107"></a>01107       <span class="comment">/* Gets length of true */</span>
+<a name="l01108"></a>01108       u32Length = <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(<a class="code" href="group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182">orxSTRING_TRUE</a>);
+<a name="l01109"></a>01109 
+<a name="l01110"></a>01110       <span class="comment">/* Is true? */</span>
+<a name="l01111"></a>01111       <span class="keywordflow">if</span>(<a class="code" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a>(_zString, <a class="code" href="group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182">orxSTRING_TRUE</a>, u32Length) == 0)
+<a name="l01112"></a>01112       {
+<a name="l01113"></a>01113         <span class="comment">/* Updates boolean */</span>
+<a name="l01114"></a>01114         *_pbOutValue = <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>;
+<a name="l01115"></a>01115 
+<a name="l01116"></a>01116         <span class="comment">/* Has remaining? */</span>
+<a name="l01117"></a>01117         <span class="keywordflow">if</span>(_pzRemaining != orxNULL)
+<a name="l01118"></a>01118         {
+<a name="l01119"></a>01119           <span class="comment">/* Updates it */</span>
+<a name="l01120"></a>01120           *_pzRemaining += u32Length;
+<a name="l01121"></a>01121         }
+<a name="l01122"></a>01122 
+<a name="l01123"></a>01123         <span class="comment">/* Updates result */</span>
+<a name="l01124"></a>01124         eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;
+<a name="l01125"></a>01125       }
+<a name="l01126"></a>01126     }
+<a name="l01127"></a>01127   }
 <a name="l01128"></a>01128 
-<a name="l01129"></a>01129   <span class="comment">/* Checks */</span>
-<a name="l01130"></a>01130   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l01131"></a>01131 
-<a name="l01132"></a>01132   <span class="comment">/* Converts the whole string */</span>
-<a name="l01133"></a>01133   <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
-<a name="l01134"></a>01134   {
-<a name="l01135"></a>01135     <span class="comment">/* Needs to be converted? */</span>
-<a name="l01136"></a>01136     <span class="keywordflow">if</span>(*pc &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; *pc &lt;= <span class="charliteral">&#39;Z&#39;</span>)
-<a name="l01137"></a>01137     {
-<a name="l01138"></a>01138       <span class="comment">/* Lower case */</span>
-<a name="l01139"></a>01139       *pc |= 0x20;
-<a name="l01140"></a>01140     }
-<a name="l01141"></a>01141   }
-<a name="l01142"></a>01142 
-<a name="l01143"></a>01143   <span class="keywordflow">return</span> _zString;
-<a name="l01144"></a>01144 }
-<a name="l01145"></a>01145 
-<a name="l01150"></a><a class="code" href="group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f">01150</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f">orxString_UpperCase</a>(orxSTRING _zString)
-<a name="l01151"></a>01151 {
-<a name="l01152"></a>01152   orxCHAR *pc;
-<a name="l01153"></a>01153 
-<a name="l01154"></a>01154   <span class="comment">/* Checks */</span>
-<a name="l01155"></a>01155   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l01156"></a>01156 
-<a name="l01157"></a>01157   <span class="comment">/* Converts the whole string */</span>
-<a name="l01158"></a>01158   <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
-<a name="l01159"></a>01159   {
-<a name="l01160"></a>01160     <span class="comment">/* Needs to be converted? */</span>
-<a name="l01161"></a>01161     <span class="keywordflow">if</span>(*pc &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; *pc &lt;= <span class="charliteral">&#39;z&#39;</span>)
-<a name="l01162"></a>01162     {
-<a name="l01163"></a>01163       <span class="comment">/* Upper case */</span>
-<a name="l01164"></a>01164       *pc &amp;= ~0x20;
-<a name="l01165"></a>01165     }
-<a name="l01166"></a>01166   }
-<a name="l01167"></a>01167 
-<a name="l01168"></a>01168   <span class="keywordflow">return</span> _zString;
-<a name="l01169"></a>01169 }
-<a name="l01170"></a>01170 
-<a name="l01175"></a><a class="code" href="group__orx_string.html#gadc2711d674628689d58be645d319ea92">01175</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#gadc2711d674628689d58be645d319ea92">orxString_ToCRC</a>(<span class="keyword">const</span> orxSTRING _zString)
-<a name="l01176"></a>01176 {
-<a name="l01177"></a>01177   <span class="comment">/* Checks */</span>
-<a name="l01178"></a>01178   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01129"></a>01129   <span class="comment">/* Done! */</span>
+<a name="l01130"></a>01130   <span class="keywordflow">return</span> eResult;
+<a name="l01131"></a>01131 }
+<a name="l01132"></a>01132 
+<a name="l01137"></a><a class="code" href="group__orx_string.html#ga688414a65e9accbe3faa0f5d78b7316d">01137</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#ga688414a65e9accbe3faa0f5d78b7316d">orxString_LowerCase</a>(orxSTRING _zString)
+<a name="l01138"></a>01138 {
+<a name="l01139"></a>01139   orxCHAR *pc;
+<a name="l01140"></a>01140 
+<a name="l01141"></a>01141   <span class="comment">/* Checks */</span>
+<a name="l01142"></a>01142   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01143"></a>01143 
+<a name="l01144"></a>01144   <span class="comment">/* Converts the whole string */</span>
+<a name="l01145"></a>01145   <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
+<a name="l01146"></a>01146   {
+<a name="l01147"></a>01147     <span class="comment">/* Needs to be converted? */</span>
+<a name="l01148"></a>01148     <span class="keywordflow">if</span>(*pc &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; *pc &lt;= <span class="charliteral">&#39;Z&#39;</span>)
+<a name="l01149"></a>01149     {
+<a name="l01150"></a>01150       <span class="comment">/* Lower case */</span>
+<a name="l01151"></a>01151       *pc |= 0x20;
+<a name="l01152"></a>01152     }
+<a name="l01153"></a>01153   }
+<a name="l01154"></a>01154 
+<a name="l01155"></a>01155   <span class="keywordflow">return</span> _zString;
+<a name="l01156"></a>01156 }
+<a name="l01157"></a>01157 
+<a name="l01162"></a><a class="code" href="group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f">01162</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f">orxString_UpperCase</a>(orxSTRING _zString)
+<a name="l01163"></a>01163 {
+<a name="l01164"></a>01164   orxCHAR *pc;
+<a name="l01165"></a>01165 
+<a name="l01166"></a>01166   <span class="comment">/* Checks */</span>
+<a name="l01167"></a>01167   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01168"></a>01168 
+<a name="l01169"></a>01169   <span class="comment">/* Converts the whole string */</span>
+<a name="l01170"></a>01170   <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)
+<a name="l01171"></a>01171   {
+<a name="l01172"></a>01172     <span class="comment">/* Needs to be converted? */</span>
+<a name="l01173"></a>01173     <span class="keywordflow">if</span>(*pc &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; *pc &lt;= <span class="charliteral">&#39;z&#39;</span>)
+<a name="l01174"></a>01174     {
+<a name="l01175"></a>01175       <span class="comment">/* Upper case */</span>
+<a name="l01176"></a>01176       *pc &amp;= ~0x20;
+<a name="l01177"></a>01177     }
+<a name="l01178"></a>01178   }
 <a name="l01179"></a>01179 
-<a name="l01180"></a>01180   <span class="comment">/* Computes the ID */</span>
-<a name="l01181"></a>01181   <span class="keywordflow">return</span>(<a class="code" href="group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637">orxString_ContinueCRC</a>(_zString, 0));
-<a name="l01182"></a>01182 }
-<a name="l01183"></a>01183 
-<a name="l01189"></a><a class="code" href="group__orx_string.html#ga69005bd58eba44a2443b8ab4b2b90af4">01189</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga69005bd58eba44a2443b8ab4b2b90af4">orxString_NToCRC</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32CharNumber)
-<a name="l01190"></a>01190 {
-<a name="l01191"></a>01191   <span class="comment">/* Checks */</span>
-<a name="l01192"></a>01192   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l01193"></a>01193 
-<a name="l01194"></a>01194   <span class="comment">/* Computes the ID */</span>
-<a name="l01195"></a>01195   <span class="keywordflow">return</span>(<a class="code" href="group__orx_string.html#ga6f2d9f112ec01738725cd001d7d17ae6">orxString_NContinueCRC</a>(_zString, 0, _u32CharNumber));
-<a name="l01196"></a>01196 }
-<a name="l01197"></a>01197 
-<a name="l01203"></a><a class="code" href="group__orx_string.html#gae870359d87657efb5f6456dd92be1266">01203</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#gae870359d87657efb5f6456dd92be1266">orxString_SearchString</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
-<a name="l01204"></a>01204 {
-<a name="l01205"></a>01205   <span class="comment">/* Checks */</span>
-<a name="l01206"></a>01206   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
-<a name="l01207"></a>01207   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
-<a name="l01208"></a>01208 
-<a name="l01209"></a>01209   <span class="comment">/* Returns result */</span>
-<a name="l01210"></a>01210   <span class="keywordflow">return</span>(strstr(_zString1, _zString2));
-<a name="l01211"></a>01211 }
-<a name="l01212"></a>01212 
-<a name="l01218"></a><a class="code" href="group__orx_string.html#gadb936702b689b61973806a33ca5b4726">01218</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#gadb936702b689b61973806a33ca5b4726">orxString_SearchChar</a>(<span class="keyword">const</span> orxSTRING _zString, orxCHAR _cChar)
-<a name="l01219"></a>01219 {
-<a name="l01220"></a>01220   <span class="comment">/* Checks */</span>
-<a name="l01221"></a>01221   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l01222"></a>01222 
-<a name="l01223"></a>01223   <span class="comment">/* Returns result */</span>
-<a name="l01224"></a>01224   <span class="keywordflow">return</span>(strchr(_zString, _cChar));
-<a name="l01225"></a>01225 }
-<a name="l01226"></a>01226 
-<a name="l01233"></a><a class="code" href="group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e">01233</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e">orxString_SearchCharIndex</a>(<span class="keyword">const</span> orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
-<a name="l01234"></a>01234 {
-<a name="l01235"></a>01235   orxS32          s32Result = -1;
-<a name="l01236"></a>01236   orxS32          s32Index;
-<a name="l01237"></a>01237   <span class="keyword">const</span> orxCHAR  *pc;
+<a name="l01180"></a>01180   <span class="keywordflow">return</span> _zString;
+<a name="l01181"></a>01181 }
+<a name="l01182"></a>01182 
+<a name="l01187"></a><a class="code" href="group__orx_string.html#gadc2711d674628689d58be645d319ea92">01187</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#gadc2711d674628689d58be645d319ea92">orxString_ToCRC</a>(<span class="keyword">const</span> orxSTRING _zString)
+<a name="l01188"></a>01188 {
+<a name="l01189"></a>01189   <span class="comment">/* Checks */</span>
+<a name="l01190"></a>01190   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01191"></a>01191 
+<a name="l01192"></a>01192   <span class="comment">/* Computes the ID */</span>
+<a name="l01193"></a>01193   <span class="keywordflow">return</span>(<a class="code" href="group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637">orxString_ContinueCRC</a>(_zString, 0));
+<a name="l01194"></a>01194 }
+<a name="l01195"></a>01195 
+<a name="l01201"></a><a class="code" href="group__orx_string.html#ga69005bd58eba44a2443b8ab4b2b90af4">01201</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#ga69005bd58eba44a2443b8ab4b2b90af4">orxString_NToCRC</a>(<span class="keyword">const</span> orxSTRING _zString, orxU32 _u32CharNumber)
+<a name="l01202"></a>01202 {
+<a name="l01203"></a>01203   <span class="comment">/* Checks */</span>
+<a name="l01204"></a>01204   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01205"></a>01205 
+<a name="l01206"></a>01206   <span class="comment">/* Computes the ID */</span>
+<a name="l01207"></a>01207   <span class="keywordflow">return</span>(<a class="code" href="group__orx_string.html#ga6f2d9f112ec01738725cd001d7d17ae6">orxString_NContinueCRC</a>(_zString, 0, _u32CharNumber));
+<a name="l01208"></a>01208 }
+<a name="l01209"></a>01209 
+<a name="l01215"></a><a class="code" href="group__orx_string.html#gae870359d87657efb5f6456dd92be1266">01215</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#gae870359d87657efb5f6456dd92be1266">orxString_SearchString</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
+<a name="l01216"></a>01216 {
+<a name="l01217"></a>01217   <span class="comment">/* Checks */</span>
+<a name="l01218"></a>01218   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString1 != orxNULL);
+<a name="l01219"></a>01219   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
+<a name="l01220"></a>01220 
+<a name="l01221"></a>01221   <span class="comment">/* Returns result */</span>
+<a name="l01222"></a>01222   <span class="keywordflow">return</span>(strstr(_zString1, _zString2));
+<a name="l01223"></a>01223 }
+<a name="l01224"></a>01224 
+<a name="l01230"></a><a class="code" href="group__orx_string.html#gadb936702b689b61973806a33ca5b4726">01230</a> <span class="keyword">static</span> orxINLINE <span class="keyword">const</span> orxSTRING        <a class="code" href="group__orx_string.html#gadb936702b689b61973806a33ca5b4726">orxString_SearchChar</a>(<span class="keyword">const</span> orxSTRING _zString, orxCHAR _cChar)
+<a name="l01231"></a>01231 {
+<a name="l01232"></a>01232   <span class="comment">/* Checks */</span>
+<a name="l01233"></a>01233   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01234"></a>01234 
+<a name="l01235"></a>01235   <span class="comment">/* Returns result */</span>
+<a name="l01236"></a>01236   <span class="keywordflow">return</span>(strchr(_zString, _cChar));
+<a name="l01237"></a>01237 }
 <a name="l01238"></a>01238 
-<a name="l01239"></a>01239   <span class="comment">/* Checks */</span>
-<a name="l01240"></a>01240   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
-<a name="l01241"></a>01241   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_u32Position &lt;= <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(_zString));
-<a name="l01242"></a>01242 
-<a name="l01243"></a>01243   <span class="comment">/* For all characters */</span>
-<a name="l01244"></a>01244   <span class="keywordflow">for</span>(s32Index = _u32Position, pc = _zString + s32Index; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++, s32Index++)
-<a name="l01245"></a>01245   {
-<a name="l01246"></a>01246     <span class="comment">/* Found? */</span>
-<a name="l01247"></a>01247     <span class="keywordflow">if</span>(*pc == _cChar)
-<a name="l01248"></a>01248     {
-<a name="l01249"></a>01249       <span class="comment">/* Updates result */</span>
-<a name="l01250"></a>01250       s32Result = s32Index;
-<a name="l01251"></a>01251 
-<a name="l01252"></a>01252       <span class="keywordflow">break</span>;
-<a name="l01253"></a>01253     }
-<a name="l01254"></a>01254   }
-<a name="l01255"></a>01255 
-<a name="l01256"></a>01256   <span class="comment">/* Done! */</span>
-<a name="l01257"></a>01257   <span class="keywordflow">return</span> s32Result;
-<a name="l01258"></a>01258 }
-<a name="l01259"></a>01259 
-<a name="l01265"></a><a class="code" href="group__orx_string.html#ga5ffe64ef217d7745c6b0c3af518083f2">01265</a> <span class="keyword">static</span> orxINLINE orxS32 orxCDECL        <a class="code" href="group__orx_string.html#ga5ffe64ef217d7745c6b0c3af518083f2">orxString_Print</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString, ...)
-<a name="l01266"></a>01266 {
-<a name="l01267"></a>01267   va_list stArgs;
-<a name="l01268"></a>01268   orxS32  s32Result;
-<a name="l01269"></a>01269 
-<a name="l01270"></a>01270   <span class="comment">/* Checks */</span>
-<a name="l01271"></a>01271   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
-<a name="l01272"></a>01272   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
-<a name="l01273"></a>01273 
-<a name="l01274"></a>01274   <span class="comment">/* Gets variable arguments &amp; print the string */</span>
-<a name="l01275"></a>01275   va_start(stArgs, _zSrcString);
-<a name="l01276"></a>01276   s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
-<a name="l01277"></a>01277   va_end(stArgs);
-<a name="l01278"></a>01278 
-<a name="l01279"></a>01279   <span class="comment">/* Done! */</span>
-<a name="l01280"></a>01280   <span class="keywordflow">return</span> s32Result;
-<a name="l01281"></a>01281 }
-<a name="l01282"></a>01282 
-<a name="l01289"></a><a class="code" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">01289</a> <span class="keyword">static</span> orxINLINE orxS32 orxCDECL        <a class="code" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a>(orxSTRING _zDstString, orxU32 _u32CharNumber, <span class="keyword">const</span> orxSTRING _zSrcString, ...)
-<a name="l01290"></a>01290 {
-<a name="l01291"></a>01291   va_list stArgs;
-<a name="l01292"></a>01292   orxS32  s32Result;
-<a name="l01293"></a>01293 
-<a name="l01294"></a>01294   <span class="comment">/* Checks */</span>
-<a name="l01295"></a>01295   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
-<a name="l01296"></a>01296   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
-<a name="l01297"></a>01297 
-<a name="l01298"></a>01298   <span class="comment">/* Gets variable arguments &amp; print the string */</span>
-<a name="l01299"></a>01299   va_start(stArgs, _zSrcString);
-<a name="l01300"></a>01300   s32Result = vsnprintf(_zDstString, _u32CharNumber, _zSrcString, stArgs);
-<a name="l01301"></a>01301   va_end(stArgs);
-<a name="l01302"></a>01302 
-<a name="l01303"></a>01303   <span class="comment">/* Done! */</span>
-<a name="l01304"></a>01304   <span class="keywordflow">return</span> s32Result;
-<a name="l01305"></a>01305 }
-<a name="l01306"></a>01306 
-<a name="l01307"></a>01307 <span class="preprocessor">#ifdef __orxMSVC__</span>
-<a name="l01308"></a>01308 <span class="preprocessor"></span>
-<a name="l01309"></a>01309 <span class="preprocessor">  #pragma warning(default : 4996)</span>
-<a name="l01310"></a>01310 <span class="preprocessor"></span>
-<a name="l01311"></a>01311 <span class="preprocessor">#endif </span><span class="comment">/* __orxMSVC__ */</span>
-<a name="l01312"></a>01312 
-<a name="l01313"></a>01313 <span class="preprocessor">#endif </span><span class="comment">/* _orxSTRING_H_ */</span>
+<a name="l01245"></a><a class="code" href="group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e">01245</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e">orxString_SearchCharIndex</a>(<span class="keyword">const</span> orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
+<a name="l01246"></a>01246 {
+<a name="l01247"></a>01247   orxS32          s32Result = -1;
+<a name="l01248"></a>01248   orxS32          s32Index;
+<a name="l01249"></a>01249   <span class="keyword">const</span> orxCHAR  *pc;
+<a name="l01250"></a>01250 
+<a name="l01251"></a>01251   <span class="comment">/* Checks */</span>
+<a name="l01252"></a>01252   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
+<a name="l01253"></a>01253   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_u32Position &lt;= <a class="code" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength</a>(_zString));
+<a name="l01254"></a>01254 
+<a name="l01255"></a>01255   <span class="comment">/* For all characters */</span>
+<a name="l01256"></a>01256   <span class="keywordflow">for</span>(s32Index = _u32Position, pc = _zString + s32Index; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++, s32Index++)
+<a name="l01257"></a>01257   {
+<a name="l01258"></a>01258     <span class="comment">/* Found? */</span>
+<a name="l01259"></a>01259     <span class="keywordflow">if</span>(*pc == _cChar)
+<a name="l01260"></a>01260     {
+<a name="l01261"></a>01261       <span class="comment">/* Updates result */</span>
+<a name="l01262"></a>01262       s32Result = s32Index;
+<a name="l01263"></a>01263 
+<a name="l01264"></a>01264       <span class="keywordflow">break</span>;
+<a name="l01265"></a>01265     }
+<a name="l01266"></a>01266   }
+<a name="l01267"></a>01267 
+<a name="l01268"></a>01268   <span class="comment">/* Done! */</span>
+<a name="l01269"></a>01269   <span class="keywordflow">return</span> s32Result;
+<a name="l01270"></a>01270 }
+<a name="l01271"></a>01271 
+<a name="l01277"></a><a class="code" href="group__orx_string.html#ga5ffe64ef217d7745c6b0c3af518083f2">01277</a> <span class="keyword">static</span> orxINLINE orxS32 orxCDECL        <a class="code" href="group__orx_string.html#ga5ffe64ef217d7745c6b0c3af518083f2">orxString_Print</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString, ...)
+<a name="l01278"></a>01278 {
+<a name="l01279"></a>01279   va_list stArgs;
+<a name="l01280"></a>01280   orxS32  s32Result;
+<a name="l01281"></a>01281 
+<a name="l01282"></a>01282   <span class="comment">/* Checks */</span>
+<a name="l01283"></a>01283   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
+<a name="l01284"></a>01284   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
+<a name="l01285"></a>01285 
+<a name="l01286"></a>01286   <span class="comment">/* Gets variable arguments &amp; print the string */</span>
+<a name="l01287"></a>01287   va_start(stArgs, _zSrcString);
+<a name="l01288"></a>01288   s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
+<a name="l01289"></a>01289   va_end(stArgs);
+<a name="l01290"></a>01290 
+<a name="l01291"></a>01291   <span class="comment">/* Done! */</span>
+<a name="l01292"></a>01292   <span class="keywordflow">return</span> s32Result;
+<a name="l01293"></a>01293 }
+<a name="l01294"></a>01294 
+<a name="l01301"></a><a class="code" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">01301</a> <span class="keyword">static</span> orxINLINE orxS32 orxCDECL        <a class="code" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a>(orxSTRING _zDstString, orxU32 _u32CharNumber, <span class="keyword">const</span> orxSTRING _zSrcString, ...)
+<a name="l01302"></a>01302 {
+<a name="l01303"></a>01303   va_list stArgs;
+<a name="l01304"></a>01304   orxS32  s32Result;
+<a name="l01305"></a>01305 
+<a name="l01306"></a>01306   <span class="comment">/* Checks */</span>
+<a name="l01307"></a>01307   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zDstString != orxNULL);
+<a name="l01308"></a>01308   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
+<a name="l01309"></a>01309 
+<a name="l01310"></a>01310   <span class="comment">/* Gets variable arguments &amp; print the string */</span>
+<a name="l01311"></a>01311   va_start(stArgs, _zSrcString);
+<a name="l01312"></a>01312   s32Result = vsnprintf(_zDstString, _u32CharNumber, _zSrcString, stArgs);
+<a name="l01313"></a>01313   va_end(stArgs);
 <a name="l01314"></a>01314 
+<a name="l01315"></a>01315   <span class="comment">/* Done! */</span>
+<a name="l01316"></a>01316   <span class="keywordflow">return</span> s32Result;
+<a name="l01317"></a>01317 }
+<a name="l01318"></a>01318 
+<a name="l01319"></a>01319 <span class="preprocessor">#ifdef __orxMSVC__</span>
+<a name="l01320"></a>01320 <span class="preprocessor"></span>
+<a name="l01321"></a>01321 <span class="preprocessor">  #pragma warning(default : 4996)</span>
+<a name="l01322"></a>01322 <span class="preprocessor"></span>
+<a name="l01323"></a>01323 <span class="preprocessor">#endif </span><span class="comment">/* __orxMSVC__ */</span>
+<a name="l01324"></a>01324 
+<a name="l01325"></a>01325 <span class="preprocessor">#endif </span><span class="comment">/* _orxSTRING_H_ */</span>
+<a name="l01326"></a>01326 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

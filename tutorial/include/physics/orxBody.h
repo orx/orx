@@ -98,6 +98,29 @@ extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 
+
+/** Tests flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags);
+
+/** Tests all flags against body definition ones
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestAllDefFlags(const orxBODY *_pstBody, orxU32 _u32Flags);
+
+/** Gets body definition flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Mask        Mask to use for getting flags
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxBody_GetDefFlags(const orxBODY *_pstBody, orxU32 _u32Mask);
+
+
 /** Gets a body owner
  * @param[in]   _pstBody        Concerned body
  * @return      orxSTRUCTURE / orxNULL
@@ -249,12 +272,45 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(const o
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECTOR *_pvCustomGravity);
 
+/** Gets a body mass
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body mass
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetMass(const orxBODY *_pstBody);
+
 /** Gets a body center of mass
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR *_pvMassCenter);
+
+
+/** Sets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Linear damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetLinearDamping(orxBODY *_pstBody, orxFLOAT _fDamping);
+
+/** Sets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fDamping       Angular damping to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularDamping(orxBODY *_pstBody, orxFLOAT _fDamping);
+
+/** Gets a body linear damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's linear damping
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetLinearDamping(const orxBODY *_pstBody);
+
+/** Gets a body angular damping
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body's angular damping
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularDamping(const orxBODY *_pstBody);
 
 
 /** Applies a torque
@@ -279,6 +335,33 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
+
+
+/** Sets self flags of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _u16SelfFlags   Self flags to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
+
+/** Sets check mask of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _u16CheckMask   Check mask to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
+
+/** Gets self flags of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @return Self flags of the physical body part
+ */
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart);
+
+/** Gets check mask of a physical body part
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @return Check mask of the physical body part
+ */
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetCheckMask(const orxBODY_PART *_pstBodyPart);
 
 
 /** Issues a raycast to test for potential bodies in the way

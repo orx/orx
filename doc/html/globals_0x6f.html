@@ -393,6 +393,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxBank_Clear()
 : <a class="el" href="group__orx_bank.html#ga66e8bef6563faa63e337fefd6d7980fa">orxBank.h</a>
 </li>
+<li>orxBank_Compact()
+: <a class="el" href="group__orx_bank.html#gaee2adddbac4a9fea1f65ae9013a44c68">orxBank.h</a>
+</li>
+<li>orxBank_CompactAll()
+: <a class="el" href="group__orx_bank.html#ga41751f5c0b3f1032ccaac78d576b0dca">orxBank.h</a>
+</li>
 <li>orxBank_Create()
 : <a class="el" href="group__orx_bank.html#gae36fba068abfd2a73a22e6f15f3f8e04">orxBank.h</a>
 </li>
@@ -1302,14 +1308,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxDEBUG_LEVEL_PARAM
 : <a class="el" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bbab7fc4af55c1ec818872257ec93be4acc">orxDebug.h</a>
 </li>
-<li>orxDEBUG_LEVEL_PATHFINDER
-: <a class="el" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba923e85b6a392637953dd3ce2dd29a7bc">orxDebug.h</a>
-</li>
 <li>orxDEBUG_LEVEL_PHYSICS
 : <a class="el" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba9aa230c0654ee625f8a0e96a719360bc">orxDebug.h</a>
 </li>
 <li>orxDEBUG_LEVEL_PLUGIN
 : <a class="el" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba9ec44d54308a652d42fdace958c45f1d">orxDebug.h</a>
+</li>
+<li>orxDEBUG_LEVEL_PROFILER
+: <a class="el" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba34b0f0c847cc51c89934228709333144">orxDebug.h</a>
 </li>
 <li>orxDEBUG_LEVEL_RENDER
 : <a class="el" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bbab47fbd67b2a4ecfef2fb420dd8a5a4f9">orxDebug.h</a>
@@ -1566,11 +1572,11 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxEvent_RemoveHandler()
 : <a class="el" href="group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532">orxEvent.h</a>
 </li>
-<li>orxEVENT_SEND
-: <a class="el" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEvent.h</a>
-</li>
 <li>orxEvent_Send()
 : <a class="el" href="group__orx_event.html#ga3435f918d28e1f6f606b6c76f46cdedb">orxEvent.h</a>
+</li>
+<li>orxEVENT_SEND
+: <a class="el" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEvent.h</a>
 </li>
 <li>orxEvent_SendShort()
 : <a class="el" href="group__orx_event.html#ga2305585afe32179ee80f9277892d555d">orxEvent.h</a>
@@ -1634,6 +1640,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxEVENT_TYPE_SYSTEM
 : <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEvent.h</a>
+</li>
+<li>orxEVENT_TYPE_TEXTURE
+: <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a714cfbf6f8d48e92dfc8215baf29c46a">orxEvent.h</a>
 </li>
 <li>orxEVENT_TYPE_USER_DEFINED
 : <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8af2e660591f643abe7403c5898ba88928">orxEvent.h</a>
@@ -1759,14 +1768,17 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxFont_Exit()
 : <a class="el" href="group__orx_font.html#ga44605b14708588c0ab44d61a060f8887">orxFont.h</a>
 </li>
+<li>orxFont_GetCharacterHeight()
+: <a class="el" href="group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739">orxFont.h</a>
+</li>
 <li>orxFont_GetCharacterList()
 : <a class="el" href="group__orx_font.html#ga017c9101872e0b814e510ae0ad7c4b0a">orxFont.h</a>
 </li>
-<li>orxFont_GetCharacterSize()
-: <a class="el" href="group__orx_font.html#gaa29e31f5bf27bc4f3e60a326358744b5">orxFont.h</a>
-</li>
 <li>orxFont_GetCharacterSpacing()
 : <a class="el" href="group__orx_font.html#gaf626752956cbfedf00e0da2613e700a6">orxFont.h</a>
+</li>
+<li>orxFont_GetCharacterWidth()
+: <a class="el" href="group__orx_font.html#ga6eaf162b26fb22952530260f4861f5f0">orxFont.h</a>
 </li>
 <li>orxFont_GetDefaultFont()
 : <a class="el" href="group__orx_font.html#gaf1446182084028517a65da805684338b">orxFont.h</a>
@@ -1789,14 +1801,17 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxFont_Init()
 : <a class="el" href="group__orx_font.html#gac3f1cf184136cd0ffd837143e79bfe31">orxFont.h</a>
 </li>
+<li>orxFont_SetCharacterHeight()
+: <a class="el" href="group__orx_font.html#ga0b952471e7b1c225b1eddcfd139cd2f3">orxFont.h</a>
+</li>
 <li>orxFont_SetCharacterList()
 : <a class="el" href="group__orx_font.html#gae5665dd0101cf568132b829c58082309">orxFont.h</a>
 </li>
-<li>orxFont_SetCharacterSize()
-: <a class="el" href="group__orx_font.html#ga7b1d62517a924b9b24f0b81174b28f3c">orxFont.h</a>
-</li>
 <li>orxFont_SetCharacterSpacing()
 : <a class="el" href="group__orx_font.html#ga02b3674e5ca2faf4208f4dff86b59f56">orxFont.h</a>
+</li>
+<li>orxFont_SetCharacterWidthList()
+: <a class="el" href="group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e">orxFont.h</a>
 </li>
 <li>orxFont_SetOrigin()
 : <a class="el" href="group__orx_font.html#ga1fd622d700599de60f4ec16b0ec524ed">orxFont.h</a>
@@ -3422,6 +3437,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxMODULE_ID_PLUGIN
 : <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708aa0b823edf8a02181b4b38d3e5dc89379">orxModule.h</a>
 </li>
+<li>orxMODULE_ID_PROFILER
+: <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708aaf10ffde3b9351aabffb03b8a074af79">orxModule.h</a>
+</li>
 <li>orxMODULE_ID_RENDER
 : <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a371b24036c2eec2a4699eeb9f22c3305">orxModule.h</a>
 </li>
@@ -3750,9 +3768,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxObject_IsPaused()
 : <a class="el" href="group__orx_object.html#ga34343a4c61fa460cf48647c869059e47">orxObject.h</a>
 </li>
-<li>orxObject_IsRendered()
-: <a class="el" href="group__orx_object.html#ga4c388ebe4faf86ac195f8e18127959a6">orxObject.h</a>
-</li>
 <li>orxObject_IsShaderEnabled()
 : <a class="el" href="group__orx_object.html#ga097e7cf84ca4b06b2de050d675b9766b">orxObject.h</a>
 </li>
@@ -3824,9 +3839,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxObject_SetRelativeSpeed()
 : <a class="el" href="group__orx_object.html#ga5efa72124855f5fa5f3266aa61fdb027">orxObject.h</a>
-</li>
-<li>orxObject_SetRendered()
-: <a class="el" href="group__orx_object.html#ga997d02b18776f1107b8a363f2d07ce15">orxObject.h</a>
 </li>
 <li>orxObject_SetRepeat()
 : <a class="el" href="group__orx_object.html#gad7e69150f8ba78a9e52309ca2f6d9a74">orxObject.h</a>
@@ -4659,6 +4671,36 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_USER_FUNCTION_START
 : <a class="el" href="group__orx_plugin.html#gac61884b29f3bf244014c6c275eda4748">orxPluginUser.h</a>
 </li>
+<li>orxProfiler_Exit()
+: <a class="el" href="group__orx_profiler.html#gabb8e3390ac3ec8f7b4d68415baaf957b">orxProfiler.h</a>
+</li>
+<li>orxProfiler_GetID()
+: <a class="el" href="group__orx_profiler.html#ga5acbe4117125b7fb1e911e98b7829453">orxProfiler.h</a>
+</li>
+<li>orxProfiler_Init()
+: <a class="el" href="group__orx_profiler.html#gac592fd81a652a5790828f07b8c3f3977">orxProfiler.h</a>
+</li>
+<li>orxPROFILER_KS32_MARKER_ID_NONE
+: <a class="el" href="group__orx_profiler.html#ga2b4928419f83ca68d4f4b65164e83efe">orxProfiler.h</a>
+</li>
+<li>orxPROFILER_KU32_MAX_MARKER_NUMBER
+: <a class="el" href="group__orx_profiler.html#ga03c281423b3327a26fb6a4fe9f236593">orxProfiler.h</a>
+</li>
+<li>orxPROFILER_POP_MARKER
+: <a class="el" href="group__orx_profiler.html#ga90c7c9280ab9e00ad524b12b14f4ead2">orxProfiler.h</a>
+</li>
+<li>orxProfiler_PopMarker()
+: <a class="el" href="group__orx_profiler.html#gab85f78c90aa0ecf16ce7a181a650f669">orxProfiler.h</a>
+</li>
+<li>orxPROFILER_PUSH_MARKER
+: <a class="el" href="group__orx_profiler.html#ga26117096ab5a2206800707b3bbaf7218">orxProfiler.h</a>
+</li>
+<li>orxProfiler_PushMarker()
+: <a class="el" href="group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971">orxProfiler.h</a>
+</li>
+<li>orxProfiler_Setup()
+: <a class="el" href="group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb">orxProfiler.h</a>
+</li>
 <li>orxRENDER_EVENT
 : <a class="el" href="group__orx_render.html#gaf2df6db5cb046f3e29a234036b54c684">orxRender.h</a>
 </li>
@@ -5195,8 +5237,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_sound_system.html#gaecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
-, <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+: <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+, <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
 </li>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#ga23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>
@@ -5372,9 +5414,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gad08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
 </li>
-<li>orxSTATUS
-: <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
-, <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
+<li>orxSTATUS()
+: <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
+, <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
 </li>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
@@ -5782,8 +5824,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem.h</a>
 </li>
 <li>orxTEXT
-: <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
-, <a class="el" href="group__orx_structure.html#ga796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+, <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
 </li>
 <li>orxText_Create()
 : <a class="el" href="group__orx_text.html#ga7db9913d83299e4951a308f10a129cd3">orxText.h</a>
@@ -5822,8 +5864,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_text.html#gabaf8ba36746f278176c2efec5a0a14d4">orxText.h</a>
 </li>
 <li>orxTEXTURE
-: <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
-, <a class="el" href="group__orx_structure.html#gae682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gae682e499ff6fb12878575a10c1e8e59d">orxStructure.h</a>
+, <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
 </li>
 <li>orxTexture_Create()
 : <a class="el" href="group__orx_texture.html#ga0234c4923d3a53bd299c36bc9a96c60b">orxTexture.h</a>
@@ -5833,6 +5875,21 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxTexture_Delete()
 : <a class="el" href="group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6">orxTexture.h</a>
+</li>
+<li>orxTEXTURE_EVENT
+: <a class="el" href="group__orx_texture.html#gaf4b625f49855b667995b2ed8b9887a75">orxTexture.h</a>
+</li>
+<li>orxTEXTURE_EVENT_CREATE
+: <a class="el" href="group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a975df9001d501e57b12ac892cae64678">orxTexture.h</a>
+</li>
+<li>orxTEXTURE_EVENT_DELETE
+: <a class="el" href="group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a7c7973e946330fae3e3a2444d7c0f809">orxTexture.h</a>
+</li>
+<li>orxTEXTURE_EVENT_NONE
+: <a class="el" href="group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29">orxTexture.h</a>
+</li>
+<li>orxTEXTURE_EVENT_NUMBER
+: <a class="el" href="group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9">orxTexture.h</a>
 </li>
 <li>orxTexture_Exit()
 : <a class="el" href="group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688">orxTexture.h</a>

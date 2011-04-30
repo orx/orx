@@ -363,7 +363,7 @@ static orxINLINE orxSTRUCTURE_ID                        orxStructure_GetID(const
 
 /** Tests flags against structure ones
  * @param[in]   _pStructure    Concerned structure
- * @param[in]   _u32Flags       Flags to test
+ * @param[in]   _u32Flags      Flags to test
  * @return      orxTRUE / orxFALSE
  */
 static orxINLINE orxBOOL                                orxStructure_TestFlags(const void *_pStructure, orxU32 _u32Flags)
@@ -377,7 +377,7 @@ static orxINLINE orxBOOL                                orxStructure_TestFlags(c
 
 /** Tests all flags against structure ones
  * @param[in]   _pStructure    Concerned structure
- * @param[in]   _u32Flags       Flags to test
+ * @param[in]   _u32Flags      Flags to test
  * @return      orxTRUE / orxFALSE
  */
 static orxINLINE orxBOOL                                orxStructure_TestAllFlags(const void *_pStructure, orxU32 _u32Flags)

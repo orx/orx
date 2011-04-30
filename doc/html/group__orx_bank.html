@@ -40,6 +40,8 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga355e01cc604740999d2fa9832dfb03b2">orxBank_Allocate</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga66e8bef6563faa63e337fefd6d7980fa">orxBank_Clear</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gaee2adddbac4a9fea1f65ae9013a44c68">orxBank_Compact</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga41751f5c0b3f1032ccaac78d576b0dca">orxBank_CompactAll</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gae36fba068abfd2a73a22e6f15f3f8e04">orxBank_Create</a> (orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, <a class="el" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga29e3b050cad7b27cc78efd243500a550">orxBank_Delete</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gaac6b0ec7f48717e7b49c3fc0f70b1563">orxBank_Exit</a> ()</td></tr>
@@ -149,6 +151,47 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="gaee2adddbac4a9fea1f65ae9013a44c68"></a><!-- doxytag: member="orxBank.h::orxBank_Compact" ref="gaee2adddbac4a9fea1f65ae9013a44c68" args="(orxBANK *_pstBank)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxBank_Compact </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&#160;</td>
+          <td class="paramname"> <em>_pstBank</em>&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Compacts a bank by removing all its unused segments </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Bank of memory to compact </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ga41751f5c0b3f1032ccaac78d576b0dca"></a><!-- doxytag: member="orxBank.h::orxBank_CompactAll" ref="ga41751f5c0b3f1032ccaac78d576b0dca" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxBank_CompactAll </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Compacts all banks by removing all their unused segments </p>
 
 </div>
 </div>

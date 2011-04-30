@@ -962,7 +962,7 @@ orxSTATUS orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
   /* Updates clock flags */
   orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED, orxCLOCK_KU32_FLAG_NONE);
 
-  // Done!
+  /* Done! */
   return eResult;
 }
 
@@ -984,7 +984,7 @@ orxSTATUS orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
   /* Updates clock flags */
   orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_PAUSED);
 
-  // Done!
+  /* Done! */
   return eResult;
 }
 

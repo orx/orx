@@ -287,6 +287,12 @@
 <li>orxBank_Clear()
 : <a class="el" href="group__orx_bank.html#ga66e8bef6563faa63e337fefd6d7980fa">orxBank.h</a>
 </li>
+<li>orxBank_Compact()
+: <a class="el" href="group__orx_bank.html#gaee2adddbac4a9fea1f65ae9013a44c68">orxBank.h</a>
+</li>
+<li>orxBank_CompactAll()
+: <a class="el" href="group__orx_bank.html#ga41751f5c0b3f1032ccaac78d576b0dca">orxBank.h</a>
+</li>
 <li>orxBank_Create()
 : <a class="el" href="group__orx_bank.html#gae36fba068abfd2a73a22e6f15f3f8e04">orxBank.h</a>
 </li>
@@ -971,14 +977,17 @@
 <li>orxFont_Exit()
 : <a class="el" href="group__orx_font.html#ga44605b14708588c0ab44d61a060f8887">orxFont.h</a>
 </li>
+<li>orxFont_GetCharacterHeight()
+: <a class="el" href="group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739">orxFont.h</a>
+</li>
 <li>orxFont_GetCharacterList()
 : <a class="el" href="group__orx_font.html#ga017c9101872e0b814e510ae0ad7c4b0a">orxFont.h</a>
 </li>
-<li>orxFont_GetCharacterSize()
-: <a class="el" href="group__orx_font.html#gaa29e31f5bf27bc4f3e60a326358744b5">orxFont.h</a>
-</li>
 <li>orxFont_GetCharacterSpacing()
 : <a class="el" href="group__orx_font.html#gaf626752956cbfedf00e0da2613e700a6">orxFont.h</a>
+</li>
+<li>orxFont_GetCharacterWidth()
+: <a class="el" href="group__orx_font.html#ga6eaf162b26fb22952530260f4861f5f0">orxFont.h</a>
 </li>
 <li>orxFont_GetDefaultFont()
 : <a class="el" href="group__orx_font.html#gaf1446182084028517a65da805684338b">orxFont.h</a>
@@ -1001,14 +1010,17 @@
 <li>orxFont_Init()
 : <a class="el" href="group__orx_font.html#gac3f1cf184136cd0ffd837143e79bfe31">orxFont.h</a>
 </li>
+<li>orxFont_SetCharacterHeight()
+: <a class="el" href="group__orx_font.html#ga0b952471e7b1c225b1eddcfd139cd2f3">orxFont.h</a>
+</li>
 <li>orxFont_SetCharacterList()
 : <a class="el" href="group__orx_font.html#gae5665dd0101cf568132b829c58082309">orxFont.h</a>
 </li>
-<li>orxFont_SetCharacterSize()
-: <a class="el" href="group__orx_font.html#ga7b1d62517a924b9b24f0b81174b28f3c">orxFont.h</a>
-</li>
 <li>orxFont_SetCharacterSpacing()
 : <a class="el" href="group__orx_font.html#ga02b3674e5ca2faf4208f4dff86b59f56">orxFont.h</a>
+</li>
+<li>orxFont_SetCharacterWidthList()
+: <a class="el" href="group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e">orxFont.h</a>
 </li>
 <li>orxFont_SetOrigin()
 : <a class="el" href="group__orx_font.html#ga1fd622d700599de60f4ec16b0ec524ed">orxFont.h</a>
@@ -1811,9 +1823,6 @@
 <li>orxObject_IsPaused()
 : <a class="el" href="group__orx_object.html#ga34343a4c61fa460cf48647c869059e47">orxObject.h</a>
 </li>
-<li>orxObject_IsRendered()
-: <a class="el" href="group__orx_object.html#ga4c388ebe4faf86ac195f8e18127959a6">orxObject.h</a>
-</li>
 <li>orxObject_IsShaderEnabled()
 : <a class="el" href="group__orx_object.html#ga097e7cf84ca4b06b2de050d675b9766b">orxObject.h</a>
 </li>
@@ -1885,9 +1894,6 @@
 </li>
 <li>orxObject_SetRelativeSpeed()
 : <a class="el" href="group__orx_object.html#ga5efa72124855f5fa5f3266aa61fdb027">orxObject.h</a>
-</li>
-<li>orxObject_SetRendered()
-: <a class="el" href="group__orx_object.html#ga997d02b18776f1107b8a363f2d07ce15">orxObject.h</a>
 </li>
 <li>orxObject_SetRepeat()
 : <a class="el" href="group__orx_object.html#gad7e69150f8ba78a9e52309ca2f6d9a74">orxObject.h</a>
@@ -2073,7 +2079,7 @@
 : <a class="el" href="group__orx_plugin.html#gac2d80ed85322ebf239a94637e627fbef">orxPluginCore.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
-: <a class="el" href="group__orx_plugin.html#gab04f2503e0b9784d2b9e176b87185d4b">orxPlugin_CoreDefine.h</a>
+: <a class="el" href="group__orx_plugin.html#gad28aab12a50da506470a18d98116b43a">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPlugin_DefaultCoreFunction()
 : <a class="el" href="group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919">orxPluginCore.h</a>
@@ -2107,6 +2113,24 @@
 </li>
 <li>orxPlugin_Unload()
 : <a class="el" href="group__orx_plugin.html#ga230eab1bb1033f4e1984d444f4cb7e92">orxPlugin.h</a>
+</li>
+<li>orxProfiler_Exit()
+: <a class="el" href="group__orx_profiler.html#gabb8e3390ac3ec8f7b4d68415baaf957b">orxProfiler.h</a>
+</li>
+<li>orxProfiler_GetID()
+: <a class="el" href="group__orx_profiler.html#ga5acbe4117125b7fb1e911e98b7829453">orxProfiler.h</a>
+</li>
+<li>orxProfiler_Init()
+: <a class="el" href="group__orx_profiler.html#gac592fd81a652a5790828f07b8c3f3977">orxProfiler.h</a>
+</li>
+<li>orxProfiler_PopMarker()
+: <a class="el" href="group__orx_profiler.html#gab85f78c90aa0ecf16ce7a181a650f669">orxProfiler.h</a>
+</li>
+<li>orxProfiler_PushMarker()
+: <a class="el" href="group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971">orxProfiler.h</a>
+</li>
+<li>orxProfiler_Setup()
+: <a class="el" href="group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb">orxProfiler.h</a>
 </li>
 <li>orxRender_Exit()
 : <a class="el" href="group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088">orxRender.h</a>

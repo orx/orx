@@ -105,7 +105,7 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
  */
 typedef struct __orxCHARACTER_GLYPH_t
 {
-  orxFLOAT fX, fY;
+  orxFLOAT fX, fY, fWidth;
 
 } orxCHARACTER_GLYPH;
 
@@ -113,10 +113,10 @@ typedef struct __orxCHARACTER_GLYPH_t
  */
 typedef struct __orxCHARACTER_MAP_t
 {
-  orxVECTOR           vCharacterSize;
+  orxFLOAT      fCharacterHeight;
 
-  orxBANK            *pstCharacterBank;
-  orxHASHTABLE       *pstCharacterTable;
+  orxBANK      *pstCharacterBank;
+  orxHASHTABLE *pstCharacterTable;
 
 } orxCHARACTER_MAP;
 
@@ -239,17 +239,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 @end
 
 #endif /* __orxIPHONE__ && __orxOBJC__ */
-//xp add
-#if defined(__orxANDROID__)
 
-
-#include <GLES/gl.h>
-#include <GLES/glext.h>
-#include <jni.h>
-#include <android/log.h>
-typedef char GLchar;
-#endif
-//~xp add
 
 /** Display module setup
  */
@@ -928,32 +918,38 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StartShader(con
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_StopShader(const orxHANDLE _hShader);
 
+/** Gets a shader parameter's ID
+ * @param[in]   _hShader                              Concerned shader
+ * @param[in]   _zParam                               Parameter name
+ * @param[in]   _s32Index                             Parameter index, -1 for non-array types
+ * @param[in]   _bIsTexture                           Is parameter a texture?
+ * @return Parameter ID
+ */
+extern orxDLLAPI orxS32 orxFASTCALL                   orxDisplay_GetParameterID(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture);
+
 /** Sets a shader parameter (orxBITMAP)
  * @param[in]   _hShader                              Concerned shader
- * @param[in]   _zParam                               Parameter to set
- * @param[in]   _s32Index                             Parameter index, -1 for non-array types
+ * @param[in]   _s32ID                                ID of parameter to set
  * @param[in]   _pstValue                             Value (orxBITMAP) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxBITMAP *_pstValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderBitmap(orxHANDLE _hShader, orxS32 _s32ID, const orxBITMAP *_pstValue);
 
 /** Sets a shader parameter (orxFLOAT)
  * @param[in]   _hShader                              Concerned shader
- * @param[in]   _zParam                               Parameter to set
- * @param[in]   _s32Index                             Parameter index, -1 for non-array types
+ * @param[in]   _s32ID                                ID of parameter to set
  * @param[in]   _fValue                               Value (orxFLOAT) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue);
 
 /** Sets a shader parameter (orxVECTOR)
  * @param[in]   _hShader                              Concerned shader
- * @param[in]   _zParam                               Parameter to set
- * @param[in]   _s32Index                             Parameter index, -1 for non-array types
+ * @param[in]   _s32ID                                ID of parameter to set
  * @param[in]   _pvValue                              Value (orxVECTOR) for this parameter
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, const orxVECTOR *_pvValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue);
 
 
 /** Enables / disables vertical synchro

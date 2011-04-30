@@ -26,6 +26,7 @@
     <VirtualDirectory Name="debug">
       <File Name="../../../src/debug/orxDebug.c"/>
       <File Name="../../../src/debug/orxFPS.c"/>
+      <File Name="../../../src/debug/orxProfiler.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="display">
       <File Name="../../../src/display/orxDisplay.c"/>
@@ -114,6 +115,7 @@
     <VirtualDirectory Name="debug">
       <File Name="../../../include/debug/orxDebug.h"/>
       <File Name="../../../include/debug/orxFPS.h"/>
+      <File Name="../../../include/debug/orxProfiler.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="display">
       <File Name="../../../include/display/orxDisplay.h"/>
