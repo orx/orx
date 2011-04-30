@@ -13,30 +13,47 @@ import android.util.Log;
 public class AnOrxMovingAsset {
 	private AssetManager assetManager;
 
-	public AnOrxMovingAsset(AssetManager assetManager) {
+	private final static String SDCARD_PATH = "/sdcard";
+	private String mAppDirectory;
+
+	public AnOrxMovingAsset(AssetManager assetManager, String appDirectory) {
 		this.assetManager = assetManager;
+		this.mAppDirectory = appDirectory;
 	}
 
-	public void copyDirectory(String assetName, String destDirPath)
-			throws IOException {
-		File destDir = new File(destDirPath + "/" + assetName);
-		if (!destDir.exists()) {
-			Log.d("orx app", "build a folder " + destDir.mkdirs());
-		} else {
-			return;
-		}
-		Log.d("orx app", " assetName is " + assetName + " destdir is "
-				+ destDir.getAbsolutePath());
+	public boolean isExistedFile(String currentPath) {
+		File destDir = new File(SDCARD_PATH + "/" + mAppDirectory + "/"
+				+ currentPath);
 
-		String[] children = assetManager.list(assetName);
+		return destDir.exists();
+	}
+
+	public void copyDirectory(String currentPath) throws IOException {
+		File destDir = new File(SDCARD_PATH + "/" + mAppDirectory + "/"
+				+ currentPath);
+		if (!destDir.exists()) {
+			destDir.mkdirs();
+		}
+		Log.i("Orx app", "copy to " + destDir);
+
+		String[] children = assetManager.list(currentPath);
 		for (String sourceChild : children) {
-			// File destChild = new File(destDir, sourceChild);
-			if (assetManager.list(assetName + "/" + sourceChild).length != 0) {
-				copyDirectory(assetName + "/" + sourceChild, destDirPath);
+			String assetName;
+			if (currentPath == "")
+				assetName =  sourceChild;
+			else
+				assetName = currentPath + "/" + sourceChild;
+
+			if (assetManager.list(assetName).length != 0) {
+				copyDirectory(assetName);
 			} else {
-				Log.d("orxApp", "a normal file name is " + sourceChild);
-				
-				copyFile(assetManager.open(assetName + "/" + sourceChild), new File(destDir.getAbsolutePath()+"/"+sourceChild));
+				// it's a config file ? => copy it
+				if (sourceChild.endsWith(".ini")) {
+					String sFileName = destDir.getAbsolutePath() + "/"
+							+ sourceChild;
+					copyFile(assetManager.open(assetName), new File(sFileName));
+					Log.d("Moving assets:", "File copied " + sFileName);
+				}
 			}
 		}
 	}

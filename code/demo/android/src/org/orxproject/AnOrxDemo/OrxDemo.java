@@ -28,6 +28,7 @@ public class OrxDemo extends AnOrxActivity {
 		appName = "orxTest";
 		orxAppLibName = "orxApp";
 		
+		
 
 		// load the .so lib in AnOrxActivity
 		super.onCreate(savedInstanceState);
@@ -44,4 +45,11 @@ public class OrxDemo extends AnOrxActivity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 	}
+
+//	@Override
+//	protected boolean checkUpdating() {
+//		// TODO Auto-generated method stub
+//		return true;
+//	}
+	
 }
