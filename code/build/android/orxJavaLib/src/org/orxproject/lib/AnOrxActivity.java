@@ -22,18 +22,22 @@ public class AnOrxActivity extends Activity {
 	// Main components
 	protected static ORXSurface mSurface;
 
-	//debug mode using orxd
+	// debug mode using orxd
 	protected static boolean isDebug = true;
-	//when you need to run in the emulator it should set to true
+	// when you need to run in the emulator it should set to true
 	protected static boolean usingGLES1 = false;
 
+	protected static boolean isTranslucent = true;
+
 	/*
-	* first, set the app name, the main feature is to set the default .ini filename
-	*/
+	 * first, set the app name, the main feature is to set the default .ini
+	 * filename
+	 */
 	protected static String appPath = "orx_demo";
 	
 	/*
-	 * set the res folder contain .ini, all of images and other stuff. the virtual app name
+	 * set the res folder contain .ini, all of images and other stuff. the
+	 * virtual app name
 	 */
 	protected static String appName = "orxTest";
 
@@ -104,7 +108,7 @@ public class AnOrxActivity extends Activity {
 	public static native void nativeSetAssetManager(AssetManager assetManager);
 
 	public static native void nativeSetShaderSupport(boolean bShaderSupport);
-	
+
 	public static native void nativeSetMainAppPath(String mainAppPath);
 
 	private AnOrxMovingAsset movingAsset;
@@ -113,8 +117,8 @@ public class AnOrxActivity extends Activity {
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		fullAppPath = appPath+"/"+appName;
+
+		fullAppPath = appPath + "/" + appName;
 		if (isDebug) {
 
 			System.loadLibrary(orxAppLibName + "d");
@@ -132,17 +136,21 @@ public class AnOrxActivity extends Activity {
 
 		anOrxActivity = this;
 
-		movingAsset = new AnOrxMovingAsset(getAssets());
+		movingAsset = new AnOrxMovingAsset(getAssets(), appPath);
 		nativeSetMainAppPath(fullAppPath);
-		try {
-			movingAsset.copyDirectory(appPath, "/sdcard");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.e("orx app", "error when moving asset");
-			e.printStackTrace();
+
+		if (checkUpdating()) {
+
+			try {
+				movingAsset.copyDirectory("");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				Log.e("orx app", "error when moving asset");
+				e.printStackTrace();
+			}
 		}
-		
-		//create the apkFileHelper
+
+		// create the apkFileHelper
 		AnOrxAPKFileHelper.getInstance().setContext(this);
 
 	}
@@ -155,6 +163,13 @@ public class AnOrxActivity extends Activity {
 
 	public static boolean closeAccel() {
 		mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+		return true;
+	}
+
+	protected boolean checkUpdating() {
+		if (movingAsset.isExistedFile("")) {
+			return false;
+		}
 		return true;
 	}
 
@@ -263,8 +278,8 @@ public class AnOrxActivity extends Activity {
 	public static boolean setMediaPlayerDataSource(MediaPlayer mediaPlayer,
 			String assetFileName) {
 		try {
-			mediaPlayer.setDataSource(anOrxActivity.getAssets()
-					.openFd(assetFileName).getFileDescriptor());
+			mediaPlayer.setDataSource(anOrxActivity.getAssets().openFd(
+					assetFileName).getFileDescriptor());
 			return true;
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -283,11 +298,11 @@ public class AnOrxActivity extends Activity {
 			return false;
 		}
 	}
-	
-	public static int loadSound(SoundPool soundpool, String assetFileName){
+
+	public static int loadSound(SoundPool soundpool, String assetFileName) {
 		try {
-			return soundpool.load(anOrxActivity.getAssets()
-					.openFd(assetFileName), 1);
+			return soundpool.load(anOrxActivity.getAssets().openFd(
+					assetFileName), 1);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
