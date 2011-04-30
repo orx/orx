@@ -32,6 +32,7 @@
 
 #include "display/orxTexture.h"
 
+#include "core/orxEvent.h"
 #include "display/orxDisplay.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
@@ -43,6 +44,7 @@
 #define orxTEXTURE_KU32_STATIC_FLAG_NONE        0x00000000
 
 #define orxTEXTURE_KU32_STATIC_FLAG_READY       0x00000001
+#define orxTEXTURE_KU32_STATIC_FLAG_INTERNAL    0x00000002  /**< Internal flag */
 
 #define orxTEXTURE_KU32_STATIC_MASK_ALL         0xFFFFFFFF
 
@@ -149,6 +151,7 @@ void orxFASTCALL orxTexture_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
   return;
@@ -345,6 +348,13 @@ orxTEXTURE *orxFASTCALL orxTexture_Create()
   {
     /* Increases counter */
     orxStructure_IncreaseCounter(pstTexture);
+
+    /* Not creating it internally? */
+    if(!orxFLAG_TEST(sstTexture.u32Flags, orxTEXTURE_KU32_STATIC_FLAG_INTERNAL))
+    {
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_CREATE, pstTexture, orxNULL, orxNULL);
+    }
   }
   else
   {
@@ -379,8 +389,14 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
   }
   else
   {
+    /* Sets internal flag */
+    orxFLAG_SET(sstTexture.u32Flags, orxTEXTURE_KU32_STATIC_FLAG_INTERNAL, orxTEXTURE_KU32_STATIC_FLAG_NONE);
+
     /* Creates an empty texture */
     pstTexture = orxTexture_Create();
+
+    /* Removes internal flag */
+    orxFLAG_SET(sstTexture.u32Flags, orxTEXTURE_KU32_STATIC_FLAG_NONE, orxTEXTURE_KU32_STATIC_FLAG_INTERNAL);
 
     /* Valid? */
     if(pstTexture != orxNULL)
@@ -396,6 +412,9 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
       {
         /* Inits it */
         orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_CREATE, pstTexture, orxNULL, orxNULL);
       }
       else
       {
@@ -437,6 +456,9 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   /* Is the last reference? */
   if(orxStructure_GetRefCounter(_pstTexture) == 0)
   {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_DELETE, _pstTexture, orxNULL, orxNULL);
+
     /* Cleans bitmap reference */
     orxTexture_UnlinkBitmap(_pstTexture);
 

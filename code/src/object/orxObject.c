@@ -488,15 +488,15 @@ orxOBJECT *orxFASTCALL orxObject_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
 
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstObject);
+
     /* Not creating it internally? */
     if(!orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL))
     {
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
+       /* Sends event */
+       orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
     }
-
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstObject);
   }
   else
   {

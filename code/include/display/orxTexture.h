@@ -54,6 +54,20 @@
 #define orxTEXTURE_KZ_SCREEN_NAME         "-=SCREEN=-"
 
 
+/** Event enum
+ */
+typedef enum __orxTEXTURE_EVENT_t
+{
+  orxTEXTURE_EVENT_CREATE = 0,
+  orxTEXTURE_EVENT_DELETE,
+
+  orxTEXTURE_EVENT_NUMBER,
+
+  orxTEXTURE_EVENT_NONE = orxENUM_NONE
+
+} orxTEXTURE_EVENT;
+
+
 /** Internal texture structure */
 typedef struct __orxTEXTURE_t             orxTEXTURE;
 
