@@ -83,6 +83,8 @@ typedef struct __orxPROFILER_MARKER_INFO_t
  */
 typedef struct __orxPROFILER_STATIC_t
 {
+  orxDOUBLE           dTimeStamp;
+  orxDOUBLE           dResetTime;
   orxHASHTABLE       *pstMarkerIDTable;
   orxS32              s32MarkerCounter;
   orxS32              s32CurrentMarker;
@@ -143,6 +145,9 @@ orxSTATUS orxFASTCALL orxProfiler_Init()
     /* Success? */
     if(sstProfiler.pstMarkerIDTable != orxNULL)
     {
+      /* Gets time stamp */
+      sstProfiler.dTimeStamp = orxSystem_GetTime();
+
       /* Inits current marker */
       sstProfiler.s32CurrentMarker = orxPROFILER_KS32_MARKER_ID_ROOT;
 
@@ -367,7 +372,8 @@ void orxFASTCALL orxProfiler_PopMarker()
  */
 void orxFASTCALL orxProfiler_ResetAllMarkers()
 {
-  orxS32 i;
+  orxDOUBLE dTimeStamp;
+  orxS32    i;
 
   /* For all markers */
   for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
@@ -382,6 +388,11 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
     pstMarker->s32ParentID    = orxPROFILER_KS32_MARKER_ID_NONE;
     pstMarker->u32PushCounter = 0;
   }
+
+  /* Updates reset time & time stamp*/
+  dTimeStamp              = orxSystem_GetTime();
+  sstProfiler.dResetTime  = dTimeStamp - sstProfiler.dTimeStamp;
+  sstProfiler.dTimeStamp  = dTimeStamp;
 
   /* Done! */
   return;
