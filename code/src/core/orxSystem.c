@@ -106,12 +106,12 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     QueryPerformanceCounter(&s64CurrentTime);
 
     /* Updates result */
-    dResult = (orxDOUBLE)s64CurrentTime.QuadPart / sstSystem.dFrequency;
+    dResult = orx2D(s64CurrentTime.QuadPart) / sstSystem.dFrequency;
   }
   else
   {
     /* Updates result */
-    dResult = (orxDOUBLE)GetTickCount() * (orxDOUBLE)0.001;
+    dResult = orx2D(GetTickCount()) * orx2D(0.001);
   }
 
 #else /* __orxWINDOWS__ */
@@ -122,7 +122,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
   if(gettimeofday(&stCurrentTime, NULL) == 0)
   {
     /* Updates result */
-    dResult = (orxDOUBLE)stCurrentTime.tv_sec + ((orxDOUBLE)stCurrentTime.tv_usec * (orxDOUBLE)0.000001);
+    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_usec) * orx2D(0.000001));
   }
   else
   {
@@ -179,7 +179,7 @@ orxSTATUS orxFASTCALL orxSystem_Init()
     if(QueryPerformanceFrequency(&s64Frequency))
     {
       /* Stores its frequency */
-      sstSystem.dFrequency = (orxDOUBLE)s64Frequency.QuadPart;
+      sstSystem.dFrequency = orx2D(s64Frequency.QuadPart);
 
       /* Updates status */
       sstSystem.bUseHighPerformanceTimer = orxTRUE;

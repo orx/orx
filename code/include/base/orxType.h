@@ -71,6 +71,7 @@
   typedef orxU32                  orxENUM;
 
   #define orx2F(V)                ((orxFLOAT)(V))
+  #define orx2D(V)                ((orxDOUBLE)(V))
 
   #define orxENUM_NONE            0xFFFFFFFFL
 
@@ -116,6 +117,7 @@
     typedef orxU32                orxENUM;
 
     #define orx2F(V)              ((orxFLOAT)(V))
+    #define orx2D(V)              ((orxDOUBLE)(V))
 
     #define orxENUM_NONE          0xFFFFFFFFL
 
