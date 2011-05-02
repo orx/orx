@@ -245,9 +245,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       /* Updates current depth */
       u32CurrentDepth = u32Depth;
 
-      /* Checks */
-      orxASSERT(u32CurrentDepth < 64);
-
       /* Updates pixel's color */
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
@@ -290,9 +287,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Updates current depth */
       u32CurrentDepth = u32Depth;
-
-      /* Checks */
-      orxASSERT(u32CurrentDepth < 64);
 
       /* Sets font's color */
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
