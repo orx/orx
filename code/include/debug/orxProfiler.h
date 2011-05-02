@@ -137,6 +137,11 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_PopMarker();
  */
 extern orxDLLAPI void orxFASTCALL                 orxProfiler_ResetAllMarkers();
 
+/** Gets the time elapsed since last reset
+ * @return Time elapsed since the last reset, in seconds
+ */
+extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetResetTime();
+
 
 /** Gets the number of registered markers
  * @return Number of registered markers
@@ -150,11 +155,11 @@ extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetMarkerCounter()
  */
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextMarkerID(orxS32 _s32MarkerID);
 
-/** Gets the ID of the next registered marker that has been uniquely pushed
- * @param[in] _s32MarkerID      ID of the current uniquely pushed marker, orxPROFILER_KS32_MARKER_ID_NONE to get the first one
- * @return Next registered marker's ID / orxPROFILER_KS32_MARKER_ID_NONE if the current marker was the last uniquely pushed one
+/** Gets the ID of the next marker, sorted by their push time
+ * @param[in] _s32MarkerID      ID of the current pushed marker, orxPROFILER_KS32_MARKER_ID_NONE to get the first one
+ * @return Next registered marker's ID / orxPROFILER_KS32_MARKER_ID_NONE if the current marker was the last one
  */
-extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextUniqueMarkerID(orxS32 _s32MarkerID);
+extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID);
 
 
 /** Gets the marker's cumulated time
@@ -182,6 +187,12 @@ extern orxDLLAPI orxU32 orxFASTCALL               orxProfiler_GetMarkerPushCount
  */
 extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_IsUniqueMarker(orxS32 _s32MarkerID);
 
+
+/** Gets the uniquely pushed marker's start time
+ * @param[in] _s32MarkerID      Concerned marker ID
+ * @return Marker's start time / 0.0
+ */
+extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID);
 
 /** Gets the uniquely pushed marker's parent ID
  * @param[in] _s32MarkerID      Concerned marker ID

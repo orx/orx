@@ -94,6 +94,287 @@ static orxRENDER_STATIC sstRender;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Renders profiler info
+ */
+static orxINLINE void orxRender_Home_RenderProfiler()
+{
+  orxDISPLAY_TRANSFORM    stTransform;
+  orxTEXTURE             *pstTexture;
+  orxBITMAP              *pstBitmap, *pstFontBitmap;
+  orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
+  orxU32                  u32CurrentDepth, u32MaxDepth;
+  orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta;
+  orxDOUBLE               dStartTime, dTotalTime, dRecTotalTime;
+  orxCOLOR                stColor;
+  const orxFONT          *pstFont;
+  const orxCHARACTER_MAP *pstMap;
+  orxCHAR                 acLabel[64];
+
+  /* Gets default font */
+  pstFont = orxFont_GetDefaultFont();
+
+  /* Gets its bitmap */
+  pstFontBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
+
+  /* Gets its map */
+  pstMap = orxFont_GetMap(pstFont);
+
+  /* Creates pixel texture */
+  pstTexture = orxTexture_CreateFromFile("pixel");
+
+  /* Gets its bitmap */
+  pstBitmap = orxTexture_GetBitmap(pstTexture);
+
+  /* Gets marker counter */
+  s32MarkerCounter = orxProfiler_GetMarkerCounter();
+
+  /* For all markers */
+  for(s32UniqueCounter = 0, u32MaxDepth = 0, s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+      s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
+      s32MarkerID = orxProfiler_GetNextMarkerID(s32MarkerID))
+  {
+    /* Is unique? */
+    if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    {
+      orxU32 u32Depth;
+
+      /* Gets depth */
+      u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
+
+      /* Deeper than previous? */
+      if(u32Depth > u32MaxDepth)
+      {
+        /* Stores it */
+        u32MaxDepth = u32Depth;
+      }
+
+      /* Updates counter */
+      s32UniqueCounter++;
+    }
+  }
+
+  /* Gets marker total time, reciprocal total time and start time */
+  dTotalTime    = orxProfiler_GetResetTime();
+  dRecTotalTime = orx2D(1.0) / dTotalTime;
+  dStartTime    = orxSystem_GetTime() - dTotalTime;
+
+  /* Gets screen size */
+  orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+
+  /* Gets border */
+  fBorder = orx2F(0.01f) * fScreenWidth;
+
+  /* Gets full marker size */
+  fWidth  = orx2F(0.5f) * fScreenWidth - fBorder;
+  fHeight = orx2F(0.5f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
+  fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
+
+  /* Inits color */
+  orxColor_Set(&stColor, &orxVECTOR_GREEN, orx2F(0.8f));
+  orxColor_FromRGBToHSV(&stColor, &stColor);
+
+  /* Gets hue delta */
+  fHueDelta = orx2F(2.0f/3.0f) / orxS2F(s32UniqueCounter);
+
+  /* Inits transform */
+  stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
+  stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
+  stTransform.fRotation = orxFLOAT_0;
+  stTransform.fDstX     = fBorder;
+  stTransform.fDstY     = orxFLOAT_1;
+  stTransform.fScaleX   = fWidth;
+  stTransform.fScaleY   = fHeight - orx2F(2.0f);
+
+  /* Selects grey colors */
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
+  orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
+
+  /* Draws top bar */
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+  /* Displays its label */
+  orxString_NPrint(acLabel, 64, "Frame [%.2lfms]", dTotalTime);
+  stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
+  stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orx2F(0.5f), orxFLOAT_1);
+  orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+  /* Selects white color */
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
+
+  /* Draws separators */
+  stTransform.fDstX   = orxFLOAT_0;
+  stTransform.fDstY   = orx2F(0.5f) * fScreenHeight;
+  stTransform.fScaleX = orx2F(0.5f) * fScreenWidth;
+  stTransform.fScaleY = orxFLOAT_1;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fDstX   = orx2F(0.5f) * fScreenWidth;
+  stTransform.fDstY   = orxFLOAT_0;
+  stTransform.fScaleX = orxFLOAT_1;
+  stTransform.fScaleY = fScreenHeight;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+  /* Updates vertical values */
+  stTransform.fDstY   = fHeight + orxFLOAT_1;
+  stTransform.fScaleY = fHeight - orx2F(2.0f);
+
+  /* For all sorted markers */
+  for(u32CurrentDepth = 0, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+      s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
+      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
+  {
+    /* Is unique? */
+    if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    {
+      orxDOUBLE dTime;
+      orxCOLOR  stBarColor;
+      orxU32    u32Depth;
+
+      /* Gets its time */
+      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* Updates its horizontal scale */
+      stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
+
+      /* Gets its depth */
+      u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID) - 1;
+
+      /* Updates its position */
+      stTransform.fDstX   = fBorder + (orxFLOAT)((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - dStartTime) * dRecTotalTime) * fWidth;
+      stTransform.fDstY  += fHeight * orxS2F((orxS32)u32Depth - (orxS32)u32CurrentDepth);
+
+      /* Updates current depth */
+      u32CurrentDepth = u32Depth;
+
+      /* Checks */
+      orxASSERT(u32CurrentDepth < 64);
+
+      /* Updates pixel's color */
+      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+
+      /* Draws bar */
+      orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Updates color */
+      stColor.vHSL.fH += fHueDelta;
+    }
+  }
+
+  /* Updates vertical position */
+  stTransform.fDstX = orx2F(0.5f) * fScreenWidth + fBorder;
+  stTransform.fDstY = orxFLOAT_1;
+
+  /* Resets scale */
+  stTransform.fScaleX = stTransform.fScaleY = orxFLOAT_1;
+
+  /* Inits color */
+  orxColor_Set(&stColor, &orxVECTOR_GREEN, orx2F(0.8f));
+  orxColor_FromRGBToHSV(&stColor, &stColor);
+
+  /* For all sorted markers */
+  for(u32CurrentDepth = 1, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+      s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
+      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
+  {
+    /* Is unique? */
+    if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    {
+      orxDOUBLE dTime;
+      orxCOLOR  stLabelColor;
+      orxU32    u32Depth, i;
+
+      /* Gets its time */
+      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* Gets its depth */
+      u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
+
+      /* Updates current depth */
+      u32CurrentDepth = u32Depth;
+
+      /* Checks */
+      orxASSERT(u32CurrentDepth < 64);
+
+      /* Sets font's color */
+      orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+
+      /* Draws its label */
+      for(i = 0; i < u32Depth; i++)
+      {
+        acLabel[i] = '+';
+      }
+      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, "%s [%.2lfms]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime);
+      orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Updates position */
+      stTransform.fDstY += pstMap->fCharacterHeight + orxFLOAT_1;
+
+      /* Updates color */
+      stColor.vHSL.fH += fHueDelta;
+    }
+  }
+
+  /* Updates marker's height */
+  fHeight = orx2F(0.5f) * fScreenHeight / orxS2F(s32MarkerCounter - s32UniqueCounter);
+  fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
+
+  /* Updates color */
+  orxColor_Set(&stColor, &orxVECTOR_RED, orx2F(0.8f));
+  orxColor_FromRGBToHSV(&stColor, &stColor);
+
+  /* Sets font's color */
+  orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
+
+  /* Gets hue delta */
+  fHueDelta = orx2F(1.0f/3.0f) / orxS2F(s32MarkerCounter - s32UniqueCounter);
+
+  /* Updates vertical values */
+  stTransform.fDstX   = fBorder;
+  stTransform.fDstY   = orx2F(0.5f) * fScreenHeight + orxFLOAT_1;
+  stTransform.fScaleY = fHeight - orx2F(2.0f);
+
+  /* For all markers */
+  for(s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+      s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
+      s32MarkerID = orxProfiler_GetNextMarkerID(s32MarkerID))
+  {
+    /* Is non unique? */
+    if(orxProfiler_IsUniqueMarker(s32MarkerID) == orxFALSE)
+    {
+      orxDOUBLE dTime;
+      orxCOLOR  stBarColor;
+
+      /* Gets its time */
+      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* Updates its horizontal scale */
+      stTransform.fScaleY = fHeight - orx2F(2.0f);
+      stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
+
+      /* Sets pixel's color */
+      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+
+      /* Draws bar */
+      orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Reinits scale */
+      stTransform.fScaleX = stTransform.fScaleY = orxCLAMP(fHeight * orx2F(1.0f/16.0f), orx2F(0.5f), orxFLOAT_1);
+
+      /* Draws its label */
+      orxString_NPrint(acLabel, 64, "%s [%.2lfms, %ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Updates position */
+      stTransform.fDstY += fHeight;
+
+      /* Updates color */
+      stColor.vHSL.fH += fHueDelta;
+    }
+  }
+
+  /* Deletes pixel texture */
+  orxTexture_Delete(pstTexture);
+}
+
 /** Renders a viewport
  * @param[in]   _pstObject        Object to render
  * @param[in]   _pstRenderBitmap  Bitmap surface where to render
@@ -1113,6 +1394,13 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
         }
       }
 
+      /* Should render profiler */
+      if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE)
+      {
+        /* Renders it */
+        orxRender_Home_RenderProfiler();
+      }
+
       /* Pops previous section */
       orxConfig_PopSection();
     }
@@ -1120,6 +1408,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Swap buffers */
     orxDisplay_Swap();
   }
+
+  /* Resets all markers */
+  orxProfiler_ResetAllMarkers();
 
   /* Done! */
   return;
