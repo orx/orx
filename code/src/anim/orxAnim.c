@@ -33,6 +33,7 @@
 #include "anim/orxAnim.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "core/orxConfig.h"
 #include "display/orxGraphic.h"
 #include "memory/orxMemory.h"
@@ -346,6 +347,7 @@ void orxFASTCALL orxAnim_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_SYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_GRAPHIC);

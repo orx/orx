@@ -34,6 +34,7 @@
 
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxLinkList.h"
@@ -112,6 +113,7 @@ void orxFASTCALL orxEvent_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_PROFILER);
 
   return;
 }

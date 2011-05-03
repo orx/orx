@@ -33,6 +33,7 @@
 #include "object/orxObject.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
@@ -218,6 +219,9 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
 {
   orxOBJECT *pstObject;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
+
   /* For all objects */
   for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
       pstObject != orxNULL;
@@ -340,6 +344,10 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return;
 }
 
@@ -355,6 +363,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);

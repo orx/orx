@@ -82,6 +82,9 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("Bounce_EventHandler");
+
   /* Checks */
   orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER) || (_pstEvent->eType == orxEVENT_TYPE_SOUND));
 
@@ -130,6 +133,9 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
     {
       orxSHADER_EVENT_PAYLOAD *pstPayload;
 
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("Bounce_EventHandler_Shader");
+
       /* Checks */
       orxASSERT(_pstEvent->eID == orxSHADER_EVENT_SET_PARAM);
 
@@ -158,6 +164,9 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         /* Updates its value */
         pstPayload->fValue = sfShaderAmplitude;
       }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
 
       break;
     }
@@ -206,6 +215,9 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       break;
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
@@ -368,7 +380,7 @@ static orxSTATUS orxBounce_Init()
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
     /* Starts recording with default settings */
-    orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
+    //! orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
 
     /* Registers callback */
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

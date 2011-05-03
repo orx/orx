@@ -33,6 +33,7 @@
 #include "object/orxFrame.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
 #include "object/orxStructure.h"
@@ -491,6 +492,7 @@ static orxINLINE void orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   /* Updates dirty status */
   orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_DIRTY);
 
+  /* Done! */
   return;
 }
 
@@ -574,6 +576,7 @@ void orxFASTCALL orxFrame_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_PROFILER);
 
   return;
 }
@@ -1081,8 +1084,14 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
     {
       case orxFRAME_SPACE_GLOBAL:
       {
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxFrame_ProcessDirty");
+
         /* Process dirty cell */
         orxFrame_ProcessDirty(_pstFrame);
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
 
         /* Gets requested position */
         pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
@@ -1144,8 +1153,14 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
       case orxFRAME_SPACE_GLOBAL:
       default:
       {
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxFrame_ProcessDirty");
+
         /* Process dirty cell */
         orxFrame_ProcessDirty(_pstFrame);
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
 
         /* Gets requested rotation */
         fAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
@@ -1191,8 +1206,14 @@ orxVECTOR *orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eS
 
       case orxFRAME_SPACE_GLOBAL:
       {
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxFrame_ProcessDirty");
+
         /* Process dirty cell */
         orxFrame_ProcessDirty(_pstFrame);
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
 
         /* Gets requested scale */
         pvResult = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);

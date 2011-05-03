@@ -35,6 +35,7 @@
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "core/orxClock.h"
@@ -348,6 +349,9 @@ static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, 
 {
   register orxANIMPOINTER *pstAnimPointer;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxAnimPointer_Update");
+
   /* Gets pointer */
   pstAnimPointer = orxANIMPOINTER(_pstStructure);
 
@@ -356,6 +360,9 @@ static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, 
 
   /* Computes animation pointer */
   orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return orxSTATUS_SUCCESS;
@@ -374,6 +381,7 @@ void orxFASTCALL orxAnimPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIMSET);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIM);

@@ -38,6 +38,7 @@
 #include "utils/orxString.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 
 
@@ -251,6 +252,7 @@ void orxFASTCALL orxBody_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PHYSICS);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_FRAME);
@@ -2250,6 +2252,9 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR 
  */
 void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxBody_ApplySimulationResult");
+
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
@@ -2379,6 +2384,9 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       orxPhysics_SetSpeed(_pstBody->pstData, &orxVECTOR_0);
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;

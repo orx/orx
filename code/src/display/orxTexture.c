@@ -33,6 +33,8 @@
 #include "display/orxTexture.h"
 
 #include "core/orxEvent.h"
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "display/orxDisplay.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
@@ -151,6 +153,7 @@ void orxFASTCALL orxTexture_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
@@ -374,6 +377,9 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
 {
   orxTEXTURE *pstTexture;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_zBitmapFileName != orxNULL);
@@ -435,6 +441,10 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return pstTexture;
 }
 

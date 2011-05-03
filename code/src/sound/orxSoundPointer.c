@@ -33,6 +33,7 @@
 #include "sound/orxSoundPointer.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
@@ -147,6 +148,9 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
   orxOBJECT    *pstObject;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundPointer_Update");
+
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstStructure);
@@ -223,6 +227,9 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -238,6 +245,7 @@ void orxFASTCALL orxSoundPointer_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_SOUND);

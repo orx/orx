@@ -33,6 +33,7 @@
 #include "object/orxSpawner.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
@@ -309,6 +310,9 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
   orxOBJECT  *pstObject;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSpawner_Update");
+
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstStructure);
@@ -356,6 +360,9 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -373,6 +380,7 @@ void orxFASTCALL orxSpawner_Setup()
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_FRAME);

@@ -35,7 +35,6 @@
 #include "memory/orxMemory.h"
 #include "core/orxSystem.h"
 #include "utils/orxString.h"
-#include "utils/orxHashTable.h"
 
 
 /** Module flags
@@ -85,7 +84,6 @@ typedef struct __orxPROFILER_MARKER_INFO_t
 typedef struct __orxPROFILER_STATIC_t
 {
   orxDOUBLE           dTimeStamp;
-  orxHASHTABLE       *pstMarkerIDTable;
   orxS32              s32MarkerCounter;
   orxS32              s32CurrentMarker;
   orxS32              s32MarkerPopToSkip;
@@ -120,9 +118,9 @@ void orxFASTCALL orxProfiler_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PROFILER, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_PROFILER, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_PROFILER, orxMODULE_ID_SYSTEM);
 
+  /* Done! */
   return;
 }
 
@@ -139,29 +137,17 @@ orxSTATUS orxFASTCALL orxProfiler_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstProfiler, sizeof(orxPROFILER_STATIC));
 
-    /* Creates marker ID table */
-    sstProfiler.pstMarkerIDTable  = orxHashTable_Create(orxPROFILER_KU32_MAX_MARKER_NUMBER, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Gets time stamp */
+    sstProfiler.dTimeStamp = orxSystem_GetTime();
 
-    /* Success? */
-    if(sstProfiler.pstMarkerIDTable != orxNULL)
-    {
-      /* Gets time stamp */
-      sstProfiler.dTimeStamp = orxSystem_GetTime();
+    /* Inits current marker */
+    sstProfiler.s32CurrentMarker = orxPROFILER_KS32_MARKER_ID_ROOT;
 
-      /* Inits current marker */
-      sstProfiler.s32CurrentMarker = orxPROFILER_KS32_MARKER_ID_ROOT;
+    /* Updates flags */
+    sstProfiler.u32Flags |= orxPROFILER_KU32_STATIC_FLAG_READY;
 
-      /* Updates flags */
-      sstProfiler.u32Flags |= orxPROFILER_KU32_STATIC_FLAG_READY;
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Failed to allocate marker ID table.");
-    }
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -183,9 +169,6 @@ void orxFASTCALL orxProfiler_Exit()
   if(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY)
   {
     orxS32 i;
-
-    /* Deletes marker ID table */
-    orxHashTable_Delete(sstProfiler.pstMarkerIDTable);
 
     /* For all existing markers */
     for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
@@ -212,23 +195,27 @@ void orxFASTCALL orxProfiler_Exit()
  */
 orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
 {
-  orxU32 u32MarkerKey;
   orxS32 s32MarkerID;
 
-  /* Gets name CRC as key */
-  u32MarkerKey = orxString_ToCRC(_zName);
+  /* For all markers */
+  for(s32MarkerID = 0; s32MarkerID < sstProfiler.s32MarkerCounter; s32MarkerID++)
+  {
+    /* Matches? */
+    if(!orxString_Compare(_zName, sstProfiler.astMarkerList[s32MarkerID].zName))
+    {
+      /* Stops */
+      break;
+    }
+  }
 
-  /* Can't find marker? */
-  if((s32MarkerID = (orxS32)orxHashTable_Get(sstProfiler.pstMarkerIDTable, u32MarkerKey)) == 0)
+  /* Not found? */
+  if(s32MarkerID >= sstProfiler.s32MarkerCounter)
   {
     /* Has free marker IDs? */
     if(sstProfiler.s32MarkerCounter < orxPROFILER_KU32_MAX_MARKER_NUMBER)
     {
-      /* Gets marker ID */
-      s32MarkerID = sstProfiler.s32MarkerCounter++;
-
-      /* Adds it to table */
-      orxHashTable_Add(sstProfiler.pstMarkerIDTable, u32MarkerKey, (void *)(s32MarkerID + 1));
+      /* Updates marker counter */
+      sstProfiler.s32MarkerCounter++;
 
       /* Inits it */
       sstProfiler.astMarkerList[s32MarkerID].dTimeStamp     = orx2D(0.0);
@@ -247,11 +234,6 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       /* Updates marker ID */
       s32MarkerID = orxPROFILER_KS32_MARKER_ID_NONE;
     }
-  }
-  else
-  {
-    /* Gets real ID */
-    s32MarkerID--;
   }
 
   /* Done! */

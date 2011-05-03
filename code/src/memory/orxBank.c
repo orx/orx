@@ -32,6 +32,7 @@
 
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
@@ -88,6 +89,9 @@ static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
   orxBANK_SEGMENT *pstSegment;  /* Pointer on the segment of memory */
   orxU32 u32SegmentSize;        /* Size of segment allocation */
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxBank_CreateSegment");
+
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
@@ -111,6 +115,10 @@ static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
     pstSegment->pSegmentData          = (void *)(((orxU8 *)pstSegment->pu32CellAllocationMap) + (_pstBank->u16SizeSegmentBitField * sizeof(orxU32)));
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return pstSegment;
 }
 
@@ -161,6 +169,7 @@ void orxFASTCALL orxBank_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_PROFILER);
 
   return;
 }
@@ -300,6 +309,9 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
   void *pCell = orxNULL;   /* Returned cell */
   orxBANK_SEGMENT *pstCurrentSegment;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxBank_Allocate");
+
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
@@ -395,6 +407,10 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return pCell;
 }
 
@@ -409,6 +425,9 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   orxU32 u32Index32Bits;        /* Index of 32 the bits data */
   orxU32 u32IndexBit;           /* Index of the bit in u32Index32Bits */
   orxU32 u32CellIndex;          /* Difference in pointers address */
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxBank_Free");
 
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
@@ -437,6 +456,12 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
 
   /* Updates bank counter */
   _pstBank->u32Counter--;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
 }
 
 /** Free all allocated cell from a bank
@@ -531,6 +556,9 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
   orxS32 s32IndexBit;           /* Index of the bit in u32Index32Bits */
   orxU32 u32CellIndex;          /* Difference in pointers address */
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxBank_GetNext");
+
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
@@ -577,6 +605,9 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
           /* Found? */
           if(u32Mask & (orxU32)1)
           {
+            /* Profiles */
+            orxPROFILER_POP_MARKER();
+
             /* The cell is on pSegment, on the bitfield u32Index32Bits and on the bit u32IndexBit */
             return (void *)(((orxU8 *)pstSegment->pSegmentData) + (((u32Index32Bits << 5) + s32IndexBit) * _pstBank->u32ElemSize));
           }
@@ -584,6 +615,9 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
       }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Not found */
   return orxNULL;

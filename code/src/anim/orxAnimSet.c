@@ -34,6 +34,7 @@
 
 #include "core/orxConfig.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -1169,6 +1170,9 @@ static orxSTATUS orxFASTCALL orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxAnimSet_ComputeLinkTable");
+
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
 
@@ -1241,6 +1245,9 @@ static orxSTATUS orxFASTCALL orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -1257,6 +1264,7 @@ void orxFASTCALL orxAnimSet_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_ANIM);
 

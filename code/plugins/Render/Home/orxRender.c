@@ -186,8 +186,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   stTransform.fScaleY   = fHeight - orx2F(2.0f);
 
   /* Selects grey colors */
-  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
-  orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
+  orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Draws top bar */
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -246,7 +246,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel's color */
-      stColor.vHSL.fH = orx2F(1.0f/3.0f) + fHueDelta * s32MarkerID;
+      stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -255,8 +255,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   }
 
   /* Updates vertical position */
-  stTransform.fDstX = orx2F(0.5f) * fScreenWidth + fBorder;
-  stTransform.fDstY = orxFLOAT_1;
+  stTransform.fDstX = fBorder;
+  stTransform.fDstY = orx2F(0.5f) * fScreenHeight + orxFLOAT_1;
 
   /* Resets scale */
   stTransform.fScaleX = stTransform.fScaleY = orxFLOAT_1;
@@ -287,7 +287,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Sets font's color */
-      stColor.vHSL.fH = orx2F(1.0f/3.0f) + fHueDelta * s32MarkerID;
+      stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
       /* Draws its label */
@@ -295,7 +295,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       {
         acLabel[i] = '+';
       }
-      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, "%s [%.2lfms]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime);
+      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2lfms]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -304,7 +304,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   }
 
   /* Updates marker's height */
-  fHeight = orx2F(0.5f) * fScreenHeight / orxS2F(s32MarkerCounter - s32UniqueCounter);
+  fHeight = orxMath_Floor(fScreenHeight / orxS2F(s32MarkerCounter - s32UniqueCounter));
   fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
 
   /* Updates color */
@@ -312,14 +312,14 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* Sets font's color */
-  orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
+  orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Gets hue delta */
-  fHueDelta = orx2F(1.0f/4.0f) / orxS2F(s32MarkerCounter);
+  fHueDelta = orx2F(0.8f/3.0f) / orxS2F(s32MarkerCounter);
 
   /* Updates vertical values */
-  stTransform.fDstX   = fBorder;
-  stTransform.fDstY   = orx2F(0.5f) * fScreenHeight + orxFLOAT_1;
+  stTransform.fDstX   = orx2F(0.5f) * fScreenWidth + fBorder;
+  stTransform.fDstY   = orxFLOAT_1;
   stTransform.fScaleY = fHeight - orx2F(2.0f);
 
   /* For all markers */
@@ -1262,6 +1262,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     orxVIEWPORT  *pstViewport;
     orxFLOAT      fWidth, fHeight;
 
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
+
     /* Clears screen */
     orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
 
@@ -1277,6 +1280,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Restores screen bitmap clipping */
     orxDisplay_GetScreenSize(&fWidth, &fHeight);
     orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
 
     /* Sends render stop event */
     orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);

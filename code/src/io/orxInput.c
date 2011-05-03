@@ -37,6 +37,7 @@
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxString.h"
@@ -367,6 +368,9 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
  */
 static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxInput_Update");
+
   /* Has current set? */
   if(sstInput.pstCurrentSet != orxNULL)
   {
@@ -624,6 +628,10 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return;
 }
 
@@ -810,6 +818,7 @@ void orxFASTCALL orxInput_Setup()
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_PROFILER);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_KEYBOARD);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_MOUSE);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_JOYSTICK);

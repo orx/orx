@@ -33,6 +33,7 @@
 #include "object/orxStructure.h"
 
 #include "memory/orxBank.h"
+#include "debug/orxProfiler.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxTree.h"
 
@@ -135,6 +136,7 @@ void orxFASTCALL orxStructure_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_PROFILER);
 
   return;
 }
@@ -355,6 +357,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
   register orxSTRUCTURE_STORAGE_NODE *pstNode;
   register orxSTRUCTURE *pstStructure = orxNULL;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxStructure_Create");
+
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
@@ -471,6 +476,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure type is not registered.");
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstStructure;

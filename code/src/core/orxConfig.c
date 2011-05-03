@@ -35,6 +35,7 @@
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
 #include "math/orxMath.h"
 #include "io/orxFile.h"
@@ -631,6 +632,9 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE *pstResult = orxNULL;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_GetValue");
+
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
 
@@ -640,6 +644,9 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
     /* Gets value */
     pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey));
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
@@ -1550,6 +1557,7 @@ void orxFASTCALL orxConfig_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);
 

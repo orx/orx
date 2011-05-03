@@ -297,6 +297,9 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
   b2Body                   *poBody;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxPhysics_Update");
+
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
@@ -430,6 +433,10 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     orxBank_Clear(sstPhysics.pstEventBank);
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return;
 }
 
