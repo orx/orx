@@ -361,9 +361,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
-
-  /* Resets all markers */
-  orxProfiler_ResetAllMarkers();
 }
 
 /** Renders a viewport
@@ -1397,6 +1394,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
         /* Renders it */
         orxRender_Home_RenderProfiler();
       }
+
+      /* Resets all profiler markers */
+      orxProfiler_ResetAllMarkers();
 
       /* Pops previous section */
       orxConfig_PopSection();
