@@ -165,7 +165,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fBorder = orx2F(0.01f) * fScreenWidth;
 
   /* Gets full marker size */
-  fWidth  = orx2F(0.5f) * fScreenWidth - fBorder;
+  fWidth  = orx2F(0.5f) * fScreenWidth - orx2F(2.0f) * fBorder;
   fHeight = orx2F(0.5f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
   fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
 
@@ -174,7 +174,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* Gets hue delta */
-  fHueDelta = orx2F(2.0f/3.0f) / orxS2F(s32UniqueCounter);
+  fHueDelta = orx2F(2.0f/3.0f) / orxS2F(s32MarkerCounter);
 
   /* Inits transform */
   stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
@@ -193,7 +193,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, 64, "Frame [%.2lfms]", dTotalTime);
+  orxString_NPrint(acLabel, 64, "-=orxPROFILER=-     Frame [%.2lfms]", orx2D(1000.0) * dTotalTime);
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orx2F(0.5f), orxFLOAT_1);
   orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -246,13 +246,11 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel's color */
+      stColor.vHSL.fH = orx2F(1.0f/3.0f) + fHueDelta * s32MarkerID;
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
       orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-
-      /* Updates color */
-      stColor.vHSL.fH += fHueDelta;
     }
   }
 
@@ -289,6 +287,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Sets font's color */
+      stColor.vHSL.fH = orx2F(1.0f/3.0f) + fHueDelta * s32MarkerID;
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
       /* Draws its label */
@@ -301,9 +300,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Updates position */
       stTransform.fDstY += pstMap->fCharacterHeight + orxFLOAT_1;
-
-      /* Updates color */
-      stColor.vHSL.fH += fHueDelta;
     }
   }
 
@@ -319,7 +315,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
 
   /* Gets hue delta */
-  fHueDelta = orx2F(1.0f/3.0f) / orxS2F(s32MarkerCounter - s32UniqueCounter);
+  fHueDelta = orx2F(1.0f/4.0f) / orxS2F(s32MarkerCounter);
 
   /* Updates vertical values */
   stTransform.fDstX   = fBorder;
@@ -345,6 +341,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
       /* Sets pixel's color */
+      stColor.vHSL.fH = fHueDelta * s32MarkerID;
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -359,14 +356,14 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Updates position */
       stTransform.fDstY += fHeight;
-
-      /* Updates color */
-      stColor.vHSL.fH += fHueDelta;
     }
   }
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
+
+  /* Resets all markers */
+  orxProfiler_ResetAllMarkers();
 }
 
 /** Renders a viewport
@@ -1402,9 +1399,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Swap buffers */
     orxDisplay_Swap();
   }
-
-  /* Resets all markers */
-  orxProfiler_ResetAllMarkers();
 
   /* Done! */
   return;
