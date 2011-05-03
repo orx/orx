@@ -52,6 +52,7 @@
 #define orxPROFILER_KU16_FLAG_NONE                0x0000
 
 #define orxPROFILER_KU16_FLAG_UNIQUE              0x0001
+#define orxPROFILER_KU16_FLAG_PUSHED              0x0002
 
 #define orxPROFILER_KU16_MASK_ALL                 0xFFFF
 
@@ -87,9 +88,9 @@ typedef struct __orxPROFILER_STATIC_t
   orxHASHTABLE       *pstMarkerIDTable;
   orxS32              s32MarkerCounter;
   orxS32              s32CurrentMarker;
-  orxS32              u32CurrentMarkerDepth;
   orxS32              s32MarkerPopToSkip;
   orxU32              u32Flags;
+  orxU16              u16CurrentMarkerDepth;
 
   orxPROFILER_MARKER  astMarkerList[orxPROFILER_KU32_MAX_MARKER_NUMBER];
 
@@ -236,7 +237,7 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       sstProfiler.astMarkerList[s32MarkerID].u32PushCounter = 0;
       sstProfiler.astMarkerList[s32MarkerID].zName          = orxString_Duplicate(_zName);
       sstProfiler.astMarkerList[s32MarkerID].u16Depth       = 0;
-      sstProfiler.astMarkerList[s32MarkerID].u16Flags       = orxPROFILER_KU16_FLAG_NONE;
+      sstProfiler.astMarkerList[s32MarkerID].u16Flags       = orxPROFILER_KU16_FLAG_UNIQUE;
     }
     else
     {
@@ -259,9 +260,8 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
 
 /** Pushes a marker (on a stack) and starts a timer for it
  * @param[in] _s32MarkerID      ID of the marker to push
- * @param[in] _bUnique          Marker can only be pushed once before being reset but its depth/parenting info will be kept
  */
-void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID, orxBOOL _bUnique)
+void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
 {
   /* Valid marker ID? */
   if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
@@ -272,54 +272,66 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID, orxBOOL _bUnique)
     pstMarker = &(sstProfiler.astMarkerList[_s32MarkerID]);
 
     /* Not already pushed? */
-    if(pstMarker->s32ParentID == orxPROFILER_KS32_MARKER_ID_NONE)
+    if(!orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED))
     {
-      /* Not unique or no cumulated time? */
-      if((_bUnique == orxFALSE) || (pstMarker->dCumulatedTime == orx2D(0.0)))
+      /* Is unique and already pushed? */
+      if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE) && (pstMarker->u32PushCounter != 0))
       {
-        /* Uniquely pushed? */
-        if(_bUnique != orxFALSE)
+        orxS32 i;
+
+        /* Updates flags */
+        orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED, orxPROFILER_KU16_FLAG_UNIQUE);
+
+        /* For all markers */
+        for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
         {
-          /* Stores its push depth */
-          pstMarker->u16Depth = (orxU16)++sstProfiler.u32CurrentMarkerDepth;
+          orxPROFILER_MARKER *pstTestMarker;
 
-          /* Updates flags */
-          orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE, orxPROFILER_KU16_MASK_ALL);
+          /* Gets it */
+          pstTestMarker = &(sstProfiler.astMarkerList[i]);
+
+          /* Is child of current marker? */
+          if(pstTestMarker->s32ParentID == _s32MarkerID)
+          {
+            /* Updates its depth */
+            pstTestMarker->u16Depth--;
+          }
         }
-        else
-        {
-          /* Clears its push depth */
-          pstMarker->u16Depth = 0;
-
-          /* Updates flags */
-          orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_NONE, orxPROFILER_KU16_MASK_ALL);
-        }
-
-        /* Updates its push counter */
-        pstMarker->u32PushCounter++;
-
-        /* Updates parent marker */
-        pstMarker->s32ParentID = sstProfiler.s32CurrentMarker;
-
-        /* Updates current marker */
-        sstProfiler.s32CurrentMarker = _s32MarkerID;
-
-        /* Gets time stamp */
-        pstMarker->dTimeStamp = orxSystem_GetTime();
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push unique marker <%s> as it has previously been pushed.", pstMarker->zName, _s32MarkerID);
-
-        /* Updates marker pops to skip */
-        sstProfiler.s32MarkerPopToSkip++;
+        /* Updates flags */
+        orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED, orxPROFILER_KU16_FLAG_NONE);
       }
+
+      /* Is unique? */
+      if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))
+      {
+        /* Stores its push depth */
+        pstMarker->u16Depth = ++sstProfiler.u16CurrentMarkerDepth;
+      }
+      else
+      {
+        /* Clears push depth */
+        pstMarker->u16Depth = 0;
+      }
+
+      /* Updates its push counter */
+      pstMarker->u32PushCounter++;
+
+      /* Updates parent marker */
+      pstMarker->s32ParentID = sstProfiler.s32CurrentMarker;
+
+      /* Updates current marker */
+      sstProfiler.s32CurrentMarker = _s32MarkerID;
+
+      /* Gets time stamp */
+      pstMarker->dTimeStamp = orxSystem_GetTime();
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker <%s> [ID: %ld] as it has already been pushed.", pstMarker->zName, _s32MarkerID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker <%s> [ID: %ld] as it's already currently pushed.", pstMarker->zName, _s32MarkerID);
 
       /* Updates marker pops to skip */
       sstProfiler.s32MarkerPopToSkip++;
@@ -364,17 +376,20 @@ void orxFASTCALL orxProfiler_PopMarker()
       /* Pops previous marker */
       sstProfiler.s32CurrentMarker = pstMarker->s32ParentID;
 
-      /* Not unique? */
-      if(!orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))
+      /* Is unique? */
+      if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))
+      {
+        /* Updates push depth */
+        sstProfiler.u16CurrentMarkerDepth--;
+      }
+      else
       {
         /* Cleans marker's parent ID */
         pstMarker->s32ParentID = orxPROFILER_KS32_MARKER_ID_NONE;
       }
-      else
-      {
-        /* Updates push depth */
-        sstProfiler.u32CurrentMarkerDepth--;
-      }
+
+      /* Updates flags */
+      orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_NONE, orxPROFILER_KU16_FLAG_PUSHED);
     }
     else
     {
@@ -436,7 +451,7 @@ orxS32 orxFASTCALL orxProfiler_GetMarkerCounter()
   return sstProfiler.s32MarkerCounter;
 }
 
-/** Gets the next registered marker ID (including uniquely pushed markers)
+/** Gets the next registered marker ID
  * @param[in] _s32MarkerID      ID of the current marker, orxPROFILER_KS32_MARKER_ID_NONE to get the first one
  * @return Next registered marker's ID / orxPROFILER_KS32_MARKER_ID_NONE if the current marker was the last one
  */
@@ -581,7 +596,7 @@ orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
   return u32Result;
 }
 
-/** Has the marker been uniquely pushed
+/** Has the marker been uniquely pushed?
  * @param[in] _s32MarkerID      Concerned marker ID
  * @return orxTRUE / orxFALSE
  */
@@ -650,50 +665,6 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
 
   /* Done! */
   return dResult;
-}
-
-/** Gets the uniquely pushed marker's parent ID
- * @param[in] _s32MarkerID      Concerned marker ID
- * @return Marker's parent ID / orxPROFILER_KS32_MARKER_ID_NONE if this marker hasn't been uniquely pushed
- */
-orxS32 orxFASTCALL orxProfiler_GetUniqueMarkerParent(orxS32 _s32MarkerID)
-{
-  orxS32 s32Result;
-
-  /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
-  {
-    orxPROFILER_MARKER *pstMarker;
-
-    /* Gets marker */
-    pstMarker = &(sstProfiler.astMarkerList[_s32MarkerID]);
-
-    /* Is unique? */
-    if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))
-    {
-      /* Updates result */
-      s32Result = pstMarker->s32ParentID;
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get parent ID of marker <%s> [ID: %ld] as it hasn't been uniquely pushed.", pstMarker->zName, _s32MarkerID);
-
-      /* Updates result */
-      s32Result = orxPROFILER_KS32_MARKER_ID_NONE;
-    }
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
-
-    /* Updates result */
-    s32Result = orxPROFILER_KS32_MARKER_ID_NONE;
-  }
-
-  /* Done! */
-  return s32Result;
 }
 
 /** Gets the uniquely pushed marker's depth, 1 being the depth of the top level

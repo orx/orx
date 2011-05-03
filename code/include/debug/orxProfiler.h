@@ -68,29 +68,15 @@
       s32ProfilerID = orxProfiler_GetIDFromName(NAME);  \
     }                                                   \
                                                         \
-    orxProfiler_PushMarker(s32ProfilerID, orxFALSE);    \
+    orxProfiler_PushMarker(s32ProfilerID);              \
   } while(orxFALSE)
 
-  #define orxPROFILER_PUSH_UNIQUE_MARKER(NAME)          \
-  do                                                    \
-  {                                                     \
-    static orxS32 s32ProfilerID = -1;                   \
-                                                        \
-    if(s32ProfilerID < 0)                               \
-    {                                                   \
-      s32ProfilerID = orxProfiler_GetIDFromName(NAME);  \
-    }                                                   \
-                                                        \
-    orxProfiler_PushMarker(s32ProfilerID, orxTRUE);     \
-  } while(orxFALSE)
 
   #define orxPROFILER_POP_MARKER()                  orxProfiler_PopMarker();
 
 #else /* __orxPROFILER__ */
 
   #define orxPROFILER_PUSH_MARKER(NAME)
-
-  #define orxPROFILER_PUSH_UNIQUE_MARKER(NAME)
 
   #define orxPROFILER_POP_MARKER()
 
@@ -124,9 +110,8 @@ extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetIDFromName(cons
 
 /** Pushes a marker (on a stack) and starts a timer for it
  * @param[in] _s32MarkerID      ID of the marker to push
- * @param[in] _bUnique          Marker can only be pushed once before being reset but its depth/parenting info will be kept
  */
-extern orxDLLAPI void orxFASTCALL                 orxProfiler_PushMarker(orxS32 _s32MarkerID, orxBOOL _bUnique);
+extern orxDLLAPI void orxFASTCALL                 orxProfiler_PushMarker(orxS32 _s32MarkerID);
 
 /** Pops a marker (from the stack) and updates its cumulated time (using the last marker push time)
  */
@@ -149,7 +134,7 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetResetTime();
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetMarkerCounter();
 
 
-/** Gets the next registered marker ID (including uniquely pushed markers)
+/** Gets the next registered marker ID
  * @param[in] _s32MarkerID      ID of the current marker, orxPROFILER_KS32_MARKER_ID_NONE to get the first one
  * @return Next registered marker's ID / orxPROFILER_KS32_MARKER_ID_NONE if the current marker was the last one
  */
@@ -181,7 +166,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL      orxProfiler_GetMarkerName(orxS
 extern orxDLLAPI orxU32 orxFASTCALL               orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID);
 
 
-/** Has the marker been uniquely pushed
+/** Has the marker been uniquely pushed?
  * @param[in] _s32MarkerID      Concerned marker ID
  * @return orxTRUE / orxFALSE
  */
@@ -193,12 +178,6 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_IsUniqueMarker(orx
  * @return Marker's start time / 0.0
  */
 extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID);
-
-/** Gets the uniquely pushed marker's parent ID
- * @param[in] _s32MarkerID      Concerned marker ID
- * @return Marker's parent ID / orxPROFILER_KS32_MARKER_ID_NONE if this marker hasn't been uniquely pushed
- */
-extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetUniqueMarkerParent(orxS32 _s32MarkerID);
 
 /** Gets the uniquely pushed marker's depth, 1 being the depth of the top level
  * @param[in] _s32MarkerID      Concerned marker ID
