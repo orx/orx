@@ -15,7 +15,7 @@
 #define APIENTRYP APIENTRY *
 #endif
 
-typedef char GLcharOES;
+typedef char GLchar;
 typedef unsigned int GLhandleOES;
 
 /* Shaders */

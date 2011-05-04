@@ -33,6 +33,8 @@
 
 #include "orxPluginAPI.h"
 
+#include <jni.h>
+
 JavaVM* globalVM;
 JNIEnv* globalEnv;
 
