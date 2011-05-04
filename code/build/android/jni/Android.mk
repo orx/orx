@@ -16,24 +16,33 @@ Box2D := $(LOCAL_PATH)/../../../../extern/Box2D_2.1.3
 SOIL := $(LOCAL_PATH)/../../../../extern/SOIL
 Dlmalloc := $(LOCAL_PATH)/../../../../extern/dlmalloc
 
-LOCAL_CFLAGS := -I$(LOCAL_PATH)/../../../include \
--I$(Box2D)/include \
--I$(SOIL)/include \
--I$(LOCAL_PATH)/include \
--D__orxANDROID__ \
--DNO_MALLINFO=1 \
--I$(Dlmalloc) 
-#-Wall
+#LOCAL_CFLAGS := -I$(LOCAL_PATH)/../../../include \
+#-I$(Box2D)/include \
+#-I$(SOIL)/include \
+#-I$(LOCAL_PATH)/include \
+#-D__orxANDROID__ \
+#-DNO_MALLINFO=1 \
+#-I$(Dlmalloc) 
 
-LOCAL_CPPFLAGS := -I$(LOCAL_PATH)/../../../include \
--I$(Box2D)/include \
--I$(SOIL)/include \
--I$(LOCAL_PATH)/include \
--I$(Dlmalloc) \
--D__orxANDROID__ \
--DNO_MALLINFO=1 \
--I$(Dlmalloc) 
-#-Wall
+#LOCAL_CPPFLAGS := -D__orxANDROID__ \
+#-DNO_MALLINFO=1 \
+#-I$(LOCAL_PATH)/../../../include \
+#-I$(Box2D)/include \
+#-I$(SOIL)/include \
+#-I$(LOCAL_PATH)/include \
+#-I$(Dlmalloc) \
+
+LOCAL_CPPFLAGS := -D__orxANDROID__ \
+-DNO_MALLINFO=1
+
+LOCAL_CFLAGS := -D__orxANDROID__ \
+-DNO_MALLINFO=1
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../include
+LOCAL_C_INCLUDES += $(Box2D)/include
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/include
+LOCAL_C_INCLUDES += $(SOIL)/include
+LOCAL_C_INCLUDES += $(Dlmalloc)
 
 ifeq ($(ORX_DEBUG),true)
 LOCAL_CFLAGS += -D__orxDEBUG__
