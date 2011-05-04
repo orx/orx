@@ -104,7 +104,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
   orxU32                  u32CurrentDepth, u32MaxDepth;
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta;
-  orxDOUBLE               dStartTime, dTotalTime, dRecTotalTime;
+  orxDOUBLE               dStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
@@ -156,7 +156,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
   dRecTotalTime = orx2D(1.0) / dTotalTime;
-  dStartTime    = orxSystem_GetTime() - dTotalTime;
 
   /* Gets screen size */
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
@@ -231,6 +230,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Gets its time */
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* First one? */
+      if(dStartTime == orx2D(0.0))
+      {
+        /* Updates start time */
+        dStartTime = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
+      }
 
       /* Updates its horizontal scale */
       stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
@@ -375,6 +381,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxRender_RenderObject");
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -694,6 +703,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
     orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid graphic or non-2d graphic detected.");
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -703,6 +715,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
  */
 static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxRender_RenderViewport");
+
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
@@ -1235,6 +1250,10 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport is not enabled.");
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return;
 }
 

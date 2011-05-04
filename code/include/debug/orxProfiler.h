@@ -47,6 +47,10 @@
 #include "orxInclude.h"
 
 
+/* *** Uncomment the line below to enable orx profiling in non debug builds *** */
+//#define __orxPROFILER__
+
+
 #ifdef __orxDEBUG__
 
   #define __orxPROFILER__

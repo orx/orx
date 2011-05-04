@@ -245,6 +245,9 @@ PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
 
 static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_Update");
+
   /* Has focus? */
   if((glfwGetWindowParam(GLFW_ACTIVE) != GL_FALSE)
   && (glfwGetWindowParam(GLFW_ICONIFIED) == GL_FALSE))
@@ -278,6 +281,9 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
     /* Sends system close event */
     orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;

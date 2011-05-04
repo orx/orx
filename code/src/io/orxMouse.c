@@ -56,6 +56,7 @@ void orxFASTCALL orxMouse_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_DISPLAY);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_CONFIG);
 

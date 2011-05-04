@@ -485,7 +485,10 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     dTime = sstProfiler.astMarkerList[i].dTimeStamp;
 
     /* Is better candidate? */
-    if((dTime > dPreviousTime) && (dTime < dBestTime))
+    if((((dTime == dPreviousTime)
+       && (i > _s32MarkerID))
+     || (dTime > dPreviousTime))
+    && (dTime < dBestTime))
     {
       /* Updates result */
       s32Result = i;

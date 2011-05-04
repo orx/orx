@@ -141,6 +141,9 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
  */
 static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxMouse_GLFW_Update");
+
   /* Should clear wheel? */
   if(sstMouse.bClearWheel != orxFALSE)
   {
@@ -160,6 +163,9 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
 
   /* Clears internal wheel move */
   sstMouse.fInternalWheelMove = orxFLOAT_0;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
