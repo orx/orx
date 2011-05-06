@@ -170,7 +170,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL      orxProfiler_GetMarkerName(orxS
 extern orxDLLAPI orxU32 orxFASTCALL               orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID);
 
 
-/** Has the marker been uniquely pushed?
+/** Has the marker been pushed by a unique parent?
  * @param[in] _s32MarkerID      Concerned marker ID
  * @return orxTRUE / orxFALSE
  */

@@ -222,7 +222,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
     /* Is unique? */
-    if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE))
     {
       orxDOUBLE dTime;
       orxCOLOR  stBarColor;
@@ -296,12 +296,33 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
-      /* Draws its label */
-      for(i = 0; i < u32Depth; i++)
+      /* Has been pushed? */
+      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
       {
-        acLabel[i] = '+';
+        /* Sets font's color */
+        stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
+        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+
+        /* Adds depth markers */
+        for(i = 0; i < u32Depth; i++)
+        {
+          acLabel[i] = '+';
+        }
       }
-      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2lfms]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime);
+      else
+      {
+        /* Sets font's color */
+        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x99, 0x99, 0x99, 0xCC));
+
+        /* Adds depth markers */
+        acLabel[0] = '-';
+
+        /* Updates depth */
+        u32Depth = 1;
+      }
+
+      /* Draws its label */
+      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2lfms, %ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -337,21 +358,32 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     if(orxProfiler_IsUniqueMarker(s32MarkerID) == orxFALSE)
     {
       orxDOUBLE dTime;
-      orxCOLOR  stBarColor;
 
       /* Gets its time */
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
 
-      /* Updates its horizontal scale */
-      stTransform.fScaleY = fHeight - orx2F(2.0f);
-      stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
+      /* Has been pushed? */
+      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+      {
+        orxCOLOR  stBarColor;
 
-      /* Sets pixel's color */
-      stColor.vHSL.fH = fHueDelta * s32MarkerID;
-      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+        /* Updates its horizontal scale */
+        stTransform.fScaleY = fHeight - orx2F(2.0f);
+        stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
-      /* Draws bar */
-      orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+        /* Updates display color */
+        stColor.vHSL.fH = fHueDelta * s32MarkerID;
+        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
+
+        /* Draws bar */
+        orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      }
+      else
+      {
+        /* Updates display color */
+        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x99, 0x99, 0x99, 0xCC));
+      }
 
       /* Reinits scale */
       stTransform.fScaleX = stTransform.fScaleY = orxCLAMP(fHeight * orx2F(1.0f/16.0f), orx2F(0.5f), orxFLOAT_1);

@@ -52,6 +52,7 @@
 
 #define orxPROFILER_KU16_FLAG_UNIQUE              0x0001
 #define orxPROFILER_KU16_FLAG_PUSHED              0x0002
+#define orxPROFILER_KU16_FLAG_INIT                0x0004
 
 #define orxPROFILER_KU16_MASK_ALL                 0xFFFF
 
@@ -68,6 +69,7 @@
  */
 typedef struct __orxPROFILER_MARKER_INFO_t
 {
+  orxDOUBLE           dFirstTimeStamp;
   orxDOUBLE           dTimeStamp;
   orxDOUBLE           dCumulatedTime;
   orxS32              s32ParentID;
@@ -218,6 +220,7 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       sstProfiler.s32MarkerCounter++;
 
       /* Inits it */
+      sstProfiler.astMarkerList[s32MarkerID].dFirstTimeStamp= orx2D(0.0);
       sstProfiler.astMarkerList[s32MarkerID].dTimeStamp     = orx2D(0.0);
       sstProfiler.astMarkerList[s32MarkerID].dCumulatedTime = orx2D(0.0);
       sstProfiler.astMarkerList[s32MarkerID].s32ParentID    = orxPROFILER_KS32_MARKER_ID_NONE;
@@ -256,13 +259,19 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
     /* Not already pushed? */
     if(!orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED))
     {
-      /* Is unique and already pushed? */
-      if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE) && (pstMarker->u32PushCounter != 0))
+      orxDOUBLE dTimeStamp;
+      orxBOOL   bFirstTime;
+
+      /* Updates first time status */
+      bFirstTime = orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_INIT) ? orxFALSE : orxTRUE;
+
+      /* Is unique and already by someone else pushed? */
+      if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE) && (pstMarker->u32PushCounter != 0) && (pstMarker->s32ParentID != sstProfiler.s32CurrentMarker))
       {
         orxS32 i;
 
         /* Updates flags */
-        orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED, orxPROFILER_KU16_FLAG_UNIQUE);
+        orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED|orxPROFILER_KU16_FLAG_INIT, orxPROFILER_KU16_FLAG_UNIQUE);
 
         /* For all markers */
         for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
@@ -283,7 +292,7 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       else
       {
         /* Updates flags */
-        orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED, orxPROFILER_KU16_FLAG_NONE);
+        orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED|orxPROFILER_KU16_FLAG_INIT, orxPROFILER_KU16_FLAG_NONE);
       }
 
       /* Is unique? */
@@ -308,7 +317,17 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       sstProfiler.s32CurrentMarker = _s32MarkerID;
 
       /* Gets time stamp */
-      pstMarker->dTimeStamp = orxSystem_GetTime();
+      dTimeStamp = orxSystem_GetTime();
+
+      /* First time? */
+      if(bFirstTime != orxFALSE)
+      {
+        /* Stores initial time */
+        pstMarker->dFirstTimeStamp = dTimeStamp;
+      }
+
+      /* Stores time stamp */
+      pstMarker->dTimeStamp = dTimeStamp;
     }
     else
     {
@@ -364,11 +383,6 @@ void orxFASTCALL orxProfiler_PopMarker()
         /* Updates push depth */
         sstProfiler.u16CurrentMarkerDepth--;
       }
-      else
-      {
-        /* Cleans marker's parent ID */
-        pstMarker->s32ParentID = orxPROFILER_KS32_MARKER_ID_NONE;
-      }
 
       /* Updates flags */
       orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_NONE, orxPROFILER_KU16_FLAG_PUSHED);
@@ -396,11 +410,13 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
     pstMarker = &(sstProfiler.astMarkerList[i]);
 
     /* Resets it */
+    pstMarker->dFirstTimeStamp= orx2D(0.0);
     pstMarker->dTimeStamp     = orx2D(0.0);
     pstMarker->dCumulatedTime = orx2D(0.0);
     pstMarker->s32ParentID    = orxPROFILER_KS32_MARKER_ID_NONE;
     pstMarker->u32PushCounter = 0;
     pstMarker->u16Depth       = 0;
+    orxFLAG_SET(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_NONE, orxPROFILER_KU16_FLAG_PUSHED|orxPROFILER_KU16_FLAG_INIT);
   }
 
   /* Updates time stamp*/
@@ -581,7 +597,7 @@ orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
   return u32Result;
 }
 
-/** Has the marker been uniquely pushed?
+/** Has the marker been pushed by a unique parent?
  * @param[in] _s32MarkerID      Concerned marker ID
  * @return orxTRUE / orxFALSE
  */
@@ -628,7 +644,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
     if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))
     {
       /* Updates result */
-      dResult = pstMarker->dTimeStamp;
+      dResult = pstMarker->dFirstTimeStamp;
     }
     else
     {
