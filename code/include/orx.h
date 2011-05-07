@@ -291,7 +291,7 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
           orxS32 s32Ident, s32Events;
           struct android_poll_source *pstSource;
   
-          while((s32Ident = ALooper_pollAll((s32Animating || pstApp->destroyRequested) ? 0 : -1, NULL, &s32Events, (void **)&pstSource)) >= 0)
+          while((s32Ident = ALooper_pollAll((s32Animating || pstApp->destroyRequested) ? 0 : -1, NULL, (int*) &s32Events, (void **)&pstSource)) >= 0)
           {
              /* Processes this event */
              if(pstSource != NULL)

@@ -9,6 +9,7 @@ static const char  *zOrxCommandLineKey = "orx.cmd_line";
 orxS32              s32Animating;
 struct android_app *pstApp;
 
+ASensorManager     *poSensorManager;
 const ASensor      *poAccelerometerSensor;
 ASensorEventQueue  *poSensorEventQueue;
 JNIEnv             *poJEnv;

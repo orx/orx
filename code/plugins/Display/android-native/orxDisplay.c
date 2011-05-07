@@ -210,8 +210,8 @@ extern ASensorEventQueue   *poSensorEventQueue;
 
 #ifdef	__cplusplus
 extern "C" {
-  void acquireWakeLock();
-  void releaseWakeLock();
+  void orxAndroid_AcquireWakeLock();
+  void orxAndroid_ReleaseWakeLock();
 }
 #endif
 
@@ -2328,7 +2328,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
         s32Animating = 1;
 
-				acquireWakeLock();
+				orxAndroid_AcquireWakeLock();
     }
     else
     {
@@ -2373,7 +2373,7 @@ void orxFASTCALL orxDisplay_Android_Exit()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
     
-    releaseWakeLock();
+    orxAndroid_ReleaseWakeLock();
   }
 
   /* Done! */
