@@ -290,28 +290,33 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
           /* Reads all pending events */
           orxS32 s32Ident, s32Events;
           struct android_poll_source *pstSource;
-  
-          while((s32Ident = ALooper_pollAll((s32Animating || pstApp->destroyRequested) ? 0 : -1, NULL, (int*) &s32Events, (void **)&pstSource)) >= 0)
+
+          /* For all system events */
+          while((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp->destroyRequested != 0)) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
           {
-             /* Processes this event */
+             /* Valid source? */
              if(pstSource != NULL)
              {
+               /* Process its event */
                pstSource->process(pstApp, pstSource);
              }
 
             /* If a sensor has data, process it now */
             if(s32Ident == LOOPER_ID_USER)
             {
+              /* Has accelerometer? */
               if(poAccelerometerSensor != NULL)
               {
               	orxSYSTEM_EVENT_PAYLOAD stPayload;
+                ASensorEvent            oEvent;
 
                 /* Inits event's payload */
                 orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
-                ASensorEvent oEvent;
+                /* For all accelerometer events */
                 while(ASensorEventQueue_getEvents(poSensorEventQueue, &oEvent, 1) > 0)
                 {
+                  /* Inits event */
                   stPayload.stAccelerometer.pAccelerometer = &oEvent;
                   stPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
                   stPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
@@ -324,7 +329,8 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
             }
           }
 
-          if(s32Animating || pstApp->destroyRequested)
+          /* Should update? */
+          if((s32Animating != 0) || (pstApp->destroyRequested != 0))
           {
             /* Runs the engine */
             eMainStatus = _pfnRun();
@@ -334,7 +340,7 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
           }
         }
       }
-      
+
       /* Removes event handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
