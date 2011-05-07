@@ -42,11 +42,11 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxANDROID__)
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   #include <dlfcn.h>
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxANDROID__ */
+#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   #ifdef __orxWINDOWS__
 
@@ -55,7 +55,7 @@
 
   #endif /* __orxWINDOWS__ */
 
-#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxANDROID__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 
 /** Platform dependent type & function defines

@@ -113,8 +113,29 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     /* Updates result */
     dResult = orx2D(GetTickCount()) * orx2D(0.001);
   }
-
+  
 #else /* __orxWINDOWS__ */
+
+  #ifdef __orxANDROID_NATIVE__
+
+  struct timespec stCurrentTime;
+  
+  /* Gets current time */
+  if(clock_gettime(CLOCK_MONOTONIC, &stCurrentTime) == 0)
+  {
+    /* Updates result */
+    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
+  }  
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
+
+    /* Updates result */
+    dResult = orx2D(0.0);
+  }
+
+  #else /* __orxANDROID_NATIVE__ */
 
   struct timeval stCurrentTime;
 
@@ -130,8 +151,10 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
 
     /* Updates result */
-    dResult = 0.0;
+    dResult = orx2D(0.0);
   }
+
+  #endif /* __orxANDROID_NATIVE__ */
 
 #endif /* __orxWINDOWS__ */
 

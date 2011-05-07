@@ -104,7 +104,7 @@
 
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__) && !defined(__orxIPHONE__) && !defined(__orxANDROID__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__) && !defined(__orxWII__) && !defined(__orxIPHONE__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -143,7 +143,7 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__/__orxANDROID__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__/__orxANDROID__/__orxANDROID_NATIVE__)"
 
   #endif
 
@@ -218,9 +218,9 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / GP2X / Wii / iPhone */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
+    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
       #define orxFASTCALL
 
@@ -228,7 +228,7 @@
 
       #define orxCDECL
 
-    #else /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */
+    #else /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -244,7 +244,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */
+    #endif /* __orxGP2X__ || __orxPPC__ || __orxX86_64__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -266,14 +266,14 @@
     /** The null address */
     #define orxNULL             (0)
 
-    #if defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
+    #if defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
       /* Wii and IPhone versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
-    #endif /* __orxWII__ || __orxIPHONE__ */
+    #endif /* __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxWINDOWS__ */
 

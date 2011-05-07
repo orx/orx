@@ -111,7 +111,7 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       UIAcceleration  *poAcceleration;
     };
   };
-#elif defined(__orxANDROID__)
+#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
   {
     /* UI event */

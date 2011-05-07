@@ -34,12 +34,12 @@
 
 #include <stdlib.h>
 
-#ifdef __orxANDROID__
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-  #include "jni.h"
-  #include "android/log.h"
+  #include <jni.h>
+  #include <android/log.h>
 
-#endif /* __orxANDROID__ */
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE */
 
 
 #ifdef __orxMSVC__
@@ -231,7 +231,7 @@ void orxFASTCALL _orxDebug_Exit()
 void orxFASTCALL _orxDebug_Break()
 {
   /* Windows / Linux / Mac / GP2X / Wii / IPhone / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Compiler specific */
 
@@ -253,6 +253,10 @@ void orxFASTCALL _orxDebug_Break()
 
       //! TODO: Add Android software break code
 
+    #elif defined(__orxANDROID_NATIVE__)
+
+      //! TODO: Add native Android software break code
+
     #else
 
       #ifdef __orxPPC__
@@ -273,7 +277,7 @@ void orxFASTCALL _orxDebug_Break()
     __debugbreak();
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   return;
 }
@@ -396,7 +400,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   /* Console Display? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
   {
-#ifdef __orxANDROID__
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
