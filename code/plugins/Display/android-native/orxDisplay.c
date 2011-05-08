@@ -2328,7 +2328,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
         s32Animating = 1;
 
-				orxAndroid_AcquireWakeLock();
+        orxAndroid_AcquireWakeLock();
     }
     else
     {
