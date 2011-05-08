@@ -523,10 +523,6 @@ static orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
   return pstResult;
 }
 
-/** Forward declaration of orxConfig_GetValue
- */
-static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey);
-
 /** Gets a value from the current section, using inheritance
  * @param[in] _u32KeyID         Entry key ID
  * @return                      orxCONFIG_VALUE / orxNULL
@@ -567,7 +563,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
         /* Gets its inherited value */
-        pstResult = orxConfig_GetValue(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
+        pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1));
 
         /* Cut the name */
         *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
