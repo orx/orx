@@ -62,21 +62,21 @@
  */
 #ifdef __orxPROFILER__
 
-  #define orxPROFILER_PUSH_MARKER(NAME)                 \
-  do                                                    \
-  {                                                     \
-    static orxS32 s32ProfilerID = -1;                   \
-                                                        \
-    if(s32ProfilerID < 0)                               \
-    {                                                   \
-      s32ProfilerID = orxProfiler_GetIDFromName(NAME);  \
-    }                                                   \
-                                                        \
-    orxProfiler_PushMarker(s32ProfilerID);              \
+  #define orxPROFILER_PUSH_MARKER(NAME)                           \
+  do                                                              \
+  {                                                               \
+    static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;\
+                                                                  \
+    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)    \
+    {                                                             \
+      s32ProfilerID = orxProfiler_GetIDFromName(NAME);            \
+    }                                                             \
+                                                                  \
+    orxProfiler_PushMarker(s32ProfilerID);                        \
   } while(orxFALSE)
 
 
-  #define orxPROFILER_POP_MARKER()                  orxProfiler_PopMarker();
+  #define orxPROFILER_POP_MARKER()                orxProfiler_PopMarker();
 
 #else /* __orxPROFILER__ */
 
@@ -89,7 +89,6 @@
 
 /** Defines
  */
-#define orxPROFILER_KU32_MAX_MARKER_NUMBER        256
 #define orxPROFILER_KS32_MARKER_ID_NONE           -1
 
 
@@ -110,6 +109,12 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_Exit();
  * @return Marker's ID / orxPROFILER_KS32_MARKER_ID_NONE
  */
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetIDFromName(const orxSTRING _zName);
+
+/** Is the given marker valid? (Useful when storing markers in static variables and still allow normal hot restart)
+ * @param[in] _s32MarkerID      ID of the marker to test
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_IsMarkerIDValid(orxS32 _s32MarkerID);
 
 
 /** Pushes a marker (on a stack) and starts a timer for it

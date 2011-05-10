@@ -173,7 +173,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* Gets hue delta */
-  fHueDelta = orx2F(2.0f/3.0f) / orxS2F(s32MarkerCounter);
+  fHueDelta = orx2F(2.0f) / orxS2F(s32MarkerCounter + 1);
 
   /* Inits transform */
   stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
@@ -252,7 +252,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel's color */
-      stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
+      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -292,15 +292,11 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       /* Updates current depth */
       u32CurrentDepth = u32Depth;
 
-      /* Sets font's color */
-      stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
-      orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
-
       /* Has been pushed? */
       if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
       {
         /* Sets font's color */
-        stColor.vHSL.fH = orx2F(0.5f/3.0f) + fHueDelta * s32MarkerID;
+        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
         orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
         /* Adds depth markers */
@@ -372,7 +368,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
         /* Updates display color */
-        stColor.vHSL.fH = fHueDelta * s32MarkerID;
+        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
         orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
         orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 

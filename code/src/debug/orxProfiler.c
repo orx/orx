@@ -58,6 +58,9 @@
 
 /** Misc defines
  */
+#define orxPROFILER_KU32_MAX_MARKER_NUMBER        (orxPROFILER_KU32_MASK_MARKER_ID + 1)
+#define orxPROFILER_KU32_SHIFT_MARKER_ID          8
+#define orxPROFILER_KU32_MASK_MARKER_ID           0xFF
 #define orxPROFILER_KS32_MARKER_ID_ROOT           -2
 
 
@@ -88,6 +91,7 @@ typedef struct __orxPROFILER_STATIC_t
   orxDOUBLE           dTimeStamp;
   orxS32              s32MarkerCounter;
   orxS32              s32CurrentMarker;
+  orxS32              s32WaterStamp;
   orxS32              s32MarkerPopToSkip;
   orxU32              u32Flags;
   orxU16              u16CurrentMarkerDepth;
@@ -133,6 +137,9 @@ orxSTATUS orxFASTCALL orxProfiler_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  /* Checks */
+  orxASSERT(orxMath_IsPowerOfTwo(orxPROFILER_KU32_MAX_MARKER_NUMBER) != orxFALSE);
+
   /* Not already Initialized? */
   if(!(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY))
   {
@@ -144,6 +151,9 @@ orxSTATUS orxFASTCALL orxProfiler_Init()
 
     /* Inits current marker */
     sstProfiler.s32CurrentMarker = orxPROFILER_KS32_MARKER_ID_ROOT;
+
+    /* Gets water stamp */
+    sstProfiler.s32WaterStamp = orxSystem_GetRealTime() << orxPROFILER_KU32_SHIFT_MARKER_ID;
 
     /* Updates flags */
     sstProfiler.u32Flags |= orxPROFILER_KU32_STATIC_FLAG_READY;
@@ -199,6 +209,10 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
 {
   orxS32 s32MarkerID;
 
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
   /* For all markers */
   for(s32MarkerID = 0; s32MarkerID < sstProfiler.s32MarkerCounter; s32MarkerID++)
   {
@@ -228,6 +242,9 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       sstProfiler.astMarkerList[s32MarkerID].zName          = orxString_Duplicate(_zName);
       sstProfiler.astMarkerList[s32MarkerID].u16Depth       = 0;
       sstProfiler.astMarkerList[s32MarkerID].u16Flags       = orxPROFILER_KU16_FLAG_UNIQUE;
+
+      /* Stamps result */
+      s32MarkerID |= sstProfiler.s32WaterStamp;
     }
     else
     {
@@ -238,9 +255,32 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       s32MarkerID = orxPROFILER_KS32_MARKER_ID_NONE;
     }
   }
+  else
+  {
+    /* Stamps result */
+    s32MarkerID |= sstProfiler.s32WaterStamp;
+  }
 
   /* Done! */
   return s32MarkerID;
+}
+
+/** Is the given marker valid? (Useful when storing markers in static variables and still allow normal hot restart)
+ * @param[in] _s32MarkerID      ID of the marker to test
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxProfiler_IsMarkerIDValid(orxS32 _s32MarkerID)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = ((_s32MarkerID & ~orxPROFILER_KU32_MASK_MARKER_ID) == sstProfiler.s32WaterStamp) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 /** Pushes a marker (on a stack) and starts a timer for it
@@ -248,13 +288,22 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
  */
 void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
 {
+  orxS32 s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
+
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     orxPROFILER_MARKER *pstMarker;
 
     /* Gets marker */
-    pstMarker = &(sstProfiler.astMarkerList[_s32MarkerID]);
+    pstMarker = &(sstProfiler.astMarkerList[s32ID]);
 
     /* Not already pushed? */
     if(!orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_PUSHED))
@@ -282,7 +331,7 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
           pstTestMarker = &(sstProfiler.astMarkerList[i]);
 
           /* Is child of current marker? */
-          if(pstTestMarker->s32ParentID == _s32MarkerID)
+          if(pstTestMarker->s32ParentID == s32ID)
           {
             /* Updates its depth */
             pstTestMarker->u16Depth--;
@@ -314,7 +363,7 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       pstMarker->s32ParentID = sstProfiler.s32CurrentMarker;
 
       /* Updates current marker */
-      sstProfiler.s32CurrentMarker = _s32MarkerID;
+      sstProfiler.s32CurrentMarker = s32ID;
 
       /* Gets time stamp */
       dTimeStamp = orxSystem_GetTime();
@@ -352,6 +401,9 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
  */
 void orxFASTCALL orxProfiler_PopMarker()
 {
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
   /* Should skip pop? */
   if(sstProfiler.s32MarkerPopToSkip > 0)
   {
@@ -401,6 +453,9 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
 {
   orxS32 i;
 
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
   /* For all markers */
   for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
   {
@@ -433,6 +488,9 @@ orxDOUBLE orxFASTCALL orxProfiler_GetResetTime()
 {
   orxDOUBLE dResult;
 
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
   /* Updates result */
   dResult = orxSystem_GetTime() - sstProfiler.dTimeStamp;
 
@@ -445,6 +503,9 @@ orxDOUBLE orxFASTCALL orxProfiler_GetResetTime()
  */
 orxS32 orxFASTCALL orxProfiler_GetMarkerCounter()
 {
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
   /* Done! */
   return sstProfiler.s32MarkerCounter;
 }
@@ -457,11 +518,15 @@ orxS32 orxFASTCALL orxProfiler_GetNextMarkerID(orxS32 _s32MarkerID)
 {
   orxS32 s32Result;
 
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT((_s32MarkerID == orxPROFILER_KS32_MARKER_ID_NONE) ||(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE));
+
   /* No marker? */
   if(_s32MarkerID == orxPROFILER_KS32_MARKER_ID_NONE)
   {
     /* Updates result */
-    s32Result = 0;
+    s32Result = sstProfiler.s32WaterStamp;
   }
   else
   {
@@ -470,7 +535,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextMarkerID(orxS32 _s32MarkerID)
   }
 
   /* Not valid? */
-  if(s32Result >= sstProfiler.s32MarkerCounter)
+  if((s32Result & orxPROFILER_KU32_MASK_MARKER_ID) >= sstProfiler.s32MarkerCounter)
   {
     /* Updates result */
     s32Result = orxPROFILER_KS32_MARKER_ID_NONE;
@@ -487,10 +552,29 @@ orxS32 orxFASTCALL orxProfiler_GetNextMarkerID(orxS32 _s32MarkerID)
 orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
 {
   orxDOUBLE dPreviousTime, dBestTime;
-  orxS32    i, s32Result = orxPROFILER_KS32_MARKER_ID_NONE;
+  orxS32    i, s32ID, s32Result = orxPROFILER_KS32_MARKER_ID_NONE;
 
-  /* Get previous marker's time stamp */
-  dPreviousTime = ((_s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE) && (_s32MarkerID < sstProfiler.s32MarkerCounter)) ? sstProfiler.astMarkerList[_s32MarkerID].dTimeStamp : orx2D(0.0);
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT((_s32MarkerID == orxPROFILER_KS32_MARKER_ID_NONE) ||(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE));
+
+  /* Valid ID? */
+  if(_s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE)
+  {
+    /* Gets ID */
+    s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
+
+    /* Get previous marker's time stamp */
+    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.astMarkerList[s32ID].dTimeStamp : orx2D(0.0);
+  }
+  else
+  {
+    /* Gets ID */
+    s32ID = orxPROFILER_KS32_MARKER_ID_NONE;
+
+    /* Get previous marker's time stamp */
+    dPreviousTime = orx2D(0.0);
+  }
 
   /* For all markers */
   for(i = 0, dBestTime = orxSystem_GetTime(); i < sstProfiler.s32MarkerCounter; i++)
@@ -502,12 +586,12 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
 
     /* Is better candidate? */
     if((((dTime == dPreviousTime)
-       && (i > _s32MarkerID))
+       && (i > s32ID))
      || (dTime > dPreviousTime))
     && (dTime < dBestTime))
     {
       /* Updates result */
-      s32Result = i;
+      s32Result = i | sstProfiler.s32WaterStamp;
       dBestTime = dTime;
     }
   }
@@ -523,12 +607,20 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
 orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
 {
   orxDOUBLE dResult;
+  orxS32    s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    dResult = sstProfiler.astMarkerList[_s32MarkerID].dCumulatedTime;
+    dResult = sstProfiler.astMarkerList[s32ID].dCumulatedTime;
   }
   else
   {
@@ -550,12 +642,20 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
 const orxSTRING orxFASTCALL orxProfiler_GetMarkerName(orxS32 _s32MarkerID)
 {
   const orxSTRING zResult;
+  orxS32          s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    zResult = sstProfiler.astMarkerList[_s32MarkerID].zName;
+    zResult = sstProfiler.astMarkerList[s32ID].zName;
   }
   else
   {
@@ -577,12 +677,20 @@ const orxSTRING orxFASTCALL orxProfiler_GetMarkerName(orxS32 _s32MarkerID)
 orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
 {
   orxU32 u32Result;
+  orxS32 s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    u32Result = sstProfiler.astMarkerList[_s32MarkerID].u32PushCounter;
+    u32Result = sstProfiler.astMarkerList[s32ID].u32PushCounter;
   }
   else
   {
@@ -604,12 +712,20 @@ orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
 orxBOOL orxFASTCALL orxProfiler_IsUniqueMarker(orxS32 _s32MarkerID)
 {
   orxBOOL bResult;
+  orxS32  s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    bResult = orxFLAG_TEST(sstProfiler.astMarkerList[_s32MarkerID].u16Flags, orxPROFILER_KU16_FLAG_UNIQUE) ? orxTRUE : orxFALSE;
+    bResult = orxFLAG_TEST(sstProfiler.astMarkerList[s32ID].u16Flags, orxPROFILER_KU16_FLAG_UNIQUE) ? orxTRUE : orxFALSE;
   }
   else
   {
@@ -631,14 +747,22 @@ orxBOOL orxFASTCALL orxProfiler_IsUniqueMarker(orxS32 _s32MarkerID)
 orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
 {
   orxDOUBLE dResult;
+  orxS32    s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     orxPROFILER_MARKER *pstMarker;
 
     /* Gets marker */
-    pstMarker = &(sstProfiler.astMarkerList[_s32MarkerID]);
+    pstMarker = &(sstProfiler.astMarkerList[s32ID]);
 
     /* Is unique? */
     if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))
@@ -674,15 +798,23 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
  */
 orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
 {
-  orxU32 u32Result;
+  orxU32  u32Result;
+  orxS32  s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
   /* Valid marker ID? */
-  if((_s32MarkerID >= 0) && (_s32MarkerID < sstProfiler.s32MarkerCounter))
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     orxPROFILER_MARKER *pstMarker;
 
     /* Gets marker */
-    pstMarker = &(sstProfiler.astMarkerList[_s32MarkerID]);
+    pstMarker = &(sstProfiler.astMarkerList[s32ID]);
 
     /* Is unique? */
     if(orxFLAG_TEST(pstMarker->u16Flags, orxPROFILER_KU16_FLAG_UNIQUE))

@@ -210,6 +210,21 @@ static orxINLINE orxU32 orxMath_GetTrailingZeroCount(orxU32 _u32Value)
   return sau32DeBruijnLUT[((orxU32)(((orxS32)_u32Value & -(orxS32)_u32Value) * 0x077CB531U)) >> 27];
 }
 
+/** Is value a power of two?
+ * @param[in]   _u32Value                       Value to test
+ * @return      orxTRUE / orxFALSE
+ */
+static orxINLINE orxBOOL orxMath_IsPowerOfTwo(orxU32 _u32Value)
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = ((_u32Value & (_u32Value - 1)) == 0) ? orxTRUE : orxFALSE;
+  
+  /* Done! */
+  return bResult;
+}
+
 /** Gets next power of two of an orxU32
  * @param[in]   _u32Value                       Value to process
  * @return      If _u32Value is already a power of two, returns it, otherwise the next power of two
