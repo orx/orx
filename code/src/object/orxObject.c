@@ -217,7 +217,7 @@ static orxINLINE void orxObject_DeleteAll()
  */
 static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxOBJECT *pstObject;
+  orxOBJECT *pstObject, *pstNextObject;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
@@ -225,8 +225,11 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
   /* For all objects */
   for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
       pstObject != orxNULL;
-      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      pstObject = pstNextObject)
   {
+    /* Gets next object */
+    pstNextObject = orxOBJECT(orxStructure_GetNext(pstObject));
+
     /* Is object enabled and not paused? */
     if((orxObject_IsEnabled(pstObject) != orxFALSE) && (orxObject_IsPaused(pstObject) == orxFALSE))
     {
@@ -259,30 +262,10 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
         /* Should die? */
         if(pstObject->fLifeTime <= orxFLOAT_0)
         {
-          orxOBJECT *pstDeleteObject;
-
-          /* Stores object to delete */
-          pstDeleteObject = pstObject;
-
-          /* Reverts to previous object */
-          pstObject = orxOBJECT(orxStructure_GetPrevious(pstObject));
-
           /* Deletes it */
-          orxObject_Delete(pstDeleteObject);
+          orxObject_Delete(pstObject);
 
-          /* Is previous invalid? */
-          if(pstObject == orxNULL)
-          {
-            pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
-
-            /* Was the last one? */
-            if(pstObject == orxNULL)
-            {
-              /* Stops */
-              break;
-            }
-          }
-
+          /* Gets to the next one */
           continue;
         }
       }
