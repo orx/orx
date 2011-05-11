@@ -1897,6 +1897,9 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_SelectSection");
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
@@ -2030,6 +2033,9 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
@@ -2375,11 +2381,14 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
 
-  /* Should keep history? */
-  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
+  /* External call? */
+  if(sstConfig.u32LoadCounter == 0)
   {
-    /* External call? */
-    if(sstConfig.u32LoadCounter == 0)
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxConfig_Load");
+
+    /* Should keep history? */
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
     {
       orxSTRING *pzEntry;
 
@@ -2849,6 +2858,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   /* Updates load counter */
   sstConfig.u32LoadCounter--;
 
+  /* External call? */
+  if(sstConfig.u32LoadCounter == 0)
+  {
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+  }
+
   /* Done! */
   return eResult;
 }
@@ -2924,6 +2940,9 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   orxFILE        *pstFile;
   const orxSTRING zFileName;
   orxSTATUS       eResult = orxSTATUS_FAILURE;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_Save");
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -3100,6 +3119,9 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
