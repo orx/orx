@@ -94,9 +94,114 @@ static orxRENDER_STATIC sstRender;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Renders FPS counter
+ */
+static orxINLINE void orxRender_RenderFPS()
+{
+  const orxFONT *pstFont;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxRender_RenderFPS");
+
+  /* Gets default font */
+  pstFont = orxFont_GetDefaultFont();
+
+  /* Valid? */
+  if(pstFont != orxNULL)
+  {
+    orxVIEWPORT          *pstViewport;
+    orxBITMAP            *pstBitmap;
+    orxDISPLAY_TRANSFORM  stTextTransform;
+    orxCHAR               acBuffer[16];
+
+    /* Gets its bitmap */
+    pstBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
+    
+    /* Clears text transform */
+    orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
+
+    /* Gets first viewport */
+    pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+
+    /* Valid? */
+    if(pstViewport != orxNULL)
+    {
+      orxAABOX  stBox;
+      orxFLOAT  fWidth, fHeight, fCorrectionRatio;
+
+      /* Gets its box & size */
+      orxViewport_GetBox(pstViewport, &stBox);
+      orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
+
+      /* Gets current correction ratio */
+      fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+
+      /* Has correction ratio? */
+      if(fCorrectionRatio != orxFLOAT_1)
+      {
+        /* X axis? */
+        if(fCorrectionRatio < orxFLOAT_1)
+        {
+          orxFLOAT fDelta;
+
+          /* Gets rendering limit delta using correction ratio */
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stBox.vBR.fX - stBox.vTL.fX);
+
+          /* Updates viewport */
+          stBox.vTL.fX += fDelta;
+          stBox.vBR.fX -= fDelta;
+        }
+        /* Y axis */
+        else
+        {
+          orxFLOAT fDelta;
+
+          /* Gets rendering limit delta using correction ratio */
+          fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
+
+          /* Updates viewport */
+          stBox.vTL.fY += fDelta;
+          stBox.vBR.fY -= fDelta;
+        }
+      }
+
+      /* Inits transform's scale */
+      stTextTransform.fScaleX = orx2F(2.0f) * fWidth;
+      stTextTransform.fScaleY = orx2F(2.0f) * fHeight;
+
+      /* Inits transform's destination */
+      stTextTransform.fDstX = stBox.vTL.fX + orx2F(10.0f);
+      stTextTransform.fDstY = stBox.vTL.fY + orx2F(10.0f);
+    }
+    else
+    {
+      /* Inits transform's scale */
+      stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(2.0f);
+
+      /* Inits transform's position */
+      stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
+    }
+
+    /* Sets font's color */
+    orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_DEFAULT_COLOR);
+
+    /* Writes string */
+    orxString_NPrint(acBuffer, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+
+    /* Displays it */
+    orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
 /** Renders profiler info
  */
-static orxINLINE void orxRender_Home_RenderProfiler()
+static orxINLINE void orxRender_RenderProfiler()
 {
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
@@ -109,6 +214,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   orxCHAR                 acLabel[64];
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxRender_RenderProfiler");
 
   /* Gets default font */
   pstFont = orxFont_GetDefaultFont();
@@ -165,7 +273,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Gets full marker size */
   fWidth  = orx2F(0.5f) * fScreenWidth - orx2F(2.0f) * fBorder;
-  fHeight = orx2F(0.5f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
+  fHeight = orx2F(0.33f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
   fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
 
   /* Inits color */
@@ -202,7 +310,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Draws separators */
   stTransform.fDstX   = orxFLOAT_0;
-  stTransform.fDstY   = orx2F(0.5f) * fScreenHeight;
+  stTransform.fDstY   = orx2F(0.33f) * fScreenHeight;
   stTransform.fScaleX = orx2F(0.5f) * fScreenWidth;
   stTransform.fScaleY = orxFLOAT_1;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -262,7 +370,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Updates vertical position */
   stTransform.fDstX = fBorder;
-  stTransform.fDstY = orx2F(0.5f) * fScreenHeight + orxFLOAT_1;
+  stTransform.fDstY = orx2F(0.33f) * fScreenHeight + orxFLOAT_1;
 
   /* Resets scale */
   stTransform.fScaleX = stTransform.fScaleY = orxFLOAT_1;
@@ -395,6 +503,12 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
 }
 
 /** Renders a viewport
@@ -1340,118 +1454,36 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       /* Pushes render config section */
       orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
-      /* Should display FPS? */
+      /* Should render FPS? */
       if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
       {
-        const orxFONT *pstFont;
-
-        /* Gets default font */
-        pstFont = orxFont_GetDefaultFont();
-
-        /* Valid? */
-        if(pstFont != orxNULL)
-        {
-          orxVIEWPORT          *pstViewport;
-          orxBITMAP            *pstBitmap;
-          orxDISPLAY_TRANSFORM  stTextTransform;
-          orxCHAR               acBuffer[16];
-
-          /* Gets its bitmap */
-          pstBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
-          
-          /* Clears text transform */
-          orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
-
-          /* Gets first viewport */
-          pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-
-          /* Valid? */
-          if(pstViewport != orxNULL)
-          {
-            orxAABOX  stBox;
-            orxFLOAT  fWidth, fHeight, fCorrectionRatio;
-
-            /* Gets its box & size */
-            orxViewport_GetBox(pstViewport, &stBox);
-            orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
-
-            /* Gets current correction ratio */
-            fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
-
-            /* Has correction ratio? */
-            if(fCorrectionRatio != orxFLOAT_1)
-            {
-              /* X axis? */
-              if(fCorrectionRatio < orxFLOAT_1)
-              {
-                orxFLOAT fDelta;
-
-                /* Gets rendering limit delta using correction ratio */
-                fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stBox.vBR.fX - stBox.vTL.fX);
-
-                /* Updates viewport */
-                stBox.vTL.fX += fDelta;
-                stBox.vBR.fX -= fDelta;
-              }
-              /* Y axis */
-              else
-              {
-                orxFLOAT fDelta;
-
-                /* Gets rendering limit delta using correction ratio */
-                fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
-
-                /* Updates viewport */
-                stBox.vTL.fY += fDelta;
-                stBox.vBR.fY -= fDelta;
-              }
-            }
-
-            /* Inits transform's scale */
-            stTextTransform.fScaleX = orx2F(2.0f) * fWidth;
-            stTextTransform.fScaleY = orx2F(2.0f) * fHeight;
-
-            /* Inits transform's destination */
-            stTextTransform.fDstX = stBox.vTL.fX + orx2F(10.0f);
-            stTextTransform.fDstY = stBox.vTL.fY + orx2F(10.0f);
-          }
-          else
-          {
-            /* Inits transform's scale */
-            stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(2.0f);
-
-            /* Inits transform's position */
-            stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
-          }
-
-          /* Sets font's color */
-          orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_DEFAULT_COLOR);
-
-          /* Writes string */
-          orxString_NPrint(acBuffer, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
-
-          /* Displays it */
-          orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
-        }
+        /* Renders it */
+        orxRender_RenderFPS();
       }
 
       /* Should render profiler */
       if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE)
       {
         /* Renders it */
-        orxRender_Home_RenderProfiler();
+        orxRender_RenderProfiler();
       }
-
-      /* Resets all profiler markers */
-      orxProfiler_ResetAllMarkers();
 
       /* Pops previous section */
       orxConfig_PopSection();
     }
 
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxDisplay_Swap");
+
     /* Swap buffers */
     orxDisplay_Swap();
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
+
+  /* Resets all profiler markers */
+  orxProfiler_ResetAllMarkers();
 
   /* Done! */
   return;
