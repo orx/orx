@@ -100,9 +100,6 @@ static orxINLINE void orxRender_RenderFPS()
 {
   const orxFONT *pstFont;
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxRender_RenderFPS");
-
   /* Gets default font */
   pstFont = orxFont_GetDefaultFont();
 
@@ -192,9 +189,6 @@ static orxINLINE void orxRender_RenderFPS()
     orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
-
   /* Done! */
   return;
 }
@@ -273,7 +267,7 @@ static orxINLINE void orxRender_RenderProfiler()
 
   /* Gets full marker size */
   fWidth  = orx2F(0.5f) * fScreenWidth - orx2F(2.0f) * fBorder;
-  fHeight = orx2F(0.33f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
+  fHeight = orx2F(0.25f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
   fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
 
   /* Inits color */
@@ -310,7 +304,7 @@ static orxINLINE void orxRender_RenderProfiler()
 
   /* Draws separators */
   stTransform.fDstX   = orxFLOAT_0;
-  stTransform.fDstY   = orx2F(0.33f) * fScreenHeight;
+  stTransform.fDstY   = orx2F(0.25f) * fScreenHeight;
   stTransform.fScaleX = orx2F(0.5f) * fScreenWidth;
   stTransform.fScaleY = orxFLOAT_1;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -370,7 +364,7 @@ static orxINLINE void orxRender_RenderProfiler()
 
   /* Updates vertical position */
   stTransform.fDstX = fBorder;
-  stTransform.fDstY = orx2F(0.33f) * fScreenHeight + orxFLOAT_1;
+  stTransform.fDstY = orx2F(0.25f) * fScreenHeight + orxFLOAT_1;
 
   /* Resets scale */
   stTransform.fScaleX = stTransform.fScaleY = orxFLOAT_1;
@@ -1407,6 +1401,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
 {
   orxBOOL bRender;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
+
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
@@ -1419,9 +1416,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   {
     orxVIEWPORT  *pstViewport;
     orxFLOAT      fWidth, fHeight;
-
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
     /* Clears screen */
     orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
@@ -1438,9 +1432,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Restores screen bitmap clipping */
     orxDisplay_GetScreenSize(&fWidth, &fHeight);
     orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
 
     /* Sends render stop event */
     orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
@@ -1481,6 +1472,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Profiles */
     orxPROFILER_POP_MARKER();
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Resets all profiler markers */
   orxProfiler_ResetAllMarkers();

@@ -556,9 +556,6 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
   orxS32 s32IndexBit;           /* Index of the bit in u32Index32Bits */
   orxU32 u32CellIndex;          /* Difference in pointers address */
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxBank_GetNext");
-
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
@@ -615,9 +612,6 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
       }
     }
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Not found */
   return orxNULL;
