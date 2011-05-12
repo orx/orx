@@ -59,8 +59,8 @@
 /** Misc defines
  */
 #define orxPROFILER_KU32_MAX_MARKER_NUMBER        (orxPROFILER_KU32_MASK_MARKER_ID + 1)
-#define orxPROFILER_KU32_SHIFT_MARKER_ID          8
-#define orxPROFILER_KU32_MASK_MARKER_ID           0xFF
+#define orxPROFILER_KU32_SHIFT_MARKER_ID          7
+#define orxPROFILER_KU32_MASK_MARKER_ID           0x7F
 #define orxPROFILER_KS32_MARKER_ID_ROOT           -2
 
 

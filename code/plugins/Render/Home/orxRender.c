@@ -1401,9 +1401,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
 {
   orxBOOL bRender;
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
-
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
@@ -1416,6 +1413,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   {
     orxVIEWPORT  *pstViewport;
     orxFLOAT      fWidth, fHeight;
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
     /* Clears screen */
     orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
@@ -1464,6 +1464,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     }
 
     /* Profiles */
+    orxPROFILER_POP_MARKER();
+
+    /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_Swap");
 
     /* Swap buffers */
@@ -1472,9 +1475,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Profiles */
     orxPROFILER_POP_MARKER();
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Resets all profiler markers */
   orxProfiler_ResetAllMarkers();
