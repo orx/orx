@@ -32,6 +32,10 @@ ORX_MODULE_NAME := $(ORX_MODULE_NAME)d
 ORX_LIB_NAME := $(ORX_LIB_NAME)d
 endif
 
+ifeq ($(ORX_PROFILE),true)
+ORX_LIB_NAME := $(ORX_LIB_NAME)p
+endif
+
 LOCAL_PATH := $(call my-dir)
 
 
@@ -65,6 +69,11 @@ LOCAL_CPPFLAGS := -DANDROID \
 ifeq ($(ORX_DEBUG),true)
 LOCAL_CFLAGS += -D__orxDEBUG__
 LOCAL_CPPFLAGS += -D__orxDEBUG__
+endif
+
+ifeq ($(ORX_PROFILE),true)
+LOCAL_CFLAGS += -D__orxPROFILE__
+LOCAL_CPPFLAGS += -D__orxPROFILE__
 endif
 
 # Note this "simple" makefile var substitution, you can find even more complex examples in different Android projects

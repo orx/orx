@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2011 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,9 +34,6 @@
 
 #include "orx.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 static orxOBJECT   *spstGenerator;
 static orxVIEWPORT *spstViewport;
@@ -108,11 +105,11 @@ static orxSTATUS orxFASTCALL Run()
   orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
 
   /* Significant enough? */
-  if(orxVector_GetSquareSize(&vGravity) > 0.5f)
+  if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
   {
     static orxVECTOR svSmoothedGravity =
     {
-      0,-1,0
+      0.0,1.0f,0.0
     };
 
     /* Gets smoothed gravity from new value (low-pass filter) */
@@ -137,8 +134,3 @@ int main(int argc, char *argv[])
   /* Done! */
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __cplusplus
-}
-#endif
