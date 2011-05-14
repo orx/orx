@@ -9,6 +9,9 @@ ifeq ($(ORX_DEBUG),true)
 ORX_NAME := $(ORX_NAME)d
 endif
 
+ifeq ($(ORX_PROFILE),true)
+ORX_NAME := $(ORX_NAME)p
+endif
 
 LOCAL_MODULE := $(ORX_NAME)
 
@@ -47,6 +50,11 @@ LOCAL_C_INCLUDES += $(Dlmalloc)
 ifeq ($(ORX_DEBUG),true)
 LOCAL_CFLAGS += -D__orxDEBUG__
 LOCAL_CPPFLAGS += -D__orxDEBUG__
+endif
+
+ifeq ($(ORX_PROFILE),true)
+LOCAL_CFLAGS += -D__orxPROFILER__
+LOCAL_CPPFLAGS += -D__orxPROFILER__
 endif
 
 ORX_SRCS := ../../../src/main/orxParam.c \
