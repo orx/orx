@@ -8,7 +8,7 @@ ORX_MODULE_NAME := orxApp
 ORXAPP_SRCS := ../jni/*.c \
 			   ../jni/*.cpp
 			   
-ORXLIB     := ../../../lib/android
+ORXLIB     := ../../../lib/static/android
 ORXINCLUDE := ../../../include
 BOX2DLIB     := ../../../../extern/Box2D_2.1.3/lib/android
 BOX2DORXINCLUDE := ../../../../extern/Box2D_2.1.3/include
