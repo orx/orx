@@ -51,6 +51,19 @@
       <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Debug"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Debug"/>
     </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux Dynamic Profile" Selected="no">
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Linux Dynamic Profile"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Profile"/>
+      <Project Name="Scroll" ConfigName="Linux Dynamic Profile"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Profile"/>
+    </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
       <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
@@ -76,19 +89,6 @@
       <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
       <Project Name="orx" ConfigName="Linux Embedded Static Debug"/>
       <Project Name="Bounce" ConfigName="Linux Embedded Static Debug"/>
-    </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Linux Embedded Static Profile" Selected="no">
-      <Project Name="Scroll" ConfigName="Linux Embedded Static Profile"/>
-      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
-      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
-      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
-      <Project Name="orxLIB" ConfigName="Linux Embedded Static Profile"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
-      <Project Name="orx" ConfigName="Linux Embedded Static Profile"/>
-      <Project Name="Bounce" ConfigName="Linux Embedded Static Profile"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Static Release" Selected="no">
       <Project Name="Scroll" ConfigName="Linux Embedded Static Release"/>
