@@ -979,7 +979,7 @@ static void Run()
 
           // Stores font info
           orxConfig_SetStringBlock("CharacterList", acBuffer);
-          orxConfig_SetStringList("CharacterWidthList", azWidthList, u32Counter);
+          orxConfig_SetStringList("CharacterWidthList", (const orxSTRING *)azWidthList, u32Counter);
           orxConfig_SetFloat("CharacterHeight", sstFontGen.vCharacterSize.fY);
           orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
           orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.tga", sstFontGen.zFontName);

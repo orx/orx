@@ -231,8 +231,8 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
       u32BufferSize = (orxU32)(fWidth * fHeight) * sizeof(orxRGBA);
 
       /* Allocates buffers */
-      pu8SrcBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
-      pu8DstBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+      pu8SrcBuffer = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+      pu8DstBuffer = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
 
       /* Gets its content */
       orxDisplay_GetBitmapData(pstBitmap, pu8SrcBuffer, u32BufferSize);
