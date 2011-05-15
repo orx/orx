@@ -11,7 +11,7 @@ Orx authors:
     Emilien Kia
     Romain Killian
 
-  IDE project files (CodeLite, Code::Blocks, Visual Studio, XCode) and external dependencies:
+  IDE project files (CodeLite, Visual Studio, XCode) and external dependencies:
     Grey
     Romain Killian
 
@@ -23,7 +23,7 @@ Orx authors:
 
   Android versions:
     Cai 'laschweinski' Huaxu (1.6+)
-    Lydesik (native, 2.3+)
+    Philippe 'Lydesik' Simons (native, 2.3+)
 
   Main executable, demos and tutorials:
     Romain Killian
@@ -32,6 +32,7 @@ Orx authors:
     Grey
     Sausage
     TDomhan
+    Lydesik
 
   OpenAL sound recording:
     TDomhan
@@ -43,7 +44,7 @@ Orx authors:
     Mochi
 
   Demo graphics:
-    Ebe
+    Ebe, Mochi
 
   Default font:
     Jørgen 'Jibs' Ibsen
