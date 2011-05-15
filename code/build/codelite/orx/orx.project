@@ -47,10 +47,16 @@
   <Dependencies Name="Linux Embedded Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
+  <Dependencies Name="Linux Embedded Dynamic Profile">
+    <Project Name="orxLIB"/>
+  </Dependencies>
   <Dependencies Name="Linux Embedded Dynamic Release">
     <Project Name="orxLIB"/>
   </Dependencies>
   <Dependencies Name="Win32 Embedded Dynamic Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Embedded Dynamic Profile">
     <Project Name="orxLIB"/>
   </Dependencies>
   <Dependencies Name="Win32 Embedded Dynamic Release">
@@ -209,6 +215,39 @@
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands></PostConnectCommands>
+        <StartupCommands></StartupCommands>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <PreprocessFileCommand></PreprocessFileCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Embedded Dynamic Profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2" Required="yes">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+      </Compiler>
+      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxp"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../bin/orxp" IntermediateDirectory="$(ConfigurationName)" Command="orxp" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands></PostConnectCommands>
         <StartupCommands></StartupCommands>
@@ -497,6 +536,37 @@
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands></PostConnectCommands>
+        <StartupCommands></StartupCommands>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <PreprocessFileCommand></PreprocessFileCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Embedded Dynamic Profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2" Required="yes">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+      </Compiler>
+      <Linker Options="-s" Required="yes">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxp"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../bin/orxp.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxp.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands></PostConnectCommands>
         <StartupCommands></StartupCommands>

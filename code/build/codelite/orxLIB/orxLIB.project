@@ -199,6 +199,7 @@
   <Dependencies Name="Linux Dynamic Debug"/>
   <Dependencies Name="Linux Dynamic Release"/>
   <Dependencies Name="Linux Embedded Dynamic Release"/>
+  <Dependencies Name="Linux Embedded Dynamic Profile"/>
   <Dependencies Name="Linux Embedded Static Debug"/>
   <Dependencies Name="Linux Embedded Static Release"/>
   <Dependencies Name="Win32 Dynamic Debug"/>
@@ -207,6 +208,7 @@
   <Dependencies Name="Win32 Dynamic Release"/>
   <Dependencies Name="Win32 Embedded Static Release"/>
   <Dependencies Name="Win32 Embedded Dynamic Release"/>
+  <Dependencies Name="Win32 Embedded Dynamic Profile"/>
   <Dependencies Name="Win32 Embedded Static Debug"/>
   <Dependencies Name="Win32 Embedded Dynamic Debug"/>
   <Dependencies Name="Linux Static Release"/>
@@ -434,6 +436,63 @@
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -f ../../../lib/dynamic/liborx.so ../../../bin</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3 -Wno-write-strings -fPIC" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
+        <IncludePath Value="../../../../extern/glfw-2.7/include"/>
+        <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
+        <IncludePath Value="../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
+        <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
+        <IncludePath Value="../../../../extern/stb_vorbis"/>
+        <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
+      </Compiler>
+      <Linker Options="-s" Required="yes">
+        <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
+        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/linux"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/linux"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal"/>
+        <Library Value="dl"/>
+        <Library Value="m"/>
+        <Library Value="glfw"/>
+        <Library Value="SOIL"/>
+        <Library Value="Box2D"/>
+        <Library Value="GL"/>
+        <Library Value="X11"/>
+        <Library Value="Xrandr"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../lib/dynamic/liborxp.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../lib/dynamic/liborxp.so ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -742,6 +801,61 @@
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cmd /c copy /Y ..\..\..\lib\dynamic\orx.dll ..\..\..\bin</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/dlmalloc"/>
+        <IncludePath Value="../../../../extern/glfw-2.7/include"/>
+        <IncludePath Value="../../../../extern/SDL-1.2.14/include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.1.3/include"/>
+        <IncludePath Value="../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../extern/OpenAL-soft/include"/>
+        <IncludePath Value="../../../../extern/libsndfile-1.0.22/include"/>
+        <IncludePath Value="../../../../extern/stb_vorbis"/>
+        <Preprocessor Value="__orxEMBEDDED__"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+        <Preprocessor Value="AL_LIBTYPE_STATIC"/>
+      </Compiler>
+      <Linker Options="-Wl,--out-implib=../../../lib/dynamic/liborxp.a -s" Required="yes">
+        <LibraryPath Value="../../../../extern/glfw-2.7/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SDL-1.2.14/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SOIL/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/OpenAL-soft/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.1.3/lib/mingw"/>
+        <Library Value="glfw"/>
+        <Library Value="sndfile"/>
+        <Library Value="openal32"/>
+        <Library Value="SOIL"/>
+        <Library Value="SDL"/>
+        <Library Value="Box2D"/>
+        <Library Value="winmm"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../lib/dynamic/orxp.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\lib\dynamic\orxp.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>

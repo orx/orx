@@ -77,6 +77,19 @@
       <Project Name="orx" ConfigName="Linux Embedded Static Debug"/>
       <Project Name="Bounce" ConfigName="Linux Embedded Static Debug"/>
     </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux Embedded Static Profile" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux Embedded Static Profile"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Linux Embedded Static Profile"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Linux Embedded Static Profile"/>
+      <Project Name="Bounce" ConfigName="Linux Embedded Static Profile"/>
+    </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Linux Embedded Static Release" Selected="no">
       <Project Name="Scroll" ConfigName="Linux Embedded Static Release"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
@@ -206,6 +219,19 @@
       <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
       <Project Name="orx" ConfigName="Win32 Embedded Dynamic Debug"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Dynamic Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Win32 Embedded Dynamic Profile" Selected="no">
+      <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Profile"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Win32 Embedded Dynamic Profile"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Win32 Embedded Dynamic Profile"/>
+      <Project Name="Bounce" ConfigName="Win32 Embedded Dynamic Profile"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Embedded Dynamic Release" Selected="no">
       <Project Name="Scroll" ConfigName="Win32 Embedded Dynamic Release"/>
