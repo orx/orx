@@ -97,7 +97,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     case orxANIM_EVENT_STOP:
     {
       /* Logs info */
-      orxLOG("Animation <%s>@<%s> has stoped!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      orxLOG("Animation <%s>@<%s> has stopped!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }

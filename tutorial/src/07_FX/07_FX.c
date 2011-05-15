@@ -163,7 +163,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       case orxFX_EVENT_STOP:
       {
         /* Logs info */
-        orxLOG("FX <%s>@<%s> has stoped!", pstPayload->zFXName, orxObject_GetName(pstObject));
+        orxLOG("FX <%s>@<%s> has stopped!", pstPayload->zFXName, orxObject_GetName(pstObject));
 
         /* On soldier? */
         if(pstObject == pstSoldier)

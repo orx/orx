@@ -1377,6 +1377,25 @@ orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
   return pstResult;
 }
 
+/** Gets clock config name
+ * @param[in]   _pstClock       Concerned clock
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxClock_GetName(const orxCLOCK *_pstClock)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClock);
+
+  /* Updates result */
+  zResult = (orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED)) ? _pstClock->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
+}
+
 /** Adds a timer function to a clock
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Concerned timer callback

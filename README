@@ -1,5 +1,5 @@
 
-Orx - Portable Game Engine  (Version 1.3)
+Orx - Portable Game Engine  (Version 1.3 rc0)
 
 =============================================================================
 
@@ -14,7 +14,7 @@ Intro
 
 Orx is a 2D-oriented, data-driven, portable game engine focused primarily on extreme ease of use.
 
-This is the first release candidate for orx v1.3. If you find any bugs,
+This is the first release candidate for orx v1.3rc0. If you find any bugs,
 please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board,
 or via orx's SourceForge page/tracker.
 
@@ -103,41 +103,40 @@ Packages
 You can download all the packages from sourceforge (http://orx.sf.net).
 Here is a list with a small description for each package.
 
-- orx-doc-1.3.zip: orx's API doxygen documentation + PDF version of the English wiki (detailed tutorials and config system)
+- orx-doc-1.3rc0.zip: orx's API doxygen documentation + PDF version of the English wiki (detailed tutorials and config system)
 
-- orx-src-1.3.zip: orx's source code including build projects for
-  . code::blocks (Win32 only, non-embedded versions)
+- orx-src-1.3rc0.zip: orx's source code including build projects for
   . codelite (Win32 and Linux, all versions)
   . msvs2008 & msvs2010 (Win32 Visual Studio, all versions)
-  . xcode (2.4+, for MacOS X, non-static versions; 3.1 for iPhone/iPod Touch, static embedded versions)
+  . xcode (2.4+, for MacOS X, non-static versions; 4.2 for iPhone/iPod Touch, static embedded versions)
   . ndk build files for Android (static embedded versions)
-NB: You'll need orx-extern-1.3.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
+NB: You'll need orx-extern-1.3rc0.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
 
-- orx-extern-1.3.zip: orx's external dependencies. You will only *NEED* these if you
-use orx-src-1.3.zip and you plan on compiling orx yourself. They are not needed otherwise.
+- orx-extern-1.3rc0.zip: orx's external dependencies. You will only *NEED* these if you
+use orx-src-1.3rx0.zip and you plan on compiling orx yourself. They are not needed otherwise.
 The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
-Warning for slow connections: this package is ~67MB.
+Warning for slow connections: this package is ~69MB.
 
-- orx-tools-1.3.zip: orx's additional set of tools (Win32, Linux and MacOS X) containing:
+- orx-tools-1.3rc0.zip: orx's additional set of tools (Win32, Linux and MacOS X) containing:
   . orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
   . orxFontGen: command line tool based on FreeType2 for generating custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
 
-- orx-dev-linux-1.3.tar.bz2: orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
-- orx-dev-mac-1.3.zip      : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
-- orx-dev-mingw-1.3.zip    : orx's dynamic embedded precompiled binaries for Win32 (mingw), release and debug.
-- orx-dev-msvs2008-1.3.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
-- orx-dev-msvs2010-1.3.zip : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2010), release and debug.
+- orx-dev-linux-1.3rc0.tar.bz2      : orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
+- orx-dev-mac-1.3rc0.zip            : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
+- orx-dev-mingw-1.3rc0.zip          : orx's dynamic embedded precompiled binaries for Win32 (mingw), release and debug.
+- orx-dev-msvs2008-1.3rc0.zip       : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
+- orx-dev-msvs2010-1.3rc0.zip       : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2010), release and debug.
 
-- orx-full-iphone-1.3.zip  : orx's static embedded precompiled binaries for iPhone/iPod Touch/iPad, release/debug, simulator/device + doc + source + XCode project file.
+- orx-full-iphone-1.3rc0.zip        : orx's static embedded precompiled binaries for iPhone/iPod Touch/iPad, release/debug, simulator/device + doc + source + XCode project file.
+- orx-full-android-1.3rc0.zip       : orx's static embedded precompiled binaries for Android, release/debug + doc + source + NDK build files.
+- orx-full-android-native-1.3rc0.zip: orx's static embedded precompiled binaries for Android Native (2.3+), release/debug + doc + source + NDK build files.
 
-- orx-full-android-1.3.zip  : orx's static embedded precompiled binaries for Android, release/debug + doc + source + NDK build files.
-
-- orx-tutorial-linux-1.3.tar.bz2: orx's precompiled tutorial for Linux (x86), release only.
-- orx-tutorial-mac-1.3.zip      : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
-- orx-tutorial-mingw-1.3.zip    : orx's precompiled tutorial for Win32 (mingw), release only.
-- orx-tutorial-msvs2008-1.3.zip : orx's precompiled tutorial for Win32 (Visual Studio 2008), release only.
-- orx-tutorial-msvs2010-1.3.zip : orx's precompiled tutorial for Win32 (Visual Studio 2010), release only.
+- orx-tutorial-linux-1.3rc0.tar.bz2 : orx's precompiled tutorial for Linux (x86), release only.
+- orx-tutorial-mac-1.3rc0.zip       : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
+- orx-tutorial-mingw-1.3rc0.zip     : orx's precompiled tutorial for Win32 (mingw), release only.
+- orx-tutorial-msvs2008-1.3rc0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2008), release only.
+- orx-tutorial-msvs2010-1.3rc0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2010), release only.
 
 All the *-dev-* packages above include:
  . orx release/debug libraries used for linking
@@ -175,6 +174,12 @@ Here's a quick list of the available compile preprocessor flags:
                     NB: If you want to link against the debug versions of orx library, you need
                     to specify it to your compiler!
 
+- __orxPROFILER__ : used to enable the profiling push/pop macros for release builds
+                    It's automatically enabled for debug builds and it has been enabled to
+                    build liborxp.a / orxp.lib / orxp.dll / liborxp.dylib / liborxp.so
+                    NB: You can define it in your projects even when using regular release builds,
+                    but you won't be able to see orx's internal profiling markers!
+
 - __orxSTATIC__   : used to compile and link against the static versions of orx library.
                     NB: If you want to link against the static versions of orx library, you need
                     to specify it to your compiler!
@@ -182,8 +187,6 @@ Here's a quick list of the available compile preprocessor flags:
 - __orxEMBEDDED__ : used to compile the embedded versions of orx library.
                     NB: this flag is *ONLY* needed when compiling orx library, not when linking
                     against it.
-
-- __orxFREEBASIC__: used to compile and link the freebasic version of orx, still WIP.
 
 
 There are other preprocessor flags used when compiling the orx library,
@@ -202,11 +205,12 @@ for which you're compiling. Here's a quick list of these flags:
 - __orxMAC__          : orx is being compiled for MacOS X (ppc/x86)
 - __orxIPHONE__       : orx is being compiled for iPhone/iPod Touch/iPad
 - __orxANDROID__      : orx is being compiled for Android
+- __orxANDROID_NATIVE_: orx is being compiled for Android native (2.3+)
 - __orxWII__          : orx is being compiled for Wii
 - __orxGP2X__         : orx is being compiled for GP2X (gcc-arm)
 - __orxCPP__          : orx is being compiled with a C++ compiler
 - __orxOBJC__         : orx is being compiled with an Objective-C compiler
-- __orxFREEBASIC__    : orx is being compiled for FreeBasic
+- __orxFREEBASIC__    : orx is being compiled for FreeBasic, WIP
 - __orxPLUGIN__       : a plugin for orx is being compiled
 - __orxEXTERN__       : code using orx's library is being compiled
 

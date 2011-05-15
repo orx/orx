@@ -300,6 +300,12 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orx
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Get(const orxSTRING _zName);
 
+/** Gets clock config name
+ * @param[in]   _pstClock       Concerned clock
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxClock_GetName(const orxCLOCK *_pstClock);
+
 
 /** Adds a timer function to a clock
  * @param[in]   _pstClock                             Concerned clock

@@ -54,7 +54,7 @@
  * Here we register our callback on 2 different clocks for didactic purpose only. All objects
  * can of course be updated with only one clock, and the given clock context is also used here 
  * for demonstration only.
- * The first clock runs at 0.01s per tick (100 Hz) and the second one at 0.2s per tick (5 Hz).
+ * The first clock runs at 100 Hz and the second one at 5 Hz.
  * If you press numpad '+', '-' and '*', you can alter the time of the first clock.
  * It'll still be updated at the same rate, but the time information that the clock will pass
  * to the callback will be stretched.
@@ -82,7 +82,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   if(orxConfig_GetBool("DisplayLog"))
   {
     /* Displays info in log and console */
-    orxLOG("CLOCK<%p> : Time = %.3f / DT = %.3f", _pstClockInfo, _pstClockInfo->fTime, _pstClockInfo->fDT);
+    orxLOG("<%s>: Time = %.3f / DT = %.3f", orxClock_GetName(orxClock_GetFromInfo(_pstClockInfo)), _pstClockInfo->fTime, _pstClockInfo->fDT);
   }
 
   /* Pops config section */
@@ -195,8 +195,8 @@ orxSTATUS Init()
   pstObject2 = orxObject_CreateFromConfig("Object2");
 
   /* Creates two user clocks: a 100Hz and a 5Hz */
-  pstClock1 = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
-  pstClock2 = orxClock_Create(orx2F(0.2f), orxCLOCK_TYPE_USER);
+  pstClock1 = orxClock_CreateFromConfig("Clock1");
+  pstClock2 = orxClock_CreateFromConfig("Clock2");
 
   /* Registers our update callback to these clocks with both object as context.
    * The module ID is used to skip the call to this callback if the corresponding module
