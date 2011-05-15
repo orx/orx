@@ -42,6 +42,7 @@ static orxFLOAT     sfShaderAmplitude = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency = orx2F(1.0f);
 static orxVECTOR    svColor;
 static orxFLOAT     sfColorTime = orx2F(0.0f);
+static orxBOOL      sbRecord = orxFALSE;
 
 /** Applies current selected video mode
  */
@@ -121,8 +122,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
       {
         /* Adds bump FX on both objects */
-//        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
-//        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
+        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
       }
 
       break;
@@ -230,6 +231,15 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   orxVECTOR vMousePos;
   orxBOOL   bInViewport;
 
+  if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
+  {
+    /* Starts recording with default settings */
+    orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
+
+    /* Updates status */
+    sbRecord = orxTRUE;
+  }
+
   if(orxInput_IsActive("ToggleProfiler") && orxInput_HasNewStatus("ToggleProfiler"))
   {
     /* Toggles profiler rendering */
@@ -308,11 +318,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Spawning */
     if(orxInput_IsActive("Spawn"))
     {
-      static int ii = 0;
-      orxConfig_PushSection("Input");
-      ii = (ii + 1) % orxConfig_GetListCounter("SetList");
-      orxLOG("%s", orxInput_SelectSet(orxConfig_GetListString("SetList", ii)) == orxSTATUS_FAILURE ? "Failure" : "Success");
-      orxConfig_PopSection();
       /* Spawns one ball */
       orxSpawner_Spawn(spoBallSpawner, 1);
     }
@@ -321,13 +326,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     {
       orxOBJECT *pstObject;
 
-      if(orxInput_HasNewStatus("Pick"))
-      {
-      orxConfig_PushSection("Render");
-      orxConfig_SetBool("ShowProfiler", !orxConfig_GetBool("ShowProfiler"));
-      orxConfig_PopSection();
-      }
-      
       /* Updates mouse position */
       vMousePos.fZ -= orx2F(0.1f);
 
@@ -398,9 +396,6 @@ static orxSTATUS orxBounce_Init()
 
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-    /* Starts recording with default settings */
-    //! orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
 
     /* Registers callback */
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
