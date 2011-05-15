@@ -121,8 +121,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
       {
         /* Adds bump FX on both objects */
-        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
-        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+//        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
+//        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
       }
 
       break;
@@ -308,6 +308,11 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Spawning */
     if(orxInput_IsActive("Spawn"))
     {
+      static int ii = 0;
+      orxConfig_PushSection("Input");
+      ii = (ii + 1) % orxConfig_GetListCounter("SetList");
+      orxLOG("%s", orxInput_SelectSet(orxConfig_GetListString("SetList", ii)) == orxSTATUS_FAILURE ? "Failure" : "Success");
+      orxConfig_PopSection();
       /* Spawns one ball */
       orxSpawner_Spawn(spoBallSpawner, 1);
     }
@@ -316,6 +321,13 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     {
       orxOBJECT *pstObject;
 
+      if(orxInput_HasNewStatus("Pick"))
+      {
+      orxConfig_PushSection("Render");
+      orxConfig_SetBool("ShowProfiler", !orxConfig_GetBool("ShowProfiler"));
+      orxConfig_PopSection();
+      }
+      
       /* Updates mouse position */
       vMousePos.fZ -= orx2F(0.1f);
 

@@ -726,7 +726,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
                 {
                   /* Has valid character height and character width list */
                   if(((fCharacterHeight = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_HEIGHT)) > orxFLOAT_0)
-                  && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST) == (orxU32)u32CharacterCounter))
+                  && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST) == (orxS32)u32CharacterCounter))
                   {
                     orxU32 i;
 
