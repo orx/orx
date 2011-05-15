@@ -3213,7 +3213,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e">orxMath.h</a>
 </li>
 <li>orxMath_InitRandom()
-: <a class="el" href="group__orx_math.html#ga6c72f24ba256435c70dafea7e34b94e3">orxMath.h</a>
+: <a class="el" href="group__orx_math.html#ga042dd7e93abc0120b673abdb4e3ed98c">orxMath.h</a>
+</li>
+<li>orxMath_IsPowerOfTwo()
+: <a class="el" href="group__orx_math.html#gaf88e117449b1482040ebd7b082c60f6b">orxMath.h</a>
 </li>
 <li>orxMATH_KF_2_PI
 : <a class="el" href="group__orx_math.html#gabe67e9a02ee83aeb7d6dd6891468ea74">orxMath.h</a>
@@ -4680,6 +4683,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxProfiler_GetMarkerCounter()
 : <a class="el" href="group__orx_profiler.html#gab6b021c2074f2c214cf260cf00df1297">orxProfiler.h</a>
 </li>
+<li>orxProfiler_GetMarkerMaxTime()
+: <a class="el" href="group__orx_profiler.html#ga3491a91ca31e82ee633d450cbf8e4069">orxProfiler.h</a>
+</li>
 <li>orxProfiler_GetMarkerName()
 : <a class="el" href="group__orx_profiler.html#ga6e28c80eb4ad16665da8d58c7fb0363d">orxProfiler.h</a>
 </li>
@@ -4701,23 +4707,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxProfiler_GetUniqueMarkerDepth()
 : <a class="el" href="group__orx_profiler.html#ga29a5ad5f4528552363c55787b44a911c">orxProfiler.h</a>
 </li>
-<li>orxProfiler_GetUniqueMarkerParent()
-: <a class="el" href="group__orx_profiler.html#ga0e79b94a9e47a0f4ff1944cc111296e7">orxProfiler.h</a>
-</li>
 <li>orxProfiler_GetUniqueMarkerStartTime()
 : <a class="el" href="group__orx_profiler.html#ga958edb69f88188f519a3f4a18b5b996a">orxProfiler.h</a>
 </li>
 <li>orxProfiler_Init()
 : <a class="el" href="group__orx_profiler.html#gac592fd81a652a5790828f07b8c3f3977">orxProfiler.h</a>
 </li>
+<li>orxProfiler_IsMarkerIDValid()
+: <a class="el" href="group__orx_profiler.html#ga248c546475a3b764918fd8ed11eecad0">orxProfiler.h</a>
+</li>
 <li>orxProfiler_IsUniqueMarker()
 : <a class="el" href="group__orx_profiler.html#ga1f3bcc11278643df85accaf4758c9804">orxProfiler.h</a>
 </li>
 <li>orxPROFILER_KS32_MARKER_ID_NONE
 : <a class="el" href="group__orx_profiler.html#ga2b4928419f83ca68d4f4b65164e83efe">orxProfiler.h</a>
-</li>
-<li>orxPROFILER_KU32_MAX_MARKER_NUMBER
-: <a class="el" href="group__orx_profiler.html#ga03c281423b3327a26fb6a4fe9f236593">orxProfiler.h</a>
 </li>
 <li>orxPROFILER_POP_MARKER
 : <a class="el" href="group__orx_profiler.html#ga90c7c9280ab9e00ad524b12b14f4ead2">orxProfiler.h</a>
@@ -4728,14 +4731,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPROFILER_PUSH_MARKER
 : <a class="el" href="group__orx_profiler.html#ga26117096ab5a2206800707b3bbaf7218">orxProfiler.h</a>
 </li>
-<li>orxPROFILER_PUSH_UNIQUE_MARKER
-: <a class="el" href="group__orx_profiler.html#gabca10fc94e60109db1e68974851970bf">orxProfiler.h</a>
-</li>
 <li>orxProfiler_PushMarker()
-: <a class="el" href="group__orx_profiler.html#gac557564d21dc3a42a31f356b148c0143">orxProfiler.h</a>
+: <a class="el" href="group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971">orxProfiler.h</a>
 </li>
 <li>orxProfiler_ResetAllMarkers()
 : <a class="el" href="group__orx_profiler.html#ga324b7b0136fbda66d63b7dd715c5728b">orxProfiler.h</a>
+</li>
+<li>orxProfiler_ResetAllMaxima()
+: <a class="el" href="group__orx_profiler.html#ga7a3ec1d7238daade394651ed47909a11">orxProfiler.h</a>
 </li>
 <li>orxProfiler_Setup()
 : <a class="el" href="group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb">orxProfiler.h</a>
@@ -4834,8 +4837,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_screenshot.html#ga1f9631ae57b99d820a23b66a9cc515de">orxScreenshot.h</a>
 </li>
 <li>orxSHADER
-: <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
-, <a class="el" href="group__orx_structure.html#ga4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
+, <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
 </li>
 <li>orxShader_AddFloatParam()
 : <a class="el" href="group__orx_shader.html#gaee59c669a705b28e66cc8ff5f2c0ae48">orxShader.h</a>
@@ -4916,8 +4919,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_shader.html#ga650247fe0da8917b20b7f8c9e01e762d">orxShader.h</a>
 </li>
 <li>orxSHADERPOINTER
-: <a class="el" href="group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
-, <a class="el" href="group__orx_structure.html#ga0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
+, <a class="el" href="group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
 </li>
 <li>orxShaderPointer_AddShader()
 : <a class="el" href="group__orx_shader_pointer.html#ga74ad326fadbef929e1ebf41429674782">orxShaderPointer.h</a>
@@ -4968,8 +4971,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_shader_pointer.html#gaf3be19abb6110e0d89f5df118b7317b4">orxShaderPointer.h</a>
 </li>
 <li>orxSOUND
-: <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSound.h</a>
-, <a class="el" href="group__orx_structure.html#ga2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
+, <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSound.h</a>
 </li>
 <li>orxSound_CreateFromConfig()
 : <a class="el" href="group__orx_sound.html#ga5cef112990ff5264c67eea94a66c7afe">orxSound.h</a>
@@ -5098,8 +5101,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_sound.html#gadbe35a1b03675b2cfae4eaf9e53592f4">orxSound.h</a>
 </li>
 <li>orxSOUNDPOINTER
-: <a class="el" href="group__orx_sound_pointer.html#ga9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
-, <a class="el" href="group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
+, <a class="el" href="group__orx_sound_pointer.html#ga9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
 </li>
 <li>orxSoundPointer_AddSound()
 : <a class="el" href="group__orx_sound_pointer.html#ga0188b5336738367bfb210e8907bdfcbb">orxSoundPointer.h</a>
@@ -5279,8 +5282,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_sound_system.html#gaecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
-, <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+: <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+, <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
 </li>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#ga23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>

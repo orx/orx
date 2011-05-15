@@ -151,9 +151,9 @@ do                                              \
 /*** Module functions *** */
 
 /** Inits the random seed with an orxFLOAT
- * @param[in]   _u32Seed                        Value to use as seed for random number generation
+ * @param[in]   _s32Seed                        Value to use as seed for random number generation
  */
-extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxU32 _u32Seed);
+extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxS32 _s32Seed);
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary (inclusive)
@@ -208,6 +208,21 @@ static orxINLINE orxU32 orxMath_GetTrailingZeroCount(orxU32 _u32Value)
 
   /* Done! */
   return sau32DeBruijnLUT[((orxU32)(((orxS32)_u32Value & -(orxS32)_u32Value) * 0x077CB531U)) >> 27];
+}
+
+/** Is value a power of two?
+ * @param[in]   _u32Value                       Value to test
+ * @return      orxTRUE / orxFALSE
+ */
+static orxINLINE orxBOOL orxMath_IsPowerOfTwo(orxU32 _u32Value)
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = ((_u32Value & (_u32Value - 1)) == 0) ? orxTRUE : orxFALSE;
+  
+  /* Done! */
+  return bResult;
 }
 
 /** Gets next power of two of an orxU32

@@ -74,6 +74,7 @@ typedef struct __orxPROFILER_MARKER_INFO_t
 {
   orxDOUBLE               dFirstTimeStamp;
   orxDOUBLE               dCumulatedTime;
+  orxDOUBLE               dMaxCumulatedTime;
   orxU32                  u32PushCounter;
   orxU32                  u32Depth;
 
@@ -436,6 +437,12 @@ void orxFASTCALL orxProfiler_PopMarker()
       /* Updates cumulated time */
       pstMarker->stInfo.dCumulatedTime += orxSystem_GetTime() - pstMarker->dTimeStamp;
 
+      /* Updates max cumulated time */
+      if(pstMarker->stInfo.dCumulatedTime > pstMarker->stInfo.dMaxCumulatedTime)
+      {
+        pstMarker->stInfo.dMaxCumulatedTime = pstMarker->stInfo.dCumulatedTime;
+      }
+
       /* Pops previous marker */
       sstProfiler.s32CurrentMarker = pstMarker->s32ParentID;
 
@@ -490,6 +497,26 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
   /* Updates time stamps */
   sstProfiler.dPreviousTimeStamp  = sstProfiler.dTimeStamp;
   sstProfiler.dTimeStamp          = orxSystem_GetTime();
+
+  /* Done! */
+  return;
+}
+
+/** Resets all maxima (usually called at a regular interval)
+ */
+void orxFASTCALL orxProfiler_ResetAllMaxima()
+{
+  orxS32 i;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
+  /* For all markers */
+  for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
+  {
+    /* Resets its maximum */
+    sstProfiler.astMarkerList[i].stInfo.dMaxCumulatedTime = orx2D(0.0);
+  }
 
   /* Done! */
   return;
@@ -635,6 +662,41 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
   {
     /* Updates result */
     dResult = sstProfiler.astPreviousInfoList[s32ID].dCumulatedTime;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+
+    /* Updates result */
+    dResult = orx2D(0.0);
+  }
+
+  /* Done! */
+  return dResult;
+}
+
+/** Gets the marker's maximum cumulated time
+ * @param[in] _s32MarkerID      Concerned marker ID
+ * @return Marker's max cumulated time
+ */
+orxDOUBLE orxFASTCALL orxProfiler_GetMarkerMaxTime(orxS32 _s32MarkerID)
+{
+  orxDOUBLE dResult;
+  orxS32    s32ID;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
+
+  /* Gets ID */
+  s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
+
+  /* Valid marker ID? */
+  if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
+  {
+    /* Updates result */
+    dResult = sstProfiler.astPreviousInfoList[s32ID].dMaxCumulatedTime;
   }
   else
   {

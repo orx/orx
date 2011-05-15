@@ -602,9 +602,6 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
           /* Found? */
           if(u32Mask & (orxU32)1)
           {
-            /* Profiles */
-            orxPROFILER_POP_MARKER();
-
             /* The cell is on pSegment, on the bitfield u32Index32Bits and on the bit u32IndexBit */
             return (void *)(((orxU8 *)pstSegment->pSegmentData) + (((u32Index32Bits << 5) + s32IndexBit) * _pstBank->u32ElemSize));
           }

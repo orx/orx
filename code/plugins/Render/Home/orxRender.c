@@ -40,6 +40,7 @@
 #define orxRENDER_KU32_STATIC_FLAG_NONE           0x00000000 /**< No flags */
 
 #define orxRENDER_KU32_STATIC_FLAG_READY          0x00000001 /**< Ready flag */
+#define orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA   0x00000002 /**< Reset maxima flag */
 
 #define orxRENDER_KU32_STATIC_MASK_ALL            0xFFFFFFFF /**< All mask */
 
@@ -93,6 +94,17 @@ static orxRENDER_STATIC sstRender;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Resets profiler's maxima
+ */
+static void orxFASTCALL orxRender_ResetProfilerMaxima(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  /* Resets profiler's maxima */
+  orxProfiler_ResetAllMaxima();
+
+  /* Done! */
+  return;
+}
 
 /** Renders FPS counter
  */
@@ -281,20 +293,30 @@ static orxINLINE void orxRender_RenderProfiler()
   stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
   stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
   stTransform.fRotation = orxFLOAT_0;
-  stTransform.fDstX     = fBorder;
-  stTransform.fDstY     = orxFLOAT_1;
-  stTransform.fScaleX   = fWidth;
-  stTransform.fScaleY   = fHeight - orx2F(2.0f);
+
+  /* Selects black color */
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x66));
+
+  /* Draws background */
+  stTransform.fDstX   = orxFLOAT_0;
+  stTransform.fDstY   = orxFLOAT_0;
+  stTransform.fScaleX = fScreenWidth;
+  stTransform.fScaleY = fScreenHeight;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Selects grey colors */
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC));
   orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Draws top bar */
+  stTransform.fDstX     = fBorder;
+  stTransform.fDstY     = orxFLOAT_1;
+  stTransform.fScaleX   = fWidth;
+  stTransform.fScaleY   = fHeight - orx2F(2.0f);
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, 64, "-=orxPROFILER=-     Frame [%.2lfms]", orx2D(1000.0) * dTotalTime);
+  orxString_NPrint(acLabel, 64, "-=orxPROFILER=-     Frame [%.2fms]", orx2D(1000.0) * dTotalTime);
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orx2F(0.5f), orxFLOAT_1);
   orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -410,7 +432,7 @@ static orxINLINE void orxRender_RenderProfiler()
       else
       {
         /* Sets font's color */
-        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x99, 0x99, 0x99, 0xCC));
+        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
 
         /* Adds depth markers */
         acLabel[0] = '-';
@@ -420,7 +442,7 @@ static orxINLINE void orxRender_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2lfms, %ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -480,14 +502,14 @@ static orxINLINE void orxRender_RenderProfiler()
       else
       {
         /* Updates display color */
-        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x99, 0x99, 0x99, 0xCC));
+        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
       }
 
       /* Reinits scale */
       stTransform.fScaleX = stTransform.fScaleY = orxCLAMP(fHeight * orx2F(1.0f/16.0f), orx2F(0.5f), orxFLOAT_1);
 
       /* Draws its label */
-      orxString_NPrint(acLabel, 64, "%s [%.2lfms, %ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel, 64, "%s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1457,6 +1479,28 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       {
         /* Renders it */
         orxRender_RenderProfiler();
+
+        /* Doesn't have the reset maxima callback yet? */
+        if(!orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
+        {
+          /* Adds it */
+          orxClock_AddGlobalTimer(orxRender_ResetProfilerMaxima, orxFLOAT_1, -1, orxNULL);
+
+          /* Updates status */
+          orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA, orxRENDER_KU32_STATIC_FLAG_NONE);
+        }
+      }
+      else
+      {
+        /* Has the reset maxima callback? */
+        if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
+        {
+          /* Removes it */
+          orxClock_RemoveGlobalTimer(orxRender_ResetProfilerMaxima, orx2F(-1.0f), orxNULL);
+
+          /* Updates status */
+          orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
+        }
       }
 
       /* Pops previous section */

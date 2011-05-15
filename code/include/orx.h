@@ -280,6 +280,7 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
       if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
       {
         orxSTATUS eClockStatus, eMainStatus;
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
         orxBOOL   bStop;
 
         /* Main loop */
@@ -290,6 +291,9 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
           /* Reads all pending events */
           orxS32 s32Ident, s32Events;
           struct android_poll_source *pstSource;
+
+          /* Clears payload */
+          orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
           /* For all system events */
           while((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp->destroyRequested != 0)) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
@@ -307,23 +311,23 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
               /* Has accelerometer? */
               if(poAccelerometerSensor != NULL)
               {
-              	orxSYSTEM_EVENT_PAYLOAD stPayload;
+              	orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
                 ASensorEvent            oEvent;
 
                 /* Inits event's payload */
-                orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+                orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
                 /* For all accelerometer events */
                 while(ASensorEventQueue_getEvents(poSensorEventQueue, &oEvent, 1) > 0)
                 {
                   /* Inits event */
-                  stPayload.stAccelerometer.pAccelerometer = &oEvent;
-                  stPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
-                  stPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
-                  stPayload.stAccelerometer.fZ = (orxFLOAT)oEvent.acceleration.z;
+                  stAccelPayload.stAccelerometer.pAccelerometer = &oEvent;
+                  stAccelPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
+                  stAccelPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
+                  stAccelPayload.stAccelerometer.fZ = (orxFLOAT)oEvent.acceleration.z;
 
                   /* Sends event */
-                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stPayload);
+                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
                 }
               }
             }
@@ -332,11 +336,20 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
           /* Should update? */
           if((s32Animating != 0) || (pstApp->destroyRequested != 0))
           {
+            /* Sends frame start event */
+            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+
             /* Runs the engine */
             eMainStatus = _pfnRun();
 
             /* Updates clock system */
             eClockStatus = orxClock_Update();
+
+            /* Sends frame stop event */
+            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
+
+            /* Updates frame counter */
+            stPayload.u32FrameCounter++;
           }
         }
       }

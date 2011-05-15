@@ -799,7 +799,9 @@ static orxINLINE orxSTATUS              orxString_ToS32(const orxSTRING _zString
   }
   /* Octal? */
   else if((_zString[0] != orxCHAR_EOL)
-  && ((_zString[0] | 0x20) == '0'))
+       && ((_zString[0] | 0x20) == '0')
+       && ((_zString[1]) >= '0')
+       && ((_zString[1]) <= '9'))
   {
     /* Gets octal value */
     eResult = orxString_ToS32Base(_zString + 1, 8, _ps32OutValue, _pzRemaining);

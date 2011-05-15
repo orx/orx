@@ -2253,7 +2253,7 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR 
 void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
 {
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxBody_ApplySimulationResult");
+  orxPROFILER_PUSH_MARKER("orxBody_ApplySimResult");
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);

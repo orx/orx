@@ -82,14 +82,7 @@
   #define orxLOG(STRING, ...)                                                                                     \
   do                                                                                                              \
   {                                                                                                               \
-    _orxDebug_BackupFlags();                                                                                      \
-    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                          \
-                      |orxDEBUG_KU32_STATIC_FLAG_FILE                                                             \
-                      |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                             \
-                      |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                       \
-                       orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                       \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
-    _orxDebug_RestoreFlags();                                                                                     \
   } while(orxFALSE)
 
   #define orxLOG_CONSOLE(STRING, ...)                                                                             \
@@ -116,26 +109,13 @@
     _orxDebug_RestoreFlags();                                                                                     \
   } while(orxFALSE)
 
-  #define orxLOG_RAW(STRING, ...)                                                                                 \
-  do                                                                                                              \
-  {                                                                                                               \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
-  } while(orxFALSE)
-
 #else /* __orxGCC__ */
   #ifdef __orxMSVC__
 
     #define orxLOG(STRING, ...)                                                                                   \
     do                                                                                                            \
     {                                                                                                             \
-      _orxDebug_BackupFlags();                                                                                    \
-      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                        \
-                        |orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
-                        |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                           \
-                        |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                     \
-                         orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-      _orxDebug_RestoreFlags();                                                                                   \
     } while(orxFALSE)
 
     #define orxLOG_CONSOLE(STRING, ...)                                                                           \
@@ -160,12 +140,6 @@
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       _orxDebug_RestoreFlags();                                                                                   \
-    } while(orxFALSE)
-
-    #define orxLOG_RAW(STRING, ...)                                                                               \
-    do                                                                                                            \
-    {                                                                                                             \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
     } while(orxFALSE)
 
   #endif /* __orxMSVC__ */

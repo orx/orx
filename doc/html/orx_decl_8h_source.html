@@ -118,7 +118,7 @@
 <a name="l00104"></a>00104 
 <a name="l00105"></a>00105 
 <a name="l00106"></a>00106 <span class="comment">/* No platform defines? */</span>
-<a name="l00107"></a>00107 <span class="preprocessor">#if !defined(__orxWINDOWS__) &amp;&amp; !defined(__orxMAC__) &amp;&amp; !defined(__orxLINUX__) &amp;&amp; !defined(__orxGP2X__) &amp;&amp; !defined(__orxWII__) &amp;&amp; !defined(__orxIPHONE__) &amp;&amp; !defined(__orxANDROID__)</span>
+<a name="l00107"></a>00107 <span class="preprocessor">#if !defined(__orxWINDOWS__) &amp;&amp; !defined(__orxMAC__) &amp;&amp; !defined(__orxLINUX__) &amp;&amp; !defined(__orxGP2X__) &amp;&amp; !defined(__orxWII__) &amp;&amp; !defined(__orxIPHONE__) &amp;&amp; !defined(__orxANDROID__) &amp;&amp; !defined(__orxANDROID_NATIVE__)</span>
 <a name="l00108"></a>00108 <span class="preprocessor"></span>
 <a name="l00109"></a>00109   <span class="comment">/* Windows? */</span>
 <a name="l00110"></a>00110 <span class="preprocessor">  #if defined(_WIN32) || defined(WIN32)</span>
@@ -157,7 +157,7 @@
 <a name="l00143"></a>00143 <span class="preprocessor"></span>
 <a name="l00144"></a>00144 <span class="preprocessor">  #else</span>
 <a name="l00145"></a>00145 <span class="preprocessor"></span>
-<a name="l00146"></a>00146 <span class="preprocessor">    #error &quot;Couldn&#39;t guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__/__orxANDROID__)&quot;</span>
+<a name="l00146"></a>00146 <span class="preprocessor">    #error &quot;Couldn&#39;t guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__/__orxWII__/__orxIPHONE__/__orxANDROID__/__orxANDROID_NATIVE__)&quot;</span>
 <a name="l00147"></a>00147 <span class="preprocessor"></span>
 <a name="l00148"></a>00148 <span class="preprocessor">  #endif</span>
 <a name="l00149"></a>00149 <span class="preprocessor"></span>
@@ -228,9 +228,9 @@
 <a name="l00218"></a>00218 <span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span>
 <a name="l00219"></a>00219 
 <a name="l00220"></a>00220   <span class="comment">/* Linux / Mac / GP2X / Wii / iPhone */</span>
-<a name="l00221"></a>00221 <span class="preprocessor">  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)</span>
+<a name="l00221"></a>00221 <span class="preprocessor">  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)</span>
 <a name="l00222"></a>00222 <span class="preprocessor"></span>
-<a name="l00223"></a>00223 <span class="preprocessor">    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__) || defined(__orxANDROID__)</span>
+<a name="l00223"></a>00223 <span class="preprocessor">    #if defined(__orxGP2X__) || defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)</span>
 <a name="l00224"></a>00224 <span class="preprocessor"></span>
 <a name="l00225"></a>00225 <span class="preprocessor">      #define orxFASTCALL</span>
 <a name="l00226"></a>00226 <span class="preprocessor"></span>
@@ -238,7 +238,7 @@
 <a name="l00228"></a>00228 <span class="preprocessor"></span>
 <a name="l00229"></a>00229 <span class="preprocessor">      #define orxCDECL</span>
 <a name="l00230"></a>00230 <span class="preprocessor"></span>
-<a name="l00231"></a>00231 <span class="preprocessor">    #else </span><span class="comment">/* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */</span>
+<a name="l00231"></a>00231 <span class="preprocessor">    #else </span><span class="comment">/* __orxGP2X__ || __orxPPC__ || __orxX86_64__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */</span>
 <a name="l00232"></a>00232 
 <a name="l00233"></a>00233 <span class="preprocessor">      #ifdef __orxFREEBASIC__</span>
 <a name="l00234"></a>00234 <span class="preprocessor"></span>
@@ -254,7 +254,7 @@
 <a name="l00244"></a>00244 <span class="preprocessor"></span>
 <a name="l00245"></a>00245 <span class="preprocessor">      #define orxCDECL          __attribute__ ((cdecl))</span>
 <a name="l00246"></a>00246 <span class="preprocessor"></span>
-<a name="l00247"></a>00247 <span class="preprocessor">    #endif </span><span class="comment">/* __orxGP2X__ || __orxPPC__ || __orxX86_64__ */</span>
+<a name="l00247"></a>00247 <span class="preprocessor">    #endif </span><span class="comment">/* __orxGP2X__ || __orxPPC__ || __orxX86_64__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */</span>
 <a name="l00248"></a>00248 
 <a name="l00250"></a>00250 <span class="preprocessor">    #define orxDLLEXPORT        __attribute__ ((visibility(&quot;default&quot;)))</span>
 <a name="l00251"></a>00251 <span class="preprocessor"></span>
@@ -272,14 +272,14 @@
 <a name="l00265"></a>00265 
 <a name="l00267"></a>00267 <span class="preprocessor">    #define orxNULL             (0)</span>
 <a name="l00268"></a>00268 <span class="preprocessor"></span>
-<a name="l00269"></a>00269 <span class="preprocessor">    #if defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)</span>
+<a name="l00269"></a>00269 <span class="preprocessor">    #if defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)</span>
 <a name="l00270"></a>00270 <span class="preprocessor"></span>
 <a name="l00271"></a>00271       <span class="comment">/* Wii and IPhone versions can only be embedded due to the lack of dlfcn presence */</span>
 <a name="l00272"></a>00272 <span class="preprocessor">      #define __orxEMBEDDED__</span>
 <a name="l00273"></a>00273 <span class="preprocessor"></span>
-<a name="l00274"></a>00274 <span class="preprocessor">    #endif </span><span class="comment">/* __orxWII__ || __orxIPHONE__ */</span>
+<a name="l00274"></a>00274 <span class="preprocessor">    #endif </span><span class="comment">/* __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */</span>
 <a name="l00275"></a>00275 
-<a name="l00276"></a>00276 <span class="preprocessor">  #endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */</span>
+<a name="l00276"></a>00276 <span class="preprocessor">  #endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */</span>
 <a name="l00277"></a>00277 
 <a name="l00278"></a>00278 <span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span>
 <a name="l00279"></a>00279 

@@ -131,6 +131,10 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_PopMarker();
  */
 extern orxDLLAPI void orxFASTCALL                 orxProfiler_ResetAllMarkers();
 
+/** Resets all maxima (usually called at a regular interval)
+ */
+extern orxDLLAPI void orxFASTCALL                 orxProfiler_ResetAllMaxima();
+
 /** Gets the time elapsed since last reset
  * @return Time elapsed since the last reset, in seconds
  */
@@ -161,6 +165,12 @@ extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextSortedMarke
  * @return Marker's cumulated time
  */
 extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMarkerTime(orxS32 _s32MarkerID);
+
+/** Gets the marker's maximum cumulated time
+ * @param[in] _s32MarkerID      Concerned marker ID
+ * @return Marker's max cumulated time
+ */
+extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMarkerMaxTime(orxS32 _s32MarkerID);
 
 /** Gets the marker's name
  * @param[in] _s32MarkerID      Concerned marker ID

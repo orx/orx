@@ -230,6 +230,14 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   orxVECTOR vMousePos;
   orxBOOL   bInViewport;
 
+  if(orxInput_IsActive("ToggleProfiler") && orxInput_HasNewStatus("ToggleProfiler"))
+  {
+    /* Toggles profiler rendering */
+    orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+    orxConfig_SetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER, !orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER));
+    orxConfig_PopSection();
+  }
+
   if(orxInput_IsActive("PreviousResolution") && orxInput_HasNewStatus("PreviousResolution"))
   {
     /* Updates video mode index */

@@ -71,6 +71,7 @@
   typedef orxU32                  orxENUM;
 
   #define orx2F(V)                ((orxFLOAT)(V))
+  #define orx2D(V)                ((orxDOUBLE)(V))
 
   #define orxENUM_NONE            0xFFFFFFFFL
 
@@ -91,7 +92,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iPhone / Android / Wii */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     typedef void *                orxHANDLE;
 
@@ -116,10 +117,11 @@
     typedef orxU32                orxENUM;
 
     #define orx2F(V)              ((orxFLOAT)(V))
+    #define orx2D(V)              ((orxDOUBLE)(V))
 
     #define orxENUM_NONE          0xFFFFFFFFL
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxWINDOWS__ */
 
