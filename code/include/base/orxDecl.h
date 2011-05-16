@@ -48,6 +48,12 @@
 
 #endif /* __APPLE__ */
 
+#ifdef TARGET_OS_ANDROID
+
+  #include <android/api-level.h>
+
+#endif /* TARGET_OS_ANDROID */
+
 
 /* *** Platform dependent base declarations */
 
@@ -129,7 +135,15 @@
   /* Android */
   #elif defined(TARGET_OS_ANDROID)
 
-    #define __orxANDROID__
+    #if __ANDROID_API__ >= 9
+
+      #define __orxANDROID_NATIVE__
+
+    #else /* __ANDROID_API__ >= 9 */
+
+      #define __orxANDROID__
+
+    #endif /* __ANDROID_API__ >= 9 */
 
   /* Mac? */
   #elif defined(__APPLE__)
