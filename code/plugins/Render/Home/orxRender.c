@@ -52,6 +52,18 @@
 #define orxRENDER_KST_DEFAULT_COLOR               orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT                   "FPS: %ld"
 
+#define orxRENDER_KF_PROFILER_BORDER              orx2F(0.01f)
+#define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH     orx2F(0.5f)
+#define orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT    orx2F(0.25f)
+#define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT      orx2F(5.0f)
+#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT      orx2F(32.0f)
+#define orxRENDER_KF_PROFILER_BAR_ALPHA           orx2F(0.8f)
+#define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT     orx2F(0.5f)
+#define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT     orx2F(1.0f)
+#define orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH  orx2F(800.0f)
+#define orxRENDER_KF_PROFILER_HUE_STACK_RANGE     orx2F(2.0f)
+#define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE   orx2F(0.8f/3.0f)
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -214,9 +226,10 @@ static orxINLINE void orxRender_RenderProfiler()
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
   orxU32                  u32CurrentDepth, u32MaxDepth;
-  orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta;
+  orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
   orxDOUBLE               dStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
+  orxBOOL                 bLandscape;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   orxCHAR                 acLabel[64];
@@ -274,20 +287,33 @@ static orxINLINE void orxRender_RenderProfiler()
   /* Gets screen size */
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
 
-  /* Gets border */
-  fBorder = orx2F(0.01f) * fScreenWidth;
+  /* Updates orientation */
+  bLandscape = (fScreenWidth >= fScreenHeight) ? orxTRUE: orxFALSE;
 
-  /* Gets full marker size */
-  fWidth  = orx2F(0.5f) * fScreenWidth - orx2F(2.0f) * fBorder;
-  fHeight = orx2F(0.25f) * fScreenHeight / orxU2F(u32MaxDepth + 2);
-  fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
+  /* Gets border */
+  fBorder = orxMath_Floor(orxRENDER_KF_PROFILER_BORDER * fScreenWidth);
+
+  /* Gets full marker size and text scale */
+  if(bLandscape != orxFALSE)
+  {
+    fWidth      = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth - orx2F(2.0f) * fBorder;
+    fHeight     = orxMath_Floor(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight / orxU2F(u32MaxDepth + 2));
+    fTextScale  = orxMIN(fScreenWidth / orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH, orxFLOAT_1);
+  }
+  else
+  {
+    fWidth      = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight - orx2F(2.0f) * fBorder;
+    fHeight     = orxMath_Floor(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth / orxU2F(u32MaxDepth + 2));
+    fTextScale  = orxMIN(fScreenHeight / orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH, orxFLOAT_1);
+  }
+  fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
 
   /* Inits color */
-  orxColor_Set(&stColor, &orxVECTOR_GREEN, orx2F(0.8f));
+  orxColor_Set(&stColor, &orxVECTOR_GREEN, orxRENDER_KF_PROFILER_BAR_ALPHA);
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* Gets hue delta */
-  fHueDelta = orx2F(2.0f) / orxS2F(s32MarkerCounter + 1);
+  fHueDelta = orxRENDER_KF_PROFILER_HUE_STACK_RANGE / orxS2F(s32MarkerCounter + 1);
 
   /* Inits transform */
   stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
@@ -295,7 +321,7 @@ static orxINLINE void orxRender_RenderProfiler()
   stTransform.fRotation = orxFLOAT_0;
 
   /* Selects black color */
-  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x66));
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x99));
 
   /* Draws background */
   stTransform.fDstX   = orxFLOAT_0;
@@ -309,8 +335,18 @@ static orxINLINE void orxRender_RenderProfiler()
   orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Draws top bar */
-  stTransform.fDstX     = fBorder;
-  stTransform.fDstY     = orxFLOAT_1;
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX     = fBorder;
+    stTransform.fDstY     = orxFLOAT_1;
+    stTransform.fRotation = orxFLOAT_0;
+  }
+  else
+  {
+    stTransform.fDstX     = orxFLOAT_1;
+    stTransform.fDstY     = fScreenHeight - fBorder;
+    stTransform.fRotation = -orxMATH_KF_PI_BY_2;
+  }
   stTransform.fScaleX   = fWidth;
   stTransform.fScaleY   = fHeight - orx2F(2.0f);
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -318,26 +354,52 @@ static orxINLINE void orxRender_RenderProfiler()
   /* Displays its label */
   orxString_NPrint(acLabel, 64, "-=orxPROFILER=-     Frame [%.2fms]", orx2D(1000.0) * dTotalTime);
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
-  stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orx2F(0.5f), orxFLOAT_1);
+  stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
+  stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
   orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Selects white color */
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Draws separators */
-  stTransform.fDstX   = orxFLOAT_0;
-  stTransform.fDstY   = orx2F(0.25f) * fScreenHeight;
-  stTransform.fScaleX = orx2F(0.5f) * fScreenWidth;
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX   = orxFLOAT_0;
+    stTransform.fDstY   = orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight;
+    stTransform.fScaleX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth;
+  }
+  else
+  {
+    stTransform.fDstX   = orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth;
+    stTransform.fDstY   = fScreenHeight;
+    stTransform.fScaleX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight;
+  }
   stTransform.fScaleY = orxFLOAT_1;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  stTransform.fDstX   = orx2F(0.5f) * fScreenWidth;
-  stTransform.fDstY   = orxFLOAT_0;
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX   = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth;
+    stTransform.fDstY   = orxFLOAT_0;
+    stTransform.fScaleY = fScreenHeight;
+  }
+  else
+  {
+    stTransform.fDstX   = orxFLOAT_0;
+    stTransform.fDstY   = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight;
+    stTransform.fScaleY = fScreenWidth;
+  }
   stTransform.fScaleX = orxFLOAT_1;
-  stTransform.fScaleY = fScreenHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Updates vertical values */
-  stTransform.fDstY   = fHeight + orxFLOAT_1;
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstY = fHeight + orxFLOAT_1;
+  }
+  else
+  {
+    stTransform.fDstX = fHeight + orxFLOAT_1;
+  }
   stTransform.fScaleY = fHeight - orx2F(2.0f);
 
   /* For all sorted markers */
@@ -369,8 +431,16 @@ static orxINLINE void orxRender_RenderProfiler()
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID) - 1;
 
       /* Updates its position */
-      stTransform.fDstX   = fBorder + (orxFLOAT)((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - dStartTime) * dRecTotalTime) * fWidth;
-      stTransform.fDstY  += fHeight * orxS2F((orxS32)u32Depth - (orxS32)u32CurrentDepth);
+      if(bLandscape != orxFALSE)
+      {
+        stTransform.fDstX   = fBorder + (orxFLOAT)((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - dStartTime) * dRecTotalTime) * fWidth;
+        stTransform.fDstY  += fHeight * orxS2F((orxS32)u32Depth - (orxS32)u32CurrentDepth);
+      }
+      else
+      {
+        stTransform.fDstX  += fHeight * orxS2F((orxS32)u32Depth - (orxS32)u32CurrentDepth);
+        stTransform.fDstY   = fScreenHeight - (fBorder + (orxFLOAT)((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - dStartTime) * dRecTotalTime) * fWidth);
+      }
 
       /* Updates current depth */
       u32CurrentDepth = u32Depth;
@@ -384,19 +454,32 @@ static orxINLINE void orxRender_RenderProfiler()
     }
   }
 
-  /* Updates vertical position */
-  stTransform.fDstX = fBorder;
-  stTransform.fDstY = orx2F(0.25f) * fScreenHeight + orxFLOAT_1;
+  /* Updates vertical position & marker's height */
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX = fBorder;
+    stTransform.fDstY = orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight + orxFLOAT_1;
+    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenHeight / orxS2F(s32UniqueCounter));
+  }
+  else
+  {
+    stTransform.fDstX = orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth + orxFLOAT_1;
+    stTransform.fDstY = fScreenHeight - fBorder;
+    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenWidth / orxS2F(s32UniqueCounter));
+  }
+  fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
 
-  /* Resets scale */
-  stTransform.fScaleX = stTransform.fScaleY = orxFLOAT_1;
+  /* Reinits text scale */
+  fTextScale          = orxMIN(fTextScale, fHeight / pstMap->fCharacterHeight);
+  fTextScale          = orxCLAMP(fTextScale, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
+  stTransform.fScaleY = stTransform.fScaleX = fTextScale;
 
   /* Inits color */
-  orxColor_Set(&stColor, &orxVECTOR_GREEN, orx2F(0.8f));
+  orxColor_Set(&stColor, &orxVECTOR_GREEN, orxRENDER_KF_PROFILER_BAR_ALPHA);
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* For all sorted markers */
-  for(u32CurrentDepth = 1, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+  for(s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
@@ -412,9 +495,6 @@ static orxINLINE void orxRender_RenderProfiler()
 
       /* Gets its depth */
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
-
-      /* Updates current depth */
-      u32CurrentDepth = u32Depth;
 
       /* Has been pushed? */
       if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
@@ -446,28 +526,46 @@ static orxINLINE void orxRender_RenderProfiler()
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
-      stTransform.fDstY += pstMap->fCharacterHeight + orxFLOAT_1;
+      if(bLandscape != orxFALSE)
+      {
+        stTransform.fDstY += fHeight;
+      }
+      else
+      {
+        stTransform.fDstX += fHeight;
+      }
     }
   }
 
-  /* Updates marker's height */
-  fHeight = orxMath_Floor(fScreenHeight / orxS2F(s32MarkerCounter - s32UniqueCounter));
-  fHeight = orxCLAMP(fHeight, orx2F(5.0f), orx2F(32.0f));
-
   /* Updates color */
-  orxColor_Set(&stColor, &orxVECTOR_RED, orx2F(0.8f));
+  orxColor_Set(&stColor, &orxVECTOR_RED, orxRENDER_KF_PROFILER_BAR_ALPHA);
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* Sets font's color */
   orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Gets hue delta */
-  fHueDelta = orx2F(0.8f/3.0f) / orxS2F(s32MarkerCounter);
+  fHueDelta = orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE / orxS2F(s32MarkerCounter);
 
-  /* Updates vertical values */
-  stTransform.fDstX   = orx2F(0.5f) * fScreenWidth + fBorder;
-  stTransform.fDstY   = orxFLOAT_1;
+  /* Updates vertical values & marker's height */
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth + fBorder;
+    stTransform.fDstY = orxFLOAT_1;
+    fHeight           = orxMath_Floor(fScreenHeight / orxS2F(s32MarkerCounter - s32UniqueCounter));
+  }
+  else
+  {
+    stTransform.fDstX = orxFLOAT_1;
+    stTransform.fDstY = fScreenHeight - (orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight + fBorder);
+    fHeight           = orxMath_Floor(fScreenWidth / orxS2F(s32MarkerCounter - s32UniqueCounter));
+  }
+  fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
   stTransform.fScaleY = fHeight - orx2F(2.0f);
+
+  /* Reinits text scale */
+  fTextScale = orxMIN(fTextScale, fHeight / pstMap->fCharacterHeight);
+  fTextScale = orxCLAMP(fTextScale, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
 
   /* For all markers */
   for(s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
@@ -506,14 +604,21 @@ static orxINLINE void orxRender_RenderProfiler()
       }
 
       /* Reinits scale */
-      stTransform.fScaleX = stTransform.fScaleY = orxCLAMP(fHeight * orx2F(1.0f/16.0f), orx2F(0.5f), orxFLOAT_1);
+      stTransform.fScaleX = stTransform.fScaleY = fTextScale;
 
       /* Draws its label */
       orxString_NPrint(acLabel, 64, "%s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
-      stTransform.fDstY += fHeight;
+      if(bLandscape != orxFALSE)
+      {
+        stTransform.fDstY += fHeight;
+      }
+      else
+      {
+        stTransform.fDstX += fHeight;
+      }
     }
   }
 
