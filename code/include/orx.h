@@ -221,7 +221,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   #include <android/sensor.h>
 
 
-/* Defined in orxAndroidSupport.c */
+/* Defined in orxAndroidNativeSupport.c */
 extern orxS32 s32Animating;
 extern struct android_app *pstApp;
 extern void (*ptonAppCmd)(struct android_app *app, int32_t cmd);
@@ -511,6 +511,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 #endif /* __orxPLUGIN__ */
 
 #endif /*_orx_H_*/
+
 
 
 #ifdef __cplusplus

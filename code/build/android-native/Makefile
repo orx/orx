@@ -36,7 +36,7 @@ C_SRC = \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
-	main/orxAndroidSupport.c  \
+	main/orxAndroidNativeSupport.c  \
 	physics/orxPhysics.c      \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
