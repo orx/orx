@@ -283,6 +283,9 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
         orxSYSTEM_EVENT_PAYLOAD stPayload;
         orxBOOL   bStop;
 
+        /* Clears payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
         /* Main loop */
         for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
             bStop == orxFALSE;
@@ -291,9 +294,6 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
           /* Reads all pending events */
           orxS32 s32Ident, s32Events;
           struct android_poll_source *pstSource;
-
-          /* Clears payload */
-          orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
           /* For all system events */
           while((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp->destroyRequested != 0)) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
@@ -511,6 +511,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 #endif /* __orxPLUGIN__ */
 
 #endif /*_orx_H_*/
+
 
 #ifdef __cplusplus
 }
