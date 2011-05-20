@@ -352,7 +352,7 @@ static orxINLINE void orxRender_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, 64, "-=orxPROFILER=-     Frame [%.2fms]", orx2D(1000.0) * dTotalTime);
+  orxString_NPrint(acLabel, 64, "-=orxPROFILER=-     Frame [%.2f|%.2fms]", orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);

@@ -99,6 +99,7 @@ typedef struct __orxPROFILER_STATIC_t
 {
   orxDOUBLE               dPreviousTimeStamp;
   orxDOUBLE               dTimeStamp;
+  orxDOUBLE               dMaxResetTime;
   orxS32                  s32MarkerCounter;
   orxS32                  s32CurrentMarker;
   orxS32                  s32WaterStamp;
@@ -518,6 +519,9 @@ void orxFASTCALL orxProfiler_ResetAllMaxima()
     sstProfiler.astMarkerList[i].stInfo.dMaxCumulatedTime = orx2D(0.0);
   }
 
+  /* Resets max reset time */
+  sstProfiler.dMaxResetTime = orx2D(0.0);
+
   /* Done! */
   return;
 }
@@ -535,8 +539,27 @@ orxDOUBLE orxFASTCALL orxProfiler_GetResetTime()
   /* Updates result */
   dResult = sstProfiler.dTimeStamp - sstProfiler.dPreviousTimeStamp;
 
+  /* Longer than previous? */
+  if(dResult > sstProfiler.dMaxResetTime)
+  {
+    /* Stores it */
+    sstProfiler.dMaxResetTime = dResult;
+  }
+
   /* Done! */
   return dResult;
+}
+
+/** Gets the maximum reset time
+ * @return Max reset time, in seconds
+ */
+orxDOUBLE orxFASTCALL orxProfiler_GetMaxResetTime()
+{
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return sstProfiler.dMaxResetTime;
 }
 
 /** Gets the number of registered markers

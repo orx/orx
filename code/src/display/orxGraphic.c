@@ -57,7 +57,7 @@
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
 
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000 /**< Blend mode no flags */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA     0x00100000  /**< Blend mode alpha flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
