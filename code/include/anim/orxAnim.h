@@ -90,27 +90,39 @@ typedef enum __orxANIM_EVENT_t
 
 } orxANIM_EVENT;
 
-/** Anim event payload
- */
-typedef struct __orxANIM_EVENT_PAYLOAD_t
-{
-  orxANIM        *pstAnim;                    /**< Animation reference : 4 */
-  const orxSTRING zAnimName;                  /**< Animation name : 8 */
-  const orxSTRING zCustomEventName;           /**< Custom event name : 12 */
-  orxFLOAT        fCustomEventValue;          /**< Custom event value : 16 */
-  orxFLOAT        fCustomEventTime;           /**< Custom event time : 20 */
-
-} orxANIM_EVENT_PAYLOAD;
-
 /** Anim custom event
  */
 typedef struct __orxANIM_CUSTOM_EVENT_t
 {
-  const orxSTRING zName;                      /**< Event name : 4 */
-  orxFLOAT        fValue;                     /**< Event value : 8 */
-  orxFLOAT        fTimeStamp;                 /**< Timestamp : 12 */
+  orxFLOAT              fTime;                /**< Timestamp : 4 */
+  orxFLOAT              fValue;               /**< Event value : 8 */
+  const orxSTRING       zName;                /**< Event name : 12 */
 
 } orxANIM_CUSTOM_EVENT;
+
+/** Anim event payload
+ */
+typedef struct __orxANIM_EVENT_PAYLOAD_t
+{
+  orxANIM              *pstAnim;              /**< Animation reference : 4 */
+  const orxSTRING       zAnimName;            /**< Animation name : 8 */
+  orxANIM_CUSTOM_EVENT  stCustomEvent;        /**< Animation custom event : 20 */
+
+} orxANIM_EVENT_PAYLOAD;
+
+
+/** Anim channel type enum
+ */
+typedef enum __orxANIM_CHANNEL_ID_t
+{
+  orxANIM_CHANNEL_ID_GRAPHIC = 0,
+  orxANIM_CHANNEL_ID_EVENT,
+
+  orxANIM_CHANNEL_ID_NUMBER,
+
+  orxANIM_CHANNEL_ID_NONE = orxENUM_NONE
+
+} orxANIM_CHANNEL_ID;
 
 
 /** Anim module setup
@@ -147,52 +159,35 @@ extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_CreateFromConfig(const orx
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 
 
-/** Adds a key to an animation
+/** Adds a structure key to an animation channel
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @param[in]   _pstData        Key data to add
- * @param[in]   _fTimeStamp     Timestamp for this key
+ * @param[in]   _fTime          Timestamp for this key
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxFLOAT _fTimeStamp);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddStructureKey(orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxSTRUCTURE *_pstData, orxFLOAT _fTime);
 
 /** Removes last added key from an animation
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastKey(orxANIM *_pstAnim);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastKey(orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID);
 
 /** Removes all keys from an animation
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  */
-extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllKeys(orxANIM *_pstAnim);
+extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllKeys(orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID);
 
 
-/** Adds an event to an animation
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _zEventName     Event name to add
- * @param[in]   _fTimeStamp     Timestamp for this event
- * @param[in]   _fValue         Value for this event
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEventName, orxFLOAT _fTimeStamp, orxFLOAT _fValue);
-
-/** Removes last added event from an animation
- * @param[in]   _pstAnim        Concerned animation
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastEvent(orxANIM *_pstAnim);
-
-/** Removes all events from an animation
- * @param[in]   _pstAnim        Concerned animation
- */
-extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllEvents(orxANIM *_pstAnim);
-
-/** Gets next event after given timestamp
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _fTimeStamp     Time stamp, excluded
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
+///** Gets next event after given timestamp
+// * @param[in]   _pstAnim        Concerned animation
+// * @param[in]   _fTimeStamp     Time stamp, excluded
+// * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+// */
+//extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 
 /** Updates anim given a timestamp

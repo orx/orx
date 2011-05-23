@@ -2416,7 +2416,7 @@ orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const o
   if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
-    bResult = (orxAnimPointer_GetCurrentAnim(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
+    bResult = (orxAnimPointer_GetCurrentAnimID(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
   }
   else
   {
@@ -2450,7 +2450,7 @@ orxBOOL orxFASTCALL orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const or
   if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
-    bResult = (orxAnimPointer_GetTargetAnim(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
+    bResult = (orxAnimPointer_GetTargetAnimID(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
   }
   else
   {
@@ -2486,12 +2486,12 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, const orxS
     if((_zAnimName == orxNULL) || (_zAnimName == orxSTRING_EMPTY))
     {
       /* Resets current animation */
-      eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxU32_UNDEFINED);
+      eResult = orxAnimPointer_SetCurrentAnimID(pstAnimPointer, orxU32_UNDEFINED);
     }
     else
     {
       /* Sets current animation */
-      eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxString_ToCRC(_zAnimName));
+      eResult = orxAnimPointer_SetCurrentAnimID(pstAnimPointer, orxString_ToCRC(_zAnimName));
     }
   }
   else
@@ -2528,12 +2528,12 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxST
     if((_zAnimName == orxNULL) || (_zAnimName == orxSTRING_EMPTY))
     {
       /* Resets target animation */
-      eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxU32_UNDEFINED);
+      eResult = orxAnimPointer_SetTargetAnimID(pstAnimPointer, orxU32_UNDEFINED);
     }
     else
     {
       /* Sets target animation */
-      eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxString_ToCRC(_zAnimName));
+      eResult = orxAnimPointer_SetTargetAnimID(pstAnimPointer, orxString_ToCRC(_zAnimName));
     }
   }
   else

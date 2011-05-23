@@ -121,13 +121,13 @@ extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetTargetAnimHandle
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentAnimID(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer target Animation ID get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetTargetAnimID(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current anim data get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
@@ -166,14 +166,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnimHandle
  * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
 
 /** AnimPointer target Animation set accessor using ID
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set / orxU32_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
 
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

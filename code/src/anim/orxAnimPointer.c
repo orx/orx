@@ -165,13 +165,13 @@ static orxINLINE void orxAnimPointer_SendCustomEvents(orxANIM *_pstAnim, const o
 
   /* For all events to send */
   for(pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, _fStartTime);
-      (pstCustomEvent != orxNULL) && (pstCustomEvent->fTimeStamp <= _fEndTime);
-      pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTimeStamp))
+      (pstCustomEvent != orxNULL) && (pstCustomEvent->fTime <= _fEndTime);
+      pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTime))
   {
     /* Updates event payload */
-    stPayload.zCustomEventName  = pstCustomEvent->zName;
-    stPayload.fCustomEventValue = pstCustomEvent->fValue;
-    stPayload.fCustomEventTime  = pstCustomEvent->fTimeStamp;
+    stPayload.stCustomEvent.zName  = pstCustomEvent->zName;
+    stPayload.stCustomEvent.fValue = pstCustomEvent->fValue;
+    stPayload.stCustomEvent.fTime  = pstCustomEvent->fTime;
 
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUSTOM_EVENT, _pstOwner, _pstOwner, &stPayload);
@@ -736,7 +736,7 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(const orxANIMPOINTER *_
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation ID
  */
-orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnimID(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxU32 u32AnimID = orxU32_UNDEFINED;
 
@@ -774,7 +774,7 @@ orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimP
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
-orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetTargetAnimID(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxU32 u32AnimID = orxU32_UNDEFINED;
 
@@ -1024,7 +1024,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
  * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
 {
   orxHANDLE hAnimHandle;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1052,7 +1052,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
  * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set / orxU32_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
 {
   orxHANDLE hAnimHandle;
   orxSTATUS eResult = orxSTATUS_FAILURE;

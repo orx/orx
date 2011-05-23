@@ -72,23 +72,44 @@
  */
 typedef struct __orxANIM_KEY_t
 {
-  orxSTRUCTURE *pstData;                    /**< Data key : 4 */
-  orxFLOAT      fTimeStamp;                 /**< Data timestamp : 8 */
+  union
+  {
+    struct
+    {
+      orxFLOAT            fTime;                        /**< Key timestamp : 4 */
+      orxSTRUCTURE       *pstData;                      /**< Key data : 8 */
+    } stStructure;
+
+    orxANIM_CUSTOM_EVENT  stEvent;
+  };
 
 } orxANIM_KEY;
+
+#ifdef __orxMSVC__
+  #pragma warning(disable : 4200) 
+#endif /* __orxMSVC__ */
+
+/** Animation channel structure
+ */
+typedef struct __orxANIM_CHANNEL_t
+{
+  orxU16                u16KeySize;
+  orxU16                u16KeyCounter;
+  orxANIM_KEY           astKeyList[0];
+
+} orxANIM_CHANNEL;
+
+#ifdef __orxMSVC__
+  #pragma warning(default : 4200)
+#endif /* __orxMSVC__ */
 
 /** Animation structure
  */
 struct __orxANIM_t
 {
-  orxSTRUCTURE          stStructure;        /**< Public structure, first structure member : 16 */
-  const orxSTRING       zName;              /**< Anim name : 20 */
-  orxU16                u16KeySize;         /**< Key size : 22 */
-  orxU16                u16KeyCounter;      /**< Key counter : 24 */
-  orxU16                u16EventSize;       /**< Event size : 26 */
-  orxU16                u16EventCounter;    /**< Event counter : 28 */
-  orxANIM_KEY          *astKeyList;         /**< Key array : 32 */
-  orxANIM_CUSTOM_EVENT *astEventList;       /**< Event array : 36 */
+  orxSTRUCTURE          stStructure;                              /**< Public structure, first structure member : 16 */
+  const orxSTRING       zName;                                    /**< Anim name : 20 */
+  orxANIM_CHANNEL      *apstChannelList[orxANIM_CHANNEL_ID_NUMBER];/** Channel list */
 };
 
 
@@ -96,7 +117,7 @@ struct __orxANIM_t
  */
 typedef struct __orxANIM_STATIC_t
 {
-  orxU32 u32Flags;                          /**< Control flags : 4 */
+  orxU32 u32Flags;                                                /**< Control flags : 4 */
 
 } orxANIM_STATIC;
 
@@ -116,200 +137,73 @@ static orxANIM_STATIC sstAnim;
 
 /** Finds a key index given a timestamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _fTimeStamp     Desired timestamp
+ * @param[in]   _eChannelID     Concerned channel
+ * @param[in]   _fTime          Desired timestamp
  * @return      Key index / orxU32_UNDEFINED
  */
-static orxINLINE orxU32 orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
+static orxINLINE orxU32 orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxFLOAT _fTime)
 {
-  orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
+  orxU32 u32Result = orxU32_UNDEFINED;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
+  orxASSERT(_eChannelID < orxANIM_CHANNEL_ID_NUMBER);
 
-  /* Gets counter */
-  u32Counter = orxAnim_GetKeyCounter(_pstAnim);
-
-  /* Is animation not empty? */
-  if(u32Counter != 0)
+  /* Has channel? */
+  if(_pstAnim->apstChannelList[_eChannelID] != orxNULL)
   {
-    /* Dichotomic search */
-    for(u32MinIndex = 0, u32MaxIndex = u32Counter - 1, u32Index = u32MaxIndex >> 1;
-        u32MinIndex < u32MaxIndex;
-        u32Index = (u32MinIndex + u32MaxIndex) >> 1)
-    {
-      /* Updates search range */
-      if(_fTimeStamp > _pstAnim->astKeyList[u32Index].fTimeStamp)
-      {
-        u32MinIndex = u32Index + 1;
-      }
-      else
-      {
-        u32MaxIndex = u32Index;
-      }
-    }
+    orxANIM_CHANNEL *pstChannel;
 
-    /* Not found? */
-    if(_pstAnim->astKeyList[u32Index].fTimeStamp < _fTimeStamp)
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid timestamp.");
+    /* Gets it */
+    pstChannel = _pstAnim->apstChannelList[_eChannelID];
 
-      /* Not defined */
-      u32Index = orxU32_UNDEFINED;
-    }
+    //! TODO
   }
-  /* Empty animation */
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animation count is 0.");
 
-    /* Not defined */
-    u32Index = orxU32_UNDEFINED;
-  }
+  ///* Gets counter */
+  //u32Counter = orxAnim_GetKeyCounter(_pstAnim);
+
+  ///* Is animation not empty? */
+  //if(u32Counter != 0)
+  //{
+  //  /* Dichotomic search */
+  //  for(u32MinIndex = 0, u32MaxIndex = u32Counter - 1, u32Index = u32MaxIndex >> 1;
+  //      u32MinIndex < u32MaxIndex;
+  //      u32Index = (u32MinIndex + u32MaxIndex) >> 1)
+  //  {
+  //    /* Updates search range */
+  //    if(_fTime > _pstAnim->astKeyList[u32Index].stStructure.fTime)
+  //    {
+  //      u32MinIndex = u32Index + 1;
+  //    }
+  //    else
+  //    {
+  //      u32MaxIndex = u32Index;
+  //    }
+  //  }
+
+  //  /* Not found? */
+  //  if(_pstAnim->astKeyList[u32Index].stStructure.fTime < _fTime)
+  //  {
+  //    /* Logs message */
+  //    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid timestamp.");
+
+  //    /* Not defined */
+  //    u32Index = orxU32_UNDEFINED;
+  //  }
+  //}
+  ///* Empty animation */
+  //else
+  //{
+  //  /* Logs message */
+  //  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animation count is 0.");
+
+  //  /* Not defined */
+  //  u32Index = orxU32_UNDEFINED;
+  //}
 
   /* Done! */
-  return u32Index;
-}
-
-/** Sets an animation key storage size
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32Size        Desired size
- */
-static orxINLINE void orxAnim_SetKeyStorageSize(orxANIM *_pstAnim, orxU32 _u32Size)
-{
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_u32Size <= orxANIM_KU32_KEY_MAX_NUMBER);
-
-  /* Updates storage size */
-  _pstAnim->u16KeySize = (orxU16)_u32Size;
-
-  return;
-}
-
-/** Sets an animation internal key counter
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32KeyCounter  Desired key counter
- */
-static orxINLINE void orxAnim_SetKeyCounter(orxANIM *_pstAnim, orxU32 _u32KeyCounter)
-{
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_u32KeyCounter <= orxAnim_GetKeyStorageSize(_pstAnim));
-
-  /* Updates counter */
-  _pstAnim->u16KeyCounter = (orxU16)_u32KeyCounter;
-
-  return;
-}
-
-/** Increases an animation internal key counter
- * @param[in]   _pstAnim        Concerned animation
- */
-static orxINLINE void orxAnim_IncreaseKeyCounter(orxANIM *_pstAnim)
-{
-  register orxU32 u32KeyCounter;
-
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-
-  /* Gets key counter */
-  u32KeyCounter = orxAnim_GetKeyCounter(_pstAnim);
-
-  /* Updates key counter */
-  orxAnim_SetKeyCounter(_pstAnim, u32KeyCounter + 1);
-
-  return;
-}
-
-/** Increases an animation internal key counter
- * @param[in]   _pstAnim        Concerned animation
- */
-static orxINLINE void orxAnim_DecreaseKeyCounter(orxANIM *_pstAnim)
-{
-  register orxU32 u32KeyCounter;
-
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-
-  /* Gets key counter */
-  u32KeyCounter = orxAnim_GetKeyCounter(_pstAnim);
-
-  /* Updates key counter */
-  orxAnim_SetKeyCounter(_pstAnim, u32KeyCounter - 1);
-
-  return;
-}
-
-/** Sets an animation event storage size
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32Size        Desired size
- */
-static orxINLINE void orxAnim_SetEventStorageSize(orxANIM *_pstAnim, orxU32 _u32Size)
-{
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_u32Size <= orxANIM_KU32_EVENT_MAX_NUMBER);
-
-  /* Updates storage size */
-  _pstAnim->u16EventSize = (orxU16)_u32Size;
-
-  return;
-}
-
-/** Sets an animation internal event counter
- * @param[in]   _pstAnim          Concerned animation
- * @param[in]   _u32EventCounter  Desired event counter
- */
-static orxINLINE void orxAnim_SetEventCounter(orxANIM *_pstAnim, orxU32 _u32EventCounter)
-{
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_u32EventCounter <= orxAnim_GetEventStorageSize(_pstAnim));
-
-  /* Updates counter */
-  _pstAnim->u16EventCounter = (orxU16)_u32EventCounter;
-
-  return;
-}
-
-/** Increases an animation internal event counter
- * @param[in]   _pstAnim        Concerned animation
- */
-static orxINLINE void orxAnim_IncreaseEventCounter(orxANIM *_pstAnim)
-{
-  register orxU32 u32EventCounter;
-
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-
-  /* Gets event counter */
-  u32EventCounter = orxAnim_GetEventCounter(_pstAnim);
-
-  /* Updates event counter */
-  orxAnim_SetEventCounter(_pstAnim, u32EventCounter + 1);
-
-  return;
-}
-
-/** Increases an animation internal event counter
- * @param[in]   _pstAnim        Concerned animation
- */
-static orxINLINE void orxAnim_DecreaseEventCounter(orxANIM *_pstAnim)
-{
-  register orxU32 u32EventCounter;
-
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-
-  /* Gets event counter */
-  u32EventCounter = orxAnim_GetEventCounter(_pstAnim);
-
-  /* Updates event counter */
-  orxAnim_SetEventCounter(_pstAnim, u32EventCounter - 1);
-
-  return;
+  return u32Result;
 }
 
 /** Deletes all animations
@@ -423,19 +317,15 @@ void orxFASTCALL orxAnim_Exit()
 
 /** Creates an empty animation
  * @param[in]   _u32Flags       Flags for created animation
- * @param[in]   _u32KeyNumber   Number of keys for this animation
- * @param[in]   _u32EventNumber Number of events for this animation
  * @return      Created orxANIM / orxNULL
  */
-orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU32 _u32EventNumber)
+orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags)
 {
   orxANIM *pstAnim;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT((_u32Flags & orxANIM_KU32_MASK_USER_ALL) == _u32Flags);
-  orxASSERT(_u32KeyNumber <= orxANIM_KU32_KEY_MAX_NUMBER);
-  orxASSERT(_u32EventNumber <= orxANIM_KU32_EVENT_MAX_NUMBER);
 
   /* Creates anim */
   pstAnim = orxANIM(orxStructure_Create(orxSTRUCTURE_ID_ANIM));
@@ -452,57 +342,8 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU
     /* 2D Animation? */
     if(orxFLAG_TEST(_u32Flags, orxANIM_KU32_FLAG_2D))
     {
-      /* Allocates key array */
-      pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32KeyNumber * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);
-
-      /* Valid? */
-      if(pstAnim->astKeyList != orxNULL)
-      {
-        /* Allocates event array */
-        pstAnim->astEventList = (orxANIM_CUSTOM_EVENT *)orxMemory_Allocate(_u32EventNumber * sizeof(orxANIM_CUSTOM_EVENT), orxMEMORY_TYPE_MAIN);
-
-        /* Valid? */
-        if(pstAnim->astEventList != orxNULL)
-        {
-          /* Cleans both arrays */
-          orxMemory_Zero(pstAnim->astKeyList, _u32KeyNumber * sizeof(orxANIM_KEY));
-          orxMemory_Zero(pstAnim->astEventList, _u32EventNumber * sizeof(orxANIM_CUSTOM_EVENT));
-
-          /* Sets storage size & counter */
-          orxAnim_SetKeyStorageSize(pstAnim, _u32KeyNumber);
-          orxAnim_SetKeyCounter(pstAnim, 0);
-          orxAnim_SetEventStorageSize(pstAnim, _u32EventNumber);
-          orxAnim_SetEventCounter(pstAnim, 0);
-
-          /* Increases counter */
-          orxStructure_IncreaseCounter(pstAnim);
-        }
-        else
-        {
-          /* Frees key array */
-          orxMemory_Free(pstAnim->astKeyList);
-
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed allocating key list.");
-
-          /* Frees partially allocated anim */
-          orxStructure_Delete(pstAnim);
-
-          /* Updates result */
-          pstAnim = orxNULL;
-        }
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed allocating key list.");
-
-        /* Frees partially allocated anim */
-        orxStructure_Delete(pstAnim);
-
-        /* Updates result */
-        pstAnim = orxNULL;
-      }
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstAnim);
     }
     /* Other Animation Type? */
     else
@@ -537,127 +378,127 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    orxU32  u32KeyCounter, u32EventCounter;
+    //orxU32  u32KeyCounter, u32EventCounter;
     orxCHAR acID[32], acEventID[32];
 
     /* Clears buffers */
     orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
     orxMemory_Zero(acEventID, 32 * sizeof(orxCHAR));
 
-    /* For all keys/events */
-    for(u32KeyCounter = 1, u32EventCounter = 1, orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter), orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter);
-        orxConfig_HasValue(acID) != orxFALSE;
-        u32KeyCounter++, orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter), orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter))
-    {
-      /* Has matching event? */
-      if(orxConfig_HasValue(acEventID) != orxFALSE)
-      {
-        /* Updates event counter */
-        u32EventCounter++;
-      }
-    }
+    ///* For all keys/events */
+    //for(u32KeyCounter = 1, u32EventCounter = 1, orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter), orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter);
+    //    orxConfig_HasValue(acID) != orxFALSE;
+    //    u32KeyCounter++, orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter), orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter))
+    //{
+    //  /* Has matching event? */
+    //  if(orxConfig_HasValue(acEventID) != orxFALSE)
+    //  {
+    //    /* Updates event counter */
+    //    u32EventCounter++;
+    //  }
+    //}
 
-    /* Valid? */
-    if(u32KeyCounter > 1)
-    {
-      /* Creates 2D animation */
-      pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter, --u32EventCounter);
+    ///* Valid? */
+    //if(u32KeyCounter > 1)
+    //{
+    //  /* Creates 2D animation */
+    //  pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter, --u32EventCounter);
 
-      /* Valid? */
-      if(pstResult != orxNULL)
-      {
-        orxCHAR   acTimeID[32], acValueID[32];
-        orxFLOAT  fTimeStamp = orxFLOAT_0;
-        orxU32    i;
+    //  /* Valid? */
+    //  if(pstResult != orxNULL)
+    //  {
+    //    orxCHAR   acTimeID[32], acValueID[32];
+    //    orxFLOAT  fTimeStamp = orxFLOAT_0;
+    //    orxU32    i;
 
-        /* Stores its name */
-        pstResult->zName = orxConfig_GetCurrentSection();
+    //    /* Stores its name */
+    //    pstResult->zName = orxConfig_GetCurrentSection();
 
-        /* Clears buffers */
-        orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
-        orxMemory_Zero(acEventID, 32 * sizeof(orxCHAR));
-        orxMemory_Zero(acTimeID, 32 * sizeof(orxCHAR));
-        orxMemory_Zero(acValueID, 32 * sizeof(orxCHAR));
+    //    /* Clears buffers */
+    //    orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
+    //    orxMemory_Zero(acEventID, 32 * sizeof(orxCHAR));
+    //    orxMemory_Zero(acTimeID, 32 * sizeof(orxCHAR));
+    //    orxMemory_Zero(acValueID, 32 * sizeof(orxCHAR));
 
-        /* For all keys */
-        for(i = 0; i < u32KeyCounter; i++)
-        {
-          const orxSTRING zDataName;
+    //    /* For all keys */
+    //    for(i = 0; i < u32KeyCounter; i++)
+    //    {
+    //      const orxSTRING zDataName;
 
-          /* Gets data ID */
-          orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
+    //      /* Gets data ID */
+    //      orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
 
-          /* Gets its name */
-          zDataName = orxConfig_GetString(acID);
+    //      /* Gets its name */
+    //      zDataName = orxConfig_GetString(acID);
 
-          /* Valid? */
-          if((zDataName != orxNULL) && (zDataName != orxSTRING_EMPTY))
-          {
-            orxGRAPHIC *pstGraphic;
+    //      /* Valid? */
+    //      if((zDataName != orxNULL) && (zDataName != orxSTRING_EMPTY))
+    //      {
+    //        orxGRAPHIC *pstGraphic;
 
-            /* Creates it */
-            pstGraphic = orxGraphic_CreateFromConfig(zDataName);
+    //        /* Creates it */
+    //        pstGraphic = orxGraphic_CreateFromConfig(zDataName);
 
-            /* Valid? */
-            if(pstGraphic != orxNULL)
-            {
-              const orxSTRING zEventName;
+    //        /* Valid? */
+    //        if(pstGraphic != orxNULL)
+    //        {
+    //          const orxSTRING zEventName;
 
-              /* Gets duration ID */
-              orxString_Print(acTimeID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
+    //          /* Gets duration ID */
+    //          orxString_Print(acTimeID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
 
-              /* Updates its timestamp */
-              fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
+    //          /* Updates its timestamp */
+    //          fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
 
-              /* Adds it */
-              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
+    //          /* Adds it */
+    //          if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
+    //          {
+    //            /* Logs message */
+    //            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
 
-                /* Deletes it */
-                orxGraphic_Delete(pstGraphic);
-              }
+    //            /* Deletes it */
+    //            orxGraphic_Delete(pstGraphic);
+    //          }
 
-              /* Gets matching event ID */
-              orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, i + 1);
+    //          /* Gets matching event ID */
+    //          orxString_Print(acEventID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, i + 1);
 
-              /* Exist? */
-              if(orxConfig_HasValue(acEventID) != orxFALSE)
-              {
-                /* Gets its name */
-                zEventName = orxConfig_GetString(acEventID);
+    //          /* Exist? */
+    //          if(orxConfig_HasValue(acEventID) != orxFALSE)
+    //          {
+    //            /* Gets its name */
+    //            zEventName = orxConfig_GetString(acEventID);
 
-                /* Valid? */
-                if((zEventName != orxNULL) && (zEventName != orxSTRING_EMPTY))
-                {
-                  /* Gets its value IDs */
-                  orxString_Print(acValueID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_VALUE, i + 1);
+    //            /* Valid? */
+    //            if((zEventName != orxNULL) && (zEventName != orxSTRING_EMPTY))
+    //            {
+    //              /* Gets its value IDs */
+    //              orxString_Print(acValueID, "%s%ld", orxANIM_KZ_CONFIG_KEY_EVENT_VALUE, i + 1);
 
-                  /* Adds it */
-                  if(orxAnim_AddEvent(pstResult, zEventName, fTimeStamp, orxConfig_GetFloat(acValueID)) == orxSTATUS_FAILURE)
-                  {
-                    /* Logs message */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add event <%s> to animation <%s>.", zEventName, pstResult->zName);
-                  }
-                }
-              }
-            }
-          }
-        }
+    //              /* Adds it */
+    //              if(orxAnim_AddEvent(pstResult, zEventName, fTimeStamp, orxConfig_GetFloat(acValueID)) == orxSTATUS_FAILURE)
+    //              {
+    //                /* Logs message */
+    //                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add event <%s> to animation <%s>.", zEventName, pstResult->zName);
+    //              }
+    //            }
+    //          }
+    //        }
+    //      }
+    //    }
 
-        /* Updates status flags */
-        orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
-      }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Couldn't find any key/data in config for anim \"%s\".", _zConfigID);
-    }
+    //    /* Updates status flags */
+    //    orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
+    //  }
+    //}
+    //else
+    //{
+    //  /* Logs message */
+    //  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Couldn't find any key/data in config for anim \"%s\".", _zConfigID);
+    //}
 
-    /* Pops previous section */
-    orxConfig_PopSection();
+    ///* Pops previous section */
+    //orxConfig_PopSection();
   }
   else
   {
@@ -690,23 +531,18 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnim) == 0)
   {
-    /* Cleans members */
+    orxU32 i;
 
-    /* 2D Animation? */
-    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
+    /* For all channels */
+    for(i = 0; i < (orxU32)orxANIM_CHANNEL_ID_NUMBER; i++)
     {
-      /* Removes all keys */
-      orxAnim_RemoveAllKeys(_pstAnim);
+      /* Is valid? */
+      if(_pstAnim->apstChannelList[i] != orxNULL)
+      {
+        /* Deletes it */
+        orxAnim_DeleteChannel(_pstAnim->apstChannelList[i]);
+      }
     }
-    /* Other Animation Type? */
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently.");
-    }
-
-    /* Removes all events */
-    orxAnim_RemoveAllEvents(_pstAnim);
 
     /* Deletes structure */
     orxStructure_Delete(_pstAnim);
@@ -732,46 +568,46 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   orxU32    u32Counter, u32Size;
   orxSTATUS eResult;
 
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_pstData != orxNULL);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
-  orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].fTimeStamp));
+  ///* Checks */
+  //orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  //orxSTRUCTURE_ASSERT(_pstAnim);
+  //orxASSERT(_pstData != orxNULL);
+  //orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
+  //orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].stStructure.fTime));
 
-  /* Gets storage size & counter */
-  u32Size     = orxAnim_GetKeyStorageSize(_pstAnim);
-  u32Counter  = orxAnim_GetKeyCounter(_pstAnim);
+  ///* Gets storage size & counter */
+  //u32Size     = orxAnim_GetKeyStorageSize(_pstAnim);
+  //u32Counter  = orxAnim_GetKeyCounter(_pstAnim);
 
-  /* Is there free room? */
-  if(u32Counter < u32Size)
-  {
-    orxANIM_KEY *pstKey;
+  ///* Is there free room? */
+  //if(u32Counter < u32Size)
+  //{
+  //  orxANIM_KEY *pstKey;
 
-    /* Gets key pointer */
-    pstKey              = &(_pstAnim->astKeyList[u32Counter]);
+  //  /* Gets key pointer */
+  //  pstKey              = &(_pstAnim->astKeyList[u32Counter]);
 
-    /* Stores key info */
-    pstKey->pstData     = _pstData;
-    pstKey->fTimeStamp  = _fTimeStamp;
+  //  /* Stores key info */
+  //  pstKey->stStructure.pstData = _pstData;
+  //  pstKey->stStructure.fTime   = _fTimeStamp;
 
-    /* Updates structure reference counter */
-    orxStructure_IncreaseCounter(_pstData);
+  //  /* Updates structure reference counter */
+  //  orxStructure_IncreaseCounter(_pstData);
 
-    /* Updates key counter */
-    orxAnim_IncreaseKeyCounter(_pstAnim);
+  //  /* Updates key counter */
+  //  orxAnim_IncreaseKeyCounter(_pstAnim);
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "No room to add key into animation.");
+  //  /* Updates result */
+  //  eResult = orxSTATUS_SUCCESS;
+  //}
+  //else
+  //{
+  //  /* Logs message */
+  //  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "No room to add key into animation.");
 
-    /* Updates status */
-    eResult = orxSTATUS_FAILURE;
-  }
+  //  /* Updates status */
+  //  eResult = orxSTATUS_FAILURE;
+  //}
 
   /* Done! */
   return eResult;
@@ -786,56 +622,56 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
   orxU32    u32Counter;
   orxSTATUS eResult;
 
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
+  ///* Checks */
+  //orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  //orxSTRUCTURE_ASSERT(_pstAnim);
+  //orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
-  /* Gets counter */
-  u32Counter = orxAnim_GetKeyCounter(_pstAnim);
+  ///* Gets counter */
+  //u32Counter = orxAnim_GetKeyCounter(_pstAnim);
 
-  /* Has key? */
-  if(u32Counter != 0)
-  {
-    orxANIM_KEY *pstKey;
+  ///* Has key? */
+  //if(u32Counter != 0)
+  //{
+  //  orxANIM_KEY *pstKey;
 
-    /* Gets real index */
-    u32Counter--;
+  //  /* Gets real index */
+  //  u32Counter--;
 
-    /* Gets key pointer */
-    pstKey = &(_pstAnim->astKeyList[u32Counter]);
+  //  /* Gets key pointer */
+  //  pstKey = &(_pstAnim->astKeyList[u32Counter]);
 
-    /* Updates key counter */
-    orxAnim_DecreaseKeyCounter(_pstAnim);
+  //  /* Updates key counter */
+  //  orxAnim_DecreaseKeyCounter(_pstAnim);
 
-    /* Updates structure reference counter */
-    orxStructure_DecreaseCounter(pstKey->pstData);
+  //  /* Updates structure reference counter */
+  //  orxStructure_DecreaseCounter(orxSTRUCTURE(pstKey->stStructure.pstData));
 
-    /* Is data internally handled? */
-    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_INTERNAL))
-    {
-      /* Is 2D data? */
-      if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D))
-      {
-        /* Deletes it */
-        orxGraphic_Delete(orxGRAPHIC(pstKey->pstData));
-      }
-    }
+  //  /* Is data internally handled? */
+  //  if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_INTERNAL))
+  //  {
+  //    /* Is 2D data? */
+  //    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D))
+  //    {
+  //      /* Deletes it */
+  //      orxGraphic_Delete(orxGRAPHIC(pstKey->stStructure.pstData));
+  //    }
+  //  }
 
-    /* Cleans the key info */
-    orxMemory_Zero(pstKey, sizeof(orxANIM_KEY));
+  //  /* Cleans the key info */
+  //  orxMemory_Zero(pstKey, sizeof(orxANIM_KEY));
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Insert keys before attempting to remove last key.");
+  //  /* Updates result */
+  //  eResult = orxSTATUS_SUCCESS;
+  //}
+  //else
+  //{
+  //  /* Logs message */
+  //  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Insert keys before attempting to remove last key.");
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
+  //  /* Updates result */
+  //  eResult = orxSTATUS_FAILURE;
+  //}
 
   /* Done! */
   return eResult;
@@ -846,16 +682,16 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
  */
 void orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 {
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
+  ///* Checks */
+  //orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  //orxSTRUCTURE_ASSERT(_pstAnim);
+  //orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
-  /* Until there are no key left */
-  while((orxAnim_GetKeyCounter(_pstAnim) != 0) && (orxAnim_RemoveLastKey(_pstAnim) != orxSTATUS_FAILURE));
+  ///* Until there are no key left */
+  //while((orxAnim_GetKeyCounter(_pstAnim) != 0) && (orxAnim_RemoveLastKey(_pstAnim) != orxSTATUS_FAILURE));
 
-  /* Done! */
-  return;
+  ///* Done! */
+  //return;
 }
 
 /** Adds an event to an animation
@@ -876,7 +712,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
   orxASSERT(_zEventName != orxNULL);
 
   /* Valid timestamp? */
-  if((orxAnim_GetEventCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astEventList[orxAnim_GetEventCounter(_pstAnim) - 1].fTimeStamp))
+  if((orxAnim_GetEventCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astEventList[orxAnim_GetEventCounter(_pstAnim) - 1].fTime))
   {
      /* Gets storage size & counter */
      u32Size     = orxAnim_GetEventStorageSize(_pstAnim);
@@ -891,9 +727,9 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
        pstEvent = &(_pstAnim->astEventList[u32Counter]);
 
        /* Stores key info */
-       pstEvent->zName       = orxString_Duplicate(_zEventName);
-       pstEvent->fTimeStamp  = _fTimeStamp;
-       pstEvent->fValue      = _fValue;
+       pstEvent->zName  = orxString_Duplicate(_zEventName);
+       pstEvent->fTime  = _fTimeStamp;
+       pstEvent->fValue = _fValue;
 
        /* Updates event counter */
        orxAnim_IncreaseEventCounter(_pstAnim);
@@ -913,7 +749,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
   else
   {
      /* Logs message */
-     orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Can't add event <%s>: its timestamp [%g] needs to be strictly greater than previous event's one (<%s> @ [%g]).", _zEventName, _fTimeStamp, _pstAnim->astEventList[orxAnim_GetEventCounter(_pstAnim) - 1].zName, _pstAnim->astEventList[orxAnim_GetEventCounter(_pstAnim) - 1].fTimeStamp);
+     orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Can't add event <%s>: its timestamp [%g] needs to be strictly greater than previous event's one (<%s> @ [%g]).", _zEventName, _fTimeStamp, _pstAnim->astEventList[orxAnim_GetEventCounter(_pstAnim) - 1].zName, _pstAnim->astEventList[orxAnim_GetEventCounter(_pstAnim) - 1].fTime);
 
      /* Updates status */
      eResult = orxSTATUS_FAILURE;
@@ -1019,10 +855,10 @@ const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pst
       pstEvent = &_pstAnim->astEventList[i];
 
       /* In range? */
-      if(pstEvent->fTimeStamp > _fTimeStamp)
+      if(pstEvent->fTime > _fTimeStamp)
       {
         /* No selection or better one? */
-        if((pstResult == orxNULL) || (pstEvent->fTimeStamp < pstResult->fTimeStamp))
+        if((pstResult == orxNULL) || (pstEvent->fTime < pstResult->fTime))
         {
           /* Selects it */
           pstResult = pstEvent;
@@ -1102,7 +938,7 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(const orxANIM *_pstAnim, orxU32 _u3
   if(_u32Index < u32Counter)
   {
     /* Updates result */
-    pstResult = _pstAnim->astKeyList[_u32Index].pstData;
+    pstResult = orxSTRUCTURE(_pstAnim->astKeyList[_u32Index].stStructure.pstData);
   }
   else
   {
@@ -1200,7 +1036,7 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
     if(u32Counter != 0)
     {
       /* Gets length */
-      fLength = _pstAnim->astKeyList[u32Counter - 1].fTimeStamp;
+      fLength = _pstAnim->astKeyList[u32Counter - 1].stStructure.fTime;
     }
   }
   else
