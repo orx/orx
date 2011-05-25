@@ -150,32 +150,33 @@ static orxINLINE void orxAnimPointer_DeleteAll()
  */
 static orxINLINE void orxAnimPointer_SendCustomEvents(orxANIM *_pstAnim, const orxSTRUCTURE *_pstOwner, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
 {
-  const orxANIM_CUSTOM_EVENT *pstCustomEvent;
-  orxANIM_EVENT_PAYLOAD       stPayload;
+  //! TODO
+  //const orxANIM_CUSTOM_EVENT *pstCustomEvent;
+  //orxANIM_EVENT_PAYLOAD       stPayload;
 
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxSTRUCTURE_ASSERT(_pstOwner);
-  orxASSERT(_fEndTime >= _fStartTime);
+  ///* Checks */
+  //orxSTRUCTURE_ASSERT(_pstAnim);
+  //orxSTRUCTURE_ASSERT(_pstOwner);
+  //orxASSERT(_fEndTime >= _fStartTime);
 
-  /* Inits event payload */
-  orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-  stPayload.pstAnim   = _pstAnim;
-  stPayload.zAnimName = orxAnim_GetName(_pstAnim);
+  ///* Inits event payload */
+  //orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
+  //stPayload.pstAnim   = _pstAnim;
+  //stPayload.zAnimName = orxAnim_GetName(_pstAnim);
 
-  /* For all events to send */
-  for(pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, _fStartTime);
-      (pstCustomEvent != orxNULL) && (pstCustomEvent->fTime <= _fEndTime);
-      pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTime))
-  {
-    /* Updates event payload */
-    stPayload.stCustomEvent.zName  = pstCustomEvent->zName;
-    stPayload.stCustomEvent.fValue = pstCustomEvent->fValue;
-    stPayload.stCustomEvent.fTime  = pstCustomEvent->fTime;
+  ///* For all events to send */
+  //for(pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, _fStartTime);
+  //    (pstCustomEvent != orxNULL) && (pstCustomEvent->fTime <= _fEndTime);
+  //    pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTime))
+  //{
+  //  /* Updates event payload */
+  //  stPayload.stCustomEvent.zName  = pstCustomEvent->zName;
+  //  stPayload.stCustomEvent.fValue = pstCustomEvent->fValue;
+  //  stPayload.stCustomEvent.fTime  = pstCustomEvent->fTime;
 
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUSTOM_EVENT, _pstOwner, _pstOwner, &stPayload);
-  }
+  //  /* Sends event */
+  //  orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUSTOM_EVENT, _pstOwner, _pstOwner, &stPayload);
+  //}
 }
 
 /** Computes current Anim for the given time

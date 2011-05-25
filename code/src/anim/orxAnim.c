@@ -109,7 +109,7 @@ struct __orxANIM_t
 {
   orxSTRUCTURE          stStructure;                              /**< Public structure, first structure member : 16 */
   const orxSTRING       zName;                                    /**< Anim name : 20 */
-  orxANIM_CHANNEL      *apstChannelList[orxANIM_CHANNEL_ID_NUMBER];/** Channel list */
+  orxANIM_CHANNEL      *apstChannelList[orxANIM_CHANNEL_ID_NUMBER];/** Channel list : 28 */
 };
 
 
@@ -918,24 +918,27 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, or
 
 /** Animation key data accessor
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @param[in]   _u32Index       Index of desired key
- * @return      Desired orxSTRUCTURE / orxNULL
+ * @return      Desired key data / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(const orxANIM *_pstAnim, orxU32 _u32Index)
+void *orxFASTCALL orxAnim_GetKeyData(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxU32 _u32Index)
 {
-  orxU32        u32Counter;
-  orxSTRUCTURE *pstResult;
+  orxU32            u32Counter;
+  orxANIM_CHANNEL  *pstChannel;
+  void             *pResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
+  orxASSERT(_eChannelID < orxANIM_CHANNEL_ID_NUMBER);
 
-  /* Gets counter */
-  u32Counter = orxAnim_GetKeyCounter(_pstAnim);
+  /* Gets channel */
+  pstChannel = _pstAnim->apstChannelList[_eChannelID];
 
-  /* Is index valid? */
-  if(_u32Index < u32Counter)
+  /* Valid? */
+  if((pstChannel != orxNULL) && (_u32Index < (orxU32)pstChannel->u16KeyCounter))
   {
     /* Updates result */
     pstResult = orxSTRUCTURE(_pstAnim->astKeyList[_u32Index].stStructure.pstData);
@@ -943,74 +946,58 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(const orxANIM *_pstAnim, orxU32 _u3
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Attempt made to get key data from animation outside index range.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Attempt made to get key data from animation <%s> outside index range [%ld] for channel <%ld>.", _pstAnim->zName, _u32Index, _eChannelID);
 
     /* Updates result */
     pstResult = orxNULL;
   }
 
   /* Done! */
-  return pstResult;
+  return pResult;
 }
 
 /** Animation key storage size accessor
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @return      Animation key storage size
  */
-orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID)
 {
+  orxU32 u32Result;
+
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
+  orxASSERT(_eChannelID < orxANIM_CHANNEL_ID_NUMBER);
 
-  /* Gets storage size */
-  return (orxU32)_pstAnim->u16KeySize;
+  /* Updates result */
+  u32Result = (_pstAnim->apstChannelList[_eChannelID] != orxNULL) ? (orxU32)_pstAnim->apstChannelList[_eChannelID]->u16KeySize : 0;
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Animation key counter accessor
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @return      Animation key counter
  */
-orxU32 orxFASTCALL orxAnim_GetKeyCounter(const orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetKeyCounter(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID)
 {
+  orxU32 u32Result;
+
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
+  orxASSERT(_eChannelID < orxANIM_CHANNEL_ID_NUMBER);
 
-  /* Gets counter */
-  return (orxU32)_pstAnim->u16KeyCounter;
-}
+  /* Updates result */
+  u32Result = (_pstAnim->apstChannelList[_eChannelID] != orxNULL) ? (orxU32)_pstAnim->apstChannelList[_eChannelID]->u16KeyCounter : 0;
 
-/** Anim event storage size accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim event storage size
- */
-orxU32 orxFASTCALL orxAnim_GetEventStorageSize(const orxANIM *_pstAnim)
-{
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
-
-  /* Gets storage size */
-  return (orxU32)_pstAnim->u16EventSize;
-}
-
-/** Anim event counter accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim event counter
- */
-orxU32 orxFASTCALL orxAnim_GetEventCounter(const orxANIM *_pstAnim)
-{
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
-
-  /* Gets counter */
-  return (orxU32)_pstAnim->u16EventCounter;
+  /* Done! */
+  return u32Result;
 }
 
 /** Animation time length accessor
@@ -1019,8 +1006,7 @@ orxU32 orxFASTCALL orxAnim_GetEventCounter(const orxANIM *_pstAnim)
  */
 orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
 {
-  orxU32    u32Counter;
-  orxFLOAT  fLength = orxFLOAT_0;
+  orxFLOAT  fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
@@ -1029,14 +1015,31 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
   /* 2D? */
   if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
   {
-    /* Gets key counter */
-    u32Counter = orxAnim_GetKeyCounter(_pstAnim);
+    orxU32 i;
 
-    /* Is animation non empty? */
-    if(u32Counter != 0)
+    /* For all channels */
+    for(i = 0; i < orxANIM_CHANNEL_ID_NUMBER; i++)
     {
-      /* Gets length */
-      fLength = _pstAnim->astKeyList[u32Counter - 1].stStructure.fTime;
+      orxANIM_CHANNEL *pstChannel;
+
+      /* Gets it */
+      pstChannel = _pstAnim->apstChannelList[i];
+
+      /* Valid? */
+      if((pstChannel != orxNULL) && (pstChannel->u16KeyCounter > 0))
+      {
+        orxFLOAT fLength;
+
+        /* Gets its length */
+        fLength = pstChannel->astKeyList[pstChannel->u16KeyCounter - 1].stStructure.fTime;
+
+        /* Longer? */
+        if(fLength > fResult)
+        {
+          /* Stores it */
+          fResult = fLength;
+        }
+      }
     }
   }
   else
@@ -1045,11 +1048,11 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently.");
 
     /* Updates result */
-    fLength = orx2F(-1.0f);
+    fResult = orx2F(-1.0f);
   }
 
   /* Done! */
-  return fLength;
+  return fResult;
 }
 
 /** Anim ID get accessor

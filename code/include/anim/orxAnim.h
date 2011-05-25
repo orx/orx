@@ -162,11 +162,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 /** Adds a structure key to an animation channel
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _eChannelID     Concerned channel ID
- * @param[in]   _pstData        Key data to add
  * @param[in]   _fTime          Timestamp for this key
+ * @param[in]   _pData          Key data to add (its type depends on the channel type)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddStructureKey(orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxSTRUCTURE *_pstData, orxFLOAT _fTime);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddKey(orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxFLOAT _fTime, void *_pData);
 
 /** Removes last added key from an animation
  * @param[in]   _pstAnim        Concerned animation
@@ -190,46 +190,37 @@ extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllKeys(orxANIM *_ps
 //extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 
-/** Updates anim given a timestamp
+/** Updates anim channel given a timestamp
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @param[in]   _fTimeStamp     TimeStamp for animation update
  * @param[out]  _pu32CurrentKey Current key as a result of update
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey);
 
 /** Anim key data accessor
  * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _eChannelID     Concerned channel ID
  * @param[in]   _u32Index       Index of desired key data
- * @return      Desired orxSTRUCTURE / orxNULL
+ * @return      Desired key data / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetKeyData(const orxANIM *_pstAnim, orxU32 _u32Index);
+extern orxDLLAPI void *orxFASTCALL            orxAnim_GetKeyData(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID, orxU32 _u32Index);
 
 
-/** Anim key storage size accessor
+/** Anim channel key storage size accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Anim key storage size
+ * @param[in]   _eChannelID     Concerned channel ID
+ * @return      Anim channel key storage size
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID);
 
-/** Anim key counter accessor
+/** Anim channel key counter accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Anim key counter
+ * @param[in]   _eChannelID     Concerned channel ID
+ * @return      Anim channel key counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(const orxANIM *_pstAnim);
-
-
-/** Anim event storage size accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim event storage size
- */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventStorageSize(const orxANIM *_pstAnim);
-
-/** Anim event counter accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim event counter
- */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCounter(const orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(const orxANIM *_pstAnim, orxANIM_CHANNEL_ID _eChannelID);
 
 
 /** Anim time length accessor
