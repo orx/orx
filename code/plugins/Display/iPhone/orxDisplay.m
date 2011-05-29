@@ -1280,7 +1280,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
 
 		/* Updates X position */
 		fX += fWidth;
-		
+
 		break;
       }
     }
@@ -1567,10 +1567,10 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapData(orxBITMAP *_pstBitmap, orx
 
       /* Allocates buffer */
       pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-      
+
       /* Checks */
       orxASSERT(pu8ImageData != orxNULL);
-      
+
       /* Reads OpenGL data */
       glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
       glASSERT();
@@ -2025,7 +2025,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
   /* Valid? */
   if(oImage != nil)
   {
-    GLuint    uiWidth, uiHeight, uiRealWidth, uiRealHeight;
+    GLuint    uiWidth, uiHeight, uiRealWidth, uiRealHeight, uiRealSize;
     GLubyte  *au8ImageBuffer;
 
     /* Gets its size */
@@ -2051,6 +2051,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         CGColorSpaceRef oColorSpace;
         CGContextRef    oContext;
         GLint           iTexture;
+        orxRGBA        *pstPixel, *pstImageEnd;
 
         /* Creates a device color space */
         oColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -2067,6 +2068,27 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 
         /* Copies image data */
         CGContextDrawImage(oContext, CGRectMake(0, 0, uiWidth, uiHeight), oImage);
+
+        /* For all pixels */
+        for(pstPixel = (orxRGBA *)au8ImageBuffer, pstImageEnd = pstPixel + (uiRealWidth * uiRealHeight);
+            pstPixel < pstImageEnd;
+            pstPixel++)
+        {
+          orxCOLOR  stColor;
+          orxFLOAT  fCoef;
+
+          /* Gets its color */
+          orxColor_SetRGBA(&stColor, *pstPixel);
+
+          /* Gets un-multiplier coef */
+          fCoef = orxCOLOR_DENORMALIZER / stColor.fAlpha;
+
+          /* Updates color components */
+          orxVector_Mulf(&(stColor.vRGB), fCoef);
+
+          /* Updates pixel */
+          *pstPixel = orxColor_ToRGBA(&stColor);
+        }
 
         /* Pushes display section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -2086,7 +2108,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         /* Backups current texture */
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
         glASSERT();
-        
+
         /* Creates new texture */
         glGenTextures(1, &pstBitmap->uiTexture);
         glASSERT();
@@ -2382,15 +2404,15 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
       sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
-      
+
       /* Updates config info */
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
-      
+
       /* Pops config section */
       orxConfig_PopSection();
-      
+
       /* Gets max texture unit number */
       glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
       glASSERT();
@@ -2796,7 +2818,7 @@ orxS32 orxFASTCALL orxDisplay_iPhone_GetParameterID(const orxHANDLE _hShader, co
 {
   orxDISPLAY_SHADER  *pstShader;
   orxS32              s32Result;
-  
+
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
@@ -2961,7 +2983,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, orxS
   {
     /* Outputs log */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%ld>) for fragment shader: all the texture units are used.", _s32ID);
-    
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
