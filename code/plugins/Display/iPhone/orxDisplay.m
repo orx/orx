@@ -2025,7 +2025,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
   /* Valid? */
   if(oImage != nil)
   {
-    GLuint    uiWidth, uiHeight, uiRealWidth, uiRealHeight, uiRealSize;
+    GLuint    uiWidth, uiHeight, uiRealWidth, uiRealHeight;
     GLubyte  *au8ImageBuffer;
 
     /* Gets its size */
@@ -2074,17 +2074,17 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
             pstPixel < pstImageEnd;
             pstPixel++)
         {
-          orxCOLOR  stColor;
-          orxFLOAT  fCoef;
+          orxCOLOR stColor;
 
           /* Gets its color */
           orxColor_SetRGBA(&stColor, *pstPixel);
 
-          /* Gets un-multiplier coef */
-          fCoef = orxCOLOR_DENORMALIZER / stColor.fAlpha;
-
-          /* Updates color components */
-          orxVector_Mulf(&(stColor.vRGB), fCoef);
+          /* Has alpha? */
+          if(stColor.fAlpha > orxFLOAT_0)
+          {
+            /* Updates color components */
+            orxVector_Divf(&(stColor.vRGB), &(stColor.vRGB), stColor.fAlpha);
+          }
 
           /* Updates pixel */
           *pstPixel = orxColor_ToRGBA(&stColor);
