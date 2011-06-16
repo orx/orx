@@ -591,7 +591,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
   /* Found? */
   if(u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER)
   {
-    orxSOUND_EVENT_PAYLOAD stPayload;
+    orxSOUND_EVENT_PAYLOAD  stPayload;
+    orxOBJECT              *pstOwner;
 
     /* Increases its reference counter */
     orxStructure_IncreaseCounter(_pstSound);
@@ -604,6 +605,18 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
 
     /* Stores it as last added sound */
     _pstSoundPointer->u32LastAddedIndex = u32Index;
+
+    /* Gets its owner object */
+    pstOwner = orxOBJECT(_pstSoundPointer->pstOwner);
+
+    /* Valid? */
+    if(pstOwner != orxNULL)
+    {
+      orxVECTOR vPosition;
+
+      /* Updates its position */
+      orxSound_SetPosition(_pstSound, orxObject_GetWorldPosition(pstOwner, &vPosition));
+    }
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
