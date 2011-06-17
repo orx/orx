@@ -147,7 +147,7 @@ extern orxDLLAPI void *orxFASTCALL          orxObject_GetUserData(const orxOBJEC
 
 /** Sets owner for an object
  * @param[in]   _pstObject    Concerned object
- * @param[in]   _pOwner       Owner to set / orxNULL
+ * @param[in]   _pOwner       Owner to set / orxNULL, if owner is an orxOBJECT, the owned object will be added to it as a children
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner);
 

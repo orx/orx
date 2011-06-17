@@ -994,8 +994,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if(pstChild != orxNULL)
           {
-            /* Sets its owner */
-            orxObject_SetOwner(pstChild, pstResult);
+            /* Stores its owner */
+            pstChild->pstOwner = orxSTRUCTURE(pstResult);
 
             /* Has last child? */
             if(pstLastChild != orxNULL)
@@ -1484,10 +1484,12 @@ void *orxFASTCALL orxObject_GetUserData(const orxOBJECT *_pstObject)
 
 /** Sets owner for an object
  * @param[in]   _pstObject    Concerned object
- * @param[in]   _pOwner       Owner to set / orxNULL
+ * @param[in]   _pOwner       Owner to set / orxNULL, if owner is an orxOBJECT, the owned object will be added to it as a children
  */
 void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
 {
+  orxOBJECT *pstOwner;
+
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
@@ -1496,6 +1498,31 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   /* Sets new owner */
   _pstObject->pstOwner = orxSTRUCTURE(_pOwner);
 
+  /* Is owner an object? */
+  if((pstOwner = orxOBJECT(_pOwner)) != orxNULL)
+  {
+    /* Has a child? */
+    if(pstOwner->pstChild != orxNULL)
+    {
+      orxOBJECT *pstChild;
+
+      /* Gets the last child */
+      for(pstChild = pstOwner->pstChild; pstChild->pstSibling != orxNULL; pstChild = pstChild->pstSibling);
+
+      /* Adds object as last child */
+      pstChild->pstSibling = _pstObject;
+    }
+    else
+    {
+      /* Adds it as first child */
+      pstOwner->pstChild = _pstObject;
+
+      /* Updates its status */
+      orxStructure_SetFlags(pstOwner, orxOBJECT_KU32_FLAG_HAS_CHILDREN, orxOBJECT_KU32_FLAG_NONE);
+    }
+  }
+
+  /* Done! */
   return;
 }
 
