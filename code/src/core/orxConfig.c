@@ -2523,10 +2523,19 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             orxSTRING         pcValueEnd;
             orxCONFIG_ENTRY  *pstEntry;
 
-            /* Finds end of value position */
-            for(pcValueEnd = pc - 1;
-                (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t') || (*pcValueEnd == orxCHAR_CR) || (*pcValueEnd == orxCHAR_LF));
-                pcValueEnd--);
+            /* Not in block mode? */
+            if(bBlockMode == orxFALSE)
+            {
+              /* Finds end of value position */
+              for(pcValueEnd = pc - 1;
+                  (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t') || (*pcValueEnd == orxCHAR_CR) || (*pcValueEnd == orxCHAR_LF));
+                  pcValueEnd--);
+            }
+            else
+            {
+              /* Gets last block characters */
+              pcValueEnd = pc - 1;
+            }
 
             /* Skips the whole line */
             while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
