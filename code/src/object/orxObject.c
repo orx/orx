@@ -538,7 +538,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
       /* For all children */
       for(pstChild = _pstObject->pstChild;
           pstChild != orxNULL;
-          pstChild = pstChild->pstSibling)
+          pstChild = _pstObject->pstChild)
       {
         /* Removes its owner */
         orxObject_SetOwner(pstChild, orxNULL);
