@@ -1495,10 +1495,42 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
 
-  /* Sets new owner */
-  _pstObject->pstOwner = orxSTRUCTURE(_pOwner);
+  /* Had a previous object owner? */
+  if((pstOwner = orxOBJECT(_pstObject->pstOwner)) != orxNULL)
+  {
+    /* Is it the first child? */
+    if(pstOwner->pstChild == _pstObject)
+    {
+      /* Was last child? */
+      if(_pstObject->pstSibling == orxNULL)
+      {
+        /* Updates previous owner */
+        pstOwner->pstChild = orxNULL;
+        orxStructure_SetFlags(pstOwner, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_CHILDREN);
+      }
+      else
+      {
+        /* Stores sibling as first child */
+        pstOwner->pstChild = _pstObject->pstSibling;
+      }
+    }
+    else
+    {
+      orxOBJECT *pstChild;
 
-  /* Is owner an object? */
+      /* Finds previous child */
+      for(pstChild = pstOwner->pstChild; pstChild->pstSibling != _pstObject; pstChild = pstChild->pstSibling);
+
+      /* Updates it */
+      pstChild->pstSibling = _pstObject->pstSibling;
+    }
+  }
+
+  /* Sets new owner */
+  _pstObject->pstOwner    = orxSTRUCTURE(_pOwner);
+  _pstObject->pstSibling  = orxNULL;
+
+  /* Is new owner an object? */
   if((pstOwner = orxOBJECT(_pOwner)) != orxNULL)
   {
     /* Has a child? */
