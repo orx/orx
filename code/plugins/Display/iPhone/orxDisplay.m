@@ -235,7 +235,7 @@ typedef struct __orxDISPLAY_STATIC_t
  */
 static orxDISPLAY_STATIC sstDisplay;
 
-static char gPVRTexIdentifier[4] = "PVR!";
+static unsigned char gPVRTexIdentifier[4] = "PVR!";
 
 
 /***************************************************************************
@@ -1231,7 +1231,7 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
     s32FileSize = orxFile_GetSize(pstFile);
 
     /* Loads PVR header from file */
-    if((s32FileSize >= sizeof(PVRTexHeader))
+    if((s32FileSize >= (orxS32)sizeof(PVRTexHeader))
     && (orxFile_Read(&stHeader, sizeof(PVRTexHeader), 1, pstFile) > 0))
     {
       /* Swaps the header's bytes to host format */
@@ -1264,7 +1264,7 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
         u32FormatFlags = stHeader.flags & PVR_TEXTURE_FLAG_TYPE_MASK;
 
         /* Updates alpha info */
-        bHasAlpha = (stHeader.bitmaskAlpha != 0) ? = orxTRUE : orxFALSE;
+        bHasAlpha = (stHeader.bitmaskAlpha != 0) ? orxTRUE : orxFALSE;
 
         /* Depending on format */
         switch(u32FormatFlags)
@@ -1370,7 +1370,7 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
           au8ImageBuffer = orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_VIDEO);
 
           /* Reads the image content (mimaps will be ignored) */
-          if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) == u32DataSize)
+          if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) > 0)
           {
             /* Allocates bitmap */
             pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -2329,7 +2329,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
 
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 {
-  CGImageRef  oImage;
   NSString   *poName;
   orxBITMAP  *pstBitmap = orxNULL;
 
@@ -2351,7 +2350,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: no PVR support on this device. Retrying with PNG extension instead.", _zFileName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: no PVR support on this device. Retrying with PNG extension instead.", _zFilename);
 
       /* Defaults back to png */
       poName = [[poName stringByDeletingPathExtension] stringByAppendingPathExtension:@".png"];
@@ -2400,11 +2399,12 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
         /* Valid? */
         if(pstBitmap != orxNULL)
         {
-          CGColorSpaceRef oColorSpace;
-          CGContextRef    oContext;
-          GLint           iTexture;
-          orxU32          iImageSize;
-          GLubyte         *au8ImagePointer;
+          CGColorSpaceRef   oColorSpace;
+          CGContextRef      oContext;
+          GLint             iTexture;
+          orxU32            iImageSize;
+          GLubyte          *au8ImagePointer;
+          orxRGBA          *pstPixel, *pstImageEnd;
 
           iImageSize = uiRealWidth * uiRealHeight;
           au8ImagePointer = au8ImageBuffer;
@@ -2413,7 +2413,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
           oColorSpace = CGColorSpaceCreateDeviceRGB();
 
           /* Creates graphic context */
-          oContext = CGBitmapContextCreate(au8ImageBuffer, uiRealWidth, uiRealHeight, 8, 4 * uiRealWidth, oColorSpace, kCGImageAlphaLast | kCGBitmapByteOrder32Big);
+          oContext = CGBitmapContextCreate(au8ImageBuffer, uiRealWidth, uiRealHeight, 8, 4 * uiRealWidth, oColorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
 
           /* Clears it */
           CGContextClearRect(oContext, CGRectMake(0, 0, uiRealWidth, uiRealHeight));
@@ -2424,6 +2424,28 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 
           /* Copies image data */
           CGContextDrawImage(oContext, CGRectMake(0, 0, uiWidth, uiHeight), oImage);
+
+          /* For all pixels */
+          for(pstPixel = (orxRGBA *)au8ImageBuffer, pstImageEnd =
+              pstPixel + (uiRealWidth * uiRealHeight);
+              pstPixel < pstImageEnd;
+              pstPixel++)
+          {
+            orxCOLOR stColor;
+
+            /* Gets its color */
+            orxColor_SetRGBA(&stColor, *pstPixel);
+
+            /* Has alpha? */
+            if(stColor.fAlpha > orxFLOAT_0)
+            {
+              /* Updates color components */
+              orxVector_Divf(&(stColor.vRGB), &(stColor.vRGB), stColor.fAlpha);
+            }
+
+            /* Updates pixel */
+            *pstPixel = orxColor_ToRGBA(&stColor);
+          }
 
           /* Pushes display section */
           orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
