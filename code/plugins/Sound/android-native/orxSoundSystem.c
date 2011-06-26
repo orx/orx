@@ -24,7 +24,7 @@
 
 /**
  * @file orxSoundSystem.c
- * @date 07/01/2009
+ * @date 07/01/2011
  * @author simons.philippe@gmail.com
  *
  * OpenSLES sound system plugin implementation

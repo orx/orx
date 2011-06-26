@@ -121,24 +121,6 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
-#ifdef __orxANDROID__
-
-#include <jni.h>
-#include <android/log.h>
-
-/** JNI environment
- *  This will be loaded in android-support.cpp.
- */
-extern JNIEnv *mEnv;
-extern JavaVM *mVM;
-extern JNIEnv *globalEnv;
-
-/****************in android there is no actual main, so define it as orxMain will be called by jni******/
-#define main orxMain
-/****************end******************/
-
-#endif /* __orxANDROID__ */
-
 #ifdef __orxIPHONE__
 
   #ifdef __orxOBJC__
@@ -214,165 +196,11 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIPHONE__ */
 
-  #ifdef __orxANDROID_NATIVE__
+  #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
-  #include <android/log.h>
-  #include <android_native_app_glue.h>
-  #include <android/sensor.h>
+#include "main/orxAndroid.h"
 
-
-/* Defined in orxAndroidNativeSupport.c */
-extern orxS32 s32Animating;
-extern struct android_app *pstApp;
-extern void (*ptonAppCmd)(struct android_app *app, int32_t cmd);
-extern int32_t (*ptonInputEvent)(struct android_app* app, AInputEvent* event);
-extern const ASensor *poAccelerometerSensor;
-extern ASensorEventQueue *poSensorEventQueue;
-void orxAndroid_AttachThread();
-void orxAndroid_DetachThread();
-void orxAndroid_GetMainArgs();
-void orxAndroid_ReleaseMainArgs();
-
-extern orxS32     s32NbParams;
-extern orxSTRING *azParams;
-
-
-static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
-{
-  /* Checks */
-  orxASSERT(_pstApp != orxNULL);
-  orxASSERT(_pfnRun != orxNULL);
-
-  /* Inits app */
-  pstApp                = _pstApp;
-  pstApp->onAppCmd      = ptonAppCmd;
-  pstApp->onInputEvent  = ptonInputEvent;
-  
-  /* Makes sure glue isn't stripped */
-  app_dummy();
-
-  /* Inits the Debug System */
-  orxDEBUG_INIT();
-
-  /* Retrieves Java environment */
-  orxAndroid_AttachThread();
-  orxAndroid_GetMainArgs();
-
-  /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
-
-  /* Registers all other modules */
-  orxModule_RegisterAll();
-
-  /* Calls all modules setup */
-  orxModule_SetupAll();
-
-  /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(s32NbParams, azParams) != orxSTATUS_FAILURE)
-  {
-    /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-    {
-      /* Registers default event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Displays help */
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
-      {
-        orxSTATUS eClockStatus, eMainStatus;
-        orxSYSTEM_EVENT_PAYLOAD stPayload;
-        orxBOOL   bStop;
-
-        /* Clears payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-        /* Main loop */
-        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
-            bStop == orxFALSE;
-            bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
-        {
-          /* Reads all pending events */
-          orxS32 s32Ident, s32Events;
-          struct android_poll_source *pstSource;
-
-          /* For all system events */
-          while((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp->destroyRequested != 0)) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
-          {
-             /* Valid source? */
-             if(pstSource != NULL)
-             {
-               /* Process its event */
-               pstSource->process(pstApp, pstSource);
-             }
-
-            /* If a sensor has data, process it now */
-            if(s32Ident == LOOPER_ID_USER)
-            {
-              /* Has accelerometer? */
-              if(poAccelerometerSensor != NULL)
-              {
-              	orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
-                ASensorEvent            oEvent;
-
-                /* Inits event's payload */
-                orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-                /* For all accelerometer events */
-                while(ASensorEventQueue_getEvents(poSensorEventQueue, &oEvent, 1) > 0)
-                {
-                  /* Inits event */
-                  stAccelPayload.stAccelerometer.pAccelerometer = &oEvent;
-                  stAccelPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
-                  stAccelPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
-                  stAccelPayload.stAccelerometer.fZ = (orxFLOAT)oEvent.acceleration.z;
-
-                  /* Sends event */
-                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
-                }
-              }
-            }
-          }
-
-          /* Should update? */
-          if((s32Animating != 0) || (pstApp->destroyRequested != 0))
-          {
-            /* Sends frame start event */
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
-
-            /* Runs the engine */
-            eMainStatus = _pfnRun();
-
-            /* Updates clock system */
-            eClockStatus = orxClock_Update();
-
-            /* Sends frame stop event */
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
-
-            /* Updates frame counter */
-            stPayload.u32FrameCounter++;
-          }
-        }
-      }
-
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Exits from engine */
-      orxModule_Exit(orxMODULE_ID_MAIN);
-    }
-
-    /* Exits from all modules */
-    orxModule_ExitAll();
-  }
-  
-  /* Exits from the Debug system */
-  orxDEBUG_EXIT();
-
-  orxAndroid_ReleaseMainArgs();
-  orxAndroid_DetachThread();
-}
-
-  #else /* __orxANDROID_NATIVE__ */
+  #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -427,6 +255,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           /* Sends frame start event */
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
+
           /* Runs the engine */
           eMainStatus = _pfnRun();
 
@@ -453,6 +282,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   }
 
   /* Exits from the Debug system */
+
   orxDEBUG_EXIT();
 }
 

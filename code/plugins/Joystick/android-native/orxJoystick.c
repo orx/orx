@@ -23,9 +23,9 @@
  */
 
 /**
- * @file orxJoystick.m
- * @date 19/02/2010
- * @author iarwain@orx-project.org
+ * @file orxJoystick.c
+ * @date 13/01/2011
+ * @author simons.philippe@gmail.com
  *
  * Android joystick plugin implementation
  *

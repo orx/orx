@@ -95,8 +95,10 @@ void orxFASTCALL orxModule_RegisterAll()
 
 #ifdef __orxANDROID__
 
-  orxMODULE_RUN_FUNCTION  pfnRun;
-  orxMODULE_EXIT_FUNCTION pfnExit;
+  orxMODULE_RUN_FUNCTION  spfnRun;
+  orxMODULE_EXIT_FUNCTION spfnExit;
+  orxMODULE_INIT_FUNCTION spfnInit;
+  orxSYSTEM_EVENT_PAYLOAD sstPayload;
 
 #endif /* __orxANDROID__ */
 

@@ -1,10 +1,3 @@
-/*
- * orxDisplay.c
- *
- *  Created on: 2010-10-10
- *      Author: laschweinski
- */
-
 /* Orx - Portable Game Engine
  *
  * Copyright (c) 2008-2010 Orx-Project
@@ -28,6 +21,17 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
+
+/**
+ * @file orxDisplay.c
+ * @date 13/01/2011
+ * @author simons.philippe@gmail.com
+ *
+ * Android display plugin implementation
+ *
+ * @todo
+ */
+
 
 #include "orxPluginAPI.h"
 
@@ -2257,8 +2261,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
         sstDisplay.pstScreen = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-        sstDisplay.pstScreen->fWidth = (float) sstDisplay.width;
-        sstDisplay.pstScreen->fHeight = (float) sstDisplay.height;
+        sstDisplay.pstScreen->fWidth = orxS2F(sstDisplay.width);
+        sstDisplay.pstScreen->fHeight = orxS2F(sstDisplay.height);
         sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
         sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U( sstDisplay.pstScreen->fHeight));
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);

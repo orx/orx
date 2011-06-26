@@ -60,6 +60,16 @@
 
   #endif /* __orxANDROID_NATIVE__ */
 
+  #ifdef __orxANDROID__
+  
+    #include "apk_file.h"
+    #include <jni.h>
+
+  extern jobject              oActivity;
+  extern JNIEnv              *poJEnv;
+    
+  #endif /* __orxANDROID__ */
+
   #include <dirent.h>
   #include <fnmatch.h>
   #include <unistd.h>
@@ -79,7 +89,7 @@
 
 /** File structure
  */
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
 typedef enum __orxFILE_TYPE_t
 {
@@ -98,14 +108,14 @@ struct __orxFILE_t
   void         *pHandle;
 };
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 struct __orxFILE_t
 {
   FILE stFile;
 };
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 /** Static structure
  */
@@ -113,11 +123,12 @@ typedef struct __orxFILE_STATIC_t
 {
   orxU32 u32Flags;
   
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
   orxSTRING zInternalDataPath;
+  orxSTRING zExternalDataPath;
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 } orxFILE_STATIC;
 
@@ -243,6 +254,9 @@ orxSTATUS orxFASTCALL orxFile_Init()
 
 #ifdef __orxANDROID_NATIVE__
 
+    // TODO Retrieves the zExternalDataPath from Java
+    sstFile.zExternalDataPath = orxNULL;
+
     /* Retrieves the zInternalDataPath from Java */
     jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, pstApp->activity->clazz);
     orxASSERT(objClass != orxNULL);
@@ -269,7 +283,59 @@ orxSTATUS orxFASTCALL orxFile_Init()
     {
       orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", sstFile.zInternalDataPath);
     }
+    
 #endif /* __orxANDROID_NATIVE__ */
+
+#ifdef __orxANDROID__
+    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
+    orxASSERT(objClass != orxNULL);
+
+   /* Retrieve the zExternalDataPath from Java */
+    jmethodID getExternalStorageDirectory = (*poJEnv)->GetMethodID(poJEnv, objClass, "getExternalStorageDirectory", "()Ljava/lang/String;");
+    orxASSERT(getExternalStorageDirectory != orxNULL);
+    jstring externalPath = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getExternalStorageDirectory);
+    if(externalPath != orxNULL)
+    {
+      const char *zExternalDataPath = (*poJEnv)->GetStringUTFChars(poJEnv, externalPath, 0);
+      orxASSERT(zExternalDataPath != orxNULL);
+      
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "ExternalDataPath is %s", zExternalDataPath);
+      sstFile.zExternalDataPath = orxString_Duplicate(zExternalDataPath);
+
+      /* Releases Java String */
+      (*poJEnv)->ReleaseStringUTFChars(poJEnv, externalPath, zExternalDataPath);
+    }
+    else
+    {
+      sstFile.zExternalDataPath = orxNULL;
+    }
+
+   /* Retrieves the zInternalDataPath from Java */
+    jmethodID getFilesDir = (*poJEnv)->GetMethodID(poJEnv, objClass, "getFilesDir", "()Ljava/io/File;");
+    orxASSERT(getFilesDir != orxNULL);
+    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getFilesDir);
+    orxASSERT(fileDir != orxNULL);
+    jclass fileClass = (*poJEnv)->GetObjectClass(poJEnv, fileDir);
+    orxASSERT(fileClass != orxNULL);
+    jmethodID getAbsolutePath = (*poJEnv)->GetMethodID(poJEnv, fileClass, "getAbsolutePath", "()Ljava/lang/String;");
+    orxASSERT(getAbsolutePath != orxNULL);
+    jstring absolutePath = (*poJEnv)->CallObjectMethod(poJEnv, fileDir, getAbsolutePath);
+    orxASSERT(absolutePath != orxNULL);
+    const char *zInternalDataPath = (*poJEnv)->GetStringUTFChars(poJEnv, absolutePath, 0);
+    orxASSERT(zInternalDataPath != orxNULL);
+    
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "InternalDataPath is %s", zInternalDataPath);
+    sstFile.zInternalDataPath = orxString_Duplicate(zInternalDataPath);
+
+    /* Releases Java String */
+    (*poJEnv)->ReleaseStringUTFChars(poJEnv, absolutePath, zInternalDataPath);
+    
+    if(chdir((const char*)sstFile.zInternalDataPath) != 0)
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", sstFile.zInternalDataPath);
+    }
+    
+#endif /* __orxANDROID__ */
 
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
@@ -286,12 +352,16 @@ void orxFASTCALL orxFile_Exit()
   /* Was initialized? */
   if(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
   {
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     /* free zInternalDataPath memory */
     orxString_Delete(sstFile.zInternalDataPath);
+    if(sstFile.zExternalDataPath != orxNULL)
+    {
+      orxString_Delete(sstFile.zExternalDataPath);
+    }
     
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     /* Cleans static controller */
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
@@ -721,10 +791,35 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     }
   }
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
   orxFILE *pstFile = NULL;
   
+  /* first try to open the file on external storage */
+  if(sstFile.zExternalDataPath != orxNULL)
+  {
+    orxU32 u32Size = orxString_GetLength(sstFile.zExternalDataPath) + orxString_GetLength(_zFileName) + 1;
+    orxSTRING zAbsoluteFileName = (orxSTRING)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_TEXT);
+    orxString_Copy(zAbsoluteFileName, sstFile.zExternalDataPath);
+    orxString_Copy(zAbsoluteFileName + orxString_GetLength(sstFile.zExternalDataPath), _zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "Absolute file path: %s", zAbsoluteFileName);
+    
+    FILE *pstExternalStdFile = fopen(zAbsoluteFileName, acMode);
+    orxString_Delete(zAbsoluteFileName);
+
+    if(pstExternalStdFile != NULL)
+    {
+      pstFile = (orxFILE *)malloc(sizeof(orxFILE));
+      pstFile->eType = orxFILE_TYPE_STD;
+      pstFile->pHandle = pstExternalStdFile;
+      return pstFile;
+    }
+    
+    /* file not found in zExternalDataPath try in asset */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "file %s not found in zExternalDataPath!", _zFileName);
+  }
+  
+
   FILE *pstStdFile = fopen(_zFileName, acMode);
   if(pstStdFile != NULL)
   {
@@ -748,7 +843,16 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     return orxNULL;
   }
   
+  #ifdef __orxANDROID_NATIVE__
+  
   AAsset *poAsset = AAssetManager_open(pstApp->activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
+  
+  #else /* __orxANDROID_NATIVE__ */
+  
+  APKFile *poAsset = APKOpen(_zFileName);
+  
+  #endif /* __orxANDROID_NATIVE__ */
+  
   if(poAsset != NULL)
   {
     pstFile = (orxFILE *)malloc(sizeof(orxFILE));
@@ -762,12 +866,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     return orxNULL;
   }
  
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
   
   /* Open the file */
   return(orxFILE *)fopen(_zFileName, acMode);
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 }
 
@@ -790,22 +894,30 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
   if(_pstFile != orxNULL)
   {
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
+      #ifdef __orxANDROID_NATIVE__
+      
       u32Ret = (orxU32)AAsset_read((AAsset *)_pstFile->pHandle, _pReadData, _u32ElemSize * _u32NbElem);
+      
+      #else /* __orxANDROID_NATIVE__ */
+      
+      u32Ret = (orxU32)APKRead(_pReadData, _u32ElemSize, _u32NbElem, (APKFile*)_pstFile->pHandle);
+      
+      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
       u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE *)_pstFile->pHandle);
     }
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE *)_pstFile);
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
 
@@ -835,7 +947,7 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
   if(_pstFile != orxNULL)
   {
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType != orxFILE_TYPE_APK)
     {
@@ -846,11 +958,11 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
       orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "read only file!");
     }
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE *)_pstFile);
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
 
@@ -874,22 +986,30 @@ orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
   {
     /* Updates result */
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
+      #ifdef __orxANDROID_NATIVE__
+      
       eResult =  (AAsset_seek((AAsset *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      
+      #else /* __orxANDROID_NATIVE__ */
+      
+      eResult = (APKSeek((APKFile*)_pstFile->pHandle, _s32Position,  SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      
+      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
       eResult = (fseek((FILE *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     eResult = (fseek((FILE *)_pstFile, _s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
   else
@@ -918,22 +1038,30 @@ orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
   {
     /* Updates result */
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
+      #ifdef __orxANDROID_NATIVE__
+      
       s32Result = AAsset_getLength((AAsset *)_pstFile->pHandle) - AAsset_getRemainingLength((AAsset *)_pstFile->pHandle);
+      
+      #else /* __orxANDROID_NATIVE__ */
+      
+      s32Result = APKTell((APKFile*)_pstFile->pHandle);
+      
+      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
       s32Result = ftell((FILE *)_pstFile->pHandle);
     }
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     s32Result = ftell((FILE *)_pstFile);
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
   else
@@ -962,11 +1090,19 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   if(_pstFile != orxNULL)
   {
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
+      #ifdef __orxANDROID_NATIVE__
+      
       s32Result = AAsset_getLength((AAsset *)_pstFile->pHandle);
+      
+      #else /* __orxANDROID_NATIVE__ */
+      
+      s32Result = APKSize((APKFile*)_pstFile->pHandle);
+      
+      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
@@ -974,7 +1110,7 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
       s32Result = stStat.st_size;
     }
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 #ifdef __orxMSVC__
 
@@ -991,7 +1127,7 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
     /* Updates result */
     s32Result = stStat.st_size;
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
   else
@@ -1021,7 +1157,7 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
   if(_pstFile != orxNULL)
   {
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType != orxFILE_TYPE_APK)
     {
@@ -1037,7 +1173,7 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "read only file!");
     }
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     va_list stArgs;
 
@@ -1046,7 +1182,7 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
     s32Result = vfprintf((FILE *)_pstFile, _zString, stArgs);
     va_end(stArgs);
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
 
@@ -1072,12 +1208,22 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
   /* valid ? */
   if(_pstFile != orxNULL)
   {
-#ifdef __orxANDROID_NATIVE__
+
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
       /* Close file pointer */
+      #ifdef __orxANDROID_NATIVE__
+      
       AAsset_close((AAsset *)_pstFile->pHandle);
+      
+      #else /* __orxANDROID_NATIVE__ */
+      
+      APKClose((APKFile*)_pstFile->pHandle);
+      
+      #endif /* __orxANDROID_NATIVE__ */
+      
       eRet = orxSTATUS_SUCCESS;
     }
     else
@@ -1091,7 +1237,7 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
     }
     free(_pstFile);
 
-#else /* __orxANDROID_NATIVE__ */
+#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
     /* Close file pointer */
     if(fclose((FILE *)_pstFile) == 0)
@@ -1100,7 +1246,7 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
       eRet = orxSTATUS_SUCCESS;
     }
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   }
 

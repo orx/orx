@@ -191,12 +191,12 @@ typedef enum __orxDISPLAY_EVENT_t
 {
   orxDISPLAY_EVENT_SET_VIDEO_MODE = 0,
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined (__orxANDROID__)
 
   orxDISPLAY_EVENT_SAVE_CONTEXT,
   orxDISPLAY_EVENT_RESTORE_CONTEXT,
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   orxDISPLAY_EVENT_NUMBER,
 

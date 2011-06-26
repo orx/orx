@@ -23,11 +23,11 @@
  */
 
 /**
- * @file orxJoystick.m
- * @date 19/02/2010
- * @author iarwain@orx-project.org
+ * @file orxJoystick.c
+ * @date 13/01/2011
+ * @author simons.philippe@gmail.com
  *
- * android joystick plugin implementation
+ * Android joystick plugin implementation
  *
  * @todo
  */
@@ -66,134 +66,144 @@ static orxJOYSTICK_STATIC sstJoystick;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxSTATUS orxFASTCALL orxJoystick_android_EventHandler(
-		const orxEVENT *_pstEvent) {
+static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_pstEvent)
+{
 	orxSTATUS eResult = orxSTATUS_SUCCESS;
 
 	/* Depending on ID */
-	switch (_pstEvent->eID) {
-	/* Accelerate? */
-	case orxSYSTEM_EVENT_ACCELERATE: {
-		orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+	switch (_pstEvent->eID)
+	{
+	  /* Accelerate? */
+	  case orxSYSTEM_EVENT_ACCELERATE:
+	  {
+      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
-		/* Gets payload */
-		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+      /* Gets payload */
+      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
-		/* Gets new position */
-		orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->stAccelerometer.fX),
-				orx2F(pstPayload->stAccelerometer.fY), orx2F(pstPayload->stAccelerometer.fZ));
+      /* Gets new position */
+      orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->stAccelerometer.fX), orx2F(pstPayload->stAccelerometer.fY), orx2F(pstPayload->stAccelerometer.fZ));
 
-		break;
-	}
+      break;
+    }
 
-	default: {
-		break;
-	}
-	}
-
-	/* Done! */
-	return eResult;
-}
-
-orxSTATUS orxFASTCALL orxJoystick_android_Init() {
-	orxSTATUS eResult = orxSTATUS_FAILURE;
-
-	/* Wasn't already initialized? */
-	if (!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)) {
-		/* Cleans static controller */
-		orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
-
-		/* Adds our joystick event handlers */
-		if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM,
-				orxJoystick_android_EventHandler)) != orxSTATUS_FAILURE) {
-			/* Updates status */
-			sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
-		}
+    default:
+    {
+      break;
+    }
 	}
 
 	/* Done! */
 	return eResult;
 }
 
-void orxFASTCALL orxJoystick_android_Exit() {
-	/* Was initialized? */
-	if (sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) {
-		/* Removes event handler */
-		orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM,
-				orxJoystick_android_EventHandler);
+orxSTATUS orxFASTCALL orxJoystick_Android_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-		/* Cleans static controller */
-		orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
-	}
+  /* Wasn't already initialized? */
+  if (!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
+
+    /* Adds our joystick event handlers */
+    if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler)) != orxSTATUS_FAILURE)
+    {
+      /* Updates status */
+      sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
+    }
+  }
+
+	/* Done! */
+	return eResult;
+}
+
+void orxFASTCALL orxJoystick_Android_Exit()
+{
+  /* Was initialized? */
+  if (sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
+  {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler);
+
+    /* Cleans static controller */
+    orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
+  }
 
 	return;
 }
 
-orxFLOAT orxFASTCALL orxJoystick_android_GetAxisValue(orxJOYSTICK_AXIS _eAxis) {
-	orxFLOAT fResult = orxFLOAT_0;
+orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
+{
+  orxFLOAT fResult = orxFLOAT_0;
 
-	/* Depending on axis */
-	switch (_eAxis) {
-	case orxJOYSTICK_AXIS_X_1:
-	case orxJOYSTICK_AXIS_X_2:
-	case orxJOYSTICK_AXIS_X_3:
-	case orxJOYSTICK_AXIS_X_4: {
-		/* Updates result */
-		fResult = sstJoystick.vAcceleration.fX;
+  /* Depending on axis */
+  switch (_eAxis)
+  {
+    case orxJOYSTICK_AXIS_X_1:
+    case orxJOYSTICK_AXIS_X_2:
+    case orxJOYSTICK_AXIS_X_3:
+    case orxJOYSTICK_AXIS_X_4:
+    {
+      /* Updates result */
+      fResult = sstJoystick.vAcceleration.fX;
 
-		break;
-	}
+      break;
+    }
 
-	case orxJOYSTICK_AXIS_Y_1:
-	case orxJOYSTICK_AXIS_Y_2:
-	case orxJOYSTICK_AXIS_Y_3:
-	case orxJOYSTICK_AXIS_Y_4: {
-		/* Updates result */
-		fResult = sstJoystick.vAcceleration.fY;
+    case orxJOYSTICK_AXIS_Y_1:
+    case orxJOYSTICK_AXIS_Y_2:
+    case orxJOYSTICK_AXIS_Y_3:
+    case orxJOYSTICK_AXIS_Y_4:
+    {
+      /* Updates result */
+      fResult = sstJoystick.vAcceleration.fY;
 
-		break;
-	}
+      break;
+    }
 
-	case orxJOYSTICK_AXIS_Z_1:
-	case orxJOYSTICK_AXIS_Z_2:
-	case orxJOYSTICK_AXIS_Z_3:
-	case orxJOYSTICK_AXIS_Z_4: {
-		/* Updates result */
-		fResult = sstJoystick.vAcceleration.fZ;
+    case orxJOYSTICK_AXIS_Z_1:
+    case orxJOYSTICK_AXIS_Z_2:
+    case orxJOYSTICK_AXIS_Z_3:
+    case orxJOYSTICK_AXIS_Z_4:
+    {
+      /* Updates result */
+      fResult = sstJoystick.vAcceleration.fZ;
 
-		break;
-	}
+      break;
+    }
 
-	default: {
-		/* Not available */
-		orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "<%s> is not available on this platform!", orxJoystick_GetAxisName(_eAxis));
+    default:
+    {
+		  /* Not available */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "<%s> is not available on this platform!", orxJoystick_GetAxisName(_eAxis));
 
-		break;
-	}
-	}
+      break;
+    }
+  }
 
-	/* Done! */
-	return fResult;
+  /* Done! */
+  return fResult;
 }
 
-orxBOOL orxFASTCALL orxJoystick_android_IsButtonPressed(
-		orxJOYSTICK_BUTTON _eButton) {
-	orxBOOL bResult = orxFALSE;
+orxBOOL orxFASTCALL orxJoystick_Android_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
+{
+  orxBOOL bResult = orxFALSE;
 
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Not available on this platform!");
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Not available on this platform!");
 
-	/* Done! */
-	return bResult;
+  /* Done! */
+  return bResult;
 }
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
-orxPLUGIN_USER_CORE_FUNCTION_START(JOYSTICK)
-		;
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_android_Init, JOYSTICK, INIT);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_android_Exit, JOYSTICK, EXIT);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_android_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_android_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
-		orxPLUGIN_USER_CORE_FUNCTION_END()
-;
+orxPLUGIN_USER_CORE_FUNCTION_START(JOYSTICK);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_Init, JOYSTICK, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_Exit, JOYSTICK, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_END();

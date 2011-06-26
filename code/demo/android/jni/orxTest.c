@@ -126,11 +126,14 @@ static void orxFASTCALL Exit()
 {
 }
 
-int main(int argc, char *argv[])
+JNIEXPORT jint JNICALL
+JNI_OnLoad (JavaVM * vm, void * reserved)
 {
-  /* Launches application */
-  orx_Execute(argc, argv, Init, Run, Exit);
-
-  /* Done! */
-  return EXIT_SUCCESS;
+  
+  /* assign orx functions pointers */
+  spfnInit = Init;
+  spfnRun = Run;
+  spfnExit = Exit;
+  
+  return JNI_VERSION_1_4;
 }
