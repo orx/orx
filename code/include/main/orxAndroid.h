@@ -171,10 +171,10 @@ static orxINLINE void orx_Exit()
   };
   #endif
 
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_init(JNIEnv * env, jobject obj, jobject activity, jint width, jint height)
+JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_init(JNIEnv * env, jobject obj, jobject activity, jint s32width, jint s32height)
 {
-	DisplayWidth = s32width;
-	DisplayHeight = s32height;
+	s32DisplayWidth = s32width;
+	s32DisplayHeight = s32height;
 	
 	/* save env and activity */
 	poJEnv = env;
@@ -436,4 +436,5 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
 
 #endif
 
+#endif
 /** @} */
