@@ -1251,9 +1251,9 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
 
       /* Is a valid PVR header? */
       if((gPVRTexIdentifier[0] == ((stHeader.pvrTag >>  0) & 0xFF))
-      && (gPVRTexIdentifier[1] == ((stHeader.pvrTag >>  8) & 0xff))
-      && (gPVRTexIdentifier[2] == ((stHeader.pvrTag >> 16) & 0xff))
-      && (gPVRTexIdentifier[3] == ((stHeader.pvrTag >> 24) & 0xff)))
+      && (gPVRTexIdentifier[1] == ((stHeader.pvrTag >>  8) & 0xFF))
+      && (gPVRTexIdentifier[2] == ((stHeader.pvrTag >> 16) & 0xFF))
+      && (gPVRTexIdentifier[3] == ((stHeader.pvrTag >> 24) & 0xFF)))
       {
         orxS32  u32FormatFlags;
         orxU32  u32BPP;
