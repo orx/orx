@@ -81,8 +81,8 @@ do                                                                      \
 
 #endif /* __orxDEBUG__ */
 
-int32_t DisplayWidth;
-int32_t DisplayHeight;
+int32_t s32DisplayWidth;
+int32_t s32DisplayHeight;
 
 /***************************************************************************
  * Structure declaration                                                   *
