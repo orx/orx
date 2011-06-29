@@ -1996,39 +1996,48 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _pstBitmap;
 
-    /* Sets OpenGL context */
-    [EAGLContext setCurrentContext:sstDisplay.poView.poThreadContext];
+	/* Is valid? */
+	if(_pstBitmap != orxNULL)
+	{
+	  /* Sets OpenGL context */
+	  [EAGLContext setCurrentContext:sstDisplay.poView.poThreadContext];
 
-    /* Recreates render target */
-    [sstDisplay.poView CreateRenderTarget:_pstBitmap];
+	  /* Recreates render target */
+	  [sstDisplay.poView CreateRenderTarget:_pstBitmap];
 
-    /* Inits viewport */
-    glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
-    glASSERT();
+	  /* Inits viewport */
+	  glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
+	  glASSERT();
 
-    /* Shader support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-    {
-      /* Inits projection matrix */
-      orxDisplay_iPhone_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+	  /* Shader support? */
+	  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+	  {
+	    /* Inits projection matrix */
+	    orxDisplay_iPhone_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
-      /* Passes it to shader */
-      glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-    }
-    else
-    {
-      /* Inits matrices */
-      glMatrixMode(GL_PROJECTION);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-      glOrthof(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
-      glASSERT();
-      glMatrixMode(GL_MODELVIEW);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-    }
+	    /* Passes it to shader */
+	    glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+	  }
+	  else
+	  {
+	    /* Inits matrices */
+	    glMatrixMode(GL_PROJECTION);
+	    glASSERT();
+	    glLoadIdentity();
+	    glASSERT();
+	    glOrthof(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+	    glASSERT();
+	    glMatrixMode(GL_MODELVIEW);
+	    glASSERT();
+	    glLoadIdentity();
+	    glASSERT();
+	  }
+	}
+	else
+	{
+	  /* Updates result */
+	  eResult = orxSTATUS_FAILURE;
+	}
   }
 
   /* Done! */
