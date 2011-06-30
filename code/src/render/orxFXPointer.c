@@ -872,3 +872,54 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   /* Done! */
   return eResult;
 }
+
+/** FXPointer time get accessor
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxFXPointer_GetTime(const orxFXPOINTER *_pstFXPointer)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* Updates result */
+  fResult = _pstFXPointer->fTime;
+
+  /* Done! */
+  return fResult;
+}
+
+/** FXPointer time set accessor
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _fTime        Time to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT _fTime)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* Valid? */
+  if(_fTime >= orxFLOAT_0)
+  {
+    /* Stores timestamp */
+    _pstFXPointer->fTime = _fTime;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
