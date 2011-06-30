@@ -51,7 +51,7 @@ C_SRC = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-	main/orxAndSupport.c
+	main/orxAndroidSupport.c
 
 CPP_SRC = \
   plugin/orxPlugin_EmbeddedList.cpp
