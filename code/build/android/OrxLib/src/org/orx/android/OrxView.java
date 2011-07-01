@@ -27,11 +27,11 @@ public class OrxView extends GLSurfaceView {
 	public OrxView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		int screenDepth = 32;
+		int screenDepth = 16;
 		boolean depthBuffer = false;
 		
 		if(attrs != null) {
-			screenDepth = attrs.getAttributeIntValue(NAMESPACE, screenDepth_attribute, 32);
+			screenDepth = attrs.getAttributeIntValue(NAMESPACE, screenDepth_attribute, 16);
 			depthBuffer = attrs.getAttributeBooleanValue(NAMESPACE, depthBuffer_attribute, false);
 		}
 		

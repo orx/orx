@@ -260,8 +260,8 @@ public class OrxActivity extends Activity implements SensorEventListener {
 	}
 	
 	protected int getScreenDepth() {
-		//default to 32bpp surface
-		return 32;
+		//default to 16bpp surface
+		return 16;
 	}
 	
 	protected boolean isUsingDepthBuffer() {
