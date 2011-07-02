@@ -19,6 +19,12 @@ public class OrxView extends GLSurfaceView {
 	private static final String screenDepth_attribute = "screenDepth";
 	private static final String depthBuffer_attribute = "depthBuffer";
 	
+	private Object mSynchroObject;
+	
+	public void setSynchroObject(Object o) {
+		mSynchroObject = o;
+	}
+	
 	public OrxView(Context context, boolean translucent, int depth, int stencil) {
 		super(context);
 		init(translucent, depth, stencil);
@@ -81,50 +87,53 @@ public class OrxView extends GLSurfaceView {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		for (int i = 0; i < event.getPointerCount(); i++) {
-			
-			final int pointerId = event.getPointerId(i);
-			final float x = event.getX(i);
-			final float y = event.getY(i);
-			final float pressure = (float) (event.getPressure(i) * 1000.0);
-			
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN: {
-				queueEvent(new Runnable() {
-					
-					@Override
-					public void run() {
-						OrxLib.onNativeTouch(0, pointerId, x, y, pressure);
-					}
-				});
-				break;
-			}
-			case MotionEvent.ACTION_UP: {
-				queueEvent(new Runnable() {
-					
-					@Override
-					public void run() {
-						OrxLib.onNativeTouch(2, pointerId, x, y, pressure);
-					}
-				});
-				break;
-			}
-			case MotionEvent.ACTION_MOVE: {
-				queueEvent(new Runnable() {
-					
-					@Override
-					public void run() {
-						OrxLib.onNativeTouch(1, pointerId, x, y, pressure);
-					}
-				});
-				break;
-			}
-			}
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		synchronized(mSynchroObject) {
+			for (int i = 0; i < event.getPointerCount(); i++) {
+				
+				final int pointerId = event.getPointerId(i);
+				final float x = event.getX(i);
+				final float y = event.getY(i);
+				final float pressure = (float) (event.getPressure(i) * 1000.0);
+				
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN: {
+					queueEvent(new Runnable() {
+						
+						@Override
+						public void run() {
+							OrxLib.onNativeTouch(0, pointerId, x, y, pressure);
+						}
+					});
+					break;
+				}
+				case MotionEvent.ACTION_UP: {
+					queueEvent(new Runnable() {
+						
+						@Override
+						public void run() {
+							OrxLib.onNativeTouch(2, pointerId, x, y, pressure);
+						}
+					});
+					break;
+				}
+				case MotionEvent.ACTION_MOVE: {
+					queueEvent(new Runnable() {
+						
+						@Override
+						public void run() {
+							OrxLib.onNativeTouch(1, pointerId, x, y, pressure);
+						}
+					});
+					break;
+				}
+				}
+				
+				try {
+					mSynchroObject.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return true;

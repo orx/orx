@@ -18,5 +18,6 @@ public abstract class OrxLayoutActivity extends OrxActivity {
 		mView.setEGLWindowSurfaceFactory(new OrxWindowSurfaceFactory());
 
 		mView.setRenderer(mRenderer);
+		mView.setSynchroObject(mSynchroObject);
 	}
 }

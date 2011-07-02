@@ -40,6 +40,8 @@ public class OrxActivity extends Activity implements SensorEventListener {
 	public boolean mExternalStorageAvailable = false;
 	public boolean mExternalStorageWriteable = false;
 	
+	protected Object mSynchroObject = new Object();
+	
 	private PowerManager mPowerManager;
 	private WakeLock mWakeLock;
 
@@ -143,13 +145,16 @@ public class OrxActivity extends Activity implements SensorEventListener {
 	private class OrxRenderer implements GLSurfaceView.Renderer {
 		@Override
 		public void onDrawFrame(GL10 gl) {
-			if (!mOrxExited) {
-				if (!OrxLib.step()) {
-					OrxLib.exit();
-					mOrxExited = true;
-					mOrxRunning = false;
-					OrxActivity.this.finish();
+			synchronized(mSynchroObject) {
+				if (!mOrxExited) {
+					if (!OrxLib.step()) {
+						OrxLib.exit();
+						mOrxExited = true;
+						mOrxRunning = false;
+						OrxActivity.this.finish();
+					}
 				}
+				mSynchroObject.notifyAll();
 			}
 		}
 
@@ -279,6 +284,7 @@ public class OrxActivity extends Activity implements SensorEventListener {
 		mView.setEGLWindowSurfaceFactory(new OrxWindowSurfaceFactory());
 
 		mView.setRenderer(mRenderer);
+		mView.setSynchroObject(mSynchroObject);
 
 		this.setContentView(mView, createSurfaceViewLayoutParams());
 	}
