@@ -556,6 +556,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
+/** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined)
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstModel       Model object on which to synchronize FXs
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SynchronizeFX(orxOBJECT *_pstObject, const orxOBJECT *_pstModel);
+
 
 /** Adds a sound using its config ID
  * @param[in]   _pstObject      Concerned object

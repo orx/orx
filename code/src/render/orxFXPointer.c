@@ -873,6 +873,79 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   return eResult;
 }
 
+/** Synchronizes FX times with an other orxFXPointer if they share common FXs
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstModel     Model FX pointer to use for synchronization
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_Synchronize(orxFXPOINTER *_pstFXPointer, const orxFXPOINTER *_pstModel)
+{
+  orxS32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxSTRUCTURE_ASSERT(_pstModel);
+
+  /* For all FXs */
+  for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+  {
+    orxFXPOINTER_HOLDER *pstFX;
+
+    /* Gets it */
+    pstFX = &_pstFXPointer->astFXList[i];
+
+    /* Valid? */
+    if(pstFX != orxNULL)
+    {
+      orxS32 j;
+
+      /* For all FXs on model */
+      for(j = 0; j < orxFXPOINTER_KU32_FX_NUMBER; j++)
+      {
+        const orxFXPOINTER_HOLDER *pstModelFX;
+
+        /* Gets it */
+        pstModelFX = &_pstModel->astFXList[j];
+
+        /* Valid? */
+        if(pstModelFX != orxNULL)
+        {
+          /* Matches? */
+          if(pstModelFX->pstFX == pstFX->pstFX)
+          {
+            /* Synchronizes start time */
+            pstFX->fStartTime = pstModelFX->fStartTime;
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
+
+            break;
+          }
+        }
+      }
+
+      /* Not found? */
+      if(j == orxFXPOINTER_KU32_FX_NUMBER)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
+      }
+    }
+  }
+
+  /* Succes? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates global time */
+    _pstFXPointer->fTime = _pstModel->fTime;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** FXPointer time get accessor
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @return      orxFLOAT

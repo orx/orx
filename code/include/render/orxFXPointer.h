@@ -162,6 +162,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddUniqueDelayedFXF
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID);
 
+
+/** Synchronizes FX times with an other orxFXPointer if they share common FXs
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstModel     Model FX pointer to use for synchronization
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Synchronize(orxFXPOINTER *_pstFXPointer, const orxFXPOINTER *_pstModel);
+
+
 /** FXPointer time get accessor
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @return      orxFLOAT
