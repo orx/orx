@@ -540,11 +540,8 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
           pstChild != orxNULL;
           pstChild = _pstObject->pstChild)
       {
-        /* Removes its owner */
-        orxObject_SetOwner(pstChild, orxNULL);
-
-        /* Marks it for deletion */
-        orxObject_SetLifeTime(pstChild, orxFLOAT_0);
+        /* Deletes it */
+        orxObject_Delete(pstChild);
       }
     }
 
