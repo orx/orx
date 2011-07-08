@@ -75,6 +75,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gafa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a> (<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#ga30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga038a9bbe36a692bf86ab9fa993ef8f40">orxEvent_Exit</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga4e1a076d113d180ee77b23e7769e30e5">orxEvent_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga503662819efbce822d0d97eeb595f725">orxEvent_IsSending</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a> (<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#ga30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga3435f918d28e1f6f606b6c76f46cdedb">orxEvent_Send</a> (const <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga2305585afe32179ee80f9277892d555d">orxEvent_SendShort</a> (<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, orxENUM _eEventID)</td></tr>
@@ -345,6 +346,24 @@ Functions</h2></td></tr>
 <div class="memdoc">
 <p>Initializes the event Module </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga503662819efbce822d0d97eeb595f725"></a><!-- doxytag: member="orxEvent.h::orxEvent_IsSending" ref="ga503662819efbce822d0d97eeb595f725" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxEvent_IsSending </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Is currently sending an event? </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxTRUE / orxFALSE </dd></dl>
 
 </div>
 </div>

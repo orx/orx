@@ -157,6 +157,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(const orxEVENT *_pstEvent)
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID);
 
+/** Is currently sending an event?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxEvent_IsSending();
+
 #endif /*_orxEVENT_H_*/
 
 /** @} */

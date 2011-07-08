@@ -512,6 +512,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((orxEvent_IsSending() == orxFALSE) && "Calling orxObject_Delete() from inside an event handler is *NOT* safe: please consider calling orxObject_SetLifeTime(orxFLOAT_0) instead.");
 
   /* Decreases counter */
   orxStructure_DecreaseCounter(_pstObject);
