@@ -1519,7 +1519,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       glASSERT();
     }
-    else
+    else if(_pstBitmap != orxNULL)
     {
       /* Binds frame buffer */
 //      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
@@ -1533,6 +1533,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
 //      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 //      glASSERT();
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Render to texture not supported");
+      eResult = orxSTATUS_FAILURE;
+    }
+    else
+    {
       eResult = orxSTATUS_FAILURE;
     }
 
