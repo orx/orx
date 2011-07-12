@@ -541,8 +541,14 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
           pstChild != orxNULL;
           pstChild = _pstObject->pstChild)
       {
-        /* Deletes it */
-        orxObject_Delete(pstChild);
+        /* Reenables it for immediate deletion */
+        orxObject_Enable(pstChild, orxTRUE);
+
+        /* Removes its owner */
+        orxObject_SetOwner(pstChild, orxNULL);
+
+        /* Marks it for deletion */
+        orxObject_SetLifeTime(pstChild, orxFLOAT_0);
       }
     }
 
@@ -4122,7 +4128,7 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
 /** Deletes an object list created with orxObject_CreateNeigborList
  * @param[in]   _astObjectList  Concerned object list
  */
-void orxFASTCALL    orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
+void orxFASTCALL orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
