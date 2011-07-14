@@ -88,14 +88,14 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
     case orxSYSTEM_EVENT_TOUCH_END:
     {
       orxVECTOR vNewPosition;
-  		orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+  	  orxSYSTEM_EVENT_PAYLOAD *pstPayload;
       orxBOOL bActive = orxFALSE;
 
-  		/* Gets payload */
-  		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+	  /* Gets payload */
+	  pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
-  		/* Gets new position */
-  		orxVector_Set(&vNewPosition, orx2F(pstPayload->stTouch.fX), orx2F(pstPayload->stTouch.fY), orxFLOAT_0);
+	  /* Gets new position */
+	  orxVector_Set(&vNewPosition, orx2F(pstPayload->stTouch.pfXArray[0]), orx2F(pstPayload->stTouch.pfYArray[0]), orxFLOAT_0);
 
       /* Updates mouse move */
       orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
@@ -106,7 +106,7 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
 
       if(_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_BEGIN || _pstEvent->eID == orxSYSTEM_EVENT_TOUCH_MOVE) {
         bActive = orxTRUE;
-      }
+	  }
     
       /* Updates click status */
       sstMouse.bIsClicked = bActive;

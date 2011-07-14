@@ -88,58 +88,61 @@ public class OrxView extends GLSurfaceView {
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
 		synchronized(mSynchroObject) {
+			/* Get real action (some actions are combinaison of pointerId & action) */
+			int nAction = event.getAction() & MotionEvent.ACTION_MASK;
+			/* Get additionnal pointer */
+			int nAdditionalPointer = -1;
+			if (nAction == MotionEvent.ACTION_POINTER_DOWN || nAction == MotionEvent.ACTION_POINTER_UP)
+			{
+				nAdditionalPointer = event.getPointerId((event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT);		
+			}
+			/* Collect pointers informations */ 
+			final int nPointerCount = event.getPointerCount();
+			final int[] fIdArray = new int[nPointerCount];
+			final float[] fXArray = new float[nPointerCount];
+			final float[] fYArray = new float[nPointerCount];
+			final float[] fPressureArray = new float[nPointerCount];
+			/* Fill array to send*/
 			for (int i = 0; i < event.getPointerCount(); i++) {
-				
-				final int pointerId = event.getPointerId(i);
-				final float x = event.getX(i);
-				final float y = event.getY(i);
-				final float pressure = (float) (event.getPressure(i) * 1000.0);
-				
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN: {
-					queueEvent(new Runnable() {
-						
-						@Override
-						public void run() {
-							OrxLib.onNativeTouch(0, pointerId, x, y, pressure);
-						}
-					});
-					break;
-				}
-				case MotionEvent.ACTION_UP: {
-					queueEvent(new Runnable() {
-						
-						@Override
-						public void run() {
-							OrxLib.onNativeTouch(2, pointerId, x, y, pressure);
-						}
-					});
-					break;
+				fIdArray[i] = event.getPointerId(i);
+				fXArray[i] = event.getX(i);
+				fYArray[i] = event.getY(i);
+				fPressureArray[i] = (float) (event.getPressure(i) * 1000.0);
+			}
+			/* Compute orx action (BEGIN / MOVE / END) */
+			int nOrxAction = -1;
+			switch (nAction) {
+				case MotionEvent.ACTION_DOWN:
+				case MotionEvent.ACTION_POINTER_DOWN: {
+					nOrxAction = 0; break;
 				}
 				case MotionEvent.ACTION_MOVE: {
-					queueEvent(new Runnable() {
-						
-						@Override
-						public void run() {
-							OrxLib.onNativeTouch(1, pointerId, x, y, pressure);
-						}
-					});
-					break;
+					nOrxAction = 1; break;
 				}
+				case MotionEvent.ACTION_UP:
+				case MotionEvent.ACTION_POINTER_UP:
+				case MotionEvent.ACTION_CANCEL: { 
+					nOrxAction = 2; break;
 				}
-				
-				try {
-					mSynchroObject.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			}
+			/* Store vars inside a final var ... */
+			final int action = nOrxAction;
+			final int actionPointer = nAdditionalPointer;            
+			/* Post event to the GLThread */
+			queueEvent(new Runnable() {                
+				public void run() {                	
+					OrxLib.onNativeTouch(action, actionPointer, nPointerCount, fIdArray, fXArray, fYArray, fPressureArray);
 				}
+			});
+			/* Wait GLThread to process this event */
+			try {
+				mSynchroObject.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		return true;
 	}
-
-
 
 	private static class ConfigChooser implements
 			GLSurfaceView.EGLConfigChooser {

@@ -162,7 +162,7 @@ static orxINLINE void orx_Exit()
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1CLOSE(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1SAVE_1CONTEXT(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1RESTORE_1CONTEXT(JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint action, int pointId, jfloat x, jfloat y, jfloat p);
+	JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint uAction, jint uActionPointer, jint uPointerCount, jintArray uIdArray,  jfloatArray fXArray, jfloatArray fYArray, jfloatArray fPressureArray);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeAccel(JNIEnv* env, jobject obj, jfloat x, jfloat y, jfloat z);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1BACKGROUND(JNIEnv* env, jobject obj);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1FOREGROUND(JNIEnv* env, jobject obj);
@@ -220,12 +220,13 @@ JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1REST
   orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
 }
 
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj,	jint action, int pointId, jfloat x, jfloat y, jfloat p)
+JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint uAction, jint uActionPointer, jint uPointerCount, jintArray uIdArray,  jfloatArray fXArray, jfloatArray fYArray, jfloatArray fPressureArray)
 {
 	orxSYSTEM_EVENT_PAYLOAD stPayload;
 
+	/* Inits event's type */
 	orxSYSTEM_EVENT android_event;
-	switch (action) {
+	switch (uAction) {
 	case 0:
 		android_event = orxSYSTEM_EVENT_TOUCH_BEGIN;
 		break;
@@ -241,14 +242,37 @@ JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jo
 	}
 
 	/* Inits event's payload */
-	orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-	stPayload.stTouch.u32ID = (orxU32) pointId;
-	stPayload.stTouch.fX = (orxFLOAT) x;
-	stPayload.stTouch.fY = (orxFLOAT) y;
-	stPayload.stTouch.fPressure = (orxFLOAT) p;
+	stPayload.stTouch.uPointerCount = uPointerCount;
+	stPayload.stTouch.uActionPointer= uActionPointer;
+
+	/* Get array from Java environment */
+#ifdef __cplusplus
+	stPayload.stTouch.puIdArray = env->GetIntArrayElements(uIdArray, NULL);
+	stPayload.stTouch.pfXArray = env->GetFloatArrayElements(fXArray, NULL);
+	stPayload.stTouch.pfYArray = env->GetFloatArrayElements(fYArray, NULL);
+	stPayload.stTouch.pfPressureArray = env->GetFloatArrayElements(fPressureArray, NULL);
+#else /* __cplusplus */
+	stPayload.stTouch.puIdArray = (*env)->GetFloaIntElements(env, uIdArray, NULL);
+	stPayload.stTouch.pfXArray = (*env)->GetFloatArrayElements(env, fXArray, NULL);
+	stPayload.stTouch.pfYArray = (*env)->GetFloatArrayElements(env, fYArray, NULL);
+	stPayload.stTouch.pfPressureArray = (*env)->GetFloatArrayElements(env, fPressureArray, NULL);
+#endif /* __cplusplus */
 
 	/* Sends it */
 	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, android_event, orxNULL, orxNULL, &stPayload);
+
+	/* Clear java arrays */
+#ifdef __cplusplus
+	env->ReleaseIntArrayElements(uIdArray,stPayload.stTouch.puIdArray, 0);
+	env->ReleaseFloatArrayElements(fXArray, stPayload.stTouch.pfXArray, 0);
+	env->ReleaseFloatArrayElements(fYArray, stPayload.stTouch.pfYArray, 0);
+	env->ReleaseFloatArrayElements(fPressureArray, stPayload.stTouch.pfPressureArray, 0);
+#else /* __cplusplus */
+	(*env)->ReleaseIntArrayElements(env, uIdArray,stPayload.stTouch.puIdArray, 0);   
+	(*env)->ReleaseFloatArrayElements(env, fXArray, stPayload.stTouch.pfXArray, 0);   
+	(*env)->ReleaseFloatArrayElements(env, fYArray, stPayload.stTouch.pfYArray, 0);   
+	(*env)->ReleaseFloatArrayElements(env, fPressureArray, stPayload.stTouch.pfPressureArray, 0);
+#endif /* __cplusplus */
 }
 
 JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeAccel(JNIEnv* env, jobject obj, jfloat x, jfloat y, jfloat z)

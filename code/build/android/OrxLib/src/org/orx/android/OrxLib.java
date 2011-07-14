@@ -33,6 +33,6 @@ public class OrxLib {
      public static native void send_orxSYSTEM_EVENT_FOREGROUND();
      public static native void send_orxDISPLAY_EVENT_SAVE_CONTEXT();
      public static native void send_orxDISPLAY_EVENT_RESTORE_CONTEXT();
-     public static native void onNativeTouch(int action, int pointid, float x, float y, float p);
+     public static native void onNativeTouch(int action,int actionPointer,int pointerCount, int[] uidArray, float[] fXArray, float[] fYArray, float[] fPressionArray);
      public static native void onNativeAccel(float x, float y, float z);
 }
