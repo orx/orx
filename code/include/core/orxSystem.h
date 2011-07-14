@@ -119,6 +119,16 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
   {
+#ifdef __orxANDROID_NATIVE__
+	/* UI event */
+    struct
+    {
+      orxU32    u32ID;
+      orxFLOAT  fX, fY, fPressure;
+    } stTouch;
+#endif // __orxANDROID_NATIVE__
+
+#ifdef __orxANDROID__
 	/* UI Touch event */
 	struct
 	{
@@ -137,6 +147,7 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 		/* Array containing pressure 	*/
 		jfloat	*pfPressureArray;
 	} stTouch;
+#endif // __orxANDROID__
 
     /* Accelerate event */
     struct
