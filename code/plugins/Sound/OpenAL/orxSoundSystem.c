@@ -886,6 +886,11 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
         alBufferData(pstResult->uiBuffer, (_u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)_u32SampleRate);
         alASSERT();
 
+        /* Stores info */
+        pstResult->stInfo.u32ChannelNumber  = _u32ChannelNumber;
+        pstResult->stInfo.u32FrameNumber    = _u32FrameNumber;
+        pstResult->stInfo.u32SampleRate     = _u32SampleRate;
+
         /* Stores duration */
         pstResult->fDuration = orxU2F(_u32FrameNumber) / orx2F(_u32SampleRate);
 
@@ -1030,7 +1035,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_GetSampleInfo(const orxSOUNDSYSTEM_S
   return orxSTATUS_SUCCESS;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 _as16Data, orxU32 _u32SampleNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
 {
   orxSTATUS eResult;
 

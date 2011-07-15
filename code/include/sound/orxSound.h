@@ -140,6 +140,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Init();
 extern orxDLLAPI void orxFASTCALL             orxSound_Exit();
 
 
+/** Creates an empty sound
+ * @return      Created orxSOUND / orxNULL
+ */
+extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_Create();
+
 /** Creates sound from config
  * @param[in]   _zConfigID    Config ID
  * @ return orxSOUND / orxNULL
@@ -151,6 +156,21 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const or
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Delete(orxSOUND *_pstSound);
+
+
+/** Links a sample
+ * @param[in]   _pstSound     Concerned sound
+ * @param[in]   _pstSample    Sample to set / orxNULL
+ * @param[in]   _zDataName    Name associated with the sample (usually filename)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_LinkSample(orxSOUND *_pstSound, orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxSTRING _zDataName);
+
+/** Unlinks (and deletes if not used anymore) a sample
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_UnlinkSample(orxSOUND *_pstSound);
 
 
 /** Is a stream (ie. music)?
