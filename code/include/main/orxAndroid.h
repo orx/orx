@@ -252,7 +252,7 @@ JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jo
 	stPayload.stTouch.pfYArray = env->GetFloatArrayElements(fYArray, NULL);
 	stPayload.stTouch.pfPressureArray = env->GetFloatArrayElements(fPressureArray, NULL);
 #else /* __cplusplus */
-	stPayload.stTouch.puIdArray = (*env)->GetFloaIntElements(env, uIdArray, NULL);
+	stPayload.stTouch.puIdArray = (*env)->GetIntArrayElements(env, uIdArray, NULL);
 	stPayload.stTouch.pfXArray = (*env)->GetFloatArrayElements(env, fXArray, NULL);
 	stPayload.stTouch.pfYArray = (*env)->GetFloatArrayElements(env, fYArray, NULL);
 	stPayload.stTouch.pfPressureArray = (*env)->GetFloatArrayElements(env, fPressureArray, NULL);
