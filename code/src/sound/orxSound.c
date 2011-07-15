@@ -196,7 +196,7 @@ static orxINLINE void orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
   if(_pstSample->u32Counter == 0)
   {
     /* Unloads its data */
-    orxSoundSystem_UnloadSample(_pstSample->pstData);
+    orxSoundSystem_DeleteSample(_pstSample->pstData);
 
     /* Removes it from reference table */
     orxHashTable_Remove(sstSound.pstReferenceTable, _pstSample->u32ID);

@@ -813,6 +813,19 @@ void orxFASTCALL orxSoundSystem_iPhone_Exit()
   return;
 }
 
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
+{
+  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return pstResult;
+}
+
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_LoadSample(const orxSTRING _zFilename)
 {
   AudioStreamBasicDescription stFileInfo;
@@ -900,7 +913,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iPhone_LoadSample(const orxSTR
   return pstResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_iPhone_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSTATUS orxFASTCALL orxSoundSystem_iPhone_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -915,6 +928,32 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_UnloadSample(orxSOUNDSYSTEM_SAMPLE *
 
   /* Done! */
   return orxSTATUS_SUCCESS;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_iPhone_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return eResult;
 }
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
@@ -1677,8 +1716,11 @@ orxVECTOR *orxFASTCALL orxSoundSystem_iPhone_GetListenerPosition(orxVECTOR *_pvP
 orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_Init, SOUNDSYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_Exit, SOUNDSYSTEM, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_CreateSample, SOUNDSYSTEM, CREATE_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_LoadSample, SOUNDSYSTEM, LOAD_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_UnloadSample, SOUNDSYSTEM, UNLOAD_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_DeleteSample, SOUNDSYSTEM, DELETE_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_Delete, SOUNDSYSTEM, DELETE);

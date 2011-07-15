@@ -301,6 +301,19 @@ void orxFASTCALL orxSoundSystem_Android_Exit() {
 	return;
 }
 
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
+{
+  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return pstResult;
+}
+
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_LoadSample(const orxSTRING _zFilename) 
 {
 	orxSOUNDSYSTEM_SAMPLE *pstResult;
@@ -329,7 +342,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_LoadSample(const orxST
 	return pstResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Android_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
 	/* Checks */
 	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -343,6 +356,32 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_UnloadSample(orxSOUNDSYSTEM_SAMPLE 
 
 	/* Done! */
 	return orxSTATUS_SUCCESS;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Android_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return eResult;
 }
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
@@ -859,8 +898,11 @@ orxBOOL orxFASTCALL orxSoundSystem_Android_HasRecordingSupport()
 orxPLUGIN_USER_CORE_FUNCTION_START( SOUNDSYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_Init, SOUNDSYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_Exit, SOUNDSYSTEM, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_CreateSample, SOUNDSYSTEM,	CREATE_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_LoadSample, SOUNDSYSTEM,	LOAD_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_UnloadSample, SOUNDSYSTEM, UNLOAD_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_DeleteSample, SOUNDSYSTEM, DELETE_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
+orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Android_Delete, SOUNDSYSTEM,	DELETE);

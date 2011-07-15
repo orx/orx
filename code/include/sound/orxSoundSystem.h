@@ -100,17 +100,42 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Init();
  */
 extern orxDLLAPI void orxFASTCALL                     orxSoundSystem_Exit();
 
+/** Creates an empty sample
+ * @param[in]   _u32ChannelNumber                     Number of channels of the sample
+ * @param[in]   _u32FrameNumber                       Number of frame of the sample (number of "samples" = number of frames * number of channels)
+ * @param[in]   _u32SampleRate                        Sampling rate of the sample (ie. number of frames per second)
+ * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ */
+extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL   orxSoundSystem_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate);
+
 /** Loads a sound sample from file (cannot be played directly)
  * @param[in]   _zFilename                            Name of the file to load as a sample (completely loaded in memory, useful for sound effects)
  * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL   orxSoundSystem_LoadSample(const orxSTRING _zFilename);
 
-/** Unloads a sound sample
+/** Deletes a sound sample
  * @param[in]   _pstSample                            Concerned sample
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample);
+
+/** Gets sample info
+ * @param[in]   _pstSample                            Concerned sample
+ * @param[in]   _pu32ChannelNumber                    Number of channels of the sample
+ * @param[in]   _pu32FrameNumber                      Number of frame of the sample (number of "samples" = number of frames * number of channels)
+ * @param[in]   _pu32SampleRate                       Sampling rate of the sample (ie. number of frames per second)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate);
+
+/** Sets sample data
+ * @param[in]   _pstSample                            Concerned sample
+ * @param[in]   _as16Data                             Data to set
+ * @param[in]   _u32SampleNumber                      Number of samples in the data array
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber);
 
 /** Creates a sound from preloaded sample (can be played directly)
  * @param[in]   _pstSample                            Concerned sample
