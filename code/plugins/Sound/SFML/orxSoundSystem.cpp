@@ -233,7 +233,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_GetSampleInfo(const orxSOUN
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -266,6 +266,19 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateFromSampl
 
   /* Updates its status */
   pstResult->bIsMusic = false;
+
+  /* Done! */
+  return pstResult;
+}
+
+extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
+{
+  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
 
   /* Done! */
   return pstResult;
@@ -916,6 +929,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_DeleteSample, SOUNDSYSTEM, 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Play, SOUNDSYSTEM, PLAY);

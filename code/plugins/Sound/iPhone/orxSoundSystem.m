@@ -943,7 +943,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_GetSampleInfo(const orxSOUNDSYSTEM_S
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
+orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -996,6 +996,19 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateFromSample(const o
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't allocate memory for creating sound.");
   }
+
+  /* Done! */
+  return pstResult;
+}
+
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
+{
+  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
 
   /* Done! */
   return pstResult;
@@ -1722,6 +1735,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_DeleteSample, SOUNDSYSTEM
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iPhone_Play, SOUNDSYSTEM, PLAY);

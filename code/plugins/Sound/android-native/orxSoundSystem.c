@@ -454,7 +454,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_GetSampleInfo(const orxSOUNDSYSTEM_
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Android_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -568,6 +568,19 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateFromSample(const 
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't allocate memory for creating sound.");
   }
+
+  /* Done! */
+  return pstResult;
+}
+
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
+{
+  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
 
   /* Done! */
   return pstResult;
@@ -1118,6 +1131,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_DeleteSample, SOUNDSYSTE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Play, SOUNDSYSTEM, PLAY);

@@ -132,16 +132,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSampleIn
 /** Sets sample data
  * @param[in]   _pstSample                            Concerned sample
  * @param[in]   _as16Data                             Data to set
- * @param[in]   _u32DataBufferSize                    Size of the data buffer, in bytes
+ * @param[in]   _u32SampleNumber                      Number of samples in the data array
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber);
 
 /** Creates a sound from preloaded sample (can be played directly)
  * @param[in]   _pstSample                            Concerned sample
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample);
+
+/** Creates an empty stream
+ * @param[in]   _u32ChannelNumber                     Number of channels for the stream
+ * @param[in]   _u32SampleRate                        Sampling rate of the stream (ie. number of frames per second)
+ * @param[in]   _zReference                           Reference name used for streaming events (usually the corresponding config ID)
+ * @return orxSOUNDSYSTEM_SOUND / orxNULL
+ */
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference);
 
 /** Creates a streamed sound from file (can be played directly)
  * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
