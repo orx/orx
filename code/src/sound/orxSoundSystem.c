@@ -162,9 +162,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetSampleInfo)(_pstSample, _pu32ChannelNumber, _pu32FrameNumber, _pu32SampleRate);
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetSampleData)(_pstSample, _as16Data, _u32SampleNumber);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetSampleData)(_pstSample, _as16Data, _u32DataBufferSize);
 }
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)

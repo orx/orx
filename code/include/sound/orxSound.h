@@ -158,13 +158,33 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const or
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Delete(orxSOUND *_pstSound);
 
 
-/** Links a sample
- * @param[in]   _pstSound     Concerned sound
- * @param[in]   _pstSample    Sample to set / orxNULL
- * @param[in]   _zDataName    Name associated with the sample (usually filename)
+/** Creates a sample
+ * @param[in] _u32ChannelNumber Number of channels of the sample
+ * @param[in] _u32FrameNumber   Number of frame of the sample (number of "samples" = number of frames * number of channels)
+ * @param[in] _u32SampleRate    Sampling rate of the sample (ie. number of frames per second)
+ * @param[in] _zName            Name to associate with the sample
+ * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ */
+extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate, const orxSTRING _zName);
+
+/** Gets a sample
+ * @param[in] _zName            Sample's name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_LinkSample(orxSOUND *_pstSound, orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxSTRING _zDataName);
+extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_GetSample(const orxSTRING _zName);
+
+/** Deletes a sample
+ * @param[in] _zName            Sample's name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_DeleteSample(const orxSTRING _zName);
+
+/** Links a sample
+ * @param[in]   _pstSound     Concerned sound
+ * @param[in]   _zSampleName  Name of the sample to link (must already be loaded/created)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _zSampleName);
 
 /** Unlinks (and deletes if not used anymore) a sample
  * @param[in]   _pstSound     Concerned sound

@@ -233,7 +233,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_GetSampleInfo(const orxSOUN
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

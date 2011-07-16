@@ -654,20 +654,184 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   return eResult;
 }
 
-/** Links a sample
- * @param[in]   _pstSound     Concerned sound
- * @param[in]   _pstSample    Sample to set / orxNULL
- * @param[in]   _zDataName    Name associated with the sample (usually filename)
+/** Creates a sample
+ * @param[in] _u32ChannelNumber Number of channels of the sample
+ * @param[in] _u32FrameNumber   Number of frame of the sample (number of "samples" = number of frames * number of channels)
+ * @param[in] _u32SampleRate    Sampling rate of the sample (ie. number of frames per second)
+ * @param[in] _zName            Name to associate with the sample
+ * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ */
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate, const orxSTRING _zName)
+{
+  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid name? */
+  if(_zName != orxSTRING_EMPTY)
+  {
+    orxU32 u32ID;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zName);
+
+    /* Not already present? */
+    if(orxHashTable_Get(sstSound.pstReferenceTable, u32ID) == orxNULL)
+    {
+      orxSOUNDSYSTEM_SAMPLE *pstSample;
+
+      /* Creates sample */
+      pstSample = orxSoundSystem_CreateSample(_u32ChannelNumber, _u32FrameNumber, _u32SampleRate);
+
+      /* Success? */
+      if(pstSample != orxNULL)
+      {
+        orxSOUND_SAMPLE *pstSoundSample;
+
+        /* Creates sound sample */
+        pstSoundSample = (orxSOUND_SAMPLE *)orxBank_Allocate(sstSound.pstSampleBank);
+
+        /* Success? */
+        if(pstSoundSample != orxNULL)
+        {
+          /* Inits it */
+          pstSoundSample->pstData     = pstSample;
+          pstSoundSample->u32Counter  = 0;
+          pstSoundSample->u32ID       = u32ID;
+          pstSoundSample->bInternal   = orxFALSE;
+
+          /* Stores it */
+          orxHashTable_Add(sstSound.pstReferenceTable, u32ID, pstSoundSample);
+
+          /* Updates result */
+          pstResult = pstSample;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample <%s>: couldn't allocate internal structure.", _zName);
+
+          /* Deletes sample */
+          orxSoundSystem_DeleteSample(pstSample);
+        }
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample <%s>: a sample with the same name is already present.", _zName);
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a sample
+ * @param[in] _zName            Sample's name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxSTRING _zDataName)
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_GetSample(const orxSTRING _zName)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid name? */
+  if(_zName != orxSTRING_EMPTY)
+  {
+    orxSOUND_SAMPLE  *pstSoundSample;
+    orxU32            u32ID;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zName);
+
+    /* Gets associated sound sample from table */
+    pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstReferenceTable, u32ID);
+
+    /* Success? */
+    if(pstSoundSample != orxNULL)
+    {
+      /* Updates result */
+      pstResult = pstSoundSample->pstData;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Deletes a sample
+ * @param[in] _zName            Sample's name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_DeleteSample(const orxSTRING _zName)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid name? */
+  if(_zName != orxSTRING_EMPTY)
+  {
+    orxSOUND_SAMPLE  *pstSoundSample;
+    orxU32            u32ID;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zName);
+
+    /* Gets associated sound sample from table */
+    pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstReferenceTable, u32ID);
+
+    /* Success? */
+    if(pstSoundSample != orxNULL)
+    {
+      /* Not referenced anymore? */
+      if(pstSoundSample->u32Counter == 0)
+      {
+        /* Deletes its data */
+        orxSoundSystem_DeleteSample(pstSoundSample->pstData);
+
+        /* Removes it from reference table */
+        orxHashTable_Remove(sstSound.pstReferenceTable, pstSoundSample->u32ID);
+
+        /* Deletes it */
+        orxBank_Free(sstSound.pstSampleBank, pstSoundSample);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't delete sample <%s>: sample is still in use by at least a sound.", _zName);
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Links a sample
+ * @param[in]   _pstSound     Concerned sound
+ * @param[in]   _zSampleName  Name of the sample to link (must already be loaded/created)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _zSampleName)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
-  orxASSERT(_pstSample != orxNULL);
+  orxASSERT(_zSampleName != orxNULL);
 
   /* Unlink previous sample if needed */
   orxSound_UnlinkSample(_pstSound);
@@ -675,95 +839,54 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, orxSOUNDSYSTEM_SA
   /* Has no sample now? */
   if(orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE | orxSOUND_KU32_FLAG_HAS_STREAM) == orxFALSE)
   {
-    orxSOUND_SAMPLE  *pstSoundSample;
-    orxU32            u32ID;
+    orxSOUND_SAMPLE *pstSoundSample;
 
-    /* Gets its ID */
-    u32ID = orxString_ToCRC(_zDataName);
+    /* Loads corresponding sample */
+    pstSoundSample = orxSound_LoadSample(_zSampleName, orxFALSE);
 
-    /* Looks for reference */
-    pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstReferenceTable, u32ID);
-
-    /* Not found? */
-    if(pstSoundSample == orxNULL)
+    /* Found? */
+    if(pstSoundSample != orxNULL)
     {
-      /* Allocates a sound sample */
-      pstSoundSample = (orxSOUND_SAMPLE *)orxBank_Allocate(sstSound.pstSampleBank);
+      /* Stores it */
+      _pstSound->pstSample = pstSoundSample;
+
+      /* Creates sound data based on it */
+      _pstSound->pstData = orxSoundSystem_CreateFromSample(pstSoundSample->pstData);
 
       /* Valid? */
-      if(pstSoundSample != orxNULL)
+      if(_pstSound->pstData != orxNULL)
       {
-        /* Stores its data */
-        pstSoundSample->pstData = _pstSample;
+        /* Stores its reference */
+        _pstSound->zReference = orxString_Duplicate(_zSampleName);
 
-        /* Adds it to reference table */
-        if(orxHashTable_Add(sstSound.pstReferenceTable, u32ID, pstSoundSample) != orxSTATUS_FAILURE)
-        {
-          /* Inits its reference counter */
-          pstSoundSample->u32Counter = 0;
+        /* Updates its status */
+        orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE | orxSOUND_KU32_FLAG_INTERNAL_REFERENCE, orxSOUND_KU32_MASK_ALL);
 
-          /* Stores its ID */
-          pstSoundSample->u32ID = u32ID;
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Unloads sound sample */
+        orxSound_UnloadSample(pstSoundSample);
 
-          /* Updates its status */
-          pstSoundSample->bInternal = orxFALSE;
+        /* Removes its reference */
+        _pstSound->pstSample = orxNULL;
 
-          /* Stores it */
-          _pstSound->pstSample = pstSoundSample;
-
-          /* Creates sound data based on it */
-          _pstSound->pstData = orxSoundSystem_CreateFromSample(_pstSample);
-
-          /* Valid? */
-          if(_pstSound->pstData != orxNULL)
-          {
-            /* Stores its reference */
-            _pstSound->zReference = orxString_Duplicate(_zDataName);
-
-            /* Updates its status */
-            orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE|orxSOUND_KU32_FLAG_INTERNAL_REFERENCE, orxSOUND_KU32_MASK_ALL);
-          }
-          else
-          {
-            /* Deletes sound sample */
-            orxBank_Free(sstSound.pstSampleBank, pstSoundSample);
-
-            /* Removes its reference */
-            _pstSound->pstSample = orxNULL;
-
-            /* Updates its status */
-            orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_MASK_ALL);
-          }
-        }
-        else
-        {
-          /* Deletes it */
-          orxBank_Free(sstSound.pstSampleBank, pstSoundSample);
-
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
-
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to add sound to hashtable, aborting link.");
-        }
+        /* Updates its status */
+        orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_MASK_ALL);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound sample <%s> is already linked to another sound, aborting.", _zDataName);
-
-      /* Already linked */
-      eResult = orxSTATUS_FAILURE;
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't link sample <%s> to sound: sample not found.", _zSampleName);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound is already linked to a sample or a stream.");
-
-    /* Already linked */
-    eResult = orxSTATUS_FAILURE;
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't link sample <%s>: sound is already linked to another sample or a stream.", _zSampleName);
   }
 
   /* Done! */

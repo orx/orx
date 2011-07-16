@@ -132,10 +132,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSampleIn
 /** Sets sample data
  * @param[in]   _pstSample                            Concerned sample
  * @param[in]   _as16Data                             Data to set
- * @param[in]   _u32SampleNumber                      Number of samples in the data array
+ * @param[in]   _u32DataBufferSize                    Size of the data buffer, in bytes
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize);
 
 /** Creates a sound from preloaded sample (can be played directly)
  * @param[in]   _pstSample                            Concerned sample

@@ -943,7 +943,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_GetSampleInfo(const orxSOUNDSYSTEM_S
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_iPhone_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

@@ -72,7 +72,7 @@
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER        4
 #define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY 44100
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          16384
-#define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       (orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / sizeof(orxS16))
+#define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE
 #define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY            orx2F(0.1f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO       orx2F(0.01f)
 
@@ -188,7 +188,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   SNDFILE                *pstRecordingFile;   /**< Recording file */
   orxLINKLIST             stStreamList;       /**< Stream list */
   orxSOUND_EVENT_PAYLOAD  stRecordingPayload; /**< Recording payload */
-  orxS8                   as8StreamBuffer[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE]; /**< Stream buffer */
+  orxS16                  as16StreamBuffer[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE]; /**< Stream buffer */
   orxS16                  as16RecordingBuffer[orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE]; /**< Recording buffer */
 
 } orxSOUNDSYSTEM_STATIC;
@@ -488,7 +488,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
       stPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
 
       /* Gets buffer's frame number */
-      u32BufferFrameNumber = (orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / sizeof(orxS16)) / _pstSound->stData.stInfo.u32ChannelNumber;
+      u32BufferFrameNumber = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE / _pstSound->stData.stInfo.u32ChannelNumber;
 
       /* For all processed buffers */
       for(i = 0, u32FrameNumber = u32BufferFrameNumber; i < (orxU32)iBufferNumber; i++)
@@ -496,11 +496,11 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         orxBOOL bEOF = orxFALSE;
 
         /* Fills buffer */
-        u32FrameNumber = orxSoundSystem_OpenAL_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.as8StreamBuffer);
+        u32FrameNumber = orxSoundSystem_OpenAL_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.as16StreamBuffer);
 
         /* Inits packet */
         stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stData.stInfo.u32ChannelNumber;
-        stPayload.stStream.stPacket.as16SampleList  = (orxS16 *)sstSoundSystem.as8StreamBuffer;
+        stPayload.stStream.stPacket.as16SampleList  = (orxS16 *)sstSoundSystem.as16StreamBuffer;
         stPayload.stStream.stPacket.bDiscard        = orxFALSE;
 
         /* Sends event */
@@ -1035,7 +1035,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_GetSampleInfo(const orxSOUNDSYSTEM_S
   return orxSTATUS_SUCCESS;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32DataBufferSize)
 {
   orxSTATUS eResult;
 
@@ -1045,10 +1045,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE 
   orxASSERT(_as16Data != orxNULL);
 
   /* Valid size? */
-  if(_u32SampleNumber == _pstSample->stInfo.u32ChannelNumber * _pstSample->stInfo.u32FrameNumber)
+  if(_u32DataBufferSize == _pstSample->stInfo.u32ChannelNumber * _pstSample->stInfo.u32FrameNumber * sizeof(orxS16))
   {
     /* Transfers the data */
-    alBufferData(_pstSample->uiBuffer, (_pstSample->stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, (const ALvoid *)_as16Data, (ALsizei)(_u32SampleNumber * sizeof(orxS16)), (ALsizei)_pstSample->stInfo.u32SampleRate);
+    alBufferData(_pstSample->uiBuffer, (_pstSample->stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, (const ALvoid *)_as16Data, (ALsizei)_u32DataBufferSize, (ALsizei)_pstSample->stInfo.u32SampleRate);
     alASSERT();
 
     /* Updates result */
