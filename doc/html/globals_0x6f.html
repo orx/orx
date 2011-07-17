@@ -4521,11 +4521,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_FROM_SAMPLE
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba5d7691410a4f9b648040c019acc781fa">orxPlugin_SoundSystem.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_SAMPLE
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba26a3be541c8e5d6d7fce8f8d7324750a">orxPlugin_SoundSystem.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bad5ea360ada045f16deddc223bf2341ec">orxPlugin_SoundSystem.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM_FROM_FILE
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bad6a0e5ddda7f6afde96d1c95cf791ad7">orxPlugin_SoundSystem.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba4becb7e609e1a4174e36df39ded715f8">orxPlugin_SoundSystem.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE_SAMPLE
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba2376a1825195bfc2f5c69a676ddd7642">orxPlugin_SoundSystem.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_EXIT
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba9aa325cf0bd69f2dd7dd3da5df9e1ac8">orxPlugin_SoundSystem.h</a>
@@ -4550,6 +4559,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_REFERENCE_DISTANCE
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba51d630e24b6b4d277f1d485a65f1950d">orxPlugin_SoundSystem.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_SAMPLE_INFO
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba00444da683b7350bda3e46df238290e8">orxPlugin_SoundSystem.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_STATUS
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba7d21f43e4a358701454054e690445420">orxPlugin_SoundSystem.h</a>
@@ -4602,6 +4614,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_REFERENCE_DISTANCE
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117baa1a1bbaf862ff7f6eacc669aa6f07005">orxPlugin_SoundSystem.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_SAMPLE_DATA
+: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e">orxPlugin_SoundSystem.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_VOLUME
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117baf132e67c0f22b457cd73f04221d9da5a">orxPlugin_SoundSystem.h</a>
 </li>
@@ -4613,9 +4628,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_STOP_RECORDING
 : <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba5a468c86b6edd085257b459db74d5974">orxPlugin_SoundSystem.h</a>
-</li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_UNLOAD_SAMPLE
-: <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba75f306516fd0357623cddd87c29f2357">orxPlugin_SoundSystem.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_ID
 : <a class="el" href="group__orx_plugin.html#ga0f3199fcbbf71824559b9414d5daf6eb">orxPluginType.h</a>
@@ -4949,8 +4961,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_shader.html#ga650247fe0da8917b20b7f8c9e01e762d">orxShader.h</a>
 </li>
 <li>orxSHADERPOINTER
-: <a class="el" href="group__orx_structure.html#ga0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
-, <a class="el" href="group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
+: <a class="el" href="group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
+, <a class="el" href="group__orx_structure.html#ga0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
 </li>
 <li>orxShaderPointer_AddShader()
 : <a class="el" href="group__orx_shader_pointer.html#ga74ad326fadbef929e1ebf41429674782">orxShaderPointer.h</a>
@@ -5004,11 +5016,23 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSound.h</a>
 , <a class="el" href="group__orx_structure.html#ga2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
 </li>
+<li>orxSound_Create()
+: <a class="el" href="group__orx_sound.html#ga8a65a26127320ce61e7e37703080e1b7">orxSound.h</a>
+</li>
 <li>orxSound_CreateFromConfig()
 : <a class="el" href="group__orx_sound.html#ga5cef112990ff5264c67eea94a66c7afe">orxSound.h</a>
 </li>
+<li>orxSound_CreateSample()
+: <a class="el" href="group__orx_sound.html#gaeba832ec94a53adc3b805987ca095751">orxSound.h</a>
+</li>
+<li>orxSound_CreateWithEmptyStream()
+: <a class="el" href="group__orx_sound.html#gaaaf6bda2855bbbb4aec3593483fd7245">orxSound.h</a>
+</li>
 <li>orxSound_Delete()
 : <a class="el" href="group__orx_sound.html#ga854297aa328589e274dccb0c3fba3964">orxSound.h</a>
+</li>
+<li>orxSound_DeleteSample()
+: <a class="el" href="group__orx_sound.html#gaae22e3f010c6ef416a63084dab14d817">orxSound.h</a>
 </li>
 <li>orxSOUND_EVENT
 : <a class="el" href="group__orx_sound.html#gae4874020c9c68ac319642a5eb6d49775">orxSound.h</a>
@@ -5058,6 +5082,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSound_GetReferenceDistance()
 : <a class="el" href="group__orx_sound.html#gada7d1c7991a6120c9dfab3792c8dcf4e">orxSound.h</a>
 </li>
+<li>orxSound_GetSample()
+: <a class="el" href="group__orx_sound.html#gaf36170a0a2a1a8cd9837038079341aa5">orxSound.h</a>
+</li>
 <li>orxSound_GetStatus()
 : <a class="el" href="group__orx_sound.html#ga7c6386386ecbfafe691f5da65a1ee30b">orxSound.h</a>
 </li>
@@ -5075,6 +5102,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSound_IsStream()
 : <a class="el" href="group__orx_sound.html#ga15413bce8dbb7e7bab4cde2354f2f00f">orxSound.h</a>
+</li>
+<li>orxSound_LinkSample()
+: <a class="el" href="group__orx_sound.html#gaa0219ada409d44a4d1d95bccf6cc8a23">orxSound.h</a>
 </li>
 <li>orxSound_Loop()
 : <a class="el" href="group__orx_sound.html#ga0466c87d987fc8c5729a3ac82bfb1a29">orxSound.h</a>
@@ -5130,9 +5160,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSound_StopRecording()
 : <a class="el" href="group__orx_sound.html#gadbe35a1b03675b2cfae4eaf9e53592f4">orxSound.h</a>
 </li>
+<li>orxSound_UnlinkSample()
+: <a class="el" href="group__orx_sound.html#ga8ef5677928b5f15668767b56c5e5ccd4">orxSound.h</a>
+</li>
 <li>orxSOUNDPOINTER
-: <a class="el" href="group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
-, <a class="el" href="group__orx_sound_pointer.html#ga9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+: <a class="el" href="group__orx_sound_pointer.html#ga9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+, <a class="el" href="group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
 </li>
 <li>orxSoundPointer_AddSound()
 : <a class="el" href="group__orx_sound_pointer.html#ga0188b5336738367bfb210e8907bdfcbb">orxSoundPointer.h</a>
@@ -5188,11 +5221,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundSystem_CreateFromSample()
 : <a class="el" href="group__orx_sound_system.html#gaa8ec8dbf1b5c62e983a6c4ea9e8b270b">orxSoundSystem.h</a>
 </li>
+<li>orxSoundSystem_CreateSample()
+: <a class="el" href="group__orx_sound_system.html#gaa7f5fb69ce624beb3d84305602ebd383">orxSoundSystem.h</a>
+</li>
+<li>orxSoundSystem_CreateStream()
+: <a class="el" href="group__orx_sound_system.html#gad5295d2f1c0f742f21865eac1cebe577">orxSoundSystem.h</a>
+</li>
 <li>orxSoundSystem_CreateStreamFromFile()
 : <a class="el" href="group__orx_sound_system.html#ga79dbe0b465090ff02504bef014eae11e">orxSoundSystem.h</a>
 </li>
 <li>orxSoundSystem_Delete()
 : <a class="el" href="group__orx_sound_system.html#ga614d73a798aa537b7a154774ab623dd2">orxSoundSystem.h</a>
+</li>
+<li>orxSoundSystem_DeleteSample()
+: <a class="el" href="group__orx_sound_system.html#ga99a0ec3cf09c49fdeafdc6ee6911e3d7">orxSoundSystem.h</a>
 </li>
 <li>orxSoundSystem_Exit()
 : <a class="el" href="group__orx_sound_system.html#gaac66b824ebaeea2e7b32a33e10413d47">orxSoundSystem.h</a>
@@ -5217,6 +5259,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSoundSystem_GetReferenceDistance()
 : <a class="el" href="group__orx_sound_system.html#gaa441cc26998c5c66733bcc8e3312470d">orxSoundSystem.h</a>
+</li>
+<li>orxSoundSystem_GetSampleInfo()
+: <a class="el" href="group__orx_sound_system.html#gaf6b6e0bfe5a675f04f99e006258bd3ae">orxSoundSystem.h</a>
 </li>
 <li>orxSoundSystem_GetStatus()
 : <a class="el" href="group__orx_sound_system.html#ga350e4fb7ca2f47913e949aaff4ddbc45">orxSoundSystem.h</a>
@@ -5272,6 +5317,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundSystem_SetReferenceDistance()
 : <a class="el" href="group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f">orxSoundSystem.h</a>
 </li>
+<li>orxSoundSystem_SetSampleData()
+: <a class="el" href="group__orx_sound_system.html#ga9225eda0edac2c6ad0e0e8b37142ee2e">orxSoundSystem.h</a>
+</li>
 <li>orxSoundSystem_Setup()
 : <a class="el" href="group__orx_sound_system.html#ga4fe88ac284a248e180404ee43dbf8eed">orxSoundSystem.h</a>
 </li>
@@ -5307,9 +5355,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxSoundSystem_StopRecording()
 : <a class="el" href="group__orx_sound_system.html#ga211e61d56febbe41ad5c855ed704a3be">orxSoundSystem.h</a>
-</li>
-<li>orxSoundSystem_UnloadSample()
-: <a class="el" href="group__orx_sound_system.html#gaecc403aa55a1b225a9b8160cc2be56e5">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
 : <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
@@ -5489,9 +5534,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gad08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
 </li>
-<li>orxSTATUS()
-: <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
-, <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+<li>orxSTATUS
+: <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+, <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
 </li>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
@@ -6177,8 +6222,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_vector.html#gafb49da17b1f47004004b7bdfb803fda1">orxVector.h</a>
 </li>
 <li>orxVIEWPORT
-: <a class="el" href="group__orx_structure.html#ga98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
-, <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+: <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+, <a class="el" href="group__orx_structure.html#ga98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
 </li>
 <li>orxViewport_AddShader()
 : <a class="el" href="group__orx_viewport.html#gafae98230b6e33fb16c5827b48db78b4b">orxViewport.h</a>

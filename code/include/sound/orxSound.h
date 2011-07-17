@@ -151,6 +151,14 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_Create();
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const orxSTRING _zConfigID);
 
+/** Creates a sound with an empty stream (ie. you'll need to provide actual sound data for each packet sent to the sound card using the event system)
+ * @param[in] _u32ChannelNumber Number of channels of the stream
+ * @param[in] _u32SampleRate    Sampling rate of the stream (ie. number of frames per second)
+ * @param[in] _zName            Name to associate with this sound
+ * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ */
+extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zName);
+
 /** Deletes sound
  * @param[in] _pstSound       Concerned Sound
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

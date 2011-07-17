@@ -71,9 +71,9 @@
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE                   32
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER        4
 #define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY 44100
-#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          16384
+#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          8192
 #define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE
-#define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY            orx2F(0.1f)
+#define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY            orx2F(0.05f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO       orx2F(0.01f)
 
 #ifdef __orxDEBUG__
@@ -1185,7 +1185,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
       pstResult->stData.stInfo.u32SampleRate    = _u32SampleRate;
 
       /* Stores duration */
-      pstResult->fDuration = orxU2F(pstResult->stData.stInfo.u32FrameNumber) / orx2F(pstResult->stData.stInfo.u32SampleRate);
+      pstResult->fDuration = orx2F(-1.0f);
 
       /* Updates status */
       pstResult->bIsStream  = orxTRUE;
