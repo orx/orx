@@ -88,11 +88,11 @@ armeabi/debug/%.o: %.c
 
 armeabi-v7a/debug/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -c $< -o $@
 
 armeabi-v7a/debug/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -c $< -o $@
 
 armeabi/release/%.o: %.cpp
 	mkdir -p $(dir $@)
@@ -104,11 +104,11 @@ armeabi/release/%.o: %.c
 
 armeabi-v7a/release/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -mfpu=vfpv3-d16 -c $< -o $@
 
 armeabi-v7a/release/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -mfpu=vfpv3-d16 -c $< -o $@
 
 $(armeabi_OUT): $(armeabi_OBJ)
 	$(AR) rcs $(armeabi_OUT) $(armeabi_OBJ)
