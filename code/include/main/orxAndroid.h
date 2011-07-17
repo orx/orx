@@ -162,7 +162,7 @@ static orxINLINE void orx_Exit()
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1CLOSE(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1SAVE_1CONTEXT(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1RESTORE_1CONTEXT(JNIEnv * env, jobject obj);
-	JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint uAction, jint uActionPointer, jint uPointerCount, jintArray uIdArray,  jfloatArray fXArray, jfloatArray fYArray, jfloatArray fPressureArray);
+	JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint iAction, jint iActionPointer, jint iPointerCount, jintArray aiIdList,  jfloatArray afXList, jfloatArray afYList, jfloatArray afPressureList);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeAccel(JNIEnv* env, jobject obj, jfloat x, jfloat y, jfloat z);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1BACKGROUND(JNIEnv* env, jobject obj);
     JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1FOREGROUND(JNIEnv* env, jobject obj);
@@ -220,13 +220,13 @@ JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1REST
   orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
 }
 
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint uAction, jint uActionPointer, jint uPointerCount, jintArray uIdArray,  jfloatArray fXArray, jfloatArray fYArray, jfloatArray fPressureArray)
+JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint iAction, jint iActionPointer, jint iPointerCount, jintArray aiIdList,  jfloatArray afXList, jfloatArray afYList, jfloatArray afPressureList)
 {
 	orxSYSTEM_EVENT_PAYLOAD stPayload;
 
 	/* Inits event's type */
 	orxSYSTEM_EVENT android_event;
-	switch (uAction) {
+	switch (iAction) {
 	case 0:
 		android_event = orxSYSTEM_EVENT_TOUCH_BEGIN;
 		break;
@@ -242,20 +242,20 @@ JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jo
 	}
 
 	/* Inits event's payload */
-	stPayload.stTouch.uPointerCount = uPointerCount;
-	stPayload.stTouch.uActionPointer= uActionPointer;
+	stPayload.stTouch.iPointerCount = iPointerCount;
+	stPayload.stTouch.iActionPointer= iActionPointer;
 
 	/* Get array from Java environment */
 #ifdef __cplusplus
-	stPayload.stTouch.puIdArray = env->GetIntArrayElements(uIdArray, NULL);
-	stPayload.stTouch.pfXArray = env->GetFloatArrayElements(fXArray, NULL);
-	stPayload.stTouch.pfYArray = env->GetFloatArrayElements(fYArray, NULL);
-	stPayload.stTouch.pfPressureArray = env->GetFloatArrayElements(fPressureArray, NULL);
+	stPayload.stTouch.aiIdList = env->GetIntArrayElements(aiIdList, NULL);
+	stPayload.stTouch.afXList = env->GetFloatArrayElements(afXList, NULL);
+	stPayload.stTouch.afYList = env->GetFloatArrayElements(afYList, NULL);
+	stPayload.stTouch.afPressureList = env->GetFloatArrayElements(afPressureList, NULL);
 #else /* __cplusplus */
-	stPayload.stTouch.puIdArray = (*env)->GetIntArrayElements(env, uIdArray, NULL);
-	stPayload.stTouch.pfXArray = (*env)->GetFloatArrayElements(env, fXArray, NULL);
-	stPayload.stTouch.pfYArray = (*env)->GetFloatArrayElements(env, fYArray, NULL);
-	stPayload.stTouch.pfPressureArray = (*env)->GetFloatArrayElements(env, fPressureArray, NULL);
+	stPayload.stTouch.aiIdList = (*env)->GetIntArrayElements(env, aiIdList, NULL);
+	stPayload.stTouch.afXList = (*env)->GetFloatArrayElements(env, afXList, NULL);
+	stPayload.stTouch.afYList = (*env)->GetFloatArrayElements(env, afYList, NULL);
+	stPayload.stTouch.afPressureList = (*env)->GetFloatArrayElements(env, afPressureList, NULL);
 #endif /* __cplusplus */
 
 	/* Sends it */
@@ -263,15 +263,15 @@ JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jo
 
 	/* Clear java arrays */
 #ifdef __cplusplus
-	env->ReleaseIntArrayElements(uIdArray,stPayload.stTouch.puIdArray, 0);
-	env->ReleaseFloatArrayElements(fXArray, stPayload.stTouch.pfXArray, 0);
-	env->ReleaseFloatArrayElements(fYArray, stPayload.stTouch.pfYArray, 0);
-	env->ReleaseFloatArrayElements(fPressureArray, stPayload.stTouch.pfPressureArray, 0);
+	env->ReleaseIntArrayElements(aiIdList,stPayload.stTouch.aiIdList, 0);
+	env->ReleaseFloatArrayElements(afXList, stPayload.stTouch.afXList, 0);
+	env->ReleaseFloatArrayElements(afYList, stPayload.stTouch.afYList, 0);
+	env->ReleaseFloatArrayElements(afPressureList, stPayload.stTouch.afPressureList, 0);
 #else /* __cplusplus */
-	(*env)->ReleaseIntArrayElements(env, uIdArray,stPayload.stTouch.puIdArray, 0);   
-	(*env)->ReleaseFloatArrayElements(env, fXArray, stPayload.stTouch.pfXArray, 0);   
-	(*env)->ReleaseFloatArrayElements(env, fYArray, stPayload.stTouch.pfYArray, 0);   
-	(*env)->ReleaseFloatArrayElements(env, fPressureArray, stPayload.stTouch.pfPressureArray, 0);
+	(*env)->ReleaseIntArrayElements(env, aiIdList,stPayload.stTouch.aiIdList, 0);   
+	(*env)->ReleaseFloatArrayElements(env, afXList, stPayload.stTouch.afXList, 0);   
+	(*env)->ReleaseFloatArrayElements(env, afYList, stPayload.stTouch.afYList, 0);   
+	(*env)->ReleaseFloatArrayElements(env, afPressureList, stPayload.stTouch.afPressureList, 0);
 #endif /* __cplusplus */
 }
 

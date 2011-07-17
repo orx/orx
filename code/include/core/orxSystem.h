@@ -133,19 +133,19 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 	struct
 	{
 		/* Array size */
-		jint	uPointerCount;
+		jint	iPointerCount;
 		/* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) 	*/
 		/* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs 						*/
 		/* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs 							*/
-		jint	uActionPointer;
-		/* Array containing pointer identifier */		
-		jint	*puIdArray;
+		jint	iActionPointer;
+		/* Array containing pointer identifier */
+		jint	*aiIdList;
 		/* Array containing X coord 	*/
-		jfloat	*pfXArray;
+		jfloat	*afXList;
 		/* Array containing Y coord		*/
-		jfloat	*pfYArray;
+		jfloat	*afYList;
 		/* Array containing pressure 	*/
-		jfloat	*pfPressureArray;
+		jfloat	*afPressureList;
 	} stTouch;
 #endif // __orxANDROID__
 
