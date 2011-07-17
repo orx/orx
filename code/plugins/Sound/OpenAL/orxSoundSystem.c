@@ -542,7 +542,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
 
         /* Inits packet */
         stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stData.stInfo.u32ChannelNumber;
-        stPayload.stStream.stPacket.as16SampleList  = (orxS16 *)sstSoundSystem.as16StreamBuffer;
+        stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
         stPayload.stStream.stPacket.bDiscard        = orxFALSE;
 
         /* Sends event */
