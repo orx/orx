@@ -536,17 +536,24 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
       }
       else
       {
-        /* Loads it */
-        pstResult->pstData = orxSoundSystem_CreateStreamFromFile(zMusicName, pstResult->zReference);
+        /* Creates sound */
+        pstResult = orxSound_Create();
 
-        /* Stores its ID */
-        pstResult->zReference = orxConfig_GetCurrentSection();
+        /* Valid? */
+        if(pstResult != orxNULL)
+        {
+          /* Loads it */
+          pstResult->pstData = orxSoundSystem_CreateStreamFromFile(zMusicName, pstResult->zReference);
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+          /* Stores its ID */
+          pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Updates its status */
-        orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_MASK_ALL);
+          /* Protects it */
+          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
+          /* Updates its status */
+          orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_MASK_ALL);
+        }
       }
     }
 
