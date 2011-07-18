@@ -39,18 +39,21 @@
 
 static const char  *zOrxCommandLineKey = "android.orx.cmd_line";
 
+/* Main function pointer */
+orxMODULE_RUN_FUNCTION  spfnRun;
+/* Global payload for step function */
+orxSYSTEM_EVENT_PAYLOAD sstPayload;
+/* Global java variables */
 jobject  oActivity;
 JNIEnv  *poJEnv;
-
+/* Command line parameters (get from manifest) */
 orxS32              s32NbParams;
 orxSTRING          *azParams;
-
 
 #define SKIP(p) while (*p && isspace (*p)) p++
 #define WANT(p) *p && !isspace (*p)
 
 /* Count the number of arguments. */
-
 static int count_args (const char * input)
 {
     const char * p;
@@ -68,7 +71,6 @@ static int count_args (const char * input)
 }
 
 /* Copy each non-whitespace argument into its own allocated space. */
-
 static int copy_args (const char * input, int argc, char ** argv)
 {
     int i = 0;
@@ -117,6 +119,7 @@ static int argc_argv (const char * input, int * argc_ptr, char *** argv_ptr)
     return 0;
 }
 
+/* Get command line parameter from manifest */
 void orxAndroid_GetMainArgs()
 {
 	jclass activityClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
@@ -193,6 +196,7 @@ void orxAndroid_GetMainArgs()
 	}
 }
 
+/* release command line parameters */
 void orxAndroid_ReleaseMainArgs()
 {
   int i;
@@ -203,4 +207,3 @@ void orxAndroid_ReleaseMainArgs()
   
   free(azParams);
 }
-

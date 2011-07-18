@@ -200,6 +200,66 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #include "main/orxAndroid.h"
 
+	/* orx_Execute for android version only */
+	#ifdef  __orxANDROID__
+extern orxMODULE_RUN_FUNCTION  spfnRun;
+extern orxSYSTEM_EVENT_PAYLOAD sstPayload;
+
+/** Orx main execution function
+ * @param[in]   _u32NbParams                  Main function parameters number (argc)
+ * @param[in]   _azParams                     Main function parameter list (argv)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
+
+  /* Checks */
+  orxASSERT(_u32NbParams > 0);
+  orxASSERT(_azParams != orxNULL);
+  orxASSERT(_pfnRun != orxNULL);
+
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+
+  /* Stores run callback */
+  spfnRun = _pfnRun;
+  
+  /* Registers all other modules */
+  orxModule_RegisterAll();
+
+  /* Calls all modules setup */
+  orxModule_SetupAll();
+
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    /* Inits the engine */
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Displays help */
+      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      {
+        /* Clears payload */
+        orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      }
+    }
+  }
+
+  /* Inits stop condition */
+  sbStopByEvent = orxFALSE;  
+  
+  /* Done! */
+  return;
+}
+	#endif /* __orxANDROID__ */
+
   #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 /** Orx main execution function

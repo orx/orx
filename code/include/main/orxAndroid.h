@@ -49,8 +49,6 @@
 
 /* defined in orxModule.c */
 extern orxMODULE_RUN_FUNCTION  spfnRun;
-extern orxMODULE_EXIT_FUNCTION spfnExit;
-extern orxMODULE_INIT_FUNCTION spfnInit;
 extern orxSYSTEM_EVENT_PAYLOAD sstPayload;
 
 /* defined in orxDisplay.c */
@@ -66,45 +64,16 @@ extern orxSTRING  *azParams;
 void orxAndroid_GetMainArgs();
 void orxAndroid_ReleaseMainArgs();
 
+/* Main function to call */
+extern int main(int argc, char *argv[]);
 
 static orxINLINE void orx_Init()
 {
-  orxASSERT(spfnRun != orxNULL);
-
-  orxDEBUG_INIT();
-  
   /* retrieve orx cmd-line arguments */
   orxAndroid_GetMainArgs();
-  
-  /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, spfnInit, spfnExit);
 
-  /* Registers all other modules */
-  orxModule_RegisterAll();
-
-  /* Calls all modules setup */
-  orxModule_SetupAll();
-
-  /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(s32NbParams, azParams) != orxSTATUS_FAILURE)
-  {
-    /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-    {
-      /* Registers default event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Displays help */
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
-      {
-        /* Clears payload */
-        orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-      }
-    }
-  }
-
-  /* Inits stop condition */
-  sbStopByEvent = orxFALSE;
+  /* Call main function */
+  main(s32NbParams,azParams);
 }
 
 static orxINLINE orxBOOL orx_Step()
