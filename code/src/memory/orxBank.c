@@ -389,7 +389,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
       _pstBank->u32Counter++;
 
       /* Set the bit as used */
-      ((orxU32*)(pstCurrentSegment->au32CellAllocationMap))[u32MapPartIndex] |= 1 << u32BitIndex;
+      ((orxU32 *)(pstCurrentSegment->au32CellAllocationMap))[u32MapPartIndex] |= 1 << u32BitIndex;
       
 #ifdef __orxMEMORY_DEBUG__
       {

@@ -468,10 +468,10 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
     u32Size = ((orxU32)strlen(_zFileName) + 1) * sizeof(orxCHAR);
 
     /* Allocates it */
-    sstDebug.zDebugFile = (orxSTRING)malloc(u32Size);
+    sstDebug.zDebugFile = (orxSTRING)malloc((size_t)u32Size);
 
     /* Stores new name */
-    memcpy(sstDebug.zDebugFile, _zFileName, u32Size);
+    memcpy(sstDebug.zDebugFile, _zFileName, (size_t)u32Size);
   }
   else
   {
@@ -504,10 +504,10 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
     u32Size = ((orxU32)strlen(_zFileName) + 1) * sizeof(orxCHAR);
 
     /* Allocates it */
-    sstDebug.zLogFile = (orxSTRING)malloc(u32Size);
+    sstDebug.zLogFile = (orxSTRING)malloc((size_t)u32Size);
 
     /* Stores new name */
-    memcpy(sstDebug.zLogFile, _zFileName, u32Size);
+    memcpy(sstDebug.zLogFile, _zFileName, (size_t)u32Size);
   }
   else
   {

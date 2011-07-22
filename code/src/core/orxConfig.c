@@ -1779,8 +1779,8 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
   {
     /* Updates values */
     sstConfig.u32EncryptionKeySize  = strlen(_zEncryptionKey);
-    sstConfig.zEncryptionKey        = (orxSTRING)malloc(sstConfig.u32EncryptionKeySize + 1);
-    memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, sstConfig.u32EncryptionKeySize + 1);
+    sstConfig.zEncryptionKey        = (orxSTRING)malloc((size_t)(sstConfig.u32EncryptionKeySize + 1));
+    memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, (size_t)(sstConfig.u32EncryptionKeySize + 1));
     sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
   }
   else

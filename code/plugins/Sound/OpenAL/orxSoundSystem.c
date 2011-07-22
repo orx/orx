@@ -269,8 +269,8 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_OpenRecordingFile()
   }
 
   /* Inits it */
-  stFileInfo.samplerate = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate;
-  stFileInfo.channels   = (sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber == 2) ? 2 : 1;
+  stFileInfo.samplerate = (int)sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate;
+  stFileInfo.channels   = (int)((sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber == 2) ? 2 : 1);
 
   /* Opens file */
   sstSoundSystem.pstRecordingFile = sf_open(sstSoundSystem.stRecordingPayload.zSoundName, SFM_WRITE, &stFileInfo);
@@ -402,7 +402,7 @@ static orxINLINE orxU32 orxSoundSystem_OpenAL_Read(orxSOUNDSYSTEM_DATA *_pstData
     if(_pstData->vorbis.pstFile != orxNULL)
     {
       /* Reads frames */
-      u32Result = (orxU32)stb_vorbis_get_samples_short_interleaved(_pstData->vorbis.pstFile, _pstData->stInfo.u32ChannelNumber, (short *)_pBuffer, _u32FrameNumber * _pstData->stInfo.u32ChannelNumber);
+      u32Result = (orxU32)stb_vorbis_get_samples_short_interleaved(_pstData->vorbis.pstFile, (int)_pstData->stInfo.u32ChannelNumber, (short *)_pBuffer, (int)(_u32FrameNumber * _pstData->stInfo.u32ChannelNumber));
     }
     else
     {

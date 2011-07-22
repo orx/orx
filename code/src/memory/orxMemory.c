@@ -138,7 +138,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
 
   /* Returns system allocation function */
-  return((void *)dlmalloc(_u32Size));
+  return((void *)dlmalloc((size_t)_u32Size));
 }
 
 /** Frees a portion of memory allocated with orxMemory_Allocateate
@@ -167,7 +167,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
  */
 void *orxFASTCALL orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size)
 {
-  return((void *)memcpy(_pDest, _pSrc, _u32Size));
+  return((void *)memcpy(_pDest, _pSrc, (size_t)_u32Size));
 }
 
 /** Moves a portion of memory into another one
@@ -178,7 +178,7 @@ void *orxFASTCALL orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Siz
  */
 void *orxFASTCALL orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
 {
-  return((void *)memmove(_pDest, _pSrc, _u32Size));
+  return((void *)memmove(_pDest, _pSrc, (size_t)_u32Size));
 }
 
 /** Compares two portions of memory
@@ -189,7 +189,7 @@ void *orxFASTCALL orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
  */
 orxU32 orxFASTCALL orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size)
 {
-  return((orxU32)memcmp(_pMem1, _pMem2, _u32Size));
+  return((orxU32)memcmp(_pMem1, _pMem2, (size_t)_u32Size));
 }
 
 /** Fills a portion of memory with _u32Data
@@ -200,7 +200,7 @@ orxU32 orxFASTCALL orxMemory_Compare(const void *_pMem1, const void *_pMem2, orx
  */
 void *orxFASTCALL orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size)
 {
-  return((void *)memset(_pDest, _u8Data, _u32Size));
+  return((void *)memset(_pDest, _u8Data, (size_t)_u32Size));
 }
 
 /** Fills a portion of memory with zeroes
@@ -210,7 +210,7 @@ void *orxFASTCALL orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size)
  */
 void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
 {
-  return((void *)memset(_pDest, 0, _u32Size));
+  return((void *)memset(_pDest, 0, (size_t)_u32Size));
 }
 
 /** Reallocates a portion of memory if the already allocated memory is not suffisant.
@@ -220,5 +220,5 @@ void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
  */
 void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 {
-  return((void *)dlrealloc(_pMem, _u32Size));
+  return((void *)dlrealloc(_pMem, (size_t)_u32Size));
 }

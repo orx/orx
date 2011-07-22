@@ -347,12 +347,12 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
       {
         /* Updates world simulation */
-        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, (orxU32)_pContext, (orxU32)_pContext);
+        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, (orxS32)(orxS64)_pContext, (orxS32)(orxS64)_pContext);
       }
     }
 
     /* Updates last step of world simulation */
-    sstPhysics.poWorld->Step(fDT, (orxU32)_pContext, (orxU32)_pContext);
+    sstPhysics.poWorld->Step(fDT, (orxS32)(orxS64)_pContext, (orxS32)(orxS64)_pContext);
 
     /* For all physical bodies */
     for(poBody = sstPhysics.poWorld->GetBodyList();
@@ -640,7 +640,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orx
       }
 
       /* Updates shape */
-      stPolygonShape.Set(avVertexList, _pstBodyPartDef->stMesh.u32VertexCounter);
+      stPolygonShape.Set(avVertexList, (int32)_pstBodyPartDef->stMesh.u32VertexCounter);
     }
   }
 

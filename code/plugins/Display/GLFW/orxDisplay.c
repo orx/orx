@@ -582,7 +582,7 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
       if((_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen) && (bCaptured == orxFALSE))
       {
         /* Copies screen content */
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight, orxF2U(sstDisplay.pstScreen->fWidth), sstDisplay.pstScreen->u32RealHeight);
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight), (GLsizei)orxF2U(sstDisplay.pstScreen->fWidth), (GLsizei)sstDisplay.pstScreen->u32RealHeight);
         glASSERT();
 
         /* Updates captured status */
@@ -628,7 +628,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
           orxDisplay_GLFW_InitShader(pstShader);
 
           /* Draws elements */
-          glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+          glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
           glASSERT();
         }
       }
@@ -636,7 +636,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     else
     {
       /* Draws arrays */
-      glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+      glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
       glASSERT();
     }
 
@@ -1036,7 +1036,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     glASSERT();
     glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
     glASSERT();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glASSERT();
@@ -1099,7 +1099,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
     glASSERT();
 
     /* Updates texture */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
     glASSERT();
 
     /* Frees buffer */
@@ -1187,7 +1187,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
     glASSERT();
 
     /* Updates its content */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
     glASSERT();
 
     /* Restores previous texture */
@@ -1263,7 +1263,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(orxBITMAP *_pstBitmap, orxU8
       glASSERT();
 
       /* Copies screen content */
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, orxF2U(_pstBitmap->fWidth), _pstBitmap->u32RealHeight);
+      glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight), (GLsizei)orxF2U(_pstBitmap->fWidth), (GLsizei)_pstBitmap->u32RealHeight);
       glASSERT();
       glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
       glASSERT();
@@ -1662,7 +1662,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
     }
 
     /* Copies screen content */
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight, orxF2U(_pstBitmap->fWidth), _pstBitmap->u32RealHeight);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight), (GLsizei)orxF2U(_pstBitmap->fWidth), (GLsizei)_pstBitmap->u32RealHeight);
     glASSERT();
   }
 
@@ -1727,8 +1727,8 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
       orxU8  *pu8ImageBuffer;
 
       /* Gets its real size */
-      uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : orxMath_GetNextPowerOfTwo(uiWidth);
-      uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : orxMath_GetNextPowerOfTwo(uiHeight);
+      uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
+      uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
    
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -1780,7 +1780,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
       glASSERT();
       glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
       glASSERT();
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstResult->u32RealWidth, (GLsizei)pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
       glASSERT();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glASSERT();
@@ -1864,7 +1864,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     glASSERT();
 
     /* Stores screen clipping */
-    glScissor(_u32TLX, orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+    glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
     glASSERT();
   }
 
@@ -2123,7 +2123,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 16:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -2132,7 +2132,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 24:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -2142,7 +2142,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     case 32:
     {
       /* Updates video mode */
-      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       break;
     }
@@ -2217,7 +2217,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
     glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
     glASSERT();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glASSERT();
@@ -2232,7 +2232,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     sstDisplay.pstDestinationBitmap = orxNULL;
 
     /* Clears new display surface */
-    glScissor(0, 0, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+    glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
     glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
@@ -2259,7 +2259,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           glASSERT();
           glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
           glASSERT();
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, aau8BufferArray[u32Index]);
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid *)aau8BufferArray[u32Index]);
           glASSERT();
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
           glASSERT();

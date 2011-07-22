@@ -915,7 +915,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
 
 #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
-    u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE *)_pstFile);
+    u32Ret = (orxU32)fread(_pReadData, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
 
 #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
@@ -960,7 +960,7 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
 
 #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
-    u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE *)_pstFile);
+    u32Ret = (orxU32)fwrite(_pDataToWrite, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
 
 #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
@@ -1007,7 +1007,7 @@ orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
 
 #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
-    eResult = (fseek((FILE *)_pstFile, _s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = (fseek((FILE *)_pstFile, (size_t)_s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
 #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 

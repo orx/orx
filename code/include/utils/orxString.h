@@ -232,7 +232,7 @@ static orxINLINE orxBOOL                orxString_IsCharacterASCII(orxU32 _u32Ch
  * @param[in] _u32CharacterCodePoint    Concerned character code
  * @return                              Encoding length in UTF-8 for given character if valid, orxU32_UNDEFINED otherwise
  */
-static orxINLINE orxBOOL                orxString_GetUTF8CharacterLength(orxU32 _u32CharacterCodePoint)
+static orxINLINE orxU32                 orxString_GetUTF8CharacterLength(orxU32 _u32CharacterCodePoint)
 {
   orxU32 u32Result;
 
@@ -574,7 +574,7 @@ static orxINLINE orxSTRING              orxString_NCopy(orxSTRING _zDstString, c
   orxASSERT(_zSrcString != orxNULL);
 
   /* Done! */
-  return(strncpy(_zDstString, _zSrcString, _u32CharNumber));
+  return(strncpy(_zDstString, _zSrcString, (size_t)_u32CharNumber));
 }
 
 /** Copies a string.
@@ -668,7 +668,7 @@ static orxINLINE orxS32                 orxString_NCompare(const orxSTRING _zStr
   orxASSERT(_zString2 != orxNULL);
 
   /* Done! */
-  return strncmp(_zString1, _zString2, _u32CharNumber);
+  return strncmp(_zString1, _zString2, (size_t)_u32CharNumber);
 }
 
 /** Compare two strings, case insensitive. If the first one is smaller than the second, it returns -1,
@@ -713,7 +713,7 @@ static orxINLINE orxS32                 orxString_NICompare(const orxSTRING _zSt
 #ifdef __orxWINDOWS__
 
   /* Done! */
-  return strnicmp(_zString1, _zString2, _u32CharNumber);
+  return strnicmp(_zString1, _zString2, (size_t)_u32CharNumber);
 
 #else /* __orxWINDOWS__ */
 
@@ -740,7 +740,7 @@ static orxINLINE orxSTATUS              orxString_ToS32Base(const orxSTRING _zSt
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
-  *_ps32OutValue = strtol(_zString, &pcEnd, _u32Base);
+  *_ps32OutValue = strtol(_zString, &pcEnd, (size_t)_u32Base);
   
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
@@ -834,7 +834,7 @@ static orxINLINE orxSTATUS              orxString_ToU32Base(const orxSTRING _zSt
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
-  *_pu32OutValue = strtoul(_zString, &pcEnd, _u32Base);
+  *_pu32OutValue = strtoul(_zString, &pcEnd, (size_t)_u32Base);
   
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
@@ -1313,7 +1313,7 @@ static orxINLINE orxS32 orxCDECL        orxString_NPrint(orxSTRING _zDstString, 
 
   /* Gets variable arguments & print the string */
   va_start(stArgs, _zSrcString);
-  s32Result = vsnprintf(_zDstString, _u32CharNumber, _zSrcString, stArgs);
+  s32Result = vsnprintf(_zDstString, (size_t)_u32CharNumber, _zSrcString, stArgs);
   va_end(stArgs);
 
   /* Done! */
