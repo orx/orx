@@ -56,7 +56,7 @@ orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
  
   /* Updates result */
   *((orxU32 *)&fResult) = ((orxU32)ss32RandomSeed >> 9) | 0x3f800000;
-  fResult = orx2F(0.5f) * ((fResult - orx2F(1.0f)) * (_fMax - _fMin) + _fMax + _fMin);
+  fResult               = _fMin + (fResult - orxFLOAT_1) * (_fMax - _fMin);
  
   /* Done! */
   return fResult;
@@ -77,7 +77,7 @@ orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
  
   /* Updates result */
   *((orxU32 *)&fTemp) = ((orxU32)ss32RandomSeed >> 9) | 0x3f800000;
-  u32Result           = _u32Min + orxF2U((fTemp - orx2F(1.0f)) * (orx2F(0.9f) + orxU2F(_u32Max - _u32Min)));
+  u32Result           = _u32Min + orxF2U((fTemp - orxFLOAT_1) * (orx2F(0.9f) + orxU2F(_u32Max - _u32Min)));
  
   /* Done! */
   return u32Result;
@@ -98,7 +98,7 @@ orxS32 orxFASTCALL orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)
  
   /* Updates result */
   *((orxU32 *)&fTemp) = ((orxU32)ss32RandomSeed >> 9) | 0x3f800000;
-  s32Result = _s32Min + orxF2S((fTemp - orx2F(1.0f)) * (orx2F(0.9f) + orxS2F(_s32Max - _s32Min)));
+  s32Result           = _s32Min + orxF2S((fTemp - orxFLOAT_1) * (orx2F(0.9f) + orxS2F(_s32Max - _s32Min)));
 
   /* Done! */
   return s32Result;
