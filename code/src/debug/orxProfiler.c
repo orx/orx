@@ -242,11 +242,6 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
     /* Has free marker IDs? */
     if(sstProfiler.s32MarkerCounter < orxPROFILER_KU32_MAX_MARKER_NUMBER)
     {
-      orxPROFILER_MARKER *pstMarker;
-
-      /* Gets it */
-      pstMarker = &(sstProfiler.astMarkerList[s32MarkerID]);
-
       /* Updates marker counter */
       sstProfiler.s32MarkerCounter++;
 

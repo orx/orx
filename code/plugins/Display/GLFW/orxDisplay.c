@@ -3051,15 +3051,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue)
 {
-  orxDISPLAY_SHADER  *pstShader;
-  orxSTATUS           eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
-
-  /* Gets shader */
-  pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Valid? */
   if(_s32ID >= 0)
@@ -3083,16 +3079,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, orxS32 
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue)
 {
-  orxDISPLAY_SHADER  *pstShader;
-  orxSTATUS           eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
   orxASSERT(_pvValue != orxNULL);
-
-  /* Gets shader */
-  pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Valid? */
   if(_s32ID >= 0)
