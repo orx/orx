@@ -213,7 +213,7 @@
 <a name="l00228"></a>00228   <span class="keywordflow">return</span>((_u32CharacterCodePoint &lt; 0x80) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>);
 <a name="l00229"></a>00229 }
 <a name="l00230"></a>00230 
-<a name="l00235"></a><a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">00235</a> <span class="keyword">static</span> orxINLINE orxBOOL                <a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">orxString_GetUTF8CharacterLength</a>(orxU32 _u32CharacterCodePoint)
+<a name="l00235"></a><a class="code" href="group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b">00235</a> <span class="keyword">static</span> orxINLINE orxU32                 <a class="code" href="group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b">orxString_GetUTF8CharacterLength</a>(orxU32 _u32CharacterCodePoint)
 <a name="l00236"></a>00236 {
 <a name="l00237"></a>00237   orxU32 u32Result;
 <a name="l00238"></a>00238 
@@ -253,7 +253,7 @@
 <a name="l00278"></a>00278   orxU32 u32Result;
 <a name="l00279"></a>00279 
 <a name="l00280"></a>00280   <span class="comment">/* Gets character&#39;s encoded length */</span>
-<a name="l00281"></a>00281   u32Result = <a class="code" href="group__orx_string.html#gafc7799193eed7e70f01097dca9c75e04">orxString_GetUTF8CharacterLength</a>(_u32CharacterCodePoint);
+<a name="l00281"></a>00281   u32Result = <a class="code" href="group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b">orxString_GetUTF8CharacterLength</a>(_u32CharacterCodePoint);
 <a name="l00282"></a>00282 
 <a name="l00283"></a>00283   <span class="comment">/* Enough room? */</span>
 <a name="l00284"></a>00284   <span class="keywordflow">if</span>(u32Result &lt;= _u32Size)
@@ -534,7 +534,7 @@
 <a name="l00574"></a>00574   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zSrcString != orxNULL);
 <a name="l00575"></a>00575 
 <a name="l00576"></a>00576   <span class="comment">/* Done! */</span>
-<a name="l00577"></a>00577   <span class="keywordflow">return</span>(strncpy(_zDstString, _zSrcString, _u32CharNumber));
+<a name="l00577"></a>00577   <span class="keywordflow">return</span>(strncpy(_zDstString, _zSrcString, (<span class="keywordtype">size_t</span>)_u32CharNumber));
 <a name="l00578"></a>00578 }
 <a name="l00579"></a>00579 
 <a name="l00585"></a><a class="code" href="group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16">00585</a> <span class="keyword">static</span> orxINLINE orxSTRING              <a class="code" href="group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16">orxString_Copy</a>(orxSTRING _zDstString, <span class="keyword">const</span> orxSTRING _zSrcString)
@@ -602,7 +602,7 @@
 <a name="l00668"></a>00668   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString2 != orxNULL);
 <a name="l00669"></a>00669 
 <a name="l00670"></a>00670   <span class="comment">/* Done! */</span>
-<a name="l00671"></a>00671   <span class="keywordflow">return</span> strncmp(_zString1, _zString2, _u32CharNumber);
+<a name="l00671"></a>00671   <span class="keywordflow">return</span> strncmp(_zString1, _zString2, (<span class="keywordtype">size_t</span>)_u32CharNumber);
 <a name="l00672"></a>00672 }
 <a name="l00673"></a>00673 
 <a name="l00680"></a><a class="code" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">00680</a> <span class="keyword">static</span> orxINLINE orxS32                 <a class="code" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">orxString_ICompare</a>(<span class="keyword">const</span> orxSTRING _zString1, <span class="keyword">const</span> orxSTRING _zString2)
@@ -633,7 +633,7 @@
 <a name="l00713"></a>00713 <span class="preprocessor">#ifdef __orxWINDOWS__</span>
 <a name="l00714"></a>00714 <span class="preprocessor"></span>
 <a name="l00715"></a>00715   <span class="comment">/* Done! */</span>
-<a name="l00716"></a>00716   <span class="keywordflow">return</span> strnicmp(_zString1, _zString2, _u32CharNumber);
+<a name="l00716"></a>00716   <span class="keywordflow">return</span> strnicmp(_zString1, _zString2, (<span class="keywordtype">size_t</span>)_u32CharNumber);
 <a name="l00717"></a>00717 
 <a name="l00718"></a>00718 <span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span>
 <a name="l00719"></a>00719 
@@ -653,7 +653,7 @@
 <a name="l00740"></a>00740   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
 <a name="l00741"></a>00741 
 <a name="l00742"></a>00742   <span class="comment">/* Convert */</span>
-<a name="l00743"></a>00743   *_ps32OutValue = strtol(_zString, &amp;pcEnd, _u32Base);
+<a name="l00743"></a>00743   *_ps32OutValue = strtol(_zString, &amp;pcEnd, (<span class="keywordtype">size_t</span>)_u32Base);
 <a name="l00744"></a>00744   
 <a name="l00745"></a>00745   <span class="comment">/* Valid conversion ? */</span>
 <a name="l00746"></a>00746   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
@@ -734,7 +734,7 @@
 <a name="l00834"></a>00834   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
 <a name="l00835"></a>00835 
 <a name="l00836"></a>00836   <span class="comment">/* Convert */</span>
-<a name="l00837"></a>00837   *_pu32OutValue = strtoul(_zString, &amp;pcEnd, _u32Base);
+<a name="l00837"></a>00837   *_pu32OutValue = strtoul(_zString, &amp;pcEnd, (<span class="keywordtype">size_t</span>)_u32Base);
 <a name="l00838"></a>00838   
 <a name="l00839"></a>00839   <span class="comment">/* Valid conversion ? */</span>
 <a name="l00840"></a>00840   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))
@@ -1145,7 +1145,7 @@
 <a name="l01313"></a>01313 
 <a name="l01314"></a>01314   <span class="comment">/* Gets variable arguments &amp; print the string */</span>
 <a name="l01315"></a>01315   va_start(stArgs, _zSrcString);
-<a name="l01316"></a>01316   s32Result = vsnprintf(_zDstString, _u32CharNumber, _zSrcString, stArgs);
+<a name="l01316"></a>01316   s32Result = vsnprintf(_zDstString, (<span class="keywordtype">size_t</span>)_u32CharNumber, _zSrcString, stArgs);
 <a name="l01317"></a>01317   va_end(stArgs);
 <a name="l01318"></a>01318 
 <a name="l01319"></a>01319   <span class="comment">/* Done! */</span>

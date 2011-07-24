@@ -142,19 +142,19 @@
 <a name="l00133"></a>00133   <span class="keyword">struct</span>
 <a name="l00134"></a>00134   {
 <a name="l00135"></a>00135     <span class="comment">/* Array size */</span>
-<a name="l00136"></a>00136     jint  uPointerCount;
+<a name="l00136"></a>00136     jint  iPointerCount;
 <a name="l00137"></a>00137     <span class="comment">/* Contains pointer identifier if additionnal touch is available (it&#39;s the case for Android ACTION_POINTER_UP/DOWN event)   */</span>
 <a name="l00138"></a>00138     <span class="comment">/* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs             */</span>
 <a name="l00139"></a>00139     <span class="comment">/* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs               */</span>
-<a name="l00140"></a>00140     jint  uActionPointer;
-<a name="l00141"></a>00141     <span class="comment">/* Array containing pointer identifier */</span>   
-<a name="l00142"></a>00142     jint  *puIdArray;
+<a name="l00140"></a>00140     jint  iActionPointer;
+<a name="l00141"></a>00141     <span class="comment">/* Array containing pointer identifier */</span>
+<a name="l00142"></a>00142     jint  *aiIdList;
 <a name="l00143"></a>00143     <span class="comment">/* Array containing X coord   */</span>
-<a name="l00144"></a>00144     jfloat  *pfXArray;
+<a name="l00144"></a>00144     jfloat  *afXList;
 <a name="l00145"></a>00145     <span class="comment">/* Array containing Y coord   */</span>
-<a name="l00146"></a>00146     jfloat  *pfYArray;
+<a name="l00146"></a>00146     jfloat  *afYList;
 <a name="l00147"></a>00147     <span class="comment">/* Array containing pressure  */</span>
-<a name="l00148"></a>00148     jfloat  *pfPressureArray;
+<a name="l00148"></a>00148     jfloat  *afPressureList;
 <a name="l00149"></a>00149   } stTouch;
 <a name="l00150"></a>00150 <span class="preprocessor">#endif // __orxANDROID__</span>
 <a name="l00151"></a>00151 <span class="preprocessor"></span>
