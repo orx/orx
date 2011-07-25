@@ -2857,6 +2857,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
     /* Restores previous encryption character */
     sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+
+    /* Closes file */
+    orxFile_Close(pstFile);
   }
   else
   {
