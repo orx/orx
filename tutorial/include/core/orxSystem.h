@@ -51,6 +51,11 @@
 
 #endif /* __orxIPHONE__ && __orxOBJC__ */
 
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+
+  #include <jni.h>
+
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Event enum
  */
@@ -114,12 +119,35 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
   {
-    /* UI event */
+#ifdef __orxANDROID_NATIVE__
+	/* UI event */
     struct
     {
       orxU32    u32ID;
       orxFLOAT  fX, fY, fPressure;
     } stTouch;
+#endif // __orxANDROID_NATIVE__
+
+#ifdef __orxANDROID__
+	/* UI Touch event */
+	struct
+	{
+		/* Array size */
+		jint	iPointerCount;
+		/* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) 	*/
+		/* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs 						*/
+		/* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs 							*/
+		jint	iActionPointer;
+		/* Array containing pointer identifier */
+		jint	*aiIdList;
+		/* Array containing X coord 	*/
+		jfloat	*afXList;
+		/* Array containing Y coord		*/
+		jfloat	*afYList;
+		/* Array containing pressure 	*/
+		jfloat	*afPressureList;
+	} stTouch;
+#endif // __orxANDROID__
 
     /* Accelerate event */
     struct
