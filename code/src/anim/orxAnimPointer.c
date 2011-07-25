@@ -903,7 +903,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
   if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
   {
     /* In range? */
-    if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+    if((orxU32)(orxU64)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
     {
       orxANIM_EVENT_PAYLOAD stPayload;
 
@@ -937,7 +937,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(orxU64)_hAnimHandle);
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -985,7 +985,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
         eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
       }
       /* In range? */
-      else if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+      else if((orxU32)(orxU64)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
       {
         /* Stores ID */
         _pstAnimPointer->hTargetAnim = _hAnimHandle;
@@ -996,7 +996,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(orxU64)(_hAnimHandle));
 
         /* Can't process */
         eResult = orxSTATUS_FAILURE;
