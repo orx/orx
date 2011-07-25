@@ -1528,8 +1528,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
             zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
 
             /* Gets source & destination anim handles */
-            hSrcAnim = (orxHANDLE)(orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
-            hDstAnim = (orxHANDLE)(orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
+            hSrcAnim = (orxHANDLE)((orxU64)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
+            hDstAnim = (orxHANDLE)((orxU64)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
 
             /* Valid? */
             if((hSrcAnim != orxHANDLE_UNDEFINED) && (hDstAnim != orxHANDLE_UNDEFINED))
@@ -2385,7 +2385,7 @@ orxHANDLE orxFASTCALL orxAnimSet_GetAnimHandleFromID(const orxANIMSET *_pstAnimS
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
   {
     /* Gets corresponding handle */
-    hResult = (orxHANDLE)(orxU64)(orxHashTable_Get(_pstAnimSet->pstIDTable, _u32AnimID) - 1);
+    hResult = (orxHANDLE)((orxU64)orxHashTable_Get(_pstAnimSet->pstIDTable, _u32AnimID) - 1);
   }
 
   /* Done! */
