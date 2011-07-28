@@ -41,6 +41,7 @@ void orxFASTCALL orxSoundSystem_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUNDSYSTEM, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_SOUNDSYSTEM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SOUNDSYSTEM, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_SOUNDSYSTEM, orxMODULE_ID_CLOCK);
 
   return;
 }

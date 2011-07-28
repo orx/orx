@@ -73,7 +73,6 @@
 #define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY 44100
 #define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          8192
 #define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE
-#define orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY            orx2F(0.05f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO       orx2F(0.01f)
 
 #ifdef __orxDEBUG__
@@ -761,7 +760,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
         {
           /* Adds streaming timer */
-          if(orxClock_AddGlobalTimer(orxSoundSystem_OpenAL_UpdateStreaming, orxSOUNDSYSTEM_KF_STREAM_TIMER_DELAY, -1, orxNULL) != orxSTATUS_FAILURE)
+          if(orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateStreaming, orxNULL, orxMODULE_ID_SOUNDSYSTEM, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)
           {
             ALfloat afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
 
@@ -864,6 +863,9 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters fill stream callback */
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateStreaming);
+
     /* Deletes banks */
     orxBank_Delete(sstSoundSystem.pstSampleBank);
     orxBank_Delete(sstSoundSystem.pstSoundBank);
@@ -1380,6 +1382,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
     /* Updates status */
     _pstSound->bStop  = orxTRUE;
     _pstSound->bPause = orxFALSE;
+
+    /* Fills stream */
+    orxSoundSystem_OpenAL_FillStream(_pstSound);
   }
 
   /* Done! */
