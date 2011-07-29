@@ -251,11 +251,11 @@ void orxFASTCALL _orxDebug_Break()
 
 	#elif defined(__orxANDROID__)
 
-      //! TODO: Add Android software break code
+      __builtin_trap();
 
     #elif defined(__orxANDROID_NATIVE__)
 
-      //! TODO: Add native Android software break code
+      __builtin_trap();
 
     #else
 
@@ -274,7 +274,9 @@ void orxFASTCALL _orxDebug_Break()
   #endif /* __orxGCC__ */
 
   #ifdef __orxMSVC__
+
     __debugbreak();
+
   #endif /* __orxMSVC__ */
 
 #endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
@@ -380,6 +382,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   /* Debug Log */
   va_start(stArgs, _zFormat);
   vsnprintf(zLog, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), _zFormat, stArgs);
+  zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
   va_end(stArgs);
 
 #ifdef __orxMSVC__
@@ -387,6 +390,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 #else /* __orxMSVC__ */
   pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s\n", zLog);
 #endif /* __orxMSVC__ */
+  pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
 
   /* Use file? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
