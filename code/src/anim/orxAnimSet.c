@@ -46,6 +46,16 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxX86_64__
+
+  #define orxANIMSET_CAST_HELPER   (orxU64)
+
+#else /* __orxX86_64__ */
+
+  #define orxANIMSET_CAST_HELPER
+
+#endif /* __orxX86_64__ */
+
 
 /** Module flags
  */
@@ -1499,7 +1509,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
               u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
 
               /* Adds it to ID table */
-              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *)(u32AnimID + 1));
+              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
             }
           }
         }
@@ -1528,8 +1538,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
             zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
 
             /* Gets source & destination anim IDs */
-            u32SrcAnim = ((orxU32)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
-            u32DstAnim = ((orxU32)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
+            u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
+            u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
 
             /* Valid? */
             if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
@@ -2385,7 +2395,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
   {
     /* Gets corresponding ID */
-    u32Result = ((orxU32)orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_ToCRC(_zAnimName)) - 1);
+    u32Result = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_ToCRC(_zAnimName)) - 1);
   }
 
   /* Done! */
