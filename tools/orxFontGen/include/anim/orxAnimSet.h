@@ -140,16 +140,16 @@ extern orxDLLAPI void orxFASTCALL                   orxAnimSet_DeleteLinkTable(o
 /** Adds an Anim to an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_pstAnim														Anim to add
- * @return Anim handle in the specified AnimSet
+ * @return Anim ID in the specified AnimSet
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim);
 
 /** Removes an Anim from an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hAnimHandle												Handle of the anim to remove
+ * @param[in]		_u32AnimID												  ID of the anim to remove
  * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
 
 /** Removes all Anim from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
@@ -160,62 +160,62 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAllAnims(or
 
 /** Adds a link between two Anims of the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hSrcAnim														Source Anim of the link
- * @param[in]		_hDstAnim														Destination Anim of the link
- * @return 			Handle of the created link / orxHANDLE_UNDEFINED
+ * @param[in]		_u32SrcAnim                         Source Anim of the link
+ * @param[in]		_u32DstAnim                         Destination Anim of the link
+ * @return 			ID of the created link / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim);
 
 /** Removes a link from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hLinkHandle												Handle of the link
+ * @param[in]		_u32LinkID                          ID of the link
  * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle);
+extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxU32 _u32LinkID);
 
 /** Gets a direct link between two Anims, if exists
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hSrcAnim														Handle of the source Anim
- * @param[in]		_hDstAnim														Handle of the destination Anim
- * @return			Handle of the direct link, orxHANDLE_UNDEFINED if none
+ * @param[in]		_u32SrcAnim                         ID of the source Anim
+ * @param[in]		_u32DstAnim                         ID of the destination Anim
+ * @return			ID of the direct link, orxU32_UNDEFINED if none
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(const orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLink(const orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim);
 
 /** Sets a link property
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hLinkHandle												Handle of the concerned link
+ * @param[in]		_u32LinkID												  ID of the concerned link
  * @param[in]		_u32Property												ID of the property to set
  * @param[in]		_u32Value                           Value of the property to set
  * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value);
+extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxU32 _u32LinkID, orxU32 _u32Property, orxU32 _u32Value);
 
 /** Gets a link property
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hLinkHandle 												Handle of the concerned link
+ * @param[in]		_u32LinkID 												  ID of the concerned link
  * @param[in]		_u32Property												ID of the property to get
  * @return			Property value / orx32_Undefined
  */
-extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orxU32 _u32LinkID, orxU32 _u32Property);
 
-/** Computes active Anim given current and destination Anim handles & a relative timestamp
+/** Computes active Anim given current and destination Anim IDs & a relative timestamp
  * @param[in]   _pstAnimSet                         Concerned AnimSet
- * @param[in]   _hSrcAnim                           Source (current) Anim handle
- * @param[in]   _hDstAnim                           Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
+ * @param[in]   _u32SrcAnim                         Source (current) Anim ID
+ * @param[in]   _u32DstAnim                         Destination Anim ID, if none (auto mode) set it to orxU32_UNDEFINED
  * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
  * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
  * @param[out] _pbCut                               Animation has been cut
  * @param[out] _pbClearTarget                       Animation has requested a target clearing
- * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
+ * @return Current Anim ID. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget);
 
 /** AnimSet Anim get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_hAnimHandle												Anim handle
+ * @param[in]		_u32AnimID												  Anim ID
  * @return Anim pointer / orxNULL
  */
-extern orxDLLAPI orxANIM *orxFASTCALL               orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxANIM *orxFASTCALL               orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
 
 /** AnimSet Anim storage size get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
@@ -229,12 +229,12 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSiz
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(const orxANIMSET *_pstAnimSet);
 
-/** Gets animation handle from ID
+/** Gets animation ID from name
  * @param[in]   _pstAnimSet                         Concerned AnimSet
- * @param[in]   _u32AnimID                          Animation ID (config's animation name CRC)
- * @return Anim handle / orxHANDLE_UNDEFINED
+ * @param[in]   _zAnimName                          Animation name (config's section)
+ * @return Anim ID / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetAnimHandleFromID(const orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, const orxSTRING _zAnimName);
 
 #endif /* _orxANIMSET_H_ */
 

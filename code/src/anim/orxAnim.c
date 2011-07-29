@@ -1216,25 +1216,6 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
   return fLength;
 }
 
-/** Anim ID get accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim ID / orxU32_UNDEFINED
- */
-orxU32 orxFASTCALL orxAnim_GetID(const orxANIM *_pstAnim)
-{
-  orxU32 u32Result;
-
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnim);
-
-  /* Updates result */
-  u32Result = orxString_ToCRC(_pstAnim->zName);
-
-  /* Done! */
-  return u32Result;
-}
-
 /** Anim name get accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      orxSTRING / orxSTRING_EMPTY

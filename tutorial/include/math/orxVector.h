@@ -848,7 +848,7 @@ static orxINLINE orxVECTOR *                orxVector_Cross(orxVECTOR *_pvRes, c
  * @param[in]   _pvPoint3                   Third control point for this curve segment
  * @param[in]   _pvPoint4                   Fourth control point for this curve segment
  * @param[in]   _fT                         Interpolation parameter in [0.0, 1.0]
- * @return      Interpolated point on the Catmull-Rom cureve segment
+ * @return      Interpolated point on the Catmull-Rom curve segment
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_CatmullRom(orxVECTOR *_pvRes, const orxVECTOR *_pvPoint1, const orxVECTOR *_pvPoint2, const orxVECTOR *_pvPoint3, const orxVECTOR *_pvPoint4, orxFLOAT _fT);
 

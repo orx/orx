@@ -87,8 +87,8 @@ struct __orxANIMPOINTER_t
   orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 16 */
   orxANIMSET             *pstAnimSet;                 /**< Referenced AnimationSet : 20 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
-  orxHANDLE               hCurrentAnim;               /**< Current animation ID : 28 */
-  orxHANDLE               hTargetAnim;                /**< Target animation ID : 32 */
+  orxU32                  u32CurrentAnim;             /**< Current animation ID : 28 */
+  orxU32                  u32TargetAnim;              /**< Target animation ID : 32 */
   orxFLOAT                fCurrentAnimTime;           /**< Current Time (Relative to current animation) : 26 */
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
@@ -198,7 +198,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
       orxBOOL   bCut, bClearTarget;
-      orxHANDLE hNewAnim;
+      orxU32    u32NewAnim;
       orxFLOAT  fTimeBackup, fEventStartTime;
 
       /* Gets event start time */
@@ -212,16 +212,16 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       fTimeBackup = _pstAnimPointer->fCurrentAnimTime;
 
       /* Computes & updates anim*/
-      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hTargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable, &bCut, &bClearTarget);
+      u32NewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim, _pstAnimPointer->u32TargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable, &bCut, &bClearTarget);
 
       /* Change happened? */
-      if(hNewAnim != _pstAnimPointer->hCurrentAnim)
+      if(u32NewAnim != _pstAnimPointer->u32CurrentAnim)
       {
         orxANIM_EVENT_PAYLOAD stPayload;
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-        stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+        stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
         /* Not cut? */
@@ -240,17 +240,17 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           }
         }
 
-        /* Updates current anim handle */
-        _pstAnimPointer->hCurrentAnim = hNewAnim;
+        /* Updates current anim ID */
+        _pstAnimPointer->u32CurrentAnim = u32NewAnim;
 
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_ANIM, (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
 
         /* No next anim? */
-        if(hNewAnim == orxHANDLE_UNDEFINED)
+        if(u32NewAnim == orxU32_UNDEFINED)
         {
           /* Cleans target anim */
-          _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+          _pstAnimPointer->u32TargetAnim = orxU32_UNDEFINED;
 
           /* Updates flags */
           orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM);
@@ -258,7 +258,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         else
         {
           /* Inits event payload */
-          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
           /* Sends event */
@@ -269,7 +269,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         if(bClearTarget != orxFALSE)
         {
           /* Removes it */
-          _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+          _pstAnimPointer->u32TargetAnim = orxU32_UNDEFINED;
         }
 
         /* Updates event start time */
@@ -285,7 +285,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
 
           /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
           /* Gets anim length */
@@ -305,7 +305,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           if(bClearTarget != orxFALSE)
           {
             /* Removes it */
-            _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+            _pstAnimPointer->u32TargetAnim = orxU32_UNDEFINED;
           }
 
           /* Updates event start time */
@@ -319,7 +319,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         orxANIM *pstAnim;
 
         /* Gets current anim */
-        pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+        pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
 
         /* Updates current anim */
         eResult = orxAnim_Update(pstAnim, _pstAnimPointer->fCurrentAnimTime, &(_pstAnimPointer->u32CurrentKey));
@@ -481,11 +481,11 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner,
     orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_MASK_FLAGS);
 
     /* Inits value */
-    pstAnimPointer->hCurrentAnim      = (orxHANDLE)0;
+    pstAnimPointer->u32CurrentAnim    = 0;
     pstAnimPointer->fCurrentAnimTime  = orxFLOAT_0;
     pstAnimPointer->fFrequency        = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
     pstAnimPointer->fTime             = orxFLOAT_0;
-    pstAnimPointer->hTargetAnim       = orxHANDLE_UNDEFINED;
+    pstAnimPointer->u32TargetAnim     = orxU32_UNDEFINED;
 
     /* Stores owner */
     pstAnimPointer->pstOwner          = _pstOwner;
@@ -682,11 +682,11 @@ orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(const orxANIMPOINTER *_pstAnim
 
 /** AnimPointer current Animation get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      Current Animation handle
+ * @return      Current Animation ID
  */
-orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(const orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer)
 {
-  orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
+  orxU32 u32Anim = orxU32_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
@@ -696,87 +696,49 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(const orxANIMPOINTER *
   if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
   && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
   {
-    hAnimHandle = _pstAnimPointer->hCurrentAnim;
+    u32Anim = _pstAnimPointer->u32CurrentAnim;
   }
 
   /* Done! */
-  return hAnimHandle;
+  return u32Anim;
 }
 
 
 /** AnimPointer target Animation get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      Target Animation handle
- */
-orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(const orxANIMPOINTER *_pstAnimPointer)
-{
-  orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnimPointer);
-
-  /* Has anim? */
-  if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
-  && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
-  {
-    hAnimHandle = _pstAnimPointer->hTargetAnim;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
-  }
-
-  /* Done! */
-  return hAnimHandle;
-}
-
-/** AnimPointer current Animation ID get accessor
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      Current Animation ID
- */
-orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer)
-{
-  orxU32 u32AnimID = orxU32_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnimPointer);
-
-  /* Has anim? */
-  if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
-  && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
-  {
-    orxANIM *pstAnim;
-
-    /* Gets it */
-    pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
-
-    /* Valid? */
-    if(pstAnim != orxNULL)
-    {
-      /* Updates result */
-      u32AnimID = orxAnim_GetID(pstAnim);
-    }
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
-  }
-
-  /* Done! */
-  return u32AnimID;
-}
-
-/** AnimPointer target Animation ID get accessor
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
-orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetTargetAnimID(const orxANIMPOINTER *_pstAnimPointer)
 {
-  orxU32 u32AnimID = orxU32_UNDEFINED;
+  orxU32 u32Anim = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Has anim? */
+  if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
+  && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
+  {
+    u32Anim = _pstAnimPointer->u32TargetAnim;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
+  }
+
+  /* Done! */
+  return u32Anim;
+}
+
+/** AnimPointer current Animation name get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Current Animation name
+ */
+const orxSTRING orxFASTCALL orxAnimPointer_GetCurrentAnimName(const orxANIMPOINTER *_pstAnimPointer)
+{
+  const orxSTRING zAnimName = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
@@ -789,13 +751,13 @@ orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPo
     orxANIM *pstAnim;
 
     /* Gets it */
-    pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hTargetAnim);
+    pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
 
     /* Valid? */
     if(pstAnim != orxNULL)
     {
       /* Updates result */
-      u32AnimID = orxAnim_GetID(pstAnim);
+      zAnimName = orxAnim_GetName(pstAnim);
     }
   }
   else
@@ -805,7 +767,45 @@ orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPo
   }
 
   /* Done! */
-  return u32AnimID;
+  return zAnimName;
+}
+
+/** AnimPointer target Animation name get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Target Animation name / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxAnimPointer_GetTargetAnimName(const orxANIMPOINTER *_pstAnimPointer)
+{
+  const orxSTRING zAnimName = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Has anim? */
+  if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
+  && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
+  {
+    orxANIM *pstAnim;
+
+    /* Gets it */
+    pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32TargetAnim);
+
+    /* Valid? */
+    if(pstAnim != orxNULL)
+    {
+      /* Updates result */
+      zAnimName = orxAnim_GetName(pstAnim);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
+  }
+
+  /* Done! */
+  return zAnimName;
 }
 
 /** AnimPointer current anim data get accessor
@@ -814,23 +814,23 @@ orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPo
  */
 orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER *_pstAnimPointer)
 {
-  orxHANDLE     hAnimHandle;
+  orxU32        u32AnimID;
   orxSTRUCTURE *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
-  /* Gets current anim handle */
-  hAnimHandle = orxAnimPointer_GetCurrentAnimHandle(_pstAnimPointer);
+  /* Gets current anim ID */
+  u32AnimID = orxAnimPointer_GetCurrentAnim(_pstAnimPointer);
 
   /* Valid? */
-  if(hAnimHandle != orxHANDLE_UNDEFINED)
+  if(u32AnimID != orxU32_UNDEFINED)
   {
     orxANIM *pstAnim;
 
     /* Gets anim */
-    pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(_pstAnimPointer), hAnimHandle);
+    pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(_pstAnimPointer), u32AnimID);
 
     /* Valid? */
     if(pstAnim != orxNULL)
@@ -888,10 +888,10 @@ orxFLOAT orxFASTCALL orxAnimPointer_GetFrequency(const orxANIMPOINTER *_pstAnimP
 
 /** AnimPointer current Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _hAnimHandle                  Animation handle to set
+ * @param[in]   _u32AnimID                    Animation ID to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
+orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -903,26 +903,26 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
   if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
   {
     /* In range? */
-    if((orxU32)(orxU64)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+    if(_u32AnimID < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
     {
       orxANIM_EVENT_PAYLOAD stPayload;
 
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-      stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+      stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
       stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
       /* Stores ID */
-      _pstAnimPointer->hCurrentAnim = _hAnimHandle;
+      _pstAnimPointer->u32CurrentAnim = _u32AnimID;
 
       /* Clears target anim */
-      _pstAnimPointer->hTargetAnim  = orxHANDLE_UNDEFINED;
+      _pstAnimPointer->u32TargetAnim  = orxU32_UNDEFINED;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUT, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
 
       /* Inits event payload */
-      stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+      stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
       stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
       /* Sends event */
@@ -937,7 +937,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(orxU64)_hAnimHandle);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid ID for the anim pointer.", _u32AnimID);
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -958,10 +958,10 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
 
 /** AnimPointer target Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _hAnimHandle                  Animation handle to set / orxHANDLE_UNDEFINED
+ * @param[in]   _u32AnimID                    Animation ID to set / orxU32_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
+orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -973,22 +973,22 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
   if(orxStructure_TestAllFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
   {
     /* New value? */
-    if(_pstAnimPointer->hTargetAnim != _hAnimHandle)
+    if(_pstAnimPointer->u32TargetAnim != _u32AnimID)
     {
       /* Removes target anim? */
-      if(_hAnimHandle == orxHANDLE_UNDEFINED)
+      if(_u32AnimID == orxU32_UNDEFINED)
       {
         /* Removes it */
-        _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+        _pstAnimPointer->u32TargetAnim = orxU32_UNDEFINED;
 
         /* Computes animpointer */
         eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
       }
       /* In range? */
-      else if((orxU32)(orxU64)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+      else if(_u32AnimID < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
       {
         /* Stores ID */
-        _pstAnimPointer->hTargetAnim = _hAnimHandle;
+        _pstAnimPointer->u32TargetAnim = _u32AnimID;
 
         /* Computes animpointer */
         eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
@@ -996,7 +996,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(orxU64)(_hAnimHandle));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid ID for the anim pointer.", _u32AnimID);
 
         /* Can't process */
         eResult = orxSTATUS_FAILURE;
@@ -1006,7 +1006,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
   else
   {
     /* Clears it */
-    _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+    _pstAnimPointer->u32TargetAnim = orxU32_UNDEFINED;
 
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
@@ -1019,53 +1019,53 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
   return eResult;
 }
 
-/** AnimPointer current Animation set accessor using ID
+/** AnimPointer current Animation set accessor using name
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @param[in]   _zAnimName                    Animation name (config's name) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimFromName(orxANIMPOINTER *_pstAnimPointer, const orxSTRING _zAnimName)
 {
-  orxHANDLE hAnimHandle;
+  orxU32    u32AnimID;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
-  /* Gets corresponding anim handle */
-  hAnimHandle = orxAnimSet_GetAnimHandleFromID(_pstAnimPointer->pstAnimSet, _u32AnimID);
+  /* Gets corresponding anim ID */
+  u32AnimID = ((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY)) ? orxAnimSet_GetAnimIDFromName(_pstAnimPointer->pstAnimSet, _zAnimName) : orxU32_UNDEFINED;
 
   /* Valid? */
-  if(hAnimHandle != orxHANDLE_UNDEFINED)
+  if(u32AnimID != orxU32_UNDEFINED)
   {
     /* Sets current anim */
-    eResult = orxAnimPointer_SetCurrentAnimHandle(_pstAnimPointer, hAnimHandle);
+    eResult = orxAnimPointer_SetCurrentAnim(_pstAnimPointer, u32AnimID);
   }
 
   /* Done! */
   return eResult;
 }
 
-/** AnimPointer target Animation set accessor using ID
+/** AnimPointer target Animation set accessor using name
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set / orxU32_UNDEFINED
+ * @param[in]   _zAnimName                    Animation name (config's name) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimFromName(orxANIMPOINTER *_pstAnimPointer, const orxSTRING _zAnimName)
 {
-  orxHANDLE hAnimHandle;
+  orxU32    u32AnimID;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
-  /* Gets corresponding anim handle */
-  hAnimHandle = (_u32AnimID != orxU32_UNDEFINED) ? orxAnimSet_GetAnimHandleFromID(_pstAnimPointer->pstAnimSet, _u32AnimID) : orxHANDLE_UNDEFINED;
+  /* Gets corresponding anim ID */
+  u32AnimID = ((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY)) ? orxAnimSet_GetAnimIDFromName(_pstAnimPointer->pstAnimSet, _zAnimName) : orxU32_UNDEFINED;
 
   /* Sets target anim */
-  eResult = orxAnimPointer_SetTargetAnimHandle(_pstAnimPointer, hAnimHandle);
+  eResult = orxAnimPointer_SetTargetAnim(_pstAnimPointer, u32AnimID);
 
   /* Done! */
   return eResult;

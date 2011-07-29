@@ -2456,7 +2456,7 @@ orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const o
   if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
-    bResult = (orxAnimPointer_GetCurrentAnim(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
+    bResult = (orxString_Compare(orxAnimPointer_GetCurrentAnimName(pstAnimPointer), _zAnimName)) ? orxFALSE : orxTRUE;
   }
   else
   {
@@ -2490,7 +2490,7 @@ orxBOOL orxFASTCALL orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const or
   if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
-    bResult = (orxAnimPointer_GetTargetAnim(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
+    bResult = (orxString_Compare(orxAnimPointer_GetTargetAnimName(pstAnimPointer), _zAnimName)) ? orxFALSE : orxTRUE;
   }
   else
   {
@@ -2522,17 +2522,8 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, const orxS
   /* Valid? */
   if(pstAnimPointer != orxNULL)
   {
-    /* Is string null or empty? */
-    if((_zAnimName == orxNULL) || (_zAnimName == orxSTRING_EMPTY))
-    {
-      /* Resets current animation */
-      eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxU32_UNDEFINED);
-    }
-    else
-    {
-      /* Sets current animation */
-      eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxString_ToCRC(_zAnimName));
-    }
+    /* Sets current animation */
+    eResult = orxAnimPointer_SetCurrentAnimFromName(pstAnimPointer, _zAnimName);
   }
   else
   {
@@ -2564,17 +2555,8 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxST
   /* Valid? */
   if(pstAnimPointer != orxNULL)
   {
-    /* Is string null or empty? */
-    if((_zAnimName == orxNULL) || (_zAnimName == orxSTRING_EMPTY))
-    {
-      /* Resets target animation */
-      eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxU32_UNDEFINED);
-    }
-    else
-    {
-      /* Sets target animation */
-      eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxString_ToCRC(_zAnimName));
-    }
+    /* Sets target animation */
+    eResult = orxAnimPointer_SetTargetAnimFromName(pstAnimPointer, _zAnimName);
   }
   else
   {

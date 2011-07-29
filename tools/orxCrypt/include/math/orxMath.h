@@ -255,6 +255,48 @@ static orxINLINE orxU32 orxMath_GetNextPowerOfTwo(orxU32 _u32Value)
   return u32Result;
 }
 
+/** Gets smooth stepped value between two extrema
+ * @param[in]   _fMin                           Minimum value
+ * @param[in]   _fMax                           Maximum value
+ * @param[in]   _fValue                         Value to process
+ * @return      0.0 if _fValue <= _fMin, 1.0 if _fValue >= _fMax, smoothed value between 0.0 & 1.0 otherwise
+ */
+static orxINLINE orxFLOAT orxMath_SmoothStep(orxFLOAT _fMin, orxFLOAT _fMax, orxFLOAT _fValue)
+{
+  orxFLOAT fTemp, fResult;
+
+  /* Gets normalized and clamped value */
+  fTemp = (_fValue - _fMin) / (_fMax - _fMin);
+  fTemp = orxCLAMP(fTemp, orxFLOAT_0, orxFLOAT_1);
+
+  /* Gets smoothed result */
+  fResult = fTemp * fTemp * (orx2F(3.0f) - (orx2F(2.0f) * fTemp));
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets smoother stepped value between two extrema
+ * @param[in]   _fMin                           Minimum value
+ * @param[in]   _fMax                           Maximum value
+ * @param[in]   _fValue                         Value to process
+ * @return      0.0 if _fValue <= _fMin, 1.0 if _fValue >= _fMax, smooth(er)ed value between 0.0 & 1.0 otherwise
+ */
+static orxINLINE orxFLOAT orxMath_SmootherStep(orxFLOAT _fMin, orxFLOAT _fMax, orxFLOAT _fValue)
+{
+  orxFLOAT fTemp, fResult;
+
+  /* Gets normalized and clamped value */
+  fTemp = (_fValue - _fMin) / (_fMax - _fMin);
+  fTemp = orxCLAMP(fTemp, orxFLOAT_0, orxFLOAT_1);
+
+  /* Gets smoothed result */
+  fResult = fTemp * fTemp * fTemp * (fTemp * ((fTemp * orx2F(6.0f)) - orx2F(15.0f)) + orx2F(10.0f));
+
+  /* Done! */
+  return fResult;
+}
+
 
 /*** Math Definitions ***/
 

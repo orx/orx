@@ -191,12 +191,12 @@ typedef enum __orxDISPLAY_EVENT_t
 {
   orxDISPLAY_EVENT_SET_VIDEO_MODE = 0,
 
-#ifdef __orxANDROID_NATIVE__
+#if defined(__orxANDROID_NATIVE__) || defined (__orxANDROID__)
 
   orxDISPLAY_EVENT_SAVE_CONTEXT,
   orxDISPLAY_EVENT_RESTORE_CONTEXT,
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   orxDISPLAY_EVENT_NUMBER,
 
@@ -236,12 +236,13 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 @private
   EAGLContext  *poMainContext, *poThreadContext;
   GLuint        uiRenderBuffer, uiFrameBuffer, uiDepthBuffer;
-  BOOL          bShaderSupport;
+  BOOL          bShaderSupport, bCompressedTextureSupport;
 }
 
 @property (nonatomic, retain) EAGLContext  *poMainContext;
 @property (nonatomic, retain) EAGLContext  *poThreadContext;
 @property                     BOOL          bShaderSupport;
+@property                     BOOL          bCompressedTextureSupport;
 
 @end
 

@@ -140,17 +140,65 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Init();
 extern orxDLLAPI void orxFASTCALL             orxSound_Exit();
 
 
+/** Creates an empty sound
+ * @return      Created orxSOUND / orxNULL
+ */
+extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_Create();
+
 /** Creates sound from config
  * @param[in]   _zConfigID    Config ID
  * @ return orxSOUND / orxNULL
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const orxSTRING _zConfigID);
 
+/** Creates a sound with an empty stream (ie. you'll need to provide actual sound data for each packet sent to the sound card using the event system)
+ * @param[in] _u32ChannelNumber Number of channels of the stream
+ * @param[in] _u32SampleRate    Sampling rate of the stream (ie. number of frames per second)
+ * @param[in] _zName            Name to associate with this sound
+ * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ */
+extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zName);
+
 /** Deletes sound
  * @param[in] _pstSound       Concerned Sound
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Delete(orxSOUND *_pstSound);
+
+
+/** Creates a sample
+ * @param[in] _u32ChannelNumber Number of channels of the sample
+ * @param[in] _u32FrameNumber   Number of frame of the sample (number of "samples" = number of frames * number of channels)
+ * @param[in] _u32SampleRate    Sampling rate of the sample (ie. number of frames per second)
+ * @param[in] _zName            Name to associate with the sample
+ * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ */
+extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate, const orxSTRING _zName);
+
+/** Gets a sample
+ * @param[in] _zName            Sample's name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_GetSample(const orxSTRING _zName);
+
+/** Deletes a sample
+ * @param[in] _zName            Sample's name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_DeleteSample(const orxSTRING _zName);
+
+/** Links a sample
+ * @param[in]   _pstSound     Concerned sound
+ * @param[in]   _zSampleName  Name of the sample to link (must already be loaded/created)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _zSampleName);
+
+/** Unlinks (and deletes if not used anymore) a sample
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_UnlinkSample(orxSOUND *_pstSound);
 
 
 /** Is a stream (ie. music)?
@@ -186,17 +234,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Stop(orxSOUND *_pstSound)
  * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSound_StartRecording(const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_StartRecording(const orxCHAR *_zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber);
 
 /** Stops recording
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSound_StopRecording();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_StopRecording();
 
 /** Is recording possible on the current system?
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL                  orxSound_HasRecordingSupport();
+extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_HasRecordingSupport();
 
 
 /** Sets sound volume

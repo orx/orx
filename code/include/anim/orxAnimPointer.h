@@ -107,27 +107,27 @@ extern orxDLLAPI orxANIMSET *orxFASTCALL      orxAnimPointer_GetAnimSet(const or
 
 /** AnimPointer current Animation get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      Current Animation handle
- */
-extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnimHandle(const orxANIMPOINTER *_pstAnimPointer);
-
-/** AnimPointer target Animation get accessor
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      Target Animation handle
- */
-extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetTargetAnimHandle(const orxANIMPOINTER *_pstAnimPointer);
-
-/** AnimPointer current Animation ID get accessor
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation ID
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer);
 
-/** AnimPointer target Animation ID get accessor
+/** AnimPointer target Animation get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer);
+
+/** AnimPointer current Animation name get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Current Animation name / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxAnimPointer_GetCurrentAnimName(const orxANIMPOINTER *_pstAnimPointer);
+
+/** AnimPointer target Animation ID get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Target Animation name / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxAnimPointer_GetTargetAnimName(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current anim data get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
@@ -149,31 +149,31 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetFrequency(const 
 
 /** AnimPointer current Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _hAnimHandle                  Animation handle to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle);
-
-/** AnimPointer target Animation set accessor
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _hAnimHandle                  Animation handle to set / orxHANDLE_UNDEFINED
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle);
-
-/** AnimPointer current Animation set accessor using ID
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @param[in]   _u32AnimID                    Animation ID to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
 
-/** AnimPointer target Animation set accessor using ID
+/** AnimPointer target Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set / orxU32_UNDEFINED
+ * @param[in]   _u32AnimID                    Animation ID to set / orxU32_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
+
+/** AnimPointer current Animation set accessor using name
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _zAnimName                    Animation name (config's name) to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnimFromName(orxANIMPOINTER *_pstAnimPointer, const orxSTRING _zAnimName);
+
+/** AnimPointer target Animation set accessor using name
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _zAnimName                    Animation name (config's name) to set / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnimFromName(orxANIMPOINTER *_pstAnimPointer, const orxSTRING _zAnimName);
 
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

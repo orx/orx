@@ -140,6 +140,11 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_ResetAllMaxima();
  */
 extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetResetTime();
 
+/** Gets the maximum reset time
+ * @return Max reset time, in seconds
+ */
+extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMaxResetTime();
+
 
 /** Gets the number of registered markers
  * @return Number of registered markers
