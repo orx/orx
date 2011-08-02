@@ -51,9 +51,9 @@
 /** Misc defines
  */
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE                   32
-#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER        4
+#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER        16
 #define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_FREQUENCY 44100
-#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          8192
+#define orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE          1024
 #define orxSOUNDSYSTEM_KU32_RECORDING_BUFFER_SIZE       orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO       orx2F(0.01f)
 
@@ -109,6 +109,7 @@ struct __orxSOUNDSYSTEM_SOUND_t
       orxBOOL                     bStop;
       orxBOOL                     bPause;
       const orxSTRING             zReference;
+      orxS32                      s32PacketID;
       ALuint                      auiBufferList[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
       ExtAudioFileRef             oFileRef;
       AudioStreamBasicDescription stFileInfo;
@@ -363,6 +364,7 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
         stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stFileInfo.mChannelsPerFrame;
         stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
         stPayload.stStream.stPacket.bDiscard        = orxFALSE;
+        stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
 
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxNULL, orxNULL, &stPayload);
@@ -454,19 +456,25 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
     /* Stopped? */
     if((iState == AL_STOPPED) || (iState == AL_INITIAL))
     {
-      ALint iQueuedBufferNumber = 0;
+      ALint iQueuedBufferNumber = 0, iProcessedBufferNumber;
 
-      /* Gets queued buffer number */
+      /* Gets queued & processed buffer numbers */
       alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iQueuedBufferNumber);
+      alASSERT();
+      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iProcessedBufferNumber);
       alASSERT();
 
       /* Checks */
+      orxASSERT(iProcessedBufferNumber <= iQueuedBufferNumber);
       orxASSERT(iQueuedBufferNumber <= orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER);
 
       /* Found any? */
       if(iQueuedBufferNumber > 0)
       {
         ALuint auiDummy[orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER];
+
+        /* Updates sound packet ID */
+        _pstSound->s32PacketID -= (orxS32)(iQueuedBufferNumber - iProcessedBufferNumber);
 
         /* Unqueues them */
         alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iQueuedBufferNumber, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_NUMBER), auiDummy);
@@ -1146,6 +1154,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStream(orxU32 _u32
       pstResult->bStop      = orxTRUE;
       pstResult->bPause     = orxFALSE;
       pstResult->zReference = _zReference;
+      pstResult->s32PacketID= 0;
 
       /* Adds it to the list */
       orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstResult->stNode));
@@ -1199,6 +1208,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iPhone_CreateStreamFromFile(con
       pstResult->bStop      = orxTRUE;
       pstResult->bPause     = orxFALSE;
       pstResult->zReference = _zReference;
+      pstResult->s32PacketID= 0;
 
       /* Adds it to the list */
       orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstResult->stNode));

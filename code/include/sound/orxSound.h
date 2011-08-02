@@ -103,6 +103,7 @@ typedef struct __orxSOUND_STREAM_PACKET_t
   orxS16   *as16SampleList;                   /**< List of samples for this packet : 8 */
   orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
   orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
+  orxS32    s32ID;                            /**< Packet's ID : 20 */
 
 } orxSOUND_STREAM_PACKET;
 
@@ -118,10 +119,10 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
 
     struct
     {
-      orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 16 */
-      orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 24 */
+      orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 12 */
+      orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 32 */
     } stStream;
-  };                                          /**< Stream : 24 */
+  };                                          /**< Stream : 32 */
 
 } orxSOUND_EVENT_PAYLOAD;
 
