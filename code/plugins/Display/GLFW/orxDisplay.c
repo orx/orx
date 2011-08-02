@@ -1094,12 +1094,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
 
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
-    glASSERT();
-
     /* Updates texture */
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, iTexture);
     glASSERT();
 
     /* Frees buffer */
