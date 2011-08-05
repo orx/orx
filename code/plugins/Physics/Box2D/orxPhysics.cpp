@@ -43,6 +43,16 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxX86_64__
+
+  #define orxPHYSICS_CAST_HELPER   (orxS64)
+
+#else /* __orxX86_64__ */
+
+  #define orxPHYSICS_CAST_HELPER
+
+#endif /* __orxX86_64__ */
+
 
 /** Module flags
  */
@@ -347,12 +357,12 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
       {
         /* Updates world simulation */
-        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, (orxS32)(orxS64)_pContext, (orxS32)(orxS64)_pContext);
+        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, (orxS32) orxPHYSICS_CAST_HELPER _pContext, (orxS32)(orxS64)_pContext);
       }
     }
 
     /* Updates last step of world simulation */
-    sstPhysics.poWorld->Step(fDT, (orxS32)(orxS64)_pContext, (orxS32)(orxS64)_pContext);
+    sstPhysics.poWorld->Step(fDT, (orxS32)(orxS64)_pContext, (orxS32) orxPHYSICS_CAST_HELPER _pContext);
 
     /* For all physical bodies */
     for(poBody = sstPhysics.poWorld->GetBodyList();
