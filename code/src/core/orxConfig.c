@@ -178,8 +178,6 @@ typedef struct __orxCONFIG_ENTRY_t
 
   orxCONFIG_VALUE   stValue;                /**< Entry value : 56 */
 
-  orxPAD(56)
-
 } orxCONFIG_ENTRY;
 
 /** Config section structure
@@ -193,8 +191,6 @@ typedef struct __orxCONFIG_SECTION_t
   orxSTRING         zName;                  /**< Section name : 28 */
   orxBANK          *pstEntryBank;           /**< Entry bank : 32 */
   orxLINKLIST       stEntryList;            /**< Entry list : 44 */
-
-  orxPAD(44)
 
 } orxCONFIG_SECTION;
 

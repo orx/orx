@@ -141,8 +141,6 @@ typedef struct __orxLINK_UPDATE_INFO_t
   orxU8                  *au8LinkInfo;                /**< Link update info : 8 */
   orxU32                  u32ByteNumber;              /**< Byte number per animation : 12 */
 
-  orxPAD(12)
-
 } orxLINK_UPDATE_INFO;
 
 /** Internal Animation Set Link table structure

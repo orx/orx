@@ -166,9 +166,6 @@ typedef struct __orxPLUGIN_INFO_t
   orxHASHTABLE   *pstFunctionTable;                         /**< Function hash table : 16 */
   const orxSTRING zPluginName;                              /**< Plugin name : 20 */
 
-  /* Padding */
-  orxPAD(20)
-
 } orxPLUGIN_INFO;
 
 /** Core info structure
@@ -186,9 +183,6 @@ typedef struct __orxPLUGIN_CORE_INFO_t
 
   /* Core info status : 16 */
   orxU32                            u32Flags;
-
-  /* Pad */
-  orxPAD(16)
 
 } orxPLUGIN_CORE_INFO;
 

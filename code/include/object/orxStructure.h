@@ -156,9 +156,9 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
 typedef struct __orxSTRUCTURE_t
 {
   orxSTRUCTURE_ID eID;            /**< Structure ID : 4 */
-  orxU32          s32RefCounter;  /**< Reference counter : 8 */
-  orxU32          u32Flags;       /**< Flags : 12 */
-  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 16 */
+  orxU32          u32Flags;       /**< Flags : 8 */
+  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12 */
+  orxU32          s32RefCounter;  /**< Reference counter : 16 */
 
 } orxSTRUCTURE;
 

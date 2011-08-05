@@ -97,8 +97,6 @@ typedef struct __orxINPUT_BINDING_t
   orxENUM         eID;                                            /**< Input ID : 8 */
   orxFLOAT        fValue;                                         /**< Value : 12 */
 
-  orxPAD(12)
-
 } orxINPUT_BINDING;
 
 /** Input entry structure
@@ -112,8 +110,6 @@ typedef struct __orxINPUT_ENTRY_t
   orxFLOAT          fExternalValue;                               /**< External value : 28 */
 
   orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 92 */
-
-  orxPAD(92)
 
 } orxINPUT_ENTRY;
 
