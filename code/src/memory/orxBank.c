@@ -36,8 +36,28 @@
 #include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
+
 #define orxBANK_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxBANK_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
+
+
+#ifdef __orxBANK_ALIGN__
+
+  #if defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+
+    #define orxBANK_KU32_CACHE_LINE_SIZE        32
+
+  #else /* __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+
+    #define orxBANK_KU32_CACHE_LINE_SIZE        64
+
+  #endif /* __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+
+#else /* __orxBANK_ALIGN__ */
+
+  #define orxBANK_KU32_CACHE_LINE_SIZE          8
+
+#endif /* __orxBANK_ALIGN__ */
 
 
 /***************************************************************************
@@ -93,7 +113,7 @@ static orxBANK_STATIC sstBank;
 static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
 {
   orxBANK_SEGMENT *pstSegment;  /* Pointer on the segment of memory */
-  orxU32 u32SegmentSize;        /* Size of segment allocation */
+  orxU32 u32BaseSegmentSize;    /* Base size of segment allocation */
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxBank_CreateSegment");
@@ -104,20 +124,19 @@ static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
 
-  /* Compute the segment size */
-  u32SegmentSize = sizeof(orxBANK_SEGMENT) +                                /* Size of the structure */
-                   _pstBank->u16SizeSegmentBitField * sizeof(orxU32) +      /* Size of bitfields */
-                   _pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize;  /* Size of stored Data */
+  /* Compute the base aligned segment size */
+  u32BaseSegmentSize = sizeof(orxBANK_SEGMENT) + _pstBank->u16SizeSegmentBitField * sizeof(orxU32);
+  u32BaseSegmentSize = orxALIGN(u32BaseSegmentSize, orxBANK_KU32_CACHE_LINE_SIZE);
 
-  /* Allocate a new segent of memory */
-  pstSegment = (orxBANK_SEGMENT *)orxMemory_Allocate(u32SegmentSize, _pstBank->eMemType);
+  /* Allocates a new segment of memory */
+  pstSegment = (orxBANK_SEGMENT *)orxMemory_Allocate(u32BaseSegmentSize + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize), _pstBank->eMemType);
   if(pstSegment != orxNULL)
   {
     /* Set initial segment values */
-    orxMemory_Zero(pstSegment, u32SegmentSize);
+    orxMemory_Zero(pstSegment, u32BaseSegmentSize + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize));
     pstSegment->pstNext               = orxNULL;
     pstSegment->u32NbFree             = _pstBank->u16NbCellPerSegments;
-    pstSegment->pSegmentData          = (void *)(((orxU8 *)pstSegment->au32CellAllocationMap) + (_pstBank->u16SizeSegmentBitField * sizeof(orxU32)));
+    pstSegment->pSegmentData          = (void *)(((orxU8 *)pstSegment) + u32BaseSegmentSize);
   }
 
   /* Profiles */
@@ -252,7 +271,11 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
     /* Set initial values */
     orxMemory_Zero(pstBank, sizeof(orxBANK));
     pstBank->u32Counter               = 0;
-    pstBank->u32ElemSize              = _u32Size;
+    pstBank->u32ElemSize              = (_u32Size > orxBANK_KU32_CACHE_LINE_SIZE)
+                                        ? orxALIGN(_u32Size, orxBANK_KU32_CACHE_LINE_SIZE)
+                                        : (orxMath_IsPowerOfTwo(_u32Size) == orxFALSE)
+                                          ? orxMath_GetNextPowerOfTwo(_u32Size)
+                                          : _u32Size;
     pstBank->u32Flags                 = _u32Flags;
     pstBank->u16NbCellPerSegments     = _u16NbElem;
     pstBank->eMemType                 = _eMemType;
