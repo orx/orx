@@ -344,46 +344,23 @@
 <a name="l00339"></a><a class="code" href="group__orx_decl.html#ga9108596dcc7bb4203fee1d30fd1db504">00339</a> <span class="preprocessor"></span><span class="preprocessor">#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)</span>
 <a name="l00340"></a>00340 <span class="preprocessor"></span>
 <a name="l00341"></a>00341 
-<a name="l00342"></a>00342 <span class="comment">/* Padding macro */</span>
-<a name="l00343"></a>00343 <span class="preprocessor">#ifdef __orxPADDING__</span>
-<a name="l00344"></a>00344 <span class="preprocessor"></span>
-<a name="l00345"></a>00345 <span class="preprocessor">  #ifdef orxPADDING_SIZE                </span><span class="comment">/* Padding size defined */</span>
-<a name="l00346"></a>00346 
-<a name="l00347"></a>00347 <span class="preprocessor">    #define orxPAD(SIZE)                orxU8 au8Pad[orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];</span>
+<a name="l00347"></a><a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">00347</a> <span class="preprocessor">#define orxFLAG_TEST_ALL(X, F) (((X) &amp; (F)) == (F))</span>
 <a name="l00348"></a>00348 <span class="preprocessor"></span>
-<a name="l00349"></a>00349 <span class="preprocessor">  #else </span><span class="comment">/* orxPADDING_SIZE */</span>           <span class="comment">/* Padding size not defined */</span>
-<a name="l00350"></a>00350 
-<a name="l00351"></a>00351 <span class="preprocessor">    #define orxPAD(SIZE)                </span><span class="comment">/* No padding applied */</span>
-<a name="l00352"></a>00352 
-<a name="l00353"></a>00353 <span class="preprocessor">    #warning orxPADDING_SIZE is undefined : its value should be a power of 2!</span>
-<a name="l00354"></a>00354 <span class="preprocessor"></span><span class="preprocessor">    #undef __orxPADDING__</span>
+<a name="l00354"></a><a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">00354</a> <span class="preprocessor">#define orxFLAG_TEST(X, F) (((X) &amp; (F)) != 0)</span>
 <a name="l00355"></a>00355 <span class="preprocessor"></span>
-<a name="l00356"></a>00356 <span class="preprocessor">  #endif </span><span class="comment">/* orxPADDING_SIZE */</span>
-<a name="l00357"></a>00357 
-<a name="l00358"></a>00358 <span class="preprocessor">#else </span><span class="comment">/* __orxPADDING__ */</span>
-<a name="l00359"></a>00359 
-<a name="l00360"></a><a class="code" href="group__orx_decl.html#ga79cbb8761a42b816df3c0e4655108b55">00360</a> <span class="preprocessor">  #define orxPAD(SIZE)                  </span><span class="comment">/* No padding applied */</span>
-<a name="l00361"></a>00361 
-<a name="l00362"></a>00362 <span class="preprocessor">#endif </span><span class="comment">/* __orxPADDING__ */</span>
-<a name="l00363"></a>00363 
-<a name="l00364"></a>00364 
-<a name="l00370"></a><a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">00370</a> <span class="preprocessor">#define orxFLAG_TEST_ALL(X, F) (((X) &amp; (F)) == (F))</span>
-<a name="l00371"></a>00371 <span class="preprocessor"></span>
-<a name="l00377"></a><a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">00377</a> <span class="preprocessor">#define orxFLAG_TEST(X, F) (((X) &amp; (F)) != 0)</span>
-<a name="l00378"></a>00378 <span class="preprocessor"></span>
-<a name="l00384"></a><a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">00384</a> <span class="preprocessor">#define orxFLAG_GET(X, M) ((X) &amp; (M))</span>
-<a name="l00385"></a>00385 <span class="preprocessor"></span>
-<a name="l00391"></a><a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">00391</a> <span class="preprocessor">#define orxFLAG_SET(X, A, R)  \</span>
-<a name="l00392"></a>00392 <span class="preprocessor">do                            \</span>
-<a name="l00393"></a>00393 <span class="preprocessor">{                             \</span>
-<a name="l00394"></a>00394 <span class="preprocessor">  (X) &amp;= ~(R);                \</span>
-<a name="l00395"></a>00395 <span class="preprocessor">  (X) |= (A);                 \</span>
-<a name="l00396"></a>00396 <span class="preprocessor">} while(orxFALSE)</span>
-<a name="l00397"></a>00397 <span class="preprocessor"></span>
-<a name="l00402"></a><a class="code" href="group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e">00402</a> <span class="preprocessor">#define orxFLAG_SWAP(X, S) ((X) ^= (S))</span>
-<a name="l00403"></a>00403 <span class="preprocessor"></span>
-<a name="l00404"></a>00404 <span class="preprocessor">#endif </span><span class="comment">/*_orxDECL_H_*/</span>
-<a name="l00405"></a>00405 
+<a name="l00361"></a><a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">00361</a> <span class="preprocessor">#define orxFLAG_GET(X, M) ((X) &amp; (M))</span>
+<a name="l00362"></a>00362 <span class="preprocessor"></span>
+<a name="l00368"></a><a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">00368</a> <span class="preprocessor">#define orxFLAG_SET(X, A, R)  \</span>
+<a name="l00369"></a>00369 <span class="preprocessor">do                            \</span>
+<a name="l00370"></a>00370 <span class="preprocessor">{                             \</span>
+<a name="l00371"></a>00371 <span class="preprocessor">  (X) &amp;= ~(R);                \</span>
+<a name="l00372"></a>00372 <span class="preprocessor">  (X) |= (A);                 \</span>
+<a name="l00373"></a>00373 <span class="preprocessor">} while(orxFALSE)</span>
+<a name="l00374"></a>00374 <span class="preprocessor"></span>
+<a name="l00379"></a><a class="code" href="group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e">00379</a> <span class="preprocessor">#define orxFLAG_SWAP(X, S) ((X) ^= (S))</span>
+<a name="l00380"></a>00380 <span class="preprocessor"></span>
+<a name="l00381"></a>00381 <span class="preprocessor">#endif </span><span class="comment">/*_orxDECL_H_*/</span>
+<a name="l00382"></a>00382 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

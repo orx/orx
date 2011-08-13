@@ -5,6 +5,23 @@ Orx - Portable Game Engine  (Version 1.3)
 
 orx 1.3
 ---
+* IMPORTANT: Added linux x86_64 support + added corresponding project files/precompiled dependencies
+* IMPORTANT: Much more efficient version of Android (non-native) plugins
+* IMPORTANT: Added possibility to create/modify sound samples and streams at runtime
+* IMPORTANT: Added Smoother(step) curve for orxFXs
+* IMPORTANT: Memory bank elements can now be aligned on cache line size by defining __orxBANK_ALIGN__
+* IMPORTANT: Added compressed texture support for iOS devices, powered by TDomhan
+* IMPORTANT: Added PNG write support for computer versions (SDL/GLFW)
+* Improved profiler display + support portrait orientation
+* Added new maths functions : smooth/smoother stepd + catmull-rom sline interpolation
+* Fixed pre-multiplied texture issue on iOS devices
+* Added direct accessors to object's sibling and child for better performances
+* Newly added sounds to objects will get their position updated immediately
+* Added option to synchronize FXs on one object with respect to another one
+* Misc fixes and additions
+
+orx 1.3rc0
+---
 * *** Added new platform with full support: android/android native. ***
 * IMPORTANT: Added very easy to use CPU profiler module with optional runtime graphical display (#define __orxPROFILER__)
 * IMPORTANT: Added OpenGL ES 2.0 support for iPhone/iPod Touch/iPad + full shader pipeline (including custom shader support)
