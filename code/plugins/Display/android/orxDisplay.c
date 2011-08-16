@@ -130,6 +130,7 @@ typedef struct __orxDISPLAY_PROJ_MATRIX_t
 struct __orxBITMAP_t
 {
   GLuint uiTexture;
+  GLuint uiFrameBuffer;
   orxBOOL bSmoothing;
   orxFLOAT fWidth, fHeight;
   orxU32 u32RealWidth, u32RealHeight;
@@ -1115,6 +1116,13 @@ void orxFASTCALL orxDisplay_Android_DeleteBitmap(orxBITMAP *_pstBitmap)
     /* Deletes its texture */
     glDeleteTextures(1, &(_pstBitmap->uiTexture));
     glASSERT();
+    
+    /* Delete the framebuffer */
+    if (_pstBitmap->uiFrameBuffer != orxNULL)
+    {
+      glGenFramebuffers(1, &_pstBitmap->uiFrameBuffer);
+      glASSERT();
+    }
 
     /* Deletes it */
     orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
@@ -1151,6 +1159,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     pstBitmap->fRecRealWidth = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+    pstBitmap->uiFrameBuffer = orxNULL;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -1511,10 +1520,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     /* Screen? */
     if(_pstBitmap == sstDisplay.pstScreen)
     {
-      /* Delete frame buffer */
-      glDeleteFramebuffers(1, &sstDisplay.uiFrameBuffer);
-      glASSERT();
-      
       /* Unbinds frame buffer */
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
       glASSERT();
@@ -1525,12 +1530,15 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     }
     else if(_pstBitmap != orxNULL)
     {
-      /* Generates frame buffer */
-      glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
-      glASSERT();
+      if (_pstBitmap->uiFrameBuffer == orxNULL)
+      {
+        /* Generates frame buffer */
+        glGenFramebuffers(1, &_pstBitmap->uiFrameBuffer);
+        glASSERT();
+      }
       
       /* Binds frame buffer */
-      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
+      glBindFramebuffer(GL_FRAMEBUFFER, _pstBitmap->uiFrameBuffer);
       glASSERT();
 
       /* Links it to frame buffer */  
