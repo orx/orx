@@ -185,7 +185,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxCOLOR                  stLastColor;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxDISPLAY_SHADER        *pstDefaultShader;
-//  GLuint                    uiFrameBuffer;
+  GLuint                    uiFrameBuffer;
   orxU8                   **aau8BufferArray;
   orxS32                    s32BitmapCounter;
   orxS32                    s32ShaderCounter;
@@ -1511,6 +1511,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     /* Screen? */
     if(_pstBitmap == sstDisplay.pstScreen)
     {
+      /* Delete frame buffer */
+      glDeleteFramebuffers(1, &sstDisplay.uiFrameBuffer);
+      glASSERT();
+      
       /* Unbinds frame buffer */
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
       glASSERT();
@@ -1521,19 +1525,21 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     }
     else if(_pstBitmap != orxNULL)
     {
+      /* Generates frame buffer */
+      glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
+      glASSERT();
+      
       /* Binds frame buffer */
-//      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
-//      glASSERT();
+      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
+      glASSERT();
 
       /* Links it to frame buffer */  
-//      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-//      glASSERT();
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
+      glASSERT();
 
       /* Updates result */
-//      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-//      glASSERT();
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Render to texture not supported");
-      eResult = orxSTATUS_FAILURE;
+      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      glASSERT();
     }
     else
     {
