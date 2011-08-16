@@ -538,18 +538,18 @@ static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MAT
 static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
   static const orxSTRING szVertexShaderSource =
-  "attribute vec2 __vPosition__;"
-  "uniform mat4 __mProjection__;"
-  "attribute mediump vec2 __vTexCoord__;"
-  "varying mediump vec2 ___TexCoord___;"
-  "attribute mediump vec4 __vColor__;"
-  "varying mediump vec4 ___Color___;"
+  "attribute vec2 _vPosition_;"
+  "uniform mat4 _mProjection_;"
+  "attribute mediump vec2 _vTexCoord_;"
+  "varying mediump vec2 _TexCoord_;"
+  "attribute mediump vec4 _vColor_;"
+  "varying mediump vec4 _Color_;"
   "void main()"
   "{"
   "  mediump float fCoef = 1.0 / 255.0;"
-  "  gl_Position      = __mProjection__ * vec4(__vPosition__.xy, 0.0, 1.0);"
-  "  ___TexCoord___   = __vTexCoord__;"
-  "  ___Color___      = fCoef * __vColor__;"
+  "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
+  "  _TexCoord_   = _vTexCoord_;"
+  "  _Color_      = fCoef * _vColor_;"
   "}";
 
   GLuint    uiProgram, uiVertexShader, uiFragmentShader;
@@ -603,11 +603,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glASSERT();
 
       /* Binds attributes */
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "__vPosition__");
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
       glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "__vTexCoord__");
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
       glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "__vColor__");
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
       glASSERT();
 
       /* Links program */
@@ -615,11 +615,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glASSERT();
 
       /* Gets texture location */
-      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
+      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
       glASSERT();
 
       /* Gets projection matrix location */
-      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
+      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
       glASSERT();
 
       /* Gets linking status */
@@ -2104,12 +2104,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
-        "varying vec2 ___TexCoord___;"
-        "varying vec4 ___Color___;"
-        "uniform sampler2D __Texture__;"
+        "varying vec2 _TexCoord_;"
+        "varying vec4 _Color_;"
+        "uniform sampler2D _Texture_;"
         "void main()"
         "{"
-        "  gl_FragColor = ___Color___ * texture2D(__Texture__, ___TexCoord___);"
+        "  gl_FragColor = _Color_ * texture2D(_Texture_, _TexCoord_);"
         "}";
 
         /* Inits flags */
@@ -2230,7 +2230,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
           orxCHAR *pcReplace;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _TexCoord_;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -2290,7 +2290,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
               pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
           {
             /* Replaces it */
-            orxMemory_Copy(pcReplace, "___TexCoord___", 14 * sizeof(orxCHAR));
+            orxMemory_Copy(pcReplace, "_TexCoord_", 14 * sizeof(orxCHAR));
           }
         }
         else
