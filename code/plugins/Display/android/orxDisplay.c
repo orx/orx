@@ -1156,8 +1156,8 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     pstBitmap->bSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
     pstBitmap->fWidth = orxU2F(_u32Width);
     pstBitmap->fHeight = orxU2F(_u32Height);
-    pstBitmap->u32RealWidth = orxMath_GetNextPowerOfTwo(_u32Width);
-    pstBitmap->u32RealHeight = orxMath_GetNextPowerOfTwo(_u32Height);
+    pstBitmap->u32RealWidth = _u32Width;
+    pstBitmap->u32RealHeight = _u32Height;
     pstBitmap->fRecRealWidth = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
@@ -1205,45 +1205,30 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Is not screen? */
-  if (_pstBitmap != sstDisplay.pstScreen)
+  if(_pstBitmap != sstDisplay.pstScreen)
   {
-    GLint iTexture;
-    orxRGBA *astBuffer, *pstPixel;
+    orxBITMAP *pstBackupBitmap;
 
-    /* Allocates buffer */
-    astBuffer = (orxRGBA *) orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+    /* Backups current destination */
+    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
 
-    /* Checks */
-    orxASSERT(astBuffer != orxNULL);
+    /* Sets new destination bitmap */
+    orxDisplay_SetDestinationBitmap(_pstBitmap);
 
-    /* For all pixels */
-    for (pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
-    {
-      /* Sets its value */
-      *pstPixel = _stColor;
-    }
-
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    /* Clears the color buffer with given color */
+    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
+    glASSERT();
+    glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
 
-    /* Binds texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
-
-    /* Updates texture */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-    glASSERT();
-
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
-    glASSERT();
-
-    /* Frees buffer */
-    orxMemory_Free(astBuffer);
+    /* Restores previous destination */
+    orxDisplay_SetDestinationBitmap(pstBackupBitmap);
   }
   else
   {
+    /* Makes sure we're working on screen */
+    orxDisplay_SetDestinationBitmap(sstDisplay.pstScreen);
+
     /* Clears the color buffer with given color */
     glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
     glASSERT();
@@ -1758,8 +1743,8 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
 			orxU8 *pu8ImageBuffer;
 
 			/* Gets its real size */
-			uiRealWidth = orxMath_GetNextPowerOfTwo(uiWidth);
-			uiRealHeight = orxMath_GetNextPowerOfTwo(uiHeight);
+			uiRealWidth = uiWidth;
+			uiRealHeight = uiHeight;
 
 			/* Pushes display section */
 			orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -2087,8 +2072,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
         sstDisplay.pstScreen->fWidth = orxS2F(s_winWidth);
         sstDisplay.pstScreen->fHeight = orxS2F(s_winHeight);
-        sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-        sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U( sstDisplay.pstScreen->fHeight));
+        sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
+        sstDisplay.pstScreen->u32RealHeight = orxF2U( sstDisplay.pstScreen->fHeight);
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
