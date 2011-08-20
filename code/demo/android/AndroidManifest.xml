@@ -4,14 +4,13 @@
       android:versionCode="1"
       android:versionName="1.0"  android:debuggable="true">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
-		<activity android:name="org.orx.android.OrxActivity" android:label="@string/app_name"
+		<activity android:name="org.orxproject.orxtest.OrxDemo" android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden"
 			android:screenOrientation="portrait">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-			<meta-data android:name="android.orx.cmd_line" android:value="orxTestd" />
-			<meta-data android:name="android.orx.lib_name" android:value="orxTest" />
 		</activity>
 
     </application>
