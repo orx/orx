@@ -45,10 +45,13 @@
 #include <nv_thread/nv_thread.h>
 #include <nv_file/nv_file.h>
 
-static float s_aspect = 1.0f;
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
+int s_displayRotation = -1;
+
+#ifdef __orxDEBUG__
 static unsigned int s_swapCount = 0;
+#endif
 
 /* Main function pointer */
 orxMODULE_RUN_FUNCTION  pfnRun;
@@ -66,11 +69,56 @@ int32_t NVEventAppInit(int32_t argc, char** argv)
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
+int GetRotation()
+{
+  jint rotation;
+  
+  jobject oActivity = (jobject) NVEventGetPlatformAppHandle();
+  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+    
+  jclass clsContext = poJEnv->FindClass("android/content/Context");
+  orxASSERT(clsContext != orxNULL);
+  jmethodID getSystemService = poJEnv->GetMethodID(clsContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+  orxASSERT(getSystemService != orxNULL);
+  jfieldID WINDOW_SERVICE_ID = poJEnv->GetStaticFieldID(clsContext, "WINDOW_SERVICE", "Ljava/lang/String;");
+  orxASSERT(WINDOW_SERVICE_ID != orxNULL);
+  jstring WINDOW_SERVICE = (jstring) poJEnv->GetStaticObjectField(clsContext, WINDOW_SERVICE_ID);
+  orxASSERT(WINDOW_SERVICE != orxNULL);
+  jobject windowManager = poJEnv->CallObjectMethod(oActivity, getSystemService, WINDOW_SERVICE);
+  orxASSERT(windowManager != orxNULL);
+  jclass clsWindowManager = poJEnv->FindClass("android/view/WindowManager");
+  orxASSERT(clsWindowManager != orxNULL);
+  jmethodID getDefaultDisplay = poJEnv->GetMethodID(clsWindowManager, "getDefaultDisplay", "()Landroid/view/Display;");
+  orxASSERT(getDefaultDisplay != orxNULL);
+  jobject defaultDisplay = poJEnv->CallObjectMethod(windowManager, getDefaultDisplay);
+  orxASSERT(defaultDisplay != orxNULL);
+  jclass clsDisplay = poJEnv->FindClass("android/view/Display");
+  orxASSERT(clsDisplay != orxNULL);
+  jmethodID getRotation = poJEnv->GetMethodID(clsDisplay, "getRotation", "()I");
+  if(getRotation != orxNULL)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "getRotation() found");
+    rotation =  poJEnv->CallIntMethod(defaultDisplay, getRotation);
+  }
+  else
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "getRotation() not found");
+    jmethodID getOrientation = poJEnv->GetMethodID(clsDisplay, "getOrientation", "()I");
+    orxASSERT(getOrientation != orxNULL);
+    rotation =  poJEnv->CallIntMethod(defaultDisplay, getOrientation);
+  }
+  
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "rotation = %d", (int) rotation);
+  
+  return (int) rotation;
+}
+
 int32_t NVEventAppMain(int32_t argc, char** argv)
 {
+#ifdef __orxDEBUG__
   s_swapCount = 0;
-  
-  s_aspect = 1.0f;
+#endif
+
   s_winWidth = 1;
   s_winHeight = 1;
 
@@ -83,12 +131,10 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
     {
       if(ev->m_type == NV_EVENT_SURFACE_SIZE)
       {
-        s_winWidth = ev->m_data.m_size.m_w;
-        s_winHeight = ev->m_data.m_size.m_h;
         DEBUG( "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
 
-        if ((s_winWidth > 0) && (s_winHeight > 0))
-          s_aspect = (float)s_winWidth / (float)s_winHeight;
+        s_winWidth = ev->m_data.m_size.m_w;
+        s_winHeight = ev->m_data.m_size.m_h;
       }
       if (ev)
         NVEventDoneWithEvent(true);
@@ -127,12 +173,14 @@ static bool renderFrame(bool allocateIfNeeded)
   /* Updates frame counter */
   sstPayload.u32FrameCounter++;
 
+#ifdef __orxDEBUG__
   // A debug printout every 256 frames so we can see when we're
   // actively rendering and swapping
   if (!(s_swapCount++ & 0x00ff))
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Swap count is %d", s_swapCount);
   }
+#endif
 
   return true;
 }
@@ -182,10 +230,35 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   return orxSTATUS_FAILURE;
 }
 
+static void canonicalToScreen(const float *canVec, float *screenVec)
+{
+  struct AxisSwap
+  {
+    signed char negateX;
+    signed char negateY;
+    signed char xSrc;
+    signed char ySrc;
+  };
+  
+  static const AxisSwap axisSwap[] = {
+    { 1, -1, 0, 1 },   // ROTATION_0
+    {-1, -1, 1, 0 },   // ROTATION_90
+    {-1,  1, 0, 1 },   // ROTATION_180
+    { 1,  1, 1, 0 } }; // ROTATION_270
+    
+  const AxisSwap& as = axisSwap[s_displayRotation];
+  
+  screenVec[0] = -(float)as.negateX * canVec[ as.xSrc ];
+  screenVec[1] = (float)as.negateY * canVec[ as.ySrc ];
+  screenVec[2] = canVec[2];
+}
+
 extern "C" {
 
   void MainLoop()
   {
+    s_displayRotation = GetRotation();
+
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
@@ -262,12 +335,10 @@ extern "C" {
 
             case NV_EVENT_SURFACE_CREATED:
             case NV_EVENT_SURFACE_SIZE:
+              DEBUG( "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
+
               s_winWidth = ev->m_data.m_size.m_w;
               s_winHeight = ev->m_data.m_size.m_h;
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
-
-              if ((s_winWidth > 0) && (s_winHeight > 0))
-                  s_aspect = (float)s_winWidth / (float)s_winHeight;
               break;
 
             case NV_EVENT_SURFACE_DESTROYED:
@@ -306,9 +377,18 @@ extern "C" {
               orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
               orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
               
-              stAccelPayload.stAccelerometer.fX = orx2F(ev->m_data.m_accel.m_x);
-              stAccelPayload.stAccelerometer.fY = orx2F(ev->m_data.m_accel.m_y);
-              stAccelPayload.stAccelerometer.fZ = orx2F(ev->m_data.m_accel.m_z);
+              float canVec[3];
+              float screenVec[3];
+              
+              canVec[0] = orx2F(ev->m_data.m_accel.m_x);
+              canVec[1] = orx2F(ev->m_data.m_accel.m_y);
+              canVec[2] = orx2F(ev->m_data.m_accel.m_z);
+              
+              canonicalToScreen(canVec, screenVec);
+              
+              stAccelPayload.stAccelerometer.fX = orx2F(screenVec[0]);
+              stAccelPayload.stAccelerometer.fY = orx2F(screenVec[1]);
+              stAccelPayload.stAccelerometer.fZ = orx2F(screenVec[2]);
               
               /* Sends event */
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
