@@ -178,7 +178,7 @@ static orxINLINE void orxRender_RenderFPS()
           orxFLOAT fDelta;
 
           /* Gets rendering limit delta using correction ratio */
-          fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stBox.vBR.fY - stBox.vTL.fY);
 
           /* Updates viewport */
           stBox.vTL.fY += fDelta;
@@ -1091,7 +1091,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   orxFLOAT fDelta;
 
                   /* Gets rendering limit delta using correction ratio */
-                  fDelta = orx2F(0.5f) * (orxFLOAT_1 - orxFLOAT_1 / fCorrectionRatio) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+                  fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
 
                   /* Updates viewport */
                   stViewportBox.vTL.fY += fDelta;
@@ -1690,7 +1690,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
         else
         {
           /* Gets rendering limit delta using correction ratio */
-          fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
 
           /* Updates viewport */
           stViewportBox.vTL.fY += fDelta;
