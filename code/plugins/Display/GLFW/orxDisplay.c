@@ -1456,9 +1456,19 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Inits viewport */
-      glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
-      glASSERT();
+      /* Is screen? */
+      if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+      {
+        /* Inits viewport */
+        glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glASSERT();
+      }
+      else
+      {
+        /* Inits viewport */
+        glViewport(0, (orxS32)sstDisplay.pstDestinationBitmap->u32RealHeight - orxF2S(sstDisplay.pstDestinationBitmap->fHeight), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glASSERT();
+      }
 
       /* Inits matrices */
       glMatrixMode(GL_PROJECTION);
@@ -1883,9 +1893,19 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     glEnable(GL_SCISSOR_TEST);
     glASSERT();
 
-    /* Stores screen clipping */
-    glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
-    glASSERT();
+    /* Is screen? */
+    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
+    else
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
   }
 
   /* Stores clip coords */

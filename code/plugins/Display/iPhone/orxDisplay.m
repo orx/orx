@@ -1990,9 +1990,19 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
 	  /* Recreates render target */
 	  [sstDisplay.poView CreateRenderTarget:_pstBitmap];
 
-	  /* Inits viewport */
-	  glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight);
-	  glASSERT();
+    /* Is screen? */
+    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    {
+      /* Inits viewport */
+      glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+      glASSERT();
+    }
+    else
+    {
+      /* Inits viewport */
+      glViewport(0, (orxS32)sstDisplay.pstDestinationBitmap->u32RealHeight - orxF2S(sstDisplay.pstDestinationBitmap->fHeight), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+      glASSERT();
+    }
 
 	  /* Shader support? */
 	  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
@@ -2560,9 +2570,19 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap,
     glEnable(GL_SCISSOR_TEST);
     glASSERT();
 
-    /* Stores screen clipping */
-    glScissor(_u32TLX, orxF2U(sstDisplay.pstScreen->fHeight) - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
-    glASSERT();
+    /* Is screen? */
+    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
+    else
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
   }
   else
   {
