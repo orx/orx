@@ -38,7 +38,8 @@
 #include "SOIL.h"
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-#include "apk_file.h"
+#include <nv_file/nv_file.h>
+#include <nv_event/nv_event.h>
 
 /** Module flags
  */
@@ -81,8 +82,9 @@ do                                                                      \
 
 #endif /* __orxDEBUG__ */
 
-int32_t s32DisplayWidth;
-int32_t s32DisplayHeight;
+/* defined in orxAndroidSupport.cpp */
+extern int32_t s_winWidth;
+extern int32_t s_winHeight;
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -1263,6 +1265,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
 
+  /* swap EGL */
+  NVEventSwapBuffersEGL();
+
   /* Done! */
   return eResult;
 }
@@ -1718,7 +1723,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
 	unsigned char *pu8ImageData;
 	GLuint uiWidth, uiHeight, uiBytesPerPixel;
 	orxBITMAP *pstResult = orxNULL;
-	APKFile* apkFile;
+	NvFile* apkFile;
 	size_t apkFileSize;
 	unsigned char* fileData;
 
@@ -1727,14 +1732,14 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
 
 
 	//open the asset file and save them into memory
-	apkFile = APKOpen(_zFilename);
-	apkFileSize = APKSize(apkFile);
+	apkFile = NvFOpen(_zFilename);
+	apkFileSize = NvFSize(apkFile);
 	fileData = (unsigned char *)malloc(sizeof(unsigned char)*apkFileSize);
 	//read
-	APKRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
+	NvFRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
 
 	//close it
-	APKClose(apkFile);
+	NvFClose(apkFile);
 
 	/* Loads image */
 	pu8ImageData = SOIL_load_image_from_memory(fileData, apkFileSize,(int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
@@ -2027,6 +2032,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
   /* Was not already initialized? */
   if (!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
   {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxDisplay_Android_Init()");
+    
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
@@ -2078,8 +2085,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
         sstDisplay.pstScreen = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-        sstDisplay.pstScreen->fWidth = orxS2F(s32DisplayWidth);
-        sstDisplay.pstScreen->fHeight = orxS2F(s32DisplayHeight);
+        sstDisplay.pstScreen->fWidth = orxS2F(s_winWidth);
+        sstDisplay.pstScreen->fHeight = orxS2F(s_winHeight);
         sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
         sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U( sstDisplay.pstScreen->fHeight));
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);

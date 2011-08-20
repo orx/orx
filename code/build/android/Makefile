@@ -50,11 +50,12 @@ C_SRC = \
 	memory/orxMemory.c        \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
-	debug/orxProfiler.c       \
-	main/orxAndroidSupport.c
+	debug/orxProfiler.c
 
 CPP_SRC = \
-  plugin/orxPlugin_EmbeddedList.cpp
+  plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
+  
 	
 armeabi_debug_OBJ = $(addprefix armeabi/debug/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi/debug/,$(C_SRC:.c=.o))
 armeabi-v7a_debug_OBJ = $(addprefix armeabi-v7a/debug/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi-v7a/debug/,$(C_SRC:.c=.o))
@@ -68,7 +69,8 @@ armeabi-v7a_debug_OUT = armeabi-v7a/liborxd.a
 armeabi_OUT = armeabi/liborx.a
 armeabi-v7a_OUT = armeabi-v7a/liborx.a
 
-INCLUDES = -I../../include -I../../../extern/SOIL/include -I../../../extern/Box2D_2.1.3/include -I../../../extern/dlmalloc -I./apkfile
+INCLUDES = -I../../include -I../../../extern/SOIL/include -I../../../extern/Box2D_2.1.3/include \
+           -I../../../extern/dlmalloc -I../../../extern/NvEvent/jni
 	
 CXX = arm-linux-androideabi-g++
 CC = arm-linux-androideabi-gcc
