@@ -1,4 +1,3 @@
 APP_ABI := armeabi armeabi-v7a
 
-APP_MODULES := orxTest apkfile
-
+APP_PLATFORM := android-9
