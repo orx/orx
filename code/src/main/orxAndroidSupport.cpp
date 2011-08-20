@@ -241,14 +241,14 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
   };
   
   static const AxisSwap axisSwap[] = {
-    { 1, -1, 0, 1 },   // ROTATION_0
-    {-1, -1, 1, 0 },   // ROTATION_90
-    {-1,  1, 0, 1 },   // ROTATION_180
-    { 1,  1, 1, 0 } }; // ROTATION_270
+    {-1, -1, 0, 1 },   // ROTATION_0
+    { 1, -1, 1, 0 },   // ROTATION_90
+    { 1,  1, 0, 1 },   // ROTATION_180
+    {-1,  1, 1, 0 } }; // ROTATION_270
     
   const AxisSwap& as = axisSwap[s_displayRotation];
   
-  screenVec[0] = -(float)as.negateX * canVec[ as.xSrc ];
+  screenVec[0] = (float)as.negateX * canVec[ as.xSrc ];
   screenVec[1] = (float)as.negateY * canVec[ as.ySrc ];
   screenVec[2] = canVec[2];
 }
