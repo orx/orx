@@ -44,6 +44,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000002  /**< Shader support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER	0x00000004  /**< Has depth buffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000008  /**< NPOT texture support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -446,12 +447,17 @@ static orxView *spoInstance;
       glDisable(GL_STENCIL_TEST);
       glASSERT();
 
-      /* Binds frame and render buffers */
-      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
+      /* Binds default frame and render buffers */
+      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiScreenFrameBuffer);
+      glASSERT();
       glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+      glASSERT();
+      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
+      glASSERT();
 
       /* Updates result */
-      bResult = YES;
+      bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
+      glASSERT();
     }
   }
 
@@ -463,12 +469,14 @@ static orxView *spoInstance;
 {
   BOOL bResult = YES;
 
-  /* Generates frame buffer */
-  glGenFramebuffersOES(1, &uiFrameBuffer);
+  /* Generates frame buffers */
+  glGenFramebuffersOES(1, &uiScreenFrameBuffer);
+  glASSERT();
+  glGenFramebuffersOES(1, &uiTextureFrameBuffer);
   glASSERT();
 
-  /* Binds it */
-  glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiFrameBuffer);
+  /* Binds screen one */
+  glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiScreenFrameBuffer);
   glASSERT();
 
   /* Generates render buffer */
@@ -479,32 +487,49 @@ static orxView *spoInstance;
   glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
   glASSERT();
 
-  /* Links render buffer to layer */
+  /* Links it to layer */
   bResult = [[EAGLContext currentContext] renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer *)self.layer];
 
-  /* Uses depth buffer? */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+  /* Success? */
+  if(bResult != NO)
   {
-    GLint iWidth, iHeight;
+    
+    /* Links it to frame buffer */
+    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
+    glASSERT();  
 
-    /* Gets render buffer's size */
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
-    glASSERT();
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
-    glASSERT();
+    /* Uses depth buffer? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    {
+      GLint iWidth, iHeight;
 
-    /* Creates depth buffer */
-    glGenRenderbuffersOES(1, &uiDepthBuffer);
-    glASSERT();
+      /* Gets render buffer's size */
+      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
+      glASSERT();
+      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
+      glASSERT();
 
-    /* Binds it */
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiDepthBuffer);
+      /* Creates depth buffer */
+      glGenRenderbuffersOES(1, &uiDepthBuffer);
+      glASSERT();
 
-    /* Sets its size */
-    glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, iWidth, iHeight);
+      /* Binds it */
+      glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiDepthBuffer);
 
-    /* Binds render buffer back */
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+      /* Sets its size */
+      glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, iWidth, iHeight);
+
+      /* Links it to frame buffer */
+      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, uiDepthBuffer);
+      glASSERT();
+
+      /* Binds render buffer back */
+      glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
+      glASSERT();
+    }
+
+    /* Updates result */
+    bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
     glASSERT();
   }
 
@@ -519,20 +544,9 @@ static orxView *spoInstance;
   /* Screen? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    /* Unbinds texture from frame buffer */
-    glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, 0, 0);
+    /* Binds screen frame buffer */
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiScreenFrameBuffer);
     glASSERT();
-
-    /* Binds render buffer to frame buffer */
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
-    glASSERT();
-
-    /* Uses depth buffer? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
-    {
-      /* Binds it to frame buffer */
-      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, uiDepthBuffer);
-    }
     glFlush();
     glASSERT();
 
@@ -542,23 +556,11 @@ static orxView *spoInstance;
   }
   else
   {
-    /* Unbinds render buffer from frame buffer */
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, 0);
+    /* Binds texture frame buffer */
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiTextureFrameBuffer);
     glASSERT();
 
-    /* Uses depth buffer? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
-    {
-      /* Unbinds depth buffer from frame buffer */
-      glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, 0);
-      glASSERT();
-    }
-
-    /* Binds corresponding texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
-
-    /* Links it to frame buffer */
+    /* Links texture to it */
     glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
     glASSERT();
     glFlush();
@@ -1652,8 +1654,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
     pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
     pstBitmap->fWidth         = orxU2F(_u32Width);
     pstBitmap->fHeight        = orxU2F(_u32Height);
-    pstBitmap->u32RealWidth   = orxMath_GetNextPowerOfTwo(_u32Width);
-    pstBitmap->u32RealHeight  = orxMath_GetNextPowerOfTwo(_u32Height);
+    pstBitmap->u32RealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Width : orxMath_GetNextPowerOfTwo(_u32Width);
+    pstBitmap->u32RealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Height : orxMath_GetNextPowerOfTwo(_u32Height);
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
@@ -1703,40 +1705,22 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   /* Is not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    GLint     iTexture;
-    orxRGBA  *astBuffer, *pstPixel;
+    orxBITMAP *pstBackupBitmap;
 
-    /* Allocates buffer */
-    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+    /* Backups current destination */
+    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
 
-    /* Checks */
-    orxASSERT(astBuffer != orxNULL);
+    /* Sets new destination bitmap */
+    orxDisplay_SetDestinationBitmap(_pstBitmap);
 
-    /* For all pixels */
-    for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
-    {
-      /* Sets its value */
-      *pstPixel = _stColor;
-    }
-
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    /* Clears the color buffer with given color */
+    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
+    glASSERT();
+    glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
 
-    /* Binds texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
-
-    /* Updates texture */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-    glASSERT();
-
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
-    glASSERT();
-
-    /* Frees buffer */
-    orxMemory_Free(astBuffer);
+    /* Restores previous destination */
+    orxDisplay_SetDestinationBitmap(pstBackupBitmap);
   }
   else
   {
@@ -1991,6 +1975,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
   {
     /* Draws remaining items */
     orxDisplay_iPhone_DrawArrays();
+    glFlush();
+    glASSERT();
 
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _pstBitmap;
@@ -2392,8 +2378,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
       uiHeight  = CGImageGetHeight(oImage);
 
       /* Gets its real size */
-      uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
-      uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
+      uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : orxMath_GetNextPowerOfTwo(uiWidth);
+      uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : orxMath_GetNextPowerOfTwo(uiHeight);
 
       /* Allocates image buffer */
       au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_VIDEO);
@@ -2734,8 +2720,9 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
     if((sstDisplay.pstBitmapBank != orxNULL)
     && (sstDisplay.pstShaderBank != orxNULL))
     {
-      orxDISPLAY_EVENT_PAYLOAD stPayload;
-      GLint                    iWidth, iHeight;
+      orxDISPLAY_EVENT_PAYLOAD  stPayload;
+      GLint                     iWidth, iHeight;
+      const GLubyte            *zExtensionList;
 
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -2755,6 +2742,21 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
       }
 
+      /* Gets extension list */
+      zExtensionList = glGetString(GL_EXTENSIONS);
+      
+      /* Has NPOT texture support? */
+      if((zExtensionList != NULL) && (strstr((const char *)zExtensionList, "GL_APPLE_texture_2D_limited_npot") != NULL))
+      {
+        /* Updates status flags */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+      }
+      else
+      {
+        /* Updates status flags */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
+      }
+
       /* Creates OpenGL thread context */
       [sstDisplay.poView CreateThreadContext];
 
@@ -2770,8 +2772,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
       sstDisplay.pstScreen->fWidth          = iWidth;
       sstDisplay.pstScreen->fHeight         = iHeight;
-      sstDisplay.pstScreen->u32RealWidth    = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-      sstDisplay.pstScreen->u32RealHeight   = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
+      sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fWidth) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
+      sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fHeight) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
       sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
       sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);

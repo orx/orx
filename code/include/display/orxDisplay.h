@@ -235,7 +235,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 {
 @private
   EAGLContext  *poMainContext, *poThreadContext;
-  GLuint        uiRenderBuffer, uiFrameBuffer, uiDepthBuffer;
+  GLuint        uiRenderBuffer, uiDepthBuffer, uiScreenFrameBuffer, uiTextureFrameBuffer;
   BOOL          bShaderSupport, bCompressedTextureSupport;
 }
 

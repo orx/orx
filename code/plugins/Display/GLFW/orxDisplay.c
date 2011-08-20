@@ -1070,40 +1070,60 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
   /* Is not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    GLint     iTexture;
-    orxRGBA  *astBuffer, *pstPixel;
-
-    /* Allocates buffer */
-    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
-
-    /* Checks */
-    orxASSERT(astBuffer != orxNULL);
-
-    /* For all pixels */
-    for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+    orxBITMAP *pstBackupBitmap;
+    
+    /* Backups current destination */
+    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
+    
+    /* Sets new destination bitmap */
+    if(orxDisplay_SetDestinationBitmap(_pstBitmap) != orxSTATUS_FAILURE)
     {
-      /* Sets its value */
-      *pstPixel = _stColor;
+      /* Clears the color buffer with given color */
+      glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
+      glASSERT();
+      glClear(GL_COLOR_BUFFER_BIT);
+      glASSERT();
+    
+      /* Restores previous destination */
+      orxDisplay_SetDestinationBitmap(pstBackupBitmap);
     }
+    else
+    {
+      GLint     iTexture;
+      orxRGBA  *astBuffer, *pstPixel;
 
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-    glASSERT();
+      /* Allocates buffer */
+      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
 
-    /* Binds texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
+      /* Checks */
+      orxASSERT(astBuffer != orxNULL);
 
-    /* Updates texture */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-    glASSERT();
+      /* For all pixels */
+      for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+      {
+        /* Sets its value */
+        *pstPixel = _stColor;
+      }
 
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
-    glASSERT();
+      /* Backups current texture */
+      glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+      glASSERT();
 
-    /* Frees buffer */
-    orxMemory_Free(astBuffer);
+      /* Binds texture */
+      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+      glASSERT();
+
+      /* Updates texture */
+      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+      glASSERT();
+
+      /* Restores previous texture */
+      glBindTexture(GL_TEXTURE_2D, iTexture);
+      glASSERT();
+
+      /* Frees buffer */
+      orxMemory_Free(astBuffer);
+    }
   }
   else
   {
@@ -1389,7 +1409,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
       /* Screen? */
       if(_pstBitmap == sstDisplay.pstScreen)
       {
-        /* Unbinds frame buffer */
+        /* Binds default frame buffer */
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         glASSERT();
         glFlush();
@@ -1406,7 +1426,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
         glASSERT();
 
-        /* Links it to frame buffer */  
+        /* Links texture to it */  
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
         glASSERT();
 
