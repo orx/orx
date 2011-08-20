@@ -296,10 +296,9 @@ static orxView *spoInstance;
                                     [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 
     /* Sets scale factor */
-    self.contentScaleFactor = (([UIScreen respondsToSelector:@selector(scale)] != NO)
-                            && ([UIScreen mainScreen].scale == 2.0f))
-                            ? 2.0f
-                            : 1.0f;
+    self.contentScaleFactor = ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] != NO)
+                              ? [UIScreen mainScreen].scale
+                              : 1.0f;
 
     /* Creates main OpenGL ES 2.0 context */
     poMainContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
