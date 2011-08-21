@@ -98,19 +98,19 @@ armeabi-v7a/debug/%.o: %.c
 
 armeabi/release/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -O2 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) -O1 -c $< -o $@
 
 armeabi/release/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -O2 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) -O1 -c $< -o $@
 
 armeabi-v7a/release/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -mfpu=vfpv3-d16 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O1 -c $< -o $@
 
 armeabi-v7a/release/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -mfpu=vfpv3-d16 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O1 -c $< -o $@
 
 $(armeabi_OUT): $(armeabi_OBJ)
 	$(AR) rcs $(armeabi_OUT) $(armeabi_OBJ)
