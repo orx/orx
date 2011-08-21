@@ -572,6 +572,14 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           }
           else
           {
+            /* Clears its data */
+            alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, 0, (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
+            alASSERT();
+
+            /* Queues it */
+            alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
+            alASSERT();
+
             /* Updates status */
             bEOF = orxTRUE;
           }
@@ -590,6 +598,16 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
               break;
             }
           }
+        }
+        else
+        {
+          /* Clears its data */
+          alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, 0, (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
+          alASSERT();
+
+          /* Queues it */
+          alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
+          alASSERT();
         }
       }
     }
