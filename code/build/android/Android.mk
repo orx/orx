@@ -7,7 +7,7 @@ LOCAL_SRC_FILES :=   $(TARGET_ARCH_ABI)/liborx.a
 LOCAL_EXPORT_LDLIBS := -L$(LOCAL_PATH)/../../../extern/SOIL/build/android/$(TARGET_ARCH_ABI) \
                        -L$(LOCAL_PATH)/../../../extern/Box2D_2.1.3/build/android/$(TARGET_ARCH_ABI) \
                        -L$(LOCAL_PATH)/../../../extern/NvEvent/obj/local/$(TARGET_ARCH_ABI)
-LOCAL_EXPORT_LDLIBS += -llog -ldl -lGLESv2 -lstdc++ -lc -lm -llog -ldl -lGLESv2 -lnvmath -lnvglesutil \
+LOCAL_EXPORT_LDLIBS += -llog -lGLESv2 -lnvmath -lnvglesutil \
                        -lnvhhdds -lnvlog -lnvshader -lnvfile -lnvapkfile -lnvevent -lnvtime -lEGL -lnvthread \
                        -lSOIL -lBox2D.2.1.3
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../include $(LOCAL_PATH)/../../../extern/NvEvent/jni
@@ -23,7 +23,7 @@ LOCAL_SRC_FILES :=   $(TARGET_ARCH_ABI)/liborxd.a
 LOCAL_EXPORT_LDLIBS := -L$(LOCAL_PATH)/../../../extern/SOIL/build/android/$(TARGET_ARCH_ABI) \
                        -L$(LOCAL_PATH)/../../../extern/Box2D_2.1.3/build/android/$(TARGET_ARCH_ABI) \
                        -L$(LOCAL_PATH)/../../../extern/NvEvent/obj/local/$(TARGET_ARCH_ABI)
-LOCAL_EXPORT_LDLIBS += -llog -ldl -lGLESv2 -lstdc++ -lc -lm -llog -ldl -lGLESv2 -lnvmath -lnvglesutil \
+LOCAL_EXPORT_LDLIBS += -llog -lGLESv2 -lnvmath -lnvglesutil \
                        -lnvhhdds -lnvlog -lnvshader -lnvfile -lnvapkfile -lnvevent -lnvtime -lEGL -lnvthread \
                        -lSOIL -lBox2D.2.1.3
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../include $(LOCAL_PATH)/../../../extern/NvEvent/jni
