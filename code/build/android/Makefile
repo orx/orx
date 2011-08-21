@@ -70,13 +70,13 @@ armeabi_OUT = armeabi/liborx.a
 armeabi-v7a_OUT = armeabi-v7a/liborx.a
 
 INCLUDES = -I../../include -I../../../extern/SOIL/include -I../../../extern/Box2D_2.1.3/include \
-           -I../../../extern/dlmalloc -I../../../extern/NvEvent/jni
+           -I../../../extern/dlmalloc -I../../../extern/NvEvent/jni -I../../../extern/NvEvent/jni/include
 	
 CXX = arm-linux-androideabi-g++
 CC = arm-linux-androideabi-gcc
 AR = arm-linux-androideabi-ar
-CPPFLAGS = -fno-exceptions -fno-rtti -DNO_MALLINFO=1 -D__orxANDROID__
-CFLAGS = -DNO_MALLINFO=1 -D__orxANDROID__
+CPPFLAGS = -fno-exceptions -fno-rtti -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID
+CFLAGS = -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID
 	
 all: $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
 

@@ -5,7 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := orxTest
 
 LOCAL_SRC_FILES := orxTest.c
-LOCAL_STATIC_LIBRARIES := orxd
+LOCAL_STATIC_LIBRARIES := orx
 
 LOCAL_ARM_MODE := arm
 
