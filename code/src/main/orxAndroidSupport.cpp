@@ -50,6 +50,8 @@ int32_t s_winHeight = 1;
 int s_displayRotation = -1;
 static bool s_glesLoaded = true;
 
+jobject oActivity;
+
 #ifdef __orxDEBUG__
 static unsigned int s_swapCount = 0;
 #endif
@@ -74,7 +76,6 @@ int GetRotation()
 {
   jint rotation;
   
-  jobject oActivity = (jobject) NVEventGetPlatformAppHandle();
   JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
     
   jclass clsContext = poJEnv->FindClass("android/content/Context");
@@ -122,6 +123,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
 
   s_winWidth = 1;
   s_winHeight = 1;
+  oActivity = (jobject) NVEventGetPlatformAppHandle();
 
   /* loop until EGL is ready */
 

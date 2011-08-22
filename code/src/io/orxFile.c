@@ -64,8 +64,8 @@
   
     #include <nv_file/nv_file.h>
     #include <jni.h>
-
-  extern JNIEnv              *poJEnv;
+    
+  extern jobject              oActivity;
     
   #endif /* __orxANDROID__ */
 
@@ -122,7 +122,7 @@ typedef struct __orxFILE_STATIC_t
 {
   orxU32 u32Flags;
   
-#if defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
   orxSTRING zInternalDataPath;
 
@@ -284,6 +284,42 @@ orxSTATUS orxFASTCALL orxFile_Init()
     
 #endif /* __orxANDROID_NATIVE__ */
 
+#ifdef __orxANDROID__
+
+    // TODO Retrieves the zExternalDataPath from Java
+    // sstFile.zExternalDataPath = orxNULL;
+
+    /* Retrieves the zInternalDataPath from Java */
+    JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+    
+    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
+    orxASSERT(objClass != orxNULL);
+    jmethodID getFilesDir = (*poJEnv)->GetMethodID(poJEnv, objClass, "getFilesDir", "()Ljava/io/File;");
+    orxASSERT(getFilesDir != orxNULL);
+    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getFilesDir);
+    orxASSERT(fileDir != orxNULL);
+    jclass fileClass = (*poJEnv)->GetObjectClass(poJEnv, fileDir);
+    orxASSERT(fileClass != orxNULL);
+    jmethodID getAbsolutePath = (*poJEnv)->GetMethodID(poJEnv, fileClass, "getAbsolutePath", "()Ljava/lang/String;");
+    orxASSERT(getAbsolutePath != orxNULL);
+    jstring absolutePath = (*poJEnv)->CallObjectMethod(poJEnv, fileDir, getAbsolutePath);
+    orxASSERT(absolutePath != orxNULL);
+    const char *zInternalDataPath = (*poJEnv)->GetStringUTFChars(poJEnv, absolutePath, 0);
+    orxASSERT(zInternalDataPath != orxNULL);
+    
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "InternalDataPath is %s", zInternalDataPath);
+    sstFile.zInternalDataPath = orxString_Duplicate(zInternalDataPath);
+
+    /* Releases Java String */
+    (*poJEnv)->ReleaseStringUTFChars(poJEnv, absolutePath, zInternalDataPath);
+    
+    if(chdir((const char*)sstFile.zInternalDataPath) != 0)
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", sstFile.zInternalDataPath);
+    }
+    
+#endif /* __orxANDROID_NATIVE__ */
+
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
   }
@@ -299,7 +335,7 @@ void orxFASTCALL orxFile_Exit()
   /* Was initialized? */
   if(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
   {
-#if defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     /* free zInternalDataPath memory */
     orxString_Delete(sstFile.zInternalDataPath);

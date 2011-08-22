@@ -45,6 +45,8 @@
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL       0xFFFFFFFF /**< All mask */
 
+extern jobject oActivity;
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -191,7 +193,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init() {
 		/* Pops config section */
 		orxConfig_PopSection();
 		
-		jobject oActivity = (jobject) NVEventGetPlatformAppHandle();
     JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
 		
 		/* retrieve the AssetManager */
