@@ -48,6 +48,7 @@
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
 int s_displayRotation = -1;
+static bool s_glesLoaded = true;
 
 #ifdef __orxDEBUG__
 static unsigned int s_swapCount = 0;
@@ -158,6 +159,15 @@ static bool renderFrame(bool allocateIfNeeded)
   if (!NVEventReadyToRenderEGL(allocateIfNeeded))
       return false;
 
+    if (!s_glesLoaded)
+    {
+        if (!allocateIfNeeded)
+            return false;
+
+        orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
+        s_glesLoaded = true;
+    }
+
   /* Sends frame start event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
 
@@ -250,6 +260,7 @@ extern "C" {
   void MainLoop()
   {
     s_displayRotation = GetRotation();
+    s_glesLoaded = true;
 
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
@@ -327,7 +338,7 @@ extern "C" {
 
             case NV_EVENT_SURFACE_CREATED:
             case NV_EVENT_SURFACE_SIZE:
-              DEBUG( "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
 
               s_winWidth = ev->m_data.m_size.m_w;
               s_winHeight = ev->m_data.m_size.m_h;
@@ -335,6 +346,8 @@ extern "C" {
 
             case NV_EVENT_SURFACE_DESTROYED:
               orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
+              orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
+              s_glesLoaded = false;
               
               NVEventDestroySurfaceEGL();
               break;
