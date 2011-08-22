@@ -77,40 +77,44 @@ CC = arm-linux-androideabi-gcc
 AR = arm-linux-androideabi-ar
 CPPFLAGS = -fno-exceptions -fno-rtti -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID
 CFLAGS = -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID
+ARMV7A_FLAGS_RELEASE = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv5te -mtune=xscale -msoft-float -O1 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
+ARMV5TE_FLAGS_RELEASE = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -O1 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
+ARMV7A_FLAGS_DEBUG = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv5te -mtune=xscale -msoft-float -g -O0 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
+ARMV5TE_FLAGS_DEBUG = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -g -O0 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
 	
 all: $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
 
 armeabi/debug/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -g -O0 -D__orxDEBUG__ -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV5TE_FLAGS_DEBUG) -D__orxDEBUG__ -c $< -o $@
 
 armeabi/debug/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -g -O0 -D__orxDEBUG__ -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV5TE_FLAGS_DEBUG) -D__orxDEBUG__ -c $< -o $@
 
 armeabi-v7a/debug/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV7A_FLAGS_DEBUG) -D__orxDEBUG__ -c $< -o $@
 
 armeabi-v7a/debug/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV7A_FLAGS_DEBUG) -D__orxDEBUG__ -c $< -o $@
 
 armeabi/release/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -O1 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV5TE_FLAGS_RELEASE) -c $< -o $@
 
 armeabi/release/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -O1 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV5TE_FLAGS_RELEASE) -c $< -o $@
 
 armeabi-v7a/release/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O1 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV7A_FLAGS_RELEASE) -c $< -o $@
 
 armeabi-v7a/release/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O1 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV7A_FLAGS_RELEASE) -c $< -o $@
 
 $(armeabi_OUT): $(armeabi_OBJ)
 	$(AR) rcs $(armeabi_OUT) $(armeabi_OBJ)
