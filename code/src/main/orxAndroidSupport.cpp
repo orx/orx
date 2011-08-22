@@ -222,14 +222,6 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-/** Render inhibiter
- */
-static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
-{
-  /* Done! */
-  return orxSTATUS_FAILURE;
-}
-
 static void canonicalToScreen(const float *canVec, float *screenVec)
 {
   struct AxisSwap
@@ -349,24 +341,26 @@ extern "C" {
 
             case NV_EVENT_FOCUS_LOST:
 				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus lost event");
-				      
-              /* Adds render inhibiter */
-              orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+				      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
               break;
 
             case NV_EVENT_FOCUS_GAINED:
               orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus gained event");
-              
-              /* Removes render inhibiter */
-              orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+              orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
               break;
 
             case NV_EVENT_PAUSE:
 				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Pause event");
+				      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
               break;
 
             case NV_EVENT_RESUME:
 				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Resume event");
+				      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
+              break;
+
+            case NV_EVENT_START:
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Start event");
               break;
               
             case NV_EVENT_STOP:
@@ -396,7 +390,6 @@ extern "C" {
 
             // Events we simply default:
             case NV_EVENT_MULTITOUCH:
-            case NV_EVENT_START:
             case NV_EVENT_RESTART:
             case NV_EVENT_QUIT:
               orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "%s event: no specific app action", NVEventGetEventStr(ev->m_type));
