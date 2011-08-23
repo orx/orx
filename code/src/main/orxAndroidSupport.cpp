@@ -205,7 +205,7 @@ static orxBOOL sbStopByEvent = orxFALSE;
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
+extern "C" orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -257,201 +257,196 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
   screenVec[2] = canVec[2];
 }
 
-extern "C" {
+extern "C" void orxFASTCALL MainLoop()
+{
+  s_displayRotation = GetRotation();
+  s_glesLoaded = true;
 
-  void MainLoop()
+  /* Inits the engine */
+  if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
   {
-    s_displayRotation = GetRotation();
-    s_glesLoaded = true;
+    /* Registers default event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
-    /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    /* Displays help */
+    if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
     {
-      /* Registers default event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+      orxBOOL                 bStop;
+      /* Clears payload */
+      orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
-      /* Displays help */
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      /* Main loop */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "App entering main loop");
+
+      for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
+          bStop == orxFALSE;
+          bStop = ((NVEventStatusIsRunning() != true) || (sbStopByEvent != orxFALSE) || (seMainStatus == orxSTATUS_FAILURE) || (seClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
       {
-        orxBOOL                 bStop;
-
-        /* Clears payload */
-        orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-         /* Main loop */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "App entering main loop");
-
-        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
-            bStop == orxFALSE;
-            bStop = ((NVEventStatusIsRunning() != true) || (sbStopByEvent != orxFALSE) || (seMainStatus == orxSTATUS_FAILURE) || (seClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+        const NVEvent* ev = NULL;
+        while (NVEventStatusIsRunning() && (ev = NVEventGetNextEvent(NVEventStatusIsFocused() ? 1 : 100)))
         {
-          const NVEvent* ev = NULL;
-		      while (NVEventStatusIsRunning() && (ev = NVEventGetNextEvent(NVEventStatusIsFocused() ? 1 : 100)))
+          switch (ev->m_type)
           {
-            switch (ev->m_type)
-			      {
-			      case NV_EVENT_KEY:
-				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s", 
-					      ev->m_data.m_key.m_code, 
-					      (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
+			    case NV_EVENT_KEY:
+				    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s", 
+					  ev->m_data.m_key.m_code, 
+					  (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
 
-              if (ev->m_data.m_key.m_code == NV_KEYCODE_BACK)
-              {
-                /* Sends event */
-                orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-              }
-              else
-              {
-                NVEventDoneWithEvent(false); 
-              }
-              ev = NULL;
-              break;
-
-            case NV_EVENT_CHAR:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Char event: 0x%02x", ev->m_data.m_char.m_unichar);
-              ev = NULL;
-              NVEventDoneWithEvent(false);
-              break;
-
-            case NV_EVENT_TOUCH:
-              orxSYSTEM_EVENT_PAYLOAD stTouchPayload;
-              orxMemory_Zero(&stTouchPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-                
-              stTouchPayload.stTouch.fX = orx2F(ev->m_data.m_touch.m_x);
-              stTouchPayload.stTouch.fY = orx2F(ev->m_data.m_touch.m_y);
-              stTouchPayload.stTouch.fPressure = orx2F(0);
-                
-              switch (ev->m_data.m_touch.m_action)
-              {
-              case NV_TOUCHACTION_DOWN:
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayload);
-                break;
-                
-              case NV_TOUCHACTION_UP:
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayload);
-                break;
-                
-              case NV_TOUCHACTION_MOVE:
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayload);
-                break;
-                
-              }
-              break;
-
-            case NV_EVENT_SURFACE_CREATED:
-            case NV_EVENT_SURFACE_SIZE:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
-
-              s_winWidth = ev->m_data.m_size.m_w;
-              s_winHeight = ev->m_data.m_size.m_h;
-              break;
-
-            case NV_EVENT_SURFACE_DESTROYED:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
-              orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
-              s_glesLoaded = false;
-              
-              NVEventDestroySurfaceEGL();
-              break;
-
-            case NV_EVENT_FOCUS_LOST:
-				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus lost event");
-				      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
-              break;
-
-            case NV_EVENT_FOCUS_GAINED:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus gained event");
-              orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
-              break;
-
-            case NV_EVENT_PAUSE:
-				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Pause event");
-				      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
-              break;
-
-            case NV_EVENT_RESUME:
-				      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Resume event");
-				      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
-              break;
-
-            case NV_EVENT_START:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Start event");
-              break;
-              
-            case NV_EVENT_STOP:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Stop event");
-              break;
-
-            case NV_EVENT_ACCEL:
-              orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
-              orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-              
-              float canVec[3];
-              float screenVec[3];
-              
-              canVec[0] = orx2F(ev->m_data.m_accel.m_x);
-              canVec[1] = orx2F(ev->m_data.m_accel.m_y);
-              canVec[2] = orx2F(ev->m_data.m_accel.m_z);
-              
-              canonicalToScreen(canVec, screenVec);
-              
-              stAccelPayload.stAccelerometer.fX = orx2F(screenVec[0]);
-              stAccelPayload.stAccelerometer.fY = orx2F(screenVec[1]);
-              stAccelPayload.stAccelerometer.fZ = orx2F(screenVec[2]);
-              
+            if (ev->m_data.m_key.m_code == NV_KEYCODE_BACK)
+            {
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
-              break;
+              orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+            }
+            else
+            {
+              NVEventDoneWithEvent(false); 
+            }
+            ev = NULL;
+            break;
 
-            // Events we simply default:
-            case NV_EVENT_MULTITOUCH:
-            case NV_EVENT_RESTART:
-            case NV_EVENT_QUIT:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "%s event: no specific app action", NVEventGetEventStr(ev->m_type));
-              break;
+          case NV_EVENT_CHAR:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Char event: 0x%02x", ev->m_data.m_char.m_unichar);
+            ev = NULL;
+            NVEventDoneWithEvent(false);
+            break;
 
-            default:
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "UNKNOWN event");
+          case NV_EVENT_TOUCH:
+            orxSYSTEM_EVENT_PAYLOAD stTouchPayload;
+            orxMemory_Zero(&stTouchPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+               
+            stTouchPayload.stTouch.fX = orx2F(ev->m_data.m_touch.m_x);
+            stTouchPayload.stTouch.fY = orx2F(ev->m_data.m_touch.m_y);
+            stTouchPayload.stTouch.fPressure = orx2F(0);
+                
+            switch (ev->m_data.m_touch.m_action)
+            {
+            case NV_TOUCHACTION_DOWN:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayload);
               break;
-			      };
+                
+            case NV_TOUCHACTION_UP:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayload);
+              break;
+                
+            case NV_TOUCHACTION_MOVE:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayload);
+              break;
+                
+            }
+            break;
+
+          case NV_EVENT_SURFACE_CREATED:
+          case NV_EVENT_SURFACE_SIZE:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
+
+            s_winWidth = ev->m_data.m_size.m_w;
+            s_winHeight = ev->m_data.m_size.m_h;
+            break;
+
+          case NV_EVENT_SURFACE_DESTROYED:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
+            orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
+            s_glesLoaded = false;
+              
+            NVEventDestroySurfaceEGL();
+            break;
+
+          case NV_EVENT_FOCUS_LOST:
+				    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus lost event");
+				    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+            break;
+
+          case NV_EVENT_FOCUS_GAINED:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus gained event");
+            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+            break;
+
+          case NV_EVENT_PAUSE:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Pause event");
+				    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
+            break;
+
+          case NV_EVENT_RESUME:
+				    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Resume event");
+				    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
+            break;
+
+          case NV_EVENT_START:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Start event");
+            break;
+              
+          case NV_EVENT_STOP:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Stop event");
+            break;
+
+          case NV_EVENT_ACCEL:
+            orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
+            orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+              
+            float canVec[3];
+            float screenVec[3];
+            
+            canVec[0] = orx2F(ev->m_data.m_accel.m_x);
+            canVec[1] = orx2F(ev->m_data.m_accel.m_y);
+            canVec[2] = orx2F(ev->m_data.m_accel.m_z);
+              
+            canonicalToScreen(canVec, screenVec);
+             
+            stAccelPayload.stAccelerometer.fX = orx2F(screenVec[0]);
+            stAccelPayload.stAccelerometer.fY = orx2F(screenVec[1]);
+            stAccelPayload.stAccelerometer.fZ = orx2F(screenVec[2]);
+              
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
+            break;
+
+          // Events we simply default:
+          case NV_EVENT_MULTITOUCH:
+          case NV_EVENT_RESTART:
+          case NV_EVENT_QUIT:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "%s event: no specific app action", NVEventGetEventStr(ev->m_type));
+            break;
+
+          default:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "UNKNOWN event");
+            break;
+			    };
 			      
-            // if we do not NULL out the event, then we return that
-            // we handled it by default
-            if (ev)
-              NVEventDoneWithEvent(true);
-		      }
+          // if we do not NULL out the event, then we return that
+          // we handled it by default
+          if (ev)
+            NVEventDoneWithEvent(true);
+		    }
 
-          // Do not bother to initialize _any_ of EGL, much less go ahead
-          // and render to the screen unless we have all we need to go 
-          // ahead and do our thing.  In many cases,
-          // devices will bring us part-way up and then take us down.
-          // So, before we bother to init EGL (much less the rendering
-          // surface, check that:
-          // - we are focused
-          // - we have a rendering surface
-          // - the surface size is not 0x0
-          // - we are resumed, not paused
-          if (NVEventStatusIsInteractable())
-          {
-            // This will try to set up EGL if it isn't set up
-            // When we first set up EGL completely, we also load our GLES resources
-            // If these are already set up or we succeed at setting them all up now, then
-            // we go ahead and render.
-            renderFrame(true);
-          }
+        // Do not bother to initialize _any_ of EGL, much less go ahead
+        // and render to the screen unless we have all we need to go 
+        // ahead and do our thing.  In many cases,
+        // devices will bring us part-way up and then take us down.
+        // So, before we bother to init EGL (much less the rendering
+        // surface, check that:
+        // - we are focused
+        // - we have a rendering surface
+        // - the surface size is not 0x0
+        // - we are resumed, not paused
+        if (NVEventStatusIsInteractable())
+        {
+          // This will try to set up EGL if it isn't set up
+          // When we first set up EGL completely, we also load our GLES resources
+          // If these are already set up or we succeed at setting them all up now, then
+          // we go ahead and render.
+          renderFrame(true);
         }
       }
-
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Exits from engine */
-      orxModule_Exit(orxMODULE_ID_MAIN);
     }
 
-    /* Exits from all modules */
-    orxModule_ExitAll();
-        
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+    /* Exits from engine */
+    orxModule_Exit(orxMODULE_ID_MAIN);
   }
-  
+
+  /* Exits from all modules */
+  orxModule_ExitAll();
 }
+

@@ -290,7 +290,7 @@ orxSTATUS orxFASTCALL orxFile_Init()
     // sstFile.zExternalDataPath = orxNULL;
 
     /* Retrieves the zInternalDataPath from Java */
-    JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv *poJEnv = (JNIEnv*) NVThreadGetCurrentJNIEnv();
     
     jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
     orxASSERT(objClass != orxNULL);
