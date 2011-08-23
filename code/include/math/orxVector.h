@@ -539,7 +539,7 @@ static orxINLINE orxFLOAT                     orxVector_GetDistance(const orxVEC
 static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   register orxFLOAT fOp;
-
+  
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp != orxNULL);
@@ -547,22 +547,13 @@ static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pv
   /* Gets squared size */
   fOp = (_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY) + (_pvOp->fZ * _pvOp->fZ);
 
-  /* Valid? */
-  if(fOp > orxFLOAT_0)
-  {
-    /* Gets reciprocal size */
-    fOp = orxFLOAT_1 / orxMath_Sqrt(fOp);
+  /* Gets reciprocal size */
+  fOp = orxFLOAT_1 / (orxMATH_KF_TINY_EPSILON + orxMath_Sqrt(fOp));
 
-    /* Updates result */
-    _pvRes->fX = fOp * _pvOp->fX;
-    _pvRes->fY = fOp * _pvOp->fY;
-    _pvRes->fZ = fOp * _pvOp->fZ;
-  }
-  else
-  {
-    /* Clears result */
-    orxMemory_Zero(_pvRes, sizeof(orxVECTOR));
-  }
+  /* Updates result */
+  _pvRes->fX = fOp * _pvOp->fX;
+  _pvRes->fY = fOp * _pvOp->fY;
+  _pvRes->fZ = fOp * _pvOp->fZ;
 
   /* Done! */
   return _pvRes;
