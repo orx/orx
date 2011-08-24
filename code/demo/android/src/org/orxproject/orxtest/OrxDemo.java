@@ -16,6 +16,7 @@ public class OrxDemo extends NvEventQueueActivity {
     static
     {
     	System.loadLibrary("Box2D");
+    	System.loadLibrary("SOIL");
         System.loadLibrary("orxTest");
     }
 
