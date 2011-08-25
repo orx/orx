@@ -205,7 +205,7 @@ static orxBOOL sbStopByEvent = orxFALSE;
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-extern "C" orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -292,15 +292,20 @@ extern "C" void orxFASTCALL MainLoop()
 					  ev->m_data.m_key.m_code, 
 					  (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
 
-            if (ev->m_data.m_key.m_code == NV_KEYCODE_BACK)
-            {
-              /* Sends event */
-              orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-            }
-            else
-            {
-              NVEventDoneWithEvent(false); 
-            }
+            orxSYSTEM_EVENT_PAYLOAD stKeyPayload;
+            orxMemory_Zero(&stKeyPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+            stKeyPayload.stKeyboard.u32KeyCode = ev->m_data.m_key.m_code;
+			      switch(ev->m_data.m_key.m_action)
+			      {
+            case NV_KEYACTION_DOWN:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_KEY_DOWN, orxNULL, orxNULL, &stKeyPayload);
+              break;
+            case NV_KEYACTION_UP:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_KEY_UP, orxNULL, orxNULL, &stKeyPayload);
+              break;
+			      }
+
             ev = NULL;
             break;
 

@@ -81,6 +81,7 @@ static orxSTATUS orxFASTCALL Init()
 
 static orxSTATUS orxFASTCALL Run()
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxVECTOR vMousePos, vGravity;
 
   /* Updates generator's status */
@@ -119,7 +120,17 @@ static orxSTATUS orxFASTCALL Run()
     orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
   }
 
-  return orxSTATUS_SUCCESS;
+  // Is quit action active?
+  if(orxInput_IsActive("Quit"))
+  {
+    // Logs
+    orxLOG("Quit action triggered, exiting!");
+
+    // Sets return value to orxSTATUS_FAILURE, meaning we want to exit
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  return eResult;
 }
 
 static void orxFASTCALL Exit()
