@@ -718,9 +718,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         pstBitmap = orxTexture_GetBitmap(pstTexture);
 
         /* Gets rendering frame's position, rotation & scale */
-        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-        orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-        orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+        fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
+        orxFrame_GetScale(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+        orxFrame_GetPosition(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
         /* Gets its clipping corners */
         orxGraphic_GetOrigin(pstGraphic, &vClipTL);
@@ -876,9 +876,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               orxGraphic_GetSize(pstGraphic, &vSize);
 
               /* Gets rendering frame's position, rotation & scale */
-              fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-              orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-              orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+              fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
+              orxFrame_GetScale(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+              orxFrame_GetPosition(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
               /* Gets object & graphic flipping */
               orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
