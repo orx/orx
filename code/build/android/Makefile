@@ -77,8 +77,8 @@ CC = arm-linux-androideabi-gcc
 AR = arm-linux-androideabi-ar
 CPPFLAGS = -fno-exceptions -fno-rtti -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID -D__orxBANK_ALIGN__
 CFLAGS = -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID -D__orxBANK_ALIGN__
-ARMV7A_FLAGS_RELEASE = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv5te -mtune=xscale -msoft-float -O2 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
-ARMV5TE_FLAGS_RELEASE = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -O2 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
+ARMV7A_FLAGS_RELEASE = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv5te -mtune=xscale -msoft-float -O1 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
+ARMV5TE_FLAGS_RELEASE = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -O1 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
 ARMV7A_FLAGS_DEBUG = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv5te -mtune=xscale -msoft-float -g -O0 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
 ARMV5TE_FLAGS_DEBUG = -fpic -ffunction-sections -funwind-tables -fstack-protector -D__ARM_ARCH_5__ -D__ARM_ARCH_5T__ -D__ARM_ARCH_5E__ -D__ARM_ARCH_5TE__  -Wno-psabi -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -g -O0 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300
 	
