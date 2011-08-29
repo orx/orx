@@ -306,7 +306,6 @@ extern "C" void orxFASTCALL MainLoop()
               break;
 			      }
 
-            ev = NULL;
             break;
 
           case NV_EVENT_CHAR:
