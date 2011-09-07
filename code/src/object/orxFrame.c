@@ -71,11 +71,11 @@
 typedef struct __orxFRAME_DATA_2D_t
 {
   orxVECTOR vGlobalPos;                     /**< Global 2D coordinates : 12 */
-  orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 24 */
-  orxFLOAT  fGlobalAngle;                   /**< Global 2D rotation angle : 28 */
-  orxFLOAT  fGlobalScaleX;                  /**< Global 2D isometric X scale : 32 */
-  orxFLOAT  fGlobalScaleY;                  /**< Global 2D isometric Y scale : 36 */
-  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 40 */
+  orxFLOAT  fGlobalAngle;                   /**< Global 2D rotation angle : 16 */
+  orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 28 */
+  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 32 */
+  orxFLOAT  fGlobalScaleX;                  /**< Global 2D isometric X scale : 36 */
+  orxFLOAT  fGlobalScaleY;                  /**< Global 2D isometric Y scale : 40 */
   orxFLOAT  fLocalScaleX;                   /**< Local 2D isometric X scale : 44 */
   orxFLOAT  fLocalScaleY;                   /**< Local 2D isometric Y scale : 48 */
 
