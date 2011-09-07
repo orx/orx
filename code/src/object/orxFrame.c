@@ -57,9 +57,8 @@
 #define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
 #define orxFRAME_KU32_FLAG_DATA_2D          0x10000000  /**< 2D ID flag */
-#define orxFRAME_KU32_FLAG_DIRTY            0x01000000  /**< Dirty ID flag */
 
-#define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< Dirty ID flag */
+#define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
 
 /***************************************************************************
@@ -124,34 +123,19 @@ static orxINLINE void _orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pvPos != orxNULL);
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* According to space */
-  switch(_eSpace)
+  /* Stores it */
+  if(_eSpace == orxFRAME_SPACE_GLOBAL)
   {
-    case orxFRAME_SPACE_GLOBAL:
-    {
-      orxVector_Copy(&(_pstFrame->stData.vGlobalPos), _pvPos);
-
-      break;
-    }
-
-    case orxFRAME_SPACE_LOCAL:
-    {
-      orxVector_Copy(&(_pstFrame->stData.vLocalPos), _pvPos);
-
-      break;
-    }
-
-    default:
-    {
-      /* Wrong space */
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%ld).", _eSpace);
-
-      break;
-    }
+    orxVector_Copy(&(_pstFrame->stData.vGlobalPos), _pvPos);
+  }
+  else
+  {
+    orxVector_Copy(&(_pstFrame->stData.vLocalPos), _pvPos);
   }
 
+  /* Done! */
   return;
 }
 
@@ -164,34 +148,19 @@ static orxINLINE void _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngl
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* According to coord type */
-  switch(_eSpace)
+  /* Stores it */
+  if(_eSpace == orxFRAME_SPACE_GLOBAL)
   {
-    case orxFRAME_SPACE_GLOBAL:
-    {
-      _pstFrame->stData.fGlobalAngle  = _fAngle;
-
-      break;
-    }
-
-    case orxFRAME_SPACE_LOCAL:
-    {
-      _pstFrame->stData.fLocalAngle   = _fAngle;
-
-      break;
-    }
-
-    default:
-    {
-      /* Wrong coord type */
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%ld).", _eSpace);
-
-      break;
-    }
+    _pstFrame->stData.fGlobalAngle = _fAngle;
+  }
+  else
+  {
+    _pstFrame->stData.fLocalAngle = _fAngle;
   }
 
+  /* Done! */
   return;
 }
 
@@ -205,33 +174,21 @@ static orxINLINE void _orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR *_
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_pvScale != orxNULL);
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* According to coord type */
-  switch(_eSpace)
+  /* Stores it */
+  if(_eSpace == orxFRAME_SPACE_GLOBAL)
   {
-    case orxFRAME_SPACE_GLOBAL:
-
-      _pstFrame->stData.fGlobalScaleX = _pvScale->fX;
-      _pstFrame->stData.fGlobalScaleY = _pvScale->fY;
-
-      break;
-
-    case orxFRAME_SPACE_LOCAL:
-
-      _pstFrame->stData.fLocalScaleX = _pvScale->fX;
-      _pstFrame->stData.fLocalScaleY = _pvScale->fY;
-
-      break;
-
-    default:
-
-      /* Wrong coord type */
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%ld).", _eSpace);
-
-      break;
+    _pstFrame->stData.fGlobalScaleX = _pvScale->fX;
+    _pstFrame->stData.fGlobalScaleY = _pvScale->fY;
+  }
+  else
+  {
+    _pstFrame->stData.fLocalScaleX = _pvScale->fX;
+    _pstFrame->stData.fLocalScaleY = _pvScale->fY;
   }
 
+  /* Done! */
   return;
 }
 
@@ -246,34 +203,16 @@ static orxINLINE const orxVECTOR *_orxFrame_GetPosition(const orxFRAME *_pstFram
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* According to coord type */
-  switch(_eSpace)
+  /* Updates result */
+  if(_eSpace == orxFRAME_SPACE_GLOBAL)
   {
-    case orxFRAME_SPACE_GLOBAL:
-    {
-      /* Updates result */
-      pvResult = &(_pstFrame->stData.vGlobalPos);
-
-      break;
-    }
-
-    case orxFRAME_SPACE_LOCAL:
-    {
-      /* Updates result */
-      pvResult = &(_pstFrame->stData.vLocalPos);
-
-      break;
-    }
-
-    default:
-    {
-      /* Wrong coord type */
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%ld).", _eSpace);
-
-      break;
-    }
+    pvResult = &(_pstFrame->stData.vGlobalPos);
+  }
+  else
+  {
+    pvResult = &(_pstFrame->stData.vLocalPos);
   }
 
   /* Done */
@@ -291,32 +230,16 @@ static orxINLINE orxFLOAT _orxFrame_GetRotation(const orxFRAME *_pstFrame, orxFR
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* According to coord type */
-  switch(_eSpace)
+  /* Updates result */
+  if(_eSpace == orxFRAME_SPACE_GLOBAL)
   {
-    case orxFRAME_SPACE_GLOBAL:
-    {
-      fAngle = _pstFrame->stData.fGlobalAngle;
-
-      break;
-    }
-
-    case orxFRAME_SPACE_LOCAL:
-    {
-      fAngle = _pstFrame->stData.fLocalAngle;
-
-      break;
-    }
-
-    default:
-    {
-      /* Wrong coord type */
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%ld).", _eSpace);
-
-      break;
-    }
+    fAngle = _pstFrame->stData.fGlobalAngle;
+  }
+  else
+  {
+    fAngle = _pstFrame->stData.fLocalAngle;
   }
 
   /* Done */
@@ -331,95 +254,63 @@ static orxINLINE orxFLOAT _orxFrame_GetRotation(const orxFRAME *_pstFrame, orxFR
  */
 static orxINLINE orxVECTOR *_orxFrame_GetScale(const orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvScale)
 {
-  orxVECTOR *pvResult;
+  orxVECTOR *pvResult = _pvScale;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pvScale != orxNULL);
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
+
+  /* Updates result */
+  if(_eSpace == orxFRAME_SPACE_GLOBAL)
+  {
+    _pvScale->fX = _pstFrame->stData.fGlobalScaleX;
+    _pvScale->fY = _pstFrame->stData.fGlobalScaleY;
+  }
+  else
+  {
+    _pvScale->fX = _pstFrame->stData.fLocalScaleX;
+    _pvScale->fY = _pstFrame->stData.fLocalScaleY;
+  }
 
   /* No z scale */
   _pvScale->fZ = orxFLOAT_1;
-
-  /* According to coord type */
-  switch(_eSpace)
-  {
-    case orxFRAME_SPACE_GLOBAL:
-    {
-      _pvScale->fX = _pstFrame->stData.fGlobalScaleX;
-      _pvScale->fY = _pstFrame->stData.fGlobalScaleY;
-
-      /* Updates result */
-      pvResult = _pvScale;
-
-      break;
-    }
-
-    case orxFRAME_SPACE_LOCAL:
-    {
-      _pvScale->fX = _pstFrame->stData.fLocalScaleX;
-      _pvScale->fY = _pstFrame->stData.fLocalScaleY;
-
-      /* Updates result */
-      pvResult = _pvScale;
-
-      break;
-    }
-
-    default:
-    {
-      /* Wrong coord type */
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%ld).", _eSpace);
-
-      /* Clears scale */
-      orxVector_Copy(_pvScale, &orxVECTOR_0);
-
-      /* Updates result */
-      pvResult = orxNULL;
-
-      break;
-    }
-  }
 
   /* Done */
   return pvResult;
 }
 
 /** Updates frame global data using parent's global and frame local ones
- * @param[out]  _pstDstFrame    Destination frame, will contain up-to-date frame
- * @param[in]   _pstSrcFrame    Source frame, which needs update
+ * @param[out]  _pstFrame       Frame to update
+ * @param[in]   _pstParent Parent frame to use for update
  */
-static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRAME *_pstSrcFrame)
+static orxINLINE void orxFrame_UpdateData(orxFRAME *_pstFrame, const orxFRAME *_pstParent)
 {
   /* Checks */
-  orxASSERT((_pstDstFrame != orxNULL));
-  orxASSERT((_pstSrcFrame != orxNULL));
+  orxASSERT((_pstFrame != orxNULL));
+  orxASSERT((_pstParent != orxNULL));
 
   /* 2D data? */
-  if(orxStructure_TestFlags(_pstSrcFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     orxVECTOR           vTempPos, vScale, vParentScale, vLocalScale;
-    const orxVECTOR *pvParentPos, *pvPos;
+    const orxVECTOR    *pvParentPos, *pvPos;
     orxFLOAT            fParentAngle, fAngle;
     orxFLOAT            fX, fY, fLocalX, fLocalY, fCos, fSin;
-    orxFRAME            *pstParentFrame;
-
-    /* gets parent frame */
-    pstParentFrame = orxFRAME(orxStructure_GetParent(_pstSrcFrame));
 
     /* Gets parent's global data */
-    pvParentPos   = _orxFrame_GetPosition(pstParentFrame, orxFRAME_SPACE_GLOBAL);
-    fParentAngle  = _orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vParentScale);
+    pvParentPos   = _orxFrame_GetPosition(_pstParent, orxFRAME_SPACE_GLOBAL);
+    fParentAngle  = _orxFrame_GetRotation(_pstParent, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_GetScale(_pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
 
     /* Gets frame's local coord */
-    pvPos         = _orxFrame_GetPosition(_pstSrcFrame, orxFRAME_SPACE_LOCAL);
+    pvPos         = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL);
 
     /* Gets frame's local scales */
-    _orxFrame_GetScale(_pstSrcFrame, orxFRAME_SPACE_LOCAL, &vLocalScale);
+    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, &vLocalScale);
 
     /* Updates angle */
-    fAngle        = _orxFrame_GetRotation(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
+    fAngle        = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
     if(fParentAngle == orxFLOAT_0)
     {
       fCos        = orxFLOAT_1;
@@ -452,9 +343,9 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;
 
     /* Stores them */
-    _orxFrame_SetRotation(_pstDstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_SetScale(_pstDstFrame, &vScale, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_SetPosition(_pstDstFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetRotation(_pstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetScale(_pstFrame, &vScale, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetPosition(_pstFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
   }
   else
   {
@@ -465,76 +356,30 @@ static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRA
   return;
 }
 
-/** Processes frame dirty state
+/** Processes a frame
  * @param[in]   _pstFrame       Concerned frame
  */
-static orxINLINE void orxFrame_ProcessDirty(orxFRAME *_pstFrame)
+static void orxFASTCALL orxFrame_Process(orxFRAME *_pstFrame, const orxFRAME *_pstParent)
 {
-  orxFRAME *pstParentFrame;
+  orxFRAME *pstChild;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFrame);
+  orxSTRUCTURE_ASSERT(_pstParent);
 
-  /* gets parent frame */
-  pstParentFrame = orxFRAME(orxStructure_GetParent(_pstFrame));
+  /* Updates frame's data */
+  orxFrame_UpdateData(_pstFrame, _pstParent);
 
-  /* Is cell dirty & has parent? */
-  if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DIRTY) != orxFALSE)
-  && (pstParentFrame != orxNULL))
+  /* For all children */
+  for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+      pstChild != orxNULL;
+      pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
   {
-    /* Updates parent status */
-    orxFrame_ProcessDirty(pstParentFrame);
-
-    /* Updates frame global data */
-    orxFrame_UpdateData(_pstFrame, _pstFrame);
+    /* Updates it */
+    orxFrame_Process(pstChild, _pstFrame);
   }
-
-  /* Updates dirty status */
-  orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_DIRTY);
 
   /* Done! */
-  return;
-}
-
-/** Sets a frame flag recursively
- * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _u32AddFlags    Flags to add
- * @param[in]   _u32RemoveFlags Flags to remove
- * @param[in]   _bRecursed      Recursive?
- */
-static void orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
-{
-  /* Non null? */
-  if(_pstFrame != orxNULL)
-  {
-    /* Updates child status */
-    orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetChild(_pstFrame)), _u32AddFlags, _u32RemoveFlags, orxTRUE);
-
-    /* Recursed? */
-    if(_bRecursed)
-    {
-      /* Updates siblings status */
-      orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetSibling(_pstFrame)), _u32AddFlags, _u32RemoveFlags, orxTRUE);
-    }
-
-    /* Updates cell flags */
-    orxStructure_SetFlags(_pstFrame, _u32AddFlags, _u32RemoveFlags);
-  }
-
-  return;
-}
-
-/** Tags a frame as dirty
- * @param[in]   _pstFrame       Concerned frame
- */
-static orxINLINE void orxFrame_SetDirty(orxFRAME *_pstFrame)
-{
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstFrame);
-
-  /* Adds dirty flags to all frame's heirs */
-  orxFrame_SetFlagRecursively(_pstFrame, orxFRAME_KU32_FLAG_DIRTY, orxFRAME_KU32_FLAG_NONE, orxFALSE);
-
   return;
 }
 
@@ -775,9 +620,16 @@ void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
     orxStructure_SetParent(_pstFrame, _pstParent);
   }
 
-  /* Tags as dirty */
-  orxFrame_SetDirty(_pstFrame);
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxFrame_Process");
 
+  /* Processes frame */
+  orxFrame_Process(_pstFrame, _pstParent);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return;
 }
 
@@ -795,25 +647,6 @@ orxBOOL orxFASTCALL orxFrame_IsRootChild(const orxFRAME *_pstFrame)
 
   /* Updates result*/
   bResult = orxFRAME(orxStructure_GetParent(_pstFrame)) == sstFrame.pstRoot;
-
-  /* Done! */
-  return bResult;
-}
-
-/** Is dirty?
- * @param[in]   _pstFrame       Concerned frame
- * @return orxTRUE if dirty, orxFALSE otherwise
- */
-orxBOOL orxFASTCALL orxFrame_IsDirty(const orxFRAME *_pstFrame)
-{
-  orxBOOL bResult;
-
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstFrame);
-
-  /* Updates result*/
-  bResult = orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DIRTY);
 
   /* Done! */
   return bResult;
@@ -837,8 +670,14 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* Updates coord values */
     _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_LOCAL);
 
-    /* Tags as dirty */
-    orxFrame_SetDirty(_pstFrame);
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* Processes frame */
+    orxFrame_Process(_pstFrame, orxFRAME(orxStructure_GetParent(_pstFrame)));
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
   else
   {
@@ -858,15 +697,15 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
         orxVECTOR         vLocalPos, vParentScale;
         orxFLOAT          fParentAngle, fCos, fSin, fX, fY, fLocalX, fLocalY;
         const orxVECTOR  *pvParentPos;
-        orxFRAME         *pstParentFrame;
+        orxFRAME         *pstParent, *pstChild;
 
         /* gets parent frame */
-        pstParentFrame = orxFRAME(orxStructure_GetParent(_pstFrame));
+        pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
 
         /* Gets parent's global data */
-        pvParentPos   = _orxFrame_GetPosition(pstParentFrame, orxFRAME_SPACE_GLOBAL);
-        fParentAngle  = _orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL);
-        _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vParentScale);
+        pvParentPos   = _orxFrame_GetPosition(pstParent, orxFRAME_SPACE_GLOBAL);
+        fParentAngle  = _orxFrame_GetRotation(pstParent, orxFRAME_SPACE_GLOBAL);
+        _orxFrame_GetScale(pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
 
         /* Gets cosine & sine */
         if(fParentAngle == orxFLOAT_0)
@@ -905,8 +744,20 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
         _orxFrame_SetPosition(_pstFrame, &vLocalPos, orxFRAME_SPACE_LOCAL);
         _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_GLOBAL);
 
-        /* Updates child status */
-        orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetChild(_pstFrame)), orxFRAME_KU32_FLAG_DIRTY, orxFRAME_KU32_FLAG_NONE, orxTRUE);
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+        /* For all children */
+        for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+            pstChild != orxNULL;
+            pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
+        {
+          /* Processes it */
+          orxFrame_Process(pstChild, _pstFrame);
+        }
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
       }
     }
     else
@@ -936,8 +787,14 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* Updates angle value */
     _orxFrame_SetRotation(_pstFrame, _fAngle, orxFRAME_SPACE_LOCAL);
 
-    /* Tags as dirty */
-    orxFrame_SetDirty(_pstFrame);
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* Processes frame */
+    orxFrame_Process(_pstFrame, orxFRAME(orxStructure_GetParent(_pstFrame)));
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
   else
   {
@@ -953,13 +810,13 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
       if(fGlobalAngle != _fAngle)
       {
         orxFLOAT fParentAngle, fLocalAngle;
-        orxFRAME *pstParentFrame;
+        orxFRAME *pstParent, *pstChild;
 
         /* gets parent frame */
-        pstParentFrame = orxFRAME(orxStructure_GetParent(_pstFrame));
+        pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
 
         /* Gets parent's global angle */
-        fParentAngle = _orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL);
+        fParentAngle = _orxFrame_GetRotation(pstParent, orxFRAME_SPACE_GLOBAL);
 
         /* Gets local angle */
         fLocalAngle = _fAngle - fParentAngle;
@@ -968,8 +825,20 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
         _orxFrame_SetRotation(_pstFrame, fLocalAngle, orxFRAME_SPACE_LOCAL);
         _orxFrame_SetRotation(_pstFrame, _fAngle, orxFRAME_SPACE_GLOBAL);
 
-        /* Updates child status */
-        orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetChild(_pstFrame)), orxFRAME_KU32_FLAG_DIRTY, orxFRAME_KU32_FLAG_NONE, orxTRUE);
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+        /* For all children */
+        for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+            pstChild != orxNULL;
+            pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
+        {
+          /* Processes it */
+          orxFrame_Process(pstChild, _pstFrame);
+        }
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
       }
     }
     else
@@ -1000,8 +869,14 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
     /* Updates scale value */
     _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_LOCAL);
 
-    /* Tags as dirty */
-    orxFrame_SetDirty(_pstFrame);
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* Processes frame */
+    orxFrame_Process(_pstFrame, orxFRAME(orxStructure_GetParent(_pstFrame)));
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
   else
   {
@@ -1019,13 +894,13 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
       || (vGlobalScale.fZ != _pvScale->fZ))
       {
         orxVECTOR vParentScale, vLocalScale;
-        orxFRAME *pstParentFrame;
+        orxFRAME *pstParent, *pstChild;
 
         /* gets parent frame */
-        pstParentFrame = orxFRAME(orxStructure_GetParent(_pstFrame));
+        pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
 
         /* Gets parent's global scale */
-        _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vParentScale);
+        _orxFrame_GetScale(pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
 
         /* Gets local scale */
         if(vParentScale.fX != orxFLOAT_0)
@@ -1041,8 +916,20 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
         _orxFrame_SetScale(_pstFrame, &vLocalScale, orxFRAME_SPACE_LOCAL);
         _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_GLOBAL);
 
-        /* Updates child status */
-        orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetChild(_pstFrame)), orxFRAME_KU32_FLAG_DIRTY, orxFRAME_KU32_FLAG_NONE, orxTRUE);
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+        /* For all children */
+        for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+            pstChild != orxNULL;
+            pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
+        {
+          /* Processes it */
+          orxFrame_Process(pstChild, _pstFrame);
+        }
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
       }
     }
     else
@@ -1071,51 +958,18 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
   orxASSERT(_pvPos != orxNULL);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* Updates result */
-  pvResult = _pvPos;
-
   /* Is a 2D Frame? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
-    const orxVECTOR *pvIntern = orxNULL;
-
-    /* Depending on space */
-    switch(_eSpace)
-    {
-      case orxFRAME_SPACE_GLOBAL:
-      {
-        /* Profiles */
-        orxPROFILER_PUSH_MARKER("orxFrame_ProcessDirty");
-
-        /* Process dirty cell */
-        orxFrame_ProcessDirty(_pstFrame);
-
-        /* Profiles */
-        orxPROFILER_POP_MARKER();
-
-        /* Gets requested position */
-        pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
-
-        break;
-      }
-
-      case orxFRAME_SPACE_LOCAL:
-      default:
-      {
-        /* Gets local position */
-        pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL);
-
-        break;
-      }
-    }
-
-    /* Makes a copy */
-    orxVector_Copy(_pvPos, (orxVECTOR *)pvIntern);
+    /* Updates result */
+    orxVector_Copy(_pvPos, _orxFrame_GetPosition(_pstFrame, _eSpace));
+    pvResult = _pvPos;
   }
   else
   {
     /* Resets coord structure */
     orxVector_SetAll(_pvPos, orxFLOAT_0);
+    pvResult = orxNULL;
   }
 
   /* Done! */
@@ -1129,7 +983,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
  */
 orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
-  orxFLOAT fAngle = orxFLOAT_0;
+  orxFLOAT fAngle;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -1139,35 +993,13 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
   /* Is Frame 2D? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
-    /* Depending on space */
-    switch(_eSpace)
-    {
-      case orxFRAME_SPACE_LOCAL:
-      {
-        /* Get rotation */
-        fAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL);
-
-        break;
-      }
-
-      case orxFRAME_SPACE_GLOBAL:
-      default:
-      {
-        /* Profiles */
-        orxPROFILER_PUSH_MARKER("orxFrame_ProcessDirty");
-
-        /* Process dirty cell */
-        orxFrame_ProcessDirty(_pstFrame);
-
-        /* Profiles */
-        orxPROFILER_POP_MARKER();
-
-        /* Gets requested rotation */
-        fAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
-
-        break;
-      }
-    }
+    /* Updates result */
+    fAngle = _orxFrame_GetRotation(_pstFrame, _eSpace);
+  }
+  else
+  {
+    /* Updates result */
+    fAngle = orxFLOAT_0;
   }
 
   /* Done! */
@@ -1193,45 +1025,8 @@ orxVECTOR *orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eS
   /* Is Frame 2D? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
-    /* Depending on space */
-    switch(_eSpace)
-    {
-      case orxFRAME_SPACE_LOCAL:
-      {
-        /* Gets scale */
-        pvResult = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
-
-        break;
-      }
-
-      case orxFRAME_SPACE_GLOBAL:
-      {
-        /* Profiles */
-        orxPROFILER_PUSH_MARKER("orxFrame_ProcessDirty");
-
-        /* Process dirty cell */
-        orxFrame_ProcessDirty(_pstFrame);
-
-        /* Profiles */
-        orxPROFILER_POP_MARKER();
-
-        /* Gets requested scale */
-        pvResult = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);
-
-        break;
-      }
-
-      default:
-      {
-        /* Clears scale */
-        orxVector_Copy(_pvScale, &orxVECTOR_0);
-
-        /* Updates result */
-        pvResult = orxNULL;
-
-        break;
-      }
-    }
+    /* Updates result */
+    pvResult = _orxFrame_GetScale(_pstFrame, _eSpace, _pvScale);
   }
   else
   {
