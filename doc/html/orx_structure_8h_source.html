@@ -156,146 +156,151 @@
 <a name="l00158"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ac258b6e7e5c43edcf15b8adba02c3553">00158</a>   <a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ac258b6e7e5c43edcf15b8adba02c3553">eID</a>;            
 <a name="l00159"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef">00159</a>   orxU32          <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef">u32Flags</a>;       
 <a name="l00160"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723">00160</a>   orxHANDLE       <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723">hStorageNode</a>;   
-<a name="l00161"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ac60583c7abbfc6d1349862079943605f">00161</a>   orxU32          <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ac60583c7abbfc6d1349862079943605f">s32RefCounter</a>;  
-<a name="l00163"></a>00163 } <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>;
-<a name="l00164"></a>00164 
-<a name="l00165"></a>00165 
-<a name="l00168"></a><a class="code" href="group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e">00168</a> <span class="keyword">typedef</span> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> (orxFASTCALL *<a class="code" href="group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a>)(<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, <span class="keyword">const</span> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, <span class="keyword">const</span> <a class="code" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo);
-<a name="l00169"></a>00169 
+<a name="l00161"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a0b9023956a7ed7f0aac9e7dec8f45ffb">00161</a>   orxU32          <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a0b9023956a7ed7f0aac9e7dec8f45ffb">u32RefCounter</a>;  
+<a name="l00163"></a>00163 <span class="preprocessor">#ifdef __orxX86_64__</span>
+<a name="l00164"></a>00164 <span class="preprocessor"></span>
+<a name="l00165"></a>00165   orxU8           au8Padding[12]; 
+<a name="l00167"></a>00167 <span class="preprocessor">#endif </span><span class="comment">/* __orxX86_64__ */</span>
+<a name="l00168"></a>00168 
+<a name="l00169"></a>00169 } <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>;
 <a name="l00170"></a>00170 
-<a name="l00176"></a><a class="code" href="group__orx_structure.html#ga6166c07b080e5a284480ac699a1459bb">00176</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *<a class="code" href="group__orx_structure.html#ga6166c07b080e5a284480ac699a1459bb">_orxStructure_GetPointer</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, <a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)
-<a name="l00177"></a>00177 {
-<a name="l00178"></a>00178   <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *pstResult;
-<a name="l00179"></a>00179 
-<a name="l00180"></a>00180   <span class="comment">/* Updates result */</span>
-<a name="l00181"></a>00181   pstResult = ((_pStructure != orxNULL) &amp;&amp; (((<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)_pStructure)-&gt;eID ^ <a class="code" href="group__orx_structure.html#gac4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>) == _eStructureID) ? (<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)_pStructure : (<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL;
-<a name="l00182"></a>00182 
-<a name="l00183"></a>00183   <span class="comment">/* Done! */</span>
-<a name="l00184"></a>00184   <span class="keywordflow">return</span> pstResult;
-<a name="l00185"></a>00185 }
-<a name="l00186"></a>00186 
-<a name="l00187"></a>00187 
-<a name="l00190"></a>00190 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                       <a class="code" href="group__orx_structure.html#ga32f6863a9c76944bc7856b77e590bf65">orxStructure_Setup</a>();
-<a name="l00191"></a>00191 
-<a name="l00195"></a>00195 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                  <a class="code" href="group__orx_structure.html#ga82035ca088171d0ae9999da3f05b5d4c">orxStructure_Init</a>();
-<a name="l00196"></a>00196 
-<a name="l00199"></a>00199 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                       <a class="code" href="group__orx_structure.html#ga2b40aa65539bbb29538314b3db3fdfbb">orxStructure_Exit</a>();
-<a name="l00200"></a>00200 
-<a name="l00201"></a>00201 
-<a name="l00210"></a>00210 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>  orxFASTCALL                 <a class="code" href="group__orx_structure.html#gaa56cb39392bd2ec50767317b4f7603fa">orxStructure_Register</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="code" href="group__orx_structure.html#ga04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="code" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, <span class="keyword">const</span> <a class="code" href="group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate);
-<a name="l00211"></a>00211 
-<a name="l00216"></a>00216 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                  <a class="code" href="group__orx_structure.html#gab212ca403cc2d92c93f16343a7fac1be">orxStructure_Unregister</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00171"></a>00171 
+<a name="l00174"></a><a class="code" href="group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e">00174</a> <span class="keyword">typedef</span> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> (orxFASTCALL *<a class="code" href="group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a>)(<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, <span class="keyword">const</span> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, <span class="keyword">const</span> <a class="code" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo);
+<a name="l00175"></a>00175 
+<a name="l00176"></a>00176 
+<a name="l00182"></a><a class="code" href="group__orx_structure.html#ga6166c07b080e5a284480ac699a1459bb">00182</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *<a class="code" href="group__orx_structure.html#ga6166c07b080e5a284480ac699a1459bb">_orxStructure_GetPointer</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, <a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)
+<a name="l00183"></a>00183 {
+<a name="l00184"></a>00184   <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *pstResult;
+<a name="l00185"></a>00185 
+<a name="l00186"></a>00186   <span class="comment">/* Updates result */</span>
+<a name="l00187"></a>00187   pstResult = ((_pStructure != orxNULL) &amp;&amp; (((<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)_pStructure)-&gt;eID ^ <a class="code" href="group__orx_structure.html#gac4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>) == _eStructureID) ? (<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)_pStructure : (<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL;
+<a name="l00188"></a>00188 
+<a name="l00189"></a>00189   <span class="comment">/* Done! */</span>
+<a name="l00190"></a>00190   <span class="keywordflow">return</span> pstResult;
+<a name="l00191"></a>00191 }
+<a name="l00192"></a>00192 
+<a name="l00193"></a>00193 
+<a name="l00196"></a>00196 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                       <a class="code" href="group__orx_structure.html#ga32f6863a9c76944bc7856b77e590bf65">orxStructure_Setup</a>();
+<a name="l00197"></a>00197 
+<a name="l00201"></a>00201 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                  <a class="code" href="group__orx_structure.html#ga82035ca088171d0ae9999da3f05b5d4c">orxStructure_Init</a>();
+<a name="l00202"></a>00202 
+<a name="l00205"></a>00205 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                       <a class="code" href="group__orx_structure.html#ga2b40aa65539bbb29538314b3db3fdfbb">orxStructure_Exit</a>();
+<a name="l00206"></a>00206 
+<a name="l00207"></a>00207 
+<a name="l00216"></a>00216 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>  orxFASTCALL                 <a class="code" href="group__orx_structure.html#gaa56cb39392bd2ec50767317b4f7603fa">orxStructure_Register</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="code" href="group__orx_structure.html#ga04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="code" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, <span class="keyword">const</span> <a class="code" href="group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate);
 <a name="l00217"></a>00217 
-<a name="l00218"></a>00218 
-<a name="l00223"></a>00223 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga16515a89c0ccb908f64a37b76e1fa2d3">orxStructure_Create</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00222"></a>00222 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                  <a class="code" href="group__orx_structure.html#gab212ca403cc2d92c93f16343a7fac1be">orxStructure_Unregister</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00223"></a>00223 
 <a name="l00224"></a>00224 
-<a name="l00229"></a>00229 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                  <a class="code" href="group__orx_structure.html#ga4ce742571c0fb99e76a5083a1943dc75">orxStructure_Delete</a>(<span class="keywordtype">void</span> *_pStructure);
+<a name="l00229"></a>00229 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga16515a89c0ccb908f64a37b76e1fa2d3">orxStructure_Create</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
 <a name="l00230"></a>00230 
-<a name="l00231"></a>00231 
-<a name="l00236"></a>00236 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_structure.html#ga04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> orxFASTCALL  <a class="code" href="group__orx_structure.html#ga92c89569bf3d75646c5ae5a9f36ac58a">orxStructure_GetStorageType</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00235"></a>00235 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                  <a class="code" href="group__orx_structure.html#ga4ce742571c0fb99e76a5083a1943dc75">orxStructure_Delete</a>(<span class="keywordtype">void</span> *_pStructure);
+<a name="l00236"></a>00236 
 <a name="l00237"></a>00237 
-<a name="l00242"></a>00242 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32     orxFASTCALL                 <a class="code" href="group__orx_structure.html#ga085d85e17a69a47684ac20fe9e1e966d">orxStructure_GetCounter</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00242"></a>00242 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_structure.html#ga04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> orxFASTCALL  <a class="code" href="group__orx_structure.html#ga92c89569bf3d75646c5ae5a9f36ac58a">orxStructure_GetStorageType</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
 <a name="l00243"></a>00243 
-<a name="l00250"></a>00250 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>  orxFASTCALL                 <a class="code" href="group__orx_structure.html#ga240a05b714cde3269191aaafcb5c56e7">orxStructure_Update</a>(<span class="keywordtype">void</span> *_pStructure, <span class="keyword">const</span> <span class="keywordtype">void</span> *_phCaller, <span class="keyword">const</span> <a class="code" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo);
-<a name="l00251"></a>00251 
-<a name="l00252"></a>00252 
-<a name="l00260"></a>00260 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga19ed685999b2338e949f1332fc27ff2f">orxStructure_GetFirst</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
-<a name="l00261"></a>00261 
-<a name="l00266"></a>00266 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#gac368eeddaae9c34df6c1a56f950e528b">orxStructure_GetLast</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00248"></a>00248 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32     orxFASTCALL                 <a class="code" href="group__orx_structure.html#ga085d85e17a69a47684ac20fe9e1e966d">orxStructure_GetCounter</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
+<a name="l00249"></a>00249 
+<a name="l00256"></a>00256 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>  orxFASTCALL                 <a class="code" href="group__orx_structure.html#ga240a05b714cde3269191aaafcb5c56e7">orxStructure_Update</a>(<span class="keywordtype">void</span> *_pStructure, <span class="keyword">const</span> <span class="keywordtype">void</span> *_phCaller, <span class="keyword">const</span> <a class="code" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo);
+<a name="l00257"></a>00257 
+<a name="l00258"></a>00258 
+<a name="l00266"></a>00266 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga19ed685999b2338e949f1332fc27ff2f">orxStructure_GetFirst</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
 <a name="l00267"></a>00267 
-<a name="l00272"></a>00272 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga862d22374bae77072677d56b7f74d80d">orxStructure_GetParent</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
+<a name="l00272"></a>00272 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#gac368eeddaae9c34df6c1a56f950e528b">orxStructure_GetLast</a>(<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID);
 <a name="l00273"></a>00273 
-<a name="l00278"></a>00278 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#gae595f4aeb26996db954c589d4582dbd0">orxStructure_GetChild</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
+<a name="l00278"></a>00278 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga862d22374bae77072677d56b7f74d80d">orxStructure_GetParent</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
 <a name="l00279"></a>00279 
-<a name="l00284"></a>00284 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga6b3a6ce62693fdf1f1b230a1677cc487">orxStructure_GetSibling</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
+<a name="l00284"></a>00284 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#gae595f4aeb26996db954c589d4582dbd0">orxStructure_GetChild</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
 <a name="l00285"></a>00285 
-<a name="l00290"></a>00290 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga878386b7ca9d5180181fb0806d56abb6">orxStructure_GetPrevious</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
+<a name="l00290"></a>00290 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga6b3a6ce62693fdf1f1b230a1677cc487">orxStructure_GetSibling</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
 <a name="l00291"></a>00291 
-<a name="l00296"></a>00296 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#gadc054536d88700f7e8b10489e94609cf">orxStructure_GetNext</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
+<a name="l00296"></a>00296 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#ga878386b7ca9d5180181fb0806d56abb6">orxStructure_GetPrevious</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
 <a name="l00297"></a>00297 
-<a name="l00303"></a>00303 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>  orxFASTCALL                 <a class="code" href="group__orx_structure.html#ga0bf3ea9346ad84fbca753c8fa3e79572">orxStructure_SetParent</a>(<span class="keywordtype">void</span> *_pStructure, <span class="keywordtype">void</span> *_phParent);
-<a name="l00304"></a>00304 
-<a name="l00305"></a>00305 
-<a name="l00312"></a><a class="code" href="group__orx_structure.html#gab6ddc1c02cd3dc49b22091e5fd995a36">00312</a> <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span>                                   <a class="code" href="group__orx_structure.html#gab6ddc1c02cd3dc49b22091e5fd995a36">orxStructure_IncreaseCounter</a>(<span class="keywordtype">void</span> *_pStructure)
-<a name="l00313"></a>00313 {
-<a name="l00314"></a>00314   <span class="comment">/* Checks */</span>
-<a name="l00315"></a>00315   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00316"></a>00316 
-<a name="l00317"></a>00317   <span class="comment">/* Increases it */</span>
-<a name="l00318"></a>00318   (<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure))-&gt;s32RefCounter++;
-<a name="l00319"></a>00319 
-<a name="l00320"></a>00320   <span class="keywordflow">return</span>;
-<a name="l00321"></a>00321 }
+<a name="l00302"></a>00302 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL              <a class="code" href="group__orx_structure.html#gadc054536d88700f7e8b10489e94609cf">orxStructure_GetNext</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure);
+<a name="l00303"></a>00303 
+<a name="l00309"></a>00309 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>  orxFASTCALL                 <a class="code" href="group__orx_structure.html#ga0bf3ea9346ad84fbca753c8fa3e79572">orxStructure_SetParent</a>(<span class="keywordtype">void</span> *_pStructure, <span class="keywordtype">void</span> *_phParent);
+<a name="l00310"></a>00310 
+<a name="l00311"></a>00311 
+<a name="l00318"></a><a class="code" href="group__orx_structure.html#gab6ddc1c02cd3dc49b22091e5fd995a36">00318</a> <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span>                                   <a class="code" href="group__orx_structure.html#gab6ddc1c02cd3dc49b22091e5fd995a36">orxStructure_IncreaseCounter</a>(<span class="keywordtype">void</span> *_pStructure)
+<a name="l00319"></a>00319 {
+<a name="l00320"></a>00320   <span class="comment">/* Checks */</span>
+<a name="l00321"></a>00321   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
 <a name="l00322"></a>00322 
-<a name="l00326"></a><a class="code" href="group__orx_structure.html#ga9fce7a3107130b4cf7f14352513b9306">00326</a> <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span>                                   <a class="code" href="group__orx_structure.html#ga9fce7a3107130b4cf7f14352513b9306">orxStructure_DecreaseCounter</a>(<span class="keywordtype">void</span> *_pStructure)
-<a name="l00327"></a>00327 {
-<a name="l00328"></a>00328   <span class="comment">/* Checks */</span>
-<a name="l00329"></a>00329   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00330"></a>00330   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;s32RefCounter &gt; 0);
-<a name="l00331"></a>00331 
-<a name="l00332"></a>00332   <span class="comment">/* Decreases it */</span>
-<a name="l00333"></a>00333   <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;s32RefCounter--;
-<a name="l00334"></a>00334 
-<a name="l00335"></a>00335   <span class="keywordflow">return</span>;
-<a name="l00336"></a>00336 }
+<a name="l00323"></a>00323   <span class="comment">/* Increases it */</span>
+<a name="l00324"></a>00324   (<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure))-&gt;u32RefCounter++;
+<a name="l00325"></a>00325 
+<a name="l00326"></a>00326   <span class="keywordflow">return</span>;
+<a name="l00327"></a>00327 }
+<a name="l00328"></a>00328 
+<a name="l00332"></a><a class="code" href="group__orx_structure.html#ga9fce7a3107130b4cf7f14352513b9306">00332</a> <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span>                                   <a class="code" href="group__orx_structure.html#ga9fce7a3107130b4cf7f14352513b9306">orxStructure_DecreaseCounter</a>(<span class="keywordtype">void</span> *_pStructure)
+<a name="l00333"></a>00333 {
+<a name="l00334"></a>00334   <span class="comment">/* Checks */</span>
+<a name="l00335"></a>00335   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00336"></a>00336   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32RefCounter &gt; 0);
 <a name="l00337"></a>00337 
-<a name="l00342"></a><a class="code" href="group__orx_structure.html#ga84adca379b51aa17f3d28f66508aaa33">00342</a> <span class="keyword">static</span> orxINLINE orxS32                                 <a class="code" href="group__orx_structure.html#ga84adca379b51aa17f3d28f66508aaa33">orxStructure_GetRefCounter</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure)
-<a name="l00343"></a>00343 {
-<a name="l00344"></a>00344   <span class="comment">/* Checks */</span>
-<a name="l00345"></a>00345   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00346"></a>00346 
-<a name="l00347"></a>00347   <span class="comment">/* Returns it */</span>
-<a name="l00348"></a>00348   <span class="keywordflow">return</span>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;s32RefCounter);
-<a name="l00349"></a>00349 }
-<a name="l00350"></a>00350 
-<a name="l00355"></a><a class="code" href="group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c">00355</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>                        <a class="code" href="group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c">orxStructure_GetID</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure)
-<a name="l00356"></a>00356 {
-<a name="l00357"></a>00357   <span class="comment">/* Checks */</span>
-<a name="l00358"></a>00358   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00359"></a>00359 
-<a name="l00360"></a>00360   <span class="comment">/* Returns it */</span>
-<a name="l00361"></a>00361   <span class="keywordflow">return</span>((<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>)(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;eID ^ <a class="code" href="group__orx_structure.html#gac4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>));
-<a name="l00362"></a>00362 }
-<a name="l00363"></a>00363 
-<a name="l00369"></a><a class="code" href="group__orx_structure.html#ga95e20943a23b25cc1a634de7f35b21f4">00369</a> <span class="keyword">static</span> orxINLINE orxBOOL                                <a class="code" href="group__orx_structure.html#ga95e20943a23b25cc1a634de7f35b21f4">orxStructure_TestFlags</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, orxU32 _u32Flags)
-<a name="l00370"></a>00370 {
-<a name="l00371"></a>00371   <span class="comment">/* Checks */</span>
-<a name="l00372"></a>00372   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00373"></a>00373 
-<a name="l00374"></a>00374   <span class="comment">/* Done! */</span>
-<a name="l00375"></a>00375   <span class="keywordflow">return</span>(<a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">orxFLAG_TEST</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32Flags));
-<a name="l00376"></a>00376 }
-<a name="l00377"></a>00377 
-<a name="l00383"></a><a class="code" href="group__orx_structure.html#gacdcd1868be2f1b62e444c81dfccb1c27">00383</a> <span class="keyword">static</span> orxINLINE orxBOOL                                <a class="code" href="group__orx_structure.html#gacdcd1868be2f1b62e444c81dfccb1c27">orxStructure_TestAllFlags</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, orxU32 _u32Flags)
-<a name="l00384"></a>00384 {
-<a name="l00385"></a>00385   <span class="comment">/* Checks */</span>
-<a name="l00386"></a>00386   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00387"></a>00387 
-<a name="l00388"></a>00388   <span class="comment">/* Done! */</span>
-<a name="l00389"></a>00389   <span class="keywordflow">return</span>(<a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">orxFLAG_TEST_ALL</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32Flags));
-<a name="l00390"></a>00390 }
-<a name="l00391"></a>00391 
-<a name="l00397"></a><a class="code" href="group__orx_structure.html#ga4d2aea4e735ff7571e9609b9973013c5">00397</a> <span class="keyword">static</span> orxINLINE orxU32                                 <a class="code" href="group__orx_structure.html#ga4d2aea4e735ff7571e9609b9973013c5">orxStructure_GetFlags</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, orxU32 _u32Mask)
-<a name="l00398"></a>00398 {
-<a name="l00399"></a>00399   <span class="comment">/* Checks */</span>
-<a name="l00400"></a>00400   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00401"></a>00401 
-<a name="l00402"></a>00402   <span class="comment">/* Done! */</span>
-<a name="l00403"></a>00403   <span class="keywordflow">return</span>(<a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">orxFLAG_GET</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32Mask));
-<a name="l00404"></a>00404 }
-<a name="l00405"></a>00405 
-<a name="l00411"></a><a class="code" href="group__orx_structure.html#ga95058db32c35e47042cf42e560bda596">00411</a> <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span>                                   <a class="code" href="group__orx_structure.html#ga95058db32c35e47042cf42e560bda596">orxStructure_SetFlags</a>(<span class="keywordtype">void</span> *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
-<a name="l00412"></a>00412 {
-<a name="l00413"></a>00413   <span class="comment">/* Checks */</span>
-<a name="l00414"></a>00414   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
-<a name="l00415"></a>00415 
-<a name="l00416"></a>00416   <a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">orxFLAG_SET</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32AddFlags, _u32RemoveFlags);
-<a name="l00417"></a>00417 
-<a name="l00418"></a>00418   <span class="keywordflow">return</span>;
-<a name="l00419"></a>00419 }
-<a name="l00420"></a>00420 
-<a name="l00421"></a>00421 <span class="preprocessor">#endif </span><span class="comment">/* _orxSTRUCTURE_H_ */</span>
-<a name="l00422"></a>00422 
+<a name="l00338"></a>00338   <span class="comment">/* Decreases it */</span>
+<a name="l00339"></a>00339   <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32RefCounter--;
+<a name="l00340"></a>00340 
+<a name="l00341"></a>00341   <span class="keywordflow">return</span>;
+<a name="l00342"></a>00342 }
+<a name="l00343"></a>00343 
+<a name="l00348"></a><a class="code" href="group__orx_structure.html#ga84adca379b51aa17f3d28f66508aaa33">00348</a> <span class="keyword">static</span> orxINLINE orxS32                                 <a class="code" href="group__orx_structure.html#ga84adca379b51aa17f3d28f66508aaa33">orxStructure_GetRefCounter</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure)
+<a name="l00349"></a>00349 {
+<a name="l00350"></a>00350   <span class="comment">/* Checks */</span>
+<a name="l00351"></a>00351   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00352"></a>00352 
+<a name="l00353"></a>00353   <span class="comment">/* Returns it */</span>
+<a name="l00354"></a>00354   <span class="keywordflow">return</span>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32RefCounter);
+<a name="l00355"></a>00355 }
+<a name="l00356"></a>00356 
+<a name="l00361"></a><a class="code" href="group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c">00361</a> <span class="keyword">static</span> orxINLINE <a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>                        <a class="code" href="group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c">orxStructure_GetID</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure)
+<a name="l00362"></a>00362 {
+<a name="l00363"></a>00363   <span class="comment">/* Checks */</span>
+<a name="l00364"></a>00364   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00365"></a>00365 
+<a name="l00366"></a>00366   <span class="comment">/* Returns it */</span>
+<a name="l00367"></a>00367   <span class="keywordflow">return</span>((<a class="code" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>)(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;eID ^ <a class="code" href="group__orx_structure.html#gac4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>));
+<a name="l00368"></a>00368 }
+<a name="l00369"></a>00369 
+<a name="l00375"></a><a class="code" href="group__orx_structure.html#ga95e20943a23b25cc1a634de7f35b21f4">00375</a> <span class="keyword">static</span> orxINLINE orxBOOL                                <a class="code" href="group__orx_structure.html#ga95e20943a23b25cc1a634de7f35b21f4">orxStructure_TestFlags</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, orxU32 _u32Flags)
+<a name="l00376"></a>00376 {
+<a name="l00377"></a>00377   <span class="comment">/* Checks */</span>
+<a name="l00378"></a>00378   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00379"></a>00379 
+<a name="l00380"></a>00380   <span class="comment">/* Done! */</span>
+<a name="l00381"></a>00381   <span class="keywordflow">return</span>(<a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">orxFLAG_TEST</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32Flags));
+<a name="l00382"></a>00382 }
+<a name="l00383"></a>00383 
+<a name="l00389"></a><a class="code" href="group__orx_structure.html#gacdcd1868be2f1b62e444c81dfccb1c27">00389</a> <span class="keyword">static</span> orxINLINE orxBOOL                                <a class="code" href="group__orx_structure.html#gacdcd1868be2f1b62e444c81dfccb1c27">orxStructure_TestAllFlags</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, orxU32 _u32Flags)
+<a name="l00390"></a>00390 {
+<a name="l00391"></a>00391   <span class="comment">/* Checks */</span>
+<a name="l00392"></a>00392   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00393"></a>00393 
+<a name="l00394"></a>00394   <span class="comment">/* Done! */</span>
+<a name="l00395"></a>00395   <span class="keywordflow">return</span>(<a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">orxFLAG_TEST_ALL</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32Flags));
+<a name="l00396"></a>00396 }
+<a name="l00397"></a>00397 
+<a name="l00403"></a><a class="code" href="group__orx_structure.html#ga4d2aea4e735ff7571e9609b9973013c5">00403</a> <span class="keyword">static</span> orxINLINE orxU32                                 <a class="code" href="group__orx_structure.html#ga4d2aea4e735ff7571e9609b9973013c5">orxStructure_GetFlags</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pStructure, orxU32 _u32Mask)
+<a name="l00404"></a>00404 {
+<a name="l00405"></a>00405   <span class="comment">/* Checks */</span>
+<a name="l00406"></a>00406   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00407"></a>00407 
+<a name="l00408"></a>00408   <span class="comment">/* Done! */</span>
+<a name="l00409"></a>00409   <span class="keywordflow">return</span>(<a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">orxFLAG_GET</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32Mask));
+<a name="l00410"></a>00410 }
+<a name="l00411"></a>00411 
+<a name="l00417"></a><a class="code" href="group__orx_structure.html#ga95058db32c35e47042cf42e560bda596">00417</a> <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span>                                   <a class="code" href="group__orx_structure.html#ga95058db32c35e47042cf42e560bda596">orxStructure_SetFlags</a>(<span class="keywordtype">void</span> *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+<a name="l00418"></a>00418 {
+<a name="l00419"></a>00419   <span class="comment">/* Checks */</span>
+<a name="l00420"></a>00420   <a class="code" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(_pStructure);
+<a name="l00421"></a>00421 
+<a name="l00422"></a>00422   <a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">orxFLAG_SET</a>(<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u32Flags, _u32AddFlags, _u32RemoveFlags);
+<a name="l00423"></a>00423 
+<a name="l00424"></a>00424   <span class="keywordflow">return</span>;
+<a name="l00425"></a>00425 }
+<a name="l00426"></a>00426 
+<a name="l00427"></a>00427 <span class="preprocessor">#endif </span><span class="comment">/* _orxSTRUCTURE_H_ */</span>
+<a name="l00428"></a>00428 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>
