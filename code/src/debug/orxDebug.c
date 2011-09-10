@@ -72,19 +72,25 @@
  */
 typedef struct __orxDEBUG_STATIC_t
 {
-  /* Debug file : 4 */
+  /* Debug file name : 4 */
   orxSTRING zDebugFile;
 
-  /* Log file : 8 */
+  /* Log file name : 8 */
   orxSTRING zLogFile;
 
-  /* Debug flags : 12 */
+  /* Debug file : 12 */
+  FILE *pstDebugFile;
+
+  /* Log file : 16 */
+  FILE *pstLogFile;
+
+  /* Debug flags : 20 */
   orxU32 u32DebugFlags;
 
-  /* Backup debug flags : 16 */
+  /* Backup debug flags : 24 */
   orxU32 u32BackupDebugFlags;
 
-  /* Control flags : 1044 */
+  /* Control flags : 28 */
   orxU32 u32Flags;
 
 } orxDEBUG_STATIC;
@@ -191,15 +197,15 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
       *pu8++ = 0;
     }
 
-    /* Inits default files */
-    sstDebug.zDebugFile     = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
-    sstDebug.zLogFile       = orxDEBUG_KZ_DEFAULT_LOG_FILE;
-
     /* Inits default debug flags */
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
 
     /* Set module as initialized */
     sstDebug.u32Flags       = orxDEBUG_KU32_STATIC_FLAG_READY;
+
+    /* Inits default files */
+    _orxDebug_SetDebugFile(orxDEBUG_KZ_DEFAULT_DEBUG_FILE);
+    _orxDebug_SetLogFile(orxDEBUG_KZ_DEFAULT_LOG_FILE);
 
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -215,6 +221,22 @@ void orxFASTCALL _orxDebug_Exit()
   /* Initialized? */
   if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+
+    /* Closes files */
+    if(sstDebug.pstLogFile != orxNULL)
+    {
+      fclose(sstDebug.pstLogFile);
+      sstDebug.pstLogFile = orxNULL;
+    }
+    if(sstDebug.pstDebugFile != orxNULL)
+    {
+       fclose(sstDebug.pstDebugFile);
+       sstDebug.pstDebugFile = orxNULL;
+    }
+
+#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+
     /* Updates flags */
     sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_READY;
   }
@@ -330,10 +352,9 @@ void orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
  */
 void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
-  va_list stArgs;
-  FILE   *pstFile = orxNULL;
   orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
-
+  FILE   *pstFile;
+  va_list stArgs;
 
   //! TODO : Checks log mask to see if display is enabled for this level
 
@@ -397,11 +418,11 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   {
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
-      pstFile = fopen(sstDebug.zLogFile, "a+");
+      pstFile = sstDebug.pstLogFile;
     }
     else
     {
-      pstFile = fopen(sstDebug.zDebugFile, "a+");
+      pstFile = sstDebug.pstDebugFile;
     }
 
     /* Valid? */
@@ -409,7 +430,6 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     {
       fprintf(pstFile, "%s", zBuffer);
       fflush(pstFile);
-      fclose(pstFile);
     }
   }
 
@@ -459,12 +479,15 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
   /* Had a previous external name? */
   if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
   {
+    /* Closes it */
+    fclose(sstDebug.pstDebugFile);
+
     /* Deletes it */
     free(sstDebug.zDebugFile);
   }
 
   /* Valid? */
-  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY))
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY) && (_zFileName != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
   {
     orxU32 u32Size;
 
@@ -482,6 +505,13 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
     /* Uses default file */
     sstDebug.zDebugFile = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
   }
+
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+
+  /* Opens it */
+  sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "a+");
+
+#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 }
 
 /** Sets log file name
@@ -495,12 +525,15 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
   /* Had a previous external name? */
   if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
   {
+    /* Closes it */
+    fclose(sstDebug.pstLogFile);
+
     /* Deletes it */
     free(sstDebug.zLogFile);
   }
 
   /* Valid? */
-  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY))
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY) && (_zFileName != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
   {
     orxU32 u32Size;
 
@@ -518,6 +551,13 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
     /* Uses default file */
     sstDebug.zLogFile = orxDEBUG_KZ_DEFAULT_LOG_FILE;
   }
+
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+
+  /* Opens it */
+  sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "a+");
+
+#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 }
 
 #ifdef __orxMSVC__

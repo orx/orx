@@ -33,31 +33,63 @@
 #include "math/orxMath.h"
 
 
-static orxS32 ss32RandomSeed = 0;
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+static orxU32 su32X = 123456789, su32Y = 362436069, su32Z = 521288629, su32W = 88675123;
 
 
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+static orxINLINE orxU32 orxMath_Xor128()
+{
+  register orxU32 u32Temp;
+
+  u32Temp = su32X ^ (su32X << 11);
+  su32X   = su32Y; su32Y = su32Z; su32Z = su32W;
+  su32W   = su32W ^ (su32W >> 19) ^ (u32Temp ^ (u32Temp >> 8));
+
+  /* Done! */
+  return su32W;
+}
+
+
+/***************************************************************************
+ * Public functions                                                        *
+ ***************************************************************************/
+
+/** Inits the random seed
+ * @param[in]   _s32Seed                        Value to use as seed for random number generation
+ */
 void orxFASTCALL orxMath_InitRandom(orxS32 _s32Seed)
 {
   /* Inits random seed */
-  ss32RandomSeed = _s32Seed;;
+  su32X = (orxU32)_s32Seed;
+  su32Y = su32X * (orxU32)_s32Seed;
+  su32Z = su32Y * (orxU32)_s32Seed;
+  su32W = su32Z * (orxU32)_s32Seed;
 }
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary (inclusive)
- * @param[in]   _fMax                           Maximum boundary (inclusive)
+ * @param[in]   _fMax                           Maximum boundary (exclusive)
  * @return      Random value
  */
 orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
 {
-  orxFLOAT  fResult;
- 
-  /* Updates seed */
-  ss32RandomSeed *= 48271;
- 
+  orxU32   u32Temp;
+  orxFLOAT fResult;
+
+  /* Gets next random number */
+  u32Temp = orxMath_Xor128();
+
   /* Updates result */
-  *((orxU32 *)&fResult) = ((orxU32)ss32RandomSeed >> 9) | 0x3f800000;
+  *((orxU32 *)&fResult) = (u32Temp >> 9) | 0x3f800000;
   fResult               = _fMin + (fResult - orxFLOAT_1) * (_fMax - _fMin);
- 
+
   /* Done! */
   return fResult;
 }
@@ -69,13 +101,13 @@ orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
  */
 orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
 {
-  orxU32 u32Result;
+  orxU32 u32Temp, u32Result;
  
-  /* Updates seed */
-  ss32RandomSeed *= 48271;
+  /* Gets next random number */
+  u32Temp = orxMath_Xor128();
  
   /* Updates result */
-  u32Result = _u32Min + (((orxU32)ss32RandomSeed) % ((_u32Max - _u32Min) + 1));
+  u32Result = _u32Min + (u32Temp % ((_u32Max - _u32Min) + 1));
  
   /* Done! */
   return u32Result;
@@ -88,13 +120,14 @@ orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
  */
 orxS32 orxFASTCALL orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)
 {
+  orxU32 u32Temp;
   orxS32 s32Result;
- 
-  /* Updates seed */
-  ss32RandomSeed *= 48271;
+
+  /* Gets next random number */
+  u32Temp = orxMath_Xor128();
  
   /* Updates result */
-  s32Result = _s32Min + ((orxU32)ss32RandomSeed % ((_s32Max - _s32Min) + 1));
+  s32Result = _s32Min + (u32Temp % ((_s32Max - _s32Min) + 1));
 
   /* Done! */
   return s32Result;

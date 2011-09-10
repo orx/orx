@@ -150,14 +150,14 @@ do                                              \
 
 /*** Module functions *** */
 
-/** Inits the random seed with an orxFLOAT
+/** Inits the random seed
  * @param[in]   _s32Seed                        Value to use as seed for random number generation
  */
 extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxS32 _s32Seed);
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary (inclusive)
- * @param[in]   _fMax                           Maximum boundary (inclusive)
+ * @param[in]   _fMax                           Maximum boundary (exclusive)
  * @return      Random value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax);
