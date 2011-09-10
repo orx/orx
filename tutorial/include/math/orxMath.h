@@ -150,14 +150,14 @@ do                                              \
 
 /*** Module functions *** */
 
-/** Inits the random seed with an orxFLOAT
+/** Inits the random seed
  * @param[in]   _s32Seed                        Value to use as seed for random number generation
  */
 extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxS32 _s32Seed);
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary (inclusive)
- * @param[in]   _fMax                           Maximum boundary (inclusive)
+ * @param[in]   _fMax                           Maximum boundary (exclusive)
  * @return      Random value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax);
@@ -302,6 +302,7 @@ static orxINLINE orxFLOAT orxMath_SmootherStep(orxFLOAT _fMin, orxFLOAT _fMax, o
 
 #define orxMATH_KF_SQRT_2         orx2F(1.414213562f)           /**< Sqrt(2) constant */
 #define orxMATH_KF_EPSILON        orx2F(0.0001f)                /**< Epsilon constant */
+#define orxMATH_KF_TINY_EPSILON   orx2F(1.0e-037f)              /**< Tiny epsilon */
 #define orxMATH_KF_2_PI           orx2F(6.283185307f)           /**< 2 PI constant */
 #define orxMATH_KF_PI             orx2F(3.141592654f)           /**< PI constant */
 #define orxMATH_KF_PI_BY_2        orx2F(1.570796327f)           /**< PI / 2 constant */

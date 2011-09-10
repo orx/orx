@@ -156,9 +156,15 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
 typedef struct __orxSTRUCTURE_t
 {
   orxSTRUCTURE_ID eID;            /**< Structure ID : 4 */
-  orxU32          s32RefCounter;  /**< Reference counter : 8 */
-  orxU32          u32Flags;       /**< Flags : 12 */
-  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 16 */
+  orxU32          u32Flags;       /**< Flags : 8 */
+  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12 */
+  orxU32          u32RefCounter;  /**< Reference counter : 16 */
+
+#ifdef __orxX86_64__
+
+  orxU8           au8Padding[12]; /**< Extra padding to be 16-bit aligned on 64bit architectures */
+
+#endif /* __orxX86_64__ */
 
 } orxSTRUCTURE;
 
@@ -315,7 +321,7 @@ static orxINLINE void                                   orxStructure_IncreaseCou
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Increases it */
-  (orxSTRUCTURE(_pStructure))->s32RefCounter++;
+  (orxSTRUCTURE(_pStructure))->u32RefCounter++;
 
   return;
 }
@@ -327,10 +333,10 @@ static orxINLINE void                                   orxStructure_DecreaseCou
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
-  orxASSERT(orxSTRUCTURE(_pStructure)->s32RefCounter > 0);
+  orxASSERT(orxSTRUCTURE(_pStructure)->u32RefCounter > 0);
 
   /* Decreases it */
-  orxSTRUCTURE(_pStructure)->s32RefCounter--;
+  orxSTRUCTURE(_pStructure)->u32RefCounter--;
 
   return;
 }
@@ -345,7 +351,7 @@ static orxINLINE orxS32                                 orxStructure_GetRefCount
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Returns it */
-  return(orxSTRUCTURE(_pStructure)->s32RefCounter);
+  return(orxSTRUCTURE(_pStructure)->u32RefCounter);
 }
 
 /** Gets structure ID

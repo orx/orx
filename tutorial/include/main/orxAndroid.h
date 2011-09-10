@@ -45,228 +45,42 @@
 #if defined(__orxANDROID__)
 
 #include <jni.h>
-#include <android/log.h>
 
-/* defined in orxModule.c */
-extern orxMODULE_RUN_FUNCTION  spfnRun;
-extern orxSYSTEM_EVENT_PAYLOAD sstPayload;
+extern orxMODULE_RUN_FUNCTION  pfnRun;
 
-/* defined in orxDisplay.c */
-extern int32_t s32DisplayWidth;
-extern int32_t s32DisplayHeight;
+void MainLoop();
 
-/* defined in orxAndSupport.c */
-extern jobject     oActivity;
-extern JNIEnv     *poJEnv;
-extern orxS32      s32NbParams;
-extern orxSTRING  *azParams;
-
-void orxAndroid_GetMainArgs();
-void orxAndroid_ReleaseMainArgs();
-
-/* Main function to call */
-extern int main(int argc, char *argv[]);
-
-static orxINLINE void orx_Init()
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
-  /* retrieve orx cmd-line arguments */
-  orxAndroid_GetMainArgs();
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
 
-  /* Call main function */
-  main(s32NbParams,azParams);
-}
+  /* Checks */
+//  orxASSERT(_u32NbParams > 0);
+//  orxASSERT(_azParams != orxNULL);
+  orxASSERT(_pfnRun != orxNULL);
 
-static orxINLINE orxBOOL orx_Step()
-{
-  orxSTATUS eClockStatus, eMainStatus;
-  orxBOOL   bStop;
-  
-  /* Sends frame start event */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
+  /* register run function */
+  pfnRun = _pfnRun;
 
-  /* Runs the engine */
-  eMainStatus = spfnRun();
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
 
-  /* Updates clock system */
-  eClockStatus = orxClock_Update();
+  /* Registers all other modules */
+  orxModule_RegisterAll();
 
-  /* Sends frame stop event */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &sstPayload);
+  /* Calls all modules setup */
+  orxModule_SetupAll();
 
-  /* Updates frame counter */
-  sstPayload.u32FrameCounter++;
-
-  /* Updates stop condition */
-  bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE;
-
-  /* Done! */
-  return bStop;
-}
-
-static orxINLINE void orx_Exit()
-{
-  /* Removes event handler */
-  orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-  /* Exits from engine */
-  orxModule_Exit(orxMODULE_ID_MAIN);
-
-  /* Exits from all modules */
-  orxModule_ExitAll();
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    MainLoop();
+  }
 
   /* Exits from the Debug system */
+
   orxDEBUG_EXIT();
-  
-  /* free cmd-line arguments */
-  orxAndroid_ReleaseMainArgs();
-}
-
-  #ifdef __cplusplus
-  extern "C" {
-  #endif
-
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_init(JNIEnv * env, jobject obj, jobject activity, jint width, jint height);
-    JNIEXPORT jboolean JNICALL Java_org_orx_android_OrxLib_step(JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_exit(JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1CLOSE(JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1SAVE_1CONTEXT(JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1RESTORE_1CONTEXT(JNIEnv * env, jobject obj);
-	JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint iAction, jint iActionPointer, jint iPointerCount, jintArray aiIdList,  jfloatArray afXList, jfloatArray afYList, jfloatArray afPressureList);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeAccel(JNIEnv* env, jobject obj, jfloat x, jfloat y, jfloat z);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1BACKGROUND(JNIEnv* env, jobject obj);
-    JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1FOREGROUND(JNIEnv* env, jobject obj);
-    
-  #ifdef __cplusplus
-  };
-  #endif
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_init(JNIEnv * env, jobject obj, jobject activity, jint s32width, jint s32height)
-{
-	s32DisplayWidth = s32width;
-	s32DisplayHeight = s32height;
-	
-	/* save env and activity */
-	poJEnv = env;
-  #ifdef __cplusplus
-    oActivity = env->NewGlobalRef(activity);
-  #else /* __cplusplus */
-	  oActivity = (*env)->NewGlobalRef(env, activity);
-  #endif /* __cplusplus */
-	
-	orx_Init();
-}
-
-JNIEXPORT jboolean JNICALL Java_org_orx_android_OrxLib_step(JNIEnv * env, jobject obj)
-{
-	return (orx_Step() == orxTRUE ? JNI_FALSE : JNI_TRUE);
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_exit(JNIEnv * env, jobject obj)
-{
-  
-	orx_Exit();
-	
-	/* release oActivity reference */
-#ifdef __cplusplus
-  env->DeleteGlobalRef(oActivity);
-#else
-	(*env)->DeleteGlobalRef(env, oActivity);
-#endif
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1CLOSE(JNIEnv * env, jobject obj)
-{
-  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1SAVE_1CONTEXT(JNIEnv * env, jobject obj)
-{
-  orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxDISPLAY_1EVENT_1RESTORE_1CONTEXT(JNIEnv * env, jobject obj)
-{
-  orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeTouch(JNIEnv* env, jobject obj, jint iAction, jint iActionPointer, jint iPointerCount, jintArray aiIdList,  jfloatArray afXList, jfloatArray afYList, jfloatArray afPressureList)
-{
-	orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-	/* Inits event's type */
-	orxSYSTEM_EVENT android_event;
-	switch (iAction) {
-	case 0:
-		android_event = orxSYSTEM_EVENT_TOUCH_BEGIN;
-		break;
-	case 1:
-		android_event = orxSYSTEM_EVENT_TOUCH_MOVE;
-		break;
-	case 2:
-		android_event = orxSYSTEM_EVENT_TOUCH_END;
-		break;
-	default:
-		//error.....
-		return;
-	}
-
-	/* Inits event's payload */
-	stPayload.stTouch.iPointerCount = iPointerCount;
-	stPayload.stTouch.iActionPointer= iActionPointer;
-
-	/* Get array from Java environment */
-#ifdef __cplusplus
-	stPayload.stTouch.aiIdList = env->GetIntArrayElements(aiIdList, NULL);
-	stPayload.stTouch.afXList = env->GetFloatArrayElements(afXList, NULL);
-	stPayload.stTouch.afYList = env->GetFloatArrayElements(afYList, NULL);
-	stPayload.stTouch.afPressureList = env->GetFloatArrayElements(afPressureList, NULL);
-#else /* __cplusplus */
-	stPayload.stTouch.aiIdList = (*env)->GetIntArrayElements(env, aiIdList, NULL);
-	stPayload.stTouch.afXList = (*env)->GetFloatArrayElements(env, afXList, NULL);
-	stPayload.stTouch.afYList = (*env)->GetFloatArrayElements(env, afYList, NULL);
-	stPayload.stTouch.afPressureList = (*env)->GetFloatArrayElements(env, afPressureList, NULL);
-#endif /* __cplusplus */
-
-	/* Sends it */
-	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, android_event, orxNULL, orxNULL, &stPayload);
-
-	/* Clear java arrays */
-#ifdef __cplusplus
-	env->ReleaseIntArrayElements(aiIdList,stPayload.stTouch.aiIdList, 0);
-	env->ReleaseFloatArrayElements(afXList, stPayload.stTouch.afXList, 0);
-	env->ReleaseFloatArrayElements(afYList, stPayload.stTouch.afYList, 0);
-	env->ReleaseFloatArrayElements(afPressureList, stPayload.stTouch.afPressureList, 0);
-#else /* __cplusplus */
-	(*env)->ReleaseIntArrayElements(env, aiIdList,stPayload.stTouch.aiIdList, 0);   
-	(*env)->ReleaseFloatArrayElements(env, afXList, stPayload.stTouch.afXList, 0);   
-	(*env)->ReleaseFloatArrayElements(env, afYList, stPayload.stTouch.afYList, 0);   
-	(*env)->ReleaseFloatArrayElements(env, afPressureList, stPayload.stTouch.afPressureList, 0);
-#endif /* __cplusplus */
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_onNativeAccel(JNIEnv* env, jobject obj, jfloat x, jfloat y, jfloat z)
-{
-  orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-	/* Inits event's payload */
-	orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-	stPayload.stAccelerometer.pAccelerometer = orxNULL;
-	stPayload.stAccelerometer.fX = (orxFLOAT) x;
-	stPayload.stAccelerometer.fY = (orxFLOAT) y;
-	stPayload.stAccelerometer.fZ = (orxFLOAT) z;
-
-	/* Sends it */
-	orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE,	orxNULL, orxNULL, &stPayload);
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1BACKGROUND(JNIEnv * env, jobject obj)
-{
-  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
-}
-
-JNIEXPORT void JNICALL Java_org_orx_android_OrxLib_send_1orxSYSTEM_1EVENT_1FOREGROUND(JNIEnv * env, jobject obj)
-{
-  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
 }
 
 #elif defined (__orxANDROID_NATIVE__)

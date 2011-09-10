@@ -74,8 +74,10 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 /** Config defines
  */
-#define orxSOUNDSYSTEM_KZ_CONFIG_SECTION  "SoundSystem"
-#define orxSOUNDSYSTEM_KZ_CONFIG_RATIO    "DimensionRatio"
+#define orxSOUNDSYSTEM_KZ_CONFIG_SECTION              "SoundSystem"
+#define orxSOUNDSYSTEM_KZ_CONFIG_RATIO                "DimensionRatio"
+#define orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE   "StreamBufferSize"
+#define orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER "StreamBufferNumber"
 
 
 /***************************************************************************
