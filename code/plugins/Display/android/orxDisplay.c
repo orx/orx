@@ -807,13 +807,13 @@ static orxINLINE void orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBitm
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
 
+    /* Binds source's texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
     /* No active shader? */
     if(sstDisplay.s32ActiveShaderCounter == 0)
     {
-      /* Binds source's texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
       /* Stores it */
       sstDisplay.pstLastBitmap = _pstBitmap;
     }
