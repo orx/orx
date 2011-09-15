@@ -471,6 +471,74 @@ orxBOOL orxFASTCALL orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPo
   return(orxStructure_TestFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_ENABLED));
 }
 
+/** Sets volume of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fVolume        Desired volume (0.0 - 1.0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_SetVolume(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fVolume)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Sets its volume */
+      orxSound_SetVolume(pstSound, _fVolume);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets pitch of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fPitch         Desired pitch
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPitch)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Sets its pitch */
+      orxSound_SetPitch(pstSound, _fPitch);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Plays all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
