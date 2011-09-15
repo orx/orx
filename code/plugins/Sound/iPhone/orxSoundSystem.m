@@ -333,11 +333,11 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
       stPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
 
       /* Gets buffer's frame number */
-      u32BufferFrameNumber = (orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE * sizeof(orxS16)) / _pstSound->stFileInfo.mBytesPerFrame;
+      u32BufferFrameNumber = (sstSoundSystem.s32StreamBufferSize * sizeof(orxS16)) / _pstSound->stFileInfo.mBytesPerFrame;
 
       /* Inits buffer info */
       stBufferInfo.mNumberBuffers               = 1;
-      stBufferInfo.mBuffers[0].mDataByteSize    = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE * sizeof(orxS16);
+      stBufferInfo.mBuffers[0].mDataByteSize    = sstSoundSystem.s32StreamBufferSize * sizeof(orxS16);
       stBufferInfo.mBuffers[0].mNumberChannels  = _pstSound->stFileInfo.mChannelsPerFrame;
       stBufferInfo.mBuffers[0].mData            = sstSoundSystem.as16StreamBuffer;
 
@@ -355,7 +355,7 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
         else
         {
           /* Clears buffer */
-          orxMemory_Zero(sstSoundSystem.as16StreamBuffer, orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE * sizeof(orxS16));
+          orxMemory_Zero(sstSoundSystem.as16StreamBuffer, sstSoundSystem.s32StreamBufferSize * sizeof(orxS16));
 
           /* Updates frame number */
           u32FrameNumber = u32BufferFrameNumber;
@@ -422,7 +422,7 @@ static void orxFASTCALL orxSoundSystem_iPhone_FillStream(orxSOUNDSYSTEM_SOUND *_
               u32FrameNumber = u32BufferFrameNumber;
 
               /* Resets buffer size */
-              stBufferInfo.mBuffers[0].mDataByteSize = orxSOUNDSYSTEM_KU32_STREAM_BUFFER_SIZE * sizeof(orxS16);
+              stBufferInfo.mBuffers[0].mDataByteSize = sstSoundSystem.s32StreamBufferSize * sizeof(orxS16);
             }
             else
             {
@@ -518,7 +518,7 @@ static void orxFASTCALL orxSoundSystem_iPhone_UpdateRecording()
     orxU32 u32PacketSampleNumber;
 
     /* Gets sample number for this packet */
-    u32PacketSampleNumber = orxMIN((orxU32)iSampleNumber, sstSoundSystem.s32StreamBufferSize);
+    u32PacketSampleNumber = (orxU32)orxMIN(iSampleNumber, sstSoundSystem.s32StreamBufferSize);
 
     /* Inits packet */
     sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber  = u32PacketSampleNumber;
