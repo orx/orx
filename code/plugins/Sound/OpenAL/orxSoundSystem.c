@@ -143,7 +143,7 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
 /** Internal sound structure
  */
 #ifdef __orxMSVC__
-  #pragma warning(disable : 4200) 
+  #pragma warning(disable : 4200)
 #endif /* __orxMSVC__ */
 
 struct __orxSOUNDSYSTEM_SOUND_t
@@ -177,7 +177,7 @@ struct __orxSOUNDSYSTEM_SOUND_t
 };
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4200) 
+  #pragma warning(default : 4200)
 #endif /* __orxMSVC__ */
 
 /** Static structure
@@ -723,7 +723,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording()
       {
         /* Writes data */
         sf_write_short(sstSoundSystem.pstRecordingFile, (const short *)sstSoundSystem.stRecordingPayload.stStream.stPacket.as16SampleList, sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber);
-      } 
+      }
     }
 
     /* Updates remaining sample number */
@@ -859,7 +859,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
 
             /* Stores reciprocal dimenstion ratio */
             sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
-      
+
             /* Updates status */
             orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
 
@@ -923,7 +923,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
     /* Pops config section */
     orxConfig_PopSection();
   }
-  
+
   /* Done! */
   return eResult;
 }
@@ -1346,7 +1346,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't allocate sound structure.", _zFilename);
   }
-  
+
   /* Done! */
   return pstResult;
 }

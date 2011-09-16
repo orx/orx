@@ -52,26 +52,25 @@
 /** Misc defines
  */
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE                     32
-#define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE    4096
 #define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER  4
+#define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE    4096
 #define orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY   44100
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
 
-//! Deactivated for now as it breaks on iPhone simulator 4.0. All other versions are fine.
-//#ifdef __orxDEBUG__
-//
-//#define alASSERT()                                                      \
-//do                                                                      \
-//{                                                                       \
-//  ALenum eError = alGetError();                                         \
-//  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
-//} while(orxFALSE)
-//
-//#else /* __orxDEBUG__ */
+#ifdef __orxDEBUG__
+
+#define alASSERT()                                                      \
+do                                                                      \
+{                                                                       \
+  ALenum eError = alGetError();                                         \
+  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
+} while(orxFALSE)
+
+#else /* __orxDEBUG__ */
 
 #define alASSERT()
 
-//#endif /* __orxDEBUG__ */
+#endif /* __orxDEBUG__ */
 
 
 /***************************************************************************
@@ -93,6 +92,7 @@ typedef struct __orxSOUNDSYSTEM_INFO_t
 typedef struct __orxSOUNDSYSTEM_DATA_t
 {
   orxBOOL             bVorbis;
+
   orxSOUNDSYSTEM_INFO stInfo;
 
   union
@@ -123,8 +123,8 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
-  ALuint    uiSource;
   orxBOOL   bIsStream;
+  ALuint    uiSource;
   orxFLOAT  fDuration;
 
   union
@@ -862,14 +862,12 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Init()
 
     /* Opens device */
     sstSoundSystem.poDevice = alcOpenDevice(NULL);
-    alASSERT();
 
     /* Valid? */
     if(sstSoundSystem.poDevice != NULL)
     {
       /* Creates associated context */
       sstSoundSystem.poContext = alcCreateContext(sstSoundSystem.poDevice, NULL);
-      alASSERT();
 
       /* Has stream buffer size? */
       if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) != orxFALSE)
@@ -908,12 +906,11 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Init()
           /* Adds streaming timer */
           if(orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_iPhone_UpdateStreaming, orxNULL, orxMODULE_ID_SOUNDSYSTEM, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)
           {
-            ALfloat afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
-            orxFLOAT fRatio;
+            ALfloat   afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
+            orxFLOAT  fRatio;
 
             /* Selects it */
             alcMakeContextCurrent(sstSoundSystem.poContext);
-            alASSERT();
 
             /* Sets 2D listener target */
             alListenerfv(AL_ORIENTATION, afOrientation);
@@ -989,12 +986,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Init()
 
           /* Destroys openAL context */
           alcDestroyContext(sstSoundSystem.poContext);
-          alASSERT();
           sstSoundSystem.poContext = NULL;
 
           /* Closes openAL device */
           alcCloseDevice(sstSoundSystem.poDevice);
-          alASSERT();
           sstSoundSystem.poDevice = NULL;
         }
       }
@@ -1002,7 +997,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Init()
       {
         /* Closes openAL device */
         alcCloseDevice(sstSoundSystem.poDevice);
-        alASSERT();
         sstSoundSystem.poDevice = NULL;
       }
     }
@@ -1036,11 +1030,9 @@ void orxFASTCALL orxSoundSystem_iPhone_Exit()
 
     /* Removes current context */
     alcMakeContextCurrent(NULL);
-    alASSERT();
 
     /* Deletes context */
     alcDestroyContext(sstSoundSystem.poContext);
-    alASSERT();
 
     /* Has capture device? */
     if(sstSoundSystem.poCaptureDevice != orxNULL)
@@ -1051,7 +1043,6 @@ void orxFASTCALL orxSoundSystem_iPhone_Exit()
 
     /* Closes device */
     alcCloseDevice(sstSoundSystem.poDevice);
-    alASSERT();
 
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
@@ -1518,7 +1509,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iPhone_Pause(orxSOUNDSYSTEM_SOUND *_pstSoun
   alSourcePause(_pstSound->uiSource);
   alASSERT();
 
-  /* Is stream? */
+  /* Is a stream? */
   if(_pstSound->bIsStream != orxFALSE)
   {
     /* Updates status */
