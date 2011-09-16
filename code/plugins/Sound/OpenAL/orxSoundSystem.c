@@ -85,11 +85,7 @@ do                                                                      \
 
 #else /* __orxDEBUG__ */
 
-#define alASSERT()                                                      \
-do                                                                      \
-{                                                                       \
-  alGetError();                                                         \
-} while(orxFALSE)
+#define alASSERT()
 
 #endif /* __orxDEBUG__ */
 
