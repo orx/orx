@@ -440,7 +440,7 @@ static orxINLINE void orxSoundSystem_iPhone_CloseFile(orxSOUNDSYSTEM_DATA *_pstD
       _pstData->vorbis.pstFile = orxNULL;
     }
   }
-  /* sndfile */
+  /* extaudio */
   else
   {
     /* Has file? */
@@ -481,7 +481,7 @@ static orxINLINE orxU32 orxSoundSystem_iPhone_Read(orxSOUNDSYSTEM_DATA *_pstData
       u32Result = _u32FrameNumber;
     }
   }
-  /* sndfile */
+  /* extaudio */
   else
   {
     /* Has valid file? */
@@ -534,7 +534,7 @@ static orxINLINE void orxSoundSystem_iPhone_Rewind(orxSOUNDSYSTEM_DATA *_pstData
       stb_vorbis_seek_start(_pstData->vorbis.pstFile);
     }
   }
-  /* sndfile */
+  /* extaudio */
   else
   {
     /* Has valid file? */
