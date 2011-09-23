@@ -317,11 +317,11 @@ extern "C" void orxFASTCALL MainLoop()
           case NV_EVENT_TOUCH:
             orxSYSTEM_EVENT_PAYLOAD stTouchPayload;
             orxMemory_Zero(&stTouchPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-               
-            stTouchPayload.stTouch.fX = orx2F(ev->m_data.m_touch.m_x);
-            stTouchPayload.stTouch.fY = orx2F(ev->m_data.m_touch.m_y);
-            stTouchPayload.stTouch.fPressure = orx2F(0);
-                
+            stTouchPayload.stTouch.uCount = 1;
+            stTouchPayload.stTouch.astTouch[0].uId = 0;
+            stTouchPayload.stTouch.astTouch[0].fX = orx2F(ev->m_data.m_touch.m_x);
+            stTouchPayload.stTouch.astTouch[0].fY = orx2F(ev->m_data.m_touch.m_y);
+    
             switch (ev->m_data.m_touch.m_action)
             {
             case NV_TOUCHACTION_DOWN:
@@ -335,7 +335,40 @@ extern "C" void orxFASTCALL MainLoop()
             case NV_TOUCHACTION_MOVE:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayload);
               break;
+            }
+            break;
+          case NV_EVENT_MULTITOUCH:
+            orxSYSTEM_EVENT_PAYLOAD stTouchPayloadMulti;
+            orxMemory_Zero(&stTouchPayloadMulti, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+            stTouchPayloadMulti.stTouch.uAddionnalPointer = ev->m_data.m_multi.m_additionnalPointer;
+            stTouchPayloadMulti.stTouch.uCount = ev->m_data.m_multi.m_nCount;
+	    
+	    orxU32 uMax;
+	    uMax = orxMIN(ev->m_data.m_multi.m_nCount,ORX_ANDROID_MAX_TOUCH);
+
+            for (orxU32 i = 0; i < uMax; i++)
+            {
+              stTouchPayloadMulti.stTouch.astTouch[i].uId = ev->m_data.m_multi.m_astTouch[i].m_id;
+              stTouchPayloadMulti.stTouch.astTouch[i].fX = ev->m_data.m_multi.m_astTouch[i].m_x;
+              stTouchPayloadMulti.stTouch.astTouch[i].fY = ev->m_data.m_multi.m_astTouch[i].m_y;
+            }
+            
+            switch (ev->m_data.m_multi.m_action)
+            {
+            case NV_MULTITOUCH_DOWN:
+            case NV_MULTITOUCH_POINTER_DOWN:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayloadMulti);
+              break;
                 
+            case NV_MULTITOUCH_UP:
+            case NV_MULTITOUCH_POINTER_UP:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayloadMulti);
+              break;
+                
+            case NV_MULTITOUCH_MOVE:
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayloadMulti);
+              break;
             }
             break;
 
@@ -405,7 +438,6 @@ extern "C" void orxFASTCALL MainLoop()
             break;
 
           // Events we simply default:
-          case NV_EVENT_MULTITOUCH:
           case NV_EVENT_RESTART:
           case NV_EVENT_QUIT:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "%s event: no specific app action", NVEventGetEventStr(ev->m_type));

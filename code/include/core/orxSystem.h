@@ -55,6 +55,9 @@
 
   #include <jni.h>
 
+  // Max number touch available for the Android version
+  #define ORX_ANDROID_MAX_TOUCH 4
+
 #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Event enum
@@ -124,12 +127,33 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
   {
+#ifdef __orxANDROID_NATIVE__
 	/* UI event */
     struct
     {
       orxU32    u32ID;
       orxFLOAT  fX, fY, fPressure;
     } stTouch;
+#endif // __orxANDROID_NATIVE__
+
+#ifdef __orxANDROID__
+    /* UI event */
+    struct
+    {
+      /* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) */
+      /* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs                       */
+      /* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs                           */
+      orxU32              uAddionnalPointer;
+      /* Number of initialized element in astTouch */
+      orxU32              uCount;
+      /* Array containing information for one touch in each element */
+      struct
+      {
+        orxU32   uId;
+        orxFLOAT fX, fY;
+      }                   astTouch[ORX_ANDROID_MAX_TOUCH];
+    } stTouch;
+#endif // __orxANDROID__
 
     /* Accelerate event */
     struct

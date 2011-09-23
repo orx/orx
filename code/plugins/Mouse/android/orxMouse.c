@@ -94,22 +94,36 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
   		/* Gets payload */
   		pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
-  		/* Gets new position */
-  		orxVector_Set(&vNewPosition, orx2F(pstPayload->stTouch.fX), orx2F(pstPayload->stTouch.fY), orxFLOAT_0);
+		/* Find pointer with 0 identifier */
+		orxU32 uPos = -1;
+		for (orxU32 uIndex = 0; uIndex < pstPayload->stTouch.uCount; uIndex++)
+		{
+			if (pstPayload->stTouch.astTouch[uIndex].uId == 0)
+			{
+				uPos = uIndex;
+				break;
+			}
+		}
 
-      /* Updates mouse move */
-      orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
-      orxVector_Add(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &vNewPosition);
+		/* If pointer 0 is available, manage it */
+		if (uPos != -1)
+		{
+			/* Gets new position */
+  			orxVector_Set(&vNewPosition, orx2F(pstPayload->stTouch.astTouch[uPos].fX), orx2F(pstPayload->stTouch.astTouch[uPos].fY), orxFLOAT_0);
+		      /* Updates mouse move */
+		      orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
+		      orxVector_Add(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &vNewPosition);
 
-      /* Updates mouse position */
-      orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
+		      /* Updates mouse position */
+		      orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
 
-      if(_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_BEGIN || _pstEvent->eID == orxSYSTEM_EVENT_TOUCH_MOVE) {
-        bActive = orxTRUE;
-      }
-    
-      /* Updates click status */
-      sstMouse.bIsClicked = bActive;
+		      if(_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_BEGIN || _pstEvent->eID == orxSYSTEM_EVENT_TOUCH_MOVE) {
+			bActive = orxTRUE;
+		      }
+		    
+		      /* Updates click status */
+		      sstMouse.bIsClicked = bActive;
+		}
       break;
     }
   }
