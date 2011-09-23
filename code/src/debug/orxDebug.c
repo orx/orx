@@ -418,10 +418,32 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   {
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+
+      /* Needs to open the file? */
+      if(sstDebug.pstLogFile == orxNULL)
+      {
+        /* Opens it */
+        sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "a+");
+      }
+
+#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+
       pstFile = sstDebug.pstLogFile;
     }
     else
     {
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+
+      /* Needs to open the file? */
+      if(sstDebug.pstDebugFile == orxNULL)
+      {
+        /* Opens it */
+        sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "a+");
+      }
+
+#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+
       pstFile = sstDebug.pstDebugFile;
     }
 
@@ -505,13 +527,6 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
     /* Uses default file */
     sstDebug.zDebugFile = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
   }
-
-#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
-
-  /* Opens it */
-  sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "a+");
-
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 }
 
 /** Sets log file name
@@ -551,13 +566,6 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
     /* Uses default file */
     sstDebug.zLogFile = orxDEBUG_KZ_DEFAULT_LOG_FILE;
   }
-
-#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
-
-  /* Opens it */
-  sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "a+");
-
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 }
 
 #ifdef __orxMSVC__
