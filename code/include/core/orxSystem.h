@@ -154,11 +154,6 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       void     *pAccelerometer;
       orxFLOAT  fX, fY, fZ;
     } stAccelerometer;
-    
-    struct
-    {
-      orxU32    u32KeyCode;
-    } stKeyboard;
   };
 #endif
 

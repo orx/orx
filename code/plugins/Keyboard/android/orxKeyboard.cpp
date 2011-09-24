@@ -149,6 +149,85 @@ static NVKeyCode orxFASTCALL orxKeyboard_Android_GetNVKey(orxKEYBOARD_KEY _eKey)
   return eResult;
 }
 
+static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(NVKeyCode _eKey)
+{
+  orxKEYBOARD_KEY eResult;
+
+  /* Depending on key */
+  switch(_eKey)
+  {
+    case NV_KEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}        
+    case NV_KEYCODE_MENU:               {eResult = orxKEYBOARD_KEY_MENU; break;}          
+                                                           
+    case NV_KEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}         
+    case NV_KEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_RETURN; break;}        
+    case NV_KEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}     
+    case NV_KEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}           
+    case NV_KEYCODE_HOME:               {eResult = orxKEYBOARD_KEY_HOME; break;}          
+    case NV_KEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_DELETE; break;}        
+    case NV_KEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}           
+    case NV_KEYCODE_MINUS:              {eResult = orxKEYBOARD_KEY_SUBTRACT; break;}      
+    case NV_KEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}      
+    case NV_KEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_DIVIDE; break;}        
+    case NV_KEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}          
+    case NV_KEYCODE_SHIFT_RIGHT:        {eResult = orxKEYBOARD_KEY_RSHIFT; break;}        
+    case NV_KEYCODE_ALT_LEFT:           {eResult = orxKEYBOARD_KEY_LALT; break;}          
+    case NV_KEYCODE_SHIFT_LEFT:         {eResult = orxKEYBOARD_KEY_LSHIFT; break;}        
+    case NV_KEYCODE_LEFT_BRACKET:       {eResult = orxKEYBOARD_KEY_LBRACKET; break;}      
+    case NV_KEYCODE_RIGHT_BRACKET:      {eResult = orxKEYBOARD_KEY_RBRACKET; break;}      
+    case NV_KEYCODE_SEMICOLON:          {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}     
+    case NV_KEYCODE_COMMA:              {eResult = orxKEYBOARD_KEY_COMMA; break;}         
+    case NV_KEYCODE_PERIOD:             {eResult = orxKEYBOARD_KEY_PERIOD; break;}        
+    case NV_KEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_SLASH; break;}         
+    case NV_KEYCODE_BACKSLASH:          {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}     
+    case NV_KEYCODE_EQUALS:             {eResult = orxKEYBOARD_KEY_EQUAL; break;}         
+    case NV_KEYCODE_DPAD_UP:            {eResult = orxKEYBOARD_KEY_UP; break;}            
+    case NV_KEYCODE_DPAD_RIGHT:         {eResult = orxKEYBOARD_KEY_RIGHT; break;}         
+    case NV_KEYCODE_DPAD_DOWN:          {eResult = orxKEYBOARD_KEY_DOWN; break;}          
+    case NV_KEYCODE_DPAD_LEFT:          {eResult = orxKEYBOARD_KEY_LEFT; break;}          
+    case NV_KEYCODE_A:                  {eResult = orxKEYBOARD_KEY_A; break;}             
+    case NV_KEYCODE_Z:                  {eResult = orxKEYBOARD_KEY_Z; break;}             
+    case NV_KEYCODE_E:                  {eResult = orxKEYBOARD_KEY_E; break;}             
+    case NV_KEYCODE_R:                  {eResult = orxKEYBOARD_KEY_R; break;}             
+    case NV_KEYCODE_T:                  {eResult = orxKEYBOARD_KEY_T; break;}             
+    case NV_KEYCODE_Y:                  {eResult = orxKEYBOARD_KEY_Y; break;}             
+    case NV_KEYCODE_U:                  {eResult = orxKEYBOARD_KEY_U; break;}             
+    case NV_KEYCODE_I:                  {eResult = orxKEYBOARD_KEY_I; break;}             
+    case NV_KEYCODE_O:                  {eResult = orxKEYBOARD_KEY_O; break;}             
+    case NV_KEYCODE_P:                  {eResult = orxKEYBOARD_KEY_P; break;}             
+    case NV_KEYCODE_Q:                  {eResult = orxKEYBOARD_KEY_Q; break;}             
+    case NV_KEYCODE_S:                  {eResult = orxKEYBOARD_KEY_S; break;}             
+    case NV_KEYCODE_D:                  {eResult = orxKEYBOARD_KEY_D; break;}             
+    case NV_KEYCODE_F:                  {eResult = orxKEYBOARD_KEY_F; break;}             
+    case NV_KEYCODE_G:                  {eResult = orxKEYBOARD_KEY_G; break;}             
+    case NV_KEYCODE_H:                  {eResult = orxKEYBOARD_KEY_H; break;}             
+    case NV_KEYCODE_J:                  {eResult = orxKEYBOARD_KEY_J; break;}             
+    case NV_KEYCODE_K:                  {eResult = orxKEYBOARD_KEY_K; break;}             
+    case NV_KEYCODE_L:                  {eResult = orxKEYBOARD_KEY_L; break;}             
+    case NV_KEYCODE_M:                  {eResult = orxKEYBOARD_KEY_M; break;}             
+    case NV_KEYCODE_W:                  {eResult = orxKEYBOARD_KEY_W; break;}             
+    case NV_KEYCODE_X:                  {eResult = orxKEYBOARD_KEY_X; break;}             
+    case NV_KEYCODE_C:                  {eResult = orxKEYBOARD_KEY_C; break;}             
+    case NV_KEYCODE_V:                  {eResult = orxKEYBOARD_KEY_V; break;}             
+    case NV_KEYCODE_B:                  {eResult = orxKEYBOARD_KEY_B; break;}             
+    case NV_KEYCODE_N:                  {eResult = orxKEYBOARD_KEY_N; break;}             
+    case NV_KEYCODE_0:                  {eResult = orxKEYBOARD_KEY_0; break;}             
+    case NV_KEYCODE_1:                  {eResult = orxKEYBOARD_KEY_1; break;}             
+    case NV_KEYCODE_2:                  {eResult = orxKEYBOARD_KEY_2; break;}             
+    case NV_KEYCODE_3:                  {eResult = orxKEYBOARD_KEY_3; break;}             
+    case NV_KEYCODE_4:                  {eResult = orxKEYBOARD_KEY_4; break;}             
+    case NV_KEYCODE_5:                  {eResult = orxKEYBOARD_KEY_5; break;}             
+    case NV_KEYCODE_6:                  {eResult = orxKEYBOARD_KEY_6; break;}             
+    case NV_KEYCODE_7:                  {eResult = orxKEYBOARD_KEY_7; break;}             
+    case NV_KEYCODE_8:                  {eResult = orxKEYBOARD_KEY_8; break;}             
+    case NV_KEYCODE_9:                  {eResult = orxKEYBOARD_KEY_9; break;}             
+    default:                            {eResult = orxKEYBOARD_KEY_NONE; break;}
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -156,19 +235,22 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
   orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
   /* Gets payload */
-  pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+  pstPayload = (orxKEYBOARD_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
   /* Depending on ID */
   switch(_pstEvent->eID)
   {
   /* Keyboard? */
-  case orxSYSTEM_EVENT_KEY_DOWN:
-    sstKeyboard.abKeyPressed[pstPayload->stKeyboard.u32KeyCode] = orxTRUE;
+  case orxKEYBOARD_EVENT_KEY_PRESSED:
+    sstKeyboard.abKeyPressed[(orxU32)pstPayload->eKey] = orxTRUE;
     break;
-  case orxSYSTEM_EVENT_KEY_UP:
-    sstKeyboard.abKeyPressed[pstPayload->stKeyboard.u32KeyCode] = orxFALSE;
+  case orxKEYBOARD_EVENT_KEY_RELEASED:
+    sstKeyboard.abKeyPressed[(orxU32)pstPayload->eKey] = orxFALSE;
     break;
   }
+
+  /* Stores key translation */
+  pstPayload->eKey = orxKeyboard_Android_GetKey((NVKeyCode)pstPayload->eKey);
 
   /* Done! */
   return eResult;
@@ -185,7 +267,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
     
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
       for(i = 0; i < NV_MAX_KEYCODE; i++)
@@ -208,7 +290,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxKeyboard_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
