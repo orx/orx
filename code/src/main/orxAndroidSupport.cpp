@@ -257,7 +257,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
   screenVec[2] = canVec[2];
 }
 
-extern "C" void orxFASTCALL MainLoop()
+  extern "C" void orxFASTCALL MainLoop()
 {
   s_displayRotation = GetRotation();
   s_glesLoaded = true;
@@ -299,10 +299,10 @@ extern "C" void orxFASTCALL MainLoop()
 			      switch(ev->m_data.m_key.m_action)
 			      {
             case NV_KEYACTION_DOWN:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_KEY_DOWN, orxNULL, orxNULL, &stKeyPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stKeyPayload);
               break;
             case NV_KEYACTION_UP:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_KEY_UP, orxNULL, orxNULL, &stKeyPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stKeyPayload);
               break;
 			      }
 
