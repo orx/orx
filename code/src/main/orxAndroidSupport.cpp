@@ -66,7 +66,7 @@ int32_t NVEventAppInit(int32_t argc, char** argv)
 {
   NvFInit();
   
-	return 0;
+  return 0;
 }
 
 /* Main function to call */
@@ -287,10 +287,10 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
         {
           switch (ev->m_type)
           {
-			    case NV_EVENT_KEY:
-				    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s", 
-					  ev->m_data.m_key.m_code, 
-					  (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
+          case NV_EVENT_KEY:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s", 
+            ev->m_data.m_key.m_code, 
+            (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
 
             orxKEYBOARD_EVENT_PAYLOAD stKeyPayload;
             orxMemory_Zero(&stKeyPayload, sizeof(orxKEYBOARD_EVENT_PAYLOAD));
@@ -298,8 +298,8 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             /* Stores keycode */ 
             stKeyPayload.eKey = (orxKEYBOARD_KEY)ev->m_data.m_key.m_code;
 
-			      switch(ev->m_data.m_key.m_action)
-			      {
+            switch(ev->m_data.m_key.m_action)
+            {
             case NV_KEYACTION_DOWN:
               /* Asks the keyboard plugin for translation */
               orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stKeyPayload);
@@ -312,8 +312,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
               /* Sends the final event */
               orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stKeyPayload);
               break;
-			      }
-
+            }
             break;
 
           case NV_EVENT_CHAR:
@@ -325,11 +324,10 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           case NV_EVENT_TOUCH:
             orxSYSTEM_EVENT_PAYLOAD stTouchPayload;
             orxMemory_Zero(&stTouchPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-            stTouchPayload.stTouch.uCount = 1;
-            stTouchPayload.stTouch.astTouch[0].uId = 0;
+            stTouchPayload.stTouch.u32Count = 1;
+            stTouchPayload.stTouch.astTouch[0].u32Id = 0;
             stTouchPayload.stTouch.astTouch[0].fX = orx2F(ev->m_data.m_touch.m_x);
             stTouchPayload.stTouch.astTouch[0].fY = orx2F(ev->m_data.m_touch.m_y);
-    
             switch (ev->m_data.m_touch.m_action)
             {
             case NV_TOUCHACTION_DOWN:
@@ -345,19 +343,20 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
               break;
             }
             break;
+
           case NV_EVENT_MULTITOUCH:
             orxSYSTEM_EVENT_PAYLOAD stTouchPayloadMulti;
             orxMemory_Zero(&stTouchPayloadMulti, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
-            stTouchPayloadMulti.stTouch.uAddionnalPointer = ev->m_data.m_multi.m_additionnalPointer;
-            stTouchPayloadMulti.stTouch.uCount = ev->m_data.m_multi.m_nCount;
-	    
-	    orxU32 uMax;
-	    uMax = orxMIN(ev->m_data.m_multi.m_nCount,ORX_ANDROID_MAX_TOUCH);
+            stTouchPayloadMulti.stTouch.u32AdditionnalTouch = ev->m_data.m_multi.m_additionnalPointer;
+            stTouchPayloadMulti.stTouch.u32Count = ev->m_data.m_multi.m_nCount;
+      
+            orxU32 uMax;
+            uMax = orxMIN(ev->m_data.m_multi.m_nCount,orxANDROID_TOUCH_NUMBER);
 
             for (orxU32 i = 0; i < uMax; i++)
             {
-              stTouchPayloadMulti.stTouch.astTouch[i].uId = ev->m_data.m_multi.m_astTouch[i].m_id;
+              stTouchPayloadMulti.stTouch.astTouch[i].u32Id = ev->m_data.m_multi.m_astTouch[i].m_id;
               stTouchPayloadMulti.stTouch.astTouch[i].fX = ev->m_data.m_multi.m_astTouch[i].m_x;
               stTouchPayloadMulti.stTouch.astTouch[i].fY = ev->m_data.m_multi.m_astTouch[i].m_y;
             }
@@ -379,7 +378,6 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
               break;
             }
             break;
-
           case NV_EVENT_SURFACE_CREATED:
           case NV_EVENT_SURFACE_SIZE:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
@@ -397,8 +395,8 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             break;
 
           case NV_EVENT_FOCUS_LOST:
-				    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus lost event");
-				    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus lost event");
+            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
             break;
 
           case NV_EVENT_FOCUS_GAINED:
@@ -408,12 +406,12 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 
           case NV_EVENT_PAUSE:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Pause event");
-				    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
+            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
             break;
 
           case NV_EVENT_RESUME:
-				    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Resume event");
-				    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Resume event");
+            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
             break;
 
           case NV_EVENT_START:
@@ -445,7 +443,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
             break;
 
-          // Events we simply default:
+          /* Events we simply default: */
           case NV_EVENT_RESTART:
           case NV_EVENT_QUIT:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "%s event: no specific app action", NVEventGetEventStr(ev->m_type));
@@ -454,13 +452,12 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           default:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "UNKNOWN event");
             break;
-			    };
-			      
-          // if we do not NULL out the event, then we return that
-          // we handled it by default
+          };
+            
+          /* if we do not NULL out the event, then we return that we handled it by default */
           if (ev)
             NVEventDoneWithEvent(true);
-		    }
+        }
 
         // Do not bother to initialize _any_ of EGL, much less go ahead
         // and render to the screen unless we have all we need to go 

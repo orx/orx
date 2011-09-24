@@ -85,11 +85,9 @@ static NVKeyCode orxFASTCALL orxKeyboard_Android_GetNVKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_BACKSPACE:     {eResult = NV_KEYCODE_DEL; break;}
     case orxKEYBOARD_KEY_TAB:           {eResult = NV_KEYCODE_TAB; break;}
     case orxKEYBOARD_KEY_HOME:          {eResult = NV_KEYCODE_HOME; break;}
-    case orxKEYBOARD_KEY_DELETE:        {eResult = NV_KEYCODE_DEL; break;}
     case orxKEYBOARD_KEY_ADD:           {eResult = NV_KEYCODE_PLUS; break;}
     case orxKEYBOARD_KEY_SUBTRACT:      {eResult = NV_KEYCODE_MINUS; break;}
     case orxKEYBOARD_KEY_MULTIPLY:      {eResult = NV_KEYCODE_STAR; break;}
-    case orxKEYBOARD_KEY_DIVIDE:        {eResult = NV_KEYCODE_SLASH; break;}
     case orxKEYBOARD_KEY_RALT:          {eResult = NV_KEYCODE_ALT_RIGHT; break;}
     case orxKEYBOARD_KEY_RSHIFT:        {eResult = NV_KEYCODE_SHIFT_RIGHT; break;}
     case orxKEYBOARD_KEY_LALT:          {eResult = NV_KEYCODE_ALT_LEFT; break;}
@@ -164,11 +162,9 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(NVKeyCode _eKey)
     case NV_KEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}     
     case NV_KEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}           
     case NV_KEYCODE_HOME:               {eResult = orxKEYBOARD_KEY_HOME; break;}          
-    case NV_KEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_DELETE; break;}        
     case NV_KEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}           
     case NV_KEYCODE_MINUS:              {eResult = orxKEYBOARD_KEY_SUBTRACT; break;}      
     case NV_KEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}      
-    case NV_KEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_DIVIDE; break;}        
     case NV_KEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}          
     case NV_KEYCODE_SHIFT_RIGHT:        {eResult = orxKEYBOARD_KEY_RSHIFT; break;}        
     case NV_KEYCODE_ALT_LEFT:           {eResult = orxKEYBOARD_KEY_LALT; break;}          
@@ -178,8 +174,8 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(NVKeyCode _eKey)
     case NV_KEYCODE_SEMICOLON:          {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}     
     case NV_KEYCODE_COMMA:              {eResult = orxKEYBOARD_KEY_COMMA; break;}         
     case NV_KEYCODE_PERIOD:             {eResult = orxKEYBOARD_KEY_PERIOD; break;}        
-    case NV_KEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_SLASH; break;}         
-    case NV_KEYCODE_BACKSLASH:          {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}     
+    case NV_KEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_SLASH; break;}
+    case NV_KEYCODE_BACKSLASH:          {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
     case NV_KEYCODE_EQUALS:             {eResult = orxKEYBOARD_KEY_EQUAL; break;}         
     case NV_KEYCODE_DPAD_UP:            {eResult = orxKEYBOARD_KEY_UP; break;}            
     case NV_KEYCODE_DPAD_RIGHT:         {eResult = orxKEYBOARD_KEY_RIGHT; break;}         
@@ -232,7 +228,7 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+  orxKEYBOARD_EVENT_PAYLOAD *pstPayload;
 
   /* Gets payload */
   pstPayload = (orxKEYBOARD_EVENT_PAYLOAD *) _pstEvent->pstPayload;
@@ -267,7 +263,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
     
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
       for(i = 0; i < NV_MAX_KEYCODE; i++)
@@ -290,7 +286,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD), orxKeyboard_Android_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
