@@ -138,6 +138,7 @@ struct __orxBITMAP_t
   orxFLOAT fRecRealWidth, fRecRealHeight;
   orxRGBA stColor;
   orxAABOX stClip;
+  orxBOOL bCompressed;
 };
 
 /** Internal param info structure
@@ -214,6 +215,62 @@ typedef struct __orxDISPLAY_STATIC_t
  */
 static orxDISPLAY_STATIC sstDisplay;
 
+/** ETC1 compressed textures utility
+ */
+
+#define ETC_PKM_HEADER_SIZE 16
+
+typedef unsigned char etc1_byte;
+typedef int etc1_bool;
+typedef unsigned int etc1_uint32;
+
+static const char kMagic[] = { 'P', 'K', 'M', ' ', '1', '0' };
+static const etc1_uint32 ETC1_PKM_FORMAT_OFFSET = 6;
+static const etc1_uint32 ETC1_PKM_ENCODED_WIDTH_OFFSET = 8;
+static const etc1_uint32 ETC1_PKM_ENCODED_HEIGHT_OFFSET = 10;
+static const etc1_uint32 ETC1_PKM_WIDTH_OFFSET = 12;
+static const etc1_uint32 ETC1_PKM_HEIGHT_OFFSET = 14;
+
+static const etc1_uint32 ETC1_RGB_NO_MIPMAPS = 0;
+
+static etc1_uint32 readBEUint16(const etc1_byte* pIn) {
+    return (pIn[0] << 8) | pIn[1];
+}
+
+// Check if a PKM header is correctly formatted.
+
+static etc1_bool etc1_pkm_is_valid(const etc1_byte* pHeader) {
+    if (memcmp(pHeader, kMagic, sizeof(kMagic))) {
+        return false;
+    }
+    etc1_uint32 format = readBEUint16(pHeader + ETC1_PKM_FORMAT_OFFSET);
+    etc1_uint32 encodedWidth = readBEUint16(pHeader + ETC1_PKM_ENCODED_WIDTH_OFFSET);
+    etc1_uint32 encodedHeight = readBEUint16(pHeader + ETC1_PKM_ENCODED_HEIGHT_OFFSET);
+    etc1_uint32 width = readBEUint16(pHeader + ETC1_PKM_WIDTH_OFFSET);
+    etc1_uint32 height = readBEUint16(pHeader + ETC1_PKM_HEIGHT_OFFSET);
+    return format == ETC1_RGB_NO_MIPMAPS &&
+            encodedWidth >= width && encodedWidth - width < 4 &&
+            encodedHeight >= height && encodedHeight - height < 4;
+}
+
+// Return the size of the encoded image data (does not include size of PKM header).
+
+etc1_uint32 etc1_get_encoded_data_size(etc1_uint32 width, etc1_uint32 height) {
+    return (((width + 3) & ~3) * ((height + 3) & ~3)) >> 1;
+}
+
+// Read the image width from a PKM header
+
+etc1_uint32 etc1_pkm_get_width(const etc1_byte* pHeader) {
+    return readBEUint16(pHeader + ETC1_PKM_WIDTH_OFFSET);
+}
+
+// Read the image height from a PKM header
+
+etc1_uint32 etc1_pkm_get_height(const etc1_byte* pHeader){
+    return readBEUint16(pHeader + ETC1_PKM_HEIGHT_OFFSET);
+}
+
 static orxINLINE orxBOOL initGLESConfig()
 {
   /* Inits it */
@@ -274,7 +331,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
               pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
           {
             /* Not screen? */
-            if(pstBitmap != sstDisplay.pstScreen)
+            if(pstBitmap != sstDisplay.pstScreen && pstBitmap->bCompressed == orxFALSE)
             {
               GLuint uiFrameBuffer;
               
@@ -390,7 +447,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
               pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
           {
             /* Not screen? */
-            if(pstBitmap != sstDisplay.pstScreen)
+            if(pstBitmap != sstDisplay.pstScreen && pstBitmap->bCompressed == orxFALSE)
             {
               /* Creates new texture */
               glGenTextures(1, &pstBitmap->uiTexture);
@@ -1703,124 +1760,233 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
   return eResult;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
+static orxBITMAP *orxDisplay_Android_LoadETC1Bitmap(const orxSTRING _zFilename)
 {
-	unsigned char *pu8ImageData;
-	GLuint uiWidth, uiHeight, uiBytesPerPixel;
-	orxBITMAP *pstResult = orxNULL;
-	NvFile* apkFile;
-	size_t apkFileSize;
-	unsigned char* fileData;
-
 	/* Checks */
 	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFilename != orxNULL);
+  
+  orxBITMAP *pstResult = orxNULL;
+  NvFile* apkFile;
+  size_t apkFileSize;
+  etc1_byte* fileData;
+  orxCHAR zPKMFileName[255];
 
+  orxString_Copy(zPKMFileName, _zFilename);
+  orxString_Copy(zPKMFileName + orxString_GetLength(_zFilename), ".pkm");
 
-	//open the asset file and save them into memory
-	apkFile = NvFOpen(_zFilename);
-	apkFileSize = NvFSize(apkFile);
-	fileData = (unsigned char *)malloc(sizeof(unsigned char)*apkFileSize);
-	//read
-	NvFRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
+  /* open the asset file and save them into memory */
+  apkFile = NvFOpen(zPKMFileName);
+  if(apkFile != orxNULL)
+  {
+    apkFileSize = NvFSize(apkFile);
+    fileData = (etc1_byte *)orxMemory_Allocate(sizeof(unsigned char)*apkFileSize, orxMEMORY_TYPE_MAIN);
+    /* read file */
+    NvFRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
 
-	//close it
-	NvFClose(apkFile);
+    /* close it */
+    NvFClose(apkFile);
+    
+    /* check if file is a valid pkm */
+    if(etc1_pkm_is_valid(fileData))
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "valid pkm file found");
+      /* Allocates bitmap */
+      pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+      
+      /* Valid? */
+      if(pstResult != orxNULL)
+      {
 
-	/* Loads image */
-	pu8ImageData = SOIL_load_image_from_memory(fileData, apkFileSize,(int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+        GLuint uiRealWidth, uiRealHeight;
+        GLint iTexture;
+        
+        uiRealWidth = etc1_pkm_get_width(fileData);
+        uiRealHeight = etc1_pkm_get_height(fileData);
+        
+        
+        /* Pushes display section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        
+        /* Inits bitmap */
+        pstResult->bSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+        pstResult->fWidth = orxU2F(uiRealWidth);
+        pstResult->fHeight = orxU2F(uiRealHeight);
+        pstResult->u32RealWidth = uiRealWidth;
+        pstResult->u32RealHeight = uiRealHeight;
+        pstResult->fRecRealWidth = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
+        pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
+        pstResult->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+        pstResult->bCompressed = orxTRUE;
+        orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
+        
+        /* Backups current texture */
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+        glASSERT();
 
-	/* Valid? */
-	if(pu8ImageData != NULL)
-	{
-		/* Allocates bitmap */
-		pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+        /* Creates new texture */
+        glGenTextures(1, &pstResult->uiTexture);
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
+        glASSERT();
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_ETC1_RGB8_OES, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, etc1_get_encoded_data_size(uiRealWidth, uiRealHeight), fileData + ETC_PKM_HEADER_SIZE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
 
-		/* Valid? */
-		if(pstResult != orxNULL)
-		{
-			GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize, uiRealWidth, uiRealHeight;
-			GLint iTexture;
-			orxU8 *pu8ImageBuffer;
+        /* Restores previous texture */
+        glBindTexture(GL_TEXTURE_2D, iTexture);
+        glASSERT();
+        
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
+    }
 
-			/* Gets its real size */
-			uiRealWidth = uiWidth;
-			uiRealHeight = uiHeight;
+    /* free file data */
+    orxMemory_Free(fileData);
+  }
+  
+  return pstResult;
+}
 
-			/* Pushes display section */
-			orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
+{
+  unsigned char *pu8ImageData;
+  GLuint uiWidth, uiHeight, uiBytesPerPixel;
+  orxBITMAP *pstResult = orxNULL;
+  NvFile* apkFile;
+  size_t apkFileSize;
+  unsigned char* fileData;
 
-			/* Inits bitmap */
-			pstResult->bSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-			pstResult->fWidth = orxU2F(uiWidth);
-			pstResult->fHeight = orxU2F(uiHeight);
-			pstResult->u32RealWidth = uiRealWidth;
-			pstResult->u32RealHeight = uiRealHeight;
-			//pstResult->u32Depth = 32;
-			pstResult->fRecRealWidth = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
-			pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
-			pstResult->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-			orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
-			orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFilename != orxNULL);
+  
+  /* try to open the ETC1 compressed file */
+  pstResult = orxDisplay_Android_LoadETC1Bitmap(_zFilename);
+  
+  /* Not already loaded? */
+  if(pstResult == orxNULL)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "valid pkm file not found loading uncompressed file");
+    /* open the asset file and save them into memory */
+    apkFile = NvFOpen(_zFilename);
+    apkFileSize = NvFSize(apkFile);
+    fileData = (orxU8 *)orxMemory_Allocate(sizeof(unsigned char)*apkFileSize, orxMEMORY_TYPE_MAIN);
+    
+    /* read file */
+    NvFRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
 
-			/* Allocates buffer */
-			pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+    /* close it */
+    NvFClose(apkFile);
 
-			/* Checks */
-			orxASSERT(pu8ImageBuffer != orxNULL);
+    /* Loads image */
+    pu8ImageData = SOIL_load_image_from_memory(fileData, apkFileSize,(int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+    
+    /* free file data */
+    orxMemory_Free(fileData);
 
-			/* Gets line sizes */
-			uiLineSize = uiWidth * 4 * sizeof(orxU8);
-			uiRealLineSize = uiRealWidth * 4 * sizeof(orxU8);
+    /* Valid? */
+    if(pu8ImageData != NULL)
+    {
+      /* Allocates bitmap */
+      pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-			/* Clears padding */
-			orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
+      /* Valid? */
+      if(pstResult != orxNULL)
+      {
+        GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize, uiRealWidth, uiRealHeight;
+        GLint iTexture;
+        orxU8 *pu8ImageBuffer;
 
-			/* For all lines */
-			for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
-					i < uiHeight;
-					i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
-			{
-				/* Copies data */
-				orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+        /* Gets its real size */
+        uiRealWidth = uiWidth;
+        uiRealHeight = uiHeight;
 
-				/* Adds padding */
-				orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
-			}
+        /* Pushes display section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-			/* Backups current texture */
-			glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-			glASSERT();
+        /* Inits bitmap */
+        pstResult->bSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+        pstResult->fWidth = orxU2F(uiWidth);
+        pstResult->fHeight = orxU2F(uiHeight);
+        pstResult->u32RealWidth = uiRealWidth;
+        pstResult->u32RealHeight = uiRealHeight;
+        pstResult->fRecRealWidth = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
+        pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
+        pstResult->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+        pstResult->bCompressed = orxFALSE;
+        orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
 
-			/* Creates new texture */
-			glGenTextures(1, &pstResult->uiTexture);
-			glASSERT();
-			glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
-			glASSERT();
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-			glASSERT();
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glASSERT();
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glASSERT();
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-			glASSERT();
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-			glASSERT();
+        /* Allocates buffer */
+        pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
 
-			/* Restores previous texture */
-			glBindTexture(GL_TEXTURE_2D, iTexture);
-			glASSERT();
+        /* Checks */
+        orxASSERT(pu8ImageBuffer != orxNULL);
 
-			/* Frees image buffer */
-			orxMemory_Free(pu8ImageBuffer);
+        /* Gets line sizes */
+        uiLineSize = uiWidth * 4 * sizeof(orxU8);
+        uiRealLineSize = uiRealWidth * 4 * sizeof(orxU8);
 
-			/* Pops config section */
-			orxConfig_PopSection();
-		}
+        /* Clears padding */
+        orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
 
-		/* Deletes surface */
-		SOIL_free_image_data(pu8ImageData);
-	}
+        /* For all lines */
+        for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
+          i < uiHeight;
+          i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
+        {
+          /* Copies data */
+          orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+
+          /* Adds padding */
+          orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+        }
+
+        /* Backups current texture */
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+        glASSERT();
+
+        /* Creates new texture */
+        glGenTextures(1, &pstResult->uiTexture);
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+
+        /* Restores previous texture */
+        glBindTexture(GL_TEXTURE_2D, iTexture);
+        glASSERT();
+
+        /* Frees image buffer */
+        orxMemory_Free(pu8ImageBuffer);
+
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
+
+      /* Deletes surface */
+      SOIL_free_image_data(pu8ImageData);
+    }
+  }
 
 	/* Done! */
 	return pstResult;
