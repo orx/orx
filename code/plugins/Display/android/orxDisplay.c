@@ -600,14 +600,14 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
   "attribute vec2 _vPosition_;"
   "uniform mat4 _mProjection_;"
   "attribute mediump vec2 _vTexCoord_;"
-  "varying mediump vec2 gl_TexCoord___;"
+  "varying mediump vec2 _gl_TexCoord0_;"
   "attribute mediump vec4 _vColor_;"
   "varying mediump vec4 _Color_;"
   "void main()"
   "{"
   "  mediump float fCoef = 1.0 / 255.0;"
   "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
-  "  gl_TexCoord___   = _vTexCoord_;"
+  "  _gl_TexCoord0_   = _vTexCoord_;"
   "  _Color_      = fCoef * _vColor_;"
   "}";
 
@@ -2262,12 +2262,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
-        "varying vec2 gl_TexCoord___;"
+        "varying vec2 _gl_TexCoord0_;"
         "varying vec4 _Color_;"
         "uniform sampler2D _Texture_;"
         "void main()"
         "{"
-        "  gl_FragColor = _Color_ * texture2D(_Texture_, gl_TexCoord___);"
+        "  gl_FragColor = _Color_ * texture2D(_Texture_, _gl_TexCoord0_);"
         "}";
 
         /* Inits flags */
@@ -2388,7 +2388,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
           orxCHAR *pcReplace;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 gl_TexCoord___;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -2448,7 +2448,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
               pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
           {
             /* Replaces it */
-            orxMemory_Copy(pcReplace, "gl_TexCoord___", 14 * sizeof(orxCHAR));
+            orxMemory_Copy(pcReplace, "_gl_TexCoord0_", 14 * sizeof(orxCHAR));
           }
         }
         else
