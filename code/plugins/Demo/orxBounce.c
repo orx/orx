@@ -215,6 +215,9 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         orxConfig_SetString(orxDISPLAY_KZ_CONFIG_TITLE, acBuffer);
         orxConfig_PopSection();
 
+        /* Updates window */
+        orxDisplay_SetVideoMode(orxNULL);
+
         break;
       }
     }

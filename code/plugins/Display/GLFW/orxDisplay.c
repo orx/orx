@@ -2075,6 +2075,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 {
   int       iWidth, iHeight, iDepth;
   orxU8   **aau8BufferArray;
+  orxBOOL   bShallowUpdate = orxFALSE;
   orxSTATUS eResult;
 
   /* Checks */
@@ -2094,71 +2095,90 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     iWidth  = (int)orxF2S(sstDisplay.pstScreen->fWidth);
     iHeight = (int)orxF2S(sstDisplay.pstScreen->fHeight);
     iDepth  = (int)sstDisplay.pstScreen->u32Depth;
+
+    /* Asks for a shallow update */
+    bShallowUpdate = orxTRUE;
   }
 
   /* Not in full screen and same depth? */
   if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN)
   && (sstDisplay.u32Depth == (orxU32)iDepth))
   {
-    orxDISPLAY_EVENT_PAYLOAD stPayload;
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-    /* Inits event payload */
-    orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-    stPayload.u32Width          = (orxU32)iWidth;
-    stPayload.u32Height         = (orxU32)iHeight;
-    stPayload.u32Depth          = (orxU32)iDepth;
-    stPayload.u32PreviousWidth  = orxF2U(sstDisplay.pstScreen->fWidth);
-    stPayload.u32PreviousHeight = orxF2U(sstDisplay.pstScreen->fHeight);
-    stPayload.u32PreviousDepth  = sstDisplay.pstScreen->u32Depth;
-    stPayload.bFullScreen       = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+    /* Updates its title */
+    glfwSetWindowTitle(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
 
-    /* Resizes instead */
-    glfwSetWindowSize(iWidth, iHeight);
+    /* Pops config section */
+    orxConfig_PopSection();
 
-    /* Deletes screen backup texture */
-    glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
-    glASSERT();
+    /* Not a shallow update? */
+    if(bShallowUpdate == orxFALSE)
+    {
+      orxDISPLAY_EVENT_PAYLOAD stPayload;
 
-    /* Stores screen info */
-    sstDisplay.pstScreen->fWidth  = orxS2F(iWidth);
-    sstDisplay.pstScreen->fHeight = orxS2F(iHeight);
-    sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? (orxU32)iWidth : orxMath_GetNextPowerOfTwo((orxU32)iWidth);
-    sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? (orxU32)iHeight : orxMath_GetNextPowerOfTwo((orxU32)iHeight);
-    sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
-    sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
-    sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
-    sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+      stPayload.u32Width          = (orxU32)iWidth;
+      stPayload.u32Height         = (orxU32)iHeight;
+      stPayload.u32Depth          = (orxU32)iDepth;
+      stPayload.u32PreviousWidth  = orxF2U(sstDisplay.pstScreen->fWidth);
+      stPayload.u32PreviousHeight = orxF2U(sstDisplay.pstScreen->fHeight);
+      stPayload.u32PreviousDepth  = sstDisplay.pstScreen->u32Depth;
+      stPayload.bFullScreen       = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
 
-    /* Creates texture for screen backup */
-    glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-    glASSERT();
-    glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-    glASSERT();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-    glASSERT();
+      /* Resizes window */
+      glfwSetWindowSize(iWidth, iHeight);
 
-    /* Clears destination bitmap */
-    sstDisplay.pstDestinationBitmap = orxNULL;
+      /* Gets its actual size */
+      glfwGetWindowSize(&iWidth, &iHeight);
 
-    /* Clears new display surface */
-    glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
-    glASSERT();
-    glClear(GL_COLOR_BUFFER_BIT);
-    glASSERT();
+      /* Deletes screen backup texture */
+      glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
+      glASSERT();
 
-    /* Stores screen depth */
-    sstDisplay.u32Depth = (orxU32)iDepth;
+      /* Stores screen info */
+      sstDisplay.pstScreen->fWidth  = orxS2F(iWidth);
+      sstDisplay.pstScreen->fHeight = orxS2F(iHeight);
+      sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? (orxU32)iWidth : orxMath_GetNextPowerOfTwo((orxU32)iWidth);
+      sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? (orxU32)iHeight : orxMath_GetNextPowerOfTwo((orxU32)iHeight);
+      sstDisplay.pstScreen->u32Depth        = _pstVideoMode->u32Depth;
+      sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
+      sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
+      sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
 
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+      /* Creates texture for screen backup */
+      glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
+      glASSERT();
+      glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
+      glASSERT();
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+
+      /* Clears destination bitmap */
+      sstDisplay.pstDestinationBitmap = orxNULL;
+
+      /* Clears new display surface */
+      glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
+      glASSERT();
+      glClear(GL_COLOR_BUFFER_BIT);
+      glASSERT();
+
+      /* Stores screen depth */
+      sstDisplay.u32Depth = (orxU32)iDepth;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
