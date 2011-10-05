@@ -260,9 +260,6 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
       {
         /* Removes event handler */
         orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
-
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing graphic module failed.");
       }
     }
   }
