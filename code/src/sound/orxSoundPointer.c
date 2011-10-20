@@ -200,16 +200,6 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
         /* Is sound stopped? */
         if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
         {
-          orxSOUND_EVENT_PAYLOAD stPayload;
-
-          /* Inits event payload */
-          orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-          stPayload.pstSound    = pstSound;
-          stPayload.zSoundName  = orxSound_GetName(pstSound);
-
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, pstSoundPointer->pstOwner, pstSoundPointer->pstOwner, &stPayload);
-
           /* Removes it */
           orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
         }
@@ -742,6 +732,16 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
       /* Found? */
       if(pstSound == _pstSound)
       {
+        orxSOUND_EVENT_PAYLOAD stPayload;
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+        stPayload.pstSound    = pstSound;
+        stPayload.zSoundName  = orxSound_GetName(pstSound);
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, _pstSoundPointer->pstOwner, _pstSoundPointer->pstOwner, &stPayload);
+
         /* Decreases its reference counter */
         orxStructure_DecreaseCounter(pstSound);
 
@@ -936,6 +936,16 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
       /* Found? */
       if(orxString_ToCRC(_zSoundConfigID) == orxString_ToCRC(orxSound_GetName(pstSound)))
       {
+        orxSOUND_EVENT_PAYLOAD stPayload;
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+        stPayload.pstSound    = pstSound;
+        stPayload.zSoundName  = orxSound_GetName(pstSound);
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, _pstSoundPointer->pstOwner, _pstSoundPointer->pstOwner, &stPayload);
+
         /* Decreases its reference counter */
         orxStructure_DecreaseCounter(pstSound);
 
