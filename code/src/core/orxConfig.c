@@ -2093,7 +2093,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 continue;
               }
             }
-                
+
             /* Has key & value? */
             if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
             {
@@ -3600,6 +3600,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearValue(const orxSTRING _zKey)
 orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
 {
   orxCONFIG_ENTRY  *pstEntry;
+  orxU32            u32KeyID;
   orxBOOL           bResult = orxFALSE;
 
   /* Checks */
@@ -3607,8 +3608,11 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
+  /* Gets ID */
+  u32KeyID = orxString_ToCRC(_zKey);
+
   /* Gets corresponding entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+  pstEntry = orxConfig_GetEntry(u32KeyID);
 
   /* Valid? */
   if(pstEntry != orxNULL)
@@ -3619,6 +3623,11 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
       /* Updates result */
       bResult = orxTRUE;
     }
+  }
+  else
+  {
+    /* Updates result */
+    bResult = (orxConfig_GetValueFromKey(u32KeyID) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
@@ -4574,7 +4583,7 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
     /* Updates result */
     zResult = orxSTRING_EMPTY;
   }
-  
+
   /* Done! */
   return zResult;
 }
