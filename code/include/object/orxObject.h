@@ -102,7 +102,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(const orxSTRING _zConfigID);
 
-/** Deletes an object
+/** Deletes an object, *unsafe* when call from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead
  * @param[in] _pstObject        Concerned object
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
