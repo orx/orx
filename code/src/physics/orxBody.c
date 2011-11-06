@@ -1108,7 +1108,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE;
 
       /* Stores default rotation */
-      stBodyJointDef.stRevolute.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      stBodyJointDef.stRevolute.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
       /* Has rotation limits? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_ROTATION) != orxFALSE)
@@ -1141,7 +1141,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC;
 
       /* Stores default rotation */
-      stBodyJointDef.stPrismatic.fDefaultRotation = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      stBodyJointDef.stPrismatic.fDefaultRotation = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
 
       /* Stores translation axis */
       orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stPrismatic.vTranslationAxis));
@@ -1179,7 +1179,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
 
       /* Stores length */
-      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
+      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
 
       /* Stores frequency */
       stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
@@ -1196,7 +1196,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_ROPE;
 
       /* Stores length */
-      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
+      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
     }
     /* Pulley? */
     else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
@@ -1214,8 +1214,8 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       orxConfig_GetVector(orxBODY_KZ_CONFIG_CHILD_GROUND_ANCHOR, &(stBodyJointDef.stPulley.vDstGroundAnchor));
 
       /* Stores lengths */
-      stBodyJointDef.stPulley.fSrcLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_PARENT_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vPos), &(stBodyJointDef.stPulley.vSrcGroundAnchor));
-      stBodyJointDef.stPulley.fDstLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_CHILD_LENGTH) : orxVector_GetDistance(orxObject_GetPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vPos), &(stBodyJointDef.stPulley.vDstGroundAnchor));
+      stBodyJointDef.stPulley.fSrcLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_PARENT_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vPos), &(stBodyJointDef.stPulley.vSrcGroundAnchor));
+      stBodyJointDef.stPulley.fDstLength    = orxConfig_HasValue(orxBODY_KZ_CONFIG_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_CHILD_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vPos), &(stBodyJointDef.stPulley.vDstGroundAnchor));
       stBodyJointDef.stPulley.fMaxSrcLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fLengthRatio * stBodyJointDef.stPulley.fDstLength;
       stBodyJointDef.stPulley.fMaxDstLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fDstLength;
     }
@@ -1259,7 +1259,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_WELD;
 
       /* Stores default rotation */
-      stBodyJointDef.stWeld.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
+      stBodyJointDef.stWeld.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
     }
     /* Friction? */
     else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_FRICTION) == 0)

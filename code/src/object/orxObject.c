@@ -1024,14 +1024,25 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Gets its body */
               pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
 
-              /* No valid joint can be added? */
-              if((pstBody == orxNULL)
-              || (pstChildBody == orxNULL)
-              || (i >= s32JointNumber)
-              || (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) == orxNULL))
+              /* Sets its parent */
+              orxObject_SetParent(pstChild, pstResult);
+
+              /* Valid joint can be added? */
+              if((pstBody != orxNULL)
+              && (pstChildBody != orxNULL)
+              && (i < s32JointNumber)
+              && (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) != orxNULL))
               {
-                /* Sets its parent */
-                orxObject_SetParent(pstChild, pstResult);
+                orxVECTOR vPosition;
+
+                /* Gets its global position */
+                orxObject_GetWorldPosition(pstChild, &vPosition);
+
+                /* Removes parent */
+                orxObject_SetParent(pstChild, orxNULL);
+
+                /* Enforces its position */
+                orxObject_SetPosition(pstChild, &vPosition);
               }
             }
 
