@@ -613,21 +613,30 @@ void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
   {
     /* Root is parent */
     orxStructure_SetParent(_pstFrame, sstFrame.pstRoot);
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* Processes frame */
+    orxFrame_Process(_pstFrame, sstFrame.pstRoot);
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
   else
   {
     /* Sets parent */
     orxStructure_SetParent(_pstFrame, _pstParent);
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* Processes frame */
+    orxFrame_Process(_pstFrame, _pstParent);
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
-
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-  /* Processes frame */
-  orxFrame_Process(_pstFrame, _pstParent);
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
