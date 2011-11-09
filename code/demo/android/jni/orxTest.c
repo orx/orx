@@ -44,68 +44,8 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Set shader param? */
-  if((_pstEvent->eType == orxEVENT_TYPE_SHADER) && (_pstEvent->eID == orxSHADER_EVENT_SET_PARAM))
-  {
-    orxSHADER_EVENT_PAYLOAD *pstPayload;
-
-    /* Gets its payload */
-    pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Normal map texture? */
-    if(!orxString_Compare(pstPayload->zParamName, "AlphaMask"))
-    {
-      /* Gets associated alpha mask */
-      if(orxHashTable_Get(pstTextureTable, orxString_ToCRC(orxTexture_GetName(pstPayload->pstValue))))
-      {
-        pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_ToCRC(orxTexture_GetName(pstPayload->pstValue)));
-      }
-    }
-  }
-  /* Created object? */
-  else if((_pstEvent->eType == orxEVENT_TYPE_OBJECT) && (_pstEvent->eID == orxOBJECT_EVENT_CREATE))
-  {
-    orxOBJECT *pstObject;
-    orxGRAPHIC *pstGraphic;
-
-    pstObject = orxOBJECT(_pstEvent->hSender);
-    pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC);
-
-    /* Valid? */
-    if(pstObject && orxTEXTURE(orxGraphic_GetData(pstGraphic)))
-    {
-      const orxSTRING zName;
-      zName = orxTexture_GetName(orxTEXTURE(orxGraphic_GetData(pstGraphic)));
-      
-      /* Valid? */
-      if(zName && zName != orxSTRING_EMPTY)
-      {
-        orxU32 u32CRC;
-        u32CRC = orxString_ToCRC(zName);
-        
-        /* Does not already exist? */
-        if(!orxHashTable_Get(pstTextureTable, u32CRC))
-        {
-          orxConfig_PushSection(orxObject_GetName(pstObject));
-          if(orxConfig_HasValue("AlphaMaskFile"))
-          {
-            orxTEXTURE *pstTexture;
-            pstTexture = orxTexture_CreateFromFile(orxConfig_GetString("AlphaMaskFile"));
-            
-            /* Valid? */
-            if(pstTexture)
-            {
-              /* Add it to the table using the CRC of the original as key */
-              orxHashTable_Add(pstTextureTable, u32CRC, pstTexture);
-            }
-          }
-          orxConfig_PopSection();
-        }
-      }
-    }
-  }
   /* Colliding? */
-  else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+  if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
   {
     /* Adds bump FX on both objects */
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
@@ -135,8 +75,6 @@ static orxSTATUS orxFASTCALL Init()
 
   /* Registers event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
-  orxEvent_AddHandler(orxEVENT_TYPE_SHADER, EventHandler);
-  orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, EventHandler);
 
   /* Done! */
   return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
