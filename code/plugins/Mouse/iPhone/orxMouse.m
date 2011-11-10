@@ -100,7 +100,7 @@ static orxSTATUS orxFASTCALL orxMouse_iPhone_EventHandler(const orxEVENT *_pstEv
       vViewPosition = [poTouch locationInView:(orxView *)_pstEvent->hSender];
 
       /* Gets new position */
-      orxVector_Set(&vNewPosition, orx2F(vViewPosition.x), orx2F(vViewPosition.y), orxFLOAT_0);
+      orxVector_Set(&vNewPosition, pstPayload->fContentScaleFactor * orx2F(vViewPosition.x), pstPayload->fContentScaleFactor * orx2F(vViewPosition.y), orxFLOAT_0);
 
       /* Updates mouse move */
       orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));

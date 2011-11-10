@@ -108,6 +108,8 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
         /* Motion event */
         UIEventSubtype  eMotion;
       };
+      
+      orxFLOAT          fContentScaleFactor;
     };
 
     /* Accelerate event */
