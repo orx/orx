@@ -353,7 +353,9 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_EVENT);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TEXTURE);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FONT);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
@@ -488,8 +490,8 @@ orxOBJECT *orxFASTCALL orxObject_Create()
     /* Not creating it internally? */
     if(!orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL))
     {
-       /* Sends event */
-       orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
     }
   }
   else
@@ -4205,6 +4207,55 @@ orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObj
 
   /* Done! */
   return eResult;
+}
+
+orxTEXTURE *orxFASTCALL orxObject_GetWorkingTexture(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxTEXTURE *pstResult = orxNULL;
+
+  /* Gets its graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstObject), GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxANIMPOINTER *pstAnimPointer;
+
+    /* Gets animation pointer */
+    pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+    /* Valid? */
+    if(pstAnimPointer != orxNULL)
+    {
+      orxGRAPHIC *pstTemp;
+
+      /* Gets current anim data */
+      pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
+
+      /* Valid? */
+      if(pstTemp != orxNULL)
+      {
+        /* Uses it */
+        pstGraphic = pstTemp;
+      }
+    }
+
+    /* Text? */
+    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+    {
+      /* Updates result */
+      pstResult = orxFont_GetTexture(orxText_GetFont(orxTEXT(orxGraphic_GetData(pstGraphic))));
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+    }
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Sets object repeat (wrap) values

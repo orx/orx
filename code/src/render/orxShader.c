@@ -670,26 +670,8 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
         {
           case orxSTRUCTURE_ID_OBJECT:
           {
-            orxGRAPHIC *pstGraphic;
-
-            /* Gets its graphic */
-            pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstOwner), GRAPHIC);
-
-            /* Valid? */
-            if(pstGraphic != orxNULL)
-            {
-              /* Text? */
-              if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
-              {
-                /* Updates owner texture */
-                pstOwnerTexture = orxFont_GetTexture(orxText_GetFont(orxTEXT(orxGraphic_GetData(pstGraphic))));
-              }
-              else
-              {
-                /* Updates owner texture */
-                pstOwnerTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
-              }
-            }
+            /* Gets its working texture */
+            pstOwnerTexture = orxObject_GetWorkingTexture(orxOBJECT(_pstOwner));
 
             break;
           }

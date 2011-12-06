@@ -51,6 +51,7 @@
 #include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
 #include "sound/orxSound.h"
@@ -643,6 +644,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
  * @return Smoothing type (enabled, default or none)
  */
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject);
+
+
+/** Gets object working texture
+ * @param[in]   _pstObject     Concerned object
+ * @return orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const orxOBJECT *_pstObject);
 
 
 /** Sets object repeat (wrap) values
