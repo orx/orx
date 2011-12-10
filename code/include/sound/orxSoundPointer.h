@@ -151,6 +151,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_AddSound(orxSOUN
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPointer, orxSOUND *_pstSound);
 
+/** Removes all sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSoundPointer);
+
 /** Adds a sound using its config ID
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _zSoundConfigID     Config ID of the sound to add

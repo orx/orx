@@ -774,6 +774,69 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
   return eResult;
 }
 
+/** Removes all sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all slots */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      orxSOUND_EVENT_PAYLOAD stPayload;
+
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+      stPayload.pstSound    = pstSound;
+      stPayload.zSoundName  = orxSound_GetName(pstSound);
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, _pstSoundPointer->pstOwner, _pstSoundPointer->pstOwner, &stPayload);
+
+      /* Decreases its reference counter */
+      orxStructure_DecreaseCounter(pstSound);
+
+      /* Was last added sound? */
+      if(_pstSoundPointer->u32LastAddedIndex == i)
+      {
+        /* Clears last added sound index */
+        _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
+      }
+
+      /* Removes its reference */
+      _pstSoundPointer->astSoundList[i].pstSound = orxNULL;
+
+      /* Is internal? */
+      if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+      {
+        /* Deletes it */
+        orxSound_Delete(pstSound);
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Adds a sound using its config ID
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _zSoundConfigID     Config ID of the sound to add
