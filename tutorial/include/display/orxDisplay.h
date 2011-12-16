@@ -170,6 +170,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_HEIGHT         "ScreenHeight"
 #define orxDISPLAY_KZ_CONFIG_DEPTH          "ScreenDepth"
 #define orxDISPLAY_KZ_CONFIG_FULLSCREEN     "FullScreen"
+#define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE   "AllowResize"
 #define orxDISPLAY_KZ_CONFIG_DECORATION     "Decoration"
 #define orxDISPLAY_KZ_CONFIG_TITLE          "Title"
 #define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
@@ -211,7 +212,10 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
   orxU32  u32Width;                                     /**< Screen width : 4 */
   orxU32  u32Height;                                    /**< Screen height : 8 */
   orxU32  u32Depth;                                     /**< Screen depth : 12 */
-  orxBOOL bFullScreen;                                  /**< FullScreen? : 16 */
+  orxU32  u32PreviousWidth;                             /**< Previous screen width : 16 */
+  orxU32  u32PreviousHeight;                            /**< Previous screen height : 20 */
+  orxU32  u32PreviousDepth;                             /**< Previous screen depth : 24 */
+  orxBOOL bFullScreen;                                  /**< FullScreen? : 28 */
 
 } orxDISPLAY_EVENT_PAYLOAD;
 

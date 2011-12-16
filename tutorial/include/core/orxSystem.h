@@ -55,6 +55,9 @@
 
   #include <jni.h>
 
+  // Max number touch available for the Android version
+  #define orxANDROID_TOUCH_NUMBER 4
+
 #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Event enum
@@ -64,8 +67,6 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_CLOSE = 0,
   orxSYSTEM_EVENT_FOCUS_GAINED,
   orxSYSTEM_EVENT_FOCUS_LOST,
-  orxSYSTEM_EVENT_MOUSE_IN,
-  orxSYSTEM_EVENT_MOUSE_OUT,
 
   orxSYSTEM_EVENT_BACKGROUND,
   orxSYSTEM_EVENT_FOREGROUND,
@@ -79,11 +80,6 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
   
-#ifdef __orxANDROID__
-  orxSYSTEM_EVENT_KEY_DOWN,
-  orxSYSTEM_EVENT_KEY_UP,
-#endif
-
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
@@ -112,6 +108,8 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
         /* Motion event */
         UIEventSubtype  eMotion;
       };
+      
+      orxFLOAT          fContentScaleFactor;
     };
 
     /* Accelerate event */
@@ -124,12 +122,33 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
   {
+#ifdef __orxANDROID_NATIVE__
 	/* UI event */
     struct
     {
       orxU32    u32ID;
       orxFLOAT  fX, fY, fPressure;
     } stTouch;
+#endif // __orxANDROID_NATIVE__
+
+#ifdef __orxANDROID__
+    /* UI event */
+    struct
+    {
+      /* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) */
+      /* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs                       */
+      /* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs                           */
+      orxU32              u32AdditionnalTouch;
+      /* Number of initialized element in astTouch */
+      orxU32              u32Count;
+      /* Array containing information for one touch in each element */
+      struct
+      {
+        orxU32   u32Id;
+        orxFLOAT fX, fY;
+      }                   astTouch[orxANDROID_TOUCH_NUMBER];
+    } stTouch;
+#endif // __orxANDROID__
 
     /* Accelerate event */
     struct
@@ -137,11 +156,6 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       void     *pAccelerometer;
       orxFLOAT  fX, fY, fZ;
     } stAccelerometer;
-    
-    struct
-    {
-      orxU32    u32KeyCode;
-    } stKeyboard;
   };
 #endif
 

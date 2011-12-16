@@ -51,6 +51,7 @@
 #include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
 #include "sound/orxSound.h"
@@ -102,7 +103,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(const orxSTRING _zConfigID);
 
-/** Deletes an object
+/** Deletes an object, *unsafe* when call from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead
  * @param[in] _pstObject        Concerned object
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -643,6 +644,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
  * @return Smoothing type (enabled, default or none)
  */
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject);
+
+
+/** Gets object working texture
+ * @param[in]   _pstObject     Concerned object
+ * @return orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const orxOBJECT *_pstObject);
 
 
 /** Sets object repeat (wrap) values
