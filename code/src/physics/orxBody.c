@@ -2139,7 +2139,7 @@ orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_
  * @param[in]   _u16SelfFlags   Self flags to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+orxSTATUS orxFASTCALL orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
 {
   orxSTATUS eResult;
 
@@ -2148,7 +2148,7 @@ orxSTATUS orxFASTCALL orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Sets self flags */
-  eResult = orxPhysics_SetSelfFlags(_pstBodyPart->pstData, _u16SelfFlags);
+  eResult = orxPhysics_SetPartSelfFlags(_pstBodyPart->pstData, _u16SelfFlags);
 
   /* Done! */
   return eResult;
@@ -2159,7 +2159,7 @@ orxSTATUS orxFASTCALL orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u
  * @param[in]   _u16CheckMask   Check mask to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+orxSTATUS orxFASTCALL orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
 {
   orxSTATUS eResult;
 
@@ -2168,7 +2168,7 @@ orxSTATUS orxFASTCALL orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Sets check mask */
-  eResult = orxPhysics_SetCheckMask(_pstBodyPart->pstData, _u16CheckMask);
+  eResult = orxPhysics_SetPartCheckMask(_pstBodyPart->pstData, _u16CheckMask);
 
   /* Done! */
   return eResult;
@@ -2178,7 +2178,7 @@ orxSTATUS orxFASTCALL orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u
  * @param[in]   _pstBodyPart    Concerned physical body part
  * @return Self flags of the physical body part
  */
-orxU16 orxFASTCALL orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart)
+orxU16 orxFASTCALL orxBody_GetPartSelfFlags(const orxBODY_PART *_pstBodyPart)
 {
   orxU16 u16Result;
 
@@ -2187,7 +2187,7 @@ orxU16 orxFASTCALL orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart)
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Gets self flags */
-  u16Result = orxPhysics_GetSelfFlags(_pstBodyPart->pstData);
+  u16Result = orxPhysics_GetPartSelfFlags(_pstBodyPart->pstData);
 
   /* Done! */
   return u16Result;
@@ -2197,7 +2197,7 @@ orxU16 orxFASTCALL orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart)
  * @param[in]   _pstBodyPart    Concerned physical body part
  * @return Check mask of the physical body part
  */
-orxU16 orxFASTCALL orxBody_GetCheckMask(const orxBODY_PART *_pstBodyPart)
+orxU16 orxFASTCALL orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart)
 {
   orxU16 u16Result;
 
@@ -2206,10 +2206,49 @@ orxU16 orxFASTCALL orxBody_GetCheckMask(const orxBODY_PART *_pstBodyPart)
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Gets check mask */
-  u16Result = orxPhysics_GetCheckMask(_pstBodyPart->pstData);
+  u16Result = orxPhysics_GetPartCheckMask(_pstBodyPart->pstData);
 
   /* Done! */
   return u16Result;
+}
+
+/** Is a body part solid?
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  bResult = orxPhysics_IsPartSolid(_pstBodyPart->pstData);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Sets a body part solid
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _bSolid         Solid or sensor?
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartSolid(_pstBodyPart->pstData, _bSolid);
+
+  /* Done! */
+  return eResult;
 }
 
 /** Issues a raycast to test for potential bodies in the way
