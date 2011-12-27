@@ -2106,8 +2106,47 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               {
                 /* Finds end of value position */
                 for(pcValueEnd = pc - 1;
-                    (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t') || (*pcValueEnd == orxCHAR_CR) || (*pcValueEnd == orxCHAR_LF));
+                    (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t'));
                     pcValueEnd--);
+
+                /* Is it a list separator? */
+                if(*pcValueEnd == orxCONFIG_KC_LIST_SEPARATOR)
+                {
+                  /* Is it a double list separator? */
+                  if((pcValueEnd > pcValueStart) && (*(pcValueEnd - 1) == orxCONFIG_KC_LIST_SEPARATOR))
+                  {
+                    /* Ignores last list separator */
+                    pcValueEnd--;
+                  }
+                  else
+                  {
+                    /* Erases the whole line */
+                    for(pcValueEnd++;
+                        (pcValueEnd < acBuffer + u32Size) && (*pcValueEnd != orxCHAR_CR) && (*pcValueEnd != orxCHAR_LF);
+                        pcValueEnd++)
+                    {
+                      *pcValueEnd = ' ';
+                    }
+
+                    /* Valid? */
+                    if(pcValueEnd < acBuffer + u32Size)
+                    {
+                      /* Removes current line stopper */
+                      *pcValueEnd = ' ';
+                    }
+                    else
+                    {
+                      /* Makes sure we don't mistake remaining partial comment for a new key */
+                      *(pcValueEnd - 1) = orxCONFIG_KC_COMMENT;
+                    }
+
+                    /* Updates current character */
+                    pc = pcValueEnd;
+
+                    /* Continues */
+                    continue;
+                  }
+                }
               }
               else
               {
