@@ -147,7 +147,7 @@ extern orxDLLAPI void *orxFASTCALL          orxObject_GetUserData(const orxOBJEC
 
 /** Sets owner for an object
  * @param[in]   _pstObject    Concerned object
- * @param[in]   _pOwner       Owner to set / orxNULL
+ * @param[in]   _pOwner       Owner to set / orxNULL, if owner is an orxOBJECT, the owned object will be added to it as a children
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner);
 
@@ -555,6 +555,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJE
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
+/** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined)
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstModel       Model object on which to synchronize FXs
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SynchronizeFX(orxOBJECT *_pstObject, const orxOBJECT *_pstModel);
 
 
 /** Adds a sound using its config ID

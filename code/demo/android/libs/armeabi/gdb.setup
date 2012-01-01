@@ -1,2 +1,0 @@
-set solib-search-path /home/laschweinski/android/workspace/liborx_svn/code/demo/android/obj/local/armeabi
-directory /home/laschweinski/android/android-ndk-r5/platforms/android-8/arch-arm/usr/include /home/laschweinski/android/workspace/liborx_svn/code/demo/android/jni /home/laschweinski/android/android-ndk-r5/sources/cxx-stl/system

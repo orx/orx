@@ -34,6 +34,8 @@
 
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "display/orxDisplay.h"
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
@@ -125,6 +127,63 @@ static orxVIEWPORT_STATIC sstViewport;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Set video mode */
+    case orxDISPLAY_EVENT_SET_VIDEO_MODE:
+    {
+      orxVIEWPORT              *pstViewport;
+      orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+      orxFLOAT                  fWidthRatio, fHeightRatio;
+
+      /* Gets its payload */
+      pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Gets new width & height ratios */
+      fWidthRatio   = orxU2F(pstPayload->u32Width) / orxU2F(pstPayload->u32PreviousWidth);
+      fHeightRatio  = orxU2F(pstPayload->u32Height) / orxU2F(pstPayload->u32PreviousHeight);
+
+      /* For all viewports */
+      for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+          pstViewport != orxNULL;
+          pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+      {
+        /* Is linked to screen? */
+        if(pstViewport->pstTexture == orxNULL)
+        {
+          /* Updates relative position & dimension */
+          pstViewport->fX      *= fWidthRatio;
+          pstViewport->fWidth  *= fWidthRatio;
+          pstViewport->fY      *= fHeightRatio;
+          pstViewport->fHeight *= fHeightRatio;
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Deletes all viewports
  */
 static orxINLINE void orxViewport_DeleteAll()
@@ -159,6 +218,8 @@ void orxFASTCALL orxViewport_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_DISPLAY);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_TEXTURE);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_CAMERA);
@@ -180,8 +241,27 @@ orxSTATUS orxFASTCALL orxViewport_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstViewport, sizeof(orxVIEWPORT_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    /* Adds event handler */
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Inits Flags */
+        sstViewport.u32Flags = orxVIEWPORT_KU32_STATIC_FLAG_READY;
+      }
+      else
+      {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
+      }
+    }
   }
   else
   {
@@ -192,16 +272,14 @@ orxSTATUS orxFASTCALL orxViewport_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Initialized? */
-  if(eResult != orxSTATUS_FAILURE)
-  {
-    /* Inits Flags */
-    sstViewport.u32Flags = orxVIEWPORT_KU32_STATIC_FLAG_READY;
-  }
-  else
+  /* Not initialized? */
+  if(eResult == orxSTATUS_FAILURE)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure while initializing viewport module.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Initializing viewport module failed.");
+
+    /* Updates Flags */
+    sstViewport.u32Flags &= ~orxVIEWPORT_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
@@ -215,6 +293,9 @@ void orxFASTCALL orxViewport_Exit()
   /* Initialized? */
   if(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
+
     /* Deletes viewport list */
     orxViewport_DeleteAll();
 

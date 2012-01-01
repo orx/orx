@@ -295,7 +295,7 @@ orxSTATUS orxFASTCALL orxDisplay_StartShader(const orxHANDLE _hShader)
 
 orxSTATUS orxFASTCALL orxDisplay_StopShader(const orxHANDLE _hShader)
 {
-    return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_StopShader)(_hShader);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_StopShader)(_hShader);
 }
 
 orxS32 orxFASTCALL orxDisplay_GetParameterID(orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)

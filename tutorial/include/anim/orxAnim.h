@@ -243,12 +243,6 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCounter(const orxA
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(const orxANIM *_pstAnim);
 
-/** Anim ID get accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim ID / orxU32_UNDEFINED
- */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetID(const orxANIM *_pstAnim);
-
 /** Anim name get accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      orxSTRING / orxSTRING_EMPTY

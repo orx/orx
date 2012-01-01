@@ -49,30 +49,12 @@ static orxBOOL      sbRecord = orxFALSE;
 static void orxBounce_ApplyCurrentVideoMode()
 {
   orxDISPLAY_VIDEO_MODE stVideoMode;
-  orxFLOAT              fWidth, fHeight;
-  orxCHAR               acBuffer[1024];
 
   /* Gets desired video mode */
   orxDisplay_GetVideoMode(su32VideoModeIndex, &stVideoMode);
 
-  /* Updates title string */
-  orxConfig_PushSection("Bounce");
-  orxString_NPrint(acBuffer, 1024, "%s (%ldx%ld)", orxConfig_GetString("Title"), stVideoMode.u32Width, stVideoMode.u32Height);
-  orxConfig_PopSection();
-
-  /* Updates display module config content */
-  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-  orxConfig_SetString(orxDISPLAY_KZ_CONFIG_TITLE, acBuffer);
-  orxConfig_PopSection();
-
-  /* Gets current viewport relative size */
-  orxViewport_GetRelativeSize(spstViewport, &fWidth, &fHeight);
-
-  /* Applies new video mode */
+  /* Applies it */
   orxDisplay_SetVideoMode(&stVideoMode);
-
-  /* Updates viewport to its previous relative size */
-  orxViewport_SetRelativeSize(spstViewport, fWidth, fHeight);
 }
 
 /** Bounce event handler
@@ -87,7 +69,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
   orxPROFILER_PUSH_MARKER("Bounce_EventHandler");
 
   /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER) || (_pstEvent->eType == orxEVENT_TYPE_SOUND));
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER) || (_pstEvent->eType == orxEVENT_TYPE_SOUND) || (_pstEvent->eType == orxEVENT_TYPE_DISPLAY));
 
   /* Depending on event type */
   switch(_pstEvent->eType)
@@ -211,6 +193,35 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       break;
     }
 
+    /* Display */
+    case orxEVENT_TYPE_DISPLAY:
+    {
+      /* New video mode? */
+      if(_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE)
+      {
+        orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+        orxCHAR                   acBuffer[1024];
+
+        /* Gets payload */
+        pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Updates title string */
+        orxConfig_PushSection("Bounce");
+        orxString_NPrint(acBuffer, 1024, "%s (%ldx%ld)", orxConfig_GetString("Title"), pstPayload->u32Width, pstPayload->u32Height);
+        orxConfig_PopSection();
+
+        /* Updates display module config content */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        orxConfig_SetString(orxDISPLAY_KZ_CONFIG_TITLE, acBuffer);
+        orxConfig_PopSection();
+
+        /* Updates window */
+        orxDisplay_SetVideoMode(orxNULL);
+
+        break;
+      }
+    }
+
     default:
     {
       break;
@@ -266,16 +277,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   }
   if(orxInput_IsActive("ToggleFullScreen") && orxInput_HasNewStatus("ToggleFullScreen"))
   {
-    orxFLOAT fWidth, fHeight;
-
-    /* Gets current viewport relative size */
-    orxViewport_GetRelativeSize(spstViewport, &fWidth, &fHeight);
-
     /* Toggles full screen display */
     orxDisplay_SetFullScreen(!orxDisplay_IsFullScreen());
-
-    /* Updates viewport to its previous relative size */
-    orxViewport_SetRelativeSize(spstViewport, fWidth, fHeight);
   }
 
   /* Pushes config section */
@@ -405,6 +408,7 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   else
   {

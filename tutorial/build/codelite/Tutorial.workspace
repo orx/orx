@@ -41,5 +41,19 @@
       <Project Name="11_Spawner" ConfigName="Win32 Dynamic Release"/>
       <Project Name="12_Lighting" ConfigName="Win32 Dynamic Release"/>
     </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux64 Dynamic Release" Selected="no">
+      <Project Name="12_Lighting" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="11_Spawner" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="10_StandAlone" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="09_Scrolling" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="08_Physics" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="07_FX" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="06_Sound" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="05_Viewport" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="04_Anim" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="03_Frame" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="02_Clock" ConfigName="Linux64 Dynamic Release"/>
+      <Project Name="01_Object" ConfigName="Linux64 Dynamic Release"/>
+    </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

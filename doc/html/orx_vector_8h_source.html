@@ -427,7 +427,7 @@
 <a name="l00539"></a><a class="code" href="group__orx_vector.html#gacec0e26920a34277bd6f4c50c69af740">00539</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gacec0e26920a34277bd6f4c50c69af740">orxVector_Normalize</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
 <a name="l00540"></a>00540 {
 <a name="l00541"></a>00541   <span class="keyword">register</span> orxFLOAT fOp;
-<a name="l00542"></a>00542 
+<a name="l00542"></a>00542   
 <a name="l00543"></a>00543   <span class="comment">/* Checks */</span>
 <a name="l00544"></a>00544   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
 <a name="l00545"></a>00545   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
@@ -435,272 +435,267 @@
 <a name="l00547"></a>00547   <span class="comment">/* Gets squared size */</span>
 <a name="l00548"></a>00548   fOp = (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) + (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
 <a name="l00549"></a>00549 
-<a name="l00550"></a>00550   <span class="comment">/* Valid? */</span>
-<a name="l00551"></a>00551   <span class="keywordflow">if</span>(fOp &gt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00552"></a>00552   {
-<a name="l00553"></a>00553     <span class="comment">/* Gets reciprocal size */</span>
-<a name="l00554"></a>00554     fOp = <a class="code" href="group__orx_type.html#ga90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a> / <a class="code" href="group__orx_math.html#gaf2becc8989b1bd9f55d824ea1736034b">orxMath_Sqrt</a>(fOp);
-<a name="l00555"></a>00555 
-<a name="l00556"></a>00556     <span class="comment">/* Updates result */</span>
-<a name="l00557"></a>00557     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = fOp * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>;
-<a name="l00558"></a>00558     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = fOp * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>;
-<a name="l00559"></a>00559     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> = fOp * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>;
-<a name="l00560"></a>00560   }
-<a name="l00561"></a>00561   <span class="keywordflow">else</span>
-<a name="l00562"></a>00562   {
-<a name="l00563"></a>00563     <span class="comment">/* Clears result */</span>
-<a name="l00564"></a>00564     <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(_pvRes, <span class="keyword">sizeof</span>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>));
-<a name="l00565"></a>00565   }
-<a name="l00566"></a>00566 
-<a name="l00567"></a>00567   <span class="comment">/* Done! */</span>
-<a name="l00568"></a>00568   <span class="keywordflow">return</span> _pvRes;
-<a name="l00569"></a>00569 }
-<a name="l00570"></a>00570 
-<a name="l00577"></a><a class="code" href="group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185">00577</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185">orxVector_2DRotate</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp, orxFLOAT _fAngle)
-<a name="l00578"></a>00578 {
-<a name="l00579"></a>00579   <span class="keyword">register</span> orxFLOAT fSin, fCos;
-<a name="l00580"></a>00580 
-<a name="l00581"></a>00581   <span class="comment">/* Checks */</span>
-<a name="l00582"></a>00582   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes   != orxNULL);
-<a name="l00583"></a>00583   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
-<a name="l00584"></a>00584 
-<a name="l00585"></a>00585   <span class="comment">/* Gets cos &amp; sin of angle */</span>
-<a name="l00586"></a>00586   fCos = <a class="code" href="group__orx_math.html#ga37c3776ab28f243435203d961d10ba80">orxMath_Cos</a>(_fAngle);
-<a name="l00587"></a>00587   fSin = <a class="code" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a>(_fAngle);
-<a name="l00588"></a>00588 
-<a name="l00589"></a>00589   <span class="comment">/* Updates result */</span>
-<a name="l00590"></a>00590   <a class="code" href="group__orx_vector.html#gae376f782e43cc341c95a8a20222ddcae">orxVector_Set</a>(_pvRes, (fCos * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) - (fSin * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>), (fSin * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (fCos * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>), _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
-<a name="l00591"></a>00591 
-<a name="l00592"></a>00592   <span class="comment">/* Done! */</span>
-<a name="l00593"></a>00593   <span class="keywordflow">return</span> _pvRes;
-<a name="l00594"></a>00594 }
-<a name="l00595"></a>00595 
-<a name="l00600"></a><a class="code" href="group__orx_vector.html#ga99cb3603700f6a80d5a770b66fe42519">00600</a> <span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_vector.html#ga99cb3603700f6a80d5a770b66fe42519">orxVector_IsNull</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
-<a name="l00601"></a>00601 {
-<a name="l00602"></a>00602   orxBOOL bResult;
-<a name="l00603"></a>00603 
-<a name="l00604"></a>00604   <span class="comment">/* Checks */</span>
-<a name="l00605"></a>00605   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
-<a name="l00606"></a>00606 
-<a name="l00607"></a>00607   <span class="comment">/* Updates result */</span>
-<a name="l00608"></a>00608   bResult = ((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
-<a name="l00609"></a>00609 
-<a name="l00610"></a>00610   <span class="comment">/* Done! */</span>
-<a name="l00611"></a>00611   <span class="keywordflow">return</span> bResult;
-<a name="l00612"></a>00612 }
+<a name="l00550"></a>00550   <span class="comment">/* Gets reciprocal size */</span>
+<a name="l00551"></a>00551   fOp = <a class="code" href="group__orx_type.html#ga90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a> / (<a class="code" href="group__orx_math.html#ga4365ce1ca146ac561389bdfce1a70f76">orxMATH_KF_TINY_EPSILON</a> + <a class="code" href="group__orx_math.html#gaf2becc8989b1bd9f55d824ea1736034b">orxMath_Sqrt</a>(fOp));
+<a name="l00552"></a>00552 
+<a name="l00553"></a>00553   <span class="comment">/* Updates result */</span>
+<a name="l00554"></a>00554   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = fOp * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>;
+<a name="l00555"></a>00555   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = fOp * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>;
+<a name="l00556"></a>00556   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> = fOp * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>;
+<a name="l00557"></a>00557 
+<a name="l00558"></a>00558   <span class="comment">/* Done! */</span>
+<a name="l00559"></a>00559   <span class="keywordflow">return</span> _pvRes;
+<a name="l00560"></a>00560 }
+<a name="l00561"></a>00561 
+<a name="l00568"></a><a class="code" href="group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185">00568</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185">orxVector_2DRotate</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp, orxFLOAT _fAngle)
+<a name="l00569"></a>00569 {
+<a name="l00570"></a>00570   <span class="keyword">register</span> orxFLOAT fSin, fCos;
+<a name="l00571"></a>00571 
+<a name="l00572"></a>00572   <span class="comment">/* Checks */</span>
+<a name="l00573"></a>00573   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes   != orxNULL);
+<a name="l00574"></a>00574   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
+<a name="l00575"></a>00575 
+<a name="l00576"></a>00576   <span class="comment">/* Gets cos &amp; sin of angle */</span>
+<a name="l00577"></a>00577   fCos = <a class="code" href="group__orx_math.html#ga37c3776ab28f243435203d961d10ba80">orxMath_Cos</a>(_fAngle);
+<a name="l00578"></a>00578   fSin = <a class="code" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a>(_fAngle);
+<a name="l00579"></a>00579 
+<a name="l00580"></a>00580   <span class="comment">/* Updates result */</span>
+<a name="l00581"></a>00581   <a class="code" href="group__orx_vector.html#gae376f782e43cc341c95a8a20222ddcae">orxVector_Set</a>(_pvRes, (fCos * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) - (fSin * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>), (fSin * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (fCos * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>), _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
+<a name="l00582"></a>00582 
+<a name="l00583"></a>00583   <span class="comment">/* Done! */</span>
+<a name="l00584"></a>00584   <span class="keywordflow">return</span> _pvRes;
+<a name="l00585"></a>00585 }
+<a name="l00586"></a>00586 
+<a name="l00591"></a><a class="code" href="group__orx_vector.html#ga99cb3603700f6a80d5a770b66fe42519">00591</a> <span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_vector.html#ga99cb3603700f6a80d5a770b66fe42519">orxVector_IsNull</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
+<a name="l00592"></a>00592 {
+<a name="l00593"></a>00593   orxBOOL bResult;
+<a name="l00594"></a>00594 
+<a name="l00595"></a>00595   <span class="comment">/* Checks */</span>
+<a name="l00596"></a>00596   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
+<a name="l00597"></a>00597 
+<a name="l00598"></a>00598   <span class="comment">/* Updates result */</span>
+<a name="l00599"></a>00599   bResult = ((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
+<a name="l00600"></a>00600 
+<a name="l00601"></a>00601   <span class="comment">/* Done! */</span>
+<a name="l00602"></a>00602   <span class="keywordflow">return</span> bResult;
+<a name="l00603"></a>00603 }
+<a name="l00604"></a>00604 
+<a name="l00610"></a><a class="code" href="group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f">00610</a> <span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f">orxVector_AreEqual</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
+<a name="l00611"></a>00611 {
+<a name="l00612"></a>00612   orxBOOL bResult;
 <a name="l00613"></a>00613 
-<a name="l00619"></a><a class="code" href="group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f">00619</a> <span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f">orxVector_AreEqual</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
-<a name="l00620"></a>00620 {
-<a name="l00621"></a>00621   orxBOOL bResult;
-<a name="l00622"></a>00622 
-<a name="l00623"></a>00623   <span class="comment">/* Checks */</span>
-<a name="l00624"></a>00624   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1  != orxNULL);
-<a name="l00625"></a>00625   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
-<a name="l00626"></a>00626 
-<a name="l00627"></a>00627   <span class="comment">/* Updates result */</span>
-<a name="l00628"></a>00628   bResult = ((_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) &amp;&amp; (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) &amp;&amp; (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
-<a name="l00629"></a>00629 
-<a name="l00630"></a>00630   <span class="comment">/* Done! */</span>
-<a name="l00631"></a>00631   <span class="keywordflow">return</span> bResult;
-<a name="l00632"></a>00632 }
-<a name="l00633"></a>00633 
-<a name="l00639"></a><a class="code" href="group__orx_vector.html#gaeef310a7d8c6d5f7bdeeaa8de574ef3d">00639</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gaeef310a7d8c6d5f7bdeeaa8de574ef3d">orxVector_FromCartesianToSpherical</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
-<a name="l00640"></a>00640 {
-<a name="l00641"></a>00641   <span class="comment">/* Checks */</span>
-<a name="l00642"></a>00642   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
-<a name="l00643"></a>00643   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
-<a name="l00644"></a>00644 
-<a name="l00645"></a>00645   <span class="comment">/* Is operand vector null? */</span>
-<a name="l00646"></a>00646   <span class="keywordflow">if</span>((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00647"></a>00647   &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00648"></a>00648   &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>))
-<a name="l00649"></a>00649   {
-<a name="l00650"></a>00650     <span class="comment">/* Updates result vector */</span>
-<a name="l00651"></a>00651     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3">fRho</a> = _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a> = _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a> = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
-<a name="l00652"></a>00652   }
-<a name="l00653"></a>00653   <span class="keywordflow">else</span>
-<a name="l00654"></a>00654   {
-<a name="l00655"></a>00655     orxFLOAT fRho, fTheta, fPhi;
-<a name="l00656"></a>00656 
-<a name="l00657"></a>00657     <span class="comment">/* Z = 0? */</span>
-<a name="l00658"></a>00658     <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00659"></a>00659     {
-<a name="l00660"></a>00660       <span class="comment">/* X = 0? */</span>
-<a name="l00661"></a>00661       <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00662"></a>00662       {
-<a name="l00663"></a>00663         <span class="comment">/* Gets absolute value */</span>
-<a name="l00664"></a>00664         fRho = <a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>);
-<a name="l00665"></a>00665       }
-<a name="l00666"></a>00666       <span class="comment">/* X != 0 and Y = 0? */</span>
-<a name="l00667"></a>00667       <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00668"></a>00668       {
-<a name="l00669"></a>00669         <span class="comment">/* Gets absolute value */</span>
-<a name="l00670"></a>00670         fRho = <a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>);
-<a name="l00671"></a>00671       }
-<a name="l00672"></a>00672       <span class="comment">/* X != 0 and Y != 0 */</span>
-<a name="l00673"></a>00673       <span class="keywordflow">else</span>
-<a name="l00674"></a>00674       {
-<a name="l00675"></a>00675         <span class="comment">/* Computes rho */</span>
-<a name="l00676"></a>00676         fRho = <a class="code" href="group__orx_math.html#gaf2becc8989b1bd9f55d824ea1736034b">orxMath_Sqrt</a>((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>));
-<a name="l00677"></a>00677       }
-<a name="l00678"></a>00678 
-<a name="l00679"></a>00679       <span class="comment">/* Sets phi */</span>
-<a name="l00680"></a>00680       fPhi = <a class="code" href="group__orx_math.html#ga20d0a29890c82c14b315e161c033e732">orxMATH_KF_PI_BY_2</a>;
-<a name="l00681"></a>00681     }
-<a name="l00682"></a>00682     <span class="keywordflow">else</span>
-<a name="l00683"></a>00683     {
-<a name="l00684"></a>00684       <span class="comment">/* X = 0 and Y = 0? */</span>
-<a name="l00685"></a>00685       <span class="keywordflow">if</span>((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>))
-<a name="l00686"></a>00686       {
-<a name="l00687"></a>00687         <span class="comment">/* Z &lt; 0? */</span>
-<a name="l00688"></a>00688         <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &lt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
-<a name="l00689"></a>00689         {
-<a name="l00690"></a>00690           <span class="comment">/* Gets absolute value */</span>
-<a name="l00691"></a>00691           fRho = <a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
-<a name="l00692"></a>00692 
-<a name="l00693"></a>00693           <span class="comment">/* Sets phi */</span>
-<a name="l00694"></a>00694           fPhi = <a class="code" href="group__orx_math.html#gaebc0034bd52ec9a0cd34031da1a9b7bb">orxMATH_KF_PI</a>;
-<a name="l00695"></a>00695         }
-<a name="l00696"></a>00696         <span class="keywordflow">else</span>
-<a name="l00697"></a>00697         {
-<a name="l00698"></a>00698           <span class="comment">/* Sets rho */</span>
-<a name="l00699"></a>00699           fRho = _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>;
+<a name="l00614"></a>00614   <span class="comment">/* Checks */</span>
+<a name="l00615"></a>00615   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1  != orxNULL);
+<a name="l00616"></a>00616   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
+<a name="l00617"></a>00617 
+<a name="l00618"></a>00618   <span class="comment">/* Updates result */</span>
+<a name="l00619"></a>00619   bResult = ((_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) &amp;&amp; (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) &amp;&amp; (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
+<a name="l00620"></a>00620 
+<a name="l00621"></a>00621   <span class="comment">/* Done! */</span>
+<a name="l00622"></a>00622   <span class="keywordflow">return</span> bResult;
+<a name="l00623"></a>00623 }
+<a name="l00624"></a>00624 
+<a name="l00630"></a><a class="code" href="group__orx_vector.html#gaeef310a7d8c6d5f7bdeeaa8de574ef3d">00630</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gaeef310a7d8c6d5f7bdeeaa8de574ef3d">orxVector_FromCartesianToSpherical</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
+<a name="l00631"></a>00631 {
+<a name="l00632"></a>00632   <span class="comment">/* Checks */</span>
+<a name="l00633"></a>00633   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
+<a name="l00634"></a>00634   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
+<a name="l00635"></a>00635 
+<a name="l00636"></a>00636   <span class="comment">/* Is operand vector null? */</span>
+<a name="l00637"></a>00637   <span class="keywordflow">if</span>((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
+<a name="l00638"></a>00638   &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
+<a name="l00639"></a>00639   &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>))
+<a name="l00640"></a>00640   {
+<a name="l00641"></a>00641     <span class="comment">/* Updates result vector */</span>
+<a name="l00642"></a>00642     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3">fRho</a> = _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a> = _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a> = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
+<a name="l00643"></a>00643   }
+<a name="l00644"></a>00644   <span class="keywordflow">else</span>
+<a name="l00645"></a>00645   {
+<a name="l00646"></a>00646     orxFLOAT fRho, fTheta, fPhi;
+<a name="l00647"></a>00647 
+<a name="l00648"></a>00648     <span class="comment">/* Z = 0? */</span>
+<a name="l00649"></a>00649     <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
+<a name="l00650"></a>00650     {
+<a name="l00651"></a>00651       <span class="comment">/* X = 0? */</span>
+<a name="l00652"></a>00652       <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
+<a name="l00653"></a>00653       {
+<a name="l00654"></a>00654         <span class="comment">/* Gets absolute value */</span>
+<a name="l00655"></a>00655         fRho = <a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>);
+<a name="l00656"></a>00656       }
+<a name="l00657"></a>00657       <span class="comment">/* X != 0 and Y = 0? */</span>
+<a name="l00658"></a>00658       <span class="keywordflow">else</span> <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
+<a name="l00659"></a>00659       {
+<a name="l00660"></a>00660         <span class="comment">/* Gets absolute value */</span>
+<a name="l00661"></a>00661         fRho = <a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>);
+<a name="l00662"></a>00662       }
+<a name="l00663"></a>00663       <span class="comment">/* X != 0 and Y != 0 */</span>
+<a name="l00664"></a>00664       <span class="keywordflow">else</span>
+<a name="l00665"></a>00665       {
+<a name="l00666"></a>00666         <span class="comment">/* Computes rho */</span>
+<a name="l00667"></a>00667         fRho = <a class="code" href="group__orx_math.html#gaf2becc8989b1bd9f55d824ea1736034b">orxMath_Sqrt</a>((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>));
+<a name="l00668"></a>00668       }
+<a name="l00669"></a>00669 
+<a name="l00670"></a>00670       <span class="comment">/* Sets phi */</span>
+<a name="l00671"></a>00671       fPhi = <a class="code" href="group__orx_math.html#ga20d0a29890c82c14b315e161c033e732">orxMATH_KF_PI_BY_2</a>;
+<a name="l00672"></a>00672     }
+<a name="l00673"></a>00673     <span class="keywordflow">else</span>
+<a name="l00674"></a>00674     {
+<a name="l00675"></a>00675       <span class="comment">/* X = 0 and Y = 0? */</span>
+<a name="l00676"></a>00676       <span class="keywordflow">if</span>((_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>) &amp;&amp; (_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>))
+<a name="l00677"></a>00677       {
+<a name="l00678"></a>00678         <span class="comment">/* Z &lt; 0? */</span>
+<a name="l00679"></a>00679         <span class="keywordflow">if</span>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &lt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)
+<a name="l00680"></a>00680         {
+<a name="l00681"></a>00681           <span class="comment">/* Gets absolute value */</span>
+<a name="l00682"></a>00682           fRho = <a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
+<a name="l00683"></a>00683 
+<a name="l00684"></a>00684           <span class="comment">/* Sets phi */</span>
+<a name="l00685"></a>00685           fPhi = <a class="code" href="group__orx_math.html#gaebc0034bd52ec9a0cd34031da1a9b7bb">orxMATH_KF_PI</a>;
+<a name="l00686"></a>00686         }
+<a name="l00687"></a>00687         <span class="keywordflow">else</span>
+<a name="l00688"></a>00688         {
+<a name="l00689"></a>00689           <span class="comment">/* Sets rho */</span>
+<a name="l00690"></a>00690           fRho = _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>;
+<a name="l00691"></a>00691 
+<a name="l00692"></a>00692           <span class="comment">/* Sets phi */</span>
+<a name="l00693"></a>00693           fPhi = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
+<a name="l00694"></a>00694         }
+<a name="l00695"></a>00695       }
+<a name="l00696"></a>00696       <span class="keywordflow">else</span>
+<a name="l00697"></a>00697       {
+<a name="l00698"></a>00698         <span class="comment">/* Computes rho */</span>
+<a name="l00699"></a>00699         fRho = <a class="code" href="group__orx_math.html#gaf2becc8989b1bd9f55d824ea1736034b">orxMath_Sqrt</a>(<a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(_pvOp));
 <a name="l00700"></a>00700 
-<a name="l00701"></a>00701           <span class="comment">/* Sets phi */</span>
-<a name="l00702"></a>00702           fPhi = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
-<a name="l00703"></a>00703         }
-<a name="l00704"></a>00704       }
-<a name="l00705"></a>00705       <span class="keywordflow">else</span>
-<a name="l00706"></a>00706       {
-<a name="l00707"></a>00707         <span class="comment">/* Computes rho */</span>
-<a name="l00708"></a>00708         fRho = <a class="code" href="group__orx_math.html#gaf2becc8989b1bd9f55d824ea1736034b">orxMath_Sqrt</a>(<a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(_pvOp));
-<a name="l00709"></a>00709 
-<a name="l00710"></a>00710         <span class="comment">/* Computes phi */</span>
-<a name="l00711"></a>00711         fPhi = <a class="code" href="group__orx_math.html#gac12332640c9c6f2d2302b725294f3807">orxMath_ACos</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> / fRho);
-<a name="l00712"></a>00712       }
-<a name="l00713"></a>00713     }
+<a name="l00701"></a>00701         <span class="comment">/* Computes phi */</span>
+<a name="l00702"></a>00702         fPhi = <a class="code" href="group__orx_math.html#gac12332640c9c6f2d2302b725294f3807">orxMath_ACos</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> / fRho);
+<a name="l00703"></a>00703       }
+<a name="l00704"></a>00704     }
+<a name="l00705"></a>00705 
+<a name="l00706"></a>00706     <span class="comment">/* Computes theta */</span>
+<a name="l00707"></a>00707     fTheta = <a class="code" href="group__orx_math.html#ga4bb456702b44d73ca808a4ab750302e3">orxMath_ATan</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>, _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>);
+<a name="l00708"></a>00708 
+<a name="l00709"></a>00709     <span class="comment">/* Updates result */</span>
+<a name="l00710"></a>00710     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3">fRho</a>    = fRho;
+<a name="l00711"></a>00711     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a>  = fTheta;
+<a name="l00712"></a>00712     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a>    = fPhi;
+<a name="l00713"></a>00713   }
 <a name="l00714"></a>00714 
-<a name="l00715"></a>00715     <span class="comment">/* Computes theta */</span>
-<a name="l00716"></a>00716     fTheta = <a class="code" href="group__orx_math.html#ga4bb456702b44d73ca808a4ab750302e3">orxMath_ATan</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>, _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>);
-<a name="l00717"></a>00717 
-<a name="l00718"></a>00718     <span class="comment">/* Updates result */</span>
-<a name="l00719"></a>00719     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3">fRho</a>    = fRho;
-<a name="l00720"></a>00720     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a>  = fTheta;
-<a name="l00721"></a>00721     _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a>    = fPhi;
-<a name="l00722"></a>00722   }
-<a name="l00723"></a>00723 
-<a name="l00724"></a>00724   <span class="comment">/* Done! */</span>
-<a name="l00725"></a>00725   <span class="keywordflow">return</span> _pvRes;
-<a name="l00726"></a>00726 }
+<a name="l00715"></a>00715   <span class="comment">/* Done! */</span>
+<a name="l00716"></a>00716   <span class="keywordflow">return</span> _pvRes;
+<a name="l00717"></a>00717 }
+<a name="l00718"></a>00718 
+<a name="l00724"></a><a class="code" href="group__orx_vector.html#gaf39a7075d3d7e90f80604b838cc0f917">00724</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gaf39a7075d3d7e90f80604b838cc0f917">orxVector_FromSphericalToCartesian</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
+<a name="l00725"></a>00725 {
+<a name="l00726"></a>00726   orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta, fRho;
 <a name="l00727"></a>00727 
-<a name="l00733"></a><a class="code" href="group__orx_vector.html#gaf39a7075d3d7e90f80604b838cc0f917">00733</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                  <a class="code" href="group__orx_vector.html#gaf39a7075d3d7e90f80604b838cc0f917">orxVector_FromSphericalToCartesian</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)
-<a name="l00734"></a>00734 {
-<a name="l00735"></a>00735   orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta, fRho;
-<a name="l00736"></a>00736 
-<a name="l00737"></a>00737   <span class="comment">/* Checks */</span>
-<a name="l00738"></a>00738   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
-<a name="l00739"></a>00739   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
-<a name="l00740"></a>00740 
-<a name="l00741"></a>00741   <span class="comment">/* Stores rho */</span>
-<a name="l00742"></a>00742   fRho = _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3">fRho</a>;
-<a name="l00743"></a>00743 
-<a name="l00744"></a>00744   <span class="comment">/* Gets sine &amp; cosine */</span>
-<a name="l00745"></a>00745   fSinTheta = <a class="code" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a>);
-<a name="l00746"></a>00746   fCosTheta = <a class="code" href="group__orx_math.html#ga37c3776ab28f243435203d961d10ba80">orxMath_Cos</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a>);
-<a name="l00747"></a>00747   fSinPhi   = <a class="code" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a>);
-<a name="l00748"></a>00748   fCosPhi   = <a class="code" href="group__orx_math.html#ga37c3776ab28f243435203d961d10ba80">orxMath_Cos</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a>);
-<a name="l00749"></a>00749   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fSinTheta) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
-<a name="l00750"></a>00750   {
-<a name="l00751"></a>00751     fSinTheta = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
-<a name="l00752"></a>00752   }
-<a name="l00753"></a>00753   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fCosTheta) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
-<a name="l00754"></a>00754   {
-<a name="l00755"></a>00755     fCosTheta = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
-<a name="l00756"></a>00756   }
-<a name="l00757"></a>00757   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fSinPhi) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
-<a name="l00758"></a>00758   {
-<a name="l00759"></a>00759     fSinPhi = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
-<a name="l00760"></a>00760   }
-<a name="l00761"></a>00761   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fCosPhi) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
-<a name="l00762"></a>00762   {
-<a name="l00763"></a>00763     fCosPhi = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
-<a name="l00764"></a>00764   }
+<a name="l00728"></a>00728   <span class="comment">/* Checks */</span>
+<a name="l00729"></a>00729   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
+<a name="l00730"></a>00730   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp != orxNULL);
+<a name="l00731"></a>00731 
+<a name="l00732"></a>00732   <span class="comment">/* Stores rho */</span>
+<a name="l00733"></a>00733   fRho = _pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3">fRho</a>;
+<a name="l00734"></a>00734 
+<a name="l00735"></a>00735   <span class="comment">/* Gets sine &amp; cosine */</span>
+<a name="l00736"></a>00736   fSinTheta = <a class="code" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a>);
+<a name="l00737"></a>00737   fCosTheta = <a class="code" href="group__orx_math.html#ga37c3776ab28f243435203d961d10ba80">orxMath_Cos</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a7bdbbcf2d473b224cc0ee4d81ccc9e17">fTheta</a>);
+<a name="l00738"></a>00738   fSinPhi   = <a class="code" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a>);
+<a name="l00739"></a>00739   fCosPhi   = <a class="code" href="group__orx_math.html#ga37c3776ab28f243435203d961d10ba80">orxMath_Cos</a>(_pvOp-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c">fPhi</a>);
+<a name="l00740"></a>00740   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fSinTheta) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
+<a name="l00741"></a>00741   {
+<a name="l00742"></a>00742     fSinTheta = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
+<a name="l00743"></a>00743   }
+<a name="l00744"></a>00744   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fCosTheta) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
+<a name="l00745"></a>00745   {
+<a name="l00746"></a>00746     fCosTheta = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
+<a name="l00747"></a>00747   }
+<a name="l00748"></a>00748   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fSinPhi) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
+<a name="l00749"></a>00749   {
+<a name="l00750"></a>00750     fSinPhi = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
+<a name="l00751"></a>00751   }
+<a name="l00752"></a>00752   <span class="keywordflow">if</span>(<a class="code" href="group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779">orxMath_Abs</a>(fCosPhi) &lt; <a class="code" href="group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7">orxMATH_KF_EPSILON</a>)
+<a name="l00753"></a>00753   {
+<a name="l00754"></a>00754     fCosPhi = <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>;
+<a name="l00755"></a>00755   }
+<a name="l00756"></a>00756 
+<a name="l00757"></a>00757   <span class="comment">/* Updates result */</span>
+<a name="l00758"></a>00758   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = fRho * fCosTheta * fSinPhi;
+<a name="l00759"></a>00759   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = fRho * fSinTheta * fSinPhi;
+<a name="l00760"></a>00760   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> = fRho * fCosPhi;
+<a name="l00761"></a>00761 
+<a name="l00762"></a>00762   <span class="comment">/* Done! */</span>
+<a name="l00763"></a>00763   <span class="keywordflow">return</span> _pvRes;
+<a name="l00764"></a>00764 }
 <a name="l00765"></a>00765 
-<a name="l00766"></a>00766   <span class="comment">/* Updates result */</span>
-<a name="l00767"></a>00767   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = fRho * fCosTheta * fSinPhi;
-<a name="l00768"></a>00768   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = fRho * fSinTheta * fSinPhi;
-<a name="l00769"></a>00769   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> = fRho * fCosPhi;
-<a name="l00770"></a>00770 
-<a name="l00771"></a>00771   <span class="comment">/* Done! */</span>
-<a name="l00772"></a>00772   <span class="keywordflow">return</span> _pvRes;
-<a name="l00773"></a>00773 }
+<a name="l00771"></a><a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">00771</a> <span class="keyword">static</span> orxINLINE orxFLOAT                   <a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">orxVector_Dot</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
+<a name="l00772"></a>00772 {
+<a name="l00773"></a>00773   orxFLOAT fResult;
 <a name="l00774"></a>00774 
-<a name="l00780"></a><a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">00780</a> <span class="keyword">static</span> orxINLINE orxFLOAT                   <a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">orxVector_Dot</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
-<a name="l00781"></a>00781 {
-<a name="l00782"></a>00782   orxFLOAT fResult;
-<a name="l00783"></a>00783 
-<a name="l00784"></a>00784   <span class="comment">/* Checks */</span>
-<a name="l00785"></a>00785   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1 != orxNULL);
-<a name="l00786"></a>00786   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
-<a name="l00787"></a>00787 
-<a name="l00788"></a>00788   <span class="comment">/* Updates result */</span>
-<a name="l00789"></a>00789   fResult = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) + (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
-<a name="l00790"></a>00790 
-<a name="l00791"></a>00791   <span class="comment">/* Done! */</span>
-<a name="l00792"></a>00792   <span class="keywordflow">return</span> fResult;
-<a name="l00793"></a>00793 }
+<a name="l00775"></a>00775   <span class="comment">/* Checks */</span>
+<a name="l00776"></a>00776   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1 != orxNULL);
+<a name="l00777"></a>00777   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
+<a name="l00778"></a>00778 
+<a name="l00779"></a>00779   <span class="comment">/* Updates result */</span>
+<a name="l00780"></a>00780   fResult = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) + (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
+<a name="l00781"></a>00781 
+<a name="l00782"></a>00782   <span class="comment">/* Done! */</span>
+<a name="l00783"></a>00783   <span class="keywordflow">return</span> fResult;
+<a name="l00784"></a>00784 }
+<a name="l00785"></a>00785 
+<a name="l00791"></a><a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">00791</a> <span class="keyword">static</span> orxINLINE orxFLOAT                   <a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">orxVector_2DDot</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
+<a name="l00792"></a>00792 {
+<a name="l00793"></a>00793   orxFLOAT fResult;
 <a name="l00794"></a>00794 
-<a name="l00800"></a><a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">00800</a> <span class="keyword">static</span> orxINLINE orxFLOAT                   <a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">orxVector_2DDot</a>(<span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
-<a name="l00801"></a>00801 {
-<a name="l00802"></a>00802   orxFLOAT fResult;
-<a name="l00803"></a>00803 
-<a name="l00804"></a>00804   <span class="comment">/* Checks */</span>
-<a name="l00805"></a>00805   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1 != orxNULL);
-<a name="l00806"></a>00806   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
-<a name="l00807"></a>00807 
-<a name="l00808"></a>00808   <span class="comment">/* Updates result */</span>
-<a name="l00809"></a>00809   fResult = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>);
-<a name="l00810"></a>00810 
-<a name="l00811"></a>00811   <span class="comment">/* Done! */</span>
-<a name="l00812"></a>00812   <span class="keywordflow">return</span> fResult;
-<a name="l00813"></a>00813 }
-<a name="l00814"></a>00814 
-<a name="l00821"></a><a class="code" href="group__orx_vector.html#ga9665e4a6ab39887213eb7e1b40d70da7">00821</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                <a class="code" href="group__orx_vector.html#ga9665e4a6ab39887213eb7e1b40d70da7">orxVector_Cross</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
-<a name="l00822"></a>00822 {
-<a name="l00823"></a>00823   orxFLOAT fTemp1, fTemp2;
-<a name="l00824"></a>00824 
-<a name="l00825"></a>00825   <span class="comment">/* Checks */</span>
-<a name="l00826"></a>00826   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
-<a name="l00827"></a>00827   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1 != orxNULL);
-<a name="l00828"></a>00828   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
-<a name="l00829"></a>00829 
-<a name="l00830"></a>00830   <span class="comment">/* Computes cross product */</span>
-<a name="l00831"></a>00831   fTemp1      = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>) - (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>);
-<a name="l00832"></a>00832   fTemp2      = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) - (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
-<a name="l00833"></a>00833   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>  = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) - (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>);
-<a name="l00834"></a>00834   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>  = fTemp2;
-<a name="l00835"></a>00835   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>  = fTemp1;
-<a name="l00836"></a>00836 
-<a name="l00837"></a>00837   <span class="comment">/* Done! */</span>
-<a name="l00838"></a>00838   <span class="keywordflow">return</span> _pvRes;
-<a name="l00839"></a>00839 }
-<a name="l00840"></a>00840 
-<a name="l00841"></a>00841 
-<a name="l00842"></a>00842 <span class="comment">/* *** Vector constants *** */</span>
-<a name="l00843"></a>00843 
-<a name="l00844"></a>00844 
-<a name="l00845"></a>00845 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gad26c9f30eb2ebab761abc31e3f5eafc2">orxVECTOR_X</a>;      
-<a name="l00846"></a>00846 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga1bd603a689d5973393dec83966aa18d8">orxVECTOR_Y</a>;      
-<a name="l00847"></a>00847 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gafb49da17b1f47004004b7bdfb803fda1">orxVECTOR_Z</a>;      
-<a name="l00849"></a>00849 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gaf418598c5e4fac78020674e538941c9a">orxVECTOR_0</a>;      
-<a name="l00850"></a>00850 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gab20d9cfbfd0c1fcc33eed217002e2e2d">orxVECTOR_1</a>;      
-<a name="l00852"></a>00852 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga4d21972e46bbd1b8080869f1c3ba8d11">orxVECTOR_RED</a>;    
-<a name="l00853"></a>00853 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga8b01c25bb39320c77bbbf2ea17e53121">orxVECTOR_GREEN</a>;  
-<a name="l00854"></a>00854 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga985c3c50241def531dcd7f814fbbf39d">orxVECTOR_BLUE</a>;   
-<a name="l00855"></a>00855 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gacc40ca7963eb044a36ffcc9137840979">orxVECTOR_BLACK</a>;  
-<a name="l00856"></a>00856 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga3be932853f91805505cdf2beb4d43921">orxVECTOR_WHITE</a>;  
-<a name="l00858"></a>00858 <span class="preprocessor">#endif </span><span class="comment">/* _orxVECTOR_H_ */</span>
-<a name="l00859"></a>00859 
+<a name="l00795"></a>00795   <span class="comment">/* Checks */</span>
+<a name="l00796"></a>00796   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1 != orxNULL);
+<a name="l00797"></a>00797   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
+<a name="l00798"></a>00798 
+<a name="l00799"></a>00799   <span class="comment">/* Updates result */</span>
+<a name="l00800"></a>00800   fResult = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) + (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>);
+<a name="l00801"></a>00801 
+<a name="l00802"></a>00802   <span class="comment">/* Done! */</span>
+<a name="l00803"></a>00803   <span class="keywordflow">return</span> fResult;
+<a name="l00804"></a>00804 }
+<a name="l00805"></a>00805 
+<a name="l00812"></a><a class="code" href="group__orx_vector.html#ga9665e4a6ab39887213eb7e1b40d70da7">00812</a> <span class="keyword">static</span> orxINLINE <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *                <a class="code" href="group__orx_vector.html#ga9665e4a6ab39887213eb7e1b40d70da7">orxVector_Cross</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)
+<a name="l00813"></a>00813 {
+<a name="l00814"></a>00814   orxFLOAT fTemp1, fTemp2;
+<a name="l00815"></a>00815 
+<a name="l00816"></a>00816   <span class="comment">/* Checks */</span>
+<a name="l00817"></a>00817   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvRes != orxNULL);
+<a name="l00818"></a>00818   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp1 != orxNULL);
+<a name="l00819"></a>00819   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pvOp2  != orxNULL);
+<a name="l00820"></a>00820 
+<a name="l00821"></a>00821   <span class="comment">/* Computes cross product */</span>
+<a name="l00822"></a>00822   fTemp1      = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>) - (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>);
+<a name="l00823"></a>00823   fTemp2      = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>) - (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>);
+<a name="l00824"></a>00824   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>  = (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>) - (_pvOp1-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> * _pvOp2-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>);
+<a name="l00825"></a>00825   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>  = fTemp2;
+<a name="l00826"></a>00826   _pvRes-&gt;<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>  = fTemp1;
+<a name="l00827"></a>00827 
+<a name="l00828"></a>00828   <span class="comment">/* Done! */</span>
+<a name="l00829"></a>00829   <span class="keywordflow">return</span> _pvRes;
+<a name="l00830"></a>00830 }
+<a name="l00831"></a>00831 
+<a name="l00832"></a>00832 
+<a name="l00833"></a>00833 <span class="comment">/* *** Vector functions *** */</span>
+<a name="l00834"></a>00834 
+<a name="l00844"></a>00844 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL <a class="code" href="group__orx_vector.html#gad6425e055fe1166db59ba2ee56e0ba64">orxVector_CatmullRom</a>(<a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint1, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint2, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint3, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint4, orxFLOAT _fT);
+<a name="l00845"></a>00845 
+<a name="l00846"></a>00846 
+<a name="l00847"></a>00847 <span class="comment">/* *** Vector constants *** */</span>
+<a name="l00848"></a>00848 
+<a name="l00849"></a>00849 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gad26c9f30eb2ebab761abc31e3f5eafc2">orxVECTOR_X</a>;      
+<a name="l00850"></a>00850 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga1bd603a689d5973393dec83966aa18d8">orxVECTOR_Y</a>;      
+<a name="l00851"></a>00851 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gafb49da17b1f47004004b7bdfb803fda1">orxVECTOR_Z</a>;      
+<a name="l00853"></a>00853 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gaf418598c5e4fac78020674e538941c9a">orxVECTOR_0</a>;      
+<a name="l00854"></a>00854 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gab20d9cfbfd0c1fcc33eed217002e2e2d">orxVECTOR_1</a>;      
+<a name="l00856"></a>00856 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga4d21972e46bbd1b8080869f1c3ba8d11">orxVECTOR_RED</a>;    
+<a name="l00857"></a>00857 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga8b01c25bb39320c77bbbf2ea17e53121">orxVECTOR_GREEN</a>;  
+<a name="l00858"></a>00858 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga985c3c50241def531dcd7f814fbbf39d">orxVECTOR_BLUE</a>;   
+<a name="l00859"></a>00859 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#gacc40ca7963eb044a36ffcc9137840979">orxVECTOR_BLACK</a>;  
+<a name="l00860"></a>00860 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="group__orx_vector.html#ga3be932853f91805505cdf2beb4d43921">orxVECTOR_WHITE</a>;  
+<a name="l00862"></a>00862 <span class="preprocessor">#endif </span><span class="comment">/* _orxVECTOR_H_ */</span>
+<a name="l00863"></a>00863 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

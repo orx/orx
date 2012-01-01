@@ -103,6 +103,21 @@ extern orxDLLAPI void orxFASTCALL               orxSoundPointer_Enable(orxSOUNDP
 extern orxDLLAPI orxBOOL orxFASTCALL            orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPointer);
 
 
+/** Sets volume of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fVolume        Desired volume (0.0 - 1.0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetVolume(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fVolume);
+
+/** Sets pitch of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fPitch         Desired pitch
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPitch);
+
+
 /** Plays all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -135,6 +150,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_AddSound(orxSOUN
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPointer, orxSOUND *_pstSound);
+
+/** Removes all sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSoundPointer);
 
 /** Adds a sound using its config ID
  * @param[in]   _pstSoundPointer    Concerned SoundPointer

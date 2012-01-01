@@ -116,7 +116,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
   
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxANDROID_NATIVE__
+  #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
   struct timespec stCurrentTime;
   
@@ -135,7 +135,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     dResult = orx2D(0.0);
   }
 
-  #else /* __orxANDROID_NATIVE__ */
+  #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
   struct timeval stCurrentTime;
 
@@ -154,7 +154,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     dResult = orx2D(0.0);
   }
 
-  #endif /* __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -220,9 +220,6 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     /* Updates status */
     sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
-
-    /* Inits random generator based on current time */
-    orxMath_InitRandom(1000 * orxSystem_GetRealTime());
   }
 
   /* Done! */

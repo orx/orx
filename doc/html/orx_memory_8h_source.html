@@ -69,36 +69,37 @@
 <a name="l00059"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4e669175f43af7fce7aba847fb607237">00059</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4e669175f43af7fce7aba847fb607237">orxMEMORY_TYPE_PALETTE</a>,               
 <a name="l00061"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3">00061</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3">orxMEMORY_TYPE_CONFIG</a>,                
 <a name="l00062"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72">00062</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72">orxMEMORY_TYPE_TEXT</a>,                  
-<a name="l00064"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">00064</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">orxMEMORY_TYPE_TEMP</a>,                  
-<a name="l00066"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5">00066</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5">orxMEMORY_TYPE_NUMBER</a>,                
-<a name="l00068"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">00068</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">orxMEMORY_TYPE_NONE</a> = orxENUM_NONE    
-<a name="l00070"></a>00070 } <a class="code" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a>;
-<a name="l00071"></a>00071 
-<a name="l00072"></a>00072 
-<a name="l00075"></a>00075 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_memory.html#gaf91c778332c819f06bdde51acfda9fa0">orxMemory_Setup</a>();
-<a name="l00076"></a>00076 
-<a name="l00080"></a>00080 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL  <a class="code" href="group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379">orxMemory_Init</a>();
-<a name="l00081"></a>00081 
-<a name="l00084"></a>00084 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_memory.html#ga643c775ffcf970857a16d419bf298020">orxMemory_Exit</a>();
-<a name="l00085"></a>00085 
-<a name="l00091"></a>00091 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#ga74fb333b07c13bf3a668c5ee88204ea8">orxMemory_Allocate</a>(orxU32 _u32Size, <a class="code" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType);
-<a name="l00092"></a>00092 
-<a name="l00096"></a>00096 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d">orxMemory_Free</a>(<span class="keywordtype">void</span> *_pMem);
-<a name="l00097"></a>00097 
-<a name="l00105"></a>00105 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c">orxMemory_Copy</a>(<span class="keywordtype">void</span> *_pDest, <span class="keyword">const</span> <span class="keywordtype">void</span> *_pSrc, orxU32 _u32Size);
-<a name="l00106"></a>00106 
-<a name="l00113"></a>00113 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#ga7e90efa0eef145702488f1d76719dda3">orxMemory_Move</a>(<span class="keywordtype">void</span> *_pDest, <span class="keywordtype">void</span> *_pSrc, orxU32 _u32Size);
-<a name="l00114"></a>00114 
-<a name="l00121"></a>00121 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL     <a class="code" href="group__orx_memory.html#gacc3b257d3c6bec8af29c59fa62a01e59">orxMemory_Compare</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pMem1, <span class="keyword">const</span> <span class="keywordtype">void</span> *_pMem2, orxU32 _u32Size);
-<a name="l00122"></a>00122 
-<a name="l00129"></a>00129 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#gadbe3840a865f43ba5310a54b203ffc9a">orxMemory_Set</a>(<span class="keywordtype">void</span> *_pDest, orxU8 _u8Data, orxU32 _u32Size);
-<a name="l00130"></a>00130 
-<a name="l00136"></a>00136 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(<span class="keywordtype">void</span> *_pDest, orxU32 _u32Size);
-<a name="l00137"></a>00137 
-<a name="l00143"></a>00143 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b">orxMemory_Reallocate</a>(<span class="keywordtype">void</span> *_pMem, orxU32 _u32Size);
-<a name="l00144"></a>00144 
-<a name="l00145"></a>00145 <span class="preprocessor">#endif </span><span class="comment">/* _orxMEMORY_H_ */</span>
+<a name="l00064"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59">00064</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59">orxMEMORY_TYPE_AUDIO</a>,                 
+<a name="l00066"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">00066</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">orxMEMORY_TYPE_TEMP</a>,                  
+<a name="l00068"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5">00068</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5">orxMEMORY_TYPE_NUMBER</a>,                
+<a name="l00070"></a><a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">00070</a>   <a class="code" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">orxMEMORY_TYPE_NONE</a> = orxENUM_NONE    
+<a name="l00072"></a>00072 } <a class="code" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a>;
+<a name="l00073"></a>00073 
+<a name="l00074"></a>00074 
+<a name="l00077"></a>00077 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_memory.html#gaf91c778332c819f06bdde51acfda9fa0">orxMemory_Setup</a>();
+<a name="l00078"></a>00078 
+<a name="l00082"></a>00082 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL  <a class="code" href="group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379">orxMemory_Init</a>();
+<a name="l00083"></a>00083 
+<a name="l00086"></a>00086 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_memory.html#ga643c775ffcf970857a16d419bf298020">orxMemory_Exit</a>();
+<a name="l00087"></a>00087 
+<a name="l00093"></a>00093 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#ga74fb333b07c13bf3a668c5ee88204ea8">orxMemory_Allocate</a>(orxU32 _u32Size, <a class="code" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType);
+<a name="l00094"></a>00094 
+<a name="l00098"></a>00098 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d">orxMemory_Free</a>(<span class="keywordtype">void</span> *_pMem);
+<a name="l00099"></a>00099 
+<a name="l00107"></a>00107 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c">orxMemory_Copy</a>(<span class="keywordtype">void</span> *_pDest, <span class="keyword">const</span> <span class="keywordtype">void</span> *_pSrc, orxU32 _u32Size);
+<a name="l00108"></a>00108 
+<a name="l00115"></a>00115 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#ga7e90efa0eef145702488f1d76719dda3">orxMemory_Move</a>(<span class="keywordtype">void</span> *_pDest, <span class="keywordtype">void</span> *_pSrc, orxU32 _u32Size);
+<a name="l00116"></a>00116 
+<a name="l00123"></a>00123 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL     <a class="code" href="group__orx_memory.html#gacc3b257d3c6bec8af29c59fa62a01e59">orxMemory_Compare</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pMem1, <span class="keyword">const</span> <span class="keywordtype">void</span> *_pMem2, orxU32 _u32Size);
+<a name="l00124"></a>00124 
+<a name="l00131"></a>00131 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#gadbe3840a865f43ba5310a54b203ffc9a">orxMemory_Set</a>(<span class="keywordtype">void</span> *_pDest, orxU8 _u8Data, orxU32 _u32Size);
+<a name="l00132"></a>00132 
+<a name="l00138"></a>00138 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(<span class="keywordtype">void</span> *_pDest, orxU32 _u32Size);
+<a name="l00139"></a>00139 
+<a name="l00145"></a>00145 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL      <a class="code" href="group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b">orxMemory_Reallocate</a>(<span class="keywordtype">void</span> *_pMem, orxU32 _u32Size);
 <a name="l00146"></a>00146 
+<a name="l00147"></a>00147 <span class="preprocessor">#endif </span><span class="comment">/* _orxMEMORY_H_ */</span>
+<a name="l00148"></a>00148 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

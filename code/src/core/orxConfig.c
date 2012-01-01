@@ -178,8 +178,6 @@ typedef struct __orxCONFIG_ENTRY_t
 
   orxCONFIG_VALUE   stValue;                /**< Entry value : 56 */
 
-  orxPAD(56)
-
 } orxCONFIG_ENTRY;
 
 /** Config section structure
@@ -193,8 +191,6 @@ typedef struct __orxCONFIG_SECTION_t
   orxSTRING         zName;                  /**< Section name : 28 */
   orxBANK          *pstEntryBank;           /**< Entry bank : 32 */
   orxLINKLIST       stEntryList;            /**< Entry list : 44 */
-
-  orxPAD(44)
 
 } orxCONFIG_SECTION;
 
@@ -235,6 +231,30 @@ typedef struct __orxCONFIG_STATIC_t
 /** static data
  */
 static orxCONFIG_STATIC sstConfig;
+
+
+/** Unsupported BOMs
+ */
+static struct __orxCONFIG_BOM_DEFINITION_t
+{
+  const orxSTRING zBOM;
+  orxU32          u32Length;
+} sastUnsupportedBOMList[] =
+{
+  {"\xFE\xFF", 2},                          /**< UTF-16 BE */
+  {"\xFF\xFE", 2},                          /**< UTF-16 LE */
+  {"\x00\x00\xFE\xFF", 4},                  /**< UTF-32 BE */
+  {"\xFF\xFE\x00\x00", 4},                  /**< UTF-32 LE */
+  {"\x2B\x2F\x76\x38", 4},                  /**< UTF-7 #1 */
+  {"\x2B\x2F\x76\x39", 4},                  /**< UTF-7 #2 */
+  {"\x2B\x2F\x76\x2B", 4},                  /**< UTF-7 #3 */
+  {"\x2B\x2F\x76\x2F", 4},                  /**< UTF-7 #4 */
+  {"\xF7\x64\x4C", 3},                      /**< UTF-1 */
+  {"\xDD\x73\x66\x73", 4},                  /**< UTF-EBCDIC */
+  {"\x0E\xFE\xFF", 3},                      /**< SCSU */
+  {"\xFB\xEE\x28", 3},                      /**< BOCU-1 */
+  {"\x84\x31\x95\x33", 4},                  /**< GB-18030 */
+};
 
 
 /***************************************************************************
@@ -1779,8 +1799,8 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
   {
     /* Updates values */
     sstConfig.u32EncryptionKeySize  = strlen(_zEncryptionKey);
-    sstConfig.zEncryptionKey        = (orxSTRING)malloc(sstConfig.u32EncryptionKeySize + 1);
-    memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, sstConfig.u32EncryptionKeySize + 1);
+    sstConfig.zEncryptionKey        = (orxSTRING)malloc((size_t)(sstConfig.u32EncryptionKeySize + 1));
+    memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, (size_t)(sstConfig.u32EncryptionKeySize + 1));
     sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
   }
   else
@@ -1793,6 +1813,20 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
 
   /* Done! */
   return eResult;
+}
+
+/** Gets encryption key
+ * @return Current encryption key / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxConfig_GetEncryptionKey()
+{
+  const orxSTRING zResult;
+
+  /* Updates result */
+  zResult = (sstConfig.zEncryptionKey != orxNULL) ? sstConfig.zEncryptionKey : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
 }
 
 /** Sets config base name
@@ -1825,7 +1859,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
 #ifdef __orxMSVC__
 
       /* Sets current directory */
-	    if(_chdir(_zBaseName) < 0)
+      if(_chdir(_zBaseName) < 0)
       {
         /* Restores separator */
         *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
@@ -1842,7 +1876,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
 #else /* __orxMSVC__ */
 
       /* Sets current directory */
-	    if(chdir(_zBaseName) < 0)
+      if(chdir(_zBaseName) < 0)
       {
         /* Restores separator */
         *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
@@ -1887,6 +1921,1007 @@ const orxSTRING orxFASTCALL orxConfig_GetMainFileName()
 
   /* Done! */
   return sstConfig.zBaseFile;
+}
+
+/** Read config config from source.
+ * @param[in] _zFileName        File name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
+{
+  orxFILE  *pstFile;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zFileName != orxNULL);
+
+  /* External call? */
+  if(sstConfig.u32LoadCounter == 0)
+  {
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxConfig_Load");
+
+    /* Should keep history? */
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
+    {
+      orxSTRING *pzEntry;
+
+      /* Add an history entry */
+      pzEntry = (orxSTRING *)orxBank_Allocate(sstConfig.pstHistoryBank);
+
+      /* Valid? */
+      if(pzEntry != orxNULL)
+      {
+        /* Stores the file name */
+        *pzEntry = orxString_Duplicate(_zFileName);
+      }
+    }
+  }
+
+  /* Updates load counter */
+  sstConfig.u32LoadCounter++;
+
+  /* Valid file to open? */
+  if((_zFileName != orxSTRING_EMPTY) && ((pstFile = orxFile_Open(_zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
+  {
+    orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
+    orxU32              u32Size, u32Offset;
+    orxBOOL             bUseEncryption = orxFALSE, bFirstTime;
+    orxCONFIG_SECTION  *pstPreviousSection;
+
+    /* Gets previous config section */
+    pstPreviousSection = sstConfig.pstCurrentSection;
+
+    /* Gets previous encryption character */
+    pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
+
+    /* Reinits current encryption character */
+    sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+
+    /* While file isn't empty */
+    for(u32Size = orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0, bFirstTime = orxTRUE;
+        u32Size > 0;
+        u32Size = orxFile_Read(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset, bFirstTime = orxFALSE)
+    {
+      orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
+      orxBOOL   bBlockMode;
+
+      /* First time? */
+      if(bFirstTime != orxFALSE)
+      {
+        /* Has encryption tag? */
+        if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+        {
+          /* Updates encryption status */
+          bUseEncryption = orxTRUE;
+
+          /* Updates start of line */
+          pcLineStart = acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
+
+          /* Updates offset */
+          u32Offset = orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
+        }
+        else
+        {
+          /* Updates encryption status */
+          bUseEncryption = orxFALSE;
+
+          /* Updates start of line */
+          pcLineStart = acBuffer;
+        }
+
+        /* Has UTF-8 BOM? */
+        if(orxString_NCompare(pcLineStart, orxCONFIG_KZ_UTF8_BOM, orxCONFIG_KU32_UTF8_BOM_LENGTH) == 0)
+        {
+          /* Skips it */
+          pcLineStart += orxCONFIG_KU32_UTF8_BOM_LENGTH;
+        }
+        else
+        {
+          orxU32 i;
+
+          /* For all invalid BOMs */
+          for(i = 0; i < sizeof(sastUnsupportedBOMList) / sizeof(struct __orxCONFIG_BOM_DEFINITION_t); i++)
+          {
+            /* Matches? */
+            if(orxString_NCompare(pcLineStart, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't load config file [%s]: invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
+
+              /* Updates result */
+              eResult = orxSTATUS_FAILURE;
+
+              break;
+            }
+          }
+        }
+      }
+      else
+      {
+        /* Updates start of line */
+        pcLineStart = acBuffer;
+      }
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Uses encryption? */
+        if(bUseEncryption != orxFALSE)
+        {
+          /* Decrypts all new characters */
+          orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
+        }
+
+        /* End of file reached? */
+        if(u32Size < orxCONFIG_KU32_BUFFER_SIZE)
+        {
+          /* Adds an extra EOL */
+          acBuffer[u32Size++] = orxCHAR_LF;
+        }
+
+        /* For all buffered characters */
+        for(pc = pcLineStart, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
+            pc < acBuffer + u32Size;
+            pc++)
+        {
+          /* Comment character or EOL out of block mode or block character in block mode? */
+          if((((*pc == orxCONFIG_KC_COMMENT)
+            || (*pc == orxCHAR_CR)
+            || (*pc == orxCHAR_LF))
+           && (bBlockMode == orxFALSE))
+          || ((bBlockMode != orxFALSE)
+           && (*pc == orxCONFIG_KC_BLOCK)))
+          {
+            /* Block mode? */
+            if(bBlockMode != orxFALSE)
+            {
+              /* Not enough buffer? */
+              if(pc + 1 >= acBuffer + u32Size)
+              {
+                /* Continues */
+                continue;
+              }
+              /* Double block character? */
+              else if(*(pc + 1) == orxCONFIG_KC_BLOCK)
+              {
+                /* Skips next character */
+                pc++;
+
+                /* Continues */
+                continue;
+              }
+            }
+
+            /* Has key & value? */
+            if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
+            {
+              orxU32            u32KeyID;
+              orxSTRING         pcValueEnd;
+              orxCONFIG_ENTRY  *pstEntry;
+
+              /* Not in block mode? */
+              if(bBlockMode == orxFALSE)
+              {
+                /* Finds end of value position */
+                for(pcValueEnd = pc - 1;
+                    (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t'));
+                    pcValueEnd--);
+
+                /* Is it a list separator? */
+                if(*pcValueEnd == orxCONFIG_KC_LIST_SEPARATOR)
+                {
+                  /* Is it a double list separator? */
+                  if((pcValueEnd > pcValueStart) && (*(pcValueEnd - 1) == orxCONFIG_KC_LIST_SEPARATOR))
+                  {
+                    /* Ignores last list separator */
+                    pcValueEnd--;
+                  }
+                  else
+                  {
+                    /* Erases the whole line */
+                    for(pcValueEnd++;
+                        (pcValueEnd < acBuffer + u32Size) && (*pcValueEnd != orxCHAR_CR) && (*pcValueEnd != orxCHAR_LF);
+                        pcValueEnd++)
+                    {
+                      *pcValueEnd = ' ';
+                    }
+
+                    /* Valid? */
+                    if(pcValueEnd < acBuffer + u32Size)
+                    {
+                      /* Removes current line stopper */
+                      *pcValueEnd = ' ';
+                    }
+                    else
+                    {
+                      /* Makes sure we don't mistake remaining partial comment for a new key */
+                      *(pcValueEnd - 1) = orxCONFIG_KC_COMMENT;
+                    }
+
+                    /* Updates current character */
+                    pc = pcValueEnd;
+
+                    /* Continues */
+                    continue;
+                  }
+                }
+              }
+              else
+              {
+                /* Gets last block characters */
+                pcValueEnd = pc - 1;
+              }
+
+              /* Skips the whole line */
+              while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+              {
+                pc++;
+              }
+
+              /* Empty? */
+              if((bBlockMode == orxFALSE) && ((*pcValueStart == orxCONFIG_KC_COMMENT) || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF)))
+              {
+                /* Uses empty string */
+                pcValueStart = (orxCHAR *)orxSTRING_EMPTY;
+              }
+
+              /* Cuts the strings */
+              *pcKeyEnd = *(++pcValueEnd) = orxCHAR_NULL;
+
+              /* Gets key ID */
+              u32KeyID = orxString_ToCRC(pcLineStart);
+
+              /* Already defined? */
+              if((pstEntry = orxConfig_GetEntry(u32KeyID)) != orxNULL)
+              {
+                /* Not in block mode? */
+                if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+                {
+                  /* Restores literal value */
+                  orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+                }
+
+                /* Logs */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
+
+                /* Deletes entry */
+                orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+              }
+
+              /* Adds entry */
+              orxConfig_AddEntry(pcLineStart, pcValueStart, bBlockMode);
+
+              /* Updates pointers */
+              pcKeyEnd = pcValueStart = orxNULL;
+            }
+            else
+            {
+              /* Skips the whole line */
+              while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+              {
+                pc++;
+              }
+            }
+
+            /* Resets block mode */
+            bBlockMode = orxFALSE;
+
+            /* Valid? */
+            if(pc < acBuffer + u32Size)
+            {
+              /* Updates line start pointer */
+              pcLineStart = pc + 1;
+            }
+            else
+            {
+              /* Updates line start pointer */
+              pcLineStart = pc - 1;
+
+              /* Makes sure we don't mistake remaining partial comment for a new key */
+              *pcLineStart = orxCONFIG_KC_COMMENT;
+            }
+          }
+          /* Beginning of line? */
+          else if(pc == pcLineStart)
+          {
+            /* Skips all spaces */
+            while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF) || (*pc == ' ') || (*pc == '\t')))
+            {
+              /* Updates pointers */
+              pcLineStart++, pc++;
+            }
+
+            /* Inheritance marker? */
+            if(*pc == orxCONFIG_KC_INHERITANCE_MARKER)
+            {
+              /* Updates pointer */
+              pc++;
+
+              /* Finds section end */
+              while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
+              {
+                /* End of line? */
+                if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+                  /* Updates new line start */
+                  pcLineStart = pc + 1;
+
+                  break;
+                }
+
+                /* Updates pointer */
+                pc++;
+              }
+
+              /* Valid? */
+              if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
+              {
+                orxCONFIG_SECTION *pstCurrentSection;
+
+                /* Gets current section */
+                pstCurrentSection = sstConfig.pstCurrentSection;
+
+                /* Cuts string */
+                *pc = orxCHAR_NULL;
+
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+                /* Loads file */
+                orxConfig_Load(pcLineStart + 1);
+
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+                /* Restores current section */
+                sstConfig.pstCurrentSection = pstCurrentSection;
+
+                /* Skips the whole line */
+                while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+                {
+                  pc++;
+                }
+
+                /* Valid? */
+                if(pc < acBuffer + u32Size)
+                {
+                  /* Updates line start pointer */
+                  pcLineStart = pc + 1;
+                }
+                else
+                {
+                  /* Updates line start pointer */
+                  pcLineStart = pc - 1;
+
+                  /* Makes sure we don't mistake remaining partial comment for a new key */
+                  *pcLineStart = orxCONFIG_KC_COMMENT;
+                }
+              }
+            }
+            /* Section start? */
+            else if(*pc == orxCONFIG_KC_SECTION_START)
+            {
+              /* Finds section end */
+              while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
+              {
+                /* End of line? */
+                if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
+                {
+                  /* Logs message */
+                  *pc = orxCHAR_NULL;
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%s> incomplete, closing character '%c' not found.", pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+
+                  /* Updates new line start */
+                  pcLineStart = pc + 1;
+
+                  break;
+                }
+
+                /* Updates pointer */
+                pc++;
+              }
+
+              /* Valid? */
+              if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_SECTION_END))
+              {
+                /* Cuts string */
+                *pc = orxCHAR_NULL;
+
+                /* Selects section */
+                orxConfig_SelectSection(pcLineStart + 1);
+
+                /* Skips the whole line */
+                while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+                {
+                  pc++;
+                }
+
+                /* Valid? */
+                if(pc < acBuffer + u32Size)
+                {
+                  /* Updates line start pointer */
+                  pcLineStart = pc + 1;
+                }
+                else
+                {
+                  /* Updates line start pointer */
+                  pcLineStart = pc - 1;
+
+                  /* Makes sure we don't mistake remaining partial comment for a new key */
+                  *pcLineStart = orxCONFIG_KC_COMMENT;
+                }
+              }
+            }
+            /* Comment character? */
+            else if(*pc == orxCONFIG_KC_COMMENT)
+            {
+              /* Skips the whole line */
+              while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+              {
+                pc++;
+              }
+
+              /* Valid? */
+              if(pc < acBuffer + u32Size)
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc + 1;
+              }
+              else
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc - 1;
+
+                /* Makes sure we don't mistake remaining partial comment for a new key */
+                *pcLineStart = orxCONFIG_KC_COMMENT;
+              }
+            }
+            else
+            {
+              /* Finds assign character */
+              while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_ASSIGN) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+              {
+                /* Updates pointer */
+                pc++;
+              }
+
+              /* Found? */
+              if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_ASSIGN))
+              {
+                /* Finds end of key position */
+                for(pcKeyEnd = pc - 1;
+                    (pcKeyEnd > pcLineStart) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t') || (*pcKeyEnd == orxCHAR_CR) || (*pcKeyEnd == orxCHAR_LF));
+                    pcKeyEnd--);
+
+                /* Updates key end pointer */
+                pcKeyEnd += 1;
+
+                /* Checks */
+                orxASSERT(pcKeyEnd > pcLineStart);
+
+                /* Finds start of value position */
+                for(pcValueStart = pc + 1;
+                    (pcValueStart < acBuffer + u32Size) && ((*pcValueStart == ' ') || (*pcValueStart == '\t'));
+                    pcValueStart++);
+
+                /* Valid? */
+                if(pcValueStart < acBuffer + u32Size)
+                {
+                  /* Is it a block delimiter character? */
+                  if(*pcValueStart == orxCONFIG_KC_BLOCK)
+                  {
+                    /* Updates value start pointer */
+                    pcValueStart++;
+
+                    /* Valid? */
+                    if(pcValueStart < acBuffer + u32Size)
+                    {
+                      /* Is not a block delimiter or triple block delimiter? */
+                      if((*pcValueStart != orxCONFIG_KC_BLOCK)
+                      || ((pcValueStart + 1 < acBuffer + u32Size)
+                       && (*(pcValueStart + 1) == orxCONFIG_KC_BLOCK)))
+                      {
+                        /* Activates block mode */
+                        bBlockMode = orxTRUE;
+                      }
+                    }
+                  }
+                }
+
+                /* Updates current character */
+                pc = pcValueStart - 1;
+              }
+              else
+              {
+                /* Not at end of buffer */
+                if(pc < acBuffer + u32Size)
+                {
+                  /* Logs message */
+                  *pc = orxCHAR_NULL;
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
+                }
+              }
+            }
+          }
+        }
+
+        /* Has remaining buffer? */
+        if((pcLineStart != acBuffer) && (pc > pcLineStart))
+        {
+          /* Updates offset */
+          u32Offset = (orxU32)(orxMIN(pc, acBuffer + u32Size) - pcLineStart);
+
+          /* Copies it at the beginning of the buffer */
+          orxMemory_Copy(acBuffer, pcLineStart, u32Offset);
+        }
+        else
+        {
+          /* Clears offset */
+          u32Offset = 0;
+        }
+      }
+    }
+
+    /* Pops previous section */
+    sstConfig.pstCurrentSection = pstPreviousSection;
+
+    /* Restores previous encryption character */
+    sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+
+    /* Closes file */
+    orxFile_Close(pstFile);
+  }
+  else
+  {
+    /* Logs */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't load config file [%s]: can't find/open file.", _zFileName);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Updates load counter */
+  sstConfig.u32LoadCounter--;
+
+  /* External call? */
+  if(sstConfig.u32LoadCounter == 0)
+  {
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Reloads config files from history
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
+{
+  orxSTRING  *pzHistoryEntry;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Has history? */
+  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
+  {
+    /* Sends event */
+    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_START);
+
+    /* Removes history flag */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
+
+    /* Clears all data */
+    orxConfig_Clear();
+
+    /* Reloads default file */
+    eResult = orxConfig_Load(sstConfig.zBaseFile);
+
+    /* Logs */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
+
+    /* For all entries in history */
+    for(pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
+        (pzHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
+        pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
+    {
+      /* Reloads it */
+      eResult = orxConfig_Load(*pzHistoryEntry);
+
+      /* Logs */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", *pzHistoryEntry);
+    }
+
+    /* Restores history flag */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+    /* Sends event */
+    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_STOP);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config history isn't stored. Please check your config file under the [Config] section.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Writes config to given file. Will overwrite any existing file, including all comments.
+ * @param[in] _zFileName        File name, if null or empty the default file name will be used
+ * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
+ * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
+{
+  orxFILE        *pstFile;
+  const orxSTRING zFileName;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_Save");
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* No encryption requested or has a valid key? */
+  if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
+  {
+    /* Is given file name invalid? */
+    if((_zFileName == orxNULL) || (_zFileName == orxSTRING_EMPTY))
+    {
+      /* Uses default file */
+      zFileName = sstConfig.zBaseFile;
+    }
+    else
+    {
+      /* Uses given one */
+      zFileName = _zFileName;
+    }
+
+    /* Opens file */
+    pstFile = orxFile_Open(zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+
+    /* Valid? */
+    if(pstFile != orxNULL)
+    {
+      orxCONFIG_SECTION  *pstSection;
+      orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar = orxNULL;
+      orxU32              u32BufferSize;
+
+      /* Use encryption? */
+      if(_bUseEncryption != orxFALSE)
+      {
+        /* Gets previous encryption character */
+        pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
+
+        /* Resets current encryption character */
+        sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+
+        /* Adds encryption tag */
+        orxFile_Print(pstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+      }
+
+      /* For all sections */
+      for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+          pstSection != orxNULL;
+          pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
+      {
+        /* No callback or should save it? */
+        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL, _zFileName, _bUseEncryption) != orxFALSE))
+        {
+          orxCONFIG_SECTION *pstParentSection = orxNULL;
+          orxCONFIG_ENTRY   *pstEntry;
+
+          /* Has a parent ID? */
+          if(pstSection->u32ParentID != 0)
+          {
+            /* Gets it from table */
+            pstParentSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, pstSection->u32ParentID);
+          }
+
+          /* Has a parent section */
+          if(pstParentSection != orxNULL)
+          {
+            /* Writes section name with inheritance */
+            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+          }
+          else
+          {
+            /* Writes section name */
+            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+          }
+
+          /* Encrypt? */
+          if(_bUseEncryption != orxFALSE)
+          {
+            /* Encrypts buffer */
+            orxConfig_CryptBuffer(acBuffer, u32BufferSize);
+          }
+
+          /* Saves it */
+          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+
+          /* For all entries */
+          for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
+              pstEntry != orxNULL;
+              pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+          {
+            /* No callback or should save it? */
+            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey, _zFileName, _bUseEncryption) != orxFALSE))
+            {
+              /* Not in block mode? */
+              if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+              {
+                /* Restores string */
+                orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+
+                /* Writes it */
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%s %c %s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
+
+                /* Computes working value */
+                orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+              }
+              else
+              {
+                orxCHAR *pcSrc, *pcDst;
+
+                /* Writes lead in */
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%s %c %c", pstEntry->zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK);
+
+                /* For all characters */
+                for(pcSrc = pstEntry->stValue.zValue, pcDst = acBuffer + u32BufferSize; (*pcSrc != orxCHAR_NULL) && (pcDst < acBuffer + orxCONFIG_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++, u32BufferSize++)
+                {
+                  /* Copies character */
+                  *pcDst = *pcSrc;
+
+                  /* Is a block marker? */
+                  if(*pcSrc == orxCONFIG_KC_BLOCK)
+                  {
+                    /* Doubles it */
+                    *(++pcDst) = orxCONFIG_KC_BLOCK;
+                    u32BufferSize++;
+                  }
+                }
+
+                /* Writes lead out */
+                u32BufferSize += (orxU32)orxString_NPrint(pcDst, orxCONFIG_KU32_BUFFER_SIZE - u32BufferSize, "%c%s", orxCONFIG_KC_BLOCK, orxSTRING_EOL);
+              }
+
+              /* Encrypt? */
+              if(_bUseEncryption != orxFALSE)
+              {
+                /* Encrypts buffer */
+                orxConfig_CryptBuffer(acBuffer, u32BufferSize);
+              }
+
+              /* Saves it */
+              orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+            }
+          }
+
+          /* Adds a new line */
+          u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s", orxSTRING_EOL);
+
+          /* Encrypt? */
+          if(_bUseEncryption != orxFALSE)
+          {
+            /* Encrypts buffer */
+            orxConfig_CryptBuffer(acBuffer, u32BufferSize);
+          }
+
+          /* Saves it */
+          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+        }
+      }
+
+      /* Flushes & closes the file */
+      eResult = orxFile_Close(pstFile);
+
+      /* Use encryption? */
+      if(_bUseEncryption != orxFALSE)
+      {
+        /* Restores previous encryption character */
+        sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s>: can't open file!", _zFileName);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
+/** Copies a file with optional encryption
+ * @param[in] _zDstFileName     Name of the destionation file
+ * @param[in] _zSrcFileName     Name of the source file
+ * @param[in] _zEncryptionKey   Encryption key to use when writing destination file, orxNULL for no encryption
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const orxSTRING _zSrcFileName, const orxSTRING _zEncryptionKey)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zDstFileName != orxNULL);
+  orxASSERT(_zSrcFileName != orxNULL);
+
+  /* Valid names */
+  if(orxString_Compare(_zDstFileName, _zSrcFileName) != 0)
+  {
+    orxFILE *pstDstFile, *pstSrcFile;
+
+    /* Opens files */
+    pstSrcFile = orxFile_Open(_zSrcFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+    pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+
+    /* Valid? */
+    if((pstSrcFile != orxNULL) && (pstDstFile != orxNULL))
+    {
+      orxCHAR   acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcEncryptionCharBackup, *pcEncryptionChar;
+      orxSTRING zPreviousEncryptionKey;
+      orxU32    u32PreviousEncryptionKeySize, u32Size;
+      orxBOOL   bFirstTime, bUseEncryption;
+
+      /* Backups encryption char */
+      pcEncryptionCharBackup = sstConfig.pcEncryptionChar;
+
+      /* Uses encryption? */
+      if(_zEncryptionKey != orxNULL)
+      {
+        /* Stores previous encryption key */
+        zPreviousEncryptionKey        = sstConfig.zEncryptionKey;
+        u32PreviousEncryptionKeySize  = sstConfig.u32EncryptionKeySize;
+
+        /* Inits encryption char */
+        pcEncryptionChar = (orxSTRING)_zEncryptionKey;
+
+        /* Adds encryption tag */
+        orxFile_Print(pstDstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+      }
+
+      /* While source file isn't empty */
+      for(u32Size = orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxTRUE, bUseEncryption = orxFALSE;
+          u32Size > 0;
+          u32Size = orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxFALSE)
+      {
+        /* First time? */
+        if(bFirstTime != orxFALSE)
+        {
+          /* Has encryption tag? */
+          if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+          {
+            /* Uses encryption */
+            bUseEncryption = orxTRUE;
+
+            /* Reinits encryption char */
+            sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+
+            /* Decrypts remaining buffer */
+            orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+          }
+        }
+        else
+        {
+          /* Uses encryption */
+          if(bUseEncryption != orxFALSE)
+          {
+            /* Decrypts buffer */
+            orxConfig_CryptBuffer(acBuffer, u32Size);
+          }
+        }
+
+        /* Use encryption for destination? */
+        if(_zEncryptionKey != orxNULL)
+        {
+          orxCHAR *pcPreviousEncryptionChar;
+
+          /* Stores previous encryption char */
+          pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
+
+          /* Stores new encryption key */
+          sstConfig.zEncryptionKey        = sstConfig.pcEncryptionChar = (orxSTRING)_zEncryptionKey;
+          sstConfig.u32EncryptionKeySize  = orxString_GetLength(_zEncryptionKey);
+
+          /* Sets encryption char */
+          sstConfig.pcEncryptionChar = pcEncryptionChar;
+
+          /* Encrypts buffer */
+          if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
+          {
+            orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+          }
+          else
+          {
+            orxConfig_CryptBuffer(acBuffer, u32Size);
+          }
+
+          /* Saves encryption char */
+          pcEncryptionChar = sstConfig.pcEncryptionChar;
+
+          /* Restores encryption key */
+          sstConfig.zEncryptionKey        = zPreviousEncryptionKey;
+          sstConfig.u32EncryptionKeySize  = u32PreviousEncryptionKeySize;
+
+          /* Restores encryption char */
+          sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+        }
+
+        /* Writes buffer */
+        if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
+        {
+          orxFile_Write(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, sizeof(orxCHAR), u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, pstDstFile);
+        }
+        else
+        {
+          orxFile_Write(acBuffer, sizeof(orxCHAR), u32Size, pstDstFile);
+        }
+      }
+
+      /* Closes files */
+      orxFile_Close(pstDstFile);
+      orxFile_Close(pstSrcFile);
+
+      /* Restores previous encryption char */
+      sstConfig.pcEncryptionChar = pcEncryptionCharBackup;
+    }
+    else
+    {
+      /* Invalid source file? */
+      if(pstSrcFile == orxNULL)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't copy config file <%s> -> <%s>: can't open source file.", _zSrcFileName, _zDstFileName);
+      }
+
+      /* Invalid destination file? */
+      if(pstDstFile == orxNULL)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't copy config file <%s> -> <%s>: can't open destination file.", _zSrcFileName, _zDstFileName);
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't copy config file <%s> -> <%s>: source and destination must be different.", _zSrcFileName, _zDstFileName);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Selects current working section
@@ -2368,817 +3403,6 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
   return eResult;
 }
 
-/** Read config config from source.
- * @param[in] _zFileName        File name
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
-{
-  orxFILE  *pstFile;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zFileName != orxNULL);
-
-  /* External call? */
-  if(sstConfig.u32LoadCounter == 0)
-  {
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxConfig_Load");
-
-    /* Should keep history? */
-    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
-    {
-      orxSTRING *pzEntry;
-
-      /* Add an history entry */
-      pzEntry = (orxSTRING *)orxBank_Allocate(sstConfig.pstHistoryBank);
-
-      /* Valid? */
-      if(pzEntry != orxNULL)
-      {
-        /* Stores the file name */
-        *pzEntry = orxString_Duplicate(_zFileName);
-      }
-    }
-  }
-
-  /* Updates load counter */
-  sstConfig.u32LoadCounter++;
-
-  /* Valid file to open? */
-  if((_zFileName != orxSTRING_EMPTY) && ((pstFile = orxFile_Open(_zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
-  {
-    orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
-    orxU32              u32Size, u32Offset;
-    orxBOOL             bUseEncryption = orxFALSE, bFirstTime;
-    orxCONFIG_SECTION  *pstPreviousSection;
-
-    /* Gets previous config section */
-    pstPreviousSection = sstConfig.pstCurrentSection;
-
-    /* Gets previous encryption character */
-    pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
-
-    /* Reinits current encryption character */
-    sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
-
-    /* While file isn't empty */
-    for(u32Size = orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0, bFirstTime = orxTRUE;
-        u32Size > 0;
-        u32Size = orxFile_Read(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset, bFirstTime = orxFALSE)
-    {
-      orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
-      orxBOOL   bBlockMode;
-
-      /* First time? */
-      if(bFirstTime != orxFALSE)
-      {
-        /* Has encryption tag? */
-        if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
-        {
-          /* Updates encryption status */
-          bUseEncryption = orxTRUE;
-
-          /* Updates start of line */
-          pcLineStart = acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
-
-          /* Updates offset */
-          u32Offset = orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
-        }
-        else
-        {
-          /* Updates encryption status */
-          bUseEncryption = orxFALSE;
-
-          /* Updates start of line */
-          pcLineStart = acBuffer;
-        }
-
-        /* Has UTF-8 BOM? */
-        if(orxString_NCompare(pcLineStart, orxCONFIG_KZ_UTF8_BOM, orxCONFIG_KU32_UTF8_BOM_LENGTH) == 0)
-        {
-          /* Skips it */
-          pcLineStart += orxCONFIG_KU32_UTF8_BOM_LENGTH;
-        }
-      }
-      else
-      {
-        /* Updates start of line */
-        pcLineStart = acBuffer;
-      }
-
-      /* Uses encryption? */
-      if(bUseEncryption != orxFALSE)
-      {
-        /* Decrypts all new characters */
-        orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
-      }
-
-      /* End of file reached? */
-      if(u32Size < orxCONFIG_KU32_BUFFER_SIZE)
-      {
-        /* Adds an extra EOL */
-        acBuffer[u32Size++] = orxCHAR_LF;
-      }
-
-      /* For all buffered characters */
-      for(pc = pcLineStart, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
-          pc < acBuffer + u32Size;
-          pc++)
-      {
-        /* Comment character or EOL out of block mode or block character in block mode? */
-        if((((*pc == orxCONFIG_KC_COMMENT)
-          || (*pc == orxCHAR_CR)
-          || (*pc == orxCHAR_LF))
-         && (bBlockMode == orxFALSE))
-        || ((bBlockMode != orxFALSE)
-         && (*pc == orxCONFIG_KC_BLOCK)))
-        {
-          /* Block mode? */
-          if(bBlockMode != orxFALSE)
-          {
-            /* Not enough buffer? */
-            if(pc + 1 >= acBuffer + u32Size)
-            {
-              /* Continues */
-              continue;
-            }
-            /* Double block character? */
-            else if(*(pc + 1) == orxCONFIG_KC_BLOCK)
-            {
-              /* Skips next character */
-              pc++;
-
-              /* Continues */
-              continue;
-            }
-          }
-              
-          /* Has key & value? */
-          if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
-          {
-            orxU32            u32KeyID;
-            orxSTRING         pcValueEnd;
-            orxCONFIG_ENTRY  *pstEntry;
-
-            /* Finds end of value position */
-            for(pcValueEnd = pc - 1;
-                (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t') || (*pcValueEnd == orxCHAR_CR) || (*pcValueEnd == orxCHAR_LF));
-                pcValueEnd--);
-
-            /* Skips the whole line */
-            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-            {
-              pc++;
-            }
-
-            /* Empty? */
-            if((bBlockMode == orxFALSE) && ((*pcValueStart == orxCONFIG_KC_COMMENT) || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF)))
-            {
-              /* Uses empty string */
-              pcValueStart = (orxCHAR *)orxSTRING_EMPTY;
-            }
-
-            /* Cuts the strings */
-            *pcKeyEnd = *(++pcValueEnd) = orxCHAR_NULL;
-
-            /* Gets key ID */
-            u32KeyID = orxString_ToCRC(pcLineStart);
-
-            /* Already defined? */
-            if((pstEntry = orxConfig_GetEntry(u32KeyID)) != orxNULL)
-            {
-              /* Not in block mode? */
-              if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
-              {
-                /* Restores literal value */
-                orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
-              }
-
-              /* Logs */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
-
-              /* Deletes entry */
-              orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
-            }
-
-            /* Adds entry */
-            orxConfig_AddEntry(pcLineStart, pcValueStart, bBlockMode);
-
-            /* Updates pointers */
-            pcKeyEnd = pcValueStart = orxNULL;
-          }
-          else
-          {
-            /* Skips the whole line */
-            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-            {
-              pc++;
-            }
-          }
-
-          /* Resets block mode */
-          bBlockMode = orxFALSE;
-
-          /* Valid? */
-          if(pc < acBuffer + u32Size)
-          {
-            /* Updates line start pointer */
-            pcLineStart = pc + 1;
-          }
-          else
-          {
-            /* Updates line start pointer */
-            pcLineStart = pc - 1;
-
-            /* Makes sure we don't mistake remaining partial comment for a new key */
-            *pcLineStart = orxCONFIG_KC_COMMENT;
-          }
-        }
-        /* Beginning of line? */
-        else if(pc == pcLineStart)
-        {
-          /* Skips all spaces */
-          while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF) || (*pc == ' ') || (*pc == '\t')))
-          {
-            /* Updates pointers */
-            pcLineStart++, pc++;
-          }
-
-          /* Inheritance marker? */
-          if(*pc == orxCONFIG_KC_INHERITANCE_MARKER)
-          {
-            /* Updates pointer */
-            pc++;
-
-            /* Finds section end */
-            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
-            {
-              /* End of line? */
-              if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-
-                /* Updates new line start */
-                pcLineStart = pc + 1;
-
-                break;
-              }
-
-              /* Updates pointer */
-              pc++;
-            }
-
-            /* Valid? */
-            if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
-            {
-              orxCONFIG_SECTION *pstCurrentSection;
-
-              /* Gets current section */
-              pstCurrentSection = sstConfig.pstCurrentSection;
-
-              /* Cuts string */
-              *pc = orxCHAR_NULL;
-
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-
-              /* Loads file */
-              orxConfig_Load(pcLineStart + 1);
-
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-
-              /* Restores current section */
-              sstConfig.pstCurrentSection = pstCurrentSection;
-
-              /* Skips the whole line */
-              while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-              {
-                pc++;
-              }
-
-              /* Valid? */
-              if(pc < acBuffer + u32Size)
-              {
-                /* Updates line start pointer */
-                pcLineStart = pc + 1;
-              }
-              else
-              {
-                /* Updates line start pointer */
-                pcLineStart = pc - 1;
-
-                /* Makes sure we don't mistake remaining partial comment for a new key */
-                *pcLineStart = orxCONFIG_KC_COMMENT;
-              }
-            }
-          }
-          /* Section start? */
-          else if(*pc == orxCONFIG_KC_SECTION_START)
-          {
-            /* Finds section end */
-            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
-            {
-              /* End of line? */
-              if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
-              {
-                /* Logs message */
-                *pc = orxCHAR_NULL;
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%s> incomplete, closing character '%c' not found.", pcLineStart + 1, orxCONFIG_KC_SECTION_END);
-
-                /* Updates new line start */
-                pcLineStart = pc + 1;
-
-                break;
-              }
-
-              /* Updates pointer */
-              pc++;
-            }
-
-            /* Valid? */
-            if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_SECTION_END))
-            {
-              /* Cuts string */
-              *pc = orxCHAR_NULL;
-
-              /* Selects section */
-              orxConfig_SelectSection(pcLineStart + 1);
-
-              /* Skips the whole line */
-              while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-              {
-                pc++;
-              }
-
-              /* Valid? */
-              if(pc < acBuffer + u32Size)
-              {
-                /* Updates line start pointer */
-                pcLineStart = pc + 1;
-              }
-              else
-              {
-                /* Updates line start pointer */
-                pcLineStart = pc - 1;
-
-                /* Makes sure we don't mistake remaining partial comment for a new key */
-                *pcLineStart = orxCONFIG_KC_COMMENT;
-              }
-            }
-          }
-          /* Comment character? */
-          else if(*pc == orxCONFIG_KC_COMMENT)
-          {
-            /* Skips the whole line */
-            while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-            {
-              pc++;
-            }
-
-            /* Valid? */
-            if(pc < acBuffer + u32Size)
-            {
-              /* Updates line start pointer */
-              pcLineStart = pc + 1;
-            }
-            else
-            {
-              /* Updates line start pointer */
-              pcLineStart = pc - 1;
-
-              /* Makes sure we don't mistake remaining partial comment for a new key */
-              *pcLineStart = orxCONFIG_KC_COMMENT;
-            }
-          }
-          else
-          {
-            /* Finds assign character */
-            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_ASSIGN) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-            {
-              /* Updates pointer */
-              pc++;
-            }
-
-            /* Found? */
-            if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_ASSIGN))
-            {
-              /* Finds end of key position */
-              for(pcKeyEnd = pc - 1;
-                  (pcKeyEnd > pcLineStart) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t') || (*pcKeyEnd == orxCHAR_CR) || (*pcKeyEnd == orxCHAR_LF));
-                  pcKeyEnd--);
-
-              /* Updates key end pointer */
-              pcKeyEnd += 1;
-
-              /* Checks */
-              orxASSERT(pcKeyEnd > pcLineStart);
-
-              /* Finds start of value position */
-              for(pcValueStart = pc + 1;
-                  (pcValueStart < acBuffer + u32Size) && ((*pcValueStart == ' ') || (*pcValueStart == '\t'));
-                  pcValueStart++);
-
-              /* Valid? */
-              if(pcValueStart < acBuffer + u32Size)
-              {
-                /* Is it a block delimiter character? */
-                if(*pcValueStart == orxCONFIG_KC_BLOCK)
-                {
-                  /* Updates value start pointer */
-                  pcValueStart++;
-
-                  /* Valid? */
-                  if(pcValueStart < acBuffer + u32Size)
-                  {
-                    /* Is not a block delimiter or triple block delimiter? */
-                    if((*pcValueStart != orxCONFIG_KC_BLOCK)
-                    || ((pcValueStart + 1 < acBuffer + u32Size)
-                     && (*(pcValueStart + 1) == orxCONFIG_KC_BLOCK)))
-                    {
-                      /* Activates block mode */
-                      bBlockMode = orxTRUE;
-                    }
-                  }
-                }
-              }
-
-              /* Updates current character */
-              pc = pcValueStart - 1;
-            }
-            else
-            {
-              /* Not at end of buffer */
-              if(pc < acBuffer + u32Size)
-              {
-                /* Logs message */
-                *pc = orxCHAR_NULL;
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
-              }
-            }
-          }
-        }
-      }
-
-      /* Has remaining buffer? */
-      if((pcLineStart != acBuffer) && (pc > pcLineStart))
-      {
-        /* Updates offset */
-        u32Offset = (orxU32)(orxMIN(pc, acBuffer + u32Size) - pcLineStart);
-
-        /* Copies it at the beginning of the buffer */
-        orxMemory_Copy(acBuffer, pcLineStart, u32Offset);
-      }
-      else
-      {
-        /* Clears offset */
-        u32Offset = 0;
-      }
-    }
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-
-    /* Pops previous section */
-    sstConfig.pstCurrentSection = pstPreviousSection;
-
-    /* Restores previous encryption character */
-    sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
-  }
-  else
-  {
-    /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] couldn't be loaded.", _zFileName);
-  }
-
-  /* Updates load counter */
-  sstConfig.u32LoadCounter--;
-
-  /* External call? */
-  if(sstConfig.u32LoadCounter == 0)
-  {
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Reloads config files from history
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
-{
-  orxSTRING  *pzHistoryEntry;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
-
-  /* Has history? */
-  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
-  {
-    /* Sends event */
-    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_START);
-
-    /* Removes history flag */
-    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
-
-    /* Clears all data */
-    orxConfig_Clear();
-
-    /* Reloads default file */
-    eResult = orxConfig_Load(sstConfig.zBaseFile);
-
-    /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
-
-    /* For all entries in history */
-    for(pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
-        (pzHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
-        pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
-    {
-      /* Reloads it */
-      eResult = orxConfig_Load(*pzHistoryEntry);
-
-      /* Logs */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", *pzHistoryEntry);
-    }
-
-    /* Restores history flag */
-    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
-
-    /* Sends event */
-    orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_STOP);
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config history isn't stored. Please check your config file under the [Config] section.");
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Writes config to given file. Will overwrite any existing file, including all comments.
- * @param[in] _zFileName        File name, if null or empty the default file name will be used
- * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
- * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
-{
-  orxFILE        *pstFile;
-  const orxSTRING zFileName;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
-
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxConfig_Save");
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
-
-  /* No encryption requested or has a valid key? */
-  if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
-  {
-    /* Is given file name invalid? */
-    if((_zFileName == orxNULL) || (_zFileName == orxSTRING_EMPTY))
-    {
-      /* Uses default file */
-      zFileName = sstConfig.zBaseFile;
-    }
-    else
-    {
-      /* Uses given one */
-      zFileName = _zFileName;
-    }
-
-    /* Opens file */
-    pstFile = orxFile_Open(zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
-
-    /* Valid? */
-    if(pstFile != orxNULL)
-    {
-      orxCONFIG_SECTION  *pstSection;
-      orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar = orxNULL;
-      orxU32              u32BufferSize;
-
-      /* Use encryption? */
-      if(_bUseEncryption != orxFALSE)
-      {
-        /* Gets previous encryption character */
-        pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
-
-        /* Resets current encryption character */
-        sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
-
-        /* Adds encryption tag */
-        orxFile_Print(pstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
-      }
-
-      /* For all sections */
-      for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
-          pstSection != orxNULL;
-          pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
-      {
-        /* No callback or should save it? */
-        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL, _zFileName, _bUseEncryption) != orxFALSE))
-        {
-          orxCONFIG_SECTION *pstParentSection = orxNULL;
-          orxCONFIG_ENTRY   *pstEntry;
-
-          /* Has a parent ID? */
-          if(pstSection->u32ParentID != 0)
-          {
-            /* Gets it from table */
-            pstParentSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, pstSection->u32ParentID);
-          }
-
-          /* Has a parent section */
-          if(pstParentSection != orxNULL)
-          {
-            /* Writes section name with inheritance */
-            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
-          }
-          else
-          {
-            /* Writes section name */
-            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
-          }
-
-          /* Encrypt? */
-          if(_bUseEncryption != orxFALSE)
-          {
-            /* Encrypts buffer */
-            orxConfig_CryptBuffer(acBuffer, u32BufferSize);
-          }
-
-          /* Saves it */
-          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
-
-          /* For all entries */
-          for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
-              pstEntry != orxNULL;
-              pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
-          {
-            /* No callback or should save it? */
-            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey, _zFileName, _bUseEncryption) != orxFALSE))
-            {
-              /* Not in block mode? */
-              if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
-              {
-                /* Restores string */
-                orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
-
-                /* Writes it */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%s %c %s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
-
-                /* Computes working value */
-                orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
-              }
-              else
-              {
-                orxCHAR *pcSrc, *pcDst;
-
-                /* Writes lead in */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE, "%s %c %c", pstEntry->zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK);
-
-                /* For all characters */
-                for(pcSrc = pstEntry->stValue.zValue, pcDst = acBuffer + u32BufferSize; (*pcSrc != orxCHAR_NULL) && (pcDst < acBuffer + orxCONFIG_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++, u32BufferSize++)
-                {
-                  /* Copies character */
-                  *pcDst = *pcSrc;
-
-                  /* Is a block marker? */
-                  if(*pcSrc == orxCONFIG_KC_BLOCK)
-                  {
-                    /* Doubles it */
-                    *(++pcDst) = orxCONFIG_KC_BLOCK;
-                    u32BufferSize++;
-                  }
-                }
-
-                /* Writes lead out */
-                u32BufferSize += (orxU32)orxString_NPrint(pcDst, orxCONFIG_KU32_BUFFER_SIZE - u32BufferSize, "%c%s", orxCONFIG_KC_BLOCK, orxSTRING_EOL);
-              }
-
-              /* Encrypt? */
-              if(_bUseEncryption != orxFALSE)
-              {
-                /* Encrypts buffer */
-                orxConfig_CryptBuffer(acBuffer, u32BufferSize);
-              }
-
-              /* Saves it */
-              orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
-            }
-          }
-
-          /* Adds a new line */
-          u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s", orxSTRING_EOL);
-
-          /* Encrypt? */
-          if(_bUseEncryption != orxFALSE)
-          {
-            /* Encrypts buffer */
-            orxConfig_CryptBuffer(acBuffer, u32BufferSize);
-          }
-
-          /* Saves it */
-          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
-        }
-      }
-
-      /* Flushes & closes the file */
-      eResult = orxFile_Close(pstFile);
-
-      /* Use encryption? */
-      if(_bUseEncryption != orxFALSE)
-      {
-        /* Restores previous encryption character */
-        sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
-      }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s>: can't open file!", _zFileName);
-    }
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
-  }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
-
-  /* Done! */
-  return eResult;
-}
-
-/** Is this value inherited from another one?
- * @param[in] _zKey             Key name
- * @return orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
-{
-  orxCONFIG_ENTRY  *pstEntry;
-  orxBOOL           bResult = orxFALSE;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
-
-  /* Gets corresponding entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
-
-  /* Valid? */
-  if(pstEntry != orxNULL)
-  {
-    /* Has local inheritance? */
-    if(orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
-    {
-      /* Updates result */
-      bResult = orxTRUE;
-    }
-  }
-
-  /* Done! */
-  return bResult;
-}
-
-/** Has specified value for the given key?
- * @param[in] _zKey             Key name
- * @return orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
-{
-  orxBOOL bResult;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
-
-  /* Updates result */
-  bResult = (orxConfig_GetValue(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
-
-  /* Done! */
-  return bResult;
-}
-
 /** Has section for the given section name?
  * @param[in] _zSectionName     Section name
  * @return orxTRUE / orxFALSE
@@ -3406,6 +3630,67 @@ orxSTATUS orxFASTCALL orxConfig_ClearValue(const orxSTRING _zKey)
 
   /* Done! */
   return eResult;
+}
+
+/** Is this value inherited from another one?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxU32            u32KeyID;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets ID */
+  u32KeyID = orxString_ToCRC(_zKey);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(u32KeyID);
+
+  /* Valid? */
+  if(pstEntry != orxNULL)
+  {
+    /* Has local inheritance? */
+    if(orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    bResult = (orxConfig_GetValueFromKey(u32KeyID) != orxNULL) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Has specified value for the given key?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Updates result */
+  bResult = (orxConfig_GetValue(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 /** Reads a signed integer value from config (will take a random value if a list is provided for this key)
@@ -3998,7 +4283,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 list item value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 list item value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4037,7 +4322,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4076,7 +4361,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32Li
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4115,7 +4400,7 @@ const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get STRING list item config value <%s>, index invalid: %ld out of %ld item(s).", _zKey, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get STRING list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4154,7 +4439,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32List
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get BOOL list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get BOOL list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4194,7 +4479,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4337,7 +4622,7 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
     /* Updates result */
     zResult = orxSTRING_EMPTY;
   }
-  
+
   /* Done! */
   return zResult;
 }

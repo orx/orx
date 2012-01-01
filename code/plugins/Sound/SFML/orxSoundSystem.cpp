@@ -158,6 +158,19 @@ extern "C" void orxFASTCALL orxSoundSystem_SFML_Exit()
   return;
 }
 
+extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_SFML_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
+{
+  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return pstResult;
+}
+
 extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_SFML_LoadSample(const orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_SAMPLE *pstResult;
@@ -189,7 +202,7 @@ extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_SFML_LoadSample(con
   return pstResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   sf::SoundBuffer *poBuffer;
 
@@ -205,6 +218,32 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM
 
   /* Done! */
   return orxSTATUS_SUCCESS;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxSoundSystem_SFML_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
+
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
@@ -227,6 +266,19 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateFromSampl
 
   /* Updates its status */
   pstResult->bIsMusic = false;
+
+  /* Done! */
+  return pstResult;
+}
+
+extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SFML_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
+{
+  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Not implemented yet
 
   /* Done! */
   return pstResult;
@@ -871,9 +923,13 @@ extern "C" orxVECTOR *orxFASTCALL orxSoundSystem_SFML_GetListenerPosition(orxVEC
 orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Init, SOUNDSYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Exit, SOUNDSYSTEM, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateSample, SOUNDSYSTEM, CREATE_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_LoadSample, SOUNDSYSTEM, LOAD_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_UnloadSample, SOUNDSYSTEM, UNLOAD_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_DeleteSample, SOUNDSYSTEM, DELETE_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Play, SOUNDSYSTEM, PLAY);

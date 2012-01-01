@@ -47,7 +47,6 @@ typedef struct __orxHASHTABLE_CELL_t
   void                         *pData;                        /**< Address of data : 8 */
   struct __orxHASHTABLE_CELL_t *pstNext;                      /**< Next cell with the same index : 12 */
 
-  orxPAD(12)
 } orxHASHTABLE_CELL;
 
 /** Hash Table */

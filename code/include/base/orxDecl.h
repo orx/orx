@@ -58,7 +58,7 @@
 /* *** Platform dependent base declarations */
 
 /* No processor defines? */
-#if !defined(__orxPPC__) && !defined(__orxX86_64__)
+#if !defined(__orxPPC__) && !defined(__orxX86_64__) && !defined(__orxX86__)
 
   /* PowerPC? */
   #if defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__)
@@ -70,9 +70,14 @@
 
     #define __orxX86_64__
 
+  /* x86 */
+  #else
+
+    #define __orxX86__
+
   #endif
 
-#endif /* !__orxPPC__ && !__orxX86_64__ */
+#endif /* !__orxPPC__ && !__orxX86_64__ && !__orxX86__ */
 
 /* Power PC? */
 #ifdef __orxPPC__
@@ -128,7 +133,7 @@
     #define __orxLINUX__
 
   /* IPhone? */
-  #elif defined(TARGET_OS_IPHONE)
+  #elif TARGET_OS_IPHONE
 
     #define __orxIPHONE__
 
@@ -146,7 +151,7 @@
     #endif /* __ANDROID_API__ >= 9 */
 
   /* Mac? */
-  #elif defined(__APPLE__)
+  #elif TARGET_OS_MAC
 
     #define __orxMAC__
 
@@ -332,29 +337,6 @@
 #define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)
 #define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)
 #define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)
-
-
-/* Padding macro */
-#ifdef __orxPADDING__
-
-  #ifdef orxPADDING_SIZE                /* Padding size defined */
-
-    #define orxPAD(SIZE)                orxU8 au8Pad[orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
-
-  #else /* orxPADDING_SIZE */           /* Padding size not defined */
-
-    #define orxPAD(SIZE)                /* No padding applied */
-
-    #warning orxPADDING_SIZE is undefined : its value should be a power of 2!
-    #undef __orxPADDING__
-
-  #endif /* orxPADDING_SIZE */
-
-#else /* __orxPADDING__ */
-
-  #define orxPAD(SIZE)                  /* No padding applied */
-
-#endif /* __orxPADDING__ */
 
 
 /** Tests all flags

@@ -233,10 +233,15 @@ Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#ga52930271b93c1ba2aaad22d49a86117b">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM</a> { <br/>
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba2dae2d47ce321b9cd853f446007c16cc">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_INIT</a> =  0, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba9aa325cf0bd69f2dd7dd3da5df9e1ac8">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_EXIT</a>, 
+<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba26a3be541c8e5d6d7fce8f8d7324750a">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_SAMPLE</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba141d3e639bc53cfe8a6d9b0d756916fe">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_LOAD_SAMPLE</a>, 
-<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba75f306516fd0357623cddd87c29f2357">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_UNLOAD_SAMPLE</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba5d7691410a4f9b648040c019acc781fa">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_FROM_SAMPLE</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba2376a1825195bfc2f5c69a676ddd7642">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE_SAMPLE</a>, 
+<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba00444da683b7350bda3e46df238290e8">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_SAMPLE_INFO</a>, 
+<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_SAMPLE_DATA</a>, 
+<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba5d7691410a4f9b648040c019acc781fa">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_FROM_SAMPLE</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bad5ea360ada045f16deddc223bf2341ec">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bad6a0e5ddda7f6afde96d1c95cf791ad7">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM_FROM_FILE</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba4becb7e609e1a4174e36df39ded715f8">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba8c3d81d4b640499829f376858e00e0b0">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_PLAY</a>, 
@@ -401,7 +406,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00169">169</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00167">167</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -422,7 +427,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a> sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] =  \
   {
 </pre></div>
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00164">164</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00162">162</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -441,7 +446,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00127">127</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00125">125</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -535,7 +540,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
     <span class="keywordflow">return</span>(<a class="code" href="group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919">orxPlugin_DefaultCoreFunction</a>(#FUNCTION_NAME, __FILE__, __LINE__));              \
   }
 </pre></div>
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00133">133</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00131">131</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -554,7 +559,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00130">130</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00128">128</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -592,7 +597,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
                                                                             \
   RETURN (orxFASTCALL *<a class="code" href="group__orx_plugin.html#ga0ff3c377c1f92fb4bb44c32de9a59705">orxPLUGIN_CORE_FUNCTION_POINTER_NAME</a>(FUNCTION_NAME))(__VA_ARGS__) = (RETURN(orxFASTCALL *)(__VA_ARGS__)) (&amp;<a class="code" href="group__orx_plugin.html#gadfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME))
 </pre></div>
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00151">151</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00149">149</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -618,7 +623,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
     <span class="keywordflow">return</span>;                                                                     \
   }
 </pre></div>
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00173">173</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00171">171</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -810,7 +815,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00199">199</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00197">197</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -1033,7 +1038,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="memdoc">
 <p>Plugin init function prototype </p>
 
-<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00085">85</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00083">83</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
 </div>
 </div>
@@ -1414,11 +1419,19 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba9aa325cf0bd69f2dd7dd3da5df9e1ac8"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_EXIT" ref="gga52930271b93c1ba2aaad22d49a86117ba9aa325cf0bd69f2dd7dd3da5df9e1ac8" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_EXIT</em>&nbsp;</td><td>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba26a3be541c8e5d6d7fce8f8d7324750a"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_SAMPLE" ref="gga52930271b93c1ba2aaad22d49a86117ba26a3be541c8e5d6d7fce8f8d7324750a" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_SAMPLE</em>&nbsp;</td><td>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba141d3e639bc53cfe8a6d9b0d756916fe"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_LOAD_SAMPLE" ref="gga52930271b93c1ba2aaad22d49a86117ba141d3e639bc53cfe8a6d9b0d756916fe" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_LOAD_SAMPLE</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba75f306516fd0357623cddd87c29f2357"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_UNLOAD_SAMPLE" ref="gga52930271b93c1ba2aaad22d49a86117ba75f306516fd0357623cddd87c29f2357" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_UNLOAD_SAMPLE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba2376a1825195bfc2f5c69a676ddd7642"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE_SAMPLE" ref="gga52930271b93c1ba2aaad22d49a86117ba2376a1825195bfc2f5c69a676ddd7642" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE_SAMPLE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba00444da683b7350bda3e46df238290e8"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_SAMPLE_INFO" ref="gga52930271b93c1ba2aaad22d49a86117ba00444da683b7350bda3e46df238290e8" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_SAMPLE_INFO</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_SAMPLE_DATA" ref="gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_SAMPLE_DATA</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba5d7691410a4f9b648040c019acc781fa"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_FROM_SAMPLE" ref="gga52930271b93c1ba2aaad22d49a86117ba5d7691410a4f9b648040c019acc781fa" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_FROM_SAMPLE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117bad5ea360ada045f16deddc223bf2341ec"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM" ref="gga52930271b93c1ba2aaad22d49a86117bad5ea360ada045f16deddc223bf2341ec" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117bad6a0e5ddda7f6afde96d1c95cf791ad7"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM_FROM_FILE" ref="gga52930271b93c1ba2aaad22d49a86117bad6a0e5ddda7f6afde96d1c95cf791ad7" args="" -->orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM_FROM_FILE</em>&nbsp;</td><td>
 </td></tr>

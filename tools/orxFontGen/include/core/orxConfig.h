@@ -88,6 +88,11 @@ extern orxDLLAPI void orxFASTCALL             orxConfig_Exit();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey);
 
+/** Gets encryption key
+ * @return Current encryption key / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetEncryptionKey();
+
 /** Sets config base name
  * @param[in] _zBaseName        Base name used for default config file
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -118,6 +123,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ReloadHistory();
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
+
+/** Copies a file with optional encryption
+ * @param[in] _zDstFileName     Name of the destionation file
+ * @param[in] _zSrcFileName     Name of the source file
+ * @param[in] _zEncryptionKey   Encryption key to use when writing destination file, orxNULL for no encryption
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_CopyFile(const orxSTRING _zDstFileName, const orxSTRING _zSrcFileName, const orxSTRING _zEncryptionKey);
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
@@ -182,6 +195,7 @@ extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetSectionCounter();
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSection(orxS32 _s32SectionIndex);
 
+
 /** Clears all config info
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -204,7 +218,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ClearValue(const orxSTRI
  * @return orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsInheritedValue(const orxSTRING _zKey);
-
 
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name

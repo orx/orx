@@ -82,10 +82,11 @@ typedef struct __orxEVENT_HANDLER_STORAGE_t
  */
 typedef struct __orxEVENT_STATIC_t
 {
-  orxU32        u32Flags;                             /**< Control flags */
-  orxHASHTABLE *pstHandlerStorageTable;               /**< Handler storage table */
-  orxBANK      *pstHandlerStorageBank;                /**< Handler storage bank */
-
+  orxU32                    u32Flags;                 /**< Control flags */
+  orxS32                    s32EventSendCounter;      /**< Event send counter */
+  orxHASHTABLE             *pstHandlerStorageTable;   /**< Handler storage table */
+  orxBANK                  *pstHandlerStorageBank;    /**< Handler storage bank */
+  orxEVENT_HANDLER_STORAGE *astCoreHandlerStorageList[orxEVENT_TYPE_CORE_NUMBER]; /**< Core handler storage list */
 
 } orxEVENT_STATIC;
 
@@ -218,7 +219,7 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
   orxASSERT(_pfnEventHandler != orxNULL);
 
   /* Gets corresponding storage */
-  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
+  pstStorage = (_eEventType < orxEVENT_TYPE_CORE_NUMBER) ? sstEvent.astCoreHandlerStorageList[_eEventType] : (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
 
   /* No storage yet? */
   if(pstStorage == orxNULL)
@@ -238,15 +239,24 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
         /* Clears its list */
         orxMemory_Zero(&(pstStorage->stList), sizeof(orxLINKLIST));
 
-        /* Tries to add it to the table */
-        if(orxHashTable_Add(sstEvent.pstHandlerStorageTable, _eEventType, pstStorage) == orxSTATUS_FAILURE)
+        /* Is a core event handler? */
+        if(_eEventType < orxEVENT_TYPE_CORE_NUMBER)
         {
-          /* Deletes its bank */
-          orxBank_Delete(pstStorage->pstBank);
+          /* Stores it */
+          sstEvent.astCoreHandlerStorageList[_eEventType] = pstStorage;
+        }
+        else
+        {
+          /* Tries to add it to the table */
+          if(orxHashTable_Add(sstEvent.pstHandlerStorageTable, _eEventType, pstStorage) == orxSTATUS_FAILURE)
+          {
+            /* Deletes its bank */
+            orxBank_Delete(pstStorage->pstBank);
 
-          /* Frees storage */
-          orxBank_Free(sstEvent.pstHandlerStorageBank, pstStorage);
-          pstStorage = orxNULL;
+            /* Frees storage */
+            orxBank_Free(sstEvent.pstHandlerStorageBank, pstStorage);
+            pstStorage = orxNULL;
+          }
         }
       }
       else
@@ -299,7 +309,7 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
   orxASSERT(_pfnEventHandler != orxNULL);
 
   /* Gets corresponding storage */
-  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
+  pstStorage = (_eEventType < orxEVENT_TYPE_CORE_NUMBER) ? sstEvent.astCoreHandlerStorageList[_eEventType] : (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
 
   /* Valid? */
   if(pstStorage != orxNULL)
@@ -350,12 +360,15 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
   orxASSERT(_pstEvent != orxNULL);
 
   /* Gets corresponding storage */
-  pstStorage = (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _pstEvent->eType);
+  pstStorage = (_pstEvent->eType < orxEVENT_TYPE_CORE_NUMBER) ? sstEvent.astCoreHandlerStorageList[_pstEvent->eType] : (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _pstEvent->eType);
 
   /* Valid? */
   if(pstStorage != orxNULL)
   {
     orxEVENT_HANDLER_INFO *pstInfo;
+
+    /* Updates event send counter */
+    sstEvent.s32EventSendCounter++;
 
     /* For all handlers */
     for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
@@ -371,6 +384,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
         break;
       }
     }
+
+    /* Updates event send counter */
+    sstEvent.s32EventSendCounter--;
   }
 
   /* Done! */
@@ -400,4 +416,21 @@ orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEv
 
   /* Done! */
   return eResult;
+}
+
+/** Is currently sending an event?
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxEvent_IsSending()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  bResult = (sstEvent.s32EventSendCounter > 0) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }

@@ -539,7 +539,7 @@ static orxINLINE orxFLOAT                     orxVector_GetDistance(const orxVEC
 static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   register orxFLOAT fOp;
-
+  
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp != orxNULL);
@@ -547,22 +547,13 @@ static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pv
   /* Gets squared size */
   fOp = (_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY) + (_pvOp->fZ * _pvOp->fZ);
 
-  /* Valid? */
-  if(fOp > orxFLOAT_0)
-  {
-    /* Gets reciprocal size */
-    fOp = orxFLOAT_1 / orxMath_Sqrt(fOp);
+  /* Gets reciprocal size */
+  fOp = orxFLOAT_1 / (orxMATH_KF_TINY_EPSILON + orxMath_Sqrt(fOp));
 
-    /* Updates result */
-    _pvRes->fX = fOp * _pvOp->fX;
-    _pvRes->fY = fOp * _pvOp->fY;
-    _pvRes->fZ = fOp * _pvOp->fZ;
-  }
-  else
-  {
-    /* Clears result */
-    orxMemory_Zero(_pvRes, sizeof(orxVECTOR));
-  }
+  /* Updates result */
+  _pvRes->fX = fOp * _pvOp->fX;
+  _pvRes->fY = fOp * _pvOp->fY;
+  _pvRes->fZ = fOp * _pvOp->fZ;
 
   /* Done! */
   return _pvRes;
@@ -839,8 +830,21 @@ static orxINLINE orxVECTOR *                orxVector_Cross(orxVECTOR *_pvRes, c
 }
 
 
-/* *** Vector constants *** */
+/* *** Vector functions *** */
 
+/** Computes an interpolated point on a Catmull-Rom curve segment for a given parameter
+ * @param[out]  _pvRes                      Vector where to store result
+ * @param[in]   _pvPoint1                   First control point for this curve segment
+ * @param[in]   _pvPoint2                   Second control point for this curve segment
+ * @param[in]   _pvPoint3                   Third control point for this curve segment
+ * @param[in]   _pvPoint4                   Fourth control point for this curve segment
+ * @param[in]   _fT                         Interpolation parameter in [0.0, 1.0]
+ * @return      Interpolated point on the Catmull-Rom curve segment
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_CatmullRom(orxVECTOR *_pvRes, const orxVECTOR *_pvPoint1, const orxVECTOR *_pvPoint2, const orxVECTOR *_pvPoint3, const orxVECTOR *_pvPoint4, orxFLOAT _fT);
+
+
+/* *** Vector constants *** */
 
 extern orxDLLAPI const orxVECTOR orxVECTOR_X;      /**< X-Axis unit vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */

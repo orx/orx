@@ -96,8 +96,6 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
   void                       *pContext;         /**< Clock function context : 24 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 28 */
 
-  orxPAD(28)
-
 } orxCLOCK_FUNCTION_STORAGE;
 
 typedef struct __orxCLOCK_TIMER_STORAGE_t
@@ -108,8 +106,6 @@ typedef struct __orxCLOCK_TIMER_STORAGE_t
   void                       *pContext;         /**< Timer function context : 24 */
   orxS32                      s32Repetition;    /**< Timer repetition : 28 */
   orxFLOAT                    fTimeStamp;       /**< Next call time stamp : 32 */
-
-  orxPAD(32)
 
 } orxCLOCK_TIMER_STORAGE;
 

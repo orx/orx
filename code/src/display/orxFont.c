@@ -753,32 +753,36 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
                   }
                 }
 
-                /* Sets character height & width list */
-                if((orxFont_SetCharacterHeight(pstResult, fCharacterHeight) != orxSTATUS_FAILURE)
-                && (orxFont_SetCharacterWidthList(pstResult, u32CharacterCounter, afCharacterWidthList) != orxSTATUS_FAILURE))
+                /* Valid? */
+                if(pstResult != orxNULL)
                 {
-                  /* Stores its reference key */
-                  pstResult->zReference = orxConfig_GetCurrentSection();
+                  /* Sets character height & width list */
+                  if((orxFont_SetCharacterHeight(pstResult, fCharacterHeight) != orxSTATUS_FAILURE)
+                  && (orxFont_SetCharacterWidthList(pstResult, u32CharacterCounter, afCharacterWidthList) != orxSTATUS_FAILURE))
+                  {
+                    /* Stores its reference key */
+                    pstResult->zReference = orxConfig_GetCurrentSection();
 
-                  /* Protects it */
-                  orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+                    /* Protects it */
+                    orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
-                  /* Adds it to reference table */
-                  orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+                    /* Adds it to reference table */
+                    orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
 
-                  /* Updates status flags */
-                  orxStructure_SetFlags(pstResult, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
-                }
-                else
-                {
-                  /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character size (%f, %f) for font (%s).", vCharacterSize.fX, vCharacterSize.fY, _zConfigID);
+                    /* Updates status flags */
+                    orxStructure_SetFlags(pstResult, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
+                  }
+                  else
+                  {
+                    /* Logs message */
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character size (%f, %f) for font (%s).", vCharacterSize.fX, vCharacterSize.fY, _zConfigID);
 
-                  /* Deletes structure */
-                  orxFont_Delete(pstResult);
+                    /* Deletes structure */
+                    orxFont_Delete(pstResult);
 
-                  /* Updates result */
-                  pstResult = orxNULL;
+                    /* Updates result */
+                    pstResult = orxNULL;
+                  }
                 }
 
                 /* Has character width list? */

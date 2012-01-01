@@ -6,23 +6,30 @@
   </VirtualDirectory>
   <Dependencies/>
   <Dependencies Name="Linux Dynamic Release"/>
+  <Dependencies Name="Win32 Dynamic Release"/>
   <Settings Type="Dynamic Library">
-    <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/linux/05_Viewport.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../05_Viewport.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2 -fPIC">
+    <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2 -fPIC -m32" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
+      <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/linux"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
-      <ResourceCompiler Required="no" Options=""/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../bin/linux/05_Viewport.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../05_Viewport.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
+        <PreprocessFileCommand/>
         <SingleFileCommand/>
         <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
@@ -33,22 +40,60 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/mingw/05_Viewport.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../05_Viewport.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+    <Configuration Name="Linux64 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2 -fPIC -m64" Required="yes" PreCompiledHeader="">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
+      <Linker Options="-fPIC -s" Required="yes">
+        <LibraryPath Value="../../../lib/linux64"/>
+        <Library Value="orx"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../bin/linux64/05_Viewport.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../05_Viewport.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="../../../include"/>
+      </Compiler>
+      <Linker Options="-fPIC -s" Required="yes">
         <LibraryPath Value="../../../lib/mingw"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
-      <ResourceCompiler Required="no" Options=""/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../../../bin/mingw/05_Viewport.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../05_Viewport.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
+        <RebuildCommand/>
         <CleanCommand/>
         <BuildCommand/>
+        <PreprocessFileCommand/>
         <SingleFileCommand/>
         <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
@@ -59,6 +104,14 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
+    <GlobalSettings>
+      <Compiler Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
   </Settings>
-  <Dependencies Name="Win32 Dynamic Release"/>
 </CodeLite_Project>

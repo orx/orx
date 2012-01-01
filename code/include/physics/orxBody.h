@@ -337,31 +337,44 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
 
 
-/** Sets self flags of a physical body part
- * @param[in]   _pstBodyPart    Concerned physical body part
+/** Sets self flags of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
  * @param[in]   _u16SelfFlags   Self flags to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
 
-/** Sets check mask of a physical body part
- * @param[in]   _pstBodyPart    Concerned physical body part
+/** Sets check mask of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
  * @param[in]   _u16CheckMask   Check mask to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
 
-/** Gets self flags of a physical body part
- * @param[in]   _pstBodyPart    Concerned physical body part
- * @return Self flags of the physical body part
+/** Gets self flags of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return Self flags of the body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetSelfFlags(const orxBODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(const orxBODY_PART *_pstBodyPart);
 
-/** Gets check mask of a physical body part
- * @param[in]   _pstBodyPart    Concerned physical body part
- * @return Check mask of the physical body part
+/** Gets check mask of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return Check mask of the body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetCheckMask(const orxBODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart);
+
+/** Is a body part solid?
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart);
+
+/** Sets a body part solid
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _bSolid         Solid or sensor?
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid);
 
 
 /** Issues a raycast to test for potential bodies in the way

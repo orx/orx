@@ -51,6 +51,11 @@
 
 #endif /* __orxIPHONE__ && __orxOBJC__ */
 
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+
+  #include <jni.h>
+
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Event enum
  */
@@ -73,6 +78,11 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_TOUCH_END,
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
+  
+#ifdef __orxANDROID__
+  orxSYSTEM_EVENT_KEY_DOWN,
+  orxSYSTEM_EVENT_KEY_UP,
+#endif
 
   orxSYSTEM_EVENT_NUMBER,
 
@@ -114,7 +124,7 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
   {
-    /* UI event */
+	/* UI event */
     struct
     {
       orxU32    u32ID;
@@ -127,6 +137,11 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       void     *pAccelerometer;
       orxFLOAT  fX, fY, fZ;
     } stAccelerometer;
+    
+    struct
+    {
+      orxU32    u32KeyCode;
+    } stKeyboard;
   };
 #endif
 

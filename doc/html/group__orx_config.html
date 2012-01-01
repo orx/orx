@@ -48,11 +48,14 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga7526b75f27415d1eff396fbaea6a3f97">orxConfig_Clear</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga0ef471810ad2d2ed9ff5e0726cacc545">orxConfig_ClearSection</a> (const orxSTRING _zSectionName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaa773c70b03b90b92246985029120c1eb">orxConfig_ClearValue</a> (const orxSTRING _zKey)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaf7628d0883e028674c707329490a740a">orxConfig_CopyFile</a> (const orxSTRING _zDstFileName, const orxSTRING _zSrcFileName, const orxSTRING _zEncryptionKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga71d5a6dcd9e8c5d835e4b480716a8ac9">orxConfig_DuplicateRawValue</a> (const orxSTRING _zKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gabc9ffc867226e9cf1d1c225a2c842139">orxConfig_Exit</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga020eac8fa22c7e5b650ecd730f8b3f92">orxConfig_GetBool</a> (const orxSTRING _zKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gabe3d8af4f39e50865bacc61ca74812b6">orxConfig_GetCurrentSection</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaae70c4ac05073b8bea6983e9b884d7b8">orxConfig_GetEncryptionKey</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga6ee371e72eb36c58ffa1cc84bc85e93b">orxConfig_GetFloat</a> (const orxSTRING _zKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gac20175fac9546218198afac0145d438c">orxConfig_GetKey</a> (orxS32 _s32KeyIndex)</td></tr>
@@ -224,6 +227,49 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="gaf7628d0883e028674c707329490a740a"></a><!-- doxytag: member="orxConfig.h::orxConfig_CopyFile" ref="gaf7628d0883e028674c707329490a740a" args="(const orxSTRING _zDstFileName, const orxSTRING _zSrcFileName, const orxSTRING _zEncryptionKey)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_CopyFile </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"> <em>_zDstFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"> <em>_zSrcFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"> <em>_zEncryptionKey</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Copies a file with optional encryption </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zDstFileName</td><td>Name of the destionation file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSrcFileName</td><td>Name of the source file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zEncryptionKey</td><td>Encryption key to use when writing destination file, orxNULL for no encryption </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga71d5a6dcd9e8c5d835e4b480716a8ac9"></a><!-- doxytag: member="orxConfig.h::orxConfig_DuplicateRawValue" ref="ga71d5a6dcd9e8c5d835e4b480716a8ac9" args="(const orxSTRING _zKey)" -->
 <div class="memitem">
 <div class="memproto">
@@ -306,6 +352,24 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="memdoc">
 <p>Gets current working section </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Current selected section </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaae70c4ac05073b8bea6983e9b884d7b8"></a><!-- doxytag: member="orxConfig.h::orxConfig_GetEncryptionKey" ref="gaae70c4ac05073b8bea6983e9b884d7b8" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetEncryptionKey </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Gets encryption key </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Current encryption key / orxSTRING_EMPTY </dd></dl>
 
 </div>
 </div>

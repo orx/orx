@@ -76,6 +76,7 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_DISPLAY,
   orxEVENT_TYPE_FX,
   orxEVENT_TYPE_INPUT,
+  orxEVENT_TYPE_KEYBOARD,
   orxEVENT_TYPE_LOCALE,
   orxEVENT_TYPE_OBJECT,
   orxEVENT_TYPE_RENDER,
@@ -156,6 +157,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(const orxEVENT *_pstEvent)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID);
+
+/** Is currently sending an event?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxEvent_IsSending();
 
 #endif /*_orxEVENT_H_*/
 

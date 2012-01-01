@@ -52,6 +52,20 @@
 
   typedef void *                  orxHANDLE;
 
+  #ifdef __orxX86_64__
+
+  typedef unsigned  int           orxU32;
+  typedef unsigned  short         orxU16;
+  typedef unsigned  char          orxU8;
+
+  typedef signed    int           orxS32;
+  typedef signed    short         orxS16;
+  typedef signed    char          orxS8;
+
+  typedef unsigned  int           orxBOOL;
+
+  #else /* __orxX86_64__ */
+
   typedef unsigned  long          orxU32;
   typedef unsigned  short         orxU16;
   typedef unsigned  char          orxU8;
@@ -61,6 +75,8 @@
   typedef signed    char          orxS8;
 
   typedef unsigned  long          orxBOOL;
+
+  #endif /* __orxX86_64__ */
 
   typedef float                   orxFLOAT;
   typedef double                  orxDOUBLE;
@@ -96,6 +112,22 @@
 
     typedef void *                orxHANDLE;
 
+    #ifdef __orxX86_64__
+
+    typedef unsigned  long long   orxU64;
+    typedef unsigned  int         orxU32;
+    typedef unsigned  short       orxU16;
+    typedef unsigned  char        orxU8;
+
+    typedef signed    long long   orxS64;
+    typedef signed    int         orxS32;
+    typedef signed    short       orxS16;
+    typedef signed    char        orxS8;
+
+    typedef unsigned  int         orxBOOL;
+
+    #else /* __orxX86_64__ */
+
     typedef unsigned  long long   orxU64;
     typedef unsigned  long        orxU32;
     typedef unsigned  short       orxU16;
@@ -107,6 +139,8 @@
     typedef signed    char        orxS8;
 
     typedef unsigned  long        orxBOOL;
+
+    #endif /* __orxX86_64__ */
 
     typedef float                 orxFLOAT;
     typedef double                orxDOUBLE;

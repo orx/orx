@@ -51,6 +51,7 @@
 #include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
 #include "sound/orxSound.h"
@@ -102,7 +103,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(const orxSTRING _zConfigID);
 
-/** Deletes an object
+/** Deletes an object, *unsafe* when call from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead
  * @param[in] _pstObject        Concerned object
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -147,7 +148,7 @@ extern orxDLLAPI void *orxFASTCALL          orxObject_GetUserData(const orxOBJEC
 
 /** Sets owner for an object
  * @param[in]   _pstObject    Concerned object
- * @param[in]   _pOwner       Owner to set / orxNULL
+ * @param[in]   _pOwner       Owner to set / orxNULL, if owner is an orxOBJECT, the owned object will be added to it as a children
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner);
 
@@ -556,6 +557,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
+/** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined)
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstModel       Model object on which to synchronize FXs
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SynchronizeFX(orxOBJECT *_pstObject, const orxOBJECT *_pstModel);
+
 
 /** Adds a sound using its config ID
  * @param[in]   _pstObject      Concerned object
@@ -636,6 +644,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
  * @return Smoothing type (enabled, default or none)
  */
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject);
+
+
+/** Gets object working texture
+ * @param[in]   _pstObject     Concerned object
+ * @return orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const orxOBJECT *_pstObject);
 
 
 /** Sets object repeat (wrap) values

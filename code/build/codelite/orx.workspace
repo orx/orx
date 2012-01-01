@@ -246,5 +246,70 @@
       <Project Name="orx" ConfigName="Win32 Embedded Dynamic Release"/>
       <Project Name="Bounce" ConfigName="Win32 Embedded Dynamic Release"/>
     </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux64 Embedded Static Debug" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux64 Embedded Static Debug"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Linux64 Embedded Static Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Linux64 Embedded Static Debug"/>
+      <Project Name="Bounce" ConfigName="Linux64 Embedded Static Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux64 Embedded Static Release" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux64 Embedded Static Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Linux64 Embedded Static Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Linux64 Embedded Static Release"/>
+      <Project Name="Bounce" ConfigName="Linux64 Embedded Static Release"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux64 Embedded Dynamic Debug" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux64 Embedded Dynamic Debug"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Linux64 Embedded Dynamic Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Linux64 Embedded Dynamic Debug"/>
+      <Project Name="Bounce" ConfigName="Linux64 Embedded Dynamic Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux64 Embedded Dynamic Release" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux64 Embedded Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Linux64 Embedded Dynamic Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Linux64 Embedded Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Linux64 Embedded Dynamic Release"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Linux64 Embedded Dynamic Profile" Selected="no">
+      <Project Name="Scroll" ConfigName="Linux64 Embedded Dynamic Profile"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxRender_Home" ConfigName="Not compiled"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Not compiled"/>
+      <Project Name="orxMouse_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxLIB" ConfigName="Linux64 Embedded Dynamic Profile"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Not compiled"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Not compiled"/>
+      <Project Name="orx" ConfigName="Linux64 Embedded Dynamic Profile"/>
+      <Project Name="Bounce" ConfigName="Linux64 Embedded Dynamic Profile"/>
+    </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

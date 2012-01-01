@@ -178,7 +178,7 @@ static orxINLINE void orxRender_RenderFPS()
           orxFLOAT fDelta;
 
           /* Gets rendering limit delta using correction ratio */
-          fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stBox.vBR.fY - stBox.vTL.fY);
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stBox.vBR.fY - stBox.vTL.fY);
 
           /* Updates viewport */
           stBox.vTL.fY += fDelta;
@@ -661,8 +661,6 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
   {
-    orxVECTOR                       vPivot, vPosition, vScale, vSize;
-    orxFLOAT                        fRotation;
     orxEVENT                        stEvent;
     orxRENDER_EVENT_OBJECT_PAYLOAD  stPayload;
 
@@ -676,59 +674,61 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
     /* Inits event */
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
 
-    /* Sends start event */
-    if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+    /* 2D? */
+    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
     {
-      /* 2D? */
-      if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
-      {
-        orxBITMAP      *pstBitmap;
-        orxTEXTURE     *pstTexture;
-        orxANIMPOINTER *pstAnimPointer;
-        orxBOOL         bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
-        orxVECTOR       vClipTL, vClipBR;
-        orxFLOAT        fRepeatX, fRepeatY;
+      orxBITMAP      *pstBitmap;
+      orxTEXTURE     *pstTexture;
+      orxANIMPOINTER *pstAnimPointer;
+      orxVECTOR       vClipTL, vClipBR, vPivot, vSize;
 
-        /* Gets animation pointer */
-        pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+      /* Gets animation pointer */
+      pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+      /* Valid? */
+      if(pstAnimPointer != orxNULL)
+      {
+        orxGRAPHIC *pstTemp;
+
+        /* Gets current anim data */
+        pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
 
         /* Valid? */
-        if(pstAnimPointer != orxNULL)
+        if(pstTemp != orxNULL)
         {
-          orxGRAPHIC *pstTemp;
-
-          /* Gets current anim data */
-          pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
-
-          /* Valid? */
-          if(pstTemp != orxNULL)
-          {
-            /* Uses it */
-            pstGraphic = pstTemp;
-          }
+          /* Uses it */
+          pstGraphic = pstTemp;
         }
+      }
 
-        /* Gets its pivot */
-        orxGraphic_GetPivot(pstGraphic, &vPivot);
+      /* Gets its pivot */
+      orxGraphic_GetPivot(pstGraphic, &vPivot);
 
-        /* Gets its texture */
-        pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+      /* Gets its texture */
+      pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
 
-        /* Gets its bitmap */
-        pstBitmap = orxTexture_GetBitmap(pstTexture);
+      /* Gets its bitmap */
+      pstBitmap = orxTexture_GetBitmap(pstTexture);
+
+      /* Gets its clipping corners */
+      orxGraphic_GetOrigin(pstGraphic, &vClipTL);
+      orxGraphic_GetSize(pstGraphic, &vSize);
+      orxVector_Add(&vClipBR, &vClipTL, &vSize);
+
+      /* Updates its clipping (before event start for updated texture coordinates in shader) */
+      orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+
+      /* Sends start event */
+      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+      {
+        orxVECTOR vPosition, vScale;
+        orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
+        orxFLOAT  fRepeatX, fRepeatY, fRotation;
 
         /* Gets rendering frame's position, rotation & scale */
-        fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-        orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-        orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-        /* Gets its clipping corners */
-        orxGraphic_GetOrigin(pstGraphic, &vClipTL);
-        orxGraphic_GetSize(pstGraphic, &vSize);
-        orxVector_Add(&vClipBR, &vClipTL, &vSize);
-
-        /* Updates its clipping */
-        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+        fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
+        orxFrame_GetScale(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+        orxFrame_GetPosition(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
         /* Gets object & graphic flipping */
         orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
@@ -839,7 +839,14 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           }
         }
       }
-      else
+
+      /* Sends stop event */
+      orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+    }
+    else
+    {
+      /* Sends start event */
+      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
         orxTEXT *pstText;
 
@@ -865,6 +872,8 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             /* Valid? */
             if(pstTexture != orxNULL)
             {
+              orxVECTOR   vPosition, vScale, vPivot, vSize;
+              orxFLOAT    fRotation;
               orxBOOL     bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
               orxBITMAP  *pstBitmap;
 
@@ -876,9 +885,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
               orxGraphic_GetSize(pstGraphic, &vSize);
 
               /* Gets rendering frame's position, rotation & scale */
-              fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-              orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-              orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+              fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
+              orxFrame_GetScale(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+              orxFrame_GetPosition(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
               /* Gets object & graphic flipping */
               orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
@@ -955,10 +964,10 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           }
         }
       }
-    }
 
-    /* Sends stop event */
-    orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+      /* Sends stop event */
+      orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+    }
   }
   else
   {
@@ -1091,7 +1100,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   orxFLOAT fDelta;
 
                   /* Gets rendering limit delta using correction ratio */
-                  fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+                  fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
 
                   /* Updates viewport */
                   stViewportBox.vTL.fY += fDelta;
@@ -1690,7 +1699,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
         else
         {
           /* Gets rendering limit delta using correction ratio */
-          fDelta = orx2F(0.5f) * (fCorrectionRatio - orxFLOAT_1) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
 
           /* Updates viewport */
           stViewportBox.vTL.fY += fDelta;

@@ -93,14 +93,6 @@ void orxFASTCALL orxModule_RegisterAll()
   return;
 }
 
-#ifdef __orxANDROID__
-
-  orxMODULE_RUN_FUNCTION  pfnRun;
-  orxMODULE_EXIT_FUNCTION pfnExit;
-
-#endif /* __orxANDROID__ */
-
-
 /** Module flags
  */
 #define orxMODULE_KU32_STATIC_FLAG_NONE         0x00000000

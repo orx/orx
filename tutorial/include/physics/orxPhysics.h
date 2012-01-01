@@ -264,7 +264,7 @@ typedef enum __orxPHYSICS_EVENT_t
 
 } orxPHYSICS_EVENT;
 
-/** Contact event payload
+/** Event payload
  */
 typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
