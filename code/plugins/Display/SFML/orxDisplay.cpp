@@ -1613,6 +1613,15 @@ extern "C" void orxFASTCALL orxDisplay_SFML_Exit()
   return;
 }
 
+extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_HasShaderSupport()
+{
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  
+  /* Done! */
+  return (sf::PostFX::CanUsePostFX() != false) ? orxTRUE : orxFALSE;
+}
+
 extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
@@ -1945,6 +1954,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteShader, DISPLAY, DELETE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_StartShader, DISPLAY, START_SHADER);

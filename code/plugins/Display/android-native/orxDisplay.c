@@ -2264,7 +2264,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.pstScreen->fWidth = orxS2F(sstDisplay.width);
         sstDisplay.pstScreen->fHeight = orxS2F(sstDisplay.height);
         sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-        sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U( sstDisplay.pstScreen->fHeight));
+        sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
@@ -2382,6 +2382,15 @@ void orxFASTCALL orxDisplay_Android_Exit()
 
   /* Done! */
   return;
+}
+
+orxBOOL orxFASTCALL orxDisplay_Android_HasShaderSupport()
+{
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
 }
 
 orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
@@ -2930,42 +2939,43 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderVector(orxHANDLE _hShader, orx
 /***************************************************************************
  * Plugin Related                                                          *
  ***************************************************************************/
-orxPLUGIN_USER_CORE_FUNCTION_START( DISPLAY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_Init, DISPLAY, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_Exit, DISPLAY, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_Swap, DISPLAY, SWAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_CreateBitmap, DISPLAY, CREATE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_DeleteBitmap, DISPLAY, DELETE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_TransformText, DISPLAY, TRANSFORM_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_LoadBitmap, DISPLAY, LOAD_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_ClearBitmap, DISPLAY, CLEAR_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_BlitBitmap, DISPLAY, BLIT_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_CreateShader, DISPLAY, CREATE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_DeleteShader, DISPLAY, DELETE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_StartShader, DISPLAY, START_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_StopShader, DISPLAY, STOP_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetParameterID, DISPLAY, GET_PARAMETER_ID);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_EnableVSync, DISPLAY, ENABLE_VSYNC);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxDisplay_Android_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
+orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_Init, DISPLAY, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_Exit, DISPLAY, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_Swap, DISPLAY, SWAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_CreateBitmap, DISPLAY, CREATE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DeleteBitmap, DISPLAY, DELETE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_LoadBitmap, DISPLAY, LOAD_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_CreateShader, DISPLAY, CREATE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DeleteShader, DISPLAY, DELETE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_StartShader, DISPLAY, START_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_StopShader, DISPLAY, STOP_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetParameterID, DISPLAY, GET_PARAMETER_ID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_EnableVSync, DISPLAY, ENABLE_VSYNC);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
 orxPLUGIN_USER_CORE_FUNCTION_END();

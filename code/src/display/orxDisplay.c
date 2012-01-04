@@ -93,6 +93,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, orxBITMAP *,
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteShader, void, orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StartShader, orxSTATUS, const orxHANDLE);
@@ -146,6 +147,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_SIZE, orxDisplay_GetBitmap
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_BITMAP, orxDisplay_GetScreenBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_SIZE, orxDisplay_GetScreenSize)
 
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, HAS_SHADER_SUPPORT, orxDisplay_HasShaderSupport)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_SHADER, orxDisplay_CreateShader)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_SHADER, orxDisplay_DeleteShader)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, START_SHADER, orxDisplay_StartShader)
@@ -276,6 +278,11 @@ orxRGBA orxFASTCALL orxDisplay_GetBitmapColor(const orxBITMAP *_pstBitmap)
 orxSTATUS orxFASTCALL orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapSize)(_pstBitmap, _pfWidth, _pfHeight);
+}
+
+orxBOOL orxFASTCALL orxDisplay_HasShaderSupport()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_HasShaderSupport)();
 }
 
 orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)

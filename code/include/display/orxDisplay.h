@@ -906,6 +906,11 @@ extern orxDLLAPI orxRGBA orxFASTCALL                  orxDisplay_GetBitmapColor(
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 
+/** Has shader support?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_HasShaderSupport();
+
 /** Creates (compiles) a shader
  * @param[in]   _zCode                                Shader code to compile
  * @param[in]   _pstParamList                         Shader parameters (should be a link list of orxSHADER_PARAM)
