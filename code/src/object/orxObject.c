@@ -3847,7 +3847,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
 }
 
 /** Removes a sound using using its config ID
- * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _pstObject      Concerned object
  * @param[in]   _zSoundConfigID Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -3899,6 +3899,62 @@ orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(const orxOBJECT *_pstObject)
 
   /* Done! */
   return pstResult;
+}
+
+/** Set volume for all sounds of an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVolume        Desired volume (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetVolume(orxOBJECT *_pstObject, orxFLOAT _fVolume)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Set volume to all sounds */
+    eResult = orxSoundPointer_SetVolume(pstSoundPointer, _fVolume);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Set pitch for all sounds of an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Set pitch to all sounds */
+    eResult = orxSoundPointer_SetPitch(pstSoundPointer, _fPitch);
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Adds a shader to an object using its config ID
