@@ -111,28 +111,29 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       orxDOUBLE dTime;
       orxVECTOR vAcceleration;
     } stAccelerometer;
-  };
 
 #elif defined(__orxANDROID__)
 
-  /* Touch event */
-  struct
-  {
-    /* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) */
-    /* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs                       */
-    /* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs                           */
-    orxU32              u32AdditionnalTouch;
-    /* Number of initialized element in astTouch */
-    orxU32              u32Count;
-    /* Array containing information for one touch in each element */
+    /* Touch event */
     struct
     {
-      orxU32   u32Id;
-      orxFLOAT fX, fY;
-    }                   astTouch[orxANDROID_TOUCH_NUMBER];
-  } stTouch;
+      /* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) */
+      /* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs                       */
+      /* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs                           */
+      orxU32              u32AdditionnalTouch;
+      /* Number of initialized element in astTouch */
+      orxU32              u32Count;
+      /* Array containing information for one touch in each element */
+      struct
+      {
+        orxU32   u32Id;
+        orxFLOAT fX, fY;
+      }                   astTouch[orxANDROID_TOUCH_NUMBER];
+    } stTouch;
 
 #endif
+
+  };
 
 } orxSYSTEM_EVENT_PAYLOAD;
 
