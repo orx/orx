@@ -53,6 +53,7 @@
 typedef struct __orxMOUSE_STATIC_t
 {
   orxU32      u32Flags;
+  orxU32      u32TouchCounter;
   orxBOOL     bIsClicked;
   orxVECTOR   vMouseMove, vMousePosition;
 
@@ -81,26 +82,23 @@ static orxSTATUS orxFASTCALL orxMouse_iPhone_EventHandler(const orxEVENT *_pstEv
   {
     /* Touch? */
     case orxSYSTEM_EVENT_TOUCH_BEGIN:
-    case orxSYSTEM_EVENT_TOUCH_MOVE:
-    case orxSYSTEM_EVENT_TOUCH_END:
     {
-      UITouch                  *poTouch;
+      /* Updates counter */
+      sstMouse.u32TouchCounter++;
+
+      /* Fall through */
+    }
+
+    case orxSYSTEM_EVENT_TOUCH_MOVE:
+    {
       orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
-      orxBOOL                   bActive = orxFALSE;
       orxVECTOR                 vNewPosition;
-      CGPoint                   vViewPosition;
 
       /* Gets payload */
       pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Gets first touch */
-      poTouch = [[pstPayload->poUIEvent allTouches] anyObject];
-
-      /* Gets its position inside view */
-      vViewPosition = [poTouch locationInView:(orxView *)_pstEvent->hSender];
-
       /* Gets new position */
-      orxVector_Set(&vNewPosition, pstPayload->fContentScaleFactor * orx2F(vViewPosition.x), pstPayload->fContentScaleFactor * orx2F(vViewPosition.y), orxFLOAT_0);
+      orxVector_Set(&vNewPosition, pstPayload->stTouch.fX, pstPayload->stTouch.fY, orxFLOAT_0);
 
       /* Updates mouse move */
       orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
@@ -109,24 +107,26 @@ static orxSTATUS orxFASTCALL orxMouse_iPhone_EventHandler(const orxEVENT *_pstEv
       /* Updates mouse position */
       orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
 
-      /* For all touches */
-      for(poTouch in [pstPayload->poUIEvent allTouches])
-      {
-        /* Not a touch end? */
-        if([poTouch phase] != UITouchPhaseEnded)
-        {
-          /* Updates status */
-          bActive = orxTRUE;
-          break;
-        }
-      }
-
       /* Updates click status */
-      sstMouse.bIsClicked = bActive;
+      sstMouse.bIsClicked = orxTRUE;
 
       break;
     }
 
+    case orxSYSTEM_EVENT_TOUCH_END:
+    {
+      /* Checks */
+      orxASSERT(sstMouse.u32TouchCounter > 0);
+
+      /* Updates counter */
+      sstMouse.u32TouchCounter--;
+
+      /* Updates click status */
+      sstMouse.bIsClicked = (sstMouse.u32TouchCounter == 0) ? orxFALSE : orxTRUE;
+
+      break;
+    }
+      
     default:
     {
       break;

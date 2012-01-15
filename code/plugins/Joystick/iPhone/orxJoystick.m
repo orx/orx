@@ -77,14 +77,15 @@ static orxSTATUS orxFASTCALL orxJoystick_iPhone_EventHandler(const orxEVENT *_ps
   orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
   orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_ACCELERATE);
+  /* Accelerate event? */
+  if(_pstEvent->eID == orxSYSTEM_EVENT_ACCELERATE)
+  {
+    /* Gets payload */
+    pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-  /* Gets payload */
-  pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-  /* Gets new acceleration */
-  orxVector_Copy(&(sstJoystick.vAcceleration), &(pstPayload->stAccelerometer.vAcceleration));
+    /* Gets new acceleration */
+    orxVector_Copy(&(sstJoystick.vAcceleration), &(pstPayload->stAccelerometer.vAcceleration));
+  }
 
   /* Done! */
   return eResult;

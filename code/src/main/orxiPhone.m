@@ -154,7 +154,7 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.dTime = orx2D(_poAcceleration.timestamp);
+  stPayload.stAccelerometer.dTime = orx2D(_poAcceleration.timestamp);
   orxVector_Set(&(stPayload.stAccelerometer.vAcceleration), orx2F(_poAcceleration.x), orx2F(-_poAcceleration.y), orx2F(-_poAcceleration.z));
 
   /* Sends it */

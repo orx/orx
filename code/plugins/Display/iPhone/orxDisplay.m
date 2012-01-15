@@ -57,6 +57,8 @@
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
+#define orxDISPLAY_KU32_TOUCH_NUMBER            16
+
 
 /**  Misc defines
  */
@@ -202,6 +204,13 @@ typedef struct __orxDISPLAY_SHADER_t
 
 } orxDISPLAY_SHADER;
 
+/** Internal touch info
+ */
+typedef struct __orxDISPLAY_TOUCH_INFO_t
+{
+  const UITouch  *poTouch;
+} orxDISPLAY_TOUCH_INFO;
+
 /** Static structure
  */
 typedef struct __orxDISPLAY_STATIC_t
@@ -224,6 +233,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_VERTEX         astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
+  orxDISPLAY_TOUCH_INFO     astTouchInfoList[orxDISPLAY_KU32_TOUCH_NUMBER];
 
 } orxDISPLAY_STATIC;
 
@@ -596,12 +606,35 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.poUIEvent           = _poEvent;
-  stPayload.poTouchList         = _poTouchList;
-  stPayload.fContentScaleFactor = self.contentScaleFactor;
+  stPayload.stTouch.fPressure   = orxFLOAT_1;
 
-  /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, self, orxNULL, &stPayload);
+  /* For all new touches */
+  for(UITouch *poTouch in _poTouchList)
+  {
+    CGPoint vViewPosition;
+    orxU32  u32ID;
+
+    /* Finds first empty slot */
+    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != nil); u32ID++);
+
+    /* Checks */
+    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+
+    /* Stores touch */
+    sstDisplay.astTouchInfoList[u32ID].poTouch = poTouch;
+
+    /* Gets its position inside view */
+    vViewPosition = [poTouch locationInView:self];
+
+    /* Updates payload */
+    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.u32ID = u32ID;
+    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, _poEvent, orxNULL, &stPayload);
+  }
 
   /* Done! */
   return;
@@ -613,12 +646,32 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.poUIEvent           = _poEvent;
-  stPayload.poTouchList         = _poTouchList;
-  stPayload.fContentScaleFactor = self.contentScaleFactor;
+  stPayload.stTouch.fPressure   = orxFLOAT_1;
 
-  /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, self, orxNULL, &stPayload);
+  /* For all moved touches */
+  for(UITouch *poTouch in _poTouchList)
+  {
+    CGPoint vViewPosition;
+    orxU32  u32ID;
+
+    /* Finds corresponding slot */
+    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
+
+    /* Checks */
+    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+
+    /* Gets its position inside view */
+    vViewPosition = [poTouch locationInView:self];
+
+    /* Updates payload */
+    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.u32ID = u32ID;
+    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, _poEvent, orxNULL, &stPayload);
+  }
 
   /* Done! */
   return;
@@ -630,12 +683,35 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.poUIEvent           = _poEvent;
-  stPayload.poTouchList         = _poTouchList;
-  stPayload.fContentScaleFactor = self.contentScaleFactor;
+  stPayload.stTouch.fPressure   = orxFLOAT_1;
 
-  /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, self, orxNULL, &stPayload);
+  /* For all ended touches */
+  for(UITouch *poTouch in _poTouchList)
+  {
+    CGPoint vViewPosition;
+    orxU32  u32ID;
+
+    /* Finds corresponding slot */
+    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
+
+    /* Checks */
+    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+
+    /* Removes touch */
+    sstDisplay.astTouchInfoList[u32ID].poTouch = nil;
+
+    /* Gets its position inside view */
+    vViewPosition = [poTouch locationInView:self];
+
+    /* Updates payload */
+    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.u32ID = u32ID;
+    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, _poEvent, orxNULL, &stPayload);
+  }
 
   /* Done! */
   return;
@@ -647,12 +723,35 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.poUIEvent           = _poEvent;
-  stPayload.poTouchList         = _poTouchList;
-  stPayload.fContentScaleFactor = self.contentScaleFactor;
+  stPayload.stTouch.fPressure   = orxFLOAT_1;
 
-  /* Sends end event */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, self, orxNULL, &stPayload);
+  /* For all cancelled touches */
+  for(UITouch *poTouch in _poTouchList)
+  {
+    CGPoint vViewPosition;
+    orxU32  u32ID;
+
+    /* Finds corresponding slot */
+    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
+
+    /* Checks */
+    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+
+    /* Removes touch */
+    sstDisplay.astTouchInfoList[u32ID].poTouch = nil;
+
+    /* Gets its position inside view */
+    vViewPosition = [poTouch locationInView:self];
+
+    /* Updates payload */
+    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.u32ID = u32ID;
+    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+    /* Sends it */
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, _poEvent, orxNULL, &stPayload);
+  }
 
   /* Done! */
   return;
@@ -671,7 +770,7 @@ static orxView *spoInstance;
     orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
     /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOTION_SHAKE, self, orxNULL, &stPayload);
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOTION_SHAKE, _poEvent, orxNULL, &stPayload);
   }
 
   /* Done! */
