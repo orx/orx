@@ -74,30 +74,17 @@ static orxJOYSTICK_STATIC sstJoystick;
 
 static orxSTATUS orxFASTCALL orxJoystick_iPhone_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-  
-  /* Depending on ID */
-  switch(_pstEvent->eID)
-  {
-    /* Accelerate? */
-    case orxSYSTEM_EVENT_ACCELERATE:
-    {
-      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+  orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
-      /* Gets payload */
-      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+  /* Checks */
+  orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_ACCELERATE);
 
-      /* Gets new position */
-      orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->poAcceleration.x), orx2F(pstPayload->poAcceleration.y), orx2F(pstPayload->poAcceleration.z));
+  /* Gets payload */
+  pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
+  /* Gets new acceleration */
+  orxVector_Copy(&(sstJoystick.vAcceleration), &(pstPayload->stAccelerometer.vAcceleration));
 
   /* Done! */
   return eResult;

@@ -616,7 +616,7 @@ static orxView *spoInstance;
   stPayload.poUIEvent           = _poEvent;
   stPayload.poTouchList         = _poTouchList;
   stPayload.fContentScaleFactor = self.contentScaleFactor;
-  
+
   /* Sends it */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, self, orxNULL, &stPayload);
 
@@ -633,7 +633,7 @@ static orxView *spoInstance;
   stPayload.poUIEvent           = _poEvent;
   stPayload.poTouchList         = _poTouchList;
   stPayload.fContentScaleFactor = self.contentScaleFactor;
-  
+
   /* Sends it */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, self, orxNULL, &stPayload);
 
@@ -650,7 +650,7 @@ static orxView *spoInstance;
   stPayload.poUIEvent           = _poEvent;
   stPayload.poTouchList         = _poTouchList;
   stPayload.fContentScaleFactor = self.contentScaleFactor;
-  
+
   /* Sends end event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, self, orxNULL, &stPayload);
 
@@ -669,8 +669,6 @@ static orxView *spoInstance;
 
     /* Inits event's payload */
     orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-    stPayload.poUIEvent = _poEvent;
-    stPayload.eMotion   = _eMotion;
 
     /* Sends it */
     orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOTION_SHAKE, self, orxNULL, &stPayload);

@@ -44,6 +44,7 @@
 #define _orxSYSTEM_H_
 
 #include "orxInclude.h"
+#include "math/orxVector.h"
 
 #if defined(__orxIPHONE__) && defined(__orxOBJC__)
 
@@ -95,6 +96,8 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 #if defined(__orxIPHONE__) && defined(__orxOBJC__)
   union
   {
+    orxDOUBLE dTime;
+
     /* UI event */
     struct
     {
@@ -104,9 +107,6 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       {
         /* Touch event */
         NSSet          *poTouchList;
-
-        /* Motion event */
-        UIEventSubtype  eMotion;
       };
       
       orxFLOAT          fContentScaleFactor;
@@ -115,9 +115,8 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
     /* Accelerate event */
     struct
     {
-      UIAccelerometer *poAccelerometer;
-      UIAcceleration  *poAcceleration;
-    };
+      orxVECTOR vAcceleration;
+    } stAccelerometer;
   };
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
   union
