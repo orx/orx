@@ -227,6 +227,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLint                     iTextureUnitNumber;
   orxS32                    s32ActiveShaderCounter;
   orxS32                    s32BufferIndex;
+  orxDOUBLE                 dTouchTimeCorrection;
   orxView                  *poView;
   orxU32                    u32Flags;
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
@@ -627,7 +628,7 @@ static orxView *spoInstance;
     vViewPosition = [poTouch locationInView:self];
 
     /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
     stPayload.stTouch.u32ID = u32ID;
     stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
     stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
@@ -664,7 +665,7 @@ static orxView *spoInstance;
     vViewPosition = [poTouch locationInView:self];
 
     /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
     stPayload.stTouch.u32ID = u32ID;
     stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
     stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
@@ -704,7 +705,7 @@ static orxView *spoInstance;
     vViewPosition = [poTouch locationInView:self];
 
     /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
     stPayload.stTouch.u32ID = u32ID;
     stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
     stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
@@ -744,7 +745,7 @@ static orxView *spoInstance;
     vViewPosition = [poTouch locationInView:self];
 
     /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp;
+    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
     stPayload.stTouch.u32ID = u32ID;
     stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
     stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
@@ -2900,6 +2901,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
       sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
+      sstDisplay.dTouchTimeCorrection       = orxSystem_GetTime() - orx2D([[NSProcessInfo processInfo] systemUptime]);
 
       /* Updates config info */
       orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);

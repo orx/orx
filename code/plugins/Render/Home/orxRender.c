@@ -682,6 +682,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
       orxANIMPOINTER *pstAnimPointer;
       orxVECTOR       vClipTL, vClipBR, vPivot, vSize;
 
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxRender_RenderObject (2D)");
+
       /* Gets animation pointer */
       pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
@@ -842,9 +845,15 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
       /* Sends stop event */
       orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
     else
     {
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxRender_RenderObject (Text)");
+      
       /* Sends start event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
@@ -967,6 +976,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
       /* Sends stop event */
       orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
   }
   else

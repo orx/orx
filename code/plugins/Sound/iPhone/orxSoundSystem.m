@@ -59,12 +59,13 @@
 
 #ifdef __orxDEBUG__
 
-#define alASSERT()                                                      \
-do                                                                      \
-{                                                                       \
-  ALenum eError = alGetError();                                         \
-  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
-} while(orxFALSE)
+// WARNING: alASSERT() is temporarily deactivated as it's not working correctly on iOS 4.2 simulator
+#define alASSERT()
+//do                                                                      \
+//{                                                                       \
+//  ALenum eError = alGetError();                                         \
+//  orxASSERT(eError == AL_NO_ERROR && "OpenAL error code: 0x%X", eError);\
+//} while(orxFALSE)
 
 #else /* __orxDEBUG__ */
 
