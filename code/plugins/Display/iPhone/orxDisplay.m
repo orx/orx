@@ -504,7 +504,6 @@ static orxView *spoInstance;
   /* Success? */
   if(bResult != NO)
   {
-    
     /* Links it to frame buffer */
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
     glASSERT();  
@@ -2844,7 +2843,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
     {
       orxDISPLAY_EVENT_PAYLOAD  stPayload;
       GLint                     iWidth, iHeight;
-      const GLubyte            *zExtensionList;
 
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -2864,11 +2862,11 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
       }
 
-      /* Gets extension list */
-      zExtensionList = glGetString(GL_EXTENSIONS);
-      
+      /* Creates OpenGL thread context */
+      [sstDisplay.poView CreateThreadContext];
+
       /* Has NPOT texture support? */
-      if((zExtensionList != NULL) && (strstr((const char *)zExtensionList, "GL_APPLE_texture_2D_limited_npot") != NULL))
+      if(([sstDisplay.poView bShaderSupport] != NO) || ([sstDisplay.poView IsExtensionSupported:@"GL_APPLE_texture_2D_limited_npot"] != NO))
       {
         /* Updates status flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
@@ -2878,9 +2876,6 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         /* Updates status flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
       }
-
-      /* Creates OpenGL thread context */
-      [sstDisplay.poView CreateThreadContext];
 
       /* Gets render buffer's size */
       glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
