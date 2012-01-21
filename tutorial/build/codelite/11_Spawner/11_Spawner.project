@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="11_Spawner">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0021Win32 Dynamic Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <VirtualDirectory Name="src">
     <File Name="../../../src/11_Spawner/11_Spawner.c"/>
@@ -8,8 +13,17 @@
   <Dependencies Name="Linux Dynamic Release"/>
   <Dependencies Name="Win32 Dynamic Release"/>
   <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings -m32" Required="yes" PreCompiledHeader="">
+      <Compiler Options="-O2 -Wno-write-strings -m32" C_Options="-O2 -Wno-write-strings -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,-rpath ./" Required="yes">
@@ -19,8 +33,10 @@
         <Library Value="m"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/linux/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner" CommandArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
-      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <General OutputFile="../../../bin/linux/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -41,9 +57,14 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
+      <Completion>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
     </Configuration>
     <Configuration Name="Linux64 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -Wno-write-strings -m64" Required="yes" PreCompiledHeader="">
+      <Compiler Options="-O2 -Wno-write-strings -m64" C_Options="-O2 -Wno-write-strings -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,-rpath ./" Required="yes">
@@ -53,8 +74,10 @@
         <Library Value="m"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/linux64/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner" CommandArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
-      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <General OutputFile="../../../bin/linux64/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -75,18 +98,25 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
+      <Completion>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes" PreCompiledHeader="">
+      <Compiler Options="-O2" C_Options="-O2" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,--export-all-symbols" Required="yes">
+      <Linker Options="-static -s" Required="yes">
         <LibraryPath Value="../../../lib/mingw"/>
         <Library Value="orx"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/mingw/11_Spawner.exe" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
-      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <General OutputFile="../../../bin/mingw/11_Spawner.exe" IntermediateDirectory="$(ConfigurationName)" Command="11_Spawner.exe" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
         <PostConnectCommands/>
         <StartupCommands/>
@@ -107,15 +137,11 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
+      <Completion>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
     </Configuration>
-    <GlobalSettings>
-      <Compiler Options="">
-        <IncludePath Value="."/>
-      </Compiler>
-      <Linker Options="">
-        <LibraryPath Value="."/>
-      </Linker>
-      <ResourceCompiler Options=""/>
-    </GlobalSettings>
   </Settings>
 </CodeLite_Project>
