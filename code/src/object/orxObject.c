@@ -42,9 +42,9 @@
 #include "display/orxText.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
+#include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
 #include "render/orxCamera.h"
-#include "render/orxFXPointer.h"
 #include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
 

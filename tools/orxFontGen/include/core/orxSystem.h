@@ -44,6 +44,7 @@
 #define _orxSYSTEM_H_
 
 #include "orxInclude.h"
+#include "math/orxVector.h"
 
 #if defined(__orxIPHONE__) && defined(__orxOBJC__)
 
@@ -55,6 +56,9 @@
 
   #include <jni.h>
 
+  // Max number touch available for the Android version
+  #define orxANDROID_TOUCH_NUMBER 4
+
 #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Event enum
@@ -64,8 +68,6 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_CLOSE = 0,
   orxSYSTEM_EVENT_FOCUS_GAINED,
   orxSYSTEM_EVENT_FOCUS_LOST,
-  orxSYSTEM_EVENT_MOUSE_IN,
-  orxSYSTEM_EVENT_MOUSE_OUT,
 
   orxSYSTEM_EVENT_BACKGROUND,
   orxSYSTEM_EVENT_FOREGROUND,
@@ -79,11 +81,6 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
   
-#ifdef __orxANDROID__
-  orxSYSTEM_EVENT_KEY_DOWN,
-  orxSYSTEM_EVENT_KEY_UP,
-#endif
-
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
@@ -94,56 +91,30 @@ typedef enum __orxSYSTEM_EVENT_t
  */
 typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 {
-  orxU32 u32FrameCounter;
-
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
   union
   {
-    /* UI event */
+    orxU32      u32FrameCounter;
+
+#if defined(__orxIPHONE__) || defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
+
+    /* Touch event */
     struct
     {
-      UIEvent *poUIEvent;
-
-      union
-      {
-        /* Touch event */
-        NSSet          *poTouchList;
-
-        /* Motion event */
-        UIEventSubtype  eMotion;
-      };
-    };
-
-    /* Accelerate event */
-    struct
-    {
-      UIAccelerometer *poAccelerometer;
-      UIAcceleration  *poAcceleration;
-    };
-  };
-#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-  union
-  {
-	/* UI event */
-    struct
-    {
+      orxDOUBLE dTime;
       orxU32    u32ID;
       orxFLOAT  fX, fY, fPressure;
     } stTouch;
 
-    /* Accelerate event */
+    /* Accelerometer event */
     struct
     {
-      void     *pAccelerometer;
-      orxFLOAT  fX, fY, fZ;
+      orxDOUBLE dTime;
+      orxVECTOR vAcceleration;
     } stAccelerometer;
-    
-    struct
-    {
-      orxU32    u32KeyCode;
-    } stKeyboard;
-  };
+
 #endif
+
+  };
 
 } orxSYSTEM_EVENT_PAYLOAD;
 

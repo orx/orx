@@ -56,6 +56,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="object">
       <File Name="../../../src/object/orxFrame.c"/>
+      <File Name="../../../src/object/orxFX.c"/>
+      <File Name="../../../src/object/orxFXPointer.c"/>
       <File Name="../../../src/object/orxObject.c"/>
       <File Name="../../../src/object/orxSpawner.c"/>
       <File Name="../../../src/object/orxStructure.c"/>
@@ -70,8 +72,6 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <File Name="../../../src/render/orxCamera.c"/>
-      <File Name="../../../src/render/orxFX.c"/>
-      <File Name="../../../src/render/orxFXPointer.c"/>
       <File Name="../../../src/render/orxRender.c"/>
       <File Name="../../../src/render/orxShader.c"/>
       <File Name="../../../src/render/orxShaderPointer.c"/>
@@ -147,6 +147,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="object">
       <File Name="../../../include/object/orxFrame.h"/>
+      <File Name="../../../include/object/orxFX.h"/>
+      <File Name="../../../include/object/orxFXPointer.h"/>
       <File Name="../../../include/object/orxObject.h"/>
       <File Name="../../../include/object/orxSpawner.h"/>
       <File Name="../../../include/object/orxStructure.h"/>
@@ -174,8 +176,6 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <File Name="../../../include/render/orxCamera.h"/>
-      <File Name="../../../include/render/orxFX.h"/>
-      <File Name="../../../include/render/orxFXPointer.h"/>
       <File Name="../../../include/render/orxRender.h"/>
       <File Name="../../../include/render/orxShader.h"/>
       <File Name="../../../include/render/orxShaderPointer.h"/>

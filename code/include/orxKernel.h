@@ -84,6 +84,8 @@
 #include "memory/orxMemory.h"
 
 #include "object/orxFrame.h"
+#include "object/orxFX.h"
+#include "object/orxFXPointer.h"
 #include "object/orxObject.h"
 #include "object/orxSpawner.h"
 #include "object/orxStructure.h"
@@ -96,8 +98,6 @@
 #include "physics/orxPhysics.h"
 
 #include "render/orxCamera.h"
-#include "render/orxFX.h"
-#include "render/orxFXPointer.h"
 #include "render/orxRender.h"
 #include "render/orxShader.h"
 #include "render/orxShaderPointer.h"

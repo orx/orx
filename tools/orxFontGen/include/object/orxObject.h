@@ -51,6 +51,7 @@
 #include "core/orxClock.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
 #include "sound/orxSound.h"
@@ -102,7 +103,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(const orxSTRING _zConfigID);
 
-/** Deletes an object
+/** Deletes an object, *unsafe* when call from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead
  * @param[in] _pstObject        Concerned object
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -584,6 +585,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_ps
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(const orxOBJECT *_pstObject);
 
+/** Sets volume for all sounds of an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVolume        Desired volume (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstObject, orxFLOAT _fVolume);
+
+/** Sets pitch for all sounds of an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);
+
 
 /** Adds a shader to an object using its config ID
  * @param[in]   _pstObject        Concerned object
@@ -643,6 +658,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
  * @return Smoothing type (enabled, default or none)
  */
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject);
+
+
+/** Gets object working texture
+ * @param[in]   _pstObject     Concerned object
+ * @return orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const orxOBJECT *_pstObject);
 
 
 /** Sets object repeat (wrap) values

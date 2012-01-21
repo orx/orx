@@ -514,26 +514,39 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(or
  * @param[in]   _u16SelfFlags                         Self flags to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
 
 /** Sets check mask of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @param[in]   _u16CheckMask                         Check mask to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
 
 /** Gets self flags of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @return Self flags of the physical body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
 /** Gets check mask of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @return Check mask of the physical body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Is a physical body part solid?
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets a physical body part solid
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _bSolid         Solid or sensor?
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid);
 
 
 /** Issues a raycast to test for potential physics bodies in the way

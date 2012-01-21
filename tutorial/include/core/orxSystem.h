@@ -44,6 +44,7 @@
 #define _orxSYSTEM_H_
 
 #include "orxInclude.h"
+#include "math/orxVector.h"
 
 #if defined(__orxIPHONE__) && defined(__orxOBJC__)
 
@@ -90,74 +91,30 @@ typedef enum __orxSYSTEM_EVENT_t
  */
 typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 {
-  orxU32 u32FrameCounter;
-
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
   union
   {
-    /* UI event */
+    orxU32      u32FrameCounter;
+
+#if defined(__orxIPHONE__) || defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
+
+    /* Touch event */
     struct
     {
-      UIEvent *poUIEvent;
-
-      union
-      {
-        /* Touch event */
-        NSSet          *poTouchList;
-
-        /* Motion event */
-        UIEventSubtype  eMotion;
-      };
-      
-      orxFLOAT          fContentScaleFactor;
-    };
-
-    /* Accelerate event */
-    struct
-    {
-      UIAccelerometer *poAccelerometer;
-      UIAcceleration  *poAcceleration;
-    };
-  };
-#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-  union
-  {
-#ifdef __orxANDROID_NATIVE__
-	/* UI event */
-    struct
-    {
+      orxDOUBLE dTime;
       orxU32    u32ID;
       orxFLOAT  fX, fY, fPressure;
     } stTouch;
-#endif // __orxANDROID_NATIVE__
 
-#ifdef __orxANDROID__
-    /* UI event */
+    /* Accelerometer event */
     struct
     {
-      /* Contains pointer identifier if additionnal touch is available (it's the case for Android ACTION_POINTER_UP/DOWN event) */
-      /* (event == orxSYSTEM_EVENT_TOUCH_BEGIN and uActionPointer != -1) means ACTION_POINTER_DOWN occurs                       */
-      /* (event == orxSYSTEM_EVENT_TOUCH_END and uActionPointer != -1) means ACTION_POINTER_UP occurs                           */
-      orxU32              u32AdditionnalTouch;
-      /* Number of initialized element in astTouch */
-      orxU32              u32Count;
-      /* Array containing information for one touch in each element */
-      struct
-      {
-        orxU32   u32Id;
-        orxFLOAT fX, fY;
-      }                   astTouch[orxANDROID_TOUCH_NUMBER];
-    } stTouch;
-#endif // __orxANDROID__
-
-    /* Accelerate event */
-    struct
-    {
-      void     *pAccelerometer;
-      orxFLOAT  fX, fY, fZ;
+      orxDOUBLE dTime;
+      orxVECTOR vAcceleration;
     } stAccelerometer;
-  };
+
 #endif
+
+  };
 
 } orxSYSTEM_EVENT_PAYLOAD;
 

@@ -30,7 +30,7 @@
  */
 
 
-#include "render/orxFX.h"
+#include "object/orxFX.h"
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"

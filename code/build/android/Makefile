@@ -24,9 +24,7 @@ C_SRC = \
 	render/orxCamera.c        \
 	render/orxViewport.c      \
 	render/orxShaderPointer.c \
-	render/orxFXPointer.c     \
 	render/orxRender.c        \
-	render/orxFX.c            \
 	render/orxShader.c        \
 	math/orxMath.c            \
 	math/orxVector.c          \
@@ -40,6 +38,8 @@ C_SRC = \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
 	object/orxFrame.c         \
+	object/orxFX.c            \
+	object/orxFXPointer.c     \
 	object/orxObject.c        \
 	object/orxSpawner.c       \
 	plugin/orxPlugin.c        \
