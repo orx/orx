@@ -196,10 +196,10 @@ typedef struct __orxFX_SLOT_t
     };                                          /**< Position : 52 */
 
     struct
-  {
+    {
       orxFLOAT fStartVolume;                    /**< Volume start value : 32 */
       orxFLOAT fEndVolume;                      /**< Volume end value : 36 */
-  };                                          /**< Position : 36 */
+    };                                          /**< Position : 36 */
     struct
     {
       orxFLOAT fStartPitch;                     /**< Volume start value : 32 */
@@ -626,7 +626,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
   orxU32    i;
   orxCOLOR  stColor;
   orxBOOL   bAlphaLock = orxFALSE, bColorBlendLock = orxFALSE, bRotationLock = orxFALSE, bScaleLock = orxFALSE, bTranslationLock = orxFALSE, bSpeedLock = orxFALSE, bVolumeLock = orxFALSE, bPitchLock = orxFALSE;
-  orxBOOL   bAlphaUpdate = orxFALSE, bColorBlendUpdate = orxFALSE, bRotationUpdate = orxFALSE, bScaleUpdate = orxFALSE, bTranslationUpdate = orxFALSE, bSpeedUpdate = orxFALSE, bVolumeUpdate = orxFALSE, bPitchUpdate = orxFALSE ;
+  orxBOOL   bAlphaUpdate = orxFALSE, bColorBlendUpdate = orxFALSE, bRotationUpdate = orxFALSE, bScaleUpdate = orxFALSE, bTranslationUpdate = orxFALSE, bSpeedUpdate = orxFALSE, bVolumeUpdate = orxFALSE, bPitchUpdate = orxFALSE;
   orxBOOL   bFirstCall;
   orxFLOAT  fAlpha = orxFLOAT_0, fRotation = orxFLOAT_0, fVolume = orxFLOAT_0, fPitch = orxFLOAT_0, fRecDuration;
   orxVECTOR vColor, vScale, vPosition, vSpeed;
@@ -1560,7 +1560,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       {
         orxSOUND *pstSound;
 
-        /* Get sounds */
+        /* Gets sounds */
         pstSound = orxObject_GetLastAddedSound(_pstObject);
 
         /* Valid ? */
@@ -1583,7 +1583,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       {
         orxSOUND *pstSound;
 
-        /* Get sounds */
+        /* Gets sounds */
         pstSound = orxObject_GetLastAddedSound(_pstObject);
 
         /* Valid? */
@@ -2523,11 +2523,11 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       /* Volume? */
       else if(orxString_Compare(zType, orxFX_KZ_VOLUME) == 0)
       {
-        orxFLOAT fStartVolume,fEndVolume;
+        orxFLOAT fStartVolume, fEndVolume;
 
         /* Gets volume values */
-        fStartVolume = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
-        fEndVolume = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
+        fStartVolume  = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
+        fEndVolume    = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
 
         /* Adds volume slot */
         eResult = orxFX_AddVolume(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fStartVolume, fEndVolume, eCurve, fPow, u32Flags);
@@ -2535,11 +2535,11 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       /* Pitch? */
       else if(orxString_Compare(zType, orxFX_KZ_PITCH) == 0)
       {
-        orxFLOAT fStartPitch,fEndPitch;
+        orxFLOAT fStartPitch, fEndPitch;
 
         /* Gets volume values */
         fStartPitch = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
-        fEndPitch = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
+        fEndPitch   = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
 
         /* Adds pitch slot */
         eResult = orxFX_AddPitch(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fStartPitch, fEndPitch, eCurve, fPow, u32Flags);
@@ -2609,7 +2609,7 @@ const orxSTRING orxFASTCALL orxFX_GetName(const orxFX *_pstFX)
   return zResult;
 }
 
-/** Set FX loop property
+/** Sets FX loop property
  * @param[in]   _pstFX          Concerned FX
  * @param[in]   _bLoop          Loop / don't loop
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

@@ -585,14 +585,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_ps
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(const orxOBJECT *_pstObject);
 
-/** Set volume for all sounds of an object
+/** Sets volume for all sounds of an object
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fVolume        Desired volume (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstObject, orxFLOAT _fVolume);
 
-/** Set pitch for all sounds of an object
+/** Sets pitch for all sounds of an object
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
