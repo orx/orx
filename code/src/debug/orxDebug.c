@@ -113,9 +113,9 @@ static orxDEBUG_STATIC sstDebug;
  * @param[in]   _eLevel                       Concerned debug level
   *@return      Corresponding literal string
  */
-static orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
+static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
 #define orxDEBUG_DECLARE_LEVEL_ENTRY(ID)    case orxDEBUG_LEVEL_##ID: zResult = #ID; break
 
@@ -525,7 +525,7 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
   else
   {
     /* Uses default file */
-    sstDebug.zDebugFile = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
+    sstDebug.zDebugFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
   }
 }
 
@@ -564,7 +564,7 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
   else
   {
     /* Uses default file */
-    sstDebug.zLogFile = orxDEBUG_KZ_DEFAULT_LOG_FILE;
+    sstDebug.zLogFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE;
   }
 }
 

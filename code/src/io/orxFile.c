@@ -1100,7 +1100,7 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
  * @param[in] _zString             Formatted string
  * @return Returns the number of written characters
  */
-orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...)
+orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...)
 {
   orxS32 s32Result = 0;
 

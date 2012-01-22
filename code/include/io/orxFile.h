@@ -168,7 +168,7 @@ extern orxDLLAPI orxS32 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstF
  * @param[in] _zString             Formatted string
  * @return Returns the number of written characters
  */
-extern orxDLLAPI orxS32 orxCDECL            orxFile_Print(orxFILE *_pstFile, orxSTRING _zString, ...);
+extern orxDLLAPI orxS32 orxCDECL            orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...);
 
 /** Closes an oppened file
  * @param[in] _pstFile             File's pointer to close
