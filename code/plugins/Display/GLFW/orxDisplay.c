@@ -60,14 +60,15 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002  /**< VSync flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000004  /**< Shader support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_FOCUS       0x00000008  /**< Focus flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND  0x00000010
-#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000020  /**< NPOT texture support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY   0x00000040  /**< Extensions ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000080  /**< Framebuffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000100  /**< Depthbuffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000200  /**< No resize flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000400  /**< Ignore resize event flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VBO         0x00000008  /**< VBO support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FOCUS       0x00000010  /**< Focus flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND  0x00000020  /**< Background flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000040  /**< NPOT texture support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY   0x00000080  /**< Extensions ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000100  /**< Framebuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000200  /**< Depthbuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000400  /**< No resize flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000800  /**< Ignore resize event flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -185,6 +186,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32ShaderCounter;
   GLint                     iTextureUnitNumber;
   GLuint                    uiFrameBuffer;
+  GLuint                    uiIndexBuffer;
   orxS32                    s32ActiveShaderCounter;
   orxS32                    s32BufferIndex;
   orxU32                    u32GLFWFlags;
@@ -227,6 +229,11 @@ PFNGLGETUNIFORMLOCATIONARBPROC      glGetUniformLocationARB     = NULL;
 PFNGLUNIFORM1FARBPROC               glUniform1fARB              = NULL;
 PFNGLUNIFORM3FARBPROC               glUniform3fARB              = NULL;
 PFNGLUNIFORM1IARBPROC               glUniform1iARB              = NULL;
+
+PFNGLGENBUFFERSARBPROC              glGenBuffersARB             = NULL;
+PFNGLDELETEBUFFERSARBPROC           glDeleteBuffersARB          = NULL;
+PFNGLBINDBUFFERARBPROC              glBindBufferARB             = NULL;
+PFNGLBUFFERDATAARBPROC              glBufferDataARB             = NULL;
 
 PFNGLGENFRAMEBUFFERSEXTPROC         glGenFramebuffersEXT        = NULL;
 PFNGLDELETEFRAMEBUFFERSEXTPROC      glDeleteFramebuffersEXT     = NULL;
@@ -413,6 +420,24 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
+    }
+
+    /* Can support vertex buffer objects? */
+    if(glfwExtensionSupported("GL_ARB_vertex_buffer_object") != GL_FALSE)
+    {
+      /* Loads frame buffer extension functions */
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLGENBUFFERSARBPROC, glGenBuffersARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDELETEBUFFERSARBPROC, glDeleteBuffersARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBINDBUFFERARBPROC, glBindBufferARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBUFFERDATAARBPROC, glBufferDataARB);
+
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VBO);
     }
 
     /* Can support shader? */
@@ -653,6 +678,8 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
   /* Has data? */
   if(sstDisplay.s32BufferIndex > 0)
   {
+    GLvoid *pIndexContext;
+
     /* Selects arrays */
     glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
     glASSERT();
@@ -660,6 +687,22 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     glASSERT();
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
+
+    /* Has VBO support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
+    {
+      /* Binds index buffer */
+      glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
+      glASSERT();
+
+      /* No offset in the index list */
+      pIndexContext = (GLvoid *)0;
+    }
+    else
+    {
+      /* Uses client-side index list */
+      pIndexContext = (GLvoid *)&(sstDisplay.au16IndexList);
+    }
 
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)
@@ -678,7 +721,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
           orxDisplay_GLFW_InitShader(pstShader);
 
           /* Draws elements */
-          glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+          glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
           glASSERT();
         }
       }
@@ -686,7 +729,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     else
     {
       /* Draws arrays */
-      glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+      glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
       glASSERT();
     }
 
@@ -2285,11 +2328,21 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       }
 
       /* Had frame buffer? */
-      if(sstDisplay.uiFrameBuffer)
+      if(sstDisplay.uiFrameBuffer != 0)
       {
         /* Deletes it */
-        glDeleteFramebuffersEXT(1, &sstDisplay.uiFrameBuffer);
+        glDeleteFramebuffersEXT(1, &(sstDisplay.uiFrameBuffer));
+        glASSERT();
         sstDisplay.uiFrameBuffer = 0;
+      }
+
+      /* Had index buffer? */
+      if(sstDisplay.uiIndexBuffer != 0)
+      {
+        /* Deletes it */
+        glDeleteBuffersARB(1, &(sstDisplay.uiIndexBuffer));
+        glASSERT();
+        sstDisplay.uiIndexBuffer = 0;
       }
 
       /* Closes window */
@@ -2387,7 +2440,24 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
       {
         /* Generates frame buffer */
-        glGenFramebuffersEXT(1, &sstDisplay.uiFrameBuffer);
+        glGenFramebuffersEXT(1, &(sstDisplay.uiFrameBuffer));
+        glASSERT();
+      }
+
+      /* Has VBO support? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
+      {
+        /* Generates index buffer object (IBO) */
+        glGenBuffersARB(1, &(sstDisplay.uiIndexBuffer));
+        glASSERT();
+
+        /* Binds it */
+        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
+        glASSERT();
+
+        /* Fills it */
+        glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
+        glASSERT();
       }
 
       /* Updates screen info */
