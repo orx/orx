@@ -378,6 +378,9 @@ static orxView *spoInstance;
       /* Stores self */
       spoInstance = self;
 
+      /* Creates frame & render buffers */
+      [self CreateBuffers];
+
       /* Updates result */
       oResult = self;
     }
@@ -386,9 +389,6 @@ static orxView *spoInstance;
       /* Releases self */
       [self release];
     }
-
-    /* Creates frame & render buffers */
-    [self CreateBuffers];
   }
 
   /* Done! */
@@ -2394,7 +2394,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't grab screen data.", _zFilename);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: couldn't grab bitmap data.", _zFilename);
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
@@ -2416,7 +2416,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save screen to <%s>: couldn't allocate memory buffers.", _zFilename);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: couldn't allocate memory buffers.", _zFilename);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;

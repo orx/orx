@@ -425,11 +425,15 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     /* Can support vertex buffer objects? */
     if(glfwExtensionSupported("GL_ARB_vertex_buffer_object") != GL_FALSE)
     {
+#ifndef __orxMAC__
+
       /* Loads frame buffer extension functions */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLGENBUFFERSARBPROC, glGenBuffersARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDELETEBUFFERSARBPROC, glDeleteBuffersARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBINDBUFFERARBPROC, glBindBufferARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBUFFERDATAARBPROC, glBufferDataARB);
+
+#endif /* __orxMAC__ */
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
