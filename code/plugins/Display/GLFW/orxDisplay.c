@@ -61,12 +61,13 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002  /**< VSync flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000004  /**< Shader support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FOCUS       0x00000008  /**< Focus flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000010  /**< NPOT texture support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY   0x00000020  /**< Extensions ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000040  /**< Framebuffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000080  /**< Depthbuffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000100  /**< No resize flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000200  /**< Ignore resize event flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND  0x00000010
+#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000020  /**< NPOT texture support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY   0x00000040  /**< Extensions ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000080  /**< Framebuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000100  /**< Depthbuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000200  /**< No resize flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000400  /**< Ignore resize event flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -270,9 +271,22 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_Update");
 
+  /* Foreground? */
+  if(glfwGetWindowParam(GLFW_ICONIFIED) == GL_FALSE)
+  {
+    /* Wasn't in the foreground before? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
+    {
+      /* Sends foreground event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
+
+      /* Updates foreground status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND);
+    }
+  }
+
   /* Has focus? */
-  if((glfwGetWindowParam(GLFW_ACTIVE) != GL_FALSE)
-  && (glfwGetWindowParam(GLFW_ICONIFIED) == GL_FALSE))
+  if(glfwGetWindowParam(GLFW_ACTIVE) != GL_FALSE)
   {
     /* Didn't have focus before? */
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
@@ -294,6 +308,20 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
 
       /* Updates focus status */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FOCUS);
+    }
+  }
+
+  /* Background? */
+  if(glfwGetWindowParam(GLFW_ICONIFIED) != GL_FALSE)
+  {
+    /* Wasn't in the background before? */
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
+    {
+      /* Sends background event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
+
+      /* Updates background status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
   }
 

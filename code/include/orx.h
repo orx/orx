@@ -255,7 +255,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           /* Sends frame start event */
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-
           /* Runs the engine */
           eMainStatus = _pfnRun();
 
