@@ -254,20 +254,32 @@ PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Render inhibiter
+ */
+static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
 {
   /* Not ignoring event? */
   if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE))
   {
-    orxDISPLAY_VIDEO_MODE stVideoMode;
+    /* Valid? */
+    if((_iWidth > 0) && (_iHeight > 0))
+    {
+      orxDISPLAY_VIDEO_MODE stVideoMode;
 
-    /* Inits video mode */
-    stVideoMode.u32Width  = (orxU32)_iWidth;
-    stVideoMode.u32Height = (orxU32)_iHeight;
-    stVideoMode.u32Depth  = sstDisplay.u32Depth;
+      /* Inits video mode */
+      stVideoMode.u32Width  = (orxU32)_iWidth;
+      stVideoMode.u32Height = (orxU32)_iHeight;
+      stVideoMode.u32Depth  = sstDisplay.u32Depth;
 
-    /* Applies it */
-    orxDisplay_SetVideoMode(&stVideoMode);
+      /* Applies it */
+      orxDisplay_SetVideoMode(&stVideoMode);
+    }
   }
 
   return;
@@ -278,6 +290,9 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_Update");
 
+  /* Polls events */
+  glfwPollEvents();
+
   /* Foreground? */
   if(glfwGetWindowParam(GLFW_ICONIFIED) == GL_FALSE)
   {
@@ -285,7 +300,11 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
     {
       /* Sends foreground event */
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
+      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
+      {
+        /* Adds render inhibiter */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+      }
 
       /* Updates foreground status */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND);
@@ -325,7 +344,11 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
     {
       /* Sends background event */
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
+      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
+      {
+        /* Adds render inhibiter */
+        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+      }
 
       /* Updates background status */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
