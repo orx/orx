@@ -1900,7 +1900,7 @@ orxFLOAT orxFASTCALL orxBody_GetMass(const orxBODY *_pstBody)
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Gets mass center */
+    /* Gets mass */
     fResult = orxPhysics_GetMass(_pstBody->pstData);
   }
   else
