@@ -44,6 +44,7 @@ Defines</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaae5504c40f1e53363e9184cbcf0e76f2">orx2RGBA</a>(R, G, B, A)&#160;&#160;&#160;((((A) &amp; 0xFF) &lt;&lt; 24) | (((B) &amp; 0xFF) &lt;&lt; 16) | (((G) &amp; 0xFF) &lt;&lt; 8) | ((R) &amp; 0xFF))</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga4c6e0944dd96095ef654b764c93346f3">orxCOLOR_DENORMALIZER</a>&#160;&#160;&#160;(orx2F(255.0f))</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga016ec946d3256a431fb1d267955670e8">orxCOLOR_NORMALIZER</a>&#160;&#160;&#160;(orx2F(1.0f / 255.0f))</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gabaaa6113ef0c67d277f9da4b0d7e3bd3">orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE</a>&#160;&#160;&#160;&quot;AllowResize&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga331cf2e2393d0d6831efb6c24952b507">orxDISPLAY_KZ_CONFIG_DECORATION</a>&#160;&#160;&#160;&quot;Decoration&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3cd69c245850b123fa561396ee82eb3a">orxDISPLAY_KZ_CONFIG_DEPTH</a>&#160;&#160;&#160;&quot;ScreenDepth&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga84a632229162932161247c99e67605fd">orxDISPLAY_KZ_CONFIG_DEPTHBUFFER</a>&#160;&#160;&#160;&quot;DepthBuffer&quot;</td></tr>
@@ -120,6 +121,7 @@ Functions</h2></td></tr>
 <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> <br class="typebreak"/>
 *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga7099d1d4919c383535a31bbe900f7e3c">orxDisplay_GetVideoMode</a> (orxU32 _u32Index, <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga638dd5b17942872b2e681ca849ac43f2">orxDisplay_GetVideoModeCounter</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac588e2511f5f9925136a7655a5f42ec2">orxDisplay_HasShaderSupport</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaeaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay_Init</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0bbde87afcc4090fd37efd155b5568df">orxDisplay_IsFullScreen</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga4df9750ffeddd581b7eb6e086e851a50">orxDisplay_IsVideoModeAvailable</a> (const <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
@@ -217,6 +219,21 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gabaaa6113ef0c67d277f9da4b0d7e3bd3"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE" ref="gabaaa6113ef0c67d277f9da4b0d7e3bd3" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE&#160;&#160;&#160;&quot;AllowResize&quot;</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00173">173</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ga331cf2e2393d0d6831efb6c24952b507"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_CONFIG_DECORATION" ref="ga331cf2e2393d0d6831efb6c24952b507" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -228,7 +245,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00173">173</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00174">174</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -258,7 +275,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00177">177</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00178">178</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -319,7 +336,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00175">175</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00176">176</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -334,7 +351,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00174">174</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00175">175</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -349,7 +366,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00176">176</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00177">177</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -379,7 +396,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00184">184</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00185">185</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -394,7 +411,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00183">183</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00184">184</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -409,7 +426,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00185">185</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00186">186</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -425,7 +442,7 @@ Functions</h2></td></tr>
 <div class="memdoc">
 <p>Shader texture suffixes </p>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00182">182</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00183">183</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -590,7 +607,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00190">190</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00191">191</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -659,7 +676,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00374">374</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00378">378</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -697,7 +714,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00469">469</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00473">473</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -735,7 +752,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00638">638</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00642">642</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -773,7 +790,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00392">392</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00396">396</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -811,7 +828,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00563">563</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00567">567</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -856,7 +873,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00284">284</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00288">288</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -894,7 +911,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> / orxNULL </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00326">326</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00330">330</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -932,7 +949,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00306">306</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00310">310</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -970,7 +987,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00261">261</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00265">265</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -997,7 +1014,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>orxRGBA </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00344">344</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00348">348</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -1522,6 +1539,24 @@ Functions</h2></td></tr>
 <div class="memdoc">
 <p>Gets available video mode counter </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Available video mode counter </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gac588e2511f5f9925136a7655a5f42ec2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_HasShaderSupport" ref="gac588e2511f5f9925136a7655a5f42ec2" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxDisplay_HasShaderSupport </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Has shader support? </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxTRUE / orxFALSE </dd></dl>
 
 </div>
 </div>

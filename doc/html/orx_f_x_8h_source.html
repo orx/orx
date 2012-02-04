@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>orx: include/render/orxFX.h Source File</title>
+<title>orx: include/object/orxFX.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -26,7 +26,7 @@
   </div>
 <div class="header">
   <div class="headertitle">
-<h1>include/render/orxFX.h</h1>  </div>
+<h1>include/object/orxFX.h</h1>  </div>
 </div>
 <div class="contents">
 <a href="orx_f_x_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/* Orx - Portable Game Engine</span>
@@ -134,18 +134,22 @@
 <a name="l00243"></a>00243 
 <a name="l00259"></a>00259 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#gac0e2e42237710d2415674ad3fdb694ac">orxFX_AddSpeed</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartSpeed, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndSpeed, <a class="code" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 <a name="l00260"></a>00260 
-<a name="l00266"></a>00266 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#ga85801f8711012806c8833f73ba22dc15">orxFX_AddSlotFromConfig</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <span class="keyword">const</span> orxSTRING _zSlotID);
-<a name="l00267"></a>00267 
-<a name="l00272"></a>00272 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL           <a class="code" href="group__orx_f_x.html#gab8c45b4c3ebd69db45c3edf7fd12e6f9">orxFX_GetDuration</a>(<span class="keyword">const</span> <a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX);
-<a name="l00273"></a>00273 
-<a name="l00278"></a>00278 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL    <a class="code" href="group__orx_f_x.html#ga2023118f60de4fab06bb2f491478b1fc">orxFX_GetName</a>(<span class="keyword">const</span> <a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX);
-<a name="l00279"></a>00279 
-<a name="l00285"></a>00285 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#ga63e696218f217101c8bab814529091b2">orxFX_Loop</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxBOOL _bLoop);
-<a name="l00286"></a>00286 
-<a name="l00291"></a>00291 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL            <a class="code" href="group__orx_f_x.html#ga06e7d5c0ff41435db83e7c882036ad65">orxFX_IsLooping</a>(<span class="keyword">const</span> <a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX);
-<a name="l00292"></a>00292 
-<a name="l00293"></a>00293 <span class="preprocessor">#endif </span><span class="comment">/* _orxFX_H_ */</span>
+<a name="l00276"></a>00276 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#ga36a72c7b6f823bc478005138faafa0fc">orxFX_AddVolume</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartVolume, orxFLOAT _fEndVolume, <a class="code" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+<a name="l00277"></a>00277 
+<a name="l00293"></a>00293 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#ga390794340d1293ec30270a77dd804985">orxFX_AddPitch</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartPitch, orxFLOAT _fEndPitch, <a class="code" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 <a name="l00294"></a>00294 
+<a name="l00300"></a>00300 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#ga85801f8711012806c8833f73ba22dc15">orxFX_AddSlotFromConfig</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <span class="keyword">const</span> orxSTRING _zSlotID);
+<a name="l00301"></a>00301 
+<a name="l00306"></a>00306 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL           <a class="code" href="group__orx_f_x.html#gab8c45b4c3ebd69db45c3edf7fd12e6f9">orxFX_GetDuration</a>(<span class="keyword">const</span> <a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX);
+<a name="l00307"></a>00307 
+<a name="l00312"></a>00312 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL    <a class="code" href="group__orx_f_x.html#ga2023118f60de4fab06bb2f491478b1fc">orxFX_GetName</a>(<span class="keyword">const</span> <a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX);
+<a name="l00313"></a>00313 
+<a name="l00319"></a>00319 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_f_x.html#ga63e696218f217101c8bab814529091b2">orxFX_Loop</a>(<a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxBOOL _bLoop);
+<a name="l00320"></a>00320 
+<a name="l00325"></a>00325 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL            <a class="code" href="group__orx_f_x.html#ga06e7d5c0ff41435db83e7c882036ad65">orxFX_IsLooping</a>(<span class="keyword">const</span> <a class="code" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX);
+<a name="l00326"></a>00326 
+<a name="l00327"></a>00327 <span class="preprocessor">#endif </span><span class="comment">/* _orxFX_H_ */</span>
+<a name="l00328"></a>00328 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

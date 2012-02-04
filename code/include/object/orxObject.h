@@ -594,7 +594,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstO
 
 /** Sets pitch for all sounds of an object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
+ * @param[in]   _fPitch         Desired pitch (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);

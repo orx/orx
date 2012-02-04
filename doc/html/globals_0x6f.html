@@ -508,9 +508,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxBody_GetAngularVelocity()
 : <a class="el" href="group__orx_body.html#ga9a47299d6149da838e0dcbe5d1b03789">orxBody.h</a>
 </li>
-<li>orxBody_GetCheckMask()
-: <a class="el" href="group__orx_body.html#ga0a2d8afbf3a0a0abf86c9a96c9642442">orxBody.h</a>
-</li>
 <li>orxBody_GetCustomGravity()
 : <a class="el" href="group__orx_body.html#ga22049df6febcbcf010cfd7ac1c9ca8ff">orxBody.h</a>
 </li>
@@ -538,8 +535,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxBody_GetOwner()
 : <a class="el" href="group__orx_body.html#ga1a492f7be69dba98bb266af4209f0fc1">orxBody.h</a>
 </li>
+<li>orxBody_GetPartCheckMask()
+: <a class="el" href="group__orx_body.html#ga2c0e1c2ebb5f49125269f3f8e07990bc">orxBody.h</a>
+</li>
 <li>orxBody_GetPartName()
 : <a class="el" href="group__orx_body.html#ga04088bb68cbfb21dcf639d5ee8dcb075">orxBody.h</a>
+</li>
+<li>orxBody_GetPartSelfFlags()
+: <a class="el" href="group__orx_body.html#ga7777d6b2ffc5a421a80214bfb5cca92e">orxBody.h</a>
 </li>
 <li>orxBody_GetPosition()
 : <a class="el" href="group__orx_body.html#gac0e71fa3efa719660137786fed2b5982">orxBody.h</a>
@@ -547,14 +550,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxBody_GetRotation()
 : <a class="el" href="group__orx_body.html#ga09f387007a1609c4d694e47bbb5e6030">orxBody.h</a>
 </li>
-<li>orxBody_GetSelfFlags()
-: <a class="el" href="group__orx_body.html#ga6474990ec396d75b596254b8c1c30b20">orxBody.h</a>
-</li>
 <li>orxBody_GetSpeed()
 : <a class="el" href="group__orx_body.html#gaffa909a07c3902c34c00c4664e738599">orxBody.h</a>
 </li>
 <li>orxBody_Init()
 : <a class="el" href="group__orx_body.html#ga027908adf63c94d330b53155432ffb14">orxBody.h</a>
+</li>
+<li>orxBody_IsPartSolid()
+: <a class="el" href="group__orx_body.html#gad0dad8a12d22a3e37a78d54a9ac305f0">orxBody.h</a>
 </li>
 <li>orxBODY_JOINT
 : <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBody.h</a>
@@ -649,14 +652,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxBody_SetAngularVelocity()
 : <a class="el" href="group__orx_body.html#ga22f88b5bfb6ae234c68f6dad79da20df">orxBody.h</a>
 </li>
-<li>orxBody_SetCheckMask()
-: <a class="el" href="group__orx_body.html#ga76c26190f06d33a46831207dd4e0de6d">orxBody.h</a>
-</li>
 <li>orxBody_SetCustomGravity()
 : <a class="el" href="group__orx_body.html#ga81b54ce47fe89e5a55735924bea22491">orxBody.h</a>
 </li>
 <li>orxBody_SetLinearDamping()
 : <a class="el" href="group__orx_body.html#ga3859e38e17cc1576c8c01fbb8484830e">orxBody.h</a>
+</li>
+<li>orxBody_SetPartCheckMask()
+: <a class="el" href="group__orx_body.html#ga02f022f0a369d82ae8231a8035cca9c0">orxBody.h</a>
+</li>
+<li>orxBody_SetPartSelfFlags()
+: <a class="el" href="group__orx_body.html#gaaee50adaf695e986bb5890792b01979b">orxBody.h</a>
+</li>
+<li>orxBody_SetPartSolid()
+: <a class="el" href="group__orx_body.html#ga60c18aed860c88103cd4b4c6d230aaf9">orxBody.h</a>
 </li>
 <li>orxBody_SetPosition()
 : <a class="el" href="group__orx_body.html#gaa919febb086838a2c89d0818c4d8297d">orxBody.h</a>
@@ -666,9 +675,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxBody_SetScale()
 : <a class="el" href="group__orx_body.html#gab851fd9f25640ad07cc525ec804d4577">orxBody.h</a>
-</li>
-<li>orxBody_SetSelfFlags()
-: <a class="el" href="group__orx_body.html#ga0f02d969f5c282f2a08f08af4c83bc12">orxBody.h</a>
 </li>
 <li>orxBody_SetSpeed()
 : <a class="el" href="group__orx_body.html#ga26b6a89cc4b657935a4f0c22958d3d93">orxBody.h</a>
@@ -1431,6 +1437,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxDisplay_GetVideoModeCounter()
 : <a class="el" href="group__orx_display.html#ga638dd5b17942872b2e681ca849ac43f2">orxDisplay.h</a>
 </li>
+<li>orxDisplay_HasShaderSupport()
+: <a class="el" href="group__orx_display.html#gac588e2511f5f9925136a7655a5f42ec2">orxDisplay.h</a>
+</li>
 <li>orxDisplay_Init()
 : <a class="el" href="group__orx_display.html#gaeaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay.h</a>
 </li>
@@ -1442,6 +1451,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxDisplay_IsVSyncEnabled()
 : <a class="el" href="group__orx_display.html#gae71ba04631c1ac576300c5b97d083312">orxDisplay.h</a>
+</li>
+<li>orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE
+: <a class="el" href="group__orx_display.html#gabaaa6113ef0c67d277f9da4b0d7e3bd3">orxDisplay.h</a>
 </li>
 <li>orxDISPLAY_KZ_CONFIG_DECORATION
 : <a class="el" href="group__orx_display.html#ga331cf2e2393d0d6831efb6c24952b507">orxDisplay.h</a>
@@ -1620,6 +1632,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxEVENT_TYPE_INPUT
 : <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8aebfc9fd92ba6dcb7eeb650e5ae4cd154">orxEvent.h</a>
 </li>
+<li>orxEVENT_TYPE_KEYBOARD
+: <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac9e0d89dbd1cce3854403029b7c1e3d2">orxEvent.h</a>
+</li>
 <li>orxEVENT_TYPE_LAST_RESERVED
 : <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac541d12d8a941187a872d9ebc881c5b0">orxEvent.h</a>
 </li>
@@ -1723,7 +1738,7 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_file.html#ga69cb0d04489c13daba0ebd380a4ae19b">orxFile.h</a>
 </li>
 <li>orxFile_Print()
-: <a class="el" href="group__orx_file.html#gaa440ac942c5d5f341a60a606f6de8435">orxFile.h</a>
+: <a class="el" href="group__orx_file.html#gaa488b51b271b256b7b4515516cb08dde">orxFile.h</a>
 </li>
 <li>orxFile_Read()
 : <a class="el" href="group__orx_file.html#ga6b28e81a5fe57e673f79b20c3f6c641f">orxFile.h</a>
@@ -1944,6 +1959,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxFX_AddColor()
 : <a class="el" href="group__orx_f_x.html#ga27b204212124cde64c9238117052f288">orxFX.h</a>
 </li>
+<li>orxFX_AddPitch()
+: <a class="el" href="group__orx_f_x.html#ga390794340d1293ec30270a77dd804985">orxFX.h</a>
+</li>
 <li>orxFX_AddPosition()
 : <a class="el" href="group__orx_f_x.html#ga67b1465f3df7d42cf36786bc135f3615">orxFX.h</a>
 </li>
@@ -1958,6 +1976,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxFX_AddSpeed()
 : <a class="el" href="group__orx_f_x.html#gac0e2e42237710d2415674ad3fdb694ac">orxFX.h</a>
+</li>
+<li>orxFX_AddVolume()
+: <a class="el" href="group__orx_f_x.html#ga36a72c7b6f823bc478005138faafa0fc">orxFX.h</a>
 </li>
 <li>orxFX_Apply()
 : <a class="el" href="group__orx_f_x.html#ga0ca775d35b31f3aaf213b97bb5da3a54">orxFX.h</a>
@@ -2749,6 +2770,21 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxKeyboard_ClearBuffer()
 : <a class="el" href="group__orx_keyboard.html#ga21ca03325eb7843d3f80214f6e9a0d2a">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT
+: <a class="el" href="group__orx_keyboard.html#gab18f55c233ebb93820e046e09eb9f265">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_KEY_PRESSED
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265a7501601efe19d8294c41d8bd32133969">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_KEY_RELEASED
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265a41939672cde0d249e1c70421db540d3f">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_NONE
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265ac9d6165e58eefc124a312025ad86f9c0">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_NUMBER
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265a39f1fd2e285a67897c34b12c2d8e2ce7">orxKeyboard.h</a>
 </li>
 <li>orxKeyboard_Exit()
 : <a class="el" href="group__orx_keyboard.html#ga0d09f92bcd5854e4955faf3ce86863c2">orxKeyboard.h</a>
@@ -3777,6 +3813,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxObject_GetUserData()
 : <a class="el" href="group__orx_object.html#ga06c9691b77444ab8dcb70fc809405a02">orxObject.h</a>
 </li>
+<li>orxObject_GetWorkingTexture()
+: <a class="el" href="group__orx_object.html#ga3ae56cd449d690621f6062d044dbd9de">orxObject.h</a>
+</li>
 <li>orxObject_GetWorldPosition()
 : <a class="el" href="group__orx_object.html#ga7588acf1390e57c8915dc84aecb8f37a">orxObject.h</a>
 </li>
@@ -3864,6 +3903,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxObject_SetParent()
 : <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject.h</a>
 </li>
+<li>orxObject_SetPitch()
+: <a class="el" href="group__orx_object.html#gae9a59f0011aedb77199a58260dc332d3">orxObject.h</a>
+</li>
 <li>orxObject_SetPivot()
 : <a class="el" href="group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3">orxObject.h</a>
 </li>
@@ -3899,6 +3941,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxObject_SetUserData()
 : <a class="el" href="group__orx_object.html#gab7984329410d2c204fa54a2fc39d72bb">orxObject.h</a>
+</li>
+<li>orxObject_SetVolume()
+: <a class="el" href="group__orx_object.html#ga877d1f073e80de047eacca6339fd6e3b">orxObject.h</a>
 </li>
 <li>orxObject_SynchronizeFX()
 : <a class="el" href="group__orx_object.html#ga935328ed11be325c601817c29cd59c26">orxObject.h</a>
@@ -4023,9 +4068,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPhysics_GetAngularVelocity()
 : <a class="el" href="group__orx_physics.html#ga9b54114217d31d3488ce3724891bad1b">orxPhysics.h</a>
 </li>
-<li>orxPhysics_GetCheckMask()
-: <a class="el" href="group__orx_physics.html#ga0b187a13f691d61c7d7f00314c283861">orxPhysics.h</a>
-</li>
 <li>orxPhysics_GetCustomGravity()
 : <a class="el" href="group__orx_physics.html#ga7ae6c8d8d9ac108d9749e99131347bb5">orxPhysics.h</a>
 </li>
@@ -4041,20 +4083,26 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPhysics_GetMassCenter()
 : <a class="el" href="group__orx_physics.html#gaca6fa6728a3c527c57cc54f8465a9fa3">orxPhysics.h</a>
 </li>
+<li>orxPhysics_GetPartCheckMask()
+: <a class="el" href="group__orx_physics.html#ga3a677fd4f7b951a850f40ba1bead29cf">orxPhysics.h</a>
+</li>
+<li>orxPhysics_GetPartSelfFlags()
+: <a class="el" href="group__orx_physics.html#ga3f9b80d75a6d511445d1d061dbf174ce">orxPhysics.h</a>
+</li>
 <li>orxPhysics_GetPosition()
 : <a class="el" href="group__orx_physics.html#ga1a06a020ce8f680c9bab871fc1506048">orxPhysics.h</a>
 </li>
 <li>orxPhysics_GetRotation()
 : <a class="el" href="group__orx_physics.html#ga50aaba3775c4a6ea1ad29344bdb5a87e">orxPhysics.h</a>
 </li>
-<li>orxPhysics_GetSelfFlags()
-: <a class="el" href="group__orx_physics.html#gab29e38a292d2b95e3ee089e143fa4fd8">orxPhysics.h</a>
-</li>
 <li>orxPhysics_GetSpeed()
 : <a class="el" href="group__orx_physics.html#ga3877fe753147784361754bdd677df244">orxPhysics.h</a>
 </li>
 <li>orxPhysics_Init()
 : <a class="el" href="group__orx_physics.html#gaef90eaf6b2c4f4724d7aa7f999e43907">orxPhysics.h</a>
+</li>
+<li>orxPhysics_IsPartSolid()
+: <a class="el" href="group__orx_physics.html#gaac179ef90f225b63cbf2d4acfb3b0d62">orxPhysics.h</a>
 </li>
 <li>orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP
 : <a class="el" href="group__orx_physics.html#gad1e001b92fcbc967b723f38522755a2c">orxPhysics.h</a>
@@ -4086,9 +4134,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPhysics_SetAngularVelocity()
 : <a class="el" href="group__orx_physics.html#ga29ca71d106c12ecd60fd2e94dd292005">orxPhysics.h</a>
 </li>
-<li>orxPhysics_SetCheckMask()
-: <a class="el" href="group__orx_physics.html#ga87e417d4d0ef08843105d2c341fc2b34">orxPhysics.h</a>
-</li>
 <li>orxPhysics_SetCustomGravity()
 : <a class="el" href="group__orx_physics.html#gaeaf969b29852a47bda3aa5c7885fbc78">orxPhysics.h</a>
 </li>
@@ -4098,14 +4143,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPhysics_SetLinearDamping()
 : <a class="el" href="group__orx_physics.html#ga77fe5b50f18eebeb8c4e81ce73a2544e">orxPhysics.h</a>
 </li>
+<li>orxPhysics_SetPartCheckMask()
+: <a class="el" href="group__orx_physics.html#ga4746cab6f8fdf3aac114db4f26dc15ce">orxPhysics.h</a>
+</li>
+<li>orxPhysics_SetPartSelfFlags()
+: <a class="el" href="group__orx_physics.html#gaefd9723b4153f8e4a73c702a7bf0550a">orxPhysics.h</a>
+</li>
+<li>orxPhysics_SetPartSolid()
+: <a class="el" href="group__orx_physics.html#gaebed7f61a4b51cf83a7e72f6dd0243a7">orxPhysics.h</a>
+</li>
 <li>orxPhysics_SetPosition()
 : <a class="el" href="group__orx_physics.html#gae5590fe43b5283093b2a28995200e8d2">orxPhysics.h</a>
 </li>
 <li>orxPhysics_SetRotation()
 : <a class="el" href="group__orx_physics.html#gaeee8ec5050127c29b21c154674a70576">orxPhysics.h</a>
-</li>
-<li>orxPhysics_SetSelfFlags()
-: <a class="el" href="group__orx_physics.html#gab3384655fe2986a9e616020111669749">orxPhysics.h</a>
 </li>
 <li>orxPhysics_SetSpeed()
 : <a class="el" href="group__orx_physics.html#ga8dae0fa6e9205640ec0dea3ef7715103">orxPhysics.h</a>
@@ -4235,6 +4286,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE_COUNTER
 : <a class="el" href="group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a1902e735494cce8980572b5e6e40cab8">orxPlugin_Display.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_HAS_SHADER_SUPPORT
+: <a class="el" href="group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7add7f6a739f859a3c1fe83167c0e48314">orxPlugin_Display.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_INIT
 : <a class="el" href="group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9deb266a63c47237ca614ca8908c45e9">orxPlugin_Display.h</a>
@@ -4428,9 +4482,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ANGULAR_VELOCITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3aba8832f5d8e591b618f342d03ba646">orxPlugin_Physics.h</a>
 </li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_CHECK_MASK
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7d1d548eb332b5c2182d47127bc6f83a">orxPlugin_Physics.h</a>
-</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_CUSTOM_GRAVITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae591ffcada284f5b50d3111624843314">orxPlugin_Physics.h</a>
 </li>
@@ -4446,20 +4497,26 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_MASS_CENTER
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa79a384e8031cde3fe5d4887755c8328a">orxPlugin_Physics.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_CHECK_MASK
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faae3c4f70d44eccfe4c9d26fb84968425">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_SELF_FLAGS
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa1089d3fb9ea2cbd86833acff41d11b13">orxPlugin_Physics.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ROTATION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa01517346f0a5f90ee94e801aaa399648">orxPlugin_Physics.h</a>
 </li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SELF_FLAGS
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5db8ab1bdd42f00cfe40e13241ae0fb7">orxPlugin_Physics.h</a>
-</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SPEED
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa500767375cba78f76af4b04db1680e6c">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_INIT
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa07453d36565e7f50468a9e0963f053ab">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_PART_SOLID
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa45f55d771edef59966f5d5421a017552">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NONE
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7144145763d2c913da38ec1cfdc1e436">orxPlugin_Physics.h</a>
@@ -4476,9 +4533,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ANGULAR_VELOCITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae87f0668832cbf194a296e5256078165">orxPlugin_Physics.h</a>
 </li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CHECK_MASK
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa0260859120073612a6202645456d5a4e">orxPlugin_Physics.h</a>
-</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CUSTOM_GRAVITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5a27b9c2ae05fd8cf0cf050fb4d54d70">orxPlugin_Physics.h</a>
 </li>
@@ -4488,14 +4542,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_LINEAR_DAMPING
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa6cf2831f29b6357703cd3eed88843bd9">orxPlugin_Physics.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_CHECK_MASK
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3c4b5fa73db60d80e7711cc503fbf4b2">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SELF_FLAGS
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faec36f4572d821f244039db3f3094c0fb">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SOLID
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa9aa56496367d7eeb92465df7c64856fd">orxPlugin_Physics.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_POSITION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa84500eaed84b9efffc06c6cb365d19fa">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ROTATION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fac9d809ae6d6581b3dafb2445ffb075eb">orxPlugin_Physics.h</a>
-</li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_SELF_FLAGS
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa8c3eb92a2b33c51dbada1d1662da13a3">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_SPEED
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fab243c9b850d279e9b09d457698361738">orxPlugin_Physics.h</a>
@@ -5016,8 +5076,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_shader_pointer.html#gaf3be19abb6110e0d89f5df118b7317b4">orxShaderPointer.h</a>
 </li>
 <li>orxSOUND
-: <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSound.h</a>
-, <a class="el" href="group__orx_structure.html#ga2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
+, <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSound.h</a>
 </li>
 <li>orxSound_Create()
 : <a class="el" href="group__orx_sound.html#ga8a65a26127320ce61e7e37703080e1b7">orxSound.h</a>
@@ -5209,14 +5269,23 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundPointer_Play()
 : <a class="el" href="group__orx_sound_pointer.html#ga7e74271bd5481ff3a214b8857a54e181">orxSoundPointer.h</a>
 </li>
+<li>orxSoundPointer_RemoveAllSounds()
+: <a class="el" href="group__orx_sound_pointer.html#ga9b02d43db4caee92e46fd736a587f30c">orxSoundPointer.h</a>
+</li>
 <li>orxSoundPointer_RemoveSound()
 : <a class="el" href="group__orx_sound_pointer.html#ga55cd4ee84dfbcdbcc332e91e2eaf4004">orxSoundPointer.h</a>
 </li>
 <li>orxSoundPointer_RemoveSoundFromConfig()
 : <a class="el" href="group__orx_sound_pointer.html#gae77c081cf849a36173c704a35a34a98f">orxSoundPointer.h</a>
 </li>
+<li>orxSoundPointer_SetPitch()
+: <a class="el" href="group__orx_sound_pointer.html#ga08bd8779d5da76309b30b05427afc611">orxSoundPointer.h</a>
+</li>
 <li>orxSoundPointer_Setup()
 : <a class="el" href="group__orx_sound_pointer.html#ga149fe786057b3fb427e1622a52631289">orxSoundPointer.h</a>
+</li>
+<li>orxSoundPointer_SetVolume()
+: <a class="el" href="group__orx_sound_pointer.html#ga0a74d593ed91c023eea945e8219011de">orxSoundPointer.h</a>
 </li>
 <li>orxSoundPointer_Stop()
 : <a class="el" href="group__orx_sound_pointer.html#gaed897495209fcbe42c738e6e8f99d86c">orxSoundPointer.h</a>
@@ -5366,8 +5435,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_sound_system.html#ga211e61d56febbe41ad5c855ed704a3be">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
-, <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+: <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+, <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
 </li>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#ga23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>
@@ -5543,9 +5612,9 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gad08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
 </li>
-<li>orxSTATUS()
-: <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
-, <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+<li>orxSTATUS
+: <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+, <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
 </li>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
@@ -5838,11 +5907,11 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSTRUCTURE_MAGIC_TAG_DELETED
 : <a class="el" href="group__orx_structure.html#gab94740c722d3469c182b3c2806a574f9">orxStructure.h</a>
 </li>
-<li>orxStructure_Register()
-: <a class="el" href="group__orx_structure.html#gaa56cb39392bd2ec50767317b4f7603fa">orxStructure.h</a>
-</li>
 <li>orxSTRUCTURE_REGISTER
 : <a class="el" href="group__orx_structure.html#gafb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
+</li>
+<li>orxStructure_Register()
+: <a class="el" href="group__orx_structure.html#gaa56cb39392bd2ec50767317b4f7603fa">orxStructure.h</a>
 </li>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#ga95058db32c35e47042cf42e560bda596">orxStructure.h</a>
@@ -5916,12 +5985,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSYSTEM_EVENT_MOTION_SHAKE
 : <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeaca2200f4fcd8418629a015d5500887ba">orxSystem.h</a>
 </li>
-<li>orxSYSTEM_EVENT_MOUSE_IN
-: <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea2d2d6022b8cebdc5cb726b0fa617109c">orxSystem.h</a>
-</li>
-<li>orxSYSTEM_EVENT_MOUSE_OUT
-: <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea74b7f5dd792fd320ba217e72a44d6ec7">orxSystem.h</a>
-</li>
 <li>orxSYSTEM_EVENT_NONE
 : <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1275060ea784dbdba516171f9c02bb95">orxSystem.h</a>
 </li>
@@ -5953,8 +6016,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem.h</a>
 </li>
 <li>orxTEXT
-: <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
-, <a class="el" href="group__orx_structure.html#ga796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga796d7432fb8b158eac03b6d6aea5f6fa">orxStructure.h</a>
+, <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
 </li>
 <li>orxText_Create()
 : <a class="el" href="group__orx_text.html#ga7db9913d83299e4951a308f10a129cd3">orxText.h</a>
@@ -6231,8 +6294,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_vector.html#gafb49da17b1f47004004b7bdfb803fda1">orxVector.h</a>
 </li>
 <li>orxVIEWPORT
-: <a class="el" href="group__orx_structure.html#ga98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
-, <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+: <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
+, <a class="el" href="group__orx_structure.html#ga98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
 </li>
 <li>orxViewport_AddShader()
 : <a class="el" href="group__orx_viewport.html#gafae98230b6e33fb16c5827b48db78b4b">orxViewport.h</a>

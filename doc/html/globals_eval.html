@@ -300,6 +300,9 @@
 <li>orxEVENT_TYPE_INPUT
 : <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8aebfc9fd92ba6dcb7eeb650e5ae4cd154">orxEvent.h</a>
 </li>
+<li>orxEVENT_TYPE_KEYBOARD
+: <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac9e0d89dbd1cce3854403029b7c1e3d2">orxEvent.h</a>
+</li>
 <li>orxEVENT_TYPE_LAST_RESERVED
 : <a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac541d12d8a941187a872d9ebc881c5b0">orxEvent.h</a>
 </li>
@@ -722,6 +725,18 @@
 </li>
 <li>orxJOYSTICK_BUTTON_SINGLE_NUMBER
 : <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJoystick.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_KEY_PRESSED
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265a7501601efe19d8294c41d8bd32133969">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_KEY_RELEASED
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265a41939672cde0d249e1c70421db540d3f">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_NONE
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265ac9d6165e58eefc124a312025ad86f9c0">orxKeyboard.h</a>
+</li>
+<li>orxKEYBOARD_EVENT_NUMBER
+: <a class="el" href="group__orx_keyboard.html#ggab18f55c233ebb93820e046e09eb9f265a39f1fd2e285a67897c34b12c2d8e2ce7">orxKeyboard.h</a>
 </li>
 <li>orxKEYBOARD_KEY_0
 : <a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa0ae0f75d2c1afbd0ed7fb7b04564ab5">orxKeyboard.h</a>
@@ -1365,6 +1380,9 @@
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE_COUNTER
 : <a class="el" href="group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a1902e735494cce8980572b5e6e40cab8">orxPlugin_Display.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_HAS_SHADER_SUPPORT
+: <a class="el" href="group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7add7f6a739f859a3c1fe83167c0e48314">orxPlugin_Display.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_INIT
 : <a class="el" href="group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9deb266a63c47237ca614ca8908c45e9">orxPlugin_Display.h</a>
 </li>
@@ -1545,9 +1563,6 @@
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ANGULAR_VELOCITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3aba8832f5d8e591b618f342d03ba646">orxPlugin_Physics.h</a>
 </li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_CHECK_MASK
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7d1d548eb332b5c2182d47127bc6f83a">orxPlugin_Physics.h</a>
-</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_CUSTOM_GRAVITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae591ffcada284f5b50d3111624843314">orxPlugin_Physics.h</a>
 </li>
@@ -1563,20 +1578,26 @@
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_MASS_CENTER
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa79a384e8031cde3fe5d4887755c8328a">orxPlugin_Physics.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_CHECK_MASK
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faae3c4f70d44eccfe4c9d26fb84968425">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_SELF_FLAGS
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa1089d3fb9ea2cbd86833acff41d11b13">orxPlugin_Physics.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ROTATION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa01517346f0a5f90ee94e801aaa399648">orxPlugin_Physics.h</a>
 </li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SELF_FLAGS
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5db8ab1bdd42f00cfe40e13241ae0fb7">orxPlugin_Physics.h</a>
-</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SPEED
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa500767375cba78f76af4b04db1680e6c">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_INIT
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa07453d36565e7f50468a9e0963f053ab">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_PART_SOLID
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa45f55d771edef59966f5d5421a017552">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NONE
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7144145763d2c913da38ec1cfdc1e436">orxPlugin_Physics.h</a>
@@ -1593,9 +1614,6 @@
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ANGULAR_VELOCITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae87f0668832cbf194a296e5256078165">orxPlugin_Physics.h</a>
 </li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CHECK_MASK
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa0260859120073612a6202645456d5a4e">orxPlugin_Physics.h</a>
-</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CUSTOM_GRAVITY
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5a27b9c2ae05fd8cf0cf050fb4d54d70">orxPlugin_Physics.h</a>
 </li>
@@ -1605,14 +1623,20 @@
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_LINEAR_DAMPING
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa6cf2831f29b6357703cd3eed88843bd9">orxPlugin_Physics.h</a>
 </li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_CHECK_MASK
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3c4b5fa73db60d80e7711cc503fbf4b2">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SELF_FLAGS
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faec36f4572d821f244039db3f3094c0fb">orxPlugin_Physics.h</a>
+</li>
+<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SOLID
+: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa9aa56496367d7eeb92465df7c64856fd">orxPlugin_Physics.h</a>
+</li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_POSITION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa84500eaed84b9efffc06c6cb365d19fa">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ROTATION
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fac9d809ae6d6581b3dafb2445ffb075eb">orxPlugin_Physics.h</a>
-</li>
-<li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_SELF_FLAGS
-: <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa8c3eb92a2b33c51dbada1d1662da13a3">orxPlugin_Physics.h</a>
 </li>
 <li>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_SPEED
 : <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fab243c9b850d279e9b09d457698361738">orxPlugin_Physics.h</a>
@@ -1994,12 +2018,6 @@
 </li>
 <li>orxSYSTEM_EVENT_MOTION_SHAKE
 : <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeaca2200f4fcd8418629a015d5500887ba">orxSystem.h</a>
-</li>
-<li>orxSYSTEM_EVENT_MOUSE_IN
-: <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea2d2d6022b8cebdc5cb726b0fa617109c">orxSystem.h</a>
-</li>
-<li>orxSYSTEM_EVENT_MOUSE_OUT
-: <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea74b7f5dd792fd320ba217e72a44d6ec7">orxSystem.h</a>
 </li>
 <li>orxSYSTEM_EVENT_NONE
 : <a class="el" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1275060ea784dbdba516171f9c02bb95">orxSystem.h</a>

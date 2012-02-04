@@ -147,7 +147,7 @@
 <a name="l00133"></a>00133 <span class="preprocessor">    #define __orxLINUX__</span>
 <a name="l00134"></a>00134 <span class="preprocessor"></span>
 <a name="l00135"></a>00135   <span class="comment">/* IPhone? */</span>
-<a name="l00136"></a>00136 <span class="preprocessor">  #elif defined(TARGET_OS_IPHONE)</span>
+<a name="l00136"></a>00136 <span class="preprocessor">  #elif TARGET_OS_IPHONE</span>
 <a name="l00137"></a>00137 <span class="preprocessor"></span>
 <a name="l00138"></a>00138 <span class="preprocessor">    #define __orxIPHONE__</span>
 <a name="l00139"></a>00139 <span class="preprocessor"></span>
@@ -165,7 +165,7 @@
 <a name="l00151"></a>00151 <span class="preprocessor">    #endif </span><span class="comment">/* __ANDROID_API__ &gt;= 9 */</span>
 <a name="l00152"></a>00152 
 <a name="l00153"></a>00153   <span class="comment">/* Mac? */</span>
-<a name="l00154"></a>00154 <span class="preprocessor">  #elif defined(__APPLE__)</span>
+<a name="l00154"></a>00154 <span class="preprocessor">  #elif TARGET_OS_MAC</span>
 <a name="l00155"></a>00155 <span class="preprocessor"></span>
 <a name="l00156"></a>00156 <span class="preprocessor">    #define __orxMAC__</span>
 <a name="l00157"></a>00157 <span class="preprocessor"></span>
