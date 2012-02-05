@@ -1930,8 +1930,22 @@ orxVECTOR *orxFASTCALL orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR 
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Gets mass center */
-    pvResult = orxPhysics_GetMassCenter(_pstBody->pstData, _pvMassCenter);
+    /* Valid scale? */
+    if((_pstBody->vScale.fX != orxFLOAT_0)
+    && (_pstBody->vScale.fY != orxFLOAT_0))
+    {
+      /* Gets mass center */
+      pvResult = orxPhysics_GetMassCenter(_pstBody->pstData, _pvMassCenter);
+
+      /* Removes scale */
+      pvResult->fX /= _pstBody->vScale.fX;
+      pvResult->fY /= _pstBody->vScale.fY;
+    }
+    else
+    {
+      /* Updates result */
+      pvResult = orxVector_Copy(_pvMassCenter, &orxVECTOR_0);
+    }
   }
   else
   {
