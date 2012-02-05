@@ -3039,7 +3039,7 @@ orxFLOAT orxFASTCALL orxObject_GetMass(const orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Gets an object center of mass
+/** Gets an object center of mass (object space)
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
@@ -3184,7 +3184,7 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
 /** Applies a force
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)

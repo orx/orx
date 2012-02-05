@@ -440,7 +440,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetCustomGravity(const orx
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetMass(const orxOBJECT *_pstObject);
 
-/** Gets an object center of mass
+/** Gets an object center of mass (object space)
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
@@ -466,7 +466,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyTorque(orxOBJECT *_ps
 /** Applies a force
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);

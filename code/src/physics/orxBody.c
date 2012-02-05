@@ -1913,7 +1913,7 @@ orxFLOAT orxFASTCALL orxBody_GetMass(const orxBODY *_pstBody)
   return fResult;
 }
 
-/** Gets a body center of mass
+/** Gets a body center of mass (object space)
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
@@ -2067,7 +2067,7 @@ orxSTATUS orxFASTCALL orxBody_ApplyTorque(orxBODY *_pstBody, orxFLOAT _fTorque)
 /** Applies a force
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
@@ -2082,19 +2082,27 @@ orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pv
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
+    orxVECTOR vPoint;
+
     /* Has given point? */
     if(_pvPoint != orxNULL)
     {
-      /* Applies force */
-      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, _pvPoint);
+      /* Copies it */
+      orxVector_Copy(&vPoint, _pvPoint);
     }
     else
     {
-      orxVECTOR vMassCenter;
-
-      /* Applies force on mass center */
-      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, orxPhysics_GetMassCenter(_pstBody->pstData, &vMassCenter));
+      /* Gets mass center */
+      orxBody_GetMassCenter(_pstBody, &vPoint);
     }
+
+    /* Applies scale, rotation and translation */
+    orxVector_2DRotate(&vPoint, &vPoint, _pstBody->fPreviousRotation);
+    orxVector_Mul(&vPoint, &vPoint, &(_pstBody->vScale));
+    orxVector_Add(&vPoint, &vPoint, &(_pstBody->vPreviousPosition));
+
+    /* Applies force */
+    eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, &vPoint);
   }
   else
   {
@@ -2109,7 +2117,7 @@ orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pv
 /** Applies an impulse
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvImpulse      Impulse to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
@@ -2124,19 +2132,27 @@ orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
+    orxVECTOR vPoint;
+
     /* Has given point? */
     if(_pvPoint != orxNULL)
     {
-      /* Applies impulse */
-      eResult = orxPhysics_ApplyImpulse(_pstBody->pstData, _pvImpulse, _pvPoint);
+      /* Copies it */
+      orxVector_Copy(&vPoint, _pvPoint);
     }
     else
     {
-      orxVECTOR vMassCenter;
-
-      /* Applies impusle on mass center */
-      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvImpulse, orxPhysics_GetMassCenter(_pstBody->pstData, &vMassCenter));
+      /* Gets mass center */
+      orxBody_GetMassCenter(_pstBody, &vPoint);
     }
+
+    /* Applies scale, rotation and translation */
+    orxVector_2DRotate(&vPoint, &vPoint, _pstBody->fPreviousRotation);
+    orxVector_Mul(&vPoint, &vPoint, &(_pstBody->vScale));
+    orxVector_Add(&vPoint, &vPoint, &(_pstBody->vPreviousPosition));
+
+    /* Applies force */
+    eResult = orxPhysics_ApplyImpulse(_pstBody->pstData, _pvImpulse, &vPoint);
   }
   else
   {

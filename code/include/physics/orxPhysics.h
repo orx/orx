@@ -450,7 +450,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravit
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetMass(const orxPHYSICS_BODY *_pstBody);
 
-/** Gets the center of mass of a physical body
+/** Gets the center of mass of a physical body (object space but scale isn't accounted for)
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvMassCenter                         Center of mass to get
  * @return Center of mass of the physical body

@@ -1557,7 +1557,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   poBody->SetAwake(true);
 
   /* Sets impulse */
-  vImpulse.Set(_pvImpulse->fX, _pvImpulse->fY);
+  vImpulse.Set(sstPhysics.fDimensionRatio * _pvImpulse->fX, sstPhysics.fDimensionRatio * _pvImpulse->fY);
 
   /* Sets point */
   vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
