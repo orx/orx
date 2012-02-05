@@ -495,7 +495,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyTorque(orx
 /** Applies a force to a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[in]   _pvForce                              Force to apply
- * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
+ * @param[in]   _pvPoint                              Point of application (world coordinates) (if null, center of mass will be used)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);
@@ -503,7 +503,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxP
 /** Applies an impulse to a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[in]   _pvImpulse                            Impulse to apply
- * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
+ * @param[in]   _pvPoint                              Point of application (world coordinates) (if null, center of mass will be used)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
