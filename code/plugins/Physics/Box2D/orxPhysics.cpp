@@ -364,6 +364,9 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Updates last step of world simulation */
     sstPhysics.poWorld->Step(fDT, (orxS32)(orxS64)_pContext, (orxS32) orxPHYSICS_CAST_HELPER _pContext);
 
+    /* Clears forces */
+    sstPhysics.poWorld->ClearForces();
+
     /* For all physical bodies */
     for(poBody = sstPhysics.poWorld->GetBodyList();
         poBody != NULL;
@@ -1861,6 +1864,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
 
       /* Registers them */
       sstPhysics.poWorld->SetContactListener(sstPhysics.poContactListener);
+
+      /* Removes auto clear forces */
+      sstPhysics.poWorld->SetAutoClearForces(false);
 
       /* Stores inverse dimension ratio */
       sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
