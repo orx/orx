@@ -188,6 +188,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxCOLOR                  stLastColor;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxDISPLAY_SHADER        *pstDefaultShader;
+  GLuint                    uiIndexBuffer;
   GLuint                    uiFrameBuffer;
   orxU8                   **aau8BufferArray;
   orxS32                    s32BitmapCounter;
@@ -814,6 +815,10 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
 
+    /* Binds index buffer */
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+    glASSERT();
+
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)
     {
@@ -831,7 +836,7 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
           orxDisplay_Android_InitShader(pstShader);
 
           /* Draws arrays */
-          glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+          glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, 0);
           glASSERT();
         }
       }
@@ -839,7 +844,7 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     else
     {
       /* Draws arrays */
-      glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, sstDisplay.au16IndexList);
+      glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, 0);
       glASSERT();
     }
 
@@ -2358,6 +2363,18 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Uses it */
         orxDisplay_StopShader(orxNULL);
 
+		/* Generates index buffer object (IBO) */
+        glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
+        glASSERT();
+
+        /* Binds it */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+        glASSERT();
+
+        /* Fills it */
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
+        glASSERT();
+
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
         stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
@@ -2404,6 +2421,15 @@ void orxFASTCALL orxDisplay_Android_Exit()
     glDeleteFramebuffers(1, &sstDisplay.uiFrameBuffer);
     glASSERT();
     
+	    /* Has index buffer? */
+    if(sstDisplay.uiIndexBuffer != 0)
+    {
+      /* Deletes it */
+      glDeleteBuffers(1, &(sstDisplay.uiIndexBuffer));
+      glASSERT();
+      sstDisplay.uiIndexBuffer = 0;
+    }
+	
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);
 
