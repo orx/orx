@@ -81,6 +81,8 @@
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
+#define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
+
 
 /**  Misc defines
  */
@@ -121,7 +123,7 @@ typedef struct __orxDISPLAY_MATRIX_t
  */
 typedef struct __orxDISPLAY_VERTEX_t
 {
-  orxFLOAT  fX, fY, fU, fV;
+  GLfloat   fX, fY, fU, fV;
   orxRGBA   stRGBA;
 
 } orxDISPLAY_VERTEX;
@@ -965,7 +967,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   return;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreen()
+orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreenBitmap()
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1091,6 +1093,302 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
       }
     }
   }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvEnd != orxNULL);
+
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
+  /* Selects arrays */
+  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
+  /* Copies vertices */
+  sstDisplay.astVertexList[0].fX = (GLfloat)(_pvStart->fX);
+  sstDisplay.astVertexList[0].fY = (GLfloat)(_pvStart->fY);
+  sstDisplay.astVertexList[1].fX = (GLfloat)(_pvEnd->fX);
+  sstDisplay.astVertexList[1].fY = (GLfloat)(_pvEnd->fY);
+
+  /* Copies color */
+  sstDisplay.astVertexList[0].stRGBA =
+  sstDisplay.astVertexList[1].stRGBA = _stColor;
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Disables texturing */
+  glDisable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Draws it */
+	glDrawArrays(GL_LINES, 0, 2);
+  glASSERT();
+
+  /* Reenables texturing */
+  glEnable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
+  /* Selects arrays */
+  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_avVertexList[i].fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_avVertexList[i].fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Disables texturing */
+  glDisable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Filled? */
+  if(_bFill != orxFALSE)
+  {
+    /* Draws it */
+    glDrawArrays(GL_TRIANGLE_FAN, 0, _u32VertexNumber);
+    glASSERT();
+  }
+  else
+  {
+    /* Draws it */
+    glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
+    glASSERT();
+  }
+
+  /* Reenables texturing */
+  glEnable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxU32    i;
+  orxFLOAT  fAngle;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvCenter != orxNULL);
+  orxASSERT(_fRadius >= orxFLOAT_0);
+
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
+  /* Selects arrays */
+  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
+  /* For all vertices */
+  for(i = 0, fAngle = orxFLOAT_0; i < orxDISPLAY_KU32_CIRCLE_LINE_NUMBER; i++, fAngle += orxMATH_KF_2_PI / orxDISPLAY_KU32_CIRCLE_LINE_NUMBER)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_fRadius * orxMath_Cos(fAngle) + _pvCenter->fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_fRadius * orxMath_Sin(fAngle) + _pvCenter->fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Disables texturing */
+  glDisable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Filled? */
+  if(_bFill != orxFALSE)
+  {
+    /* Draws it */
+    glDrawArrays(GL_TRIANGLE_FAN, 0, orxDISPLAY_KU32_CIRCLE_LINE_NUMBER);
+    glASSERT();
+  }
+  else
+  {
+    /* Draws it */
+    glDrawArrays(GL_LINE_LOOP, 0, orxDISPLAY_KU32_CIRCLE_LINE_NUMBER);
+    glASSERT();
+  }
+
+  /* Reenables texturing */
+  glEnable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxVECTOR vOrigin;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
+  /* Selects arrays */
+  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
+  /* Gets origin */
+  orxVector_Sub(&vOrigin, &(_pstBox->vPosition), &(_pstBox->vPivot));
+
+  /* Sets vertices */
+  sstDisplay.astVertexList[0].fX = (GLfloat)(vOrigin.fX);
+  sstDisplay.astVertexList[0].fY = (GLfloat)(vOrigin.fY);
+  sstDisplay.astVertexList[1].fX = (GLfloat)(vOrigin.fX + _pstBox->vX.fX);
+  sstDisplay.astVertexList[1].fY = (GLfloat)(vOrigin.fY + _pstBox->vX.fY);
+  sstDisplay.astVertexList[2].fX = (GLfloat)(vOrigin.fX + _pstBox->vX.fX + _pstBox->vY.fX);
+  sstDisplay.astVertexList[2].fY = (GLfloat)(vOrigin.fY + _pstBox->vX.fY + _pstBox->vY.fY);
+  sstDisplay.astVertexList[3].fX = (GLfloat)(vOrigin.fX + _pstBox->vY.fX);
+  sstDisplay.astVertexList[3].fY = (GLfloat)(vOrigin.fY + _pstBox->vY.fY);
+
+  /* Copies color */
+  sstDisplay.astVertexList[0].stRGBA =
+  sstDisplay.astVertexList[1].stRGBA =
+  sstDisplay.astVertexList[2].stRGBA =
+  sstDisplay.astVertexList[3].stRGBA = _stColor;
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Disables texturing */
+  glDisable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Filled? */
+  if(_bFill != orxFALSE)
+  {
+    /* Draws it */
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glASSERT();
+  }
+  else
+  {
+    /* Draws it */
+    glDrawArrays(GL_LINE_LOOP, 0, 4);
+    glASSERT();
+  }
+
+  /* Reenables texturing */
+  glEnable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
   /* Done! */
   return eResult;
@@ -3430,24 +3728,28 @@ orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_Init, DISPLAY, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_Exit, DISPLAY, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_Swap, DISPLAY, SWAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetScreenBitmap, DISPLAY, GET_SCREEN_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteBitmap, DISPLAY, DELETE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SaveBitmap, DISPLAY, SAVE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformText, DISPLAY, TRANSFORM_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_LoadBitmap, DISPLAY, LOAD_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolygon, DISPLAY, DRAW_POLYGON);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCircle, DISPLAY, DRAW_CIRCLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawOBox, DISPLAY, DRAW_OBOX);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteShader, DISPLAY, DELETE_SHADER);

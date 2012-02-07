@@ -615,415 +615,6 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmap(orxBITMAP 
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  sf::Sprite     *poSprite;
-  orxU32          u32CharacterCodePoint;
-  const orxCHAR  *pc;
-  orxFLOAT        fX, fY, fStartX, fStartY;
-  orxVECTOR       vSpacing;
-  orxSTATUS       eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zString != orxNULL);
-  orxASSERT(_pstFont != orxNULL);
-  orxASSERT(_pstMap != orxNULL);
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Gets sprite */
-  poSprite = (sf::Sprite *)_pstFont;
-
-  /* Updates its rotation */
-  poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
-
-  /* Gets vertical spacing */
-  vSpacing.fY = -_pstMap->fCharacterHeight;
-  
-  /* Updates its flipping */
-  if(_pstTransform->fScaleX < 0.0f)
-  {
-    poSprite->FlipX(true);
-    fStartX     = -_pstTransform->fSrcX - vSpacing.fY;
-  }
-  else
-  {
-    fStartX     = _pstTransform->fSrcX;
-  }
-
-  if(_pstTransform->fScaleY < 0.0f)
-  {
-    poSprite->FlipY(true);
-    vSpacing.fY = -vSpacing.fY;
-    fStartY     = -_pstTransform->fSrcY + vSpacing.fY;
-  }
-  else
-  {
-    fStartY     = _pstTransform->fSrcY;
-  }
-  
-  /* Updates its scale */
-  poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
-
-  /* For all characters */
-  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), fX = fStartX, fY = fStartY;
-      u32CharacterCodePoint != orxCHAR_NULL;
-      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
-  {
-    /* Depending on character */
-    switch(u32CharacterCodePoint)
-    {
-      case orxCHAR_CR:
-      {
-        /* Half EOL? */
-        if(*pc == orxCHAR_LF)
-        {
-          /* Updates pointer */
-          pc++;
-        }
-
-        /* Fall through */
-      }
-
-      case orxCHAR_LF:
-      {
-        /* Updates Y position */
-        fY += vSpacing.fY;
-
-        /* Resets X position */
-        fX = fStartX;
-
-        break;
-      }
-
-      default:
-      {
-        const orxCHARACTER_GLYPH *pstGlyph;
-
-        /* Gets glyph from table */
-        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
-
-        /* Valid? */
-        if(pstGlyph != orxNULL)
-        {
-          /* Gets horizontal spacing */
-          vSpacing.fX = -pstGlyph->fWidth;
-
-          /* Sets sub rectangle for sprite */
-          poSprite->SetSubRect(sf::IntRect(orxF2S(pstGlyph->fX), orxF2S(pstGlyph->fY), orxF2S(pstGlyph->fX + pstGlyph->fWidth), orxF2S(pstGlyph->fY + _pstMap->fCharacterHeight)));
-
-          /* Updates its center */
-          poSprite->SetCenter(fX, fY);
-
-          /* Blits it */
-          eResult = orxDisplay_SFML_BlitBitmap(_pstFont, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
-        }
-        else
-        {
-          /* Gets default horizontal spacing */
-          vSpacing.fX = -_pstMap->fCharacterHeight;
-        }
-
-        /* Updates its flipping */
-        if(_pstTransform->fScaleX < 0.0f)
-        {
-          vSpacing.fX = -vSpacing.fX;
-        }
-
-        /* Updates X position */
-        fX += vSpacing.fX;
-
-        break;
-      }
-    }
-  }
-
-  /* Resets its center */
-  poSprite->SetCenter(0.0f, 0.0f);
-
-  /* Resets its rotation */
-  poSprite->SetRotation(0.0f);
-
-  /* Resets its flipping */
-  poSprite->FlipX(false);
-  poSprite->FlipY(false);
-
-  /* Resets its scale */
-  poSprite->SetScale(1.0f, 1.0f);
-
-  /* Done! */
-  return eResult;
-}
-
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  sf::Sprite *poSprite;
-  orxFLOAT    fCenterX, fCenterY;
-  orxBOOL     bFlipX, bFlipY;
-  orxSTATUS   eResult;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != orxDisplay::spoScreen));
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Gets sprite */
-  poSprite = (sf::Sprite *)_pstSrc;
-
-  /* Updates its rotation */
-  poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
-
-  /* Updates its flipping */
-  if(_pstTransform->fScaleX < 0.0f)
-  {
-    poSprite->FlipX(true);
-    fCenterX = poSprite->GetSize().x - _pstTransform->fSrcX;
-    bFlipX = true;
-  }
-  else
-  {
-    fCenterX = _pstTransform->fSrcX;
-    bFlipX = false;
-  }
-
-  if(_pstTransform->fScaleY < 0.0f)
-  {
-    poSprite->FlipY(true);
-    fCenterY = poSprite->GetSize().y - _pstTransform->fSrcY;
-    bFlipY = true;
-  }
-  else
-  {
-    fCenterY = _pstTransform->fSrcY;
-    bFlipY = false;
-  }
-
-  /* Updates its center */
-  poSprite->SetCenter(fCenterX, fCenterY);
-
-  /* Has repeat? */
-  if((_pstTransform->fRepeatX != orxFLOAT_1) || (_pstTransform->fRepeatY != orxFLOAT_1))
-  {
-    orxFLOAT    fIncX, fIncY, fCos, fSin, fX, fY, fSizeX, fSizeY, fScaleX, fScaleY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY, fAbsScaleX, fAbsScaleY;
-    sf::IntRect stClip;
-
-    /* Gets sprite's size */
-    fSizeX = (orxFLOAT)poSprite->GetImage()->GetWidth();
-    fSizeY = (orxFLOAT)poSprite->GetImage()->GetHeight();
-
-    /* Gets sprite's clipping */
-    stClip = poSprite->GetSubRect();
-
-    /* Has no rotation? */
-    if(_pstTransform->fRotation == orxFLOAT_0)
-    {
-      /* Gets cosine and sine of the object angle */
-      fCos = orxFLOAT_1;
-      fSin = orxFLOAT_0;
-    }
-    /* 90°? */
-    else if(_pstTransform->fRotation == orxMATH_KF_PI_BY_2)
-    {
-      /* Gets cosine and sine of the object angle */
-      fCos = orxFLOAT_0;
-      fSin = -orxFLOAT_1;
-    }
-    /* 180°? */
-    else if(_pstTransform->fRotation == orxMATH_KF_PI)
-    {
-      /* Gets cosine and sine of the object angle */
-      fCos = -orxFLOAT_1;
-      fSin = orxFLOAT_0;
-    }
-    /* 270°? */
-    else if(_pstTransform->fRotation == -orxMATH_KF_PI_BY_2)
-    {
-      /* Gets cosine and sine of the object angle */
-      fCos = orxFLOAT_0;
-      fSin = orxFLOAT_1;
-    }
-    else
-    {
-      /* Gets cosine and sine of the object angle */
-      fCos = orxMath_Cos(-_pstTransform->fRotation);
-      fSin = orxMath_Sin(-_pstTransform->fRotation);
-    }
-
-    /* Tiling on X? */
-    if(_pstTransform->fRepeatX == _pstTransform->fScaleX)
-    {
-      /* Updates scale */
-      fScaleX = orxFLOAT_1;
-
-      /* Updates increment */
-      fIncX = fSizeX;
-    }
-    else
-    {
-      /* Updates scale */
-      fScaleX = _pstTransform->fScaleX / _pstTransform->fRepeatX;
-
-      /* Updates increment */
-      fIncX = fSizeX * fScaleX;
-    }
-
-    /* Tiling on Y? */
-    if(_pstTransform->fRepeatY == _pstTransform->fScaleY)
-    {
-      /* Updates scale */
-      fScaleY = orxFLOAT_1;
-
-      /* Updates increment */
-      fIncY = fSizeY;
-    }
-    else
-    {
-      /* Updates scale */
-      fScaleY = _pstTransform->fScaleY / _pstTransform->fRepeatY;
-
-      /* Updates increment */
-      fIncY = fSizeY * fScaleY;
-    }
-
-    /* Gets relative pivot */
-    fRelativePivotX = _pstTransform->fSrcX / fSizeX;
-    fRelativePivotY = _pstTransform->fSrcY / fSizeY;
-
-    /* For all lines */
-    for(fY = -fRelativePivotY * fIncY * (_pstTransform->fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = _pstTransform->fRepeatY * fSizeY, fAbsScaleY = orxMath_Abs(fScaleY);
-      fRemainderY > orxFLOAT_0;
-      fY += fIncY, fRemainderY -= fSizeY)
-    {
-      orxFLOAT fPosY = fY;
-
-      /* Positive scale on Y? */
-      if(fScaleY > orxFLOAT_0)
-      {
-        /* Flipped? */
-        if(bFlipY != orxFALSE)
-        {
-          /* Gets adjusted position */
-          fPosY -= fInitRemainderY;
-        }
-      }
-      else
-      {
-        /* Not flipped? */
-        if(bFlipY == orxFALSE)
-        {
-          /* Last line? */
-          if(fRemainderY < fSizeY)
-          {
-            /* Gets adjusted position */
-            fPosY += fAbsScaleY * (fSizeY - fRemainderY);
-          }
-        }
-        else
-        {
-          /* Not last line? */
-          if(fRemainderY >= fSizeY)
-          {
-            /* Gets adjusted position */
-            fPosY += fInitRemainderY;
-          }
-          else
-          {
-            /* Gets adjusted position */
-            fPosY += fInitRemainderY + fAbsScaleY * (fSizeY - fRemainderY);
-          }
-        }
-      }
-
-      /* For all columns */
-      for(fX = -fRelativePivotX * fIncX * (_pstTransform->fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = _pstTransform->fRepeatX * fSizeX, fAbsScaleX = orxMath_Abs(fScaleX);
-        fRemainderX > orxFLOAT_0;
-        fX += fIncX, fRemainderX -= fSizeX)
-      {
-        orxFLOAT fOffsetX, fOffsetY, fPosX = fX;
-
-        /* Updates clip info */
-        stClip.Right  = stClip.Left + orxF2U(orxMIN(fSizeX, fRemainderX));
-        stClip.Bottom = stClip.Top + orxF2U(orxMIN(fSizeY, fRemainderY));
-
-        /* Sets sub rectangle for sprite */
-        poSprite->SetSubRect(stClip);
-
-        /* Positive scale on X? */
-        if(fScaleX > orxFLOAT_0)
-        {
-          /* Flipped? */
-          if(bFlipX != orxFALSE)
-          {
-            /* Gets adjusted position */
-            fPosX -= fInitRemainderX;
-          }
-        }
-        else
-        {
-          /* Not flipped? */
-          if(bFlipX == orxFALSE)
-          {
-            /* Last line? */
-            if(fRemainderX < fSizeX)
-            {
-              /* Gets adjusted position */
-              fPosX += fAbsScaleX * (fSizeX - fRemainderX);
-            }
-          }
-          else
-          {
-            /* Not last line? */
-            if(fRemainderX >= fSizeX)
-            {
-              /* Gets adjusted position */
-              fPosX += fInitRemainderX;
-            }
-            else
-            {
-              /* Gets adjusted position */
-              fPosX += fInitRemainderX + fAbsScaleX * (fSizeX - fRemainderX);
-            }
-          }
-        }
-
-        /* Computes offsets */
-        fOffsetX = (fCos * fPosX) + (fSin * fPosY);
-        fOffsetY = (-fSin * fPosX) + (fCos * fPosY);
-
-        /* Updates its scale */
-        poSprite->SetScale(orxMath_Abs(fScaleX), orxMath_Abs(fScaleY));
-
-        /* Blits bitmap */
-        eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX + fOffsetX, _pstTransform->fDstY + fOffsetY, _eSmoothing, _eBlendMode);
-      }
-    }
-  }
-  else
-  {
-    /* Updates its scale */
-    poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
-
-    /* Blits it */
-    eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
-  }
-
-  /* Resets its center */
-  poSprite->SetCenter(0.0f, 0.0f);
-
-  /* Resets its rotation */
-  poSprite->SetRotation(0.0f);
-
-  /* Resets its flipping */
-  poSprite->FlipX(false);
-  poSprite->FlipY(false);
-
-  /* Resets its scale */
-  poSprite->SetScale(1.0f, 1.0f);
-
-  /* Done! */
-  return eResult;
-}
-
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
   orxSTATUS eResult;
@@ -1613,6 +1204,478 @@ extern "C" void orxFASTCALL orxDisplay_SFML_Exit()
   return;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  sf::Sprite *poSprite;
+  orxFLOAT    fCenterX, fCenterY;
+  orxBOOL     bFlipX, bFlipY;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != orxDisplay::spoScreen));
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Gets sprite */
+  poSprite = (sf::Sprite *)_pstSrc;
+
+  /* Updates its rotation */
+  poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
+
+  /* Updates its flipping */
+  if(_pstTransform->fScaleX < 0.0f)
+  {
+    poSprite->FlipX(true);
+    fCenterX = poSprite->GetSize().x - _pstTransform->fSrcX;
+    bFlipX = true;
+  }
+  else
+  {
+    fCenterX = _pstTransform->fSrcX;
+    bFlipX = false;
+  }
+
+  if(_pstTransform->fScaleY < 0.0f)
+  {
+    poSprite->FlipY(true);
+    fCenterY = poSprite->GetSize().y - _pstTransform->fSrcY;
+    bFlipY = true;
+  }
+  else
+  {
+    fCenterY = _pstTransform->fSrcY;
+    bFlipY = false;
+  }
+
+  /* Updates its center */
+  poSprite->SetCenter(fCenterX, fCenterY);
+
+  /* Has repeat? */
+  if((_pstTransform->fRepeatX != orxFLOAT_1) || (_pstTransform->fRepeatY != orxFLOAT_1))
+  {
+    orxFLOAT    fIncX, fIncY, fCos, fSin, fX, fY, fSizeX, fSizeY, fScaleX, fScaleY, fRemainderX, fRemainderY, fInitRemainderX, fInitRemainderY, fRelativePivotX, fRelativePivotY, fAbsScaleX, fAbsScaleY;
+    sf::IntRect stClip;
+
+    /* Gets sprite's size */
+    fSizeX = (orxFLOAT)poSprite->GetImage()->GetWidth();
+    fSizeY = (orxFLOAT)poSprite->GetImage()->GetHeight();
+
+    /* Gets sprite's clipping */
+    stClip = poSprite->GetSubRect();
+
+    /* Has no rotation? */
+    if(_pstTransform->fRotation == orxFLOAT_0)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxFLOAT_1;
+      fSin = orxFLOAT_0;
+    }
+    /* 90°? */
+    else if(_pstTransform->fRotation == orxMATH_KF_PI_BY_2)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxFLOAT_0;
+      fSin = -orxFLOAT_1;
+    }
+    /* 180°? */
+    else if(_pstTransform->fRotation == orxMATH_KF_PI)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = -orxFLOAT_1;
+      fSin = orxFLOAT_0;
+    }
+    /* 270°? */
+    else if(_pstTransform->fRotation == -orxMATH_KF_PI_BY_2)
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxFLOAT_0;
+      fSin = orxFLOAT_1;
+    }
+    else
+    {
+      /* Gets cosine and sine of the object angle */
+      fCos = orxMath_Cos(-_pstTransform->fRotation);
+      fSin = orxMath_Sin(-_pstTransform->fRotation);
+    }
+
+    /* Tiling on X? */
+    if(_pstTransform->fRepeatX == _pstTransform->fScaleX)
+    {
+      /* Updates scale */
+      fScaleX = orxFLOAT_1;
+
+      /* Updates increment */
+      fIncX = fSizeX;
+    }
+    else
+    {
+      /* Updates scale */
+      fScaleX = _pstTransform->fScaleX / _pstTransform->fRepeatX;
+
+      /* Updates increment */
+      fIncX = fSizeX * fScaleX;
+    }
+
+    /* Tiling on Y? */
+    if(_pstTransform->fRepeatY == _pstTransform->fScaleY)
+    {
+      /* Updates scale */
+      fScaleY = orxFLOAT_1;
+
+      /* Updates increment */
+      fIncY = fSizeY;
+    }
+    else
+    {
+      /* Updates scale */
+      fScaleY = _pstTransform->fScaleY / _pstTransform->fRepeatY;
+
+      /* Updates increment */
+      fIncY = fSizeY * fScaleY;
+    }
+
+    /* Gets relative pivot */
+    fRelativePivotX = _pstTransform->fSrcX / fSizeX;
+    fRelativePivotY = _pstTransform->fSrcY / fSizeY;
+
+    /* For all lines */
+    for(fY = -fRelativePivotY * fIncY * (_pstTransform->fRepeatY - orxFLOAT_1), fInitRemainderY = fRemainderY = _pstTransform->fRepeatY * fSizeY, fAbsScaleY = orxMath_Abs(fScaleY);
+      fRemainderY > orxFLOAT_0;
+      fY += fIncY, fRemainderY -= fSizeY)
+    {
+      orxFLOAT fPosY = fY;
+
+      /* Positive scale on Y? */
+      if(fScaleY > orxFLOAT_0)
+      {
+        /* Flipped? */
+        if(bFlipY != orxFALSE)
+        {
+          /* Gets adjusted position */
+          fPosY -= fInitRemainderY;
+        }
+      }
+      else
+      {
+        /* Not flipped? */
+        if(bFlipY == orxFALSE)
+        {
+          /* Last line? */
+          if(fRemainderY < fSizeY)
+          {
+            /* Gets adjusted position */
+            fPosY += fAbsScaleY * (fSizeY - fRemainderY);
+          }
+        }
+        else
+        {
+          /* Not last line? */
+          if(fRemainderY >= fSizeY)
+          {
+            /* Gets adjusted position */
+            fPosY += fInitRemainderY;
+          }
+          else
+          {
+            /* Gets adjusted position */
+            fPosY += fInitRemainderY + fAbsScaleY * (fSizeY - fRemainderY);
+          }
+        }
+      }
+
+      /* For all columns */
+      for(fX = -fRelativePivotX * fIncX * (_pstTransform->fRepeatX - orxFLOAT_1), fInitRemainderX = fRemainderX = _pstTransform->fRepeatX * fSizeX, fAbsScaleX = orxMath_Abs(fScaleX);
+        fRemainderX > orxFLOAT_0;
+        fX += fIncX, fRemainderX -= fSizeX)
+      {
+        orxFLOAT fOffsetX, fOffsetY, fPosX = fX;
+
+        /* Updates clip info */
+        stClip.Right  = stClip.Left + orxF2U(orxMIN(fSizeX, fRemainderX));
+        stClip.Bottom = stClip.Top + orxF2U(orxMIN(fSizeY, fRemainderY));
+
+        /* Sets sub rectangle for sprite */
+        poSprite->SetSubRect(stClip);
+
+        /* Positive scale on X? */
+        if(fScaleX > orxFLOAT_0)
+        {
+          /* Flipped? */
+          if(bFlipX != orxFALSE)
+          {
+            /* Gets adjusted position */
+            fPosX -= fInitRemainderX;
+          }
+        }
+        else
+        {
+          /* Not flipped? */
+          if(bFlipX == orxFALSE)
+          {
+            /* Last line? */
+            if(fRemainderX < fSizeX)
+            {
+              /* Gets adjusted position */
+              fPosX += fAbsScaleX * (fSizeX - fRemainderX);
+            }
+          }
+          else
+          {
+            /* Not last line? */
+            if(fRemainderX >= fSizeX)
+            {
+              /* Gets adjusted position */
+              fPosX += fInitRemainderX;
+            }
+            else
+            {
+              /* Gets adjusted position */
+              fPosX += fInitRemainderX + fAbsScaleX * (fSizeX - fRemainderX);
+            }
+          }
+        }
+
+        /* Computes offsets */
+        fOffsetX = (fCos * fPosX) + (fSin * fPosY);
+        fOffsetY = (-fSin * fPosX) + (fCos * fPosY);
+
+        /* Updates its scale */
+        poSprite->SetScale(orxMath_Abs(fScaleX), orxMath_Abs(fScaleY));
+
+        /* Blits bitmap */
+        eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX + fOffsetX, _pstTransform->fDstY + fOffsetY, _eSmoothing, _eBlendMode);
+      }
+    }
+  }
+  else
+  {
+    /* Updates its scale */
+    poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
+
+    /* Blits it */
+    eResult = orxDisplay_SFML_BlitBitmap(_pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
+  }
+
+  /* Resets its center */
+  poSprite->SetCenter(0.0f, 0.0f);
+
+  /* Resets its rotation */
+  poSprite->SetRotation(0.0f);
+
+  /* Resets its flipping */
+  poSprite->FlipX(false);
+  poSprite->FlipY(false);
+
+  /* Resets its scale */
+  poSprite->SetScale(1.0f, 1.0f);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  sf::Sprite     *poSprite;
+  orxU32          u32CharacterCodePoint;
+  const orxCHAR  *pc;
+  orxFLOAT        fX, fY, fStartX, fStartY;
+  orxVECTOR       vSpacing;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+  orxASSERT(_pstFont != orxNULL);
+  orxASSERT(_pstMap != orxNULL);
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Gets sprite */
+  poSprite = (sf::Sprite *)_pstFont;
+
+  /* Updates its rotation */
+  poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
+
+  /* Gets vertical spacing */
+  vSpacing.fY = -_pstMap->fCharacterHeight;
+  
+  /* Updates its flipping */
+  if(_pstTransform->fScaleX < 0.0f)
+  {
+    poSprite->FlipX(true);
+    fStartX     = -_pstTransform->fSrcX - vSpacing.fY;
+  }
+  else
+  {
+    fStartX     = _pstTransform->fSrcX;
+  }
+
+  if(_pstTransform->fScaleY < 0.0f)
+  {
+    poSprite->FlipY(true);
+    vSpacing.fY = -vSpacing.fY;
+    fStartY     = -_pstTransform->fSrcY + vSpacing.fY;
+  }
+  else
+  {
+    fStartY     = _pstTransform->fSrcY;
+  }
+  
+  /* Updates its scale */
+  poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
+
+  /* For all characters */
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), fX = fStartX, fY = fStartY;
+      u32CharacterCodePoint != orxCHAR_NULL;
+      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+  {
+    /* Depending on character */
+    switch(u32CharacterCodePoint)
+    {
+      case orxCHAR_CR:
+      {
+        /* Half EOL? */
+        if(*pc == orxCHAR_LF)
+        {
+          /* Updates pointer */
+          pc++;
+        }
+
+        /* Fall through */
+      }
+
+      case orxCHAR_LF:
+      {
+        /* Updates Y position */
+        fY += vSpacing.fY;
+
+        /* Resets X position */
+        fX = fStartX;
+
+        break;
+      }
+
+      default:
+      {
+        const orxCHARACTER_GLYPH *pstGlyph;
+
+        /* Gets glyph from table */
+        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
+
+        /* Valid? */
+        if(pstGlyph != orxNULL)
+        {
+          /* Gets horizontal spacing */
+          vSpacing.fX = -pstGlyph->fWidth;
+
+          /* Sets sub rectangle for sprite */
+          poSprite->SetSubRect(sf::IntRect(orxF2S(pstGlyph->fX), orxF2S(pstGlyph->fY), orxF2S(pstGlyph->fX + pstGlyph->fWidth), orxF2S(pstGlyph->fY + _pstMap->fCharacterHeight)));
+
+          /* Updates its center */
+          poSprite->SetCenter(fX, fY);
+
+          /* Blits it */
+          eResult = orxDisplay_SFML_BlitBitmap(_pstFont, _pstTransform->fDstX, _pstTransform->fDstY, _eSmoothing, _eBlendMode);
+        }
+        else
+        {
+          /* Gets default horizontal spacing */
+          vSpacing.fX = -_pstMap->fCharacterHeight;
+        }
+
+        /* Updates its flipping */
+        if(_pstTransform->fScaleX < 0.0f)
+        {
+          vSpacing.fX = -vSpacing.fX;
+        }
+
+        /* Updates X position */
+        fX += vSpacing.fX;
+
+        break;
+      }
+    }
+  }
+
+  /* Resets its center */
+  poSprite->SetCenter(0.0f, 0.0f);
+
+  /* Resets its rotation */
+  poSprite->SetRotation(0.0f);
+
+  /* Resets its flipping */
+  poSprite->FlipX(false);
+  poSprite->FlipY(false);
+
+  /* Resets its scale */
+  poSprite->SetScale(1.0f, 1.0f);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvEnd != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvCenter != orxNULL);
+  orxASSERT(_fRadius >= orxFLOAT_0);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_HasShaderSupport()
 {
   /* Checks */
@@ -1940,7 +2003,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateBitmap, DISPLAY, CREATE_B
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SaveBitmap, DISPLAY, SAVE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
@@ -1953,7 +2015,12 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapData, DISPLAY, SET_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawPolygon, DISPLAY, DRAW_POLYGON);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawCircle, DISPLAY, DRAW_CIRCLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawOBox, DISPLAY, DRAW_OBOX);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteShader, DISPLAY, DELETE_SHADER);

@@ -66,32 +66,39 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Exit, void, void);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Swap, orxSTATUS, void);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformText, orxSTATUS, const orxSTRING, const orxBITMAP *, const orxCHARACTER_MAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenBitmap, orxBITMAP *, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenSize, orxSTATUS, orxFLOAT *, orxFLOAT *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateBitmap, orxBITMAP *, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, void, orxBITMAP *);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenBitmap, orxBITMAP *, void);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenSize, orxSTATUS, orxFLOAT *, orxFLOAT *);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, const orxBITMAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColor, orxSTATUS, orxBITMAP *, orxRGBA);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxU32, orxU32, orxU32, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmap, orxSTATUS, orxBITMAP *);
 
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxU32, orxU32, orxU32, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, orxBITMAP *, orxU8 *, orxU32);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColor, orxSTATUS, orxBITMAP *, orxRGBA);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITMAP *);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
+
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_BlitBitmap, orxSTATUS, const orxBITMAP *, orxFLOAT, orxFLOAT, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, const orxBITMAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformText, orxSTATUS, const orxSTRING, const orxBITMAP *, const orxCHARACTER_MAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, orxBITMAP *, orxU8 *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawLine, orxSTATUS, const orxVECTOR *, const orxVECTOR *, orxRGBA);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawPolygon, orxSTATUS, const orxVECTOR *, orxU32, orxRGBA, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawCircle, orxSTATUS, const orxVECTOR *, orxFLOAT, orxRGBA, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, orxRGBA, orxBOOL);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *);
@@ -124,28 +131,34 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, EXIT, orxDisplay_Exit)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SWAP, orxDisplay_Swap)
 
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_BITMAP, orxDisplay_GetScreenBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_SIZE, orxDisplay_GetScreenSize)
+
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_BITMAP, orxDisplay_CreateBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_BITMAP, orxDisplay_DeleteBitmap)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, LOAD_BITMAP, orxDisplay_LoadBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAP, orxDisplay_SetDestinationBitmap)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_BITMAP, orxDisplay_TransformBitmap)
-
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CLEAR_BITMAP, orxDisplay_ClearBitmap)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, BLIT_BITMAP, orxDisplay_BlitBitmap)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_DATA, orxDisplay_SetBitmapData)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR_KEY, orxDisplay_SetBitmapColorKey)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR, orxDisplay_SetBitmapColor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_CLIPPING, orxDisplay_SetBitmapClipping)
-
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR_KEY, orxDisplay_SetBitmapColorKey)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_DATA, orxDisplay_SetBitmapData)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_DATA, orxDisplay_GetBitmapData)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR, orxDisplay_SetBitmapColor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_COLOR, orxDisplay_GetBitmapColor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_SIZE, orxDisplay_GetBitmapSize)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_BITMAP, orxDisplay_GetScreenBitmap)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_SIZE, orxDisplay_GetScreenSize)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, BLIT_BITMAP, orxDisplay_BlitBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_BITMAP, orxDisplay_TransformBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_TEXT, orxDisplay_TransformText)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_LINE, orxDisplay_DrawLine)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_POLYGON, orxDisplay_DrawPolygon)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_CIRCLE, orxDisplay_DrawCircle)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_OBOX, orxDisplay_DrawOBox)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, HAS_SHADER_SUPPORT, orxDisplay_HasShaderSupport)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_SHADER, orxDisplay_CreateShader)
@@ -156,8 +169,6 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_PARAMETER_ID, orxDisplay_GetParam
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_BITMAP, orxDisplay_SetShaderBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_FLOAT, orxDisplay_SetShaderFloat)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_VECTOR, orxDisplay_SetShaderVector)
-
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_TEXT, orxDisplay_TransformText)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, ENABLE_VSYNC, orxDisplay_EnableVSync)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VSYNC_ENABLED, orxDisplay_IsVSyncEnabled)
@@ -193,6 +204,26 @@ orxSTATUS orxFASTCALL orxDisplay_Swap()
 orxSTATUS orxFASTCALL orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_TransformText)(_zString, _pstFont, _pstMap, _pstTransform, _eSmoothing, _eBlendMode);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawLine)(_pvStart, _pvEnd, _stColor);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawPolygon)(_avVertexList, _u32VertexNumber, _stColor, _bFill);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawCircle)(_pvCenter, _fRadius, _stColor, _bFill);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawOBox)(_pstBox, _stColor, _bFill);
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
