@@ -296,7 +296,7 @@ typedef struct __orxPHYSICS_BODY_JOINT_t  orxPHYSICS_BODY_JOINT;
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
 #define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
-#define orxPHYSICS_KZ_CONFIG_FIXED_DT     "FixedDT"
+#define orxPHYSICS_KZ_CONFIG_SHOW_DEBUG   "ShowDebug"
 
 
 /***************************************************************************

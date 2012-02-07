@@ -54,6 +54,13 @@
 #endif /* __orxX86_64__ */
 
 
+#if defined(__orxDEBUG__) || defined(__orxPROFILER__)
+
+  #define orxPHYSICS_ENABLE_DEBUG_DRAW
+
+#endif /* __orxDEBUG__ || __orxPROFILER__ */
+
+
 /** Module flags
  */
 #define orxPHYSICS_KU32_STATIC_FLAG_NONE        0x00000000 /**< No flags */
@@ -98,6 +105,25 @@ public:
   void EndContact(b2Contact *_poContact);
 };
 
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+/** Debug draw
+ */
+class orxPhysicsDebugDraw : public b2DebugDraw
+{
+public:
+  void DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor);
+  void DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor);
+  void DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor);
+  void DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor);
+  void DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor);
+  void DrawTransform(const b2Transform &_rstTransform);
+};
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+
 /** Static structure
  */
 typedef struct __orxPHYSICS_STATIC_t
@@ -110,6 +136,12 @@ typedef struct __orxPHYSICS_STATIC_t
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
   orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+  orxPhysicsDebugDraw        *poDebugDraw;        /**< Debug draw */
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
 } orxPHYSICS_STATIC;
 
@@ -298,17 +330,80 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 }
 
 
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
+{
+  //! TODO
+}
+
+void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
+{
+  //! TODO
+}
+
+void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor)
+{
+  //! TODO
+}
+
+void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor)
+{
+  //! TODO
+}
+
+void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor)
+{
+  //! TODO
+}
+
+void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
+{
+  //! TODO
+}
+
+static orxSTATUS orxFASTCALL orxPhysics_Box2D_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
+
+  /* End of viewport rendering? */
+  if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_STOP)
+  {
+    /* Pushes config section */
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Show debug? */
+    if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_SHOW_DEBUG) != orxFALSE)
+    {
+      /* Draws debug */
+      sstPhysics.poWorld->DrawDebugData();
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+
 /** Update (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pContext       Context sent when registering callback to the clock
  */
-static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
   b2Body                   *poBody;
 
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxPhysics_Update");
+  orxPROFILER_PUSH_MARKER("orxPhysics_Box2D_Update");
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -1896,13 +1991,29 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       if(pstClock != orxNULL)
       {
         /* Registers rendering function */
-        eResult = orxClock_Register(pstClock, orxPhysics_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+        eResult = orxClock_Register(pstClock, orxPhysics_Box2D_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Creates event bank */
           sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+          /* Creates debug draw */
+          sstPhysics.poDebugDraw = new orxPhysicsDebugDraw();
+
+          /* Inits it */
+          sstPhysics.poDebugDraw->SetFlags(b2DebugDraw::e_shapeBit | b2DebugDraw::e_jointBit | b2DebugDraw::e_centerOfMassBit);
+
+          /* Registers it */
+          sstPhysics.poWorld->SetDebugDraw(sstPhysics.poDebugDraw);
+
+          /* Adds event handler */
+          orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
           /* Updates status */
           sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY | orxPHYSICS_KU32_STATIC_FLAG_ENABLED;
@@ -1952,6 +2063,16 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_Exit()
   {
     /* Deletes the listeners */
     delete sstPhysics.poContactListener;
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
+
+    /* Deletes debug draw */
+    delete sstPhysics.poDebugDraw;
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
     /* Deletes world */
     delete sstPhysics.poWorld;
