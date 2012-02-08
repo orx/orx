@@ -407,8 +407,8 @@ static orxINLINE void orxRender_RenderProfiler()
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
-    /* Is unique? */
-    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE))
+    /* Is unique and has been pushed? */
+    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
     {
       orxDOUBLE dTime;
       orxCOLOR  stBarColor;
@@ -483,8 +483,9 @@ static orxINLINE void orxRender_RenderProfiler()
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
-    /* Is unique? */
-    if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    /* Is unique and has been pushed? */
+    if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
     {
       orxDOUBLE dTime;
       orxCOLOR  stLabelColor;
@@ -496,30 +497,58 @@ static orxINLINE void orxRender_RenderProfiler()
       /* Gets its depth */
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
-      /* Has been pushed? */
-      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
-      {
-        /* Sets font's color */
-        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
-        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+      /* Sets font's color */
+      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
-        /* Adds depth markers */
-        for(i = 0; i < u32Depth; i++)
-        {
-          acLabel[i] = '+';
-        }
+      /* Adds depth markers */
+      for(i = 0; i < u32Depth; i++)
+      {
+        acLabel[i] = '+';
+      }
+
+      /* Draws its label */
+      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Updates position */
+      if(bLandscape != orxFALSE)
+      {
+        stTransform.fDstY += fHeight;
       }
       else
       {
-        /* Sets font's color */
-        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
-
-        /* Adds depth markers */
-        acLabel[0] = '-';
-
-        /* Updates depth */
-        u32Depth = 1;
+        stTransform.fDstX += fHeight;
       }
+    }
+  }
+
+  /* For all sorted markers */
+  for(s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+      s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
+      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
+  {
+    /* Is unique and hasn't been pushed? */
+    if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) == 0))
+    {
+      orxDOUBLE dTime;
+      orxU32    u32Depth;
+
+      /* Gets its time */
+      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* Gets its depth */
+      u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
+
+      /* Sets font's color */
+      orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
+
+      /* Adds depth markers */
+      acLabel[0] = '-';
+
+      /* Updates depth */
+      u32Depth = 1;
 
       /* Draws its label */
       orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));

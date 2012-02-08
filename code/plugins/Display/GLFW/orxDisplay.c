@@ -703,11 +703,14 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
 }
 
 static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
-{
+{  
   /* Has data? */
   if(sstDisplay.s32BufferIndex > 0)
   {
     GLvoid *pIndexContext;
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_DrawArrays");
 
     /* Selects arrays */
     glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
@@ -764,8 +767,11 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
 
     /* Clears buffer index */
     sstDisplay.s32BufferIndex = 0;
-  }
 
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+  }
+  
   /* Done! */
   return;
 }
@@ -969,6 +975,9 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
 
 static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_DrawPrimitive");
+
   /* Selects arrays */
   glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
   glASSERT();
@@ -1025,6 +1034,9 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
 
   /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
