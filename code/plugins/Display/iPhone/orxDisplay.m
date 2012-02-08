@@ -43,7 +43,7 @@
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000002  /**< Shader support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER	0x00000004  /**< Has depth buffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000004  /**< Has depth buffer support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000008  /**< NPOT texture support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
@@ -59,11 +59,13 @@
 
 #define orxDISPLAY_KU32_TOUCH_NUMBER            16
 
+#define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
+
 
 /**  Misc defines
  */
 
-#define PVR_TEXTURE_FLAG_TYPE_MASK	            0xFF
+#define PVR_TEXTURE_FLAG_TYPE_MASK              0xFF
 
 
 #ifdef __orxDEBUG__
@@ -103,19 +105,19 @@ typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t
  */
 typedef struct __PVRTexHeader_t
 {
-	uint32_t headerLength;
-	uint32_t height;
-	uint32_t width;
-	uint32_t numMipmaps;
-	uint32_t flags;
-	uint32_t dataLength;
-	uint32_t bpp;
-	uint32_t bitmaskRed;
-	uint32_t bitmaskGreen;
-	uint32_t bitmaskBlue;
-	uint32_t bitmaskAlpha;
-	uint32_t pvrTag;
-	uint32_t numSurfs;
+  uint32_t headerLength;
+  uint32_t height;
+  uint32_t width;
+  uint32_t numMipmaps;
+  uint32_t flags;
+  uint32_t dataLength;
+  uint32_t bpp;
+  uint32_t bitmaskRed;
+  uint32_t bitmaskGreen;
+  uint32_t bitmaskBlue;
+  uint32_t bitmaskAlpha;
+  uint32_t pvrTag;
+  uint32_t numSurfs;
 } PVRTexHeader;
 
 /** PVR texture types
@@ -224,6 +226,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxCOLOR                  stLastColor;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxDISPLAY_SHADER        *pstDefaultShader;
+  orxDISPLAY_SHADER        *pstNoTextureShader;
   GLuint                    uiIndexBuffer;
   GLint                     iTextureUnitNumber;
   orxS32                    s32ActiveShaderCounter;
@@ -594,11 +597,11 @@ static orxView *spoInstance;
 
 - (BOOL) IsExtensionSupported:(NSString *)_zExtension
 {
-	NSString *zExtensionString  = [NSString stringWithCString:(char *)glGetString(GL_EXTENSIONS) encoding:NSUTF8StringEncoding];
-	NSArray *zExtensionList     = [zExtensionString componentsSeparatedByString:@" "];
+  NSString *zExtensionString  = [NSString stringWithCString:(char *)glGetString(GL_EXTENSIONS) encoding:NSUTF8StringEncoding];
+  NSArray *zExtensionList     = [zExtensionString componentsSeparatedByString:@" "];
 
   /* Done! */
-	return [zExtensionList containsObject:_zExtension];
+  return [zExtensionList containsObject:_zExtension];
 }
 
 - (void) touchesBegan:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
@@ -1586,6 +1589,96 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
   return pstBitmap;
 }
 
+static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+{
+  /* Has shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Starts no texture shader */
+    orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Inits it */
+    orxDisplay_iPhone_InitShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Selects arrays */
+    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
+  }
+  else
+  {
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
+
+    /* Disables texturing */
+    glDisable(GL_TEXTURE_2D);
+    glASSERT();
+  }
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Only 2 vertices? */
+  if(_u32VertexNumber == 2)
+  {
+    /* Draws it */
+    glDrawArrays(GL_LINES, 0, 2);
+    glASSERT();
+  }
+  else
+  {
+    /* Should fill? */
+    if(_bFill != orxFALSE)
+    {
+      /* Draws it */
+      glDrawArrays(GL_TRIANGLE_FAN, 0, _u32VertexNumber);
+      glASSERT();
+    }
+    else
+    {
+      /* Draws it */
+      glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
+      glASSERT();
+    }
+  }
+
+  /* Has shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Stops current shader */
+    orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+  }
+  else
+  {
+    /* Reenables texturing */
+    glEnable(GL_TEXTURE_2D);
+    glASSERT();
+  }
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Done! */
+  return;
+}
+
 orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreenBitmap()
 {
   /* Checks */
@@ -1705,10 +1798,10 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
           fWidth = fHeight;
         }
 
-		/* Updates X position */
-		fX += fWidth;
+    /* Updates X position */
+    fX += fWidth;
 
-		break;
+    break;
       }
     }
   }
@@ -1726,8 +1819,21 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawLine(const orxVECTOR *_pvStart, cons
   orxASSERT(_pvStart != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_iPhone_DrawArrays();
+
+  /* Copies vertices */
+  sstDisplay.astVertexList[0].fX = (GLfloat)(_pvStart->fX);
+  sstDisplay.astVertexList[0].fY = (GLfloat)(_pvStart->fY);
+  sstDisplay.astVertexList[1].fX = (GLfloat)(_pvEnd->fX);
+  sstDisplay.astVertexList[1].fY = (GLfloat)(_pvEnd->fY);
+
+  /* Copies color */
+  sstDisplay.astVertexList[0].stRGBA =
+  sstDisplay.astVertexList[1].stRGBA = _stColor;
+
+  /* Draws it */
+  orxDisplay_iPhone_DrawPrimitive(2, _stColor, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1735,6 +1841,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawLine(const orxVECTOR *_pvStart, cons
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
 {
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1742,8 +1849,22 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexLi
   orxASSERT(_avVertexList != orxNULL);
   orxASSERT(_u32VertexNumber > 0);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_iPhone_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_avVertexList[i].fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_avVertexList[i].fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_iPhone_DrawPrimitive(_u32VertexNumber, _stColor, _bFill);
 
   /* Done! */
   return eResult;
@@ -1751,6 +1872,8 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexLi
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
 {
+  orxU32    i;
+  orxFLOAT  fAngle;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1758,8 +1881,22 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, o
   orxASSERT(_pvCenter != orxNULL);
   orxASSERT(_fRadius >= orxFLOAT_0);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_iPhone_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0, fAngle = orxFLOAT_0; i < orxDISPLAY_KU32_CIRCLE_LINE_NUMBER; i++, fAngle += orxMATH_KF_2_PI / orxDISPLAY_KU32_CIRCLE_LINE_NUMBER)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_fRadius * orxMath_Cos(fAngle) + _pvCenter->fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_fRadius * orxMath_Sin(fAngle) + _pvCenter->fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_iPhone_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill);
 
   /* Done! */
   return eResult;
@@ -1767,14 +1904,37 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, o
 
 orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
 {
+  orxVECTOR vOrigin;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBox != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_iPhone_DrawArrays();
+
+  /* Gets origin */
+  orxVector_Sub(&vOrigin, &(_pstBox->vPosition), &(_pstBox->vPivot));
+
+  /* Sets vertices */
+  sstDisplay.astVertexList[0].fX = (GLfloat)(vOrigin.fX);
+  sstDisplay.astVertexList[0].fY = (GLfloat)(vOrigin.fY);
+  sstDisplay.astVertexList[1].fX = (GLfloat)(vOrigin.fX + _pstBox->vX.fX);
+  sstDisplay.astVertexList[1].fY = (GLfloat)(vOrigin.fY + _pstBox->vX.fY);
+  sstDisplay.astVertexList[2].fX = (GLfloat)(vOrigin.fX + _pstBox->vX.fX + _pstBox->vY.fX);
+  sstDisplay.astVertexList[2].fY = (GLfloat)(vOrigin.fY + _pstBox->vX.fY + _pstBox->vY.fY);
+  sstDisplay.astVertexList[3].fX = (GLfloat)(vOrigin.fX + _pstBox->vY.fX);
+  sstDisplay.astVertexList[3].fY = (GLfloat)(vOrigin.fY + _pstBox->vY.fY);
+
+  /* Copies color */
+  sstDisplay.astVertexList[0].stRGBA =
+  sstDisplay.astVertexList[1].stRGBA =
+  sstDisplay.astVertexList[2].stRGBA =
+  sstDisplay.astVertexList[3].stRGBA = _stColor;
+
+  /* Draws it */
+  orxDisplay_iPhone_DrawPrimitive(4, _stColor, _bFill);
 
   /* Done! */
   return eResult;
@@ -2990,6 +3150,15 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         "{"
         "  gl_FragColor = ___Color___ * texture2D(__Texture__, ___TexCoord___);"
         "}";
+        static const orxSTRING szNoTextureFragmentShaderSource =
+        "precision mediump float;"
+        "varying vec2 ___TexCoord___;"
+        "varying vec4 ___Color___;"
+        "uniform sampler2D __Texture__;"
+        "void main()"
+        "{"
+        "  gl_FragColor = ___Color___;"
+        "}";
 
         /* Inits flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
@@ -3010,8 +3179,9 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
         glASSERT();
 
-        /* Creates default shader */
-        sstDisplay.pstDefaultShader = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
+        /* Creates default shaders */
+        sstDisplay.pstDefaultShader   = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
+        sstDisplay.pstNoTextureShader = orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
 
         /* Uses it */
         orxDisplay_StopShader(orxNULL);
@@ -3077,8 +3247,9 @@ void orxFASTCALL orxDisplay_iPhone_Exit()
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
-      /* Deletes default shader */
+      /* Deletes default shaders */
       orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+      orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
     }
 
     /* Has index buffer? */

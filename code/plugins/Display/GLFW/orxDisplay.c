@@ -48,7 +48,7 @@
   #ifdef __orxMSVC__
     #pragma message("!!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of GLFW!")
   #else /* __orxMSVC__ */
-    #warning !!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of SDL!
+    #warning !!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of GLFW!
   #endif /* __orxMSVC__ */
 #endif /* __orxEMBEDDED__ */
 
@@ -967,6 +967,69 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   return;
 }
 
+static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+{
+  /* Selects arrays */
+  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
+  /* Disables texturing */
+  glDisable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Only 2 vertices? */
+  if(_u32VertexNumber == 2)
+  {
+    /* Draws it */
+    glDrawArrays(GL_LINES, 0, 2);
+    glASSERT();
+  }
+  else
+  {
+    /* Should fill? */
+    if(_bFill != orxFALSE)
+    {
+      /* Draws it */
+      glDrawArrays(GL_TRIANGLE_FAN, 0, _u32VertexNumber);
+      glASSERT();
+    }
+    else
+    {
+      /* Draws it */
+      glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
+      glASSERT();
+    }
+  }
+
+  /* Reenables texturing */
+  glEnable(GL_TEXTURE_2D);
+  glASSERT();
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Done! */
+  return;
+}
+
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreenBitmap()
 {
   /* Checks */
@@ -1110,12 +1173,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawLine(const orxVECTOR *_pvStart, const 
   /* Draws remaining items */
   orxDisplay_GLFW_DrawArrays();
 
-  /* Selects arrays */
-  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-  glASSERT();
-  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-  glASSERT();
-
   /* Copies vertices */
   sstDisplay.astVertexList[0].fX = (GLfloat)(_pvStart->fX);
   sstDisplay.astVertexList[0].fY = (GLfloat)(_pvStart->fY);
@@ -1126,36 +1183,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawLine(const orxVECTOR *_pvStart, const 
   sstDisplay.astVertexList[0].stRGBA =
   sstDisplay.astVertexList[1].stRGBA = _stColor;
 
-  /* Has alpha? */
-  if(orxRGBA_A(_stColor) != 0xFF)
-  {
-    /* Enables alpha blending */
-    glEnable(GL_BLEND);
-    glASSERT();
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glASSERT();
-  }
-  else
-  {
-    /* Disables alpha blending */
-    glDisable(GL_BLEND);
-    glASSERT();
-  }
-
-  /* Disables texturing */
-  glDisable(GL_TEXTURE_2D);
-  glASSERT();
-
   /* Draws it */
-	glDrawArrays(GL_LINES, 0, 2);
-  glASSERT();
-
-  /* Reenables texturing */
-  glEnable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Clears last blend mode */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  orxDisplay_GLFW_DrawPrimitive(2, _stColor, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1174,12 +1203,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawPolygon(const orxVECTOR *_avVertexList
   /* Draws remaining items */
   orxDisplay_GLFW_DrawArrays();
 
-  /* Selects arrays */
-  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-  glASSERT();
-  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-  glASSERT();
-
   /* For all vertices */
   for(i = 0; i < _u32VertexNumber; i++)
   {
@@ -1191,46 +1214,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawPolygon(const orxVECTOR *_avVertexList
     sstDisplay.astVertexList[i].stRGBA = _stColor;
   }
 
-  /* Has alpha? */
-  if(orxRGBA_A(_stColor) != 0xFF)
-  {
-    /* Enables alpha blending */
-    glEnable(GL_BLEND);
-    glASSERT();
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glASSERT();
-  }
-  else
-  {
-    /* Disables alpha blending */
-    glDisable(GL_BLEND);
-    glASSERT();
-  }
-
-  /* Disables texturing */
-  glDisable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Filled? */
-  if(_bFill != orxFALSE)
-  {
-    /* Draws it */
-    glDrawArrays(GL_TRIANGLE_FAN, 0, _u32VertexNumber);
-    glASSERT();
-  }
-  else
-  {
-    /* Draws it */
-    glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
-    glASSERT();
-  }
-
-  /* Reenables texturing */
-  glEnable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Clears last blend mode */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  /* Draws it */
+  orxDisplay_GLFW_DrawPrimitive(_u32VertexNumber, _stColor, _bFill);
 
   /* Done! */
   return eResult;
@@ -1250,12 +1235,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCircle(const orxVECTOR *_pvCenter, orx
   /* Draws remaining items */
   orxDisplay_GLFW_DrawArrays();
 
-  /* Selects arrays */
-  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-  glASSERT();
-  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-  glASSERT();
-
   /* For all vertices */
   for(i = 0, fAngle = orxFLOAT_0; i < orxDISPLAY_KU32_CIRCLE_LINE_NUMBER; i++, fAngle += orxMATH_KF_2_PI / orxDISPLAY_KU32_CIRCLE_LINE_NUMBER)
   {
@@ -1267,46 +1246,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCircle(const orxVECTOR *_pvCenter, orx
     sstDisplay.astVertexList[i].stRGBA = _stColor;
   }
 
-  /* Has alpha? */
-  if(orxRGBA_A(_stColor) != 0xFF)
-  {
-    /* Enables alpha blending */
-    glEnable(GL_BLEND);
-    glASSERT();
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glASSERT();
-  }
-  else
-  {
-    /* Disables alpha blending */
-    glDisable(GL_BLEND);
-    glASSERT();
-  }
-
-  /* Disables texturing */
-  glDisable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Filled? */
-  if(_bFill != orxFALSE)
-  {
-    /* Draws it */
-    glDrawArrays(GL_TRIANGLE_FAN, 0, orxDISPLAY_KU32_CIRCLE_LINE_NUMBER);
-    glASSERT();
-  }
-  else
-  {
-    /* Draws it */
-    glDrawArrays(GL_LINE_LOOP, 0, orxDISPLAY_KU32_CIRCLE_LINE_NUMBER);
-    glASSERT();
-  }
-
-  /* Reenables texturing */
-  glEnable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Clears last blend mode */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  /* Draws it */
+  orxDisplay_GLFW_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill);
 
   /* Done! */
   return eResult;
@@ -1323,12 +1264,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 
   /* Draws remaining items */
   orxDisplay_GLFW_DrawArrays();
-
-  /* Selects arrays */
-  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-  glASSERT();
-  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-  glASSERT();
 
   /* Gets origin */
   orxVector_Sub(&vOrigin, &(_pstBox->vPosition), &(_pstBox->vPivot));
@@ -1349,46 +1284,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
   sstDisplay.astVertexList[2].stRGBA =
   sstDisplay.astVertexList[3].stRGBA = _stColor;
 
-  /* Has alpha? */
-  if(orxRGBA_A(_stColor) != 0xFF)
-  {
-    /* Enables alpha blending */
-    glEnable(GL_BLEND);
-    glASSERT();
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glASSERT();
-  }
-  else
-  {
-    /* Disables alpha blending */
-    glDisable(GL_BLEND);
-    glASSERT();
-  }
-
-  /* Disables texturing */
-  glDisable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Filled? */
-  if(_bFill != orxFALSE)
-  {
-    /* Draws it */
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    glASSERT();
-  }
-  else
-  {
-    /* Draws it */
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-    glASSERT();
-  }
-
-  /* Reenables texturing */
-  glEnable(GL_TEXTURE_2D);
-  glASSERT();
-
-  /* Clears last blend mode */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  /* Draws it */
+  orxDisplay_GLFW_DrawPrimitive(4, _stColor, _bFill);
 
   /* Done! */
   return eResult;
