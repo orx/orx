@@ -416,6 +416,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   {
     orxFRAME *pstFrame;
     orxBODY  *pstBody;
+    orxVECTOR vSpeed;
 
     /* Gets associated body */
     pstBody = orxBODY(poBody->GetUserData());
@@ -423,15 +424,29 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
     /* Gets owner's frame */
     pstFrame = orxOBJECT_GET_STRUCTURE(orxOBJECT(orxBody_GetOwner(pstBody)), FRAME);
 
+    /* Gets its body speed */
+    orxBody_GetSpeed(pstBody, &vSpeed);
+
     /* Is not a root child? */
     if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
     {
-      orxVECTOR vPos;
+      orxVECTOR vPos, vScale;
+      orxFRAME *pstParentFrame;
 
       /* Updates body's position & rotation*/
       orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
       orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+
+      /* Gets parent frame */
+      pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+      /* Updates its speed with parent scale & rotation */
+      orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+      orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
     }
+
+    /* Applies speed */
+    orxPhysics_SetSpeed((orxPHYSICS_BODY *)poBody, &vSpeed);
   }
 
   /* Is simulation enabled? */

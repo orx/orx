@@ -687,14 +687,18 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
       }
 
       /* Use rotation? */
-      if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_USE_ROTATION) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_ROTATION) != orxFALSE))
+      if(((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_USE_ROTATION) == orxFALSE)
+       && (!orxStructure_TestFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT)))
+      || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_ROTATION) != orxFALSE))
       {
         /* Updates status */
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_ROTATION, orxSPAWNER_KU32_FLAG_NONE);
       }
 
       /* Use scale? */
-      if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_USE_SCALE) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_SCALE) != orxFALSE))
+      if(((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_USE_SCALE) == orxFALSE)
+       && (!orxStructure_TestFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT)))
+      || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_SCALE) != orxFALSE))
       {
         /* Updates status */
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SCALE, orxSPAWNER_KU32_FLAG_NONE);
@@ -1319,7 +1323,7 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         }
 
         /* Not using self as parent or has a body? */
-        if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT) || (_orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_BODY) != orxNULL))
+        if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
         {
           /* Updates object position */
           orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxVector_Mul(&vPosition, orxObject_GetPosition(pstObject, &vPosition), &vSpawnerScale), fSpawnerRotation), orxSpawner_GetWorldPosition(_pstSpawner, &vSpawnerPosition)));

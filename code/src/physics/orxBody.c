@@ -183,16 +183,17 @@ struct __orxBODY_JOINT_t
 struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
-  orxVECTOR               vScale;                                     /**< Scale : 28 */
-  orxVECTOR               vPreviousPosition;                          /**< Previous position : 40 */
-  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 44 */
-  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 48 */
-  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 52 */
-  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 56 */
-  orxU32                  u32DefFlags;                                /**< Definition flags : 60 */
-  orxLINKLIST             stPartList;                                 /**< Part list : 72 */
-  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 84 */
-  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 96 */
+  orxVECTOR               vSpeed;                                     /**< Speed : 28 */
+  orxVECTOR               vScale;                                     /**< Scale : 40 */
+  orxVECTOR               vPreviousPosition;                          /**< Previous position : 52 */
+  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 56 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 60 */
+  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 64 */
+  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 68 */
+  orxU32                  u32DefFlags;                                /**< Definition flags : 72 */
+  orxLINKLIST             stPartList;                                 /**< Part list : 84 */
+  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 96 */
+  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 108 */
 };
 
 /** Static structure
@@ -1659,8 +1660,11 @@ orxSTATUS orxFASTCALL orxBody_SetSpeed(orxBODY *_pstBody, const orxVECTOR *_pvSp
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Updates its speed */
-    eResult = orxPhysics_SetSpeed(_pstBody->pstData, _pvSpeed);
+    /* Stores it */
+    orxVector_Copy(&(_pstBody->vSpeed), _pvSpeed);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -1815,7 +1819,7 @@ orxVECTOR *orxFASTCALL orxBody_GetSpeed(const orxBODY *_pstBody, orxVECTOR *_pvS
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
     /* Updates result */
-    pvResult = orxPhysics_GetSpeed(_pstBody->pstData, _pvSpeed);
+    pvResult = orxVector_Copy(_pvSpeed, &(_pstBody->vSpeed));
   }
   else
   {
@@ -2400,9 +2404,15 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       /* Gets body up-to-date rotation */
       fRotation = orxPhysics_GetRotation(_pstBody->pstData);
 
+      /* Gets body up-to-date speed */
+      orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed);
+
       /* Global space? */
       if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
       {
+        orxVECTOR vScale;
+        orxFRAME *pstParentFrame;
+
         /* Updates position & rotation with diffs */
         orxVector_Add(&vPosition, &vPosition, &vDiff);
         fRotation += fDiff;
@@ -2412,6 +2422,13 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
         orxPhysics_SetRotation(_pstBody->pstData, fRotation);
         orxVector_Copy(&(_pstBody->vPreviousPosition), &vPosition);
         _pstBody->fPreviousRotation = fRotation;
+
+        /* Gets parent frame */
+        pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+        /* Updates speed with parent scale & rotation */
+        orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+        orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));        
       }
 
       /* Updates position */
@@ -2424,7 +2441,7 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       orxPhysics_SetAngularVelocity(_pstBody->pstData, orxPhysics_GetAngularVelocity(_pstBody->pstData) * fSpeedCoef);
 
       /* Updates its speed */
-      orxPhysics_SetSpeed(_pstBody->pstData, orxVector_Mulf(&vSpeed, orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed), fSpeedCoef));
+      orxBody_SetSpeed(_pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fSpeedCoef));
 
       /* Has speed coef */
       if(fSpeedCoef != orxFLOAT_1)
