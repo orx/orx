@@ -68,6 +68,7 @@ void orxFASTCALL orxRender_Setup()
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, void, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, const orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetScreenPosition, orxVECTOR *, const orxVECTOR *, const orxVIEWPORT *, orxVECTOR *);
 
 
 /* *** Core function info array *** */
@@ -77,6 +78,7 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(RENDER)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, INIT, orxRender_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, EXIT, orxRender_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, GET_WORLD_POSITION, orxRender_GetWorldPosition)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, GET_SCREEN_POSITION, orxRender_GetScreenPosition)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(RENDER)
 
@@ -96,4 +98,9 @@ void orxFASTCALL orxRender_Exit()
 orxVECTOR *orxFASTCALL orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
+}
+
+orxVECTOR *orxFASTCALL orxRender_GetScreenPosition(const orxVECTOR *_pvWorldPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvScreenPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetScreenPosition)(_pvWorldPosition, _pstViewport, _pvScreenPosition);
 }
