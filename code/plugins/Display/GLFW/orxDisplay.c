@@ -973,7 +973,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   return;
 }
 
-static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_DrawPrimitive");
@@ -1022,9 +1022,19 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
     }
     else
     {
-      /* Draws it */
-      glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
-      glASSERT();
+      /* Is open? */
+      if(_bOpen != orxFALSE)
+      {
+        /* Draws it */
+        glDrawArrays(GL_LINE_STRIP, 0, _u32VertexNumber);
+        glASSERT();
+      }
+      else
+      {
+        /* Draws it */
+        glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
+        glASSERT();
+      }
     }
   }
 
@@ -1196,7 +1206,38 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawLine(const orxVECTOR *_pvStart, const 
   sstDisplay.astVertexList[1].stRGBA = _stColor;
 
   /* Draws it */
-  orxDisplay_GLFW_DrawPrimitive(2, _stColor, orxFALSE);
+  orxDisplay_GLFW_DrawPrimitive(2, _stColor, orxFALSE, orxTRUE);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_avVertexList[i].fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_avVertexList[i].fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_GLFW_DrawPrimitive(_u32VertexNumber, _stColor, orxFALSE, orxTRUE);
 
   /* Done! */
   return eResult;
@@ -1227,7 +1268,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawPolygon(const orxVECTOR *_avVertexList
   }
 
   /* Draws it */
-  orxDisplay_GLFW_DrawPrimitive(_u32VertexNumber, _stColor, _bFill);
+  orxDisplay_GLFW_DrawPrimitive(_u32VertexNumber, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1259,7 +1300,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCircle(const orxVECTOR *_pvCenter, orx
   }
 
   /* Draws it */
-  orxDisplay_GLFW_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill);
+  orxDisplay_GLFW_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1297,7 +1338,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
   sstDisplay.astVertexList[3].stRGBA = _stColor;
 
   /* Draws it */
-  orxDisplay_GLFW_DrawPrimitive(4, _stColor, _bFill);
+  orxDisplay_GLFW_DrawPrimitive(4, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -3656,6 +3697,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_BlitBitmap, DISPLAY, BLIT_BITMA
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolyline, DISPLAY, DRAW_POLYLINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolygon, DISPLAY, DRAW_POLYGON);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawOBox, DISPLAY, DRAW_OBOX);

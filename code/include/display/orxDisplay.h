@@ -913,6 +913,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(c
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor);
 
+/** Draws a polyline (aka open polygon)
+ * @param[in]   _avVertexList                         List of vertices
+ * @param[in]   _u32VertexNumber                      Number of vertices in the list
+ * @param[in]   _stColor                              Color
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor);
+
 /** Draws a (closed) polygon
  * @param[in]   _avVertexList                         List of vertices
  * @param[in]   _u32VertexNumber                      Number of vertices in the list

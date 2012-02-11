@@ -1629,6 +1629,22 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawLine(const orxVECTOR *_pvSt
   return eResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -2018,6 +2034,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawPolyline, DISPLAY, DRAW_POLYLINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawPolygon, DISPLAY, DRAW_POLYGON);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawOBox, DISPLAY, DRAW_OBOX);

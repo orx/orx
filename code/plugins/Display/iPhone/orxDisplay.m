@@ -1595,7 +1595,7 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
   return pstBitmap;
 }
 
-static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_iPhone_DrawPrimitive");
@@ -1662,9 +1662,19 @@ static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber,
     }
     else
     {
-      /* Draws it */
-      glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
-      glASSERT();
+      /* Is open? */
+      if(_bOpen != orxFALSE)
+      {
+        /* Draws it */
+        glDrawArrays(GL_LINE_STRIP, 0, _u32VertexNumber);
+        glASSERT();
+      }
+      else
+      {
+        /* Draws it */
+        glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
+        glASSERT();
+      }
     }
   }
 
@@ -1845,7 +1855,38 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawLine(const orxVECTOR *_pvStart, cons
   sstDisplay.astVertexList[1].stRGBA = _stColor;
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(2, _stColor, orxFALSE);
+  orxDisplay_iPhone_DrawPrimitive(2, _stColor, orxFALSE, orxTRUE);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Draws remaining items */
+  orxDisplay_iPhone_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_avVertexList[i].fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_avVertexList[i].fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_iPhone_DrawPrimitive(_u32VertexNumber, _stColor, orxFALSE, orxTRUE);
 
   /* Done! */
   return eResult;
@@ -1876,7 +1917,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexLi
   }
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(_u32VertexNumber, _stColor, _bFill);
+  orxDisplay_iPhone_DrawPrimitive(_u32VertexNumber, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1908,7 +1949,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, o
   }
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill);
+  orxDisplay_iPhone_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1946,7 +1987,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawOBox(const orxOBOX *_pstBox, orxRGBA
   sstDisplay.astVertexList[3].stRGBA = _stColor;
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(4, _stColor, _bFill);
+  orxDisplay_iPhone_DrawPrimitive(4, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -3859,6 +3900,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_BlitBitmap, DISPLAY, BLIT_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawPolyline, DISPLAY, DRAW_POLYLINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawPolygon, DISPLAY, DRAW_POLYGON);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawOBox, DISPLAY, DRAW_OBOX);

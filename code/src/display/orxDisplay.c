@@ -96,6 +96,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, const orxB
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformText, orxSTATUS, const orxSTRING, const orxBITMAP *, const orxCHARACTER_MAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawLine, orxSTATUS, const orxVECTOR *, const orxVECTOR *, orxRGBA);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawPolyline, orxSTATUS, const orxVECTOR *, orxU32, orxRGBA);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawPolygon, orxSTATUS, const orxVECTOR *, orxU32, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawCircle, orxSTATUS, const orxVECTOR *, orxFLOAT, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, orxRGBA, orxBOOL);
@@ -156,6 +157,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_BITMAP, orxDisplay_Transfor
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_TEXT, orxDisplay_TransformText)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_LINE, orxDisplay_DrawLine)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_POLYLINE, orxDisplay_DrawPolyline)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_POLYGON, orxDisplay_DrawPolygon)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_CIRCLE, orxDisplay_DrawCircle)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_OBOX, orxDisplay_DrawOBox)
@@ -209,6 +211,11 @@ orxSTATUS orxFASTCALL orxDisplay_TransformText(const orxSTRING _zString, const o
 orxSTATUS orxFASTCALL orxDisplay_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawLine)(_pvStart, _pvEnd, _stColor);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawPolyline)(_avVertexList, _u32VertexNumber, _stColor);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
