@@ -86,10 +86,11 @@ typedef struct __orxRENDER_RENDER_NODE_t
  */
 typedef struct __orxRENDER_STATIC_t
 {
-  orxU32        u32Flags;                         /**< Control flags : 4 */
-  orxCLOCK     *pstClock;                         /**< Rendering clock pointer : 8 */
-  orxBANK      *pstRenderBank;                    /**< Rendering bank : 12 */
-  orxLINKLIST   stRenderList;                     /**< Rendering list : 16 */
+  orxU32        u32Flags;                         /**< Control flags */
+  orxCLOCK     *pstClock;                         /**< Rendering clock pointer */
+  orxFRAME     *pstFrame;                         /**< Conversion frame */
+  orxBANK      *pstRenderBank;                    /**< Rendering bank */
+  orxLINKLIST   stRenderList;                     /**< Rendering list */
 
 } orxRENDER_STATIC;
 
@@ -137,7 +138,7 @@ static orxINLINE void orxRender_RenderFPS()
 
     /* Gets its bitmap */
     pstBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
-    
+
     /* Clears text transform */
     orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
@@ -882,7 +883,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
     {
       /* Profiles */
       orxPROFILER_PUSH_MARKER("orxRender_RenderObject (Text)");
-      
+
       /* Sends start event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
@@ -1721,7 +1722,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
 
       /* Gets viewport correction ratio */
       fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
-      
+
       /* Has one? */
       if(fCorrectionRatio != orxFLOAT_1)
       {
@@ -1879,115 +1880,39 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
       /* Is position depth in camera frustum? */
       if((_pvWorldPosition->fZ > stCameraFrustum.vTL.fZ) && (_pvWorldPosition->fZ <= stCameraFrustum.vBR.fZ))
       {
+        orxAABOX  stViewportBox;
+        orxVECTOR vLocalPosition, vViewportCenter, vCoef;
 
-        //! TODO
-      //  orxAABOX  stViewportBox;
-      //  orxFLOAT  fCorrectionRatio;
+        /* Links the conversion frame to the camera */
+        orxFrame_SetParent(sstRender.pstFrame, orxCamera_GetFrame(pstCamera));
 
-      ///* Gets viewport box */
-      //orxViewport_GetBox(pstViewport, &stViewportBox);
+        /* Updates the conversion frame with world position */
+        orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_GLOBAL, _pvWorldPosition);
 
-      ///* Gets viewport center */
-      //orxVector_Mulf(&vCenter, orxVector_Add(&vCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
+        /* Updates local position */
+        orxFrame_GetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &vLocalPosition);
 
-      ///* Gets viewport correction ratio */
-      //fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
-      //
-      ///* Has one? */
-      //if(fCorrectionRatio != orxFLOAT_1)
-      //{
-      //  orxFLOAT fDelta;
+        /* Unlinks frame from the camera */
+        orxFrame_SetParent(sstRender.pstFrame, orxNULL);
+        
+        /* Makes it relative to the camera frustum size */
+        vLocalPosition.fX = vLocalPosition.fX / (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX);
+        vLocalPosition.fY = vLocalPosition.fY / (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY);
 
-      //  /* Should correct horizontally? */
-      //  if(fCorrectionRatio < orxFLOAT_1)
-      //  {
-      //    /* Gets rendering limit delta using correction ratio */
-      //    fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+        /* Gets viewport box */
+        orxViewport_GetBox(pstViewport, &stViewportBox);
 
-      //    /* Updates viewport */
-      //    stViewportBox.vTL.fX += fDelta;
-      //    stViewportBox.vBR.fX -= fDelta;
-      //  }
-      //  else
-      //  {
-      //    /* Gets rendering limit delta using correction ratio */
-      //    fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+        /* Gets viewport center */
+        orxVector_Mulf(&vViewportCenter, orxVector_Add(&vViewportCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
 
-      //    /* Updates viewport */
-      //    stViewportBox.vTL.fY += fDelta;
-      //    stViewportBox.vBR.fY -= fDelta;
-      //  }
-      //}
+        /* Gets coef */
+        orxVector_Sub(&vCoef, &(stViewportBox.vBR), &(stViewportBox.vTL));
 
-      ///* Is position depth in frustum? */
-      //if((_pvWorldPosition->fZ > stFrustum.fZ)
-      //&& (_pvScreenPosition->fX <= stViewportBox.vBR.fX)
-      //&& (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
-      //&& (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
-      //{
-      //  orxVECTOR vLocalPosition, vCenter, vCameraCenter, vCameraPosition;
-      //  orxAABOX  stCameraFrustum;
-      //  orxFLOAT  fZoom, fRotation;
+        /* Updates screen position */
+        orxVector_Add(_pvScreenPosition, &vViewportCenter, orxVector_Mul(&vLocalPosition, &vLocalPosition, &vCoef));
 
-      //  /* Gets viewport center */
-      //  orxVector_Mulf(&vCenter, orxVector_Add(&vCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
-
-      //  /* Gets camera position */
-      //  orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-      //  /* Gets camera world frustum */
-      //  orxCamera_GetFrustum(pstCamera, &stCameraFrustum);
-      //  orxVector_Add(&(stCameraFrustum.vTL), &(stCameraFrustum.vTL), &vCameraPosition);
-      //  orxVector_Add(&(stCameraFrustum.vBR), &(stCameraFrustum.vBR), &vCameraPosition);
-
-      //  /* Gets camera position */
-      //  orxVector_Mulf(&vCameraCenter, orxVector_Add(&vCameraCenter, &(stCameraFrustum.vBR), &(stCameraFrustum.vTL)), orx2F(0.5f));
-
-      //  /* Gets viewport space normalized position */
-      //  orxVector_Set(&vLocalPosition, (_pvScreenPosition->fX - vCenter.fX) / (stViewportBox.vBR.fX - stViewportBox.vTL.fX), (_pvScreenPosition->fY - vCenter.fY) / (stViewportBox.vBR.fY - stViewportBox.vTL.fY), orxFLOAT_0);
-
-      //  /* Gets camera zoom */
-      //  fZoom = orxCamera_GetZoom(pstCamera);
-
-      //  /* Has rotation */
-      //  if((fRotation = orxFrame_GetRotation(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL)) != orxFLOAT_0)
-      //  {
-      //    orxFLOAT fCos, fSin;
-
-      //    /* Gets values in camera space */
-      //    vLocalPosition.fX *= (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX);
-      //    vLocalPosition.fY *= (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY);
-
-      //    /* Gets cosine and sine of the camera angle */
-      //    fCos = orxMath_Cos(-fRotation);
-      //    fSin = orxMath_Sin(-fRotation);
-
-      //    /* Gets its world coordinates */
-      //    orxVector_Set(_pvWorldPosition, (vCameraCenter.fX * fZoom) + (fCos * vLocalPosition.fX) + (fSin * vLocalPosition.fY), (vCameraCenter.fY * fZoom) + (-fSin * vLocalPosition.fX) + (fCos * vLocalPosition.fY), stCameraFrustum.vTL.fZ);
-      //  }
-      //  else
-      //  {
-      //    /* Gets its world coordinates */
-      //    orxVector_Set(_pvWorldPosition, vCameraCenter.fX * fZoom + vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX), vCameraCenter.fY * fZoom + vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY), stCameraFrustum.vTL.fZ);
-      //  }
-
-      //  /* Has zoom? */
-      //  if((fZoom = orxCamera_GetZoom(pstCamera)) != orxFLOAT_1)
-      //  {
-      //    orxFLOAT fRecZoom;
-
-      //    /* Gets reciprocal zoom */
-      //    fRecZoom = orxFLOAT_1 / fZoom;
-
-      //    /* Updates result */
-      //    _pvWorldPosition->fX *= fRecZoom;
-      //    _pvWorldPosition->fY *= fRecZoom;
-      //  }
-
-      //  /* Updates result */
-      //  pvResult = _pvWorldPosition;
-
-      //  break;
+        /* Updates result */
+        pvResult = _pvScreenPosition;
       }
     }
   }
@@ -2037,8 +1962,28 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
       /* Valid? */
       if(sstRender.pstClock != orxNULL)
       {
-        /* Registers rendering function */
-        eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+        /* Creates conversion frame */
+        sstRender.pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+        /* Valid? */
+        if(sstRender.pstFrame != orxNULL)
+        {
+          /* Inits it */
+          orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);
+          orxFrame_SetRotation(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, orxFLOAT_0);
+          orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
+
+          /* Registers rendering function */
+          eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+        }
+        else
+        {
+          /* Deletes bank */
+          orxBank_Delete(sstRender.pstRenderBank);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
       }
       else
       {
@@ -2089,6 +2034,9 @@ void orxFASTCALL orxRender_Home_Exit()
   {
     /* Unregisters rendering function */
     orxClock_Unregister(sstRender.pstClock, orxRender_RenderAll);
+
+    /* Deletes conversion frame */
+    orxFrame_Delete(sstRender.pstFrame);
 
     /* Deletes rendering bank */
     orxBank_Delete(sstRender.pstRenderBank);
