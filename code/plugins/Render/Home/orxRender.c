@@ -1882,6 +1882,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
       {
         orxAABOX  stViewportBox;
         orxVECTOR vLocalPosition, vViewportCenter, vCoef;
+        orxFLOAT  fCorrectionRatio;
 
         /* Links the conversion frame to the camera */
         orxFrame_SetParent(sstRender.pstFrame, orxCamera_GetFrame(pstCamera));
@@ -1894,7 +1895,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
 
         /* Unlinks frame from the camera */
         orxFrame_SetParent(sstRender.pstFrame, orxNULL);
-        
+
         /* Makes it relative to the camera frustum size */
         vLocalPosition.fX = vLocalPosition.fX / (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX);
         vLocalPosition.fY = vLocalPosition.fY / (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY);
@@ -1907,6 +1908,25 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
 
         /* Gets coef */
         orxVector_Sub(&vCoef, &(stViewportBox.vBR), &(stViewportBox.vTL));
+
+        /* Gets its correction ratio */
+        fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+
+        /* Has correction ratio? */
+        if(fCorrectionRatio != orxFLOAT_1)
+        {
+          /* X axis? */
+          if(fCorrectionRatio < orxFLOAT_1)
+          {
+            /* Applies it */
+            vCoef.fX *= fCorrectionRatio;
+          }
+          else
+          {
+            /* Applies it */
+            vCoef.fY *= orxFLOAT_1 / fCorrectionRatio;
+          }
+        }
 
         /* Updates screen position */
         orxVector_Add(_pvScreenPosition, &vViewportCenter, orxVector_Mul(&vLocalPosition, &vLocalPosition, &vCoef));
