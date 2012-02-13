@@ -1071,7 +1071,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
   if(sstDisplay.s32BufferIndex > 0)
   {
     /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxDisplay_iPhone_DrawArrays");
+    orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
 
     /* Shader support? */
     if([sstDisplay.poView bShaderSupport] != NO)
@@ -1598,7 +1598,7 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
 static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
 {
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxDisplay_iPhone_DrawPrimitive");
+  orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
 
   /* Has shader support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))

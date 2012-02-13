@@ -290,7 +290,7 @@ static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
 static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_Update");
+  orxPROFILER_PUSH_MARKER("orxDisplay_Update");
 
   /* Polls events */
   glfwPollEvents();
@@ -710,7 +710,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     GLvoid *pIndexContext;
 
     /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_DrawArrays");
+    orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
 
     /* Selects arrays */
     glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
@@ -976,7 +976,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
 static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
 {
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxDisplay_GLFW_DrawPrimitive");
+  orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
 
   /* Selects arrays */
   glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
