@@ -1877,8 +1877,10 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
       /* Gets camera center */
       orxVector_Mulf(&vCameraCenter, orxVector_Add(&vCameraCenter, &(stCameraFrustum.vBR), &(stCameraFrustum.vTL)), orx2F(0.5f));
 
-      /* Is position depth in camera frustum? */
-      if((_pvWorldPosition->fZ > stCameraFrustum.vTL.fZ) && (_pvWorldPosition->fZ <= stCameraFrustum.vBR.fZ))
+      /* No viewport specified or is position depth in camera frustum? */
+      if((_pstViewport == orxNULL)
+      || ((_pvWorldPosition->fZ > stCameraFrustum.vTL.fZ)
+       && (_pvWorldPosition->fZ <= stCameraFrustum.vBR.fZ)))
       {
         orxAABOX  stViewportBox;
         orxVECTOR vLocalPosition, vViewportCenter, vCoef;
