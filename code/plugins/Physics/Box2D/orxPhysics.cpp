@@ -35,6 +35,7 @@
 #include "orxPluginAPI.h"
 
 #include <Box2D/Box2D.h>
+#include <malloc.h>
 
 
 #ifdef __orxMSVC__
@@ -334,9 +335,18 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 
 void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
 {
-  orxVECTOR avVertexList[_s32VertexNumber];
   orxCOLOR  stColor;
   orxS32    i;
+
+#ifndef __orxMSVC__
+
+  orxVECTOR avVertexList[_s32VertexNumber];
+
+#else /* __orxMSVC__ */
+
+  orxVECTOR *avVertexList = (orxVECTOR *)_malloca(_s32VertexNumber * sizeof(orxVECTOR));
+
+#endif /* __orxMSVC__ */
 
   /* For all vertices */
   for(i = 0; i < _s32VertexNumber; i++)
@@ -363,9 +373,18 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
 
 void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
 {
-  orxVECTOR avVertexList[_s32VertexNumber];
   orxCOLOR  stColor;
   orxS32    i;
+
+#ifndef __orxMSVC__
+
+  orxVECTOR avVertexList[_s32VertexNumber];
+
+#else /* __orxMSVC__ */
+
+  orxVECTOR *avVertexList = (orxVECTOR *)_malloca(_s32VertexNumber * sizeof(orxVECTOR));
+
+#endif /* __orxMSVC__ */
 
   /* For all vertices */
   for(i = 0; i < _s32VertexNumber; i++)
