@@ -1583,6 +1583,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
+  /* Clears screen */
+  orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+
   /* Sends render start event */
   bRender = (orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_START) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
 
@@ -1594,9 +1597,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
 
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
-
-    /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
 
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
