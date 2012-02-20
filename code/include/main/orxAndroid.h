@@ -102,30 +102,17 @@ void orxAndroid_DetachThread();
 void orxAndroid_GetMainArgs();
 void orxAndroid_ReleaseMainArgs();
 
-extern orxS32     s32NbParams;
+extern orxS32     u32NbParams;
 extern orxSTRING *azParams;
 
 
-static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
-  /* Checks */
-  orxASSERT(_pstApp != orxNULL);
-  orxASSERT(_pfnRun != orxNULL);
-
-  /* Inits app */
-  pstApp                = _pstApp;
-  pstApp->onAppCmd      = ptonAppCmd;
-  pstApp->onInputEvent  = ptonInputEvent;
-  
-  /* Makes sure glue isn't stripped */
-  app_dummy();
-
   /* Inits the Debug System */
   orxDEBUG_INIT();
 
-  /* Retrieves Java environment */
-  orxAndroid_AttachThread();
-  orxAndroid_GetMainArgs();
+  /* Checks */
+  orxASSERT(_pfnRun != orxNULL);
 
   /* Registers main module */
   orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
@@ -137,7 +124,7 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
   orxModule_SetupAll();
 
   /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(s32NbParams, azParams) != orxSTATUS_FAILURE)
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
@@ -235,9 +222,30 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
   
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
+}
+
+int main(int argc, char *argv[]);
+
+void android_main(struct android_app *_pstApp)
+{
+  /* Makes sure glue isn't stripped */
+  app_dummy();
+
+  /* Inits app */
+  pstApp                = _pstApp;
+  pstApp->onAppCmd      = ptonAppCmd;
+  pstApp->onInputEvent  = ptonInputEvent;
+
+  /* Retrieves Java environment */
+  orxAndroid_AttachThread();
+  orxAndroid_GetMainArgs();
+
+  main(u32NbParams, azParams);
 
   orxAndroid_ReleaseMainArgs();
   orxAndroid_DetachThread();
+
+  return;
 }
 
 #endif

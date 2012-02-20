@@ -126,12 +126,9 @@ static void orxFASTCALL Exit()
 {
 }
 
-void android_main(struct android_app *_pstApp)
+int main(int argc, char *argv[])
 {
-  /* Executes orx */
-  orx_AndroidExecute(_pstApp, Init, Run, Exit);
-  
-  /* Done! */
-  return;
+  orx_Execute(argc, argv, Init, Run, Exit);
+  return 0;
 }
 

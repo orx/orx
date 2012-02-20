@@ -49,7 +49,7 @@ ASensorEventQueue  *poSensorEventQueue;
 JNIEnv             *poJEnv;
 jobject             oWakeLock;
 
-orxS32              s32NbParams;
+orxU32              u32NbParams;
 orxSTRING          *azParams;
 
 /** Render inhibiter
@@ -280,7 +280,7 @@ void orxAndroid_GetMainArgs()
     const char* cmd_line = (*poJEnv)->GetStringUTFChars(poJEnv, orx_cmd_line, NULL);
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "orx.cmd_line = %s", cmd_line);
     
-    if (argc_argv (cmd_line, (int *) &s32NbParams, (char***) &azParams) == -1)
+    if (argc_argv (cmd_line, (int *) &u32NbParams, (char***) &azParams) == -1)
     {
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Something went wrong.");
     }
@@ -289,7 +289,7 @@ void orxAndroid_GetMainArgs()
 	}
 	else
 	{
-	  s32NbParams = 0;
+	  u32NbParams = 0;
 	  azParams = orxNULL;
 	  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "orx.cmd_line not defined");
 	}
@@ -298,7 +298,7 @@ void orxAndroid_GetMainArgs()
 void orxAndroid_ReleaseMainArgs()
 {
   int i;
-  for(i = 0; i < s32NbParams; i++)
+  for(i = 0; i < u32NbParams; i++)
   {
     free(azParams[i]);
   }
