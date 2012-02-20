@@ -190,10 +190,9 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
                 while(ASensorEventQueue_getEvents(poSensorEventQueue, &oEvent, 1) > 0)
                 {
                   /* Inits event */
-                  stAccelPayload.stAccelerometer.pAccelerometer = &oEvent;
-                  stAccelPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
-                  stAccelPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
-                  stAccelPayload.stAccelerometer.fZ = (orxFLOAT)oEvent.acceleration.z;
+                  stAccelPayload.stAccelerometer.vAcceleration.fX = (orxFLOAT)oEvent.acceleration.x;
+                  stAccelPayload.stAccelerometer.vAcceleration.fY = (orxFLOAT)oEvent.acceleration.y;
+                  stAccelPayload.stAccelerometer.vAcceleration.fZ = (orxFLOAT)oEvent.acceleration.z;
 
                   /* Sends event */
                   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
