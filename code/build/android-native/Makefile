@@ -69,7 +69,7 @@ armeabi_OUT = armeabi/liborx.a
 armeabi-v7a_OUT = armeabi-v7a/liborx.a
 
 # change this to the root of your android ndk installation
-NDK_ROOT = /opt/loki/android-ndk-r5b
+NDK_ROOT = /home/philippe/android-ndk-r7b
 
 INCLUDES = -I../../include -I../../../extern/SOIL/include -I../../../extern/Box2D_2.1.3/include -I../../../extern/dlmalloc -I../../../extern/stb_vorbis \
            -I$(NDK_ROOT)/sources/android/native_app_glue
@@ -92,11 +92,11 @@ armeabi/debug/%.o: %.c
 
 armeabi-v7a/debug/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -c $< -o $@
 
 armeabi-v7a/debug/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) -g -O0 -D__orxDEBUG__ -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -c $< -o $@
 
 armeabi/release/%.o: %.cpp
 	mkdir -p $(dir $@)
@@ -108,11 +108,11 @@ armeabi/release/%.o: %.c
 
 armeabi-v7a/release/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -c $< -o $@
+	$(CXX) $(INCLUDES) $(CPPFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -mfpu=vfpv3-d16 -c $< -o $@
 
 armeabi-v7a/release/%.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -c $< -o $@
+	$(CC) $(INCLUDES) $(CFLAGS) -march=armv7-a -mfloat-abi=softfp -O2 -mfpu=vfpv3-d16 -c $< -o $@
 
 $(armeabi_OUT): $(armeabi_OBJ)
 	$(AR) rcs $(armeabi_OUT) $(armeabi_OBJ)
