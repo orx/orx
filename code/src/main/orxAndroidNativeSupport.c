@@ -31,12 +31,16 @@
  *
  */
 
-
+#include <android/log.h>
 #include <android_native_app_glue.h>
 #include <android/sensor.h>
 
 #include "orxInclude.h"
 #include "orxKernel.h"
+
+#define  LOG_TAG    "orx"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 static const char  *zOrxCommandLineKey = "orx.cmd_line";
 
@@ -67,7 +71,7 @@ void orxAndroid_AttachThread()
   int error = (*pstApp->activity->vm)->AttachCurrentThread(pstApp->activity->vm, &poJEnv, NULL);
   if (error || !poJEnv)
   {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "ERROR: could not attach thread to JVM!");
+    LOGE("ERROR: could not attach thread to JVM!");
   }
 }
 
@@ -282,7 +286,7 @@ void orxAndroid_GetMainArgs()
     
     if (argc_argv (cmd_line, (int *) &u32NbParams, (char***) &azParams) == -1)
     {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Something went wrong.");
+      LOGE("Something went wrong.");
     }
     
     (*poJEnv)->ReleaseStringUTFChars(poJEnv, orx_cmd_line, cmd_line);
@@ -291,7 +295,7 @@ void orxAndroid_GetMainArgs()
 	{
 	  u32NbParams = 0;
 	  azParams = orxNULL;
-	  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "orx.cmd_line not defined");
+	  LOGI("orx.cmd_line not defined");
 	}
 }
 
@@ -392,5 +396,39 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
     return 0;
 }
 
-void (*ptonAppCmd)(struct android_app* app, int32_t cmd) = engine_handle_cmd;
-int32_t (*ptonInputEvent)(struct android_app* app, AInputEvent* event) = engine_handle_input;
+extern int main(int argc, char *argv[]);
+
+void android_main(struct android_app *_pstApp)
+{
+  /* Makes sure glue isn't stripped */
+  app_dummy();
+
+  /* Inits app */
+  pstApp                = _pstApp;
+  pstApp->onAppCmd      = engine_handle_cmd;
+  pstApp->onInputEvent  = engine_handle_input;
+
+  /* Retrieves Java environment */
+  orxAndroid_AttachThread();
+  orxAndroid_GetMainArgs();
+
+  #ifdef __orxDEBUG__
+
+  LOGI("about to call main()");
+
+  #endif
+
+  main(u32NbParams, azParams);
+
+  #ifdef __orxDEBUG__
+
+  LOGI("main() returned");
+
+  #endif
+
+  orxAndroid_ReleaseMainArgs();
+  orxAndroid_DetachThread();
+
+  return;
+}
+

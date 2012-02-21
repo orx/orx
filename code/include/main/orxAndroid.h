@@ -93,14 +93,8 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 /* Defined in orxAndroidNativeSupport.c */
 extern orxS32 s32Animating;
 extern struct android_app *pstApp;
-extern void (*ptonAppCmd)(struct android_app *app, int32_t cmd);
-extern int32_t (*ptonInputEvent)(struct android_app* app, AInputEvent* event);
 extern const ASensor *poAccelerometerSensor;
 extern ASensorEventQueue *poSensorEventQueue;
-void orxAndroid_AttachThread();
-void orxAndroid_DetachThread();
-void orxAndroid_GetMainArgs();
-void orxAndroid_ReleaseMainArgs();
 
 extern orxS32     u32NbParams;
 extern orxSTRING *azParams;
@@ -222,30 +216,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
-}
-
-int main(int argc, char *argv[]);
-
-void android_main(struct android_app *_pstApp)
-{
-  /* Makes sure glue isn't stripped */
-  app_dummy();
-
-  /* Inits app */
-  pstApp                = _pstApp;
-  pstApp->onAppCmd      = ptonAppCmd;
-  pstApp->onInputEvent  = ptonInputEvent;
-
-  /* Retrieves Java environment */
-  orxAndroid_AttachThread();
-  orxAndroid_GetMainArgs();
-
-  main(u32NbParams, azParams);
-
-  orxAndroid_ReleaseMainArgs();
-  orxAndroid_DetachThread();
-
-  return;
 }
 
 #endif
