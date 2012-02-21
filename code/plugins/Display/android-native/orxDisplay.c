@@ -62,6 +62,8 @@
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
+#define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
+
 /**  Misc defines
  */
 #ifdef __orxDEBUG__
@@ -184,6 +186,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxCOLOR                  stLastColor;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxDISPLAY_SHADER        *pstDefaultShader;
+  orxDISPLAY_SHADER        *pstNoTextureShader;
 //  GLuint                    uiFrameBuffer;
   orxU8                   **aau8BufferArray;
   orxS32                    s32BitmapCounter;
@@ -438,9 +441,9 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
               glCheckFramebufferStatus(GL_FRAMEBUFFER);
               glASSERT();
 
-          		/* Inits viewport */
-        	  	glViewport(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight);
-        	  	glASSERT();
+              /* Inits viewport */
+              glViewport(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight);
+              glASSERT();
     
               /* Reads OpenGL data */
               glReadPixels(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index++]);
@@ -680,18 +683,18 @@ static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MAT
 static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
   static const orxSTRING szVertexShaderSource =
-  "attribute vec2 __vPosition__;"
-  "uniform mat4 __mProjection__;"
-  "attribute mediump vec2 __vTexCoord__;"
-  "varying mediump vec2 ___TexCoord___;"
-  "attribute mediump vec4 __vColor__;"
-  "varying mediump vec4 ___Color___;"
+  "attribute vec2 _vPosition_;"
+  "uniform mat4 _mProjection_;"
+  "attribute mediump vec2 _vTexCoord_;"
+  "varying mediump vec2 _gl_TexCoord0_;"
+  "attribute mediump vec4 _vColor_;"
+  "varying mediump vec4 _Color_;"
   "void main()"
   "{"
   "  mediump float fCoef = 1.0 / 255.0;"
-  "  gl_Position      = __mProjection__ * vec4(__vPosition__.xy, 0.0, 1.0);"
-  "  ___TexCoord___   = __vTexCoord__;"
-  "  ___Color___      = fCoef * __vColor__;"
+  "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
+  "  _gl_TexCoord0_   = _vTexCoord_;"
+  "  _Color_      = fCoef * _vColor_;"
   "}";
 
   GLuint    uiProgram, uiVertexShader, uiFragmentShader;
@@ -745,11 +748,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glASSERT();
 
       /* Binds attributes */
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "__vPosition__");
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
       glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "__vTexCoord__");
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
       glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "__vColor__");
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
       glASSERT();
 
       /* Links program */
@@ -757,11 +760,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glASSERT();
 
       /* Gets texture location */
-      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
+      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
       glASSERT();
 
       /* Gets projection matrix location */
-      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
+      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
       glASSERT();
 
       /* Gets linking status */
@@ -1124,7 +1127,102 @@ static orxINLINE void orxDisplay_Android_DrawBitmap(const orxBITMAP *_pstBitmap,
   return;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_Android_GetScreen()
+static void orxFASTCALL orxDisplay_Android_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
+{
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
+
+  /* Has shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Starts no texture shader */
+    orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Inits it */
+    orxDisplay_Android_InitShader(sstDisplay.pstNoTextureShader);
+
+    /* Selects arrays */
+    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
+  }
+
+  /* Has alpha? */
+  if(orxRGBA_A(_stColor) != 0xFF)
+  {
+    /* Enables alpha blending */
+    glEnable(GL_BLEND);
+    glASSERT();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glASSERT();
+  }
+  else
+  {
+    /* Disables alpha blending */
+    glDisable(GL_BLEND);
+    glASSERT();
+  }
+
+  /* Only 2 vertices? */
+  if(_u32VertexNumber == 2)
+  {
+    /* Draws it */
+    glDrawArrays(GL_LINES, 0, 2);
+    glASSERT();
+  }
+  else
+  {
+    /* Should fill? */
+    if(_bFill != orxFALSE)
+    {
+      /* Draws it */
+      glDrawArrays(GL_TRIANGLE_FAN, 0, _u32VertexNumber);
+      glASSERT();
+    }
+    else
+    {
+      /* Is open? */
+      if(_bOpen != orxFALSE)
+      {
+        /* Draws it */
+        glDrawArrays(GL_LINE_STRIP, 0, _u32VertexNumber);
+        glASSERT();
+      }
+      else
+      {
+        /* Draws it */
+        glDrawArrays(GL_LINE_LOOP, 0, _u32VertexNumber);
+        glASSERT();
+      }
+    }
+  }
+
+  /* Has shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Stops current shader */
+    orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+  }
+  else
+  {
+    /* Reenables texturing */
+    glEnable(GL_TEXTURE_2D);
+    glASSERT();
+  }
+
+  /* Clears last blend mode */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
+
+orxBITMAP *orxFASTCALL orxDisplay_Android_GetScreenBitmap()
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1262,15 +1360,29 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawLine(const orxVECTOR *_pvStart, con
   orxASSERT(_pvStart != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_Android_DrawArrays();
 
+  /* Copies vertices */
+  sstDisplay.astVertexList[0].fX = (GLfloat)(_pvStart->fX);
+  sstDisplay.astVertexList[0].fY = (GLfloat)(_pvStart->fY);
+  sstDisplay.astVertexList[1].fX = (GLfloat)(_pvEnd->fX);
+  sstDisplay.astVertexList[1].fY = (GLfloat)(_pvEnd->fY);
+
+  /* Copies color */
+  sstDisplay.astVertexList[0].stRGBA =
+  sstDisplay.astVertexList[1].stRGBA = _stColor;
+
+  /* Draws it */
+  orxDisplay_Android_DrawPrimitive(2, _stColor, orxFALSE, orxTRUE);
+  
   /* Done! */
   return eResult;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
 {
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1278,8 +1390,22 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawPolyline(const orxVECTOR *_avVertex
   orxASSERT(_avVertexList != orxNULL);
   orxASSERT(_u32VertexNumber > 0);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_Android_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_avVertexList[i].fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_avVertexList[i].fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_Android_DrawPrimitive(_u32VertexNumber, _stColor, orxFALSE, orxTRUE);
 
   /* Done! */
   return eResult;
@@ -1287,6 +1413,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawPolyline(const orxVECTOR *_avVertex
 
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
 {
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1294,8 +1421,22 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawPolygon(const orxVECTOR *_avVertexL
   orxASSERT(_avVertexList != orxNULL);
   orxASSERT(_u32VertexNumber > 0);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_Android_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_avVertexList[i].fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_avVertexList[i].fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_Android_DrawPrimitive(_u32VertexNumber, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1303,6 +1444,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawPolygon(const orxVECTOR *_avVertexL
 
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
 {
+  orxU32    i;
+  orxFLOAT  fAngle;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1310,8 +1453,22 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawCircle(const orxVECTOR *_pvCenter, 
   orxASSERT(_pvCenter != orxNULL);
   orxASSERT(_fRadius >= orxFLOAT_0);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_Android_DrawArrays();
+
+  /* For all vertices */
+  for(i = 0, fAngle = orxFLOAT_0; i < orxDISPLAY_KU32_CIRCLE_LINE_NUMBER; i++, fAngle += orxMATH_KF_2_PI / orxDISPLAY_KU32_CIRCLE_LINE_NUMBER)
+  {
+    /* Copies its coords */
+    sstDisplay.astVertexList[i].fX = (GLfloat)(_fRadius * orxMath_Cos(fAngle) + _pvCenter->fX);
+    sstDisplay.astVertexList[i].fY = (GLfloat)(_fRadius * orxMath_Sin(fAngle) + _pvCenter->fY);
+
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _stColor;
+  }
+
+  /* Draws it */
+  orxDisplay_Android_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -1319,14 +1476,37 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawCircle(const orxVECTOR *_pvCenter, 
 
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
 {
+  orxVECTOR vOrigin;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBox != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Draws remaining items */
+  orxDisplay_Android_DrawArrays();
+
+  /* Gets origin */
+  orxVector_Sub(&vOrigin, &(_pstBox->vPosition), &(_pstBox->vPivot));
+
+  /* Sets vertices */
+  sstDisplay.astVertexList[0].fX = (GLfloat)(vOrigin.fX);
+  sstDisplay.astVertexList[0].fY = (GLfloat)(vOrigin.fY);
+  sstDisplay.astVertexList[1].fX = (GLfloat)(vOrigin.fX + _pstBox->vX.fX);
+  sstDisplay.astVertexList[1].fY = (GLfloat)(vOrigin.fY + _pstBox->vX.fY);
+  sstDisplay.astVertexList[2].fX = (GLfloat)(vOrigin.fX + _pstBox->vX.fX + _pstBox->vY.fX);
+  sstDisplay.astVertexList[2].fY = (GLfloat)(vOrigin.fY + _pstBox->vX.fY + _pstBox->vY.fY);
+  sstDisplay.astVertexList[3].fX = (GLfloat)(vOrigin.fX + _pstBox->vY.fX);
+  sstDisplay.astVertexList[3].fY = (GLfloat)(vOrigin.fY + _pstBox->vY.fY);
+
+  /* Copies color */
+  sstDisplay.astVertexList[0].stRGBA =
+  sstDisplay.astVertexList[1].stRGBA =
+  sstDisplay.astVertexList[2].stRGBA =
+  sstDisplay.astVertexList[3].stRGBA = _stColor;
+
+  /* Draws it */
+  orxDisplay_Android_DrawPrimitive(4, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -2364,12 +2544,21 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
-        "varying vec2 ___TexCoord___;"
-        "varying vec4 ___Color___;"
-        "uniform sampler2D __Texture__;"
+        "varying vec2 _gl_TexCoord0_;"
+        "varying vec4 _Color_;"
+        "uniform sampler2D _Texture_;"
         "void main()"
         "{"
-        "  gl_FragColor = ___Color___ * texture2D(__Texture__, ___TexCoord___);"
+        "  gl_FragColor = _Color_ * texture2D(_Texture_, _gl_TexCoord0_);"
+        "}";
+        static const orxSTRING szNoTextureFragmentShaderSource =
+        "precision mediump float;"
+        "varying vec2 _gl_TexCoord0_;"
+        "varying vec4 _Color_;"
+        "uniform sampler2D _Texture_;"
+        "void main()"
+        "{"
+        "  gl_FragColor = _Color_;"
         "}";
 
         /* Inits flags */
@@ -2391,8 +2580,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
         glASSERT();
 
-        /* Creates default shader */
+        /* Creates default shaders */
         sstDisplay.pstDefaultShader = (orxDISPLAY_SHADER *) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
+        sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
 
         /* Uses it */
         orxDisplay_StopShader(orxNULL);
@@ -2439,6 +2629,14 @@ void orxFASTCALL orxDisplay_Android_Exit()
   {
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
 
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Deletes default shaders */
+      orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+      orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
+    }
+
     sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
     
     /* free saved context memory */
@@ -2447,11 +2645,11 @@ void orxFASTCALL orxDisplay_Android_Exit()
     {
     	orxMemory_Free(sstDisplay.aau8BufferArray[u32Index]);
     }
-    
     orxMemory_Free(sstDisplay.aau8BufferArray);
 
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);
+    orxBank_Delete(sstDisplay.pstShaderBank);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
@@ -2508,7 +2706,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
           orxCHAR *pcReplace;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -2568,7 +2766,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
               pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
           {
             /* Replaces it */
-            orxMemory_Copy(pcReplace, "___TexCoord___", 14 * sizeof(orxCHAR));
+            orxMemory_Copy(pcReplace, "_gl_TexCoord0_", 14 * sizeof(orxCHAR));
           }
         }
         else
@@ -3031,7 +3229,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_TransformText, DISPLAY, TRAN
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreenBitmap, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_BlitBitmap, DISPLAY, BLIT_BITMAP);
