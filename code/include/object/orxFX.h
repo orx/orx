@@ -173,7 +173,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(const orxFX *_ps
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
-/** Adds color to an FX
+/** Adds RGB color to an FX
  * @param[in]   _pstFX          Concerned FX
  * @param[in]   _fStartTime     Time start
  * @param[in]   _fEndTime       Time end
@@ -188,7 +188,41 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, or
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColor(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRGB(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+
+/** Adds HSL color to an FX
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fStartTime     Time start
+ * @param[in]   _fEndTime       Time end
+ * @param[in]   _fCyclePeriod   Cycle period
+ * @param[in]   _fCyclePhase    Cycle phase (at start)
+ * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
+ * @param[in]   _pvStartColor   Starting color value
+ * @param[in]   _pvEndColor     Ending color value
+ * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
+ * @param[in]   _u32Flags       Param flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddHSL(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+
+/** Adds HSV color to an FX
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fStartTime     Time start
+ * @param[in]   _fEndTime       Time end
+ * @param[in]   _fCyclePeriod   Cycle period
+ * @param[in]   _fCyclePhase    Cycle phase (at start)
+ * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
+ * @param[in]   _pvStartColor   Starting color value
+ * @param[in]   _pvEndColor     Ending color value
+ * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
+ * @param[in]   _u32Flags       Param flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddHSV(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds rotation to an FX
  * @param[in]   _pstFX          Concerned FX

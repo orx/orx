@@ -112,6 +112,9 @@
 #define orxFX_KZ_SMOOTHER                       "smoother"
 #define orxFX_KZ_ALPHA                          "alpha"
 #define orxFX_KZ_COLOR                          "color"
+#define orxFX_KZ_RGB                            "rgb"
+#define orxFX_KZ_HSL                            "hsl"
+#define orxFX_KZ_HSV                            "hsv"
 #define orxFX_KZ_ROTATION                       "rotation"
 #define orxFX_KZ_SCALE                          "scale"
 #define orxFX_KZ_POSITION                       "position"
@@ -129,7 +132,9 @@
 typedef enum __orxFX_TYPE_t
 {
   orxFX_TYPE_ALPHA = 0,
-  orxFX_TYPE_COLOR,
+  orxFX_TYPE_RGB,
+  orxFX_TYPE_HSL,
+  orxFX_TYPE_HSV,
   orxFX_TYPE_POSITION,
   orxFX_TYPE_ROTATION,
   orxFX_TYPE_SCALE,
@@ -623,14 +628,14 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
  */
 orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
 {
-  orxU32    i;
-  orxCOLOR  stColor;
-  orxBOOL   bAlphaLock = orxFALSE, bColorBlendLock = orxFALSE, bRotationLock = orxFALSE, bScaleLock = orxFALSE, bTranslationLock = orxFALSE, bSpeedLock = orxFALSE, bVolumeLock = orxFALSE, bPitchLock = orxFALSE;
-  orxBOOL   bAlphaUpdate = orxFALSE, bColorBlendUpdate = orxFALSE, bRotationUpdate = orxFALSE, bScaleUpdate = orxFALSE, bTranslationUpdate = orxFALSE, bSpeedUpdate = orxFALSE, bVolumeUpdate = orxFALSE, bPitchUpdate = orxFALSE;
-  orxBOOL   bFirstCall;
-  orxFLOAT  fAlpha = orxFLOAT_0, fRotation = orxFLOAT_0, fVolume = orxFLOAT_0, fPitch = orxFLOAT_0, fRecDuration;
-  orxVECTOR vColor, vScale, vPosition, vSpeed;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32      i;
+  orxCOLOR    stObjectColor, stColor;
+  orxBOOL     bAlphaLock = orxFALSE, bColorBlendLock = orxFALSE, bRotationLock = orxFALSE, bScaleLock = orxFALSE, bTranslationLock = orxFALSE, bSpeedLock = orxFALSE, bVolumeLock = orxFALSE, bPitchLock = orxFALSE;
+  orxBOOL     bAlphaUpdate = orxFALSE, bRotationUpdate = orxFALSE, bScaleUpdate = orxFALSE, bTranslationUpdate = orxFALSE, bSpeedUpdate = orxFALSE, bVolumeUpdate = orxFALSE, bPitchUpdate = orxFALSE, bFirstCall;
+  orxFX_TYPE  eColorBlendUpdate = orxFX_TYPE_NONE;
+  orxFLOAT    fRotation = orxFLOAT_0, fVolume = orxFLOAT_0, fPitch = orxFLOAT_0, fRecDuration;
+  orxVECTOR   vScale, vPosition, vSpeed;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
@@ -641,7 +646,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
   if(_fEndTime >= orxFLOAT_0)
   {
     /* Clears color, scale and position vectors */
-    orxVector_SetAll(&vColor, orxFLOAT_0);
+    orxColor_Set(&stColor, &orxVECTOR_0, orxFLOAT_0);
     orxVector_SetAll(&vScale, orxFLOAT_1);
     orxVector_SetAll(&vPosition, orxFLOAT_0);
     orxVector_SetAll(&vSpeed, orxFLOAT_0);
@@ -650,12 +655,12 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     if(orxObject_HasColor(_pstObject) != orxFALSE)
     {
       /* Stores object color */
-      orxObject_GetColor(_pstObject, &stColor);
+      orxObject_GetColor(_pstObject, &stObjectColor);
     }
     else
     {
       /* Clears color */
-      orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
+      orxColor_Set(&stObjectColor, &orxVECTOR_WHITE, orxFLOAT_1);
     }
 
     /* For all slots */
@@ -714,7 +719,9 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
 
           /* Is FX type not blocked? */
           if(((eFXType == orxFX_TYPE_ALPHA) && (bAlphaLock == orxFALSE))
-          || ((eFXType == orxFX_TYPE_COLOR) && (bColorBlendLock == orxFALSE))
+          || ((eFXType == orxFX_TYPE_RGB) && (bColorBlendLock == orxFALSE))
+          || ((eFXType == orxFX_TYPE_HSL) && (bColorBlendLock == orxFALSE))
+          || ((eFXType == orxFX_TYPE_HSV) && (bColorBlendLock == orxFALSE))
           || ((eFXType == orxFX_TYPE_ROTATION) && (bRotationLock == orxFALSE))
           || ((eFXType == orxFX_TYPE_SCALE) && (bScaleLock == orxFALSE))
           || ((eFXType == orxFX_TYPE_POSITION) && (bTranslationLock == orxFALSE))
@@ -1018,7 +1025,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
                 {
                   /* Overrides value */
-                  fAlpha = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fEndCoef);
+                  stColor.fAlpha = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fEndCoef);
 
                   /* Locks it */
                   bAlphaLock = orxTRUE;
@@ -1043,7 +1050,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                   fEndAlpha = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fEndCoef);
 
                   /* Updates global alpha value */
-                  fAlpha += fEndAlpha - fStartAlpha;
+                  stColor.fAlpha += fEndAlpha - fStartAlpha;
                 }
 
                 /* Updates alpha status */
@@ -1052,43 +1059,53 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 break;
               }
 
-              case orxFX_TYPE_COLOR:
+              case orxFX_TYPE_RGB:
+              case orxFX_TYPE_HSL:
+              case orxFX_TYPE_HSV:
               {
-                /* Absolute ? */
-                if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
+                /* Valid color blend mix? */
+                if((eColorBlendUpdate == orxFX_TYPE_NONE) || (eColorBlendUpdate == eFXType))
                 {
-                  /* Overrides values */
-                  orxVector_Lerp(&vColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fEndCoef);
-
-                  /* Locks it */
-                  bColorBlendLock = orxTRUE;
-
-                }
-                else
-                {
-                  orxVECTOR vStartColor, vEndColor;
-
-                  /* First call? */
-                  if(bFirstCall != orxFALSE)
+                  /* Absolute ? */
+                  if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
                   {
-                    /* Gets start value */
-                    orxVector_SetAll(&vStartColor, orxFLOAT_0);
+                    /* Overrides values */
+                    orxVector_Lerp(&(stColor.vRGB), &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fEndCoef);
+
+                    /* Locks it */
+                    bColorBlendLock = orxTRUE;
                   }
                   else
                   {
-                    /* Gets start value */
-                    orxVector_Lerp(&vStartColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fStartCoef);
+                    orxVECTOR vStartColor, vEndColor;
+
+                    /* First call? */
+                    if(bFirstCall != orxFALSE)
+                    {
+                      /* Gets start value */
+                      orxVector_SetAll(&vStartColor, orxFLOAT_0);
+                    }
+                    else
+                    {
+                      /* Gets start value */
+                      orxVector_Lerp(&vStartColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fStartCoef);
+                    }
+
+                    /* Gets end value */
+                    orxVector_Lerp(&vEndColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fEndCoef);
+
+                    /* Updates global color value */
+                    orxVector_Add(&(stColor.vRGB), &(stColor.vRGB), orxVector_Sub(&vEndColor, &vEndColor, &vStartColor));
                   }
 
-                  /* Gets end value */
-                  orxVector_Lerp(&vEndColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fEndCoef);
-
-                  /* Updates global color value */
-                  orxVector_Add(&vColor, &vColor, orxVector_Sub(&vEndColor, &vEndColor, &vStartColor));
+                  /* Updates color blend status */
+                  eColorBlendUpdate = eFXType;
                 }
-
-                /* Updates color blend status */
-                bColorBlendUpdate = orxTRUE;
+                else
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid color blend mix for FX: only one type of color space can used at once.");
+                }
 
                 break;
               }
@@ -1446,7 +1463,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
 
     /* Global color update? */
     if((bAlphaUpdate != orxFALSE)
-    || (bColorBlendUpdate != orxFALSE))
+    || (eColorBlendUpdate != orxFX_TYPE_NONE))
     {
       /* Update alpha? */
       if(bAlphaUpdate != orxFALSE)
@@ -1455,33 +1472,79 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
         if(bAlphaLock == orxFALSE)
         {
           /* Updates alpha with previous one */
-          fAlpha += stColor.fAlpha;
+          stColor.fAlpha += stObjectColor.fAlpha;
         }
       }
       else
       {
         /* Resets alpha */
-        fAlpha = stColor.fAlpha;
+        stColor.fAlpha = stObjectColor.fAlpha;
       }
 
       /* Update color blend? */
-      if(bColorBlendUpdate != orxFALSE)
+      if(eColorBlendUpdate != orxFX_TYPE_NONE)
       {
         /* Non absolute */
         if(bColorBlendLock == orxFALSE)
         {
-          /* Updates color with previous one */
-          orxVector_Add(&vColor, &vColor, &(stColor.vRGB));
+          /* HSL? */
+          if(eColorBlendUpdate == orxFX_TYPE_HSL)
+          {
+            /* Gets object's HSL color */
+            orxColor_FromRGBToHSL(&stObjectColor, &stObjectColor);
+
+            /* Updates color with previous one */
+            orxVector_Add(&(stColor.vHSL), &(stColor.vHSL), &(stObjectColor.vHSL));
+
+            /* Applies circular clamp */
+            orxCIRCULAR_CLAMP_INC_MIN(stColor.vHSL.fH, orxFLOAT_0, orxFLOAT_1);
+
+            /* Gets RGB color */
+            orxColor_FromHSLToRGB(&stColor, &stColor);
+          }
+          /* HSV? */
+          else if(eColorBlendUpdate == orxFX_TYPE_HSV)
+          {
+            /* Gets object's HSV color */
+            orxColor_FromRGBToHSV(&stObjectColor, &stObjectColor);
+
+            /* Updates color with previous one */
+            orxVector_Add(&(stColor.vHSV), &(stColor.vHSV), &(stObjectColor.vHSV));
+
+            /* Applies circular clamp */
+            orxCIRCULAR_CLAMP_INC_MIN(stColor.vHSV.fH, orxFLOAT_0, orxFLOAT_1);
+
+            /* Gets RGB color */
+            orxColor_FromHSVToRGB(&stColor, &stColor);
+          }
+          /* RGB */
+          else
+          {
+            /* Updates color with previous one */
+            orxVector_Add(&(stColor.vRGB), &(stColor.vRGB), &(stObjectColor.vRGB));
+          }
+        }
+        else
+        {
+          /* HSL? */
+          if(eColorBlendUpdate == orxFX_TYPE_HSL)
+          {
+            /* Gets RGB color */
+            orxColor_FromHSLToRGB(&stColor, &stColor);
+          }
+          /* HSV? */
+          else if(eColorBlendUpdate == orxFX_TYPE_HSV)
+          {
+            /* Gets RGB color */
+            orxColor_FromHSVToRGB(&stColor, &stColor);
+          }
         }
       }
       else
       {
         /* Resets color */
-        orxVector_Copy(&vColor, &(stColor.vRGB));
+        orxVector_Copy(&(stColor.vRGB), &(stObjectColor.vRGB));
       }
-
-      /* Updates global color */
-      orxColor_Set(&stColor, &vColor, fAlpha);
 
       /* Applies it */
       orxObject_SetColor(_pstObject, &stColor);
@@ -1723,7 +1786,7 @@ orxSTATUS orxFASTCALL orxFX_AddAlpha(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
   return eResult;
 }
 
-/** Adds color to an FX
+/** Adds RGB color to an FX
  * @param[in]   _pstFX          Concerned FX
  * @param[in]   _fStartTime     Time start
  * @param[in]   _fEndTime       Time end
@@ -1738,7 +1801,7 @@ orxSTATUS orxFASTCALL orxFX_AddAlpha(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddColor(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddRGB(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1774,7 +1837,167 @@ orxSTATUS orxFASTCALL orxFX_AddColor(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
     pstFXSlot->fPow           = _fPow;
     orxVector_Copy(&(pstFXSlot->vStartColor), _pvStartColor);
     orxVector_Copy(&(pstFXSlot->vEndColor), _pvEndColor);
-    pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_COLOR << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
+    pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_RGB << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
+    if(_fAmplification != orxFLOAT_1)
+    {
+        pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_AMPLIFICATION;
+    }
+    if(_fAcceleration != orxFLOAT_1)
+    {
+        pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_ACCELERATION;
+    }
+    if(_fPow != orxFLOAT_1)
+    {
+        pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_POW;
+    }
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds HSL color to an FX
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fStartTime     Time start
+ * @param[in]   _fEndTime       Time end
+ * @param[in]   _fCyclePeriod   Cycle period
+ * @param[in]   _fCyclePhase    Cycle phase (at start)
+ * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
+ * @param[in]   _pvStartColor   Starting color value
+ * @param[in]   _pvEndColor     Ending color value
+ * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
+ * @param[in]   _u32Flags       Param flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_AddHSL(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
+  orxASSERT(_fStartTime >= orxFLOAT_0);
+  orxASSERT(_fEndTime >= _fStartTime);
+  orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_pvStartColor != orxNULL);
+  orxASSERT(_pvEndColor != orxNULL);
+
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->fStartTime     = _fStartTime;
+    pstFXSlot->fEndTime       = _fEndTime;
+    pstFXSlot->fCyclePeriod   = _fCyclePeriod;
+    pstFXSlot->fCyclePhase    = _fCyclePhase;
+    pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fAcceleration  = _fAcceleration;
+    pstFXSlot->fPow           = _fPow;
+    orxVector_Copy(&(pstFXSlot->vStartColor), _pvStartColor);
+    orxVector_Copy(&(pstFXSlot->vEndColor), _pvEndColor);
+    pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_HSL << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
+    if(_fAmplification != orxFLOAT_1)
+    {
+        pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_AMPLIFICATION;
+    }
+    if(_fAcceleration != orxFLOAT_1)
+    {
+        pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_ACCELERATION;
+    }
+    if(_fPow != orxFLOAT_1)
+    {
+        pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_POW;
+    }
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds HSV color to an FX
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fStartTime     Time start
+ * @param[in]   _fEndTime       Time end
+ * @param[in]   _fCyclePeriod   Cycle period
+ * @param[in]   _fCyclePhase    Cycle phase (at start)
+ * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
+ * @param[in]   _pvStartColor   Starting color value
+ * @param[in]   _pvEndColor     Ending color value
+ * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
+ * @param[in]   _u32Flags       Param flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_AddHSV(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
+  orxASSERT(_fStartTime >= orxFLOAT_0);
+  orxASSERT(_fEndTime >= _fStartTime);
+  orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_pvStartColor != orxNULL);
+  orxASSERT(_pvEndColor != orxNULL);
+
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->fStartTime     = _fStartTime;
+    pstFXSlot->fEndTime       = _fEndTime;
+    pstFXSlot->fCyclePeriod   = _fCyclePeriod;
+    pstFXSlot->fCyclePhase    = _fCyclePhase;
+    pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fAcceleration  = _fAcceleration;
+    pstFXSlot->fPow           = _fPow;
+    orxVector_Copy(&(pstFXSlot->vStartColor), _pvStartColor);
+    orxVector_Copy(&(pstFXSlot->vEndColor), _pvEndColor);
+    pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_HSV << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
     if(_fAmplification != orxFLOAT_1)
     {
         pstFXSlot->u32Flags |= orxFX_SLOT_KU32_FLAG_AMPLIFICATION;
@@ -2409,8 +2632,44 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         orxVector_Mulf(&vStartColor, &vStartColor, orxCOLOR_NORMALIZER);
         orxVector_Mulf(&vEndColor, &vEndColor, orxCOLOR_NORMALIZER);
 
-        /* Adds color slot */
-        eResult = orxFX_AddColor(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
+        /* Adds RGB slot */
+        eResult = orxFX_AddRGB(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
+      }
+      /* RGB blend? */
+      else if(orxString_Compare(zType, orxFX_KZ_RGB) == 0)
+      {
+        orxVECTOR vStartColor, vEndColor;
+
+        /* Gets color values */
+        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+
+        /* Adds RGB slot */
+        eResult = orxFX_AddRGB(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
+      }
+      /* HSL blend? */
+      else if(orxString_Compare(zType, orxFX_KZ_HSL) == 0)
+      {
+        orxVECTOR vStartColor, vEndColor;
+
+        /* Gets color values */
+        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+
+        /* Adds HSL slot */
+        eResult = orxFX_AddHSL(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
+      }
+      /* HSV blend? */
+      else if(orxString_Compare(zType, orxFX_KZ_HSV) == 0)
+      {
+        orxVECTOR vStartColor, vEndColor;
+
+        /* Gets color values */
+        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+
+        /* Adds RGB slot */
+        eResult = orxFX_AddHSV(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
       }
       /* Rotation? */
       else if(orxString_Compare(zType, orxFX_KZ_ROTATION) == 0)

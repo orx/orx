@@ -79,6 +79,9 @@
 #define orxGRAPHIC_KZ_CONFIG_PIVOT                "Pivot"
 #define orxGRAPHIC_KZ_CONFIG_COLOR                "Color"
 #define orxGRAPHIC_KZ_CONFIG_ALPHA                "Alpha"
+#define orxGRAPHIC_KZ_CONFIG_RGB                  "RGB"
+#define orxGRAPHIC_KZ_CONFIG_HSL                  "HSL"
+#define orxGRAPHIC_KZ_CONFIG_HSV                  "HSV"
 #define orxGRAPHIC_KZ_CONFIG_FLIP                 "Flip"
 #define orxGRAPHIC_KZ_CONFIG_REPEAT               "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING            "Smoothing"
@@ -564,6 +567,39 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
 
           /* Normalizes and applies it */
           orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+        }
+        /* Has RGB values? */
+        else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_RGB) != orxFALSE)
+        {
+          /* Gets its value */
+          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
+
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+        }
+        /* Has HSL values? */
+        else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
+        {
+          /* Gets its value */
+          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
+
+          /* Stores its RGB equivalent */
+          orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
+
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+        }
+        /* Has HSV values? */
+        else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSV) != orxFALSE)
+        {
+          /* Gets its value */
+          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSV, &(pstResult->stColor.vHSV));
+
+          /* Stores its RGB equivalent */
+          orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
 
           /* Updates status */
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);

@@ -104,6 +104,9 @@
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
 #define orxOBJECT_KZ_CONFIG_COLOR               "Color"
+#define orxOBJECT_KZ_CONFIG_RGB                 "RGB"
+#define orxOBJECT_KZ_CONFIG_HSL                 "HSL"
+#define orxOBJECT_KZ_CONFIG_HSV                 "HSV"
 #define orxOBJECT_KZ_CONFIG_ALPHA               "Alpha"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
@@ -875,6 +878,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
 
         /* Updates status flags */
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+      }
+      /* Has RGB values? */
+      else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
+      {
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
+
+        /* Updates status */
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+      }
+      /* Has HSL values? */
+      else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSL) != orxFALSE)
+      {
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
+
+        /* Stores its RGB equivalent */
+        orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
+
+        /* Updates status */
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+      }
+      /* Has HSV values? */
+      else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSV) != orxFALSE)
+      {
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSV, &(pstResult->stColor.vHSV));
+
+        /* Stores its RGB equivalent */
+        orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
+
+        /* Updates status */
         u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
       }
 
