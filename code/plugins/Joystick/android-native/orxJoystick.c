@@ -35,7 +35,6 @@
 
 #include "orxPluginAPI.h"
 
-#include <android_native_app_glue.h>
 #include <android/sensor.h>
 
 /** Module flags
@@ -62,14 +61,20 @@ typedef struct __orxJOYSTICK_STATIC_t
   orxU32      u32Flags;
   orxVECTOR   vAcceleration;
   orxFLOAT    fFrequency;
-
 } orxJOYSTICK_STATIC;
 
-/** Extern data */
-extern struct android_app  *pstApp;
-extern ASensorManager      *poSensorManager;
+/* Defined in orxAndroid.h */
+
 extern const ASensor       *poAccelerometerSensor;
 extern ASensorEventQueue   *poSensorEventQueue;
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+  void orxAndroid_EnableAccelerometer(orxFLOAT fFrequency);
+#ifdef	__cplusplus
+}
+#endif
 
 /***************************************************************************
  * Static variables                                                        *
@@ -146,20 +151,13 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
       if((fFrequency = orxConfig_GetFloat(orxANDROID_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
       {
         sstJoystick.fFrequency = fFrequency;
-        
-        poSensorManager = ASensorManager_getInstance();
-        poAccelerometerSensor = ASensorManager_getDefaultSensor(poSensorManager, ASENSOR_TYPE_ACCELEROMETER);
-        poSensorEventQueue = ASensorManager_createEventQueue(poSensorManager, pstApp->looper, LOOPER_ID_USER, NULL, NULL);
+ 
+        orxAndroid_EnableAccelerometer(fFrequency);
 
-        /* enable accelerometer */
-        ASensorEventQueue_enableSensor(poSensorEventQueue, poAccelerometerSensor);
-        ASensorEventQueue_setEventRate(poSensorEventQueue, poAccelerometerSensor, (1000L/fFrequency)*1000);
-  
         orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler);
       }
       else
       {
-        poSensorManager = orxNULL;
         poAccelerometerSensor = orxNULL;
         poSensorEventQueue = orxNULL;
         sstJoystick.fFrequency = orx2F(0);
@@ -167,7 +165,6 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     }
     else
     {
-      poSensorManager = orxNULL;
       poAccelerometerSensor = orxNULL;
       poSensorEventQueue = orxNULL;
       sstJoystick.fFrequency = orx2F(0);

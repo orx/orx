@@ -116,6 +116,13 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
 } orxSOUNDSYSTEM_STATIC;
 
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+  ANativeActivity* orxAndroid_GetNativeActivity();
+#ifdef	__cplusplus
+}
+#endif
 
 /***************************************************************************
  * Static variables                                                        *
@@ -134,7 +141,8 @@ static orxINLINE orxSTATUS orxSoundSystem_Android_OpenFile(const orxSTRING _zFil
   orxASSERT(_pstData != orxNULL);
 
   /* open file from assets */
-  AAsset* asset = AAssetManager_open(pstApp->activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
+  ANativeActivity *activity = orxAndroid_GetNativeActivity();
+  AAsset* asset = AAssetManager_open(activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
 
   /* Valid? */
   if(asset != NULL)
@@ -605,7 +613,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStreamFromFile(co
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
     
     /* open file from assets */
-    AAsset* asset = AAssetManager_open(pstApp->activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
+    ANativeActivity *activity = orxAndroid_GetNativeActivity();
+    AAsset* asset = AAssetManager_open(activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
 
     /* Valid? */
     if(asset != NULL)
@@ -823,12 +832,15 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pst
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
+  /******************* broken since ICS 
+
   SLresult result;
   SLpermille rate = _fPitch * 1000;
   
   result = (*_pstSound->PlayerRate)->SetRate(_pstSound->PlayerRate, rate);
   orxASSERT(SL_RESULT_SUCCESS == result);
-  
+
+  ********************/
 
   /* Done! */
   return eResult;

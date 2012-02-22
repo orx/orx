@@ -39,7 +39,7 @@
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-#include <android_native_app_glue.h>
+#include <android/native_activity.h>
 #include <android/sensor.h>
 
 /** Module flags
@@ -212,14 +212,16 @@ typedef struct __orxDISPLAY_STATIC_t
 
 /** Extern data */
 extern int                  s32Animating;
-extern struct android_app  *pstApp;
-extern const ASensor       *poAccelerometerSensor;
-extern ASensorEventQueue   *poSensorEventQueue;
 
 #ifdef	__cplusplus
 extern "C" {
+#endif
   void orxAndroid_AcquireWakeLock();
   void orxAndroid_ReleaseWakeLock();
+  ANativeWindow* orxAndroid_GetNativeWindow();
+  ANativeActivity* orxAndroid_GetNativeActivity();
+  void orxAndroid_WaitForWindow();
+#ifdef	__cplusplus
 }
 #endif
 
@@ -303,9 +305,10 @@ static int init_display() {
      * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
     eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
 
-    ANativeWindow_setBuffersGeometry(pstApp->window, 0, 0, format);
+    ANativeWindow *window = orxAndroid_GetNativeWindow();
+    ANativeWindow_setBuffersGeometry(window, 0, 0, format);
 
-    surface = eglCreateWindowSurface(display, config, pstApp->window, NULL);
+    surface = eglCreateWindowSurface(display, config, window, NULL);
     
     const EGLint context_attrib[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
     context = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attrib);
@@ -497,7 +500,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "RESTORE_CONTEXT");
  
-        if (pstApp->window != NULL)
+        if (orxAndroid_GetNativeWindow() != NULL)
         {
           init_display();
         }
@@ -2143,7 +2146,9 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
   orxASSERT(_zFileName != orxNULL);
 
   /* open file in assets */
-  AAsset* file = AAssetManager_open(pstApp->activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
+  
+  ANativeActivity *activity = orxAndroid_GetNativeActivity();
+  AAsset* file = AAssetManager_open(activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
   if(file != NULL)
   {
     /* read the file in memory */
@@ -2455,30 +2460,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    // waiting for window to be ready
-    // Read all pending events.
-    int ident;
-    int events;
-    struct android_poll_source* source;
-
-    while ((ident=ALooper_pollAll(pstApp->window != NULL ? 0 : -1, NULL, &events, (void**)&source)) >= 0)
-    {
-      // Process this event.
-      if (source != NULL)
-      {
-        source->process(pstApp, source);
-      }
-
-      if (ident == LOOPER_ID_USER)
-      // consume sensorevents
-      {
-        if (poAccelerometerSensor != NULL)
-        {
-          ASensorEvent event;
-          while (ASensorEventQueue_getEvents(poSensorEventQueue, &event, 1) > 0);
-        }
-      }
-    }
+    orxAndroid_WaitForWindow();
     
     orxU32 i;
     GLushort u16Index;

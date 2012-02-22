@@ -32,56 +32,80 @@
  */
 
 #include <android/log.h>
-#include <android_native_app_glue.h>
+#include <android/native_activity.h>
 #include <android/sensor.h>
+#include <pthread.h>
 
 #include "orxInclude.h"
 #include "orxKernel.h"
 
-#define  LOG_TAG    "orx"
+#define  LOG_TAG    "orxAndroidNativeSupport.c"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 static const char  *zOrxCommandLineKey = "orx.cmd_line";
 
-orxS32              s32Animating;
-struct android_app *pstApp;
+ANativeActivity* orxAndroid_GetNativeActivity();
 
-ASensorManager     *poSensorManager;
-const ASensor      *poAccelerometerSensor;
-ASensorEventQueue  *poSensorEventQueue;
-JNIEnv             *poJEnv;
-jobject             oWakeLock;
+static jobject             oWakeLock;
+static JavaVM*             s_vm = NULL;
+static pthread_key_t       s_jniEnvKey = 0;
 
-orxU32              u32NbParams;
-orxSTRING          *azParams;
+orxU32                     u32NbParams;
+orxSTRING                 *azParams;
 
-/** Render inhibiter
- */
-static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
+void orxAndroid_SetJavaVM(JavaVM* vm)
 {
-  /* Done! */
-  return orxSTATUS_FAILURE;
+	s_vm = vm;
 }
 
-void orxAndroid_AttachThread()
+JNIEnv* orxAndroid_GetCurrentJNIEnv()
 {
-  // retrieve the JNIEnv
-  
-  int error = (*pstApp->activity->vm)->AttachCurrentThread(pstApp->activity->vm, &poJEnv, NULL);
-  if (error || !poJEnv)
-  {
-    LOGE("ERROR: could not attach thread to JVM!");
-  }
+    JNIEnv* env = NULL;
+    if (s_jniEnvKey)
+	{
+		env = (JNIEnv*)pthread_getspecific(s_jniEnvKey);
+	}
+	else
+	{
+		pthread_key_create(&s_jniEnvKey, NULL);
+	}
+
+	if (!env)
+	{
+		// do we have a VM cached?
+		if (!s_vm)
+		{
+			LOGE("Error - could not find JVM!");
+			return NULL;
+		}
+
+		// Hmm - no env for this thread cached yet
+		int error = (*s_vm)->AttachCurrentThread(s_vm, &env, NULL);
+		LOGI("AttachCurrentThread: %d, 0x%p", error, env);
+		if (error || !env)
+		{
+			LOGE("Error - could not attach thread to JVM!");
+			return NULL;
+		}
+
+		pthread_setspecific(s_jniEnvKey, env);
+	}
+
+	return env;
 }
+
 
 void orxAndroid_DetachThread()
 {
-  (*pstApp->activity->vm)->DetachCurrentThread(pstApp->activity->vm);
+  (*s_vm)->DetachCurrentThread(s_vm);
 }
 
 void orxAndroid_AcquireWakeLock()
 {
+        ANativeActivity *activity = orxAndroid_GetNativeActivity();
+        JNIEnv *poJEnv = orxAndroid_GetCurrentJNIEnv();
+
         /* Acquires wake lock */
         jclass contextClass = (*poJEnv)->FindClass(poJEnv, "android/content/Context");
         orxASSERT(contextClass != orxNULL);
@@ -94,7 +118,7 @@ void orxAndroid_AcquireWakeLock()
         orxASSERT(POWER_SERVICE != orxNULL);
         
         /* Retrieves the PowerManager service and wakelock */
-        jobject powerManager = (*poJEnv)->CallObjectMethod(poJEnv, pstApp->activity->clazz, getSystemService, POWER_SERVICE);
+        jobject powerManager = (*poJEnv)->CallObjectMethod(poJEnv, activity->clazz, getSystemService, POWER_SERVICE);
         orxASSERT(powerManager != orxNULL);
         jclass powerManagerClass = (*poJEnv)->FindClass(poJEnv, "android/os/PowerManager");
         orxASSERT(powerManagerClass != orxNULL);
@@ -132,6 +156,8 @@ void orxAndroid_AcquireWakeLock()
 
 void orxAndroid_ReleaseWakeLock()
 {
+        JNIEnv *poJEnv = orxAndroid_GetCurrentJNIEnv();
+
         /* acquire wake lock */
         jclass wakeLockClass = (*poJEnv)->GetObjectClass(poJEnv, oWakeLock);
         orxASSERT(wakeLockClass != orxNULL);
@@ -225,13 +251,16 @@ static int argc_argv (const char * input, int * argc_ptr, char *** argv_ptr)
 
 void orxAndroid_GetMainArgs()
 {
-	jclass activityClass = (*poJEnv)->GetObjectClass(poJEnv, pstApp->activity->clazz);
+        ANativeActivity *activity = orxAndroid_GetNativeActivity();
+        JNIEnv *poJEnv = orxAndroid_GetCurrentJNIEnv();
+
+	jclass activityClass = (*poJEnv)->GetObjectClass(poJEnv, activity->clazz);
 	orxASSERT(activityClass != orxNULL);
 
 	/* retrieve intent */
 	jmethodID getIntent = (*poJEnv)->GetMethodID(poJEnv, activityClass, "getIntent", "()Landroid/content/Intent;");
 	orxASSERT(getIntent != orxNULL);
-	jobject intent = (*poJEnv)->CallObjectMethod(poJEnv, pstApp->activity->clazz, getIntent);
+	jobject intent = (*poJEnv)->CallObjectMethod(poJEnv, activity->clazz, getIntent);
 	orxASSERT(intent != orxNULL);
 	jclass intentClass = (*poJEnv)->GetObjectClass(poJEnv, intent);
 	orxASSERT(intentClass != orxNULL);
@@ -245,7 +274,7 @@ void orxAndroid_GetMainArgs()
 	/* retrieve PackageManager */
 	jmethodID getPackageManager = (*poJEnv)->GetMethodID(poJEnv, activityClass, "getPackageManager", "()Landroid/content/pm/PackageManager;");
 	orxASSERT(getPackageManager != orxNULL);
-	jobject packageManager = (*poJEnv)->CallObjectMethod(poJEnv, pstApp->activity->clazz, getPackageManager);
+	jobject packageManager = (*poJEnv)->CallObjectMethod(poJEnv, activity->clazz, getPackageManager);
 	orxASSERT(packageManager != orxNULL);
 	jclass packageManagerClass = (*poJEnv)->GetObjectClass(poJEnv, packageManager);
 	orxASSERT(packageManagerClass != orxNULL);
@@ -310,125 +339,4 @@ void orxAndroid_ReleaseMainArgs()
   free(azParams);
 }
 
-static void engine_handle_cmd(struct android_app* app, int32_t cmd)
-{
-  struct engine* engine = (struct engine*)app->userData;
-  switch (cmd)
-  {
-    case APP_CMD_INIT_WINDOW:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_INIT_WINDOW\n");
-      // The window is being shown, get it ready.
-      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
-      break;
-    case APP_CMD_TERM_WINDOW:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_TERM_WINDOW\n");
-      // The window is being hidden or closed, clean it up.
-      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
-      break;
-    case APP_CMD_LOST_FOCUS:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_LOST_FOCUS\n");
-      /* Sends event */
-      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
-      {
-        /* Adds render inhibiter */
-        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
-      }
-      break;
-    case APP_CMD_GAINED_FOCUS:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_GAINED_FOCUS\n");
-      /* Sends event */
-      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
-      {
-        /* Removes render inhibiter */
-        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
-      }
-      break;
-    case APP_CMD_DESTROY:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_DESTROY\n");
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-      break;
-  }
-}
-
-/**
- * Process the next input event.
- */
-static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
-    struct engine* engine = (struct engine*)app->userData;
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-    	orxSYSTEM_EVENT_PAYLOAD stPayload;
-    	
-      /* read event data */
-      int32_t x = AMotionEvent_getX(event, 0);
-      int32_t y = AMotionEvent_getY(event, 0);
-      float pressure = AMotionEvent_getPressure(event, 0);
-
-      /* Inits event's payload */
-      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-      stPayload.stTouch.fX = (orxFLOAT)x;
-      stPayload.stTouch.fY = (orxFLOAT)y;
-      stPayload.stTouch.fPressure = (orxFLOAT)pressure;
-
-      int32_t action = AMotionEvent_getAction(event);
-      switch(action)
-      {
-        case AMOTION_EVENT_ACTION_DOWN:
-        {
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
-          break;
-        }
-        
-        case AMOTION_EVENT_ACTION_UP:
-        {
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-          break;
-        }
-        
-        case AMOTION_EVENT_ACTION_MOVE:
-        {
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
-          break;
-        }
-
-      }
-      return 1;
-    }
-    return 0;
-}
-
-extern int main(int argc, char *argv[]);
-
-void android_main(struct android_app *_pstApp)
-{
-  /* Makes sure glue isn't stripped */
-  app_dummy();
-
-  /* Inits app */
-  pstApp                = _pstApp;
-  pstApp->onAppCmd      = engine_handle_cmd;
-  pstApp->onInputEvent  = engine_handle_input;
-
-  /* Retrieves Java environment */
-  orxAndroid_AttachThread();
-  orxAndroid_GetMainArgs();
-
-  #ifdef __orxDEBUG__
-
-  LOGI("about to call main()");
-
-  #endif
-
-  main(u32NbParams, azParams);
-
-  #ifdef __orxDEBUG__
-
-  LOGI("main() returned");
-
-  #endif
-
-  orxAndroid_ReleaseMainArgs();
-  orxAndroid_DetachThread();
-
-  return;
-}
 

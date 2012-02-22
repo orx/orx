@@ -53,10 +53,13 @@
 
   #ifdef __orxANDROID_NATIVE__
 
-    #include <android_native_app_glue.h>
+    #include <android/native_activity.h>
 
-  extern struct android_app  *pstApp;
-  extern JNIEnv              *poJEnv;
+    ANativeActivity* orxAndroid_GetNativeActivity();
+    JNIEnv* orxAndroid_GetCurrentJNIEnv();
+
+    static ANativeActivity     *pstApp;
+    static JNIEnv              *poJEnv;
 
   #endif /* __orxANDROID_NATIVE__ */
 
@@ -65,7 +68,7 @@
     #include <nv_file/nv_file.h>
     #include <jni.h>
     
-  extern jobject              oActivity;
+    extern jobject              oActivity;
     
   #endif /* __orxANDROID__ */
 
@@ -255,12 +258,15 @@ orxSTATUS orxFASTCALL orxFile_Init()
     // TODO Retrieves the zExternalDataPath from Java
     // sstFile.zExternalDataPath = orxNULL;
 
+    pstApp = orxAndroid_GetNativeActivity();
+    poJEnv = orxAndroid_GetCurrentJNIEnv();
+
     /* Retrieves the zInternalDataPath from Java */
-    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, pstApp->activity->clazz);
+    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, pstApp->clazz);
     orxASSERT(objClass != orxNULL);
     jmethodID getFilesDir = (*poJEnv)->GetMethodID(poJEnv, objClass, "getFilesDir", "()Ljava/io/File;");
     orxASSERT(getFilesDir != orxNULL);
-    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, pstApp->activity->clazz, getFilesDir);
+    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, pstApp->clazz, getFilesDir);
     orxASSERT(fileDir != orxNULL);
     jclass fileClass = (*poJEnv)->GetObjectClass(poJEnv, fileDir);
     orxASSERT(fileClass != orxNULL);
@@ -800,7 +806,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
   
   #ifdef __orxANDROID_NATIVE__
   
-  AAsset *poAsset = AAssetManager_open(pstApp->activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
+  AAsset *poAsset = AAssetManager_open(pstApp->assetManager, _zFileName, AASSET_MODE_RANDOM);
   
   #else /* __orxANDROID_NATIVE__ */
   
