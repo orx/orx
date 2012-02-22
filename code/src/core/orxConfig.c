@@ -576,7 +576,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
       /* Found? */
       if(s32SeparatorIndex >= 0)
       {
-        /* Cut the name */
+        /* Cuts the name */
         *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCHAR_NULL;
 
         /* Selects parent section */
@@ -585,7 +585,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
         /* Gets its inherited value */
         pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1));
 
-        /* Cut the name */
+        /* Restores the name */
         *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
       }
       else
@@ -2955,7 +2955,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     {
       const orxSTRING zParent;
 
-      /* Cut the name */
+      /* Cuts the name */
       *((orxSTRING)_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
 
       /* Gets end of name */
