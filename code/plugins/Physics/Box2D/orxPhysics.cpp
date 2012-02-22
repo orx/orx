@@ -35,7 +35,7 @@
 #include "orxPluginAPI.h"
 
 #include <Box2D/Box2D.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 
 #ifdef __orxMSVC__
