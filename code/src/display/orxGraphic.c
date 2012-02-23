@@ -1070,7 +1070,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvSize);
-  orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fX >= orxFLOAT_0));
+  orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fY >= orxFLOAT_0));
 
   /* Stores values */
   _pstGraphic->fWidth   = _pvSize->fX;
@@ -1291,7 +1291,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetOrigin(orxGRAPHIC *_pstGraphic, const orxVEC
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvOrigin);
-  orxASSERT((_pvOrigin->fX >= orxFLOAT_0) && (_pvOrigin->fX >= orxFLOAT_0));
+  orxASSERT((_pvOrigin->fX >= orxFLOAT_0) && (_pvOrigin->fY >= orxFLOAT_0));
 
   /* Stores values */
   _pstGraphic->fLeft  = _pvOrigin->fX;
