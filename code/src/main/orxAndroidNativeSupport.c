@@ -32,7 +32,7 @@
  */
 
 #include <android/log.h>
-#include <android/native_activity.h>
+#include <android_native_app_glue.h>
 #include <android/sensor.h>
 #include <pthread.h>
 
@@ -45,14 +45,159 @@
 
 static const char  *zOrxCommandLineKey = "orx.cmd_line";
 
-ANativeActivity* orxAndroid_GetNativeActivity();
-
 static jobject             oWakeLock;
 static JavaVM*             s_vm = NULL;
 static pthread_key_t       s_jniEnvKey = 0;
 
 orxU32                     u32NbParams;
 orxSTRING                 *azParams;
+orxS32                     s32Animating;
+const ASensor             *poAccelerometerSensor;
+ASensorEventQueue         *poSensorEventQueue;
+struct android_app        *pstApp;
+
+/** Render inhibiter
+ */
+static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+static void engine_handle_cmd(struct android_app* app, int32_t cmd)
+{
+  /* struct engine* engine = (struct engine*)app->userData; */
+  switch (cmd)
+  {
+    case APP_CMD_INIT_WINDOW:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_INIT_WINDOW\n");
+      // The window is being shown, get it ready.
+      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
+      break;
+    case APP_CMD_TERM_WINDOW:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_TERM_WINDOW\n");
+      // The window is being hidden or closed, clean it up.
+      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
+      break;
+    case APP_CMD_LOST_FOCUS:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_LOST_FOCUS\n");
+      /* Sends event */
+      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
+      {
+        /* Adds render inhibiter */
+        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+      }
+      break;
+    case APP_CMD_GAINED_FOCUS:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_GAINED_FOCUS\n");
+      /* Sends event */
+      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
+      {
+        /* Removes render inhibiter */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+      }
+      break;
+    case APP_CMD_DESTROY:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_DESTROY\n");
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+      break;
+  }
+}
+
+/**
+ * Process the next input event.
+ */
+static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
+    /* struct engine* engine = (struct engine*)app->userData; */
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
+    	
+      /* read event data */
+      int32_t x = AMotionEvent_getX(event, 0);
+      int32_t y = AMotionEvent_getY(event, 0);
+      float pressure = AMotionEvent_getPressure(event, 0);
+
+      /* Inits event's payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      stPayload.stTouch.fX = (orxFLOAT)x;
+      stPayload.stTouch.fY = (orxFLOAT)y;
+      stPayload.stTouch.fPressure = (orxFLOAT)pressure;
+
+      int32_t action = AMotionEvent_getAction(event);
+      switch(action)
+      {
+        case AMOTION_EVENT_ACTION_DOWN:
+        {
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+          break;
+        }
+        
+        case AMOTION_EVENT_ACTION_UP:
+        {
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+          break;
+        }
+        
+        case AMOTION_EVENT_ACTION_MOVE:
+        {
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
+          break;
+        }
+
+      }
+      return 1;
+    }
+    return 0;
+}
+
+void orxAndroid_EnableAccelerometer(orxFLOAT _fFrequency)
+{
+  ASensorManager *poSensorManager = ASensorManager_getInstance();
+  poAccelerometerSensor = ASensorManager_getDefaultSensor(poSensorManager, ASENSOR_TYPE_ACCELEROMETER);
+  poSensorEventQueue = ASensorManager_createEventQueue(poSensorManager, pstApp->looper, LOOPER_ID_USER, NULL, NULL);
+
+  /* enable accelerometer */
+  ASensorEventQueue_enableSensor(poSensorEventQueue, poAccelerometerSensor);
+  ASensorEventQueue_setEventRate(poSensorEventQueue, poAccelerometerSensor, (1000L/_fFrequency)*1000);
+}
+
+void orxAndroid_WaitForWindow()
+{
+    // waiting for window to be ready
+    // Read all pending events.
+    int ident;
+    int events;
+    struct android_poll_source* source;
+
+    while ((ident=ALooper_pollAll(pstApp->window != NULL ? 0 : -1, NULL, &events, (void**)&source)) >= 0)
+    {
+      // Process this event.
+      if (source != NULL)
+      {
+        source->process(pstApp, source);
+      }
+
+      if (ident == LOOPER_ID_USER)
+      // consume sensorevents
+      {
+        if (poAccelerometerSensor != NULL)
+        {
+          ASensorEvent event;
+          while (ASensorEventQueue_getEvents(poSensorEventQueue, &event, 1) > 0);
+        }
+      }
+    }
+}
+
+ANativeActivity* orxAndroid_GetNativeActivity()
+{
+  return pstApp->activity;
+}
+
+ANativeWindow* orxAndroid_GetNativeWindow()
+{
+  return pstApp->window;
+}
 
 void orxAndroid_SetJavaVM(JavaVM* vm)
 {
@@ -339,4 +484,39 @@ void orxAndroid_ReleaseMainArgs()
   free(azParams);
 }
 
+int main(int argc, char *argv[]);
+
+void android_main(struct android_app *_pstApp)
+{
+  /* Makes sure glue isn't stripped */
+  app_dummy();
+
+  /* Inits app */
+  pstApp                = _pstApp;
+  pstApp->onAppCmd      = engine_handle_cmd;
+  pstApp->onInputEvent  = engine_handle_input;
+
+  /* Retrieves Java environment */
+  orxAndroid_SetJavaVM(_pstApp->activity->vm);
+  orxAndroid_GetMainArgs();
+
+  #ifdef __orxDEBUG__
+
+  LOGI("about to call main()");
+
+  #endif
+
+  main(u32NbParams, azParams);
+
+  #ifdef __orxDEBUG__
+
+  LOGI("main() returned");
+
+  #endif
+
+  orxAndroid_ReleaseMainArgs();
+  orxAndroid_DetachThread();
+
+  return;
+}
 
