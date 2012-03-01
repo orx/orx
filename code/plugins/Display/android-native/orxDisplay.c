@@ -1808,9 +1808,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(orxBITMAP *_pstBitmap, or
       /* Checks */
       orxASSERT(pu8ImageData != orxNULL);
 
-   		/* Inits viewport */
- 	  	glViewport(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
- 	  	glASSERT();
+      /* Inits viewport */
+      glViewport(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
+      glASSERT();
       
       /* Reads OpenGL data */
       glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
@@ -1957,9 +1957,19 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Inits viewport */
-      glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth,	sstDisplay.pstDestinationBitmap->fHeight);
-      glASSERT();
+      /* Is screen? */
+      if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+      {
+        /* Inits viewport */
+        glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glASSERT();
+      }
+      else
+      {
+        /* Inits viewport */
+        glViewport(0, (orxS32)sstDisplay.pstDestinationBitmap->u32RealHeight - orxF2S(sstDisplay.pstDestinationBitmap->fHeight), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glASSERT();
+      }
 
       /* Inits projection matrix */
       orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
@@ -2306,10 +2316,19 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
     glEnable(GL_SCISSOR_TEST);
     glASSERT();
 
-    /* Stores screen clipping */
-    glScissor(_u32TLX, orxF2U(sstDisplay.pstScreen->fHeight) - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
-    glASSERT();
-
+    /* Is screen? */
+    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
+    else
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
   }
   else
   {
@@ -2588,6 +2607,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Sends it */
         orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+
+        /* generate framebuffer */
+        glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
+        glASSERT();
 
         /* Updates result */
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
