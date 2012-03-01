@@ -188,7 +188,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLuint                    uiIndexBuffer;
-//  GLuint                    uiFrameBuffer;
+  GLuint                    uiFrameBuffer;
   orxU8                   **aau8BufferArray;
   orxS32                    s32BitmapCounter;
   orxS32                    s32ShaderCounter;
@@ -1618,45 +1618,30 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Is not screen? */
-  if (_pstBitmap != sstDisplay.pstScreen)
+  if(_pstBitmap != sstDisplay.pstScreen)
   {
-    GLint iTexture;
-    orxRGBA *astBuffer, *pstPixel;
+    orxBITMAP *pstBackupBitmap;
 
-    /* Allocates buffer */
-    astBuffer = (orxRGBA *) orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+    /* Backups current destination */
+    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
 
-    /* Checks */
-    orxASSERT(astBuffer != orxNULL);
+    /* Sets new destination bitmap */
+    orxDisplay_SetDestinationBitmap(_pstBitmap);
 
-    /* For all pixels */
-    for (pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
-    {
-      /* Sets its value */
-      *pstPixel = _stColor;
-    }
-
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    /* Clears the color buffer with given color */
+    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
+    glASSERT();
+    glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
 
-    /* Binds texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
-
-    /* Updates texture */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-    glASSERT();
-
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
-    glASSERT();
-
-    /* Frees buffer */
-    orxMemory_Free(astBuffer);
+    /* Restores previous destination */
+    orxDisplay_SetDestinationBitmap(pstBackupBitmap);
   }
   else
   {
+    /* Makes sure we're working on screen */
+    orxDisplay_SetDestinationBitmap(sstDisplay.pstScreen);
+
     /* Clears the color buffer with given color */
     glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
     glASSERT();
@@ -1928,16 +1913,16 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Checks */
-	orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-	/* Different destination bitmap? */
-	if (_pstBitmap != sstDisplay.pstDestinationBitmap) {
-		/* Draws remaining items */
-		orxDisplay_Android_DrawArrays();
+  /* Different destination bitmap? */
+  if (_pstBitmap != sstDisplay.pstDestinationBitmap) {
+    /* Draws remaining items */
+    orxDisplay_Android_DrawArrays();
 
-		/* Stores it */
-		sstDisplay.pstDestinationBitmap = _pstBitmap;
+    /* Stores it */
+    sstDisplay.pstDestinationBitmap = _pstBitmap;
 
     /* Screen? */
     if(_pstBitmap == sstDisplay.pstScreen)
@@ -1950,29 +1935,31 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       glASSERT();
     }
-    else
+    else if(_pstBitmap != orxNULL)
     {
       /* Binds frame buffer */
-//      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
-//      glASSERT();
+      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
+      glASSERT();
 
       /* Links it to frame buffer */  
-//      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-//      glASSERT();
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
+      glASSERT();
 
       /* Updates result */
-//      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-//      glASSERT();
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Render to texture not supported");
+      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      glASSERT();
+    }
+    else
+    {
       eResult = orxSTATUS_FAILURE;
     }
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-  		/* Inits viewport */
-	  	glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth,	sstDisplay.pstDestinationBitmap->fHeight);
-	  	glASSERT();
+      /* Inits viewport */
+      glViewport(0, 0, sstDisplay.pstDestinationBitmap->fWidth,	sstDisplay.pstDestinationBitmap->fHeight);
+      glASSERT();
 
       /* Inits projection matrix */
       orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
@@ -1981,10 +1968,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       glASSERT();
     }
-	}
+  }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_Android_BlitBitmap(const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
