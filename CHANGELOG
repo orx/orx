@@ -21,6 +21,7 @@ orx 1.4 (dev)
 * IMPORTANT: Big speed optimization for debug builds: they will only flush the debug log to disk when quiting
 * Config lists can now span multiple lines provided each line to be continued ends with #
 * Added PNG write support for computer versions (SDL/GLFW)
+* Replaced old PNRG with a Xor128 one (as fast as the previous one but with a much better quality of distribution and a huge cycle size)
 * Added possibility to create/modify sound samples and streams at runtime
 * Iconification is now correctly supported on computers
 * Added Smoother(step) curve for orxFXs
