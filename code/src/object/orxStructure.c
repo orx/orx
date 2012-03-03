@@ -106,6 +106,7 @@ typedef struct __orxSTRUCTURE_STATIC_t
 {
   orxSTRUCTURE_STORAGE        astStorage[orxSTRUCTURE_ID_NUMBER]; /**< Structure banks */
   orxSTRUCTURE_REGISTER_INFO  astInfo[orxSTRUCTURE_ID_NUMBER];    /**< Structure info */
+  orxU32                      u32InstanceCounter;                 /**< Instance counter */
   orxU32                      u32Flags;                           /**< Control flags */
 
 } orxSTRUCTURE_STATIC;
@@ -148,6 +149,9 @@ orxSTATUS orxFASTCALL orxStructure_Init()
 {
   orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxSTRUCTURE_ID_NUMBER <= (orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
 
   /* Not already Initialized? */
   if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY))
@@ -367,8 +371,10 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
   /* Is structure type registered? */
   if(sstStructure.astInfo[_eStructureID].u32Size != 0)
   {
+    orxU32 u32ItemID;
+
     /* Creates structure */
-    pstStructure = (orxSTRUCTURE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstStructureBank);
+    pstStructure = (orxSTRUCTURE *)orxBank_AllocateIndexed(sstStructure.astStorage[_eStructureID].pstStructureBank, &u32ItemID);
 
     /* Valid? */
     if(pstStructure != orxNULL)
@@ -431,14 +437,24 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           /* Cleans whole structure */
           orxMemory_Zero(pstStructure, sstStructure.astInfo[_eStructureID].u32Size);
 
-          /* Stores ID with magic number */
-          pstStructure->eID           = (orxSTRUCTURE_ID)(_eStructureID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE);
+          /* Checks */
+          orxASSERT(_eStructureID <= (orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
+          orxASSERT(u32ItemID <= (orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
+          orxASSERT(sstStructure.u32InstanceCounter <= (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
+
+          /* Stores GUID */
+          pstStructure->u64GUID = ((orxU64)_eStructureID << orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID)
+                                | ((orxU64)u32ItemID << orxSTRUCTURE_GUID_SHIFT_ITEM_ID)
+                                | ((orxU64)sstStructure.u32InstanceCounter << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
 
           /* Stores storage handle */
-          pstStructure->hStorageNode  = (orxHANDLE)pstNode;
+          pstStructure->hStorageNode = (orxHANDLE)pstNode;
 
           /* Stores structure pointer */
-          pstNode->pstStructure       = pstStructure;
+          pstNode->pstStructure = pstStructure;
+
+          /* Updates instance ID */
+          sstStructure.u32InstanceCounter = (sstStructure.u32InstanceCounter + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
         }
         else
         {
@@ -532,7 +548,7 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
     orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstStructureBank, _pStructure);
 
     /* Tags structure as deleted */
-    orxSTRUCTURE(_pStructure)->eID = (orxSTRUCTURE_ID)orxSTRUCTURE_MAGIC_TAG_DELETED;
+    orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
   }
   else
   {
@@ -641,6 +657,42 @@ orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCalle
 
   /* Done! */
   return eResult;
+}
+
+/** Gets structure given its GUID
+ * @param[in]   _u64GUID        Structure's GUID
+ * @return      orxSTRUCTURE / orxNULL if not found/alive
+ */
+orxSTRUCTURE *orxFASTCALL orxStructure_Get(orxU64 _u64GUID)
+{
+  orxU64        u64StructureID;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+
+  /* Gets structure ID */
+  u64StructureID = (_u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID;
+
+  /* Checks */
+  orxASSERT(u64StructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Gets structure at index */
+  pstResult = (orxSTRUCTURE *)orxBank_GetAtIndex(sstStructure.astStorage[u64StructureID].pstStructureBank, (orxU32)((_u64GUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
+
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    /* Invalid instance ID? */
+    if((pstResult->u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID) != (_u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID))
+    {
+      /* Clears result */
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets first stored structure (first list cell or tree root depending on storage type)

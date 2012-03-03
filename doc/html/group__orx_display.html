@@ -113,6 +113,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031">orxDisplay_DrawLine</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c">orxDisplay_DrawOBox</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258">orxDisplay_DrawPolygon</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avVertexList, orxU32 _u32VertexNumber, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3">orxDisplay_DrawPolyline</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avVertexList, orxU32 _u32VertexNumber, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf463e1f2aa57d66db163d6306bfe433a">orxDisplay_EnableVSync</a> (orxBOOL _bEnable)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0af5c24229c1176913296242dfa2d4da">orxDisplay_Exit</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad115c2a3c5a27410cc1509bb100bf44c">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
@@ -1414,6 +1415,49 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32VertexNumber</td><td>Number of vertices in the list </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_stColor</td><td>Color </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_bFill</td><td>If true, the polygon will be filled otherwise only its outline will be drawn </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga3fac17f6697ddc6d6dd3059fecdb9ca3"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_DrawPolyline" ref="ga3fac17f6697ddc6d6dd3059fecdb9ca3" args="(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_DrawPolyline </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"> <em>_avVertexList</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"> <em>_u32VertexNumber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramname"> <em>_stColor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Draws a polyline (aka open polygon) </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_avVertexList</td><td>List of vertices </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32VertexNumber</td><td>Number of vertices in the list </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_stColor</td><td>Color </td></tr>
   </table>
   </dd>
 </dl>

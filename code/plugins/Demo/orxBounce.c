@@ -350,6 +350,21 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   /* Toggle shader? */
   if(orxInput_IsActive("ToggleShader") && (orxInput_HasNewStatus("ToggleShader")))
   {
+    orxU32 i;
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+    {
+      orxSTRUCTURE *p;
+      for(p = orxStructure_GetFirst((orxSTRUCTURE_ID)i);
+          p;
+          p = orxStructure_GetNext(p))
+      {
+        if(p != orxStructure_Get(p->u64GUID))
+        {
+          orxBREAK();
+        }
+      }
+    }
+
     /* Toggles shader */
     orxViewport_EnableShader(spstViewport, !orxViewport_IsShaderEnabled(spstViewport));
   }

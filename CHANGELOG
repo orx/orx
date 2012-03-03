@@ -9,6 +9,7 @@ orx 1.4 (dev)
 * IMPORTANT: Much more efficient version of Android (non-native) plugins
 * IMPORTANT: Added primitive draw support (line, circle, polygon, box)
 * IMPORTANT: Added window resize support (both in code or via direct user manipulation of the handles)
+* IMPORTANT: Added 64b GUID for all orx structures
 * IMPORTANT: Added Box2D debug display (in non-release builds only) when config property Physics.ShowDebug is set
 * IMPORTANT: Fixed Retina display for iOS devices
 * IMPORTANT: Added compressed texture support for iOS devices, powered by TDomhan

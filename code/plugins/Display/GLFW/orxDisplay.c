@@ -704,7 +704,7 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
 }
 
 static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
-{  
+{
   /* Has data? */
   if(sstDisplay.s32BufferIndex > 0)
   {
@@ -772,7 +772,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     /* Profiles */
     orxPROFILER_POP_MARKER();
   }
-  
+
   /* Done! */
   return;
 }
@@ -1105,7 +1105,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
 
         /* Fall through */
       }
-  
+
       case orxCHAR_LF:
       {
         /* Updates Y position */
@@ -1440,10 +1440,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
   if(_pstBitmap != sstDisplay.pstScreen)
   {
     orxBITMAP *pstBackupBitmap;
-    
+
     /* Backups current destination */
     pstBackupBitmap = sstDisplay.pstDestinationBitmap;
-    
+
     /* Sets new destination bitmap */
     if(orxDisplay_SetDestinationBitmap(_pstBitmap) != orxSTATUS_FAILURE)
     {
@@ -1452,7 +1452,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
       glASSERT();
       glClear(GL_COLOR_BUFFER_BIT);
       glASSERT();
-    
+
       /* Restores previous destination */
       orxDisplay_SetDestinationBitmap(pstBackupBitmap);
     }
@@ -1795,7 +1795,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
         glASSERT();
 
-        /* Links texture to it */  
+        /* Links texture to it */
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
         glASSERT();
 
@@ -2128,7 +2128,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
       /* Gets its real size */
       uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
       uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
-   
+
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -2144,7 +2144,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
       pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
       orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
- 
+
       /* Allocates buffer */
       pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
 
@@ -3379,7 +3379,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
     orxDisplay_GLFW_InitShader(pstShader);
 
     /* Defines the vertex list */
-    sstDisplay.astVertexList[0].fX  = 
+    sstDisplay.astVertexList[0].fX  =
     sstDisplay.astVertexList[1].fX  = sstDisplay.pstScreen->stClip.vTL.fX;
     sstDisplay.astVertexList[2].fX  =
     sstDisplay.astVertexList[3].fX  = sstDisplay.pstScreen->stClip.vBR.fX;

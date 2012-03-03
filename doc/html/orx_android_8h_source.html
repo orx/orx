@@ -103,162 +103,140 @@
 <a name="l00089"></a>00089 <span class="preprocessor">  #include &lt;android_native_app_glue.h&gt;</span>
 <a name="l00090"></a>00090 <span class="preprocessor">  #include &lt;android/sensor.h&gt;</span>
 <a name="l00091"></a>00091 
-<a name="l00092"></a>00092 
-<a name="l00093"></a>00093 <span class="comment">/* Defined in orxAndroidNativeSupport.c */</span>
-<a name="l00094"></a>00094 <span class="keyword">extern</span> orxS32 s32Animating;
-<a name="l00095"></a>00095 <span class="keyword">extern</span> <span class="keyword">struct </span>android_app *pstApp;
-<a name="l00096"></a>00096 <span class="keyword">extern</span> <a class="code" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> (*ptonAppCmd)(<span class="keyword">struct </span>android_app *app, int32_t cmd);
-<a name="l00097"></a>00097 <span class="keyword">extern</span> int32_t (*ptonInputEvent)(<span class="keyword">struct </span>android_app* app, AInputEvent* event);
-<a name="l00098"></a>00098 <span class="keyword">extern</span> <span class="keyword">const</span> ASensor *poAccelerometerSensor;
-<a name="l00099"></a>00099 <span class="keyword">extern</span> ASensorEventQueue *poSensorEventQueue;
-<a name="l00100"></a>00100 <span class="keywordtype">void</span> orxAndroid_AttachThread();
-<a name="l00101"></a>00101 <span class="keywordtype">void</span> orxAndroid_DetachThread();
-<a name="l00102"></a>00102 <span class="keywordtype">void</span> orxAndroid_GetMainArgs();
-<a name="l00103"></a>00103 <span class="keywordtype">void</span> orxAndroid_ReleaseMainArgs();
-<a name="l00104"></a>00104 
-<a name="l00105"></a>00105 <span class="keyword">extern</span> orxS32     s32NbParams;
-<a name="l00106"></a>00106 <span class="keyword">extern</span> orxSTRING *azParams;
-<a name="l00107"></a>00107 
+<a name="l00092"></a>00092 <span class="preprocessor">#define  LOG_TAG    &quot;orxAndroid.h&quot;</span>
+<a name="l00093"></a>00093 <span class="preprocessor"></span><span class="preprocessor">#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)</span>
+<a name="l00094"></a>00094 <span class="preprocessor"></span><span class="preprocessor">#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)</span>
+<a name="l00095"></a>00095 <span class="preprocessor"></span>
+<a name="l00096"></a>00096 <span class="comment">/* Defined in orxAndroidNativeSupport.c */</span>
+<a name="l00097"></a>00097 <span class="keyword">extern</span> <span class="keyword">struct </span>android_app *pstApp;
+<a name="l00098"></a>00098 <span class="keyword">extern</span> orxS32                     u32NbParams;
+<a name="l00099"></a>00099 <span class="keyword">extern</span> orxSTRING                 *azParams;
+<a name="l00100"></a>00100 <span class="keyword">extern</span> orxS32                     s32Animating;
+<a name="l00101"></a>00101 <span class="keyword">extern</span> <span class="keyword">const</span> ASensor             *poAccelerometerSensor;
+<a name="l00102"></a>00102 <span class="keyword">extern</span> ASensorEventQueue         *poSensorEventQueue;
+<a name="l00103"></a>00103 
+<a name="l00104"></a>00104 <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> <a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a>(orxU32 _u32NbParams, orxSTRING _azParams[], <span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)
+<a name="l00105"></a>00105 {
+<a name="l00106"></a>00106   <span class="comment">/* Inits the Debug System */</span>
+<a name="l00107"></a>00107   <a class="code" href="group__orx_debug.html#gadb24945ce6ef84f98566d5fa37e35ef6">orxDEBUG_INIT</a>();
 <a name="l00108"></a>00108 
-<a name="l00109"></a>00109 <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> orx_AndroidExecute(<span class="keyword">struct</span> android_app *_pstApp, <span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)
-<a name="l00110"></a>00110 {
-<a name="l00111"></a>00111   <span class="comment">/* Checks */</span>
-<a name="l00112"></a>00112   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstApp != orxNULL);
-<a name="l00113"></a>00113   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pfnRun != orxNULL);
+<a name="l00109"></a>00109   <span class="comment">/* Checks */</span>
+<a name="l00110"></a>00110   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pfnRun != orxNULL);
+<a name="l00111"></a>00111 
+<a name="l00112"></a>00112   <span class="comment">/* Registers main module */</span>
+<a name="l00113"></a>00113   <a class="code" href="group__orx_module.html#ga236c2233cd358ff40c2af94d7ef4b640">orxModule_Register</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>, <a class="code" href="group___orx.html#ga25f8974b9edb1f72d95af8c0ae4ce7d9">orx_MainSetup</a>, _pfnInit, _pfnExit);
 <a name="l00114"></a>00114 
-<a name="l00115"></a>00115   <span class="comment">/* Inits app */</span>
-<a name="l00116"></a>00116   pstApp                = _pstApp;
-<a name="l00117"></a>00117   pstApp-&gt;onAppCmd      = ptonAppCmd;
-<a name="l00118"></a>00118   pstApp-&gt;onInputEvent  = ptonInputEvent;
-<a name="l00119"></a>00119   
-<a name="l00120"></a>00120   <span class="comment">/* Makes sure glue isn&#39;t stripped */</span>
-<a name="l00121"></a>00121   app_dummy();
-<a name="l00122"></a>00122 
-<a name="l00123"></a>00123   <span class="comment">/* Inits the Debug System */</span>
-<a name="l00124"></a>00124   <a class="code" href="group__orx_debug.html#gadb24945ce6ef84f98566d5fa37e35ef6">orxDEBUG_INIT</a>();
-<a name="l00125"></a>00125 
-<a name="l00126"></a>00126   <span class="comment">/* Retrieves Java environment */</span>
-<a name="l00127"></a>00127   orxAndroid_AttachThread();
-<a name="l00128"></a>00128   orxAndroid_GetMainArgs();
+<a name="l00115"></a>00115   <span class="comment">/* Registers all other modules */</span>
+<a name="l00116"></a>00116   <a class="code" href="group__orx_module.html#ga7a0361e51ff409dc42025c1019758d02">orxModule_RegisterAll</a>();
+<a name="l00117"></a>00117 
+<a name="l00118"></a>00118   <span class="comment">/* Calls all modules setup */</span>
+<a name="l00119"></a>00119   <a class="code" href="group__orx_module.html#ga10bf7e12da32a1f3ad58beee77900609">orxModule_SetupAll</a>();
+<a name="l00120"></a>00120 
+<a name="l00121"></a>00121   <span class="comment">/* Sends the command line arguments to orxParam module */</span>
+<a name="l00122"></a>00122   <span class="keywordflow">if</span>(<a class="code" href="group__orx_param.html#gaaa54334e7382d583238b892bcb8f97ff">orxParam_SetArgs</a>(_u32NbParams, _azParams) != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l00123"></a>00123   {
+<a name="l00124"></a>00124     <span class="comment">/* Inits the engine */</span>
+<a name="l00125"></a>00125     <span class="keywordflow">if</span>(<a class="code" href="group__orx_module.html#gae6568b5f2c3ed7f4eb64ee81f76f9350">orxModule_Init</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>) != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l00126"></a>00126     {
+<a name="l00127"></a>00127       <span class="comment">/* Registers default event handler */</span>
+<a name="l00128"></a>00128       <a class="code" href="group__orx_event.html#gafa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00">orx_DefaultEventHandler</a>);
 <a name="l00129"></a>00129 
-<a name="l00130"></a>00130   <span class="comment">/* Registers main module */</span>
-<a name="l00131"></a>00131   <a class="code" href="group__orx_module.html#ga236c2233cd358ff40c2af94d7ef4b640">orxModule_Register</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>, <a class="code" href="group___orx.html#ga25f8974b9edb1f72d95af8c0ae4ce7d9">orx_MainSetup</a>, _pfnInit, _pfnExit);
-<a name="l00132"></a>00132 
-<a name="l00133"></a>00133   <span class="comment">/* Registers all other modules */</span>
-<a name="l00134"></a>00134   <a class="code" href="group__orx_module.html#ga7a0361e51ff409dc42025c1019758d02">orxModule_RegisterAll</a>();
-<a name="l00135"></a>00135 
-<a name="l00136"></a>00136   <span class="comment">/* Calls all modules setup */</span>
-<a name="l00137"></a>00137   <a class="code" href="group__orx_module.html#ga10bf7e12da32a1f3ad58beee77900609">orxModule_SetupAll</a>();
-<a name="l00138"></a>00138 
-<a name="l00139"></a>00139   <span class="comment">/* Sends the command line arguments to orxParam module */</span>
-<a name="l00140"></a>00140   <span class="keywordflow">if</span>(<a class="code" href="group__orx_param.html#gaaa54334e7382d583238b892bcb8f97ff">orxParam_SetArgs</a>(s32NbParams, azParams) != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l00141"></a>00141   {
-<a name="l00142"></a>00142     <span class="comment">/* Inits the engine */</span>
-<a name="l00143"></a>00143     <span class="keywordflow">if</span>(<a class="code" href="group__orx_module.html#gae6568b5f2c3ed7f4eb64ee81f76f9350">orxModule_Init</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>) != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l00144"></a>00144     {
-<a name="l00145"></a>00145       <span class="comment">/* Registers default event handler */</span>
-<a name="l00146"></a>00146       <a class="code" href="group__orx_event.html#gafa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00">orx_DefaultEventHandler</a>);
-<a name="l00147"></a>00147 
-<a name="l00148"></a>00148       <span class="comment">/* Displays help */</span>
-<a name="l00149"></a>00149       <span class="keywordflow">if</span>(<a class="code" href="group__orx_param.html#ga2d78f6565168199a9b04fb370296204d">orxParam_DisplayHelp</a>() != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
-<a name="l00150"></a>00150       {
-<a name="l00151"></a>00151         <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eClockStatus, eMainStatus;
-<a name="l00152"></a>00152         <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a> stPayload;
-<a name="l00153"></a>00153         orxBOOL   bStop;
-<a name="l00154"></a>00154 
-<a name="l00155"></a>00155         <span class="comment">/* Clears payload */</span>
-<a name="l00156"></a>00156         <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(&amp;stPayload, <span class="keyword">sizeof</span>(<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a>));
-<a name="l00157"></a>00157 
-<a name="l00158"></a>00158         <span class="comment">/* Main loop */</span>
-<a name="l00159"></a>00159         <span class="keywordflow">for</span>(bStop = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>, <a class="code" href="group___orx.html#ga55fefcd75e9fa01c47e0543d530a358c">sbStopByEvent</a> = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
-<a name="l00160"></a>00160             bStop == <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
-<a name="l00161"></a>00161             bStop = ((<a class="code" href="group___orx.html#ga55fefcd75e9fa01c47e0543d530a358c">sbStopByEvent</a> != <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>) || (eMainStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>) || (eClockStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
-<a name="l00162"></a>00162         {
-<a name="l00163"></a>00163           <span class="comment">/* Reads all pending events */</span>
-<a name="l00164"></a>00164           orxS32 s32Ident, s32Events;
-<a name="l00165"></a>00165           <span class="keyword">struct </span>android_poll_source *pstSource;
-<a name="l00166"></a>00166 
-<a name="l00167"></a>00167           <span class="comment">/* For all system events */</span>
-<a name="l00168"></a>00168           <span class="keywordflow">while</span>((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp-&gt;destroyRequested != 0)) ? 0 : -1, NULL, (<span class="keywordtype">int</span> *)&amp;s32Events, (<span class="keywordtype">void</span> **)&amp;pstSource)) &gt;= 0)
-<a name="l00169"></a>00169           {
-<a name="l00170"></a>00170              <span class="comment">/* Valid source? */</span>
-<a name="l00171"></a>00171              <span class="keywordflow">if</span>(pstSource != NULL)
-<a name="l00172"></a>00172              {
-<a name="l00173"></a>00173                <span class="comment">/* Process its event */</span>
-<a name="l00174"></a>00174                pstSource-&gt;process(pstApp, pstSource);
-<a name="l00175"></a>00175              }
-<a name="l00176"></a>00176 
-<a name="l00177"></a>00177             <span class="comment">/* If a sensor has data, process it now */</span>
-<a name="l00178"></a>00178             <span class="keywordflow">if</span>(s32Ident == LOOPER_ID_USER)
-<a name="l00179"></a>00179             {
-<a name="l00180"></a>00180               <span class="comment">/* Has accelerometer? */</span>
-<a name="l00181"></a>00181               <span class="keywordflow">if</span>(poAccelerometerSensor != NULL)
-<a name="l00182"></a>00182               {
-<a name="l00183"></a>00183                 <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a> stAccelPayload;
-<a name="l00184"></a>00184                 ASensorEvent            oEvent;
+<a name="l00130"></a>00130       <span class="comment">/* Displays help */</span>
+<a name="l00131"></a>00131       <span class="keywordflow">if</span>(<a class="code" href="group__orx_param.html#ga2d78f6565168199a9b04fb370296204d">orxParam_DisplayHelp</a>() != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)
+<a name="l00132"></a>00132       {
+<a name="l00133"></a>00133         <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> eClockStatus, eMainStatus;
+<a name="l00134"></a>00134         <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a> stPayload;
+<a name="l00135"></a>00135         orxBOOL   bStop;
+<a name="l00136"></a>00136 
+<a name="l00137"></a>00137         <span class="comment">/* Clears payload */</span>
+<a name="l00138"></a>00138         <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(&amp;stPayload, <span class="keyword">sizeof</span>(<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a>));
+<a name="l00139"></a>00139 
+<a name="l00140"></a>00140         <span class="comment">/* Main loop */</span>
+<a name="l00141"></a>00141         <span class="keywordflow">for</span>(bStop = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>, <a class="code" href="group___orx.html#ga55fefcd75e9fa01c47e0543d530a358c">sbStopByEvent</a> = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
+<a name="l00142"></a>00142             bStop == <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;
+<a name="l00143"></a>00143             bStop = ((<a class="code" href="group___orx.html#ga55fefcd75e9fa01c47e0543d530a358c">sbStopByEvent</a> != <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>) || (eMainStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>) || (eClockStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
+<a name="l00144"></a>00144         {
+<a name="l00145"></a>00145           <span class="comment">/* Reads all pending events */</span>
+<a name="l00146"></a>00146           orxS32 s32Ident, s32Events;
+<a name="l00147"></a>00147           <span class="keyword">struct </span>android_poll_source *pstSource;
+<a name="l00148"></a>00148 
+<a name="l00149"></a>00149           <span class="comment">/* For all system events */</span>
+<a name="l00150"></a>00150           <span class="keywordflow">while</span>((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp-&gt;destroyRequested != 0)) ? 0 : -1, NULL, (<span class="keywordtype">int</span> *)&amp;s32Events, (<span class="keywordtype">void</span> **)&amp;pstSource)) &gt;= 0)
+<a name="l00151"></a>00151           {
+<a name="l00152"></a>00152              <span class="comment">/* Valid source? */</span>
+<a name="l00153"></a>00153              <span class="keywordflow">if</span>(pstSource != NULL)
+<a name="l00154"></a>00154              {
+<a name="l00155"></a>00155                <span class="comment">/* Process its event */</span>
+<a name="l00156"></a>00156                pstSource-&gt;process(pstApp, pstSource);
+<a name="l00157"></a>00157              }
+<a name="l00158"></a>00158 
+<a name="l00159"></a>00159             <span class="comment">/* If a sensor has data, process it now */</span>
+<a name="l00160"></a>00160             <span class="keywordflow">if</span>(s32Ident == LOOPER_ID_USER)
+<a name="l00161"></a>00161             {
+<a name="l00162"></a>00162               <span class="comment">/* Has accelerometer? */</span>
+<a name="l00163"></a>00163               <span class="keywordflow">if</span>(poAccelerometerSensor != NULL)
+<a name="l00164"></a>00164               {
+<a name="l00165"></a>00165                 <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a> stAccelPayload;
+<a name="l00166"></a>00166                 ASensorEvent            oEvent;
+<a name="l00167"></a>00167 
+<a name="l00168"></a>00168                 <span class="comment">/* Inits event&#39;s payload */</span>
+<a name="l00169"></a>00169                 <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(&amp;stAccelPayload, <span class="keyword">sizeof</span>(<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a>));
+<a name="l00170"></a>00170 
+<a name="l00171"></a>00171                 <span class="comment">/* For all accelerometer events */</span>
+<a name="l00172"></a>00172                 <span class="keywordflow">while</span>(ASensorEventQueue_getEvents(poSensorEventQueue, &amp;oEvent, 1) &gt; 0)
+<a name="l00173"></a>00173                 {
+<a name="l00174"></a>00174                   <span class="comment">/* Inits event */</span>
+<a name="l00175"></a>00175                   stAccelPayload.stAccelerometer.vAcceleration.fX = (orxFLOAT)oEvent.acceleration.x;
+<a name="l00176"></a>00176                   stAccelPayload.stAccelerometer.vAcceleration.fY = (orxFLOAT)oEvent.acceleration.y;
+<a name="l00177"></a>00177                   stAccelPayload.stAccelerometer.vAcceleration.fZ = (orxFLOAT)oEvent.acceleration.z;
+<a name="l00178"></a>00178 
+<a name="l00179"></a>00179                   <span class="comment">/* Sends event */</span>
+<a name="l00180"></a>00180                   <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeacb1022e05c114dc1585aa4d2a6ca3baa">orxSYSTEM_EVENT_ACCELERATE</a>, orxNULL, orxNULL, &amp;stAccelPayload);
+<a name="l00181"></a>00181                 }
+<a name="l00182"></a>00182               }
+<a name="l00183"></a>00183             }
+<a name="l00184"></a>00184           }
 <a name="l00185"></a>00185 
-<a name="l00186"></a>00186                 <span class="comment">/* Inits event&#39;s payload */</span>
-<a name="l00187"></a>00187                 <a class="code" href="group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347">orxMemory_Zero</a>(&amp;stAccelPayload, <span class="keyword">sizeof</span>(<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a>));
-<a name="l00188"></a>00188 
-<a name="l00189"></a>00189                 <span class="comment">/* For all accelerometer events */</span>
-<a name="l00190"></a>00190                 <span class="keywordflow">while</span>(ASensorEventQueue_getEvents(poSensorEventQueue, &amp;oEvent, 1) &gt; 0)
-<a name="l00191"></a>00191                 {
-<a name="l00192"></a>00192                   <span class="comment">/* Inits event */</span>
-<a name="l00193"></a>00193                   stAccelPayload.stAccelerometer.pAccelerometer = &amp;oEvent;
-<a name="l00194"></a>00194                   stAccelPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
-<a name="l00195"></a>00195                   stAccelPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
-<a name="l00196"></a>00196                   stAccelPayload.stAccelerometer.fZ = (orxFLOAT)oEvent.acceleration.z;
+<a name="l00186"></a>00186           <span class="comment">/* Should update? */</span>
+<a name="l00187"></a>00187           <span class="keywordflow">if</span>((s32Animating != 0) || (pstApp-&gt;destroyRequested != 0))
+<a name="l00188"></a>00188           {
+<a name="l00189"></a>00189             <span class="comment">/* Sends frame start event */</span>
+<a name="l00190"></a>00190             <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea72a6496ab2b209fdc3ad19f501c5d840">orxSYSTEM_EVENT_GAME_LOOP_START</a>, orxNULL, orxNULL, &amp;stPayload);
+<a name="l00191"></a>00191 
+<a name="l00192"></a>00192             <span class="comment">/* Runs the engine */</span>
+<a name="l00193"></a>00193             eMainStatus = _pfnRun();
+<a name="l00194"></a>00194 
+<a name="l00195"></a>00195             <span class="comment">/* Updates clock system */</span>
+<a name="l00196"></a>00196             eClockStatus = <a class="code" href="group__orx_clock.html#gac6daebe5994b3120859ef148b1eda1f4">orxClock_Update</a>();
 <a name="l00197"></a>00197 
-<a name="l00198"></a>00198                   <span class="comment">/* Sends event */</span>
-<a name="l00199"></a>00199                   <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeacb1022e05c114dc1585aa4d2a6ca3baa">orxSYSTEM_EVENT_ACCELERATE</a>, orxNULL, orxNULL, &amp;stAccelPayload);
-<a name="l00200"></a>00200                 }
-<a name="l00201"></a>00201               }
-<a name="l00202"></a>00202             }
+<a name="l00198"></a>00198             <span class="comment">/* Sends frame stop event */</span>
+<a name="l00199"></a>00199             <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea5667ecf5f5450207e5a38acba3c609da">orxSYSTEM_EVENT_GAME_LOOP_STOP</a>, orxNULL, orxNULL, &amp;stPayload);
+<a name="l00200"></a>00200 
+<a name="l00201"></a>00201             <span class="comment">/* Updates frame counter */</span>
+<a name="l00202"></a>00202             stPayload.<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e">u32FrameCounter</a>++;
 <a name="l00203"></a>00203           }
-<a name="l00204"></a>00204 
-<a name="l00205"></a>00205           <span class="comment">/* Should update? */</span>
-<a name="l00206"></a>00206           <span class="keywordflow">if</span>((s32Animating != 0) || (pstApp-&gt;destroyRequested != 0))
-<a name="l00207"></a>00207           {
-<a name="l00208"></a>00208             <span class="comment">/* Sends frame start event */</span>
-<a name="l00209"></a>00209             <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea72a6496ab2b209fdc3ad19f501c5d840">orxSYSTEM_EVENT_GAME_LOOP_START</a>, orxNULL, orxNULL, &amp;stPayload);
-<a name="l00210"></a>00210 
-<a name="l00211"></a>00211             <span class="comment">/* Runs the engine */</span>
-<a name="l00212"></a>00212             eMainStatus = _pfnRun();
+<a name="l00204"></a>00204         }
+<a name="l00205"></a>00205       }
+<a name="l00206"></a>00206 
+<a name="l00207"></a>00207       <span class="comment">/* Removes event handler */</span>
+<a name="l00208"></a>00208       <a class="code" href="group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00">orx_DefaultEventHandler</a>);
+<a name="l00209"></a>00209 
+<a name="l00210"></a>00210       <span class="comment">/* Exits from engine */</span>
+<a name="l00211"></a>00211       <a class="code" href="group__orx_module.html#ga6a492298081fa56cf9c382491c456998">orxModule_Exit</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>);
+<a name="l00212"></a>00212     }
 <a name="l00213"></a>00213 
-<a name="l00214"></a>00214             <span class="comment">/* Updates clock system */</span>
-<a name="l00215"></a>00215             eClockStatus = <a class="code" href="group__orx_clock.html#gac6daebe5994b3120859ef148b1eda1f4">orxClock_Update</a>();
-<a name="l00216"></a>00216 
-<a name="l00217"></a>00217             <span class="comment">/* Sends frame stop event */</span>
-<a name="l00218"></a>00218             <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea5667ecf5f5450207e5a38acba3c609da">orxSYSTEM_EVENT_GAME_LOOP_STOP</a>, orxNULL, orxNULL, &amp;stPayload);
-<a name="l00219"></a>00219 
-<a name="l00220"></a>00220             <span class="comment">/* Updates frame counter */</span>
-<a name="l00221"></a>00221             stPayload.<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e">u32FrameCounter</a>++;
-<a name="l00222"></a>00222           }
-<a name="l00223"></a>00223         }
-<a name="l00224"></a>00224       }
-<a name="l00225"></a>00225 
-<a name="l00226"></a>00226       <span class="comment">/* Removes event handler */</span>
-<a name="l00227"></a>00227       <a class="code" href="group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00">orx_DefaultEventHandler</a>);
-<a name="l00228"></a>00228 
-<a name="l00229"></a>00229       <span class="comment">/* Exits from engine */</span>
-<a name="l00230"></a>00230       <a class="code" href="group__orx_module.html#ga6a492298081fa56cf9c382491c456998">orxModule_Exit</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>);
-<a name="l00231"></a>00231     }
-<a name="l00232"></a>00232 
-<a name="l00233"></a>00233     <span class="comment">/* Exits from all modules */</span>
-<a name="l00234"></a>00234     <a class="code" href="group__orx_module.html#ga26302cb32518da5834394e07c5339351">orxModule_ExitAll</a>();
-<a name="l00235"></a>00235   }
-<a name="l00236"></a>00236   
-<a name="l00237"></a>00237   <span class="comment">/* Exits from the Debug system */</span>
-<a name="l00238"></a>00238   <a class="code" href="group__orx_debug.html#gaa1f495a2e235f27771f46449c924466d">orxDEBUG_EXIT</a>();
-<a name="l00239"></a>00239 
-<a name="l00240"></a>00240   orxAndroid_ReleaseMainArgs();
-<a name="l00241"></a>00241   orxAndroid_DetachThread();
-<a name="l00242"></a>00242 }
-<a name="l00243"></a>00243 
-<a name="l00244"></a>00244 <span class="preprocessor">#endif</span>
-<a name="l00245"></a>00245 <span class="preprocessor"></span>
-<a name="l00246"></a>00246 <span class="preprocessor">#endif</span>
-<a name="l00247"></a>00247 <span class="preprocessor"></span>
+<a name="l00214"></a>00214     <span class="comment">/* Exits from all modules */</span>
+<a name="l00215"></a>00215     <a class="code" href="group__orx_module.html#ga26302cb32518da5834394e07c5339351">orxModule_ExitAll</a>();
+<a name="l00216"></a>00216   }
+<a name="l00217"></a>00217   
+<a name="l00218"></a>00218   <span class="comment">/* Exits from the Debug system */</span>
+<a name="l00219"></a>00219   <a class="code" href="group__orx_debug.html#gaa1f495a2e235f27771f46449c924466d">orxDEBUG_EXIT</a>();
+<a name="l00220"></a>00220 }
+<a name="l00221"></a>00221 
+<a name="l00222"></a>00222 <span class="preprocessor">#endif</span>
+<a name="l00223"></a>00223 <span class="preprocessor"></span>
+<a name="l00224"></a>00224 <span class="preprocessor">#endif</span>
+<a name="l00225"></a>00225 <span class="preprocessor"></span>
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

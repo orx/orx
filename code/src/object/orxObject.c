@@ -1546,7 +1546,7 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pOwner == orxNULL) || ((((orxSTRUCTURE *)(_pOwner))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
 
   /* Had a previous object owner? */
   if((pstOwner = orxOBJECT(_pstObject->pstOwner)) != orxNULL)
@@ -2303,7 +2303,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pParent == orxNULL) || ((((orxSTRUCTURE *)(_pParent))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
