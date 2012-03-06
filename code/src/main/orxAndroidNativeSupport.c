@@ -246,6 +246,40 @@ void orxAndroid_DetachThread()
   (*s_vm)->DetachCurrentThread(s_vm);
 }
 
+orxS32 orxAndroid_GetRotation()
+{
+  jint rotation;
+  
+  JNIEnv *poJEnv = orxAndroid_GetCurrentJNIEnv();
+  ANativeActivity *activity = orxAndroid_GetNativeActivity();
+   
+  jclass clsContext = (*poJEnv)->FindClass(poJEnv, "android/content/Context");
+  orxASSERT(clsContext != orxNULL);
+  jmethodID getSystemService = (*poJEnv)->GetMethodID(poJEnv, clsContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+  orxASSERT(getSystemService != orxNULL);
+  jfieldID WINDOW_SERVICE_ID = (*poJEnv)->GetStaticFieldID(poJEnv, clsContext, "WINDOW_SERVICE", "Ljava/lang/String;");
+  orxASSERT(WINDOW_SERVICE_ID != orxNULL);
+  jstring WINDOW_SERVICE = (jstring) (*poJEnv)->GetStaticObjectField(poJEnv, clsContext, WINDOW_SERVICE_ID);
+  orxASSERT(WINDOW_SERVICE != orxNULL);
+  jobject windowManager = (*poJEnv)->CallObjectMethod(poJEnv, activity->clazz, getSystemService, WINDOW_SERVICE);
+  orxASSERT(windowManager != orxNULL);
+  jclass clsWindowManager = (*poJEnv)->FindClass(poJEnv, "android/view/WindowManager");
+  orxASSERT(clsWindowManager != orxNULL);
+  jmethodID getDefaultDisplay = (*poJEnv)->GetMethodID(poJEnv, clsWindowManager, "getDefaultDisplay", "()Landroid/view/Display;");
+  orxASSERT(getDefaultDisplay != orxNULL);
+  jobject defaultDisplay = (*poJEnv)->CallObjectMethod(poJEnv, windowManager, getDefaultDisplay);
+  orxASSERT(defaultDisplay != orxNULL);
+  jclass clsDisplay = (*poJEnv)->FindClass(poJEnv, "android/view/Display");
+  orxASSERT(clsDisplay != orxNULL);
+  jmethodID getRotation = (*poJEnv)->GetMethodID(poJEnv, clsDisplay, "getRotation", "()I");
+  orxASSERT(getRotation != orxNULL)
+  rotation =  (*poJEnv)->CallIntMethod(poJEnv, defaultDisplay, getRotation);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "rotation = %d", (int) rotation);
+  
+  return (orxS32) rotation;
+}
+
+
 void orxAndroid_AcquireWakeLock()
 {
         ANativeActivity *activity = orxAndroid_GetNativeActivity();

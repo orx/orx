@@ -109,7 +109,7 @@ static orxSTATUS orxFASTCALL Run()
   {
     static orxVECTOR svSmoothedGravity =
     {
-      0, -1, 0
+      orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)
     };
 
     /* Gets smoothed gravity from new value (low-pass filter) */
