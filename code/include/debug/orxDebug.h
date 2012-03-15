@@ -225,9 +225,9 @@
 
   #define orxASSERT(TEST, ...)
 
-  #define orxDEBUG_SET_FLAG(SET, UNSET)
-  #define orxDEBUG_BACKUP_FLAG()
-  #define orxDEBUG_RESTORE_FLAG()
+  #define orxDEBUG_SET_FLAG(SET, UNSET)       _orxDebug_SetFlags(SET, UNSET)
+  #define orxDEBUG_BACKUP_FLAG()              _orxDebug_BackupFlags()
+  #define orxDEBUG_RESTORE_FLAG()             _orxDebug_RestoreFlags()
 
 #endif /* __orxDEBUG__ */
 
