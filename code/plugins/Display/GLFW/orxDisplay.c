@@ -2819,10 +2819,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
       }
     }
-
-    /* Clears last blend mode & last bitmap */
-    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-    sstDisplay.pstLastBitmap  = orxNULL;
   }
   else
   {
@@ -2835,6 +2831,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     /* Pops config section */
     orxConfig_PopSection();
   }
+
+  /* Clears last blend mode & last bitmap */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  sstDisplay.pstLastBitmap  = orxNULL;
 
   /* Done! */
   return eResult;
