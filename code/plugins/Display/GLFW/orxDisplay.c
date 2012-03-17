@@ -2830,6 +2830,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
     /* Pops config section */
     orxConfig_PopSection();
+
+	/* Updates result */
+	eResult = orxSTATUS_SUCCESS;
   }
 
   /* Clears last blend mode & last bitmap */

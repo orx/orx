@@ -60,11 +60,17 @@ CPP_SRC = \
 armeabi_debug_OBJ = $(addprefix armeabi/debug/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi/debug/,$(C_SRC:.c=.o))
 armeabi-v7a_debug_OBJ = $(addprefix armeabi-v7a/debug/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi-v7a/debug/,$(C_SRC:.c=.o))
 
+armeabi_profile_OBJ = $(addprefix armeabi/profile/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi/profile/,$(C_SRC:.c=.o))
+armeabi-v7a_profile_OBJ = $(addprefix armeabi-v7a/profile/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi-v7a/profile/,$(C_SRC:.c=.o))
+
 armeabi_OBJ = $(addprefix armeabi/release/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi/release/,$(C_SRC:.c=.o))
 armeabi-v7a_OBJ = $(addprefix armeabi-v7a/release/,$(CPP_SRC:.cpp=.o)) $(addprefix armeabi-v7a/release/,$(C_SRC:.c=.o))
 	
 armeabi_debug_OUT = armeabi/liborxd.a
 armeabi-v7a_debug_OUT = armeabi-v7a/liborxd.a
+
+armeabi_profile_OUT = armeabi/liborxp.a
+armeabi-v7a_profile_OUT = armeabi-v7a/liborxp.a
 
 armeabi_OUT = armeabi/liborx.a
 armeabi-v7a_OUT = armeabi-v7a/liborx.a
@@ -82,7 +88,7 @@ ARMV5TE_FLAGS_RELEASE = -O1
 ARMV7A_FLAGS_DEBUG = -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O0 -g
 ARMV5TE_FLAGS_DEBUG = -O0 -g
 	
-all: $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
+all: $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_profile_OUT) $(armeabi-v7a_profile_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
 
 armeabi/debug/%.o: %.cpp
 	mkdir -p $(dir $@)
@@ -100,6 +106,22 @@ armeabi-v7a/debug/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV7A_FLAGS_DEBUG) -D__orxDEBUG__ -c $< -o $@
 
+armeabi/profile/%.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV5TE_FLAGS_PROFILE) -D__orxPROFILER__ -c $< -o $@
+
+armeabi/profile/%.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV5TE_FLAGS_PROFILE) -D__orxPROFILER__ -c $< -o $@
+
+armeabi-v7a/profile/%.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV7A_FLAGS_PROFILE) -D__orxPROFILER__ -c $< -o $@
+
+armeabi-v7a/profile/%.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) $(INCLUDES) $(CFLAGS) $(ARMV7A_FLAGS_PROFILE) -D__orxPROFILER__ -c $< -o $@
+	
 armeabi/release/%.o: %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(INCLUDES) $(CPPFLAGS) $(ARMV5TE_FLAGS_RELEASE) -c $< -o $@
@@ -122,6 +144,12 @@ $(armeabi_OUT): $(armeabi_OBJ)
 $(armeabi-v7a_OUT): $(armeabi-v7a_OBJ)
 	$(AR) rcs $(armeabi-v7a_OUT) $(armeabi-v7a_OBJ)
 
+$(armeabi_profile_OUT): $(armeabi_profile_OBJ)
+	$(AR) rcs $(armeabi_profile_OUT) $(armeabi_profile_OBJ)
+
+$(armeabi-v7a_profile_OUT): $(armeabi-v7a_profile_OBJ)
+	$(AR) rcs $(armeabi-v7a_profile_OUT) $(armeabi-v7a_profile_OBJ)
+	
 $(armeabi_debug_OUT): $(armeabi_debug_OBJ)
 	$(AR) rcs $(armeabi_debug_OUT) $(armeabi_debug_OBJ)
 
@@ -129,4 +157,4 @@ $(armeabi-v7a_debug_OUT): $(armeabi-v7a_debug_OBJ)
 	$(AR) rcs $(armeabi-v7a_debug_OUT) $(armeabi-v7a_debug_OBJ)
 
 clean:
-	rm -f $(armeabi_debug_OBJ) $(armeabi-v7a_debug_OBJ) $(armeabi_OBJ) $(armeabi-v7a_OBJ) $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
+	rm -f $(armeabi_debug_OBJ) $(armeabi-v7a_debug_OBJ) $(armeabi_profile_OBJ) $(armeabi-v7a_profile_OBJ) $(armeabi_OBJ) $(armeabi-v7a_OBJ) $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_profile_OUT) $(armeabi-v7a_profile_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
