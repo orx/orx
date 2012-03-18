@@ -35,15 +35,8 @@
 
 #ifdef __orxEMBEDDED__
 
-/* Wii? */
-#if defined(__orxWII__)
-
-//! TODO: Includes all plugins to embed for Wii
-#include "../plugins/Physics/Box2D/orxPhysics.cpp"
-#include "../plugins/Render/Home/orxRender.c"
-
-/* iPhone? */
-#elif defined(__orxIPHONE__)
+/* iOS? */
+#if defined(__orxIOS__)
 
 #pragma GCC visibility push(hidden)
 

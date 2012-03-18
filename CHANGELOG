@@ -3,22 +3,64 @@ Orx - Portable Game Engine  (Version 1.3)
 
 =============================================================================
 
-orx 1.3
+orx 1.4 (dev)
 ---
 * IMPORTANT: Added linux x86_64 support + added corresponding project files/precompiled dependencies
 * IMPORTANT: Much more efficient version of Android (non-native) plugins
-* IMPORTANT: Added possibility to create/modify sound samples and streams at runtime
-* IMPORTANT: Added Smoother(step) curve for orxFXs
-* IMPORTANT: Memory bank elements can now be aligned on cache line size by defining __orxBANK_ALIGN__
+* IMPORTANT: Added primitive draw support (line, circle, polygon, box)
+* IMPORTANT: Added window resize support (both in code or via direct user manipulation of the handles)
+* IMPORTANT: Added 64b GUID for all orx structures
+* IMPORTANT: Added Box2D debug display (in non-release builds only) when config property Physics.ShowDebug is set
+* IMPORTANT: Replaced __orxIPHONE__ by __orxIOS__
+* IMPORTANT: Fixed Retina display for iOS devices
 * IMPORTANT: Added compressed texture support for iOS devices, powered by TDomhan
-* IMPORTANT: Added PNG write support for computer versions (SDL/GLFW)
-* Improved profiler display + support portrait orientation
-* Added new maths functions : smooth/smoother stepd + catmull-rom sline interpolation
+* IMPORTANT: Added ogg/vorbis support for iOS devices (not hardware accelerated)
+* IMPORTANT: orxCrypt tool doesn't do merge by default anymore but simple 1:1 file copy (-m to trigger config merging)
+* IMPORTANT: Added RGB/HSL/HSV as config input for objects, graphics & FXs
+* IMPORTANT: FXs can now be used for modifying the color of objects using HSL or HSV color spaces (for more natural blendings)
+* IMPORTANT: FXs can now be used for modifying volume and pitch of sounds over time (with curves) on objects
+* IMPORTANT: Multitouch support is now unified across Android and iOS devices (still handled via events)
+* IMPORTANT: Big speed optimization for debug builds: they will only flush the debug log to disk when quiting
+* Config lists can now span multiple lines provided each line to be continued ends with #
+* Added PNG write support for computer versions (SDL/GLFW)
+* Replaced old PNRG with a Xor128 one (as fast as the previous one but with a much better quality of distribution and a huge cycle size)
+* Added possibility to create/modify sound samples and streams at runtime
+* Iconification is now correctly supported on computers
+* Added Smoother(step) curve for orxFXs
+* Memory bank elements can now be aligned on cache line size by defining __orxBANK_ALIGN__
+* Fixed using an object hierarchy + bodies with respect to speed update
+* Fixed spawning of physics object when UseSelfAsParent is set
+* Fixed applying physics impulse/force not using the center of mass correctly by default + not using local space
+* Improved profiler display + support portrait orientation + added some more internal markers
+* Added new maths functions : smooth/smoother steps + catmull-rom sline interpolation
+* Fixed orxBody_GetMassCenter() not returning a scale-invariant position
+* Fixed NPOT texture support for iOS devices
+* Fixed relative children object positioning + joints when created in config
+* Fixed orxConfig_IsInheritedValue() not working for global section inheritance
+* Added config-customizable sound streaming (buffer size & number)
+* Fixed sub-graphic (ie. in spritesheet/texture atlas) coordinates passed to shaders
+* Fixed multi-texture animations not working with shaders
+* Fixed texture smoothing/blending when some shaders are active
 * Fixed pre-multiplied texture issue on iOS devices
+* Fixed render-to-texture offset for architectures that don't have NPOT texture support
+* Fixed aspect rendering on portrait-oriented (ie. vertical display) devices
+* Optimized core event dispatch
 * Added direct accessors to object's sibling and child for better performances
+* Added config encryption get accessor + config file copy function
+* Frames are not immediately updated (no more passive deferred frame update)
 * Newly added sounds to objects will get their position updated immediately
 * Added option to synchronize FXs on one object with respect to another one
-* Misc fixes and additions
+* Fixed lost sound stream buffers when they were discarded on the fly by the user
+* Worked around a framebuffer bug in iOS 4.2
+* Added orxRender_GetScreenPosition() to transform a world position to screen given an optional viewport
+* orxRENDER_EVENT_START is now sent *after* screen had been cleared
+* Fixed calling orxObject_SetParent(orxNULL)
+* Fixed orxSOUND_EVENT_STOP not sent for all cases of sounds removal
+* Calling orxDisplay_SetVideoMode(orxNULL) will now trigger a window title update based on the config value
+* Added index buffer object optimization for all rendering
+* Removed obsolete orxSYSTEM_EVENT_MOUSE_IN/_OUT events
+* Added debug error message when loading config files with an unsupported unicode encoding (only UTF-8 is supported)
+* Misc fixes, optimizations and additions
 
 orx 1.3rc0
 ---

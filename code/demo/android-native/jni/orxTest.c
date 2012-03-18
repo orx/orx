@@ -27,7 +27,7 @@
  * @date 28/01/2010
  * @author iarwain@orx-project.org
  *
- * iPhone test
+ * Android test
  *
  */
 
@@ -109,7 +109,7 @@ static orxSTATUS orxFASTCALL Run()
   {
     static orxVECTOR svSmoothedGravity =
     {
-      0, -1, 0
+      orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)
     };
 
     /* Gets smoothed gravity from new value (low-pass filter) */
@@ -126,12 +126,9 @@ static void orxFASTCALL Exit()
 {
 }
 
-void android_main(struct android_app *_pstApp)
+int main(int argc, char *argv[])
 {
-  /* Executes orx */
-  orx_AndroidExecute(_pstApp, Init, Run, Exit);
-  
-  /* Done! */
-  return;
+  orx_Execute(argc, argv, Init, Run, Exit);
+  return 0;
 }
 

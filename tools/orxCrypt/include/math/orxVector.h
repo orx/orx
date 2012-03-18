@@ -567,18 +567,34 @@ static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pv
  */
 static orxINLINE orxVECTOR *                  orxVector_2DRotate(orxVECTOR *_pvRes, const orxVECTOR *_pvOp, orxFLOAT _fAngle)
 {
-  register orxFLOAT fSin, fCos;
-
   /* Checks */
-  orxASSERT(_pvRes   != orxNULL);
+  orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp != orxNULL);
 
-  /* Gets cos & sin of angle */
-  fCos = orxMath_Cos(_fAngle);
-  fSin = orxMath_Sin(_fAngle);
+  /* PI/2? */
+  if(_fAngle == orxMATH_KF_PI_BY_2)
+  {
+    /* Updates result */
+    orxVector_Set(_pvRes, -_pvOp->fY, _pvOp->fX, _pvOp->fZ);
+  }
+  /* -PI/2? */
+  else if(_fAngle == -orxMATH_KF_PI_BY_2)
+  {
+    /* Updates result */
+    orxVector_Set(_pvRes, _pvOp->fY, -_pvOp->fX, _pvOp->fZ);
+  }
+  /* Any other angle */
+  else
+  {
+    register orxFLOAT fSin, fCos;
 
-  /* Updates result */
-  orxVector_Set(_pvRes, (fCos * _pvOp->fX) - (fSin * _pvOp->fY), (fSin * _pvOp->fX) + (fCos * _pvOp->fY), _pvOp->fZ);
+    /* Gets cos & sin of angle */
+    fCos = orxMath_Cos(_fAngle);
+    fSin = orxMath_Sin(_fAngle);
+
+    /* Updates result */
+    orxVector_Set(_pvRes, (fCos * _pvOp->fX) - (fSin * _pvOp->fY), (fSin * _pvOp->fX) + (fCos * _pvOp->fY), _pvOp->fZ);
+  }
 
   /* Done! */
   return _pvRes;

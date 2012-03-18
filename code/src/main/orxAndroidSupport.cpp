@@ -48,6 +48,8 @@
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
 int s_displayRotation = -1;
+orxDOUBLE s_dOffsetTimeFromBoot = 0;
+
 static bool s_glesLoaded = true;
 
 jobject oActivity;
@@ -71,6 +73,17 @@ int32_t NVEventAppInit(int32_t argc, char** argv)
 
 /* Main function to call */
 extern int main(int argc, char *argv[]);
+
+orxDOUBLE GetBootTime()
+{
+  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  jclass clsSystemClock = poJEnv->FindClass("android/os/SystemClock");
+  orxASSERT(clsSystemClock != orxNULL);
+  jmethodID uptimeMillis = poJEnv->GetStaticMethodID(clsSystemClock, "uptimeMillis", "()J");
+  jlong lTime = poJEnv->CallStaticLongMethod(clsSystemClock,uptimeMillis);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Boot time (in second) %f", (double) (lTime / 1000.0f));
+  return (lTime/1000.0f);
+}
 
 int GetRotation()
 {
@@ -261,7 +274,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 {
   s_displayRotation = GetRotation();
   s_glesLoaded = true;
-
+  
   /* Inits the engine */
   if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
   {
@@ -274,6 +287,12 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
       orxBOOL                 bStop;
       /* Clears payload */
       orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+      /* Get offset time from boot */
+      orxDOUBLE dSystTime = orxSystem_GetTime();
+      s_dOffsetTimeFromBoot = GetBootTime() - dSystTime;
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Orx boot time (in second) %f", dSystTime);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Offset boot time (in second) %f", s_dOffsetTimeFromBoot);
 
       /* Main loop */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "App entering main loop");
@@ -324,10 +343,11 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           case NV_EVENT_TOUCH:
             orxSYSTEM_EVENT_PAYLOAD stTouchPayload;
             orxMemory_Zero(&stTouchPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-            stTouchPayload.stTouch.u32Count = 1;
-            stTouchPayload.stTouch.astTouch[0].u32Id = 0;
-            stTouchPayload.stTouch.astTouch[0].fX = orx2F(ev->m_data.m_touch.m_x);
-            stTouchPayload.stTouch.astTouch[0].fY = orx2F(ev->m_data.m_touch.m_y);
+            stTouchPayload.stTouch.u32ID = 0;
+            stTouchPayload.stTouch.fX = orx2F(ev->m_data.m_touch.m_x);
+            stTouchPayload.stTouch.fY = orx2F(ev->m_data.m_touch.m_y);
+			stTouchPayload.stTouch.fPressure = orxFLOAT_0;
+			stTouchPayload.stTouch.dTime = orxFLOAT_0;
             switch (ev->m_data.m_touch.m_action)
             {
             case NV_TOUCHACTION_DOWN:
@@ -348,26 +368,18 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             orxSYSTEM_EVENT_PAYLOAD stTouchPayloadMulti;
             orxMemory_Zero(&stTouchPayloadMulti, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
-            stTouchPayloadMulti.stTouch.u32AdditionnalTouch = ev->m_data.m_multi.m_additionnalPointer;
-            stTouchPayloadMulti.stTouch.u32Count = ev->m_data.m_multi.m_nCount;
-      
-            orxU32 uMax;
-            uMax = orxMIN(ev->m_data.m_multi.m_nCount,orxANDROID_TOUCH_NUMBER);
-
-            for (orxU32 i = 0; i < uMax; i++)
-            {
-              stTouchPayloadMulti.stTouch.astTouch[i].u32Id = ev->m_data.m_multi.m_astTouch[i].m_id;
-              stTouchPayloadMulti.stTouch.astTouch[i].fX = ev->m_data.m_multi.m_astTouch[i].m_x;
-              stTouchPayloadMulti.stTouch.astTouch[i].fY = ev->m_data.m_multi.m_astTouch[i].m_y;
-            }
-            
+			stTouchPayloadMulti.stTouch.u32ID     = ev->m_data.m_multi.m_id;
+			stTouchPayloadMulti.stTouch.fX        = orx2F(ev->m_data.m_multi.m_x);
+			stTouchPayloadMulti.stTouch.fY        = orx2F(ev->m_data.m_multi.m_y);
+			stTouchPayloadMulti.stTouch.fPressure = orx2F(ev->m_data.m_multi.m_pressure);
+			stTouchPayloadMulti.stTouch.dTime     = (orxDOUBLE)((ev->m_data.m_multi.m_eventtime / 1000.0f) - s_dOffsetTimeFromBoot);
             switch (ev->m_data.m_multi.m_action)
             {
             case NV_MULTITOUCH_DOWN:
             case NV_MULTITOUCH_POINTER_DOWN:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayloadMulti);
               break;
-                
+            case NV_MULTITOUCH_CANCEL:
             case NV_MULTITOUCH_UP:
             case NV_MULTITOUCH_POINTER_UP:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayloadMulti);
@@ -425,20 +437,22 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           case NV_EVENT_ACCEL:
             orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
             orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-              
+
             float canVec[3];
             float screenVec[3];
             
             canVec[0] = orx2F(ev->m_data.m_accel.m_x);
             canVec[1] = orx2F(ev->m_data.m_accel.m_y);
             canVec[2] = orx2F(ev->m_data.m_accel.m_z);
-              
+
             canonicalToScreen(canVec, screenVec);
-             
-            stAccelPayload.stAccelerometer.fX = orx2F(screenVec[0]);
-            stAccelPayload.stAccelerometer.fY = orx2F(screenVec[1]);
-            stAccelPayload.stAccelerometer.fZ = orx2F(screenVec[2]);
-              
+
+            /* Set real time */
+            stAccelPayload.stAccelerometer.dTime = orxFLOAT_0;
+
+            /* Set acceleration vector */
+            orxVector_Set(&stAccelPayload.stAccelerometer.vAcceleration,orx2F(screenVec[0]),orx2F(screenVec[1]),orx2F(screenVec[2]));
+
             /* Sends event */
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
             break;

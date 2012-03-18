@@ -35,6 +35,7 @@
 #include "orxPluginAPI.h"
 
 #include <Box2D/Box2D.h>
+#include <stdlib.h>
 
 
 #ifdef __orxMSVC__
@@ -52,6 +53,13 @@
   #define orxPHYSICS_CAST_HELPER
 
 #endif /* __orxX86_64__ */
+
+
+#if defined(__orxDEBUG__) || defined(__orxPROFILER__)
+
+  #define orxPHYSICS_ENABLE_DEBUG_DRAW
+
+#endif /* __orxDEBUG__ || __orxPROFILER__ */
 
 
 /** Module flags
@@ -98,6 +106,25 @@ public:
   void EndContact(b2Contact *_poContact);
 };
 
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+/** Debug draw
+ */
+class orxPhysicsDebugDraw : public b2DebugDraw
+{
+public:
+  void DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor);
+  void DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor);
+  void DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor);
+  void DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor);
+  void DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor);
+  void DrawTransform(const b2Transform &_rstTransform);
+};
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+
 /** Static structure
  */
 typedef struct __orxPHYSICS_STATIC_t
@@ -110,6 +137,12 @@ typedef struct __orxPHYSICS_STATIC_t
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
   orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+  orxPhysicsDebugDraw        *poDebugDraw;        /**< Debug draw */
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
 } orxPHYSICS_STATIC;
 
@@ -298,17 +331,225 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 }
 
 
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
+{
+  orxCOLOR  stColor;
+  orxS32    i;
+
+#ifndef __orxMSVC__
+
+  orxVECTOR avVertexList[_s32VertexNumber];
+
+#else /* __orxMSVC__ */
+
+  orxVECTOR *avVertexList = (orxVECTOR *)_malloca(_s32VertexNumber * sizeof(orxVECTOR));
+
+#endif /* __orxMSVC__ */
+
+  /* For all vertices */
+  for(i = 0; i < _s32VertexNumber; i++)
+  {
+    orxVECTOR vTemp;
+
+    /* Sets it */
+    orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].x), sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].y), orxFLOAT_0);
+
+    /* Stores its screen position */
+    orxRender_GetScreenPosition(&vTemp, orxNULL, &(avVertexList[i]));
+  }
+
+  /* Sets color */
+  orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+  stColor.fAlpha = orxFLOAT_1;
+
+  /* Draws polygon */
+  orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxFALSE);
+
+  /* Done! */
+  return;
+}
+
+void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
+{
+  orxCOLOR  stColor;
+  orxS32    i;
+
+#ifndef __orxMSVC__
+
+  orxVECTOR avVertexList[_s32VertexNumber];
+
+#else /* __orxMSVC__ */
+
+  orxVECTOR *avVertexList = (orxVECTOR *)_malloca(_s32VertexNumber * sizeof(orxVECTOR));
+
+#endif /* __orxMSVC__ */
+
+  /* For all vertices */
+  for(i = 0; i < _s32VertexNumber; i++)
+  {
+    orxVECTOR vTemp;
+
+    /* Sets it */
+    orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].x), sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].y), orxFLOAT_0);
+
+    /* Stores its screen position */
+    orxRender_GetScreenPosition(&vTemp, orxNULL, &(avVertexList[i]));
+  }
+
+  /* Sets color */
+  orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+
+  /* Draws polygon inside */
+  stColor.fAlpha = orx2F(0.5f);
+  orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxTRUE);
+
+  /* Draws polygon outside */
+  stColor.fAlpha = orxFLOAT_1;
+  orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxFALSE);
+
+  /* Done! */
+  return;
+}
+
+void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor)
+{
+  orxCOLOR  stColor;
+  orxVECTOR vCenter;
+
+  /* Inits center */
+  orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.y), orxFLOAT_0);
+
+  /* Gets its screen position */
+  orxRender_GetScreenPosition(&vCenter, orxNULL, &vCenter);
+
+  /* Sets color */
+  orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+  stColor.fAlpha = orxFLOAT_1;
+
+  /* Draws circle */
+  orxDisplay_DrawCircle(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_fRadius), orxColor_ToRGBA(&stColor), orxFALSE);
+
+  /* Done! */
+  return;
+}
+
+void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor)
+{
+  orxCOLOR  stColor;
+  orxVECTOR vCenter;
+
+  /* Inits center */
+  orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.y), orxFLOAT_0);
+
+  /* Gets its screen position */
+  orxRender_GetScreenPosition(&vCenter, orxNULL, &vCenter);
+
+  /* Sets color */
+  orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+
+  /* Draws circle inside */
+  stColor.fAlpha = orx2F(0.5f);
+  orxDisplay_DrawCircle(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_fRadius), orxColor_ToRGBA(&stColor), orxTRUE);
+
+  /* Draws circle outside */
+  stColor.fAlpha = orxFLOAT_1;
+  orxDisplay_DrawCircle(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_fRadius), orxColor_ToRGBA(&stColor), orxFALSE);
+
+  /* Done! */
+  return;
+}
+
+void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor)
+{
+  orxCOLOR  stColor;
+  orxVECTOR vStart, vEnd;
+
+  /* Inits points */
+  orxVector_Set(&vStart, sstPhysics.fRecDimensionRatio * orx2F(_rvP1.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP1.y), orxFLOAT_0);
+  orxVector_Set(&vEnd, sstPhysics.fRecDimensionRatio * orx2F(_rvP2.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP2.y), orxFLOAT_0);
+
+  /* Gets their screen positions */
+  orxRender_GetScreenPosition(&vStart, orxNULL, &vStart);
+  orxRender_GetScreenPosition(&vEnd, orxNULL, &vEnd);
+
+  /* Sets color */
+  orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+  stColor.fAlpha = orxFLOAT_1;
+
+  /* Draws segment */
+  orxDisplay_DrawLine(&vStart, &vEnd, orxColor_ToRGBA(&stColor));
+
+  /* Done! */
+  return;
+}
+
+void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
+{
+  orxVECTOR       vStart, vEndX, vEndY;
+  const orxFLOAT  fScale = orx2F(0.4f);
+
+  /* Inits points */
+  orxVector_Set(&vStart, sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.position.x), sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.position.y), orxFLOAT_0);
+  orxVector_Set(&vEndX, vStart.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.R.col1.x), vStart.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.R.col1.y), orxFLOAT_0);
+  orxVector_Set(&vEndY, vStart.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.R.col2.x), vStart.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.R.col2.y), orxFLOAT_0);
+
+  /* Gets their screen positions */
+  orxRender_GetScreenPosition(&vStart, orxNULL, &vStart);
+  orxRender_GetScreenPosition(&vEndX, orxNULL, &vEndX);
+  orxRender_GetScreenPosition(&vEndY, orxNULL, &vEndY);
+
+  /* Draws segments */
+  orxDisplay_DrawLine(&vStart, &vEndX, orx2RGBA(0xFF, 0x00, 0x00, 0xFF));
+  orxDisplay_DrawLine(&vStart, &vEndY, orx2RGBA(0x00, 0xFF, 0x00, 0xFF));
+
+  /* Done! */
+  return;
+}
+
+static orxSTATUS orxFASTCALL orxPhysics_Box2D_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
+
+  /* End of viewport rendering? */
+  if(_pstEvent->eID == orxRENDER_EVENT_VIEWPORT_STOP)
+  {
+    /* Pushes config section */
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Show debug? */
+    if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_SHOW_DEBUG) != orxFALSE)
+    {
+      /* Draws debug */
+      sstPhysics.poWorld->DrawDebugData();
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+
 /** Update (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pContext       Context sent when registering callback to the clock
  */
-static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
   b2Body                   *poBody;
 
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxPhysics_Update");
+  orxPROFILER_PUSH_MARKER("orxPhysics_Box2D_Update");
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -321,6 +562,7 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
   {
     orxFRAME *pstFrame;
     orxBODY  *pstBody;
+    orxVECTOR vSpeed;
 
     /* Gets associated body */
     pstBody = orxBODY(poBody->GetUserData());
@@ -328,15 +570,29 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Gets owner's frame */
     pstFrame = orxOBJECT_GET_STRUCTURE(orxOBJECT(orxBody_GetOwner(pstBody)), FRAME);
 
+    /* Gets its body speed */
+    orxBody_GetSpeed(pstBody, &vSpeed);
+
     /* Is not a root child? */
     if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
     {
-      orxVECTOR vPos;
+      orxVECTOR vPos, vScale;
+      orxFRAME *pstParentFrame;
 
       /* Updates body's position & rotation*/
       orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
       orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+
+      /* Gets parent frame */
+      pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+      /* Updates its speed with parent scale & rotation */
+      orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+      orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
     }
+
+    /* Applies speed */
+    orxPhysics_SetSpeed((orxPHYSICS_BODY *)poBody, &vSpeed);
   }
 
   /* Is simulation enabled? */
@@ -363,6 +619,9 @@ static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
     /* Updates last step of world simulation */
     sstPhysics.poWorld->Step(fDT, (orxS32)(orxS64)_pContext, (orxS32) orxPHYSICS_CAST_HELPER _pContext);
+
+    /* Clears forces */
+    sstPhysics.poWorld->ClearForces();
 
     /* For all physical bodies */
     for(poBody = sstPhysics.poWorld->GetBodyList();
@@ -1557,7 +1816,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   poBody->SetAwake(true);
 
   /* Sets impulse */
-  vImpulse.Set(_pvImpulse->fX, _pvImpulse->fY);
+  vImpulse.Set(sstPhysics.fDimensionRatio * _pvImpulse->fX, sstPhysics.fDimensionRatio * _pvImpulse->fY);
 
   /* Sets point */
   vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
@@ -1862,6 +2121,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       /* Registers them */
       sstPhysics.poWorld->SetContactListener(sstPhysics.poContactListener);
 
+      /* Removes auto clear forces */
+      sstPhysics.poWorld->SetAutoClearForces(false);
+
       /* Stores inverse dimension ratio */
       sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
 
@@ -1890,13 +2152,29 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       if(pstClock != orxNULL)
       {
         /* Registers rendering function */
-        eResult = orxClock_Register(pstClock, orxPhysics_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+        eResult = orxClock_Register(pstClock, orxPhysics_Box2D_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Creates event bank */
           sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+          /* Creates debug draw */
+          sstPhysics.poDebugDraw = new orxPhysicsDebugDraw();
+
+          /* Inits it */
+          sstPhysics.poDebugDraw->SetFlags(b2DebugDraw::e_shapeBit | b2DebugDraw::e_jointBit | b2DebugDraw::e_centerOfMassBit);
+
+          /* Registers it */
+          sstPhysics.poWorld->SetDebugDraw(sstPhysics.poDebugDraw);
+
+          /* Adds event handler */
+          orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
           /* Updates status */
           sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY | orxPHYSICS_KU32_STATIC_FLAG_ENABLED;
@@ -1946,6 +2224,16 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_Exit()
   {
     /* Deletes the listeners */
     delete sstPhysics.poContactListener;
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
+
+    /* Deletes debug draw */
+    delete sstPhysics.poDebugDraw;
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
     /* Deletes world */
     delete sstPhysics.poWorld;

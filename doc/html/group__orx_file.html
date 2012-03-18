@@ -58,7 +58,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga017e8a1b07e7dac74193f5908bcabfcf">orxFile_GetSize</a> (const <a class="el" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga58fad06e476d24fe45d96f42c304eb65">orxFile_Init</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga69cb0d04489c13daba0ebd380a4ae19b">orxFile_Open</a> (const orxSTRING _zFileName, orxU32 _u32OpenFlags)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxS32 orxCDECL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gaa440ac942c5d5f341a60a606f6de8435">orxFile_Print</a> (<a class="el" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxSTRING _zString,...)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxS32 orxCDECL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gaa488b51b271b256b7b4515516cb08dde">orxFile_Print</a> (<a class="el" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, const orxSTRING _zString,...)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga6b28e81a5fe57e673f79b20c3f6c641f">orxFile_Read</a> (void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gaad3788ccc8b930c0034b59039ab23344">orxFile_Seek</a> (<a class="el" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxS32 _s32Position)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga3211b72acbc9ff98a67d97ee757acd7d">orxFile_Setup</a> ()</td></tr>
@@ -480,7 +480,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaa440ac942c5d5f341a60a606f6de8435"></a><!-- doxytag: member="orxFile.h::orxFile_Print" ref="gaa440ac942c5d5f341a60a606f6de8435" args="(orxFILE *_pstFile, orxSTRING _zString,...)" -->
+<a class="anchor" id="gaa488b51b271b256b7b4515516cb08dde"></a><!-- doxytag: member="orxFile.h::orxFile_Print" ref="gaa488b51b271b256b7b4515516cb08dde" args="(orxFILE *_pstFile, const orxSTRING _zString,...)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -493,7 +493,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxSTRING&#160;</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
           <td class="paramname"> <em>_zString</em>, </td>
         </tr>
         <tr>

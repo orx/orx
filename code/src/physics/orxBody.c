@@ -183,16 +183,17 @@ struct __orxBODY_JOINT_t
 struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
-  orxVECTOR               vScale;                                     /**< Scale : 28 */
-  orxVECTOR               vPreviousPosition;                          /**< Previous position : 40 */
-  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 44 */
-  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 48 */
-  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 52 */
-  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 56 */
-  orxU32                  u32DefFlags;                                /**< Definition flags : 60 */
-  orxLINKLIST             stPartList;                                 /**< Part list : 72 */
-  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 84 */
-  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 96 */
+  orxVECTOR               vSpeed;                                     /**< Speed : 28 */
+  orxVECTOR               vScale;                                     /**< Scale : 40 */
+  orxVECTOR               vPreviousPosition;                          /**< Previous position : 52 */
+  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 56 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 60 */
+  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 64 */
+  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 68 */
+  orxU32                  u32DefFlags;                                /**< Definition flags : 72 */
+  orxLINKLIST             stPartList;                                 /**< Part list : 84 */
+  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 96 */
+  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 108 */
 };
 
 /** Static structure
@@ -1659,8 +1660,11 @@ orxSTATUS orxFASTCALL orxBody_SetSpeed(orxBODY *_pstBody, const orxVECTOR *_pvSp
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Updates its speed */
-    eResult = orxPhysics_SetSpeed(_pstBody->pstData, _pvSpeed);
+    /* Stores it */
+    orxVector_Copy(&(_pstBody->vSpeed), _pvSpeed);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -1815,7 +1819,7 @@ orxVECTOR *orxFASTCALL orxBody_GetSpeed(const orxBODY *_pstBody, orxVECTOR *_pvS
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
     /* Updates result */
-    pvResult = orxPhysics_GetSpeed(_pstBody->pstData, _pvSpeed);
+    pvResult = orxVector_Copy(_pvSpeed, &(_pstBody->vSpeed));
   }
   else
   {
@@ -1900,7 +1904,7 @@ orxFLOAT orxFASTCALL orxBody_GetMass(const orxBODY *_pstBody)
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Gets mass center */
+    /* Gets mass */
     fResult = orxPhysics_GetMass(_pstBody->pstData);
   }
   else
@@ -1913,7 +1917,7 @@ orxFLOAT orxFASTCALL orxBody_GetMass(const orxBODY *_pstBody)
   return fResult;
 }
 
-/** Gets a body center of mass
+/** Gets a body center of mass (object space)
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
@@ -1930,8 +1934,22 @@ orxVECTOR *orxFASTCALL orxBody_GetMassCenter(const orxBODY *_pstBody, orxVECTOR 
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Gets mass center */
-    pvResult = orxPhysics_GetMassCenter(_pstBody->pstData, _pvMassCenter);
+    /* Valid scale? */
+    if((_pstBody->vScale.fX != orxFLOAT_0)
+    && (_pstBody->vScale.fY != orxFLOAT_0))
+    {
+      /* Gets mass center */
+      pvResult = orxPhysics_GetMassCenter(_pstBody->pstData, _pvMassCenter);
+
+      /* Removes scale */
+      pvResult->fX /= _pstBody->vScale.fX;
+      pvResult->fY /= _pstBody->vScale.fY;
+    }
+    else
+    {
+      /* Updates result */
+      pvResult = orxVector_Copy(_pvMassCenter, &orxVECTOR_0);
+    }
   }
   else
   {
@@ -2053,7 +2071,7 @@ orxSTATUS orxFASTCALL orxBody_ApplyTorque(orxBODY *_pstBody, orxFLOAT _fTorque)
 /** Applies a force
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
@@ -2068,19 +2086,27 @@ orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pv
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
+    orxVECTOR vPoint;
+
     /* Has given point? */
     if(_pvPoint != orxNULL)
     {
-      /* Applies force */
-      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, _pvPoint);
+      /* Copies it */
+      orxVector_Copy(&vPoint, _pvPoint);
     }
     else
     {
-      orxVECTOR vMassCenter;
-
-      /* Applies force on mass center */
-      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, orxPhysics_GetMassCenter(_pstBody->pstData, &vMassCenter));
+      /* Gets mass center */
+      orxBody_GetMassCenter(_pstBody, &vPoint);
     }
+
+    /* Applies scale, rotation and translation */
+    orxVector_2DRotate(&vPoint, &vPoint, _pstBody->fPreviousRotation);
+    orxVector_Mul(&vPoint, &vPoint, &(_pstBody->vScale));
+    orxVector_Add(&vPoint, &vPoint, &(_pstBody->vPreviousPosition));
+
+    /* Applies force */
+    eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, &vPoint);
   }
   else
   {
@@ -2095,7 +2121,7 @@ orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pv
 /** Applies an impulse
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvImpulse      Impulse to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
@@ -2110,19 +2136,27 @@ orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
+    orxVECTOR vPoint;
+
     /* Has given point? */
     if(_pvPoint != orxNULL)
     {
-      /* Applies impulse */
-      eResult = orxPhysics_ApplyImpulse(_pstBody->pstData, _pvImpulse, _pvPoint);
+      /* Copies it */
+      orxVector_Copy(&vPoint, _pvPoint);
     }
     else
     {
-      orxVECTOR vMassCenter;
-
-      /* Applies impusle on mass center */
-      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvImpulse, orxPhysics_GetMassCenter(_pstBody->pstData, &vMassCenter));
+      /* Gets mass center */
+      orxBody_GetMassCenter(_pstBody, &vPoint);
     }
+
+    /* Applies scale, rotation and translation */
+    orxVector_2DRotate(&vPoint, &vPoint, _pstBody->fPreviousRotation);
+    orxVector_Mul(&vPoint, &vPoint, &(_pstBody->vScale));
+    orxVector_Add(&vPoint, &vPoint, &(_pstBody->vPreviousPosition));
+
+    /* Applies force */
+    eResult = orxPhysics_ApplyImpulse(_pstBody->pstData, _pvImpulse, &vPoint);
   }
   else
   {
@@ -2370,9 +2404,15 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       /* Gets body up-to-date rotation */
       fRotation = orxPhysics_GetRotation(_pstBody->pstData);
 
+      /* Gets body up-to-date speed */
+      orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed);
+
       /* Global space? */
       if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
       {
+        orxVECTOR vScale;
+        orxFRAME *pstParentFrame;
+
         /* Updates position & rotation with diffs */
         orxVector_Add(&vPosition, &vPosition, &vDiff);
         fRotation += fDiff;
@@ -2382,6 +2422,13 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
         orxPhysics_SetRotation(_pstBody->pstData, fRotation);
         orxVector_Copy(&(_pstBody->vPreviousPosition), &vPosition);
         _pstBody->fPreviousRotation = fRotation;
+
+        /* Gets parent frame */
+        pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+        /* Updates speed with parent scale & rotation */
+        orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+        orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));        
       }
 
       /* Updates position */
@@ -2394,7 +2441,7 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       orxPhysics_SetAngularVelocity(_pstBody->pstData, orxPhysics_GetAngularVelocity(_pstBody->pstData) * fSpeedCoef);
 
       /* Updates its speed */
-      orxPhysics_SetSpeed(_pstBody->pstData, orxVector_Mulf(&vSpeed, orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed), fSpeedCoef));
+      orxBody_SetSpeed(_pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fSpeedCoef));
 
       /* Has speed coef */
       if(fSpeedCoef != orxFLOAT_1)

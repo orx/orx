@@ -89,43 +89,25 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   #include <android_native_app_glue.h>
   #include <android/sensor.h>
 
+#define  LOG_TAG    "orxAndroid.h"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 /* Defined in orxAndroidNativeSupport.c */
-extern orxS32 s32Animating;
 extern struct android_app *pstApp;
-extern void (*ptonAppCmd)(struct android_app *app, int32_t cmd);
-extern int32_t (*ptonInputEvent)(struct android_app* app, AInputEvent* event);
-extern const ASensor *poAccelerometerSensor;
-extern ASensorEventQueue *poSensorEventQueue;
-void orxAndroid_AttachThread();
-void orxAndroid_DetachThread();
-void orxAndroid_GetMainArgs();
-void orxAndroid_ReleaseMainArgs();
+extern orxS32                     u32NbParams;
+extern orxSTRING                 *azParams;
+extern orxS32                     s32Animating;
+extern const ASensor             *poAccelerometerSensor;
+extern ASensorEventQueue         *poSensorEventQueue;
 
-extern orxS32     s32NbParams;
-extern orxSTRING *azParams;
-
-
-static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
-  /* Checks */
-  orxASSERT(_pstApp != orxNULL);
-  orxASSERT(_pfnRun != orxNULL);
-
-  /* Inits app */
-  pstApp                = _pstApp;
-  pstApp->onAppCmd      = ptonAppCmd;
-  pstApp->onInputEvent  = ptonInputEvent;
-  
-  /* Makes sure glue isn't stripped */
-  app_dummy();
-
   /* Inits the Debug System */
   orxDEBUG_INIT();
 
-  /* Retrieves Java environment */
-  orxAndroid_AttachThread();
-  orxAndroid_GetMainArgs();
+  /* Checks */
+  orxASSERT(_pfnRun != orxNULL);
 
   /* Registers main module */
   orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
@@ -137,7 +119,7 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
   orxModule_SetupAll();
 
   /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(s32NbParams, azParams) != orxSTATUS_FAILURE)
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
@@ -190,10 +172,9 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
                 while(ASensorEventQueue_getEvents(poSensorEventQueue, &oEvent, 1) > 0)
                 {
                   /* Inits event */
-                  stAccelPayload.stAccelerometer.pAccelerometer = &oEvent;
-                  stAccelPayload.stAccelerometer.fX = (orxFLOAT)oEvent.acceleration.x;
-                  stAccelPayload.stAccelerometer.fY = (orxFLOAT)oEvent.acceleration.y;
-                  stAccelPayload.stAccelerometer.fZ = (orxFLOAT)oEvent.acceleration.z;
+                  stAccelPayload.stAccelerometer.vAcceleration.fX = (orxFLOAT)oEvent.acceleration.x;
+                  stAccelPayload.stAccelerometer.vAcceleration.fY = (orxFLOAT)oEvent.acceleration.y;
+                  stAccelPayload.stAccelerometer.vAcceleration.fZ = (orxFLOAT)oEvent.acceleration.z;
 
                   /* Sends event */
                   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
@@ -236,9 +217,6 @@ static orxINLINE void orx_AndroidExecute(struct android_app *_pstApp, const orxM
   
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
-
-  orxAndroid_ReleaseMainArgs();
-  orxAndroid_DetachThread();
 }
 
 #endif

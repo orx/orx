@@ -258,6 +258,40 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX,
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSpeed(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
+/** Adds volume to an FX
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fStartTime     Time start
+ * @param[in]   _fEndTime       Time end
+ * @param[in]   _fCyclePeriod   Cycle period
+ * @param[in]   _fCyclePhase    Cycle phase (at start)
+ * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
+ * @param[in]   _fStartVolume   Starting volume value
+ * @param[in]   _fEndVolume     Ending volume value
+ * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
+ * @param[in]   _u32Flags       Param flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddVolume(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartVolume, orxFLOAT _fEndVolume, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+
+/** Adds pitch to an FX
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fStartTime     Time start
+ * @param[in]   _fEndTime       Time end
+ * @param[in]   _fCyclePeriod   Cycle period
+ * @param[in]   _fCyclePhase    Cycle phase (at start)
+ * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
+ * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
+ * @param[in]   _fStartPitch    Starting pitch value
+ * @param[in]   _fEndPitch      Ending pitch value
+ * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
+ * @param[in]   _u32Flags       Param flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPitch(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartPitch, orxFLOAT _fEndPitch, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+
 /** Adds a slot to an FX from config
  * @param[in]   _pstFX          Concerned FX
  * @param[in]   _zSlotID        Config ID

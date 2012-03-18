@@ -746,216 +746,6 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_GetScreen()
   return sstDisplay.pstScreen;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  const orxCHAR  *pc;
-  orxU32          u32CharacterCodePoint, u32Counter;
-  GLfloat         fX, fY, fHeight;
-  orxSTATUS       eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zString != orxNULL);
-  orxASSERT(_pstFont != orxNULL);
-  orxASSERT(_pstMap != orxNULL);
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Translates it */
-  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
-  glASSERT();
-
-  /* Applies rotation */
-  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
-  glASSERT();
-
-  /* Applies scale */
-  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
-  glASSERT();
-
-  /* Gets character's height */
-  fHeight = _pstMap->fCharacterHeight;
-
-  /* Prepares font for drawing */
-  orxDisplay_SDL_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
-
-  /* For all characters */
-  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), u32Counter = 0, fX = (GLfloat)-_pstTransform->fSrcX, fY = (GLfloat)-_pstTransform->fSrcY;
-      u32CharacterCodePoint != orxCHAR_NULL;
-      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
-  {
-    /* Depending on character */
-    switch(u32CharacterCodePoint)
-    {
-      case orxCHAR_CR:
-      {
-        /* Half EOL? */
-        if(*pc == orxCHAR_LF)
-        {
-          /* Updates pointer */
-          pc++;
-        }
-
-        /* Fall through */
-      }
-  
-      case orxCHAR_LF:
-      {
-        /* Updates Y position */
-        fY += fHeight;
-
-        /* Resets X position */
-        fX = (GLfloat)-_pstTransform->fSrcX;
-
-        break;
-      }
-
-      default:
-      {
-        const orxCHARACTER_GLYPH *pstGlyph;
-        orxFLOAT                  fWidth;
-
-        /* Gets glyph from UTF-8 table */
-        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
-
-        /* Valid? */
-        if(pstGlyph != orxNULL)
-        {
-          /* Gets character width */
-          fWidth = pstGlyph->fWidth;
-
-          /* End of buffer? */
-          if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
-          {
-            /* Selects arrays */
-            glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
-            glASSERT();
-            glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
-            glASSERT();
-
-            /* Has active shaders? */
-            if(sstDisplay.s32ActiveShaderCounter > 0)
-            {
-              orxDISPLAY_SHADER *pstShader;
-
-              /* For all shaders */
-              for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-                  pstShader != orxNULL;
-                  pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-              {
-                /* Is active? */
-                if(pstShader->bActive != orxFALSE)
-                {
-                  /* Inits shader */
-                  orxDisplay_SDL_InitShader(pstShader);
-
-                  /* Draws arrays */
-                  glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-                  glASSERT();
-                }
-              }
-            }
-            else
-            {
-              /* Draws arrays */
-              glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-              glASSERT();
-            }
-
-            /* Resets counter */
-            u32Counter = 0;
-          }
-
-          /* Outputs vertices and texture coordinates */
-          sstDisplay.afVertexList[u32Counter]       =
-          sstDisplay.afVertexList[u32Counter + 2]   =
-          sstDisplay.afVertexList[u32Counter + 4]   = fX;
-          sstDisplay.afVertexList[u32Counter + 6]   =
-          sstDisplay.afVertexList[u32Counter + 8]   =
-          sstDisplay.afVertexList[u32Counter + 10]  = fX + fWidth;
-          sstDisplay.afVertexList[u32Counter + 5]   =
-          sstDisplay.afVertexList[u32Counter + 9]   =
-          sstDisplay.afVertexList[u32Counter + 11]  = fY;
-          sstDisplay.afVertexList[u32Counter + 1]   =
-          sstDisplay.afVertexList[u32Counter + 3]   =
-          sstDisplay.afVertexList[u32Counter + 7]   = fY + fHeight;
-          
-          sstDisplay.afTextureCoordList[u32Counter]       =
-          sstDisplay.afTextureCoordList[u32Counter + 2]   =
-          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
-          sstDisplay.afTextureCoordList[u32Counter + 6]   =
-          sstDisplay.afTextureCoordList[u32Counter + 8]   =
-          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
-          sstDisplay.afTextureCoordList[u32Counter + 5]   =
-          sstDisplay.afTextureCoordList[u32Counter + 9]   =
-          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
-          sstDisplay.afTextureCoordList[u32Counter + 1]   =
-          sstDisplay.afTextureCoordList[u32Counter + 3]   =
-          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
-
-          /* Updates counter */
-          u32Counter += 12;
-        }
-        else
-        {
-          /* Gets default width */
-          fWidth = fHeight;
-        }
-
-        /* Updates X position */
-        fX += fWidth;
-
-        break;
-      }
-    }
-  }
-
-  /* Has remaining data? */
-  if(u32Counter != 0)
-  {
-    /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
-    glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
-    glASSERT();
-
-    /* Has active shaders? */
-    if(sstDisplay.s32ActiveShaderCounter > 0)
-    {
-      orxDISPLAY_SHADER *pstShader;
-
-      /* For all shaders */
-      for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-          pstShader != orxNULL;
-          pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-      {
-        /* Is active? */
-        if(pstShader->bActive != orxFALSE)
-        {
-          /* Inits shader */
-          orxDisplay_SDL_InitShader(pstShader);
-
-          /* Draws arrays */
-          glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-          glASSERT();
-        }
-      }
-    }
-    else
-    {
-      /* Draws arrays */
-      glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-      glASSERT();
-    }
-  }
-
-  /* Restores identity */
-  glLoadIdentity();
-  glASSERT();
-
-  /* Done! */
-  return eResult;
-}
-
 void orxFASTCALL orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   /* Checks */
@@ -1358,207 +1148,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_BlitBitmap(const orxBITMAP *_pstSrc, orxFLO
 
   /* Draws it */
   orxDisplay_SDL_DrawBitmap(_pstSrc, _fPosX, _fPosY, _eSmoothing, _eBlendMode);
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
-  orxASSERT(_pstTransform != orxNULL);
-
-  /* Translates it */
-  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
-  glASSERT();
-
-  /* Applies rotation */
-  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
-  glASSERT();
-
-  /* Applies scale */
-  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
-  glASSERT();
-
-  /* No repeat? */
-  if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
-  {
-    /* Draws it */
-    orxDisplay_SDL_DrawBitmap(_pstSrc, -_pstTransform->fSrcX, -_pstTransform->fSrcY, _eSmoothing, _eBlendMode);
-  }
-  else
-  {
-    orxFLOAT  i, j, fRecRepeatX;
-    GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
-    orxU32    u32Counter;
-
-    /* Prepares bitmap for drawing */
-    orxDisplay_SDL_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
-
-    /* Inits bitmap height */
-    fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
-
-    /* Inits texture coords */
-    fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
-    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
-
-    /* For all lines */
-    for(fY = (GLfloat)-_pstTransform->fSrcY, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
-    {
-      /* Partial line? */
-      if(i < orxFLOAT_1)
-      {
-        /* Updates height */
-        fHeight *= (GLfloat)i;
-
-        /* Resets texture coords */
-        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
-      }
-      else
-      {
-        /* Resets texture coords */
-        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
-      }
-
-      /* Resets bitmap width */
-      fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
-
-      /* For all columns */
-      for(fX = (GLfloat)-_pstTransform->fSrcX, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
-      {
-        /* End of buffer? */
-        if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
-        {
-          /* Selects arrays */
-          glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
-          glASSERT();
-          glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
-          glASSERT();
-
-          /* Has active shaders? */
-          if(sstDisplay.s32ActiveShaderCounter > 0)
-          {
-            orxDISPLAY_SHADER *pstShader;
-
-            /* For all shaders */
-            for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-                pstShader != orxNULL;
-                pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-            {
-              /* Is active? */
-              if(pstShader->bActive != orxFALSE)
-              {
-                /* Inits shader */
-                orxDisplay_SDL_InitShader(pstShader);
-
-                /* Draws arrays */
-                glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-                glASSERT();
-              }
-            }
-          }
-          else
-          {
-            /* Draws arrays */
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-            glASSERT();
-          }
-
-          /* Resets counter */
-          u32Counter = 0;
-        }
-
-        /* Partial column? */
-        if(j < orxFLOAT_1)
-        {
-          /* Updates width */
-          fWidth *= (GLfloat)j;
-
-          /* Updates texture right coord */
-          fRight = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + (j * (_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX))));
-        }
-
-        /* Outputs vertices and texture coordinates */
-        sstDisplay.afVertexList[u32Counter]       =
-        sstDisplay.afVertexList[u32Counter + 2]   =
-        sstDisplay.afVertexList[u32Counter + 4]   = fX;
-        sstDisplay.afVertexList[u32Counter + 6]   =
-        sstDisplay.afVertexList[u32Counter + 8]   =
-        sstDisplay.afVertexList[u32Counter + 10]  = fX + fWidth;
-        sstDisplay.afVertexList[u32Counter + 5]   =
-        sstDisplay.afVertexList[u32Counter + 9]   =
-        sstDisplay.afVertexList[u32Counter + 11]  = fY;
-        sstDisplay.afVertexList[u32Counter + 1]   =
-        sstDisplay.afVertexList[u32Counter + 3]   =
-        sstDisplay.afVertexList[u32Counter + 7]   = fY + fHeight;
-
-        sstDisplay.afTextureCoordList[u32Counter]       =
-        sstDisplay.afTextureCoordList[u32Counter + 2]   =
-        sstDisplay.afTextureCoordList[u32Counter + 4]   = fLeft;
-        sstDisplay.afTextureCoordList[u32Counter + 6]   =
-        sstDisplay.afTextureCoordList[u32Counter + 8]   =
-        sstDisplay.afTextureCoordList[u32Counter + 10]  = fRight;
-        sstDisplay.afTextureCoordList[u32Counter + 5]   =
-        sstDisplay.afTextureCoordList[u32Counter + 9]   =
-        sstDisplay.afTextureCoordList[u32Counter + 11]  = fTop;
-        sstDisplay.afTextureCoordList[u32Counter + 1]   =
-        sstDisplay.afTextureCoordList[u32Counter + 3]   =
-        sstDisplay.afTextureCoordList[u32Counter + 7]   = fBottom;
-
-        /* Updates counter */
-        u32Counter += 12;
-      }
-    }
-
-    /* Has remaining data? */
-    if(u32Counter != 0)
-    {
-      /* Selects arrays */
-      glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
-      glASSERT();
-      glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
-      glASSERT();
-
-      /* Has active shaders? */
-      if(sstDisplay.s32ActiveShaderCounter > 0)
-      {
-        orxDISPLAY_SHADER *pstShader;
-
-        /* For all shaders */
-        for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-            pstShader != orxNULL;
-            pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-        {
-          /* Is active? */
-          if(pstShader->bActive != orxFALSE)
-          {
-            /* Inits shader */
-            orxDisplay_SDL_InitShader(pstShader);
-
-            /* Draws arrays */
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-            glASSERT();
-          }
-        }
-      }
-      else
-      {
-        /* Draws arrays */
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
-        glASSERT();
-      }
-    }
-  }
-
-  /* Restores identity */
-  glLoadIdentity();
-  glASSERT();
 
   /* Done! */
   return eResult;
@@ -2534,6 +2123,505 @@ void orxFASTCALL orxDisplay_SDL_Exit()
   return;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_SDL_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Translates it */
+  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
+  glASSERT();
+
+  /* Applies rotation */
+  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
+  glASSERT();
+
+  /* Applies scale */
+  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
+  glASSERT();
+
+  /* No repeat? */
+  if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
+  {
+    /* Draws it */
+    orxDisplay_SDL_DrawBitmap(_pstSrc, -_pstTransform->fSrcX, -_pstTransform->fSrcY, _eSmoothing, _eBlendMode);
+  }
+  else
+  {
+    orxFLOAT  i, j, fRecRepeatX;
+    GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
+    orxU32    u32Counter;
+
+    /* Prepares bitmap for drawing */
+    orxDisplay_SDL_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+
+    /* Inits bitmap height */
+    fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
+
+    /* Inits texture coords */
+    fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
+    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
+
+    /* For all lines */
+    for(fY = (GLfloat)-_pstTransform->fSrcY, i = _pstTransform->fRepeatY, u32Counter = 0, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
+    {
+      /* Partial line? */
+      if(i < orxFLOAT_1)
+      {
+        /* Updates height */
+        fHeight *= (GLfloat)i;
+
+        /* Resets texture coords */
+        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
+      }
+      else
+      {
+        /* Resets texture coords */
+        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+      }
+
+      /* Resets bitmap width */
+      fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
+
+      /* For all columns */
+      for(fX = (GLfloat)-_pstTransform->fSrcX, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
+      {
+        /* End of buffer? */
+        if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
+        {
+          /* Selects arrays */
+          glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+          glASSERT();
+          glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+          glASSERT();
+
+          /* Has active shaders? */
+          if(sstDisplay.s32ActiveShaderCounter > 0)
+          {
+            orxDISPLAY_SHADER *pstShader;
+
+            /* For all shaders */
+            for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+                pstShader != orxNULL;
+                pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+            {
+              /* Is active? */
+              if(pstShader->bActive != orxFALSE)
+              {
+                /* Inits shader */
+                orxDisplay_SDL_InitShader(pstShader);
+
+                /* Draws arrays */
+                glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+                glASSERT();
+              }
+            }
+          }
+          else
+          {
+            /* Draws arrays */
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+            glASSERT();
+          }
+
+          /* Resets counter */
+          u32Counter = 0;
+        }
+
+        /* Partial column? */
+        if(j < orxFLOAT_1)
+        {
+          /* Updates width */
+          fWidth *= (GLfloat)j;
+
+          /* Updates texture right coord */
+          fRight = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + (j * (_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX))));
+        }
+
+        /* Outputs vertices and texture coordinates */
+        sstDisplay.afVertexList[u32Counter]       =
+        sstDisplay.afVertexList[u32Counter + 2]   =
+        sstDisplay.afVertexList[u32Counter + 4]   = fX;
+        sstDisplay.afVertexList[u32Counter + 6]   =
+        sstDisplay.afVertexList[u32Counter + 8]   =
+        sstDisplay.afVertexList[u32Counter + 10]  = fX + fWidth;
+        sstDisplay.afVertexList[u32Counter + 5]   =
+        sstDisplay.afVertexList[u32Counter + 9]   =
+        sstDisplay.afVertexList[u32Counter + 11]  = fY;
+        sstDisplay.afVertexList[u32Counter + 1]   =
+        sstDisplay.afVertexList[u32Counter + 3]   =
+        sstDisplay.afVertexList[u32Counter + 7]   = fY + fHeight;
+
+        sstDisplay.afTextureCoordList[u32Counter]       =
+        sstDisplay.afTextureCoordList[u32Counter + 2]   =
+        sstDisplay.afTextureCoordList[u32Counter + 4]   = fLeft;
+        sstDisplay.afTextureCoordList[u32Counter + 6]   =
+        sstDisplay.afTextureCoordList[u32Counter + 8]   =
+        sstDisplay.afTextureCoordList[u32Counter + 10]  = fRight;
+        sstDisplay.afTextureCoordList[u32Counter + 5]   =
+        sstDisplay.afTextureCoordList[u32Counter + 9]   =
+        sstDisplay.afTextureCoordList[u32Counter + 11]  = fTop;
+        sstDisplay.afTextureCoordList[u32Counter + 1]   =
+        sstDisplay.afTextureCoordList[u32Counter + 3]   =
+        sstDisplay.afTextureCoordList[u32Counter + 7]   = fBottom;
+
+        /* Updates counter */
+        u32Counter += 12;
+      }
+    }
+
+    /* Has remaining data? */
+    if(u32Counter != 0)
+    {
+      /* Selects arrays */
+      glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+      glASSERT();
+      glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+      glASSERT();
+
+      /* Has active shaders? */
+      if(sstDisplay.s32ActiveShaderCounter > 0)
+      {
+        orxDISPLAY_SHADER *pstShader;
+
+        /* For all shaders */
+        for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+            pstShader != orxNULL;
+            pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+        {
+          /* Is active? */
+          if(pstShader->bActive != orxFALSE)
+          {
+            /* Inits shader */
+            orxDisplay_SDL_InitShader(pstShader);
+
+            /* Draws arrays */
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+            glASSERT();
+          }
+        }
+      }
+      else
+      {
+        /* Draws arrays */
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+        glASSERT();
+      }
+    }
+  }
+
+  /* Restores identity */
+  glLoadIdentity();
+  glASSERT();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  const orxCHAR  *pc;
+  orxU32          u32CharacterCodePoint, u32Counter;
+  GLfloat         fX, fY, fHeight;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+  orxASSERT(_pstFont != orxNULL);
+  orxASSERT(_pstMap != orxNULL);
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Translates it */
+  glTranslatef(_pstTransform->fDstX, _pstTransform->fDstY, 0.0f);
+  glASSERT();
+
+  /* Applies rotation */
+  glRotatef(orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, 0.0f, 0.0f, 1.0f);
+  glASSERT();
+
+  /* Applies scale */
+  glScalef(_pstTransform->fScaleX, _pstTransform->fScaleY, 1.0f);
+  glASSERT();
+
+  /* Gets character's height */
+  fHeight = _pstMap->fCharacterHeight;
+
+  /* Prepares font for drawing */
+  orxDisplay_SDL_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
+
+  /* For all characters */
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), u32Counter = 0, fX = (GLfloat)-_pstTransform->fSrcX, fY = (GLfloat)-_pstTransform->fSrcY;
+      u32CharacterCodePoint != orxCHAR_NULL;
+      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+  {
+    /* Depending on character */
+    switch(u32CharacterCodePoint)
+    {
+      case orxCHAR_CR:
+      {
+        /* Half EOL? */
+        if(*pc == orxCHAR_LF)
+        {
+          /* Updates pointer */
+          pc++;
+        }
+
+        /* Fall through */
+      }
+  
+      case orxCHAR_LF:
+      {
+        /* Updates Y position */
+        fY += fHeight;
+
+        /* Resets X position */
+        fX = (GLfloat)-_pstTransform->fSrcX;
+
+        break;
+      }
+
+      default:
+      {
+        const orxCHARACTER_GLYPH *pstGlyph;
+        orxFLOAT                  fWidth;
+
+        /* Gets glyph from UTF-8 table */
+        pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
+
+        /* Valid? */
+        if(pstGlyph != orxNULL)
+        {
+          /* Gets character width */
+          fWidth = pstGlyph->fWidth;
+
+          /* End of buffer? */
+          if(u32Counter > orxDISPLAY_KU32_BUFFER_SIZE - 12)
+          {
+            /* Selects arrays */
+            glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+            glASSERT();
+            glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+            glASSERT();
+
+            /* Has active shaders? */
+            if(sstDisplay.s32ActiveShaderCounter > 0)
+            {
+              orxDISPLAY_SHADER *pstShader;
+
+              /* For all shaders */
+              for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+                  pstShader != orxNULL;
+                  pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+              {
+                /* Is active? */
+                if(pstShader->bActive != orxFALSE)
+                {
+                  /* Inits shader */
+                  orxDisplay_SDL_InitShader(pstShader);
+
+                  /* Draws arrays */
+                  glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+                  glASSERT();
+                }
+              }
+            }
+            else
+            {
+              /* Draws arrays */
+              glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+              glASSERT();
+            }
+
+            /* Resets counter */
+            u32Counter = 0;
+          }
+
+          /* Outputs vertices and texture coordinates */
+          sstDisplay.afVertexList[u32Counter]       =
+          sstDisplay.afVertexList[u32Counter + 2]   =
+          sstDisplay.afVertexList[u32Counter + 4]   = fX;
+          sstDisplay.afVertexList[u32Counter + 6]   =
+          sstDisplay.afVertexList[u32Counter + 8]   =
+          sstDisplay.afVertexList[u32Counter + 10]  = fX + fWidth;
+          sstDisplay.afVertexList[u32Counter + 5]   =
+          sstDisplay.afVertexList[u32Counter + 9]   =
+          sstDisplay.afVertexList[u32Counter + 11]  = fY;
+          sstDisplay.afVertexList[u32Counter + 1]   =
+          sstDisplay.afVertexList[u32Counter + 3]   =
+          sstDisplay.afVertexList[u32Counter + 7]   = fY + fHeight;
+          
+          sstDisplay.afTextureCoordList[u32Counter]       =
+          sstDisplay.afTextureCoordList[u32Counter + 2]   =
+          sstDisplay.afTextureCoordList[u32Counter + 4]   = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.afTextureCoordList[u32Counter + 6]   =
+          sstDisplay.afTextureCoordList[u32Counter + 8]   =
+          sstDisplay.afTextureCoordList[u32Counter + 10]  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.afTextureCoordList[u32Counter + 5]   =
+          sstDisplay.afTextureCoordList[u32Counter + 9]   =
+          sstDisplay.afTextureCoordList[u32Counter + 11]  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.afTextureCoordList[u32Counter + 1]   =
+          sstDisplay.afTextureCoordList[u32Counter + 3]   =
+          sstDisplay.afTextureCoordList[u32Counter + 7]   = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
+
+          /* Updates counter */
+          u32Counter += 12;
+        }
+        else
+        {
+          /* Gets default width */
+          fWidth = fHeight;
+        }
+
+        /* Updates X position */
+        fX += fWidth;
+
+        break;
+      }
+    }
+  }
+
+  /* Has remaining data? */
+  if(u32Counter != 0)
+  {
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, 0, sstDisplay.afVertexList);
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, 0, sstDisplay.afTextureCoordList);
+    glASSERT();
+
+    /* Has active shaders? */
+    if(sstDisplay.s32ActiveShaderCounter > 0)
+    {
+      orxDISPLAY_SHADER *pstShader;
+
+      /* For all shaders */
+      for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+          pstShader != orxNULL;
+          pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+      {
+        /* Is active? */
+        if(pstShader->bActive != orxFALSE)
+        {
+          /* Inits shader */
+          orxDisplay_SDL_InitShader(pstShader);
+
+          /* Draws arrays */
+          glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+          glASSERT();
+        }
+      }
+    }
+    else
+    {
+      /* Draws arrays */
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, u32Counter >> 1);
+      glASSERT();
+    }
+  }
+
+  /* Restores identity */
+  glLoadIdentity();
+  glASSERT();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvEnd != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_avVertexList != orxNULL);
+  orxASSERT(_u32VertexNumber > 0);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvCenter != orxNULL);
+  orxASSERT(_fRadius >= orxFLOAT_0);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxBOOL orxFASTCALL orxDisplay_SDL_HasShaderSupport()
+{
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
+}
+
 orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
@@ -3048,8 +3136,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateBitmap, DISPLAY, CREATE_BI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SaveBitmap, DISPLAY, SAVE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
@@ -3062,6 +3148,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapData, DISPLAY, GET_BITM
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawPolyline, DISPLAY, DRAW_POLYLINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawPolygon, DISPLAY, DRAW_POLYGON);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawCircle, DISPLAY, DRAW_CIRCLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawOBox, DISPLAY, DRAW_OBOX);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteShader, DISPLAY, DELETE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_StartShader, DISPLAY, START_SHADER);

@@ -49,7 +49,7 @@
 /** Misc
  */
 
-#if defined(__orxIPHONE__)
+#if defined(__orxIOS__)
 
   #define orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME "../Documents"
   #define orxSCREENSHOT_KZ_DEFAULT_BASE_NAME      "screenshot-"

@@ -281,6 +281,9 @@
 <li>orxBank_Allocate()
 : <a class="el" href="group__orx_bank.html#ga355e01cc604740999d2fa9832dfb03b2">orxBank.h</a>
 </li>
+<li>orxBank_AllocateIndexed()
+: <a class="el" href="group__orx_bank.html#gabd08fcf851bf8003436a39a22de50053">orxBank.h</a>
+</li>
 <li>orxBank_Clear()
 : <a class="el" href="group__orx_bank.html#ga66e8bef6563faa63e337fefd6d7980fa">orxBank.h</a>
 </li>
@@ -362,9 +365,6 @@
 <li>orxBody_GetAngularVelocity()
 : <a class="el" href="group__orx_body.html#ga9a47299d6149da838e0dcbe5d1b03789">orxBody.h</a>
 </li>
-<li>orxBody_GetCheckMask()
-: <a class="el" href="group__orx_body.html#ga0a2d8afbf3a0a0abf86c9a96c9642442">orxBody.h</a>
-</li>
 <li>orxBody_GetCustomGravity()
 : <a class="el" href="group__orx_body.html#ga22049df6febcbcf010cfd7ac1c9ca8ff">orxBody.h</a>
 </li>
@@ -392,8 +392,14 @@
 <li>orxBody_GetOwner()
 : <a class="el" href="group__orx_body.html#ga1a492f7be69dba98bb266af4209f0fc1">orxBody.h</a>
 </li>
+<li>orxBody_GetPartCheckMask()
+: <a class="el" href="group__orx_body.html#ga2c0e1c2ebb5f49125269f3f8e07990bc">orxBody.h</a>
+</li>
 <li>orxBody_GetPartName()
 : <a class="el" href="group__orx_body.html#ga04088bb68cbfb21dcf639d5ee8dcb075">orxBody.h</a>
+</li>
+<li>orxBody_GetPartSelfFlags()
+: <a class="el" href="group__orx_body.html#ga7777d6b2ffc5a421a80214bfb5cca92e">orxBody.h</a>
 </li>
 <li>orxBody_GetPosition()
 : <a class="el" href="group__orx_body.html#gac0e71fa3efa719660137786fed2b5982">orxBody.h</a>
@@ -401,14 +407,14 @@
 <li>orxBody_GetRotation()
 : <a class="el" href="group__orx_body.html#ga09f387007a1609c4d694e47bbb5e6030">orxBody.h</a>
 </li>
-<li>orxBody_GetSelfFlags()
-: <a class="el" href="group__orx_body.html#ga6474990ec396d75b596254b8c1c30b20">orxBody.h</a>
-</li>
 <li>orxBody_GetSpeed()
 : <a class="el" href="group__orx_body.html#gaffa909a07c3902c34c00c4664e738599">orxBody.h</a>
 </li>
 <li>orxBody_Init()
 : <a class="el" href="group__orx_body.html#ga027908adf63c94d330b53155432ffb14">orxBody.h</a>
+</li>
+<li>orxBody_IsPartSolid()
+: <a class="el" href="group__orx_body.html#gad0dad8a12d22a3e37a78d54a9ac305f0">orxBody.h</a>
 </li>
 <li>orxBody_Raycast()
 : <a class="el" href="group__orx_body.html#ga60bb6bd3200d8fd5f97ab238703bf180">orxBody.h</a>
@@ -425,14 +431,20 @@
 <li>orxBody_SetAngularVelocity()
 : <a class="el" href="group__orx_body.html#ga22f88b5bfb6ae234c68f6dad79da20df">orxBody.h</a>
 </li>
-<li>orxBody_SetCheckMask()
-: <a class="el" href="group__orx_body.html#ga76c26190f06d33a46831207dd4e0de6d">orxBody.h</a>
-</li>
 <li>orxBody_SetCustomGravity()
 : <a class="el" href="group__orx_body.html#ga81b54ce47fe89e5a55735924bea22491">orxBody.h</a>
 </li>
 <li>orxBody_SetLinearDamping()
 : <a class="el" href="group__orx_body.html#ga3859e38e17cc1576c8c01fbb8484830e">orxBody.h</a>
+</li>
+<li>orxBody_SetPartCheckMask()
+: <a class="el" href="group__orx_body.html#ga02f022f0a369d82ae8231a8035cca9c0">orxBody.h</a>
+</li>
+<li>orxBody_SetPartSelfFlags()
+: <a class="el" href="group__orx_body.html#gaaee50adaf695e986bb5890792b01979b">orxBody.h</a>
+</li>
+<li>orxBody_SetPartSolid()
+: <a class="el" href="group__orx_body.html#ga60c18aed860c88103cd4b4c6d230aaf9">orxBody.h</a>
 </li>
 <li>orxBody_SetPosition()
 : <a class="el" href="group__orx_body.html#gaa919febb086838a2c89d0818c4d8297d">orxBody.h</a>
@@ -442,9 +454,6 @@
 </li>
 <li>orxBody_SetScale()
 : <a class="el" href="group__orx_body.html#gab851fd9f25640ad07cc525ec804d4577">orxBody.h</a>
-</li>
-<li>orxBody_SetSelfFlags()
-: <a class="el" href="group__orx_body.html#ga0f02d969f5c282f2a08f08af4c83bc12">orxBody.h</a>
 </li>
 <li>orxBody_SetSpeed()
 : <a class="el" href="group__orx_body.html#ga26b6a89cc4b657935a4f0c22958d3d93">orxBody.h</a>
@@ -806,6 +815,21 @@
 <li>orxDisplay_DeleteShader()
 : <a class="el" href="group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2">orxDisplay.h</a>
 </li>
+<li>orxDisplay_DrawCircle()
+: <a class="el" href="group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332">orxDisplay.h</a>
+</li>
+<li>orxDisplay_DrawLine()
+: <a class="el" href="group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031">orxDisplay.h</a>
+</li>
+<li>orxDisplay_DrawOBox()
+: <a class="el" href="group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c">orxDisplay.h</a>
+</li>
+<li>orxDisplay_DrawPolygon()
+: <a class="el" href="group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258">orxDisplay.h</a>
+</li>
+<li>orxDisplay_DrawPolyline()
+: <a class="el" href="group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3">orxDisplay.h</a>
+</li>
 <li>orxDisplay_EnableVSync()
 : <a class="el" href="group__orx_display.html#gaf463e1f2aa57d66db163d6306bfe433a">orxDisplay.h</a>
 </li>
@@ -835,6 +859,9 @@
 </li>
 <li>orxDisplay_GetVideoModeCounter()
 : <a class="el" href="group__orx_display.html#ga638dd5b17942872b2e681ca849ac43f2">orxDisplay.h</a>
+</li>
+<li>orxDisplay_HasShaderSupport()
+: <a class="el" href="group__orx_display.html#gac588e2511f5f9925136a7655a5f42ec2">orxDisplay.h</a>
 </li>
 <li>orxDisplay_Init()
 : <a class="el" href="group__orx_display.html#gaeaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay.h</a>
@@ -957,7 +984,7 @@
 : <a class="el" href="group__orx_file.html#ga69cb0d04489c13daba0ebd380a4ae19b">orxFile.h</a>
 </li>
 <li>orxFile_Print()
-: <a class="el" href="group__orx_file.html#gaa440ac942c5d5f341a60a606f6de8435">orxFile.h</a>
+: <a class="el" href="group__orx_file.html#gaa488b51b271b256b7b4515516cb08dde">orxFile.h</a>
 </li>
 <li>orxFile_Read()
 : <a class="el" href="group__orx_file.html#ga6b28e81a5fe57e673f79b20c3f6c641f">orxFile.h</a>
@@ -1100,11 +1127,20 @@
 <li>orxFX_AddAlpha()
 : <a class="el" href="group__orx_f_x.html#ga16b22b94114a1e51932f434af8273380">orxFX.h</a>
 </li>
-<li>orxFX_AddColor()
-: <a class="el" href="group__orx_f_x.html#ga27b204212124cde64c9238117052f288">orxFX.h</a>
+<li>orxFX_AddHSL()
+: <a class="el" href="group__orx_f_x.html#ga417a42f99bf6a1469aae714972ad929a">orxFX.h</a>
+</li>
+<li>orxFX_AddHSV()
+: <a class="el" href="group__orx_f_x.html#ga5bccca6e51a39dc4b97bdcd6220d6eb9">orxFX.h</a>
+</li>
+<li>orxFX_AddPitch()
+: <a class="el" href="group__orx_f_x.html#ga390794340d1293ec30270a77dd804985">orxFX.h</a>
 </li>
 <li>orxFX_AddPosition()
 : <a class="el" href="group__orx_f_x.html#ga67b1465f3df7d42cf36786bc135f3615">orxFX.h</a>
+</li>
+<li>orxFX_AddRGB()
+: <a class="el" href="group__orx_f_x.html#ga28a53271d81317a8bb2253a8dee871ea">orxFX.h</a>
 </li>
 <li>orxFX_AddRotation()
 : <a class="el" href="group__orx_f_x.html#gad863d8cafd82984aa02a2193eb6409c1">orxFX.h</a>
@@ -1117,6 +1153,9 @@
 </li>
 <li>orxFX_AddSpeed()
 : <a class="el" href="group__orx_f_x.html#gac0e2e42237710d2415674ad3fdb694ac">orxFX.h</a>
+</li>
+<li>orxFX_AddVolume()
+: <a class="el" href="group__orx_f_x.html#ga36a72c7b6f823bc478005138faafa0fc">orxFX.h</a>
 </li>
 <li>orxFX_Apply()
 : <a class="el" href="group__orx_f_x.html#ga0ca775d35b31f3aaf213b97bb5da3a54">orxFX.h</a>
@@ -1823,6 +1862,9 @@
 <li>orxObject_GetUserData()
 : <a class="el" href="group__orx_object.html#ga06c9691b77444ab8dcb70fc809405a02">orxObject.h</a>
 </li>
+<li>orxObject_GetWorkingTexture()
+: <a class="el" href="group__orx_object.html#ga3ae56cd449d690621f6062d044dbd9de">orxObject.h</a>
+</li>
 <li>orxObject_GetWorldPosition()
 : <a class="el" href="group__orx_object.html#ga7588acf1390e57c8915dc84aecb8f37a">orxObject.h</a>
 </li>
@@ -1910,6 +1952,9 @@
 <li>orxObject_SetParent()
 : <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject.h</a>
 </li>
+<li>orxObject_SetPitch()
+: <a class="el" href="group__orx_object.html#gae9a59f0011aedb77199a58260dc332d3">orxObject.h</a>
+</li>
 <li>orxObject_SetPivot()
 : <a class="el" href="group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3">orxObject.h</a>
 </li>
@@ -1945,6 +1990,9 @@
 </li>
 <li>orxObject_SetUserData()
 : <a class="el" href="group__orx_object.html#gab7984329410d2c204fa54a2fc39d72bb">orxObject.h</a>
+</li>
+<li>orxObject_SetVolume()
+: <a class="el" href="group__orx_object.html#ga877d1f073e80de047eacca6339fd6e3b">orxObject.h</a>
 </li>
 <li>orxObject_SynchronizeFX()
 : <a class="el" href="group__orx_object.html#ga935328ed11be325c601817c29cd59c26">orxObject.h</a>
@@ -2033,9 +2081,6 @@
 <li>orxPhysics_GetAngularVelocity()
 : <a class="el" href="group__orx_physics.html#ga9b54114217d31d3488ce3724891bad1b">orxPhysics.h</a>
 </li>
-<li>orxPhysics_GetCheckMask()
-: <a class="el" href="group__orx_physics.html#ga0b187a13f691d61c7d7f00314c283861">orxPhysics.h</a>
-</li>
 <li>orxPhysics_GetCustomGravity()
 : <a class="el" href="group__orx_physics.html#ga7ae6c8d8d9ac108d9749e99131347bb5">orxPhysics.h</a>
 </li>
@@ -2051,20 +2096,26 @@
 <li>orxPhysics_GetMassCenter()
 : <a class="el" href="group__orx_physics.html#gaca6fa6728a3c527c57cc54f8465a9fa3">orxPhysics.h</a>
 </li>
+<li>orxPhysics_GetPartCheckMask()
+: <a class="el" href="group__orx_physics.html#ga3a677fd4f7b951a850f40ba1bead29cf">orxPhysics.h</a>
+</li>
+<li>orxPhysics_GetPartSelfFlags()
+: <a class="el" href="group__orx_physics.html#ga3f9b80d75a6d511445d1d061dbf174ce">orxPhysics.h</a>
+</li>
 <li>orxPhysics_GetPosition()
 : <a class="el" href="group__orx_physics.html#ga1a06a020ce8f680c9bab871fc1506048">orxPhysics.h</a>
 </li>
 <li>orxPhysics_GetRotation()
 : <a class="el" href="group__orx_physics.html#ga50aaba3775c4a6ea1ad29344bdb5a87e">orxPhysics.h</a>
 </li>
-<li>orxPhysics_GetSelfFlags()
-: <a class="el" href="group__orx_physics.html#gab29e38a292d2b95e3ee089e143fa4fd8">orxPhysics.h</a>
-</li>
 <li>orxPhysics_GetSpeed()
 : <a class="el" href="group__orx_physics.html#ga3877fe753147784361754bdd677df244">orxPhysics.h</a>
 </li>
 <li>orxPhysics_Init()
 : <a class="el" href="group__orx_physics.html#gaef90eaf6b2c4f4724d7aa7f999e43907">orxPhysics.h</a>
+</li>
+<li>orxPhysics_IsPartSolid()
+: <a class="el" href="group__orx_physics.html#gaac179ef90f225b63cbf2d4acfb3b0d62">orxPhysics.h</a>
 </li>
 <li>orxPhysics_Raycast()
 : <a class="el" href="group__orx_physics.html#gadc8ab81f58b2a172aac1ff8a79d5f42f">orxPhysics.h</a>
@@ -2075,9 +2126,6 @@
 <li>orxPhysics_SetAngularVelocity()
 : <a class="el" href="group__orx_physics.html#ga29ca71d106c12ecd60fd2e94dd292005">orxPhysics.h</a>
 </li>
-<li>orxPhysics_SetCheckMask()
-: <a class="el" href="group__orx_physics.html#ga87e417d4d0ef08843105d2c341fc2b34">orxPhysics.h</a>
-</li>
 <li>orxPhysics_SetCustomGravity()
 : <a class="el" href="group__orx_physics.html#gaeaf969b29852a47bda3aa5c7885fbc78">orxPhysics.h</a>
 </li>
@@ -2087,14 +2135,20 @@
 <li>orxPhysics_SetLinearDamping()
 : <a class="el" href="group__orx_physics.html#ga77fe5b50f18eebeb8c4e81ce73a2544e">orxPhysics.h</a>
 </li>
+<li>orxPhysics_SetPartCheckMask()
+: <a class="el" href="group__orx_physics.html#ga4746cab6f8fdf3aac114db4f26dc15ce">orxPhysics.h</a>
+</li>
+<li>orxPhysics_SetPartSelfFlags()
+: <a class="el" href="group__orx_physics.html#gaefd9723b4153f8e4a73c702a7bf0550a">orxPhysics.h</a>
+</li>
+<li>orxPhysics_SetPartSolid()
+: <a class="el" href="group__orx_physics.html#gaebed7f61a4b51cf83a7e72f6dd0243a7">orxPhysics.h</a>
+</li>
 <li>orxPhysics_SetPosition()
 : <a class="el" href="group__orx_physics.html#gae5590fe43b5283093b2a28995200e8d2">orxPhysics.h</a>
 </li>
 <li>orxPhysics_SetRotation()
 : <a class="el" href="group__orx_physics.html#gaeee8ec5050127c29b21c154674a70576">orxPhysics.h</a>
-</li>
-<li>orxPhysics_SetSelfFlags()
-: <a class="el" href="group__orx_physics.html#gab3384655fe2986a9e616020111669749">orxPhysics.h</a>
 </li>
 <li>orxPhysics_SetSpeed()
 : <a class="el" href="group__orx_physics.html#ga8dae0fa6e9205640ec0dea3ef7715103">orxPhysics.h</a>
@@ -2106,7 +2160,7 @@
 : <a class="el" href="group__orx_plugin.html#gac2d80ed85322ebf239a94637e627fbef">orxPluginCore.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
-: <a class="el" href="group__orx_plugin.html#ga4d0f770b1a20af917b0a07c4708f6cfc">orxPlugin_CoreDefine.h</a>
+: <a class="el" href="group__orx_plugin.html#ga2521b0142525880ca5a22a2f6d88cd7a">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPlugin_DefaultCoreFunction()
 : <a class="el" href="group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919">orxPluginCore.h</a>
@@ -2206,6 +2260,9 @@
 </li>
 <li>orxRender_Exit()
 : <a class="el" href="group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088">orxRender.h</a>
+</li>
+<li>orxRender_GetScreenPosition()
+: <a class="el" href="group__orx_render.html#gae08c3ff585427542ad1b269cfe00eca8">orxRender.h</a>
 </li>
 <li>orxRender_GetWorldPosition()
 : <a class="el" href="group__orx_render.html#ga98e541f3a10b90c60d59fee51b9cd203">orxRender.h</a>
@@ -2459,14 +2516,23 @@
 <li>orxSoundPointer_Play()
 : <a class="el" href="group__orx_sound_pointer.html#ga7e74271bd5481ff3a214b8857a54e181">orxSoundPointer.h</a>
 </li>
+<li>orxSoundPointer_RemoveAllSounds()
+: <a class="el" href="group__orx_sound_pointer.html#ga9b02d43db4caee92e46fd736a587f30c">orxSoundPointer.h</a>
+</li>
 <li>orxSoundPointer_RemoveSound()
 : <a class="el" href="group__orx_sound_pointer.html#ga55cd4ee84dfbcdbcc332e91e2eaf4004">orxSoundPointer.h</a>
 </li>
 <li>orxSoundPointer_RemoveSoundFromConfig()
 : <a class="el" href="group__orx_sound_pointer.html#gae77c081cf849a36173c704a35a34a98f">orxSoundPointer.h</a>
 </li>
+<li>orxSoundPointer_SetPitch()
+: <a class="el" href="group__orx_sound_pointer.html#ga08bd8779d5da76309b30b05427afc611">orxSoundPointer.h</a>
+</li>
 <li>orxSoundPointer_Setup()
 : <a class="el" href="group__orx_sound_pointer.html#ga149fe786057b3fb427e1622a52631289">orxSoundPointer.h</a>
+</li>
+<li>orxSoundPointer_SetVolume()
+: <a class="el" href="group__orx_sound_pointer.html#ga0a74d593ed91c023eea945e8219011de">orxSoundPointer.h</a>
 </li>
 <li>orxSoundPointer_Stop()
 : <a class="el" href="group__orx_sound_pointer.html#gaed897495209fcbe42c738e6e8f99d86c">orxSoundPointer.h</a>
@@ -2807,6 +2873,9 @@
 <li>orxStructure_Exit()
 : <a class="el" href="group__orx_structure.html#ga2b40aa65539bbb29538314b3db3fdfbb">orxStructure.h</a>
 </li>
+<li>orxStructure_Get()
+: <a class="el" href="group__orx_structure.html#ga26d36ee7c4f491bb07b85660cd026e08">orxStructure.h</a>
+</li>
 <li>orxStructure_GetChild()
 : <a class="el" href="group__orx_structure.html#gae595f4aeb26996db954c589d4582dbd0">orxStructure.h</a>
 </li>
@@ -2835,7 +2904,7 @@
 : <a class="el" href="group__orx_structure.html#ga878386b7ca9d5180181fb0806d56abb6">orxStructure.h</a>
 </li>
 <li>orxStructure_GetRefCounter()
-: <a class="el" href="group__orx_structure.html#ga84adca379b51aa17f3d28f66508aaa33">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga75c64fc468f26c889ee428608903b01c">orxStructure.h</a>
 </li>
 <li>orxStructure_GetSibling()
 : <a class="el" href="group__orx_structure.html#ga6b3a6ce62693fdf1f1b230a1677cc487">orxStructure.h</a>

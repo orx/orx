@@ -45,7 +45,7 @@
 
 
 #include "orxInclude.h"
-#include "render/orxFX.h"
+#include "object/orxFX.h"
 #include "object/orxStructure.h"
 
 

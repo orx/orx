@@ -42,9 +42,9 @@
 #include "display/orxText.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
+#include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
 #include "render/orxCamera.h"
-#include "render/orxFXPointer.h"
 #include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
 
@@ -104,6 +104,9 @@
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
 #define orxOBJECT_KZ_CONFIG_COLOR               "Color"
+#define orxOBJECT_KZ_CONFIG_RGB                 "RGB"
+#define orxOBJECT_KZ_CONFIG_HSL                 "HSL"
+#define orxOBJECT_KZ_CONFIG_HSV                 "HSV"
 #define orxOBJECT_KZ_CONFIG_ALPHA               "Alpha"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
@@ -877,6 +880,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Updates status flags */
         u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
       }
+      /* Has RGB values? */
+      else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
+      {
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
+
+        /* Updates status */
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+      }
+      /* Has HSL values? */
+      else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSL) != orxFALSE)
+      {
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
+
+        /* Stores its RGB equivalent */
+        orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
+
+        /* Updates status */
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+      }
+      /* Has HSV values? */
+      else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSV) != orxFALSE)
+      {
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSV, &(pstResult->stColor.vHSV));
+
+        /* Stores its RGB equivalent */
+        orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
+
+        /* Updates status */
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+      }
 
       /* Has alpha? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
@@ -1510,7 +1546,7 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pOwner == orxNULL) || ((((orxSTRUCTURE *)(_pOwner))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
 
   /* Had a previous object owner? */
   if((pstOwner = orxOBJECT(_pstObject->pstOwner)) != orxNULL)
@@ -2267,7 +2303,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pParent == orxNULL) || ((((orxSTRUCTURE *)(_pParent))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
@@ -3039,7 +3075,7 @@ orxFLOAT orxFASTCALL orxObject_GetMass(const orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Gets an object center of mass
+/** Gets an object center of mass (object space)
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
@@ -3184,7 +3220,7 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
 /** Applies a force
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
@@ -3847,7 +3883,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
 }
 
 /** Removes a sound using using its config ID
- * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _pstObject      Concerned object
  * @param[in]   _zSoundConfigID Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -3899,6 +3935,62 @@ orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(const orxOBJECT *_pstObject)
 
   /* Done! */
   return pstResult;
+}
+
+/** Sets volume for all sounds of an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVolume        Desired volume (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetVolume(orxOBJECT *_pstObject, orxFLOAT _fVolume)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Set volume to all sounds */
+    eResult = orxSoundPointer_SetVolume(pstSoundPointer, _fVolume);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets pitch for all sounds of an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Set pitch to all sounds */
+    eResult = orxSoundPointer_SetPitch(pstSoundPointer, _fPitch);
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Adds a shader to an object using its config ID

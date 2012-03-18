@@ -128,7 +128,7 @@
 <a name="l00121"></a>00121   <span class="keywordflow">return</span>;
 <a name="l00122"></a>00122 }
 <a name="l00123"></a>00123 
-<a name="l00124"></a>00124 <span class="preprocessor">#ifdef __orxIPHONE__</span>
+<a name="l00124"></a>00124 <span class="preprocessor">#ifdef __orxIOS__</span>
 <a name="l00125"></a>00125 <span class="preprocessor"></span>
 <a name="l00126"></a>00126 <span class="preprocessor">  #ifdef __orxOBJC__</span>
 <a name="l00127"></a>00127 <span class="preprocessor"></span>
@@ -192,7 +192,7 @@
 <a name="l00194"></a>00194 
 <a name="l00195"></a>00195 <span class="preprocessor">  #endif </span><span class="comment">/* __orxOBJC__ */</span>
 <a name="l00196"></a>00196 
-<a name="l00197"></a>00197 <span class="preprocessor">#else </span><span class="comment">/* __orxIPHONE__ */</span>
+<a name="l00197"></a>00197 <span class="preprocessor">#else </span><span class="comment">/* __orxIOS__ */</span>
 <a name="l00198"></a>00198 
 <a name="l00199"></a>00199 <span class="preprocessor">  #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)</span>
 <a name="l00200"></a>00200 <span class="preprocessor"></span>
@@ -246,94 +246,93 @@
 <a name="l00255"></a>00255           <span class="comment">/* Sends frame start event */</span>
 <a name="l00256"></a>00256           <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea72a6496ab2b209fdc3ad19f501c5d840">orxSYSTEM_EVENT_GAME_LOOP_START</a>, orxNULL, orxNULL, &amp;stPayload);
 <a name="l00257"></a>00257 
-<a name="l00258"></a>00258 
-<a name="l00259"></a>00259           <span class="comment">/* Runs the engine */</span>
-<a name="l00260"></a>00260           eMainStatus = _pfnRun();
-<a name="l00261"></a>00261 
-<a name="l00262"></a>00262           <span class="comment">/* Updates clock system */</span>
-<a name="l00263"></a>00263           eClockStatus = <a class="code" href="group__orx_clock.html#gac6daebe5994b3120859ef148b1eda1f4">orxClock_Update</a>();
-<a name="l00264"></a>00264 
-<a name="l00265"></a>00265           <span class="comment">/* Sends frame stop event */</span>
-<a name="l00266"></a>00266           <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea5667ecf5f5450207e5a38acba3c609da">orxSYSTEM_EVENT_GAME_LOOP_STOP</a>, orxNULL, orxNULL, &amp;stPayload);
-<a name="l00267"></a>00267 
-<a name="l00268"></a>00268           <span class="comment">/* Updates frame counter */</span>
-<a name="l00269"></a>00269           stPayload.<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e">u32FrameCounter</a>++;
-<a name="l00270"></a>00270         }
-<a name="l00271"></a>00271       }
-<a name="l00272"></a>00272 
-<a name="l00273"></a>00273       <span class="comment">/* Removes event handler */</span>
-<a name="l00274"></a>00274       <a class="code" href="group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00">orx_DefaultEventHandler</a>);
-<a name="l00275"></a>00275 
-<a name="l00276"></a>00276       <span class="comment">/* Exits from engine */</span>
-<a name="l00277"></a>00277       <a class="code" href="group__orx_module.html#ga6a492298081fa56cf9c382491c456998">orxModule_Exit</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>);
-<a name="l00278"></a>00278     }
-<a name="l00279"></a>00279 
-<a name="l00280"></a>00280     <span class="comment">/* Exits from all modules */</span>
-<a name="l00281"></a>00281     <a class="code" href="group__orx_module.html#ga26302cb32518da5834394e07c5339351">orxModule_ExitAll</a>();
-<a name="l00282"></a>00282   }
-<a name="l00283"></a>00283 
-<a name="l00284"></a>00284   <span class="comment">/* Exits from the Debug system */</span>
-<a name="l00285"></a>00285 
-<a name="l00286"></a>00286   <a class="code" href="group__orx_debug.html#gaa1f495a2e235f27771f46449c924466d">orxDEBUG_EXIT</a>();
-<a name="l00287"></a>00287 }
-<a name="l00288"></a>00288 
-<a name="l00289"></a>00289 <span class="preprocessor">    #ifdef __orxMSVC__</span>
-<a name="l00290"></a>00290 <span class="preprocessor"></span>
-<a name="l00291"></a>00291 <span class="preprocessor">    #define WIN32_LEAN_AND_MEAN</span>
-<a name="l00292"></a>00292 <span class="preprocessor"></span><span class="preprocessor">    #include &lt;windows.h&gt;</span>
-<a name="l00293"></a>00293 
-<a name="l00299"></a>00299 <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> orx_WinExecute(<span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)
-<a name="l00300"></a>00300 {
-<a name="l00301"></a>00301 <span class="preprocessor">  #define orxMAX_ARGS 256</span>
-<a name="l00302"></a>00302 <span class="preprocessor"></span>
-<a name="l00303"></a>00303   <span class="keywordtype">int</span>   argc;
-<a name="l00304"></a>00304   <span class="keywordtype">char</span> *argv[orxMAX_ARGS];
-<a name="l00305"></a>00305   <span class="keywordtype">char</span> *pcToken, *pcNextToken, *pcFirstDelimiters;
-<a name="l00306"></a>00306   LPSTR lpFullCmdLine;
-<a name="l00307"></a>00307 
-<a name="l00308"></a>00308   <span class="comment">/* Gets full command line */</span>
-<a name="l00309"></a>00309   lpFullCmdLine = GetCommandLineA();
-<a name="l00310"></a>00310 
-<a name="l00311"></a>00311   <span class="comment">/* Starts with a double quote? */</span>
-<a name="l00312"></a>00312   <span class="keywordflow">if</span>(*<a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(lpFullCmdLine) == <span class="charliteral">&#39;&quot;&#39;</span>)
-<a name="l00313"></a>00313   {
-<a name="l00314"></a>00314     <span class="comment">/* Gets first delimiters */</span>
-<a name="l00315"></a>00315     pcFirstDelimiters = <span class="stringliteral">&quot;\&quot;&quot;</span>;
-<a name="l00316"></a>00316   }
-<a name="l00317"></a>00317   <span class="keywordflow">else</span>
-<a name="l00318"></a>00318   {
-<a name="l00319"></a>00319     <span class="comment">/* Gets first delimiters */</span>
-<a name="l00320"></a>00320     pcFirstDelimiters = <span class="stringliteral">&quot; &quot;</span>;
-<a name="l00321"></a>00321   }
-<a name="l00322"></a>00322 
-<a name="l00323"></a>00323   <span class="comment">/* Process command line */</span>
-<a name="l00324"></a>00324   <span class="keywordflow">for</span>(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &amp;pcNextToken);
-<a name="l00325"></a>00325       pcToken &amp;&amp; (argc &lt; orxMAX_ARGS);
-<a name="l00326"></a>00326       pcToken = strtok_s(NULL, <span class="stringliteral">&quot; &quot;</span>, &amp;pcNextToken))
-<a name="l00327"></a>00327   {
-<a name="l00328"></a>00328     argv[argc++] = pcToken;
-<a name="l00329"></a>00329   }
-<a name="l00330"></a>00330 
-<a name="l00331"></a>00331   <span class="comment">/* Inits and executes orx */</span>
-<a name="l00332"></a>00332   <a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a>(argc, argv, _pfnInit, _pfnRun, _pfnExit);
-<a name="l00333"></a>00333 }
-<a name="l00334"></a>00334 
-<a name="l00335"></a>00335 <span class="preprocessor">    #endif </span><span class="comment">/* __orxMSVC__ */</span>
-<a name="l00336"></a>00336 
-<a name="l00337"></a>00337 <span class="preprocessor">  #endif </span><span class="comment">/* __orxANDROID_NATIVE__ */</span>
-<a name="l00338"></a>00338 
-<a name="l00339"></a>00339 <span class="preprocessor">#endif </span><span class="comment">/* __orxIPHONE__ */</span>
-<a name="l00340"></a>00340 
-<a name="l00341"></a>00341 <span class="preprocessor">#endif </span><span class="comment">/* __orxPLUGIN__ */</span>
-<a name="l00342"></a>00342 
-<a name="l00343"></a>00343 <span class="preprocessor">#endif </span><span class="comment">/*_orx_H_*/</span>
+<a name="l00258"></a>00258           <span class="comment">/* Runs the engine */</span>
+<a name="l00259"></a>00259           eMainStatus = _pfnRun();
+<a name="l00260"></a>00260 
+<a name="l00261"></a>00261           <span class="comment">/* Updates clock system */</span>
+<a name="l00262"></a>00262           eClockStatus = <a class="code" href="group__orx_clock.html#gac6daebe5994b3120859ef148b1eda1f4">orxClock_Update</a>();
+<a name="l00263"></a>00263 
+<a name="l00264"></a>00264           <span class="comment">/* Sends frame stop event */</span>
+<a name="l00265"></a>00265           <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea5667ecf5f5450207e5a38acba3c609da">orxSYSTEM_EVENT_GAME_LOOP_STOP</a>, orxNULL, orxNULL, &amp;stPayload);
+<a name="l00266"></a>00266 
+<a name="l00267"></a>00267           <span class="comment">/* Updates frame counter */</span>
+<a name="l00268"></a>00268           stPayload.<a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e">u32FrameCounter</a>++;
+<a name="l00269"></a>00269         }
+<a name="l00270"></a>00270       }
+<a name="l00271"></a>00271 
+<a name="l00272"></a>00272       <span class="comment">/* Removes event handler */</span>
+<a name="l00273"></a>00273       <a class="code" href="group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00">orx_DefaultEventHandler</a>);
+<a name="l00274"></a>00274 
+<a name="l00275"></a>00275       <span class="comment">/* Exits from engine */</span>
+<a name="l00276"></a>00276       <a class="code" href="group__orx_module.html#ga6a492298081fa56cf9c382491c456998">orxModule_Exit</a>(<a class="code" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2de31f278d602c8e0c728b668e9d2c73">orxMODULE_ID_MAIN</a>);
+<a name="l00277"></a>00277     }
+<a name="l00278"></a>00278 
+<a name="l00279"></a>00279     <span class="comment">/* Exits from all modules */</span>
+<a name="l00280"></a>00280     <a class="code" href="group__orx_module.html#ga26302cb32518da5834394e07c5339351">orxModule_ExitAll</a>();
+<a name="l00281"></a>00281   }
+<a name="l00282"></a>00282 
+<a name="l00283"></a>00283   <span class="comment">/* Exits from the Debug system */</span>
+<a name="l00284"></a>00284 
+<a name="l00285"></a>00285   <a class="code" href="group__orx_debug.html#gaa1f495a2e235f27771f46449c924466d">orxDEBUG_EXIT</a>();
+<a name="l00286"></a>00286 }
+<a name="l00287"></a>00287 
+<a name="l00288"></a>00288 <span class="preprocessor">    #ifdef __orxMSVC__</span>
+<a name="l00289"></a>00289 <span class="preprocessor"></span>
+<a name="l00290"></a>00290 <span class="preprocessor">    #define WIN32_LEAN_AND_MEAN</span>
+<a name="l00291"></a>00291 <span class="preprocessor"></span><span class="preprocessor">    #include &lt;windows.h&gt;</span>
+<a name="l00292"></a>00292 
+<a name="l00298"></a>00298 <span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> orx_WinExecute(<span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)
+<a name="l00299"></a>00299 {
+<a name="l00300"></a>00300 <span class="preprocessor">  #define orxMAX_ARGS 256</span>
+<a name="l00301"></a>00301 <span class="preprocessor"></span>
+<a name="l00302"></a>00302   <span class="keywordtype">int</span>   argc;
+<a name="l00303"></a>00303   <span class="keywordtype">char</span> *argv[orxMAX_ARGS];
+<a name="l00304"></a>00304   <span class="keywordtype">char</span> *pcToken, *pcNextToken, *pcFirstDelimiters;
+<a name="l00305"></a>00305   LPSTR lpFullCmdLine;
+<a name="l00306"></a>00306 
+<a name="l00307"></a>00307   <span class="comment">/* Gets full command line */</span>
+<a name="l00308"></a>00308   lpFullCmdLine = GetCommandLineA();
+<a name="l00309"></a>00309 
+<a name="l00310"></a>00310   <span class="comment">/* Starts with a double quote? */</span>
+<a name="l00311"></a>00311   <span class="keywordflow">if</span>(*<a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(lpFullCmdLine) == <span class="charliteral">&#39;&quot;&#39;</span>)
+<a name="l00312"></a>00312   {
+<a name="l00313"></a>00313     <span class="comment">/* Gets first delimiters */</span>
+<a name="l00314"></a>00314     pcFirstDelimiters = <span class="stringliteral">&quot;\&quot;&quot;</span>;
+<a name="l00315"></a>00315   }
+<a name="l00316"></a>00316   <span class="keywordflow">else</span>
+<a name="l00317"></a>00317   {
+<a name="l00318"></a>00318     <span class="comment">/* Gets first delimiters */</span>
+<a name="l00319"></a>00319     pcFirstDelimiters = <span class="stringliteral">&quot; &quot;</span>;
+<a name="l00320"></a>00320   }
+<a name="l00321"></a>00321 
+<a name="l00322"></a>00322   <span class="comment">/* Process command line */</span>
+<a name="l00323"></a>00323   <span class="keywordflow">for</span>(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &amp;pcNextToken);
+<a name="l00324"></a>00324       pcToken &amp;&amp; (argc &lt; orxMAX_ARGS);
+<a name="l00325"></a>00325       pcToken = strtok_s(NULL, <span class="stringliteral">&quot; &quot;</span>, &amp;pcNextToken))
+<a name="l00326"></a>00326   {
+<a name="l00327"></a>00327     argv[argc++] = pcToken;
+<a name="l00328"></a>00328   }
+<a name="l00329"></a>00329 
+<a name="l00330"></a>00330   <span class="comment">/* Inits and executes orx */</span>
+<a name="l00331"></a>00331   <a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a>(argc, argv, _pfnInit, _pfnRun, _pfnExit);
+<a name="l00332"></a>00332 }
+<a name="l00333"></a>00333 
+<a name="l00334"></a>00334 <span class="preprocessor">    #endif </span><span class="comment">/* __orxMSVC__ */</span>
+<a name="l00335"></a>00335 
+<a name="l00336"></a>00336 <span class="preprocessor">  #endif </span><span class="comment">/* __orxANDROID_NATIVE__ */</span>
+<a name="l00337"></a>00337 
+<a name="l00338"></a>00338 <span class="preprocessor">#endif </span><span class="comment">/* __orxIOS__ */</span>
+<a name="l00339"></a>00339 
+<a name="l00340"></a>00340 <span class="preprocessor">#endif </span><span class="comment">/* __orxPLUGIN__ */</span>
+<a name="l00341"></a>00341 
+<a name="l00342"></a>00342 <span class="preprocessor">#endif </span><span class="comment">/*_orx_H_*/</span>
+<a name="l00343"></a>00343 
 <a name="l00344"></a>00344 
 <a name="l00345"></a>00345 
-<a name="l00346"></a>00346 
-<a name="l00347"></a>00347 <span class="preprocessor">#ifdef __cplusplus</span>
-<a name="l00348"></a>00348 <span class="preprocessor"></span>}
-<a name="l00349"></a>00349 <span class="preprocessor">#endif </span><span class="comment">/* __cplusplus */</span>
-<a name="l00350"></a>00350 
+<a name="l00346"></a>00346 <span class="preprocessor">#ifdef __cplusplus</span>
+<a name="l00347"></a>00347 <span class="preprocessor"></span>}
+<a name="l00348"></a>00348 <span class="preprocessor">#endif </span><span class="comment">/* __cplusplus */</span>
+<a name="l00349"></a>00349 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

@@ -63,6 +63,15 @@
 
 #define orxDEBUG_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
+#ifdef __orxDEBUG__
+
+#define orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT 0xFFFFFFFF
+
+#else /* __orxDEBUG__ */
+
+#define orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT (1 << orxDEBUG_LEVEL_LOG)
+
+#endif /* __orxDEBUG__ */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -72,25 +81,28 @@
  */
 typedef struct __orxDEBUG_STATIC_t
 {
-  /* Debug file name : 4 */
+  /* Debug file name */
   orxSTRING zDebugFile;
 
-  /* Log file name : 8 */
+  /* Log file name */
   orxSTRING zLogFile;
 
-  /* Debug file : 12 */
+  /* Debug file */
   FILE *pstDebugFile;
 
-  /* Log file : 16 */
+  /* Log file */
   FILE *pstLogFile;
 
-  /* Debug flags : 20 */
+  /* Debug flags */
   orxU32 u32DebugFlags;
 
-  /* Backup debug flags : 24 */
+  /* Backup debug flags */
   orxU32 u32BackupDebugFlags;
 
-  /* Control flags : 28 */
+  /* Level flags */
+  orxU32 u32LevelFlags;
+
+  /* Control flags */
   orxU32 u32Flags;
 
 } orxDEBUG_STATIC;
@@ -113,9 +125,9 @@ static orxDEBUG_STATIC sstDebug;
  * @param[in]   _eLevel                       Concerned debug level
   *@return      Corresponding literal string
  */
-static orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
+static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
-  orxSTRING zResult;
+  const orxSTRING zResult;
 
 #define orxDEBUG_DECLARE_LEVEL_ENTRY(ID)    case orxDEBUG_LEVEL_##ID: zResult = #ID; break
 
@@ -197,8 +209,9 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
       *pu8++ = 0;
     }
 
-    /* Inits default debug flags */
+    /* Inits default debug & level flags */
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
+    sstDebug.u32LevelFlags  = orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT;
 
     /* Set module as initialized */
     sstDebug.u32Flags       = orxDEBUG_KU32_STATIC_FLAG_READY;
@@ -252,26 +265,18 @@ void orxFASTCALL _orxDebug_Exit()
 /** Software break function */
 void orxFASTCALL _orxDebug_Break()
 {
-  /* Windows / Linux / Mac / GP2X / Wii / IPhone / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  /* Windows / Linux / Mac / iOS / Android */
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Compiler specific */
 
   #ifdef __orxGCC__
 
-    #if defined(__orxGP2X__)
-
-    //! TODO: Add GP2X software break code
-
-    #elif defined(__orxWII__)
-
-    //! TODO: Add WII software break code
-
-    #elif defined(__orxIPHONE__)
+    #if defined(__orxIOS__)
 
       __builtin_trap();
 
-	#elif defined(__orxANDROID__)
+    #elif defined(__orxANDROID__)
 
       __builtin_trap();
 
@@ -301,7 +306,7 @@ void orxFASTCALL _orxDebug_Break()
 
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   return;
 }
@@ -352,141 +357,189 @@ void orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
  */
 void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
-  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
-  FILE   *pstFile;
-  va_list stArgs;
-
-  //! TODO : Checks log mask to see if display is enabled for this level
-
-  /* Empties current buffer */
-  pcBuffer[0] = orxCHAR_NULL;
-
-  /* Time Stamp? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
+  /* Is level enabled? */
+  if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)))
   {
-    time_t u32Time;
+    orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
+    FILE   *pstFile;
+    va_list stArgs;
 
-    /* Inits Log Time */
-    time(&u32Time);
+    /* Empties current buffer */
+    pcBuffer[0] = orxCHAR_NULL;
 
-    pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
-  }
-
-  /* Log Type? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TYPE)
-  {
-#ifdef __orxMSVC__
-    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " <%s>", orxDebug_GetLevelString(_eLevel));
-#else /* __orxMSVC__ */
-    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " <%s>", orxDebug_GetLevelString(_eLevel));
-#endif /* __orxMSVC__ */
-  }
-
-  /* Log FUNCTION, FILE & LINE? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
-  {
-    const orxCHAR *pc;
-
-    /* Trims relative path */
-    for(pc = _zFile;
-        (*pc != orxCHAR_EOL) && ((*pc == '.') || (*pc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS));
-        pc++);
-
-    /* Writes info */
-#ifdef __orxMSVC__
-    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%u)", _zFunction, pc, _u32Line);
-#else /* __orxMSVC__ */
-    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%u)", _zFunction, pc, (unsigned int)_u32Line);
-#endif /* __orxMSVC__ */
-  }
-
-  /* Debug Log */
-  va_start(stArgs, _zFormat);
-  vsnprintf(zLog, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), _zFormat, stArgs);
-  zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
-  va_end(stArgs);
-
-#ifdef __orxMSVC__
-  pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s\n", zLog);
-#else /* __orxMSVC__ */
-  pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s\n", zLog);
-#endif /* __orxMSVC__ */
-  pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
-
-  /* Use file? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
-  {
-    if(_eLevel == orxDEBUG_LEVEL_LOG)
+    /* Time Stamp? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
     {
+      time_t u32Time;
+
+      /* Inits Log Time */
+      time(&u32Time);
+
+      pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
+    }
+
+    /* Log Type? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TYPE)
+    {
+
+#ifdef __orxMSVC__
+
+      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " <%s>", orxDebug_GetLevelString(_eLevel));
+
+#else /* __orxMSVC__ */
+
+      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " <%s>", orxDebug_GetLevelString(_eLevel));
+
+#endif /* __orxMSVC__ */
+
+    }
+
+    /* Log FUNCTION, FILE & LINE? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
+    {
+      const orxCHAR *pc;
+
+      /* Trims relative path */
+      for(pc = _zFile;
+          (*pc != orxCHAR_EOL) && ((*pc == '.') || (*pc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS));
+          pc++);
+
+#ifdef __orxMSVC__
+
+      /* Writes info */
+      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%u)", _zFunction, pc, _u32Line);
+
+#else /* __orxMSVC__ */
+
+      /* Writes info */
+      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%u)", _zFunction, pc, (unsigned int)_u32Line);
+
+#endif /* __orxMSVC__ */
+    }
+
+    /* Debug Log */
+    va_start(stArgs, _zFormat);
+    vsnprintf(zLog, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), _zFormat, stArgs);
+    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
+    va_end(stArgs);
+
+#ifdef __orxMSVC__
+
+    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s\n", zLog);
+
+#else /* __orxMSVC__ */
+
+    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s\n", zLog);
+
+#endif /* __orxMSVC__ */
+
+    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
+
+    /* Use file? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
+    {
+      if(_eLevel == orxDEBUG_LEVEL_LOG)
+      {
+
 #if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
 
-      /* Needs to open the file? */
-      if(sstDebug.pstLogFile == orxNULL)
-      {
-        /* Opens it */
-        sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "a+");
-      }
+        /* Needs to open the file? */
+        if(sstDebug.pstLogFile == orxNULL)
+        {
+          /* Opens it */
+          sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "a+");
+        }
 
 #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 
-      pstFile = sstDebug.pstLogFile;
-    }
-    else
-    {
+        pstFile = sstDebug.pstLogFile;
+      }
+      else
+      {
+
 #if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
 
-      /* Needs to open the file? */
-      if(sstDebug.pstDebugFile == orxNULL)
-      {
-        /* Opens it */
-        sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "a+");
-      }
+        /* Needs to open the file? */
+        if(sstDebug.pstDebugFile == orxNULL)
+        {
+          /* Opens it */
+          sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "a+");
+        }
 
 #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 
-      pstFile = sstDebug.pstDebugFile;
+        pstFile = sstDebug.pstDebugFile;
+      }
+
+      /* Valid? */
+      if(pstFile != orxNULL)
+      {
+        fprintf(pstFile, "%s", zBuffer);
+        fflush(pstFile);
+      }
     }
 
-    /* Valid? */
-    if(pstFile != orxNULL)
+    /* Console Display? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
     {
-      fprintf(pstFile, "%s", zBuffer);
-      fflush(pstFile);
-    }
-  }
 
-  /* Console Display? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
-  {
 #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-    if(_eLevel == orxDEBUG_LEVEL_LOG)
-    {
-      __android_log_print(ANDROID_LOG_INFO, "ORX", zBuffer);
-    }
-    else
-    {
-      __android_log_print(ANDROID_LOG_DEBUG, "ORX", zBuffer);
-    }
+      if(_eLevel == orxDEBUG_LEVEL_LOG)
+      {
+        __android_log_print(ANDROID_LOG_INFO, "ORX", zBuffer);
+      }
+      else
+      {
+        __android_log_print(ANDROID_LOG_DEBUG, "ORX", zBuffer);
+      }
 
 #else /* __orxANDROID__ */
 
-    if(_eLevel == orxDEBUG_LEVEL_LOG)
-    {
-      pstFile = stdout;
-    }
-    else
-    {
-      pstFile = stderr;
-    }
+      if(_eLevel == orxDEBUG_LEVEL_LOG)
+      {
+        pstFile = stdout;
+      }
+      else
+      {
+        pstFile = stderr;
+      }
 
-    fprintf(pstFile, "%s", zBuffer);
-    fflush(pstFile);
+      fprintf(pstFile, "%s", zBuffer);
+      fflush(pstFile);
 
 #endif /* __orxANDROID__ */
+
+    }
   }
 
   /* Done */
+  return;
+}
+
+/** Enables/disables a given log level
+ * @param[in]   _eLevel                       Debug level to enable/disable
+ * @param[in]   _bEnable                      Enable / disable
+*/
+void orxFASTCALL _orxDebug_EnableLevel(orxDEBUG_LEVEL _eLevel, orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+  orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates level flags */
+    orxFLAG_SET(sstDebug.u32LevelFlags, 1 << _eLevel, 0);
+  }
+  else
+  {
+    /* Updates level flags */
+    orxFLAG_SET(sstDebug.u32LevelFlags, 0, 1 << _eLevel);
+  }
+
+  /* Done! */
   return;
 }
 
@@ -525,7 +578,7 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
   else
   {
     /* Uses default file */
-    sstDebug.zDebugFile = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
+    sstDebug.zDebugFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
   }
 }
 
@@ -564,7 +617,7 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
   else
   {
     /* Uses default file */
-    sstDebug.zLogFile = orxDEBUG_KZ_DEFAULT_LOG_FILE;
+    sstDebug.zLogFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE;
   }
 }
 

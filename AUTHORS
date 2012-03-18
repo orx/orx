@@ -18,12 +18,13 @@ Orx authors:
   MacOS X (ppc/x86) version:
     Romain Killian
 
-  iPhone (iPod Touch/iPad) version:
+  iOS (iPhone/iPod Touch/iPad) version:
     Romain Killian
 
   Android versions:
     Cai 'laschweinski' Huaxu (1.6+)
     Philippe 'Lydesik' Simons (native, 2.3+)
+    Gilles 'faistoiplaisir' Zucchini (native, 2.3+)
 
   Main executable, demos and tutorials:
     Romain Killian

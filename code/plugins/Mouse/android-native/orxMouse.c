@@ -71,8 +71,6 @@ static orxMOUSE_STATIC sstMouse;
  * Private functions                                                       *
  ***************************************************************************/
 
-extern struct engine engine;
-
 /** Event handler
  */
 static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstEvent)

@@ -33,14 +33,14 @@
  */
 static const struct
 {
-  orxU32    u32Width;
-  orxU32    u32Height;
-  orxFLOAT  fCharacterWidth;
-  orxFLOAT  fCharacterHeight;
-  orxFLOAT  fCharacterSpacingX;
-  orxFLOAT  fCharacterSpacingY;
-  orxSTRING zCharacterList;
-  orxU8     au8Data[128 * 224 * 4];
+  orxU32          u32Width;
+  orxU32          u32Height;
+  orxFLOAT        fCharacterWidth;
+  orxFLOAT        fCharacterHeight;
+  orxFLOAT        fCharacterSpacingX;
+  orxFLOAT        fCharacterSpacingY;
+  const orxSTRING zCharacterList;
+  orxU8           au8Data[128 * 224 * 4];
 } sstDefaultFont =
 {
   128, 224, 8.0f, 16.0f, 0.0f, 0.0f,

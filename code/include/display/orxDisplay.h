@@ -47,6 +47,7 @@
 #include "plugin/orxPluginCore.h"
 
 #include "math/orxVector.h"
+#include "math/orxOBox.h"
 #include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -224,7 +225,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+#if defined(__orxIOS__) && defined(__orxOBJC__)
 
 #import <UIKit/UIKit.h>
 #import <OpenGLES/EAGL.h>
@@ -250,7 +251,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 
 @end
 
-#endif /* __orxIPHONE__ && __orxOBJC__ */
+#endif /* __orxIOS__ && __orxOBJC__ */
 
 
 /** Display module setup
@@ -763,16 +764,18 @@ extern orxDLLAPI void orxFASTCALL                     orxDisplay_Exit();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_Swap();
 
-/** Transforms a text (on a bitmap)
- * @param[in]   _zString                              String to display
- * @param[in]   _pstFont                              Font bitmap
- * @param[in]   _pstMap                               Character map
- * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
- * @param[in]   _eSmoothing                           Bitmap smoothing type
- * @param[in]   _eBlendMode                           Blend mode
+
+/** Gets screen bitmap
+ * @return orxBITMAP / orxNULL
+ */
+extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_GetScreenBitmap();
+
+/** Gets screen size
+ * @param[out]   _pfWidth                             Screen width
+ * @param[out]   _pfHeight                            Screen height
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 
 /** Creates a bitmap
@@ -788,25 +791,19 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_CreateBitmap(or
 extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
 
 
-/** Gets screen bitmap
- * @return orxBITMAP / orxNULL
+/** Loads a bitmap from file
+ * @param[in]   _zFileName                            Name of the file to load
+ * @return orxBITMAP * / orxNULL
  */
-extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_GetScreenBitmap();
+extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(const orxSTRING _zFileName);
 
-/** Gets screen size
- * @param[out]   _pfWidth                             Screen width
- * @param[out]   _pfHeight                            Screen height
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
-
-
-/** Clears a bitmap
+/** Saves a bitmap to file
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to clear the bitmap with
+ * @param[in]   _zFileName                            Name of the file where to store the bitmap
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
+
 
 /** Sets destination bitmap
  * @param[in]   _pstDst                               Destination bitmap
@@ -814,38 +811,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmap(orxBITMAP *_pstDst);
 
-/** Transforms (and blits onto another) a bitmap
- * @param[in]   _pstSrc                               Bitmap to transform and draw
- * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
- * @param[in]   _eSmoothing                           Bitmap smoothing type
- * @param[in]   _eBlendMode                           Blend mode
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
-
-
-/** Sets a bitmap data (RGBA memory format)
+/** Clears a bitmap
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _au8Data                              Data (4 channels, RGBA)
- * @param[in]   _u32ByteNumber                        Number of bytes
+ * @param[in]   _stColor                              Color to clear the bitmap with
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber);
-
-/** Sets a bitmap color key (used with non alpha transparency)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to use as transparent one
- * @param[in]   _bEnable                              Enable / disable transparence for this color
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
-
-/** Sets a bitmap color (lighting/hue)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to apply on the bitmap
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
 /** Sets a bitmap clipping for blitting (both as source and destination)
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -857,31 +828,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColor(
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY);
 
-
-/** Blits a bitmap (no transformation)
- * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
- * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
- * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
- * @param[in]   _eSmoothing                           Bitmap smoothing type
- * @param[in]   _eBlendMode                           Blend mode
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
-
-
-/** Saves a bitmap to file
+/** Sets a bitmap color key (used with non alpha transparency)
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _zFileName                            Name of the file where to store the bitmap
+ * @param[in]   _stColor                              Color to use as transparent one
+ * @param[in]   _bEnable                              Enable / disable transparence for this color
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
 
-/** Loads a bitmap from file
- * @param[in]   _zFileName                            Name of the file to load
- * @return orxBITMAP * / orxNULL
+/** Sets a bitmap data (RGBA memory format)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _au8Data                              Data (4 channels, RGBA)
+ * @param[in]   _u32ByteNumber                        Number of bytes
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(const orxSTRING _zFileName);
-
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
 /** Gets a bitmap data (RGBA memory format)
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -890,6 +851,13 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(cons
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
+
+/** Sets a bitmap color (lighting/hue)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _stColor                              Color to apply on the bitmap
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
 /** Gets bitmap color (lighting/hue)
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -905,6 +873,85 @@ extern orxDLLAPI orxRGBA orxFASTCALL                  orxDisplay_GetBitmapColor(
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
+
+/** Blits a bitmap (no transformation)
+ * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
+ * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
+ * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
+ * @param[in]   _eBlendMode                           Blend mode
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Transforms (and blits onto another) a bitmap
+ * @param[in]   _pstSrc                               Bitmap to transform and draw
+ * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
+ * @param[in]   _eBlendMode                           Blend mode
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Transforms a text (onto a bitmap)
+ * @param[in]   _zString                              String to display
+ * @param[in]   _pstFont                              Font bitmap
+ * @param[in]   _pstMap                               Character map
+ * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
+ * @param[in]   _eBlendMode                           Blend mode
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+
+/** Draws a line
+ * @param[in]   _pvStart                              Start point
+ * @param[in]   _pvEnd                                End point
+ * @param[in]   _stColor                              Color
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor);
+
+/** Draws a polyline (aka open polygon)
+ * @param[in]   _avVertexList                         List of vertices
+ * @param[in]   _u32VertexNumber                      Number of vertices in the list
+ * @param[in]   _stColor                              Color
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor);
+
+/** Draws a (closed) polygon
+ * @param[in]   _avVertexList                         List of vertices
+ * @param[in]   _u32VertexNumber                      Number of vertices in the list
+ * @param[in]   _stColor                              Color
+ * @param[in]   _bFill                                If true, the polygon will be filled otherwise only its outline will be drawn
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill);
+
+/** Draws a circle
+ * @param[in]   _pvCenter                             Center
+ * @param[in]   _fRadius                              Radius
+ * @param[in]   _stColor                              Color
+ * @param[in]   _bFill                                If true, the polygon will be filled otherwise only its outline will be drawn
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill);
+
+/** Draws an oriented box
+ * @param[in]   _pstBox                               Box to draw
+ * @param[in]   _stColor                              Color
+ * @param[in]   _bFill                                If true, the polygon will be filled otherwise only its outline will be drawn
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill);
+
+
+/** Has shader support?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_HasShaderSupport();
 
 /** Creates (compiles) a shader
  * @param[in]   _zCode                                Shader code to compile

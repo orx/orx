@@ -27,7 +27,7 @@
  * @date 28/01/2010
  * @author iarwain@orx-project.org
  *
- * iPhone test
+ * iOS test
  *
  */
 
@@ -102,7 +102,7 @@ static orxSTATUS orxFASTCALL Run()
   }
 
   /* Gets gravity vector from input */
-  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
+  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), -orxInput_GetValue("GravityY"), orxFLOAT_0);
 
   /* Significant enough? */
   if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))

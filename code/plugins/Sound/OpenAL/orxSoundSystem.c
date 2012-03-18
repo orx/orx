@@ -34,17 +34,17 @@
 
 #include "orxPluginAPI.h"
 
-#if defined(__orxMAC__) || defined(__orxIPHONE__)
+#if defined(__orxMAC__) || defined(__orxIOS__)
 
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
 
-#else /* __orxMAC__ || __orxIPHONE__ */
+#else /* __orxMAC__ || __orxIOS__ */
 
   #include <AL/al.h>
   #include <AL/alc.h>
 
-#endif /* __orxMAC__ || __orxIPHONE__ */
+#endif /* __orxMAC__ || __orxIOS__ */
 
 #ifdef __orxMSVC__
 

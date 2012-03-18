@@ -133,7 +133,7 @@
     #define __orxLINUX__
 
   /* IPhone? */
-  #elif defined(TARGET_OS_IPHONE)
+  #elif TARGET_OS_IPHONE
 
     #define __orxIPHONE__
 
@@ -151,7 +151,7 @@
     #endif /* __ANDROID_API__ >= 9 */
 
   /* Mac? */
-  #elif defined(__APPLE__)
+  #elif TARGET_OS_MAC
 
     #define __orxMAC__
 

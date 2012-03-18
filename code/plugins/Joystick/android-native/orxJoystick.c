@@ -35,7 +35,6 @@
 
 #include "orxPluginAPI.h"
 
-#include <android_native_app_glue.h>
 #include <android/sensor.h>
 
 /** Module flags
@@ -62,14 +61,22 @@ typedef struct __orxJOYSTICK_STATIC_t
   orxU32      u32Flags;
   orxVECTOR   vAcceleration;
   orxFLOAT    fFrequency;
-
+  orxS32      s32Rotation;
 } orxJOYSTICK_STATIC;
 
-/** Extern data */
-extern struct android_app  *pstApp;
-extern ASensorManager      *poSensorManager;
+/* Defined in orxAndroid.h */
+
 extern const ASensor       *poAccelerometerSensor;
 extern ASensorEventQueue   *poSensorEventQueue;
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+  void orxAndroid_EnableAccelerometer(orxFLOAT fFrequency);
+  orxS32 orxAndroid_GetRotation();
+#ifdef	__cplusplus
+}
+#endif
 
 /***************************************************************************
  * Static variables                                                        *
@@ -79,6 +86,29 @@ extern ASensorEventQueue   *poSensorEventQueue;
  */
 static orxJOYSTICK_STATIC sstJoystick;
 
+static void orxFASTCALL orxJoystick_Android_CanonicalToScreen(const orxFLOAT *canVec, orxFLOAT *screenVec)
+{
+  struct AxisSwap
+  {
+    orxS8 negateX;
+    orxS8 negateY;
+    orxS8 xSrc;
+    orxS8 ySrc;
+  };
+  
+  static const AxisSwap axisSwap[] = {
+    {-1, -1, 0, 1 },   // ROTATION_0
+    { 1, -1, 1, 0 },   // ROTATION_90
+    { 1,  1, 0, 1 },   // ROTATION_180
+    {-1,  1, 1, 0 } }; // ROTATION_270
+    
+  const AxisSwap& as = axisSwap[sstJoystick.s32Rotation];
+  
+  screenVec[0] = (orxFLOAT)as.negateX * canVec[ as.xSrc ];
+  screenVec[1] = (orxFLOAT)as.negateY * canVec[ as.ySrc ];
+  screenVec[2] = canVec[2];
+}
+
 
 /***************************************************************************
  * Private functions                                                       *
@@ -87,32 +117,41 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_p
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Depending on ID */
-	switch (_pstEvent->eID)
-	{
-	  case orxSYSTEM_EVENT_ACCELERATE:
-	  {
-	    orxSYSTEM_EVENT_PAYLOAD *pstPayload;
-	    
-	    /* Gets payload */
-	    pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+  /* Depending on ID */
+  switch (_pstEvent->eID)
+  {
+    case orxSYSTEM_EVENT_ACCELERATE:
+    {
+      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
-      /* Gets new position */
-      orxVector_Set(&(sstJoystick.vAcceleration), orx2F(- pstPayload->stAccelerometer.fX), orx2F(- pstPayload->stAccelerometer.fY), orx2F(pstPayload->stAccelerometer.fZ));
+      /* Gets payload */
+      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
 
-	    break;
-	  }
-	  case orxSYSTEM_EVENT_BACKGROUND:
-	  {
+      static orxFLOAT canVec[3];
+      static orxFLOAT screenVec[3];
+
+      canVec[0] = orx2F(pstPayload->stAccelerometer.vAcceleration.fX);
+      canVec[1] = orx2F(pstPayload->stAccelerometer.vAcceleration.fY);
+      canVec[2] = orx2F(pstPayload->stAccelerometer.vAcceleration.fZ);
+
+      orxJoystick_Android_CanonicalToScreen(canVec, screenVec);
+
+      /* Gets new acceleration */
+      orxVector_Set(&(sstJoystick.vAcceleration), orx2F(screenVec[0]), orx2F(screenVec[1]), orx2F(screenVec[2]));
+
+      break;
+    }
+    case orxSYSTEM_EVENT_BACKGROUND:
+    {
       if (poAccelerometerSensor != orxNULL)
       {
         ASensorEventQueue_disableSensor(poSensorEventQueue, poAccelerometerSensor);
       }
 
       break;
-	  }
-	  case orxSYSTEM_EVENT_FOREGROUND:
-	  {
+    }
+    case orxSYSTEM_EVENT_FOREGROUND:
+    {
       if (poAccelerometerSensor != orxNULL)
       {
         ASensorEventQueue_enableSensor(poSensorEventQueue, poAccelerometerSensor);
@@ -120,10 +159,11 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_p
       }
 
       break;
-	  }
+    }
   }
   return eResult;
 }
+
 orxSTATUS orxFASTCALL orxJoystick_Android_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -146,28 +186,23 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
       if((fFrequency = orxConfig_GetFloat(orxANDROID_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
       {
         sstJoystick.fFrequency = fFrequency;
-        
-        poSensorManager = ASensorManager_getInstance();
-        poAccelerometerSensor = ASensorManager_getDefaultSensor(poSensorManager, ASENSOR_TYPE_ACCELEROMETER);
-        poSensorEventQueue = ASensorManager_createEventQueue(poSensorManager, pstApp->looper, LOOPER_ID_USER, NULL, NULL);
+ 
+        orxAndroid_EnableAccelerometer(fFrequency);
 
-        /* enable accelerometer */
-        ASensorEventQueue_enableSensor(poSensorEventQueue, poAccelerometerSensor);
-        ASensorEventQueue_setEventRate(poSensorEventQueue, poAccelerometerSensor, (1000L/fFrequency)*1000);
-  
         orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler);
       }
       else
       {
-        poSensorManager = orxNULL;
         poAccelerometerSensor = orxNULL;
         poSensorEventQueue = orxNULL;
         sstJoystick.fFrequency = orx2F(0);
       }
+
+      /* Get Screen Rotation */
+      sstJoystick.s32Rotation = orxAndroid_GetRotation();
     }
     else
     {
-      poSensorManager = orxNULL;
       poAccelerometerSensor = orxNULL;
       poSensorEventQueue = orxNULL;
       sstJoystick.fFrequency = orx2F(0);

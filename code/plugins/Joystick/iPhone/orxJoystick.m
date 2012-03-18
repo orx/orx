@@ -27,7 +27,7 @@
  * @date 19/02/2010
  * @author iarwain@orx-project.org
  *
- * iPhone joystick plugin implementation
+ * iOS joystick plugin implementation
  *
  * @todo
  */
@@ -72,38 +72,26 @@ static orxJOYSTICK_STATIC sstJoystick;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxSTATUS orxFASTCALL orxJoystick_iPhone_EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxJoystick_iOS_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-  
-  /* Depending on ID */
-  switch(_pstEvent->eID)
+  orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
+
+  /* Accelerate event? */
+  if(_pstEvent->eID == orxSYSTEM_EVENT_ACCELERATE)
   {
-    /* Accelerate? */
-    case orxSYSTEM_EVENT_ACCELERATE:
-    {
-      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+    /* Gets payload */
+    pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Gets payload */
-      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Gets new position */
-      orxVector_Set(&(sstJoystick.vAcceleration), orx2F(pstPayload->poAcceleration.x), orx2F(pstPayload->poAcceleration.y), orx2F(pstPayload->poAcceleration.z));
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
+    /* Gets new acceleration */
+    orxVector_Copy(&(sstJoystick.vAcceleration), &(pstPayload->stAccelerometer.vAcceleration));
   }
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxJoystick_iPhone_Init()
+orxSTATUS orxFASTCALL orxJoystick_iOS_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -114,7 +102,7 @@ orxSTATUS orxFASTCALL orxJoystick_iPhone_Init()
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
     /* Adds our joystick event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iPhone_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iOS_EventHandler)) != orxSTATUS_FAILURE)
     {
       /* Updates status */
       sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
@@ -125,13 +113,13 @@ orxSTATUS orxFASTCALL orxJoystick_iPhone_Init()
   return eResult;
 }
 
-void orxFASTCALL orxJoystick_iPhone_Exit()
+void orxFASTCALL orxJoystick_iOS_Exit()
 {
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iPhone_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iOS_EventHandler);
     
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
@@ -140,7 +128,7 @@ void orxFASTCALL orxJoystick_iPhone_Exit()
   return;
 }
 
-orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
+orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -193,7 +181,7 @@ orxFLOAT orxFASTCALL orxJoystick_iPhone_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   return fResult;
 }
 
-orxBOOL orxFASTCALL orxJoystick_iPhone_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
+orxBOOL orxFASTCALL orxJoystick_iOS_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -210,8 +198,8 @@ orxBOOL orxFASTCALL orxJoystick_iPhone_IsButtonPressed(orxJOYSTICK_BUTTON _eButt
  ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(JOYSTICK);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iPhone_Init, JOYSTICK, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iPhone_Exit, JOYSTICK, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iPhone_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iPhone_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_Init, JOYSTICK, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_Exit, JOYSTICK, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
 orxPLUGIN_USER_CORE_FUNCTION_END();

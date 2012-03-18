@@ -27,7 +27,7 @@
  * @date 25/01/2010
  * @author iarwain@orx-project.org
  *
- * Dummy keyboard plugin implementation
+ * iOS keyboard plugin implementation
  *
  */
 
@@ -49,7 +49,7 @@
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATUS orxFASTCALL orxKeyboard_iPhone_Init()
+orxSTATUS orxFASTCALL orxKeyboard_Dummy_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -57,13 +57,13 @@ orxSTATUS orxFASTCALL orxKeyboard_iPhone_Init()
   return eResult;
 }
 
-void orxFASTCALL orxKeyboard_iPhone_Exit()
+void orxFASTCALL orxKeyboard_Dummy_Exit()
 {
   /* Done! */
   return;
 }
 
-orxBOOL orxFASTCALL orxKeyboard_iPhone_IsKeyPressed(orxKEYBOARD_KEY _eKey)
+orxBOOL orxFASTCALL orxKeyboard_Dummy_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -71,7 +71,7 @@ orxBOOL orxFASTCALL orxKeyboard_iPhone_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return bResult;
 }
 
-orxKEYBOARD_KEY orxFASTCALL orxKeyboard_iPhone_Read()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Dummy_Read()
 {
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
@@ -79,7 +79,7 @@ orxKEYBOARD_KEY orxFASTCALL orxKeyboard_iPhone_Read()
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxKeyboard_iPhone_Hit()
+orxBOOL orxFASTCALL orxKeyboard_Dummy_Hit()
 {
   orxBOOL bResult = orxFALSE;
 
@@ -87,7 +87,7 @@ orxBOOL orxFASTCALL orxKeyboard_iPhone_Hit()
   return bResult;
 }
 
-void orxFASTCALL orxKeyboard_iPhone_ClearBuffer()
+void orxFASTCALL orxKeyboard_Dummy_ClearBuffer()
 {
   /* Done! */
   return;
@@ -98,10 +98,10 @@ void orxFASTCALL orxKeyboard_iPhone_ClearBuffer()
  ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_iPhone_Init, KEYBOARD, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_iPhone_Exit, KEYBOARD, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_iPhone_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_iPhone_Hit, KEYBOARD, HIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_iPhone_Read, KEYBOARD, READ);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_iPhone_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Init, KEYBOARD, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Exit, KEYBOARD, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Hit, KEYBOARD, HIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Read, KEYBOARD, READ);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
 orxPLUGIN_USER_CORE_FUNCTION_END();

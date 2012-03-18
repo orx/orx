@@ -30,7 +30,7 @@
  */
 
 
-#include "render/orxFXPointer.h"
+#include "object/orxFXPointer.h"
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"

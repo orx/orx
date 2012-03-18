@@ -92,6 +92,13 @@ extern orxDLLAPI void orxFASTCALL           orxBank_Delete(orxBANK *_pstBank);
  */
 extern orxDLLAPI void *orxFASTCALL          orxBank_Allocate(orxBANK *_pstBank);
 
+/** Allocates a new cell from the bank and returns its index
+ * @param[in] _pstBank        Pointer on the memory bank to use
+ * @param[out] _pu32ItemIndex Will be set with the allocated item index
+ * @return a new cell of memory (orxNULL if no allocation possible)
+ */
+extern orxDLLAPI void *orxFASTCALL          orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIndex);
+
 /** Frees an allocated cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
  * @param[in] _pCell      Pointer on the cell to free

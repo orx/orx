@@ -86,10 +86,11 @@ typedef struct __orxRENDER_RENDER_NODE_t
  */
 typedef struct __orxRENDER_STATIC_t
 {
-  orxU32        u32Flags;                         /**< Control flags : 4 */
-  orxCLOCK     *pstClock;                         /**< Rendering clock pointer : 8 */
-  orxBANK      *pstRenderBank;                    /**< Rendering bank : 12 */
-  orxLINKLIST   stRenderList;                     /**< Rendering list : 16 */
+  orxU32        u32Flags;                         /**< Control flags */
+  orxCLOCK     *pstClock;                         /**< Rendering clock pointer */
+  orxFRAME     *pstFrame;                         /**< Conversion frame */
+  orxBANK      *pstRenderBank;                    /**< Rendering bank */
+  orxLINKLIST   stRenderList;                     /**< Rendering list */
 
 } orxRENDER_STATIC;
 
@@ -137,7 +138,7 @@ static orxINLINE void orxRender_RenderFPS()
 
     /* Gets its bitmap */
     pstBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
-    
+
     /* Clears text transform */
     orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
@@ -407,8 +408,8 @@ static orxINLINE void orxRender_RenderProfiler()
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
-    /* Is unique? */
-    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE))
+    /* Is unique and has been pushed? */
+    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
     {
       orxDOUBLE dTime;
       orxCOLOR  stBarColor;
@@ -483,8 +484,9 @@ static orxINLINE void orxRender_RenderProfiler()
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
-    /* Is unique? */
-    if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    /* Is unique and has been pushed? */
+    if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
     {
       orxDOUBLE dTime;
       orxCOLOR  stLabelColor;
@@ -496,30 +498,58 @@ static orxINLINE void orxRender_RenderProfiler()
       /* Gets its depth */
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
-      /* Has been pushed? */
-      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
-      {
-        /* Sets font's color */
-        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
-        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+      /* Sets font's color */
+      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
-        /* Adds depth markers */
-        for(i = 0; i < u32Depth; i++)
-        {
-          acLabel[i] = '+';
-        }
+      /* Adds depth markers */
+      for(i = 0; i < u32Depth; i++)
+      {
+        acLabel[i] = '+';
+      }
+
+      /* Draws its label */
+      orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Updates position */
+      if(bLandscape != orxFALSE)
+      {
+        stTransform.fDstY += fHeight;
       }
       else
       {
-        /* Sets font's color */
-        orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
-
-        /* Adds depth markers */
-        acLabel[0] = '-';
-
-        /* Updates depth */
-        u32Depth = 1;
+        stTransform.fDstX += fHeight;
       }
+    }
+  }
+
+  /* For all sorted markers */
+  for(s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+      s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
+      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
+  {
+    /* Is unique and hasn't been pushed? */
+    if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
+    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) == 0))
+    {
+      orxDOUBLE dTime;
+      orxU32    u32Depth;
+
+      /* Gets its time */
+      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* Gets its depth */
+      u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
+
+      /* Sets font's color */
+      orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
+
+      /* Adds depth markers */
+      acLabel[0] = '-';
+
+      /* Updates depth */
+      u32Depth = 1;
 
       /* Draws its label */
       orxString_NPrint(acLabel + u32Depth, 64 - u32Depth, " %s [%.2f|%.2fms][%ldx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
@@ -682,6 +712,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
       orxANIMPOINTER *pstAnimPointer;
       orxVECTOR       vClipTL, vClipBR, vPivot, vSize;
 
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxRender_RenderObject (2D)");
+
       /* Gets animation pointer */
       pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
@@ -842,9 +875,15 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
       /* Sends stop event */
       orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
     else
     {
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxRender_RenderObject (Text)");
+
       /* Sends start event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
@@ -967,6 +1006,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 
       /* Sends stop event */
       orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
   }
   else
@@ -1541,6 +1583,9 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
+  /* Clears screen */
+  orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+
   /* Sends render start event */
   bRender = (orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_START) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
 
@@ -1552,9 +1597,6 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
 
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
-
-    /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
 
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
@@ -1680,7 +1722,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
 
       /* Gets viewport correction ratio */
       fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
-      
+
       /* Has one? */
       if(fCorrectionRatio != orxFLOAT_1)
       {
@@ -1728,7 +1770,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
         orxVector_Add(&(stCameraFrustum.vTL), &(stCameraFrustum.vTL), &vCameraPosition);
         orxVector_Add(&(stCameraFrustum.vBR), &(stCameraFrustum.vBR), &vCameraPosition);
 
-        /* Gets camera position */
+        /* Gets camera center */
         orxVector_Mulf(&vCameraCenter, orxVector_Add(&vCameraCenter, &(stCameraFrustum.vBR), &(stCameraFrustum.vTL)), orx2F(0.5f));
 
         /* Gets viewport space normalized position */
@@ -1784,6 +1826,123 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   return pvResult;
 }
 
+/** Get a screen position given a world one and a viewport (rendering position)
+ * @param[in]   _pvWorldPosition                      Concerned world position
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then the first viewport will be used
+ * @param[out]  _pvScreenPosition                     Corresponding screen position
+ * @return      orxVECTOR if found (can be off-screen), orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorldPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvScreenPosition)
+{
+  const orxVIEWPORT  *pstViewport;
+  orxVECTOR          *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvScreenPosition != orxNULL);
+  orxASSERT(_pvWorldPosition != orxNULL);
+
+  /* Has a specified viewport? */
+  if(_pstViewport != orxNULL)
+  {
+    /* Selects it */
+    pstViewport = _pstViewport;
+  }
+  else
+  {
+    /* Uses first viewport */
+    pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+  }
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    orxCAMERA *pstCamera;
+
+    /* Is active and has camera? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
+    {
+      orxVECTOR vCameraCenter, vCameraPosition;
+      orxAABOX  stCameraFrustum;
+
+      /* Gets camera position */
+      orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+      /* Gets camera world frustum */
+      orxCamera_GetFrustum(pstCamera, &stCameraFrustum);
+      orxVector_Add(&(stCameraFrustum.vTL), &(stCameraFrustum.vTL), &vCameraPosition);
+      orxVector_Add(&(stCameraFrustum.vBR), &(stCameraFrustum.vBR), &vCameraPosition);
+
+      /* Gets camera center */
+      orxVector_Mulf(&vCameraCenter, orxVector_Add(&vCameraCenter, &(stCameraFrustum.vBR), &(stCameraFrustum.vTL)), orx2F(0.5f));
+
+      /* No viewport specified or is position depth in camera frustum? */
+      if((_pstViewport == orxNULL)
+      || ((_pvWorldPosition->fZ > stCameraFrustum.vTL.fZ)
+       && (_pvWorldPosition->fZ <= stCameraFrustum.vBR.fZ)))
+      {
+        orxAABOX  stViewportBox;
+        orxVECTOR vLocalPosition, vViewportCenter, vCoef;
+        orxFLOAT  fCorrectionRatio;
+
+        /* Links the conversion frame to the camera */
+        orxFrame_SetParent(sstRender.pstFrame, orxCamera_GetFrame(pstCamera));
+
+        /* Updates the conversion frame with world position */
+        orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_GLOBAL, _pvWorldPosition);
+
+        /* Updates local position */
+        orxFrame_GetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &vLocalPosition);
+
+        /* Unlinks frame from the camera */
+        orxFrame_SetParent(sstRender.pstFrame, orxNULL);
+
+        /* Makes it relative to the camera frustum size */
+        vLocalPosition.fX = vLocalPosition.fX / (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX);
+        vLocalPosition.fY = vLocalPosition.fY / (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY);
+
+        /* Gets viewport box */
+        orxViewport_GetBox(pstViewport, &stViewportBox);
+
+        /* Gets viewport center */
+        orxVector_Mulf(&vViewportCenter, orxVector_Add(&vViewportCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
+
+        /* Gets coef */
+        orxVector_Sub(&vCoef, &(stViewportBox.vBR), &(stViewportBox.vTL));
+
+        /* Gets its correction ratio */
+        fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+
+        /* Has correction ratio? */
+        if(fCorrectionRatio != orxFLOAT_1)
+        {
+          /* X axis? */
+          if(fCorrectionRatio < orxFLOAT_1)
+          {
+            /* Applies it */
+            vCoef.fX *= fCorrectionRatio;
+          }
+          else
+          {
+            /* Applies it */
+            vCoef.fY *= orxFLOAT_1 / fCorrectionRatio;
+          }
+        }
+
+        /* Updates screen position */
+        orxVector_Add(_pvScreenPosition, &vViewportCenter, orxVector_Mul(&vLocalPosition, &vLocalPosition, &vCoef));
+
+        /* Updates result */
+        pvResult = _pvScreenPosition;
+      }
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
 /** Inits the Render module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -1825,8 +1984,28 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
       /* Valid? */
       if(sstRender.pstClock != orxNULL)
       {
-        /* Registers rendering function */
-        eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+        /* Creates conversion frame */
+        sstRender.pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+        /* Valid? */
+        if(sstRender.pstFrame != orxNULL)
+        {
+          /* Inits it */
+          orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);
+          orxFrame_SetRotation(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, orxFLOAT_0);
+          orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
+
+          /* Registers rendering function */
+          eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+        }
+        else
+        {
+          /* Deletes bank */
+          orxBank_Delete(sstRender.pstRenderBank);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
       }
       else
       {
@@ -1878,6 +2057,9 @@ void orxFASTCALL orxRender_Home_Exit()
     /* Unregisters rendering function */
     orxClock_Unregister(sstRender.pstClock, orxRender_RenderAll);
 
+    /* Deletes conversion frame */
+    orxFrame_Delete(sstRender.pstFrame);
+
     /* Deletes rendering bank */
     orxBank_Delete(sstRender.pstRenderBank);
 
@@ -1903,5 +2085,6 @@ orxPLUGIN_USER_CORE_FUNCTION_START(RENDER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_Init, RENDER, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_Exit, RENDER, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_GetWorldPosition, RENDER, GET_WORLD_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_GetScreenPosition, RENDER, GET_SCREEN_POSITION);
 
 orxPLUGIN_USER_CORE_FUNCTION_END();

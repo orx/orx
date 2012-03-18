@@ -42,11 +42,11 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   #include <dlfcn.h>
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   #ifdef __orxWINDOWS__
 
@@ -55,7 +55,7 @@
 
   #endif /* __orxWINDOWS__ */
 
-#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 
 /** Platform dependent type & function defines
@@ -78,15 +78,15 @@
 
   typedef void *                                            orxSYSPLUGIN;
 
-  /* Wii / IPhone */
-  #if defined(__orxWII__) || defined(__orxIPHONE__)
+  /* iOS */
+  #if defined(__orxIOS__)
 
     #undef __orxPLUGIN_DYNAMIC__
     #undef orxPLUGIN_OPEN(PLUGIN)
     #undef orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)
     #undef orxPLUGIN_CLOSE(PLUGIN)
 
-  #else /* __orxWII__ || __orxIPHONE__ */
+  #else /* __orxIOS__ */
 
     #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
     #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
@@ -104,7 +104,7 @@
 
     #define __orxPLUGIN_DYNAMIC__
 
-  #endif /* __orxWII__ || __orxIPHONE__ */
+  #endif /* __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -925,14 +925,14 @@ void orxFASTCALL orxPlugin_Exit()
  */
 void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, const orxSTRING _zFileName, orxU32 _u32Line)
 {
-  orxDEBUG_FLAG_BACKUP();
-  orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE
+  orxDEBUG_BACKUP_FLAG();
+  orxDEBUG_SET_FLAG(orxDEBUG_KU32_STATIC_FLAG_CONSOLE
                    |orxDEBUG_KU32_STATIC_FLAG_FILE
                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
   orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() @ %s:%ld> has been called before being loaded!\nPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line);
-  orxDEBUG_FLAG_RESTORE();
+  orxDEBUG_RESTORE_FLAG();
 
   return orxNULL;
 }
