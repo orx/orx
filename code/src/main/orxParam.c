@@ -48,15 +48,15 @@
 #endif /* __orxMSVC__ */
 
 
-#if defined(__orxIPHONE__)
+#if defined(__orxIOS__)
 
   #define orxPARAM_KZ_BASE_DIRECTORY_NAME "../Documents/"
 
-#else /* __orxIPHONE__ */
+#else /* __orxIOS__ */
 
   #define orxPARAM_KZ_BASE_DIRECTORY_NAME ""
 
-#endif /* __orxIPHONE__ */
+#endif /* __orxIOS__ */
 
 
 #define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */

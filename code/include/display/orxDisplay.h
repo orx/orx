@@ -225,7 +225,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+#if defined(__orxIOS__) && defined(__orxOBJC__)
 
 #import <UIKit/UIKit.h>
 #import <OpenGLES/EAGL.h>
@@ -251,7 +251,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 
 @end
 
-#endif /* __orxIPHONE__ && __orxOBJC__ */
+#endif /* __orxIOS__ && __orxOBJC__ */
 
 
 /** Display module setup

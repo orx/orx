@@ -814,18 +814,18 @@
 <a name="l00926"></a>00926   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pfOutValue != orxNULL);
 <a name="l00927"></a>00927   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);
 <a name="l00928"></a>00928 
-<a name="l00929"></a>00929   <span class="comment">/* Linux / Mac / GP2X / Wii / IPhone / Android / MSVC? */</span>
-<a name="l00930"></a>00930 <span class="preprocessor">#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined (__orxIPHONE__) || defined(__orxMSVC__) || defined(__orxANDROID__)</span>
+<a name="l00929"></a>00929   <span class="comment">/* Linux / Mac / iOS / Android / MSVC? */</span>
+<a name="l00930"></a>00930 <span class="preprocessor">#if defined(__orxLINUX__) || defined(__orxMAC__) || defined (__orxIOS__) || defined(__orxMSVC__) || defined(__orxANDROID__)</span>
 <a name="l00931"></a>00931 <span class="preprocessor"></span>
 <a name="l00932"></a>00932   <span class="comment">/* Converts it */</span>
 <a name="l00933"></a>00933   *_pfOutValue = (orxFLOAT)strtod(_zString, &amp;pcEnd);
 <a name="l00934"></a>00934 
-<a name="l00935"></a>00935 <span class="preprocessor">#else </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */</span>
+<a name="l00935"></a>00935 <span class="preprocessor">#else </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxMSVC__ || __orxANDROID__ */</span>
 <a name="l00936"></a>00936 
 <a name="l00937"></a>00937   <span class="comment">/* Converts it */</span>
 <a name="l00938"></a>00938   *_pfOutValue = strtof(_zString, &amp;pcEnd);
 <a name="l00939"></a>00939 
-<a name="l00940"></a>00940 <span class="preprocessor">#endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxMSVC__ || __orxANDROID__ */</span>
+<a name="l00940"></a>00940 <span class="preprocessor">#endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxMSVC__ || __orxANDROID__ */</span>
 <a name="l00941"></a>00941 
 <a name="l00942"></a>00942   <span class="comment">/* Valid conversion ? */</span>
 <a name="l00943"></a>00943   <span class="keywordflow">if</span>((pcEnd != _zString) &amp;&amp; (_zString[0] != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>))

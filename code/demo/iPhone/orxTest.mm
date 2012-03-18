@@ -27,7 +27,7 @@
  * @date 28/01/2010
  * @author iarwain@orx-project.org
  *
- * iPhone test
+ * iOS test
  *
  */
 

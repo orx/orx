@@ -46,11 +46,11 @@
 #include "orxInclude.h"
 #include "math/orxVector.h"
 
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+#if defined(__orxIOS__) && defined(__orxOBJC__)
 
   #import <UIKit/UIKit.h>
 
-#endif /* __orxIPHONE__ && __orxOBJC__ */
+#endif /* __orxIOS__ && __orxOBJC__ */
 
 #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
@@ -95,7 +95,7 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
   {
     orxU32      u32FrameCounter;
 
-#if defined(__orxIPHONE__) || defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
+#if defined(__orxIOS__) || defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
     /* Touch event */
     struct

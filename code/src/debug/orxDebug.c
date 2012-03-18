@@ -265,26 +265,18 @@ void orxFASTCALL _orxDebug_Exit()
 /** Software break function */
 void orxFASTCALL _orxDebug_Break()
 {
-  /* Windows / Linux / Mac / GP2X / Wii / IPhone / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  /* Windows / Linux / Mac / iOS / Android */
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Compiler specific */
 
   #ifdef __orxGCC__
 
-    #if defined(__orxGP2X__)
-
-    //! TODO: Add GP2X software break code
-
-    #elif defined(__orxWII__)
-
-    //! TODO: Add WII software break code
-
-    #elif defined(__orxIPHONE__)
+    #if defined(__orxIOS__)
 
       __builtin_trap();
 
-	#elif defined(__orxANDROID__)
+    #elif defined(__orxANDROID__)
 
       __builtin_trap();
 
@@ -314,7 +306,7 @@ void orxFASTCALL _orxDebug_Break()
 
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   return;
 }

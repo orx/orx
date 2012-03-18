@@ -245,7 +245,7 @@
 <a name="l00345"></a>00345   <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(u64Counter &lt;= (<a class="code" href="group__orx_structure.html#gaaca12f0bb21db0f43fb52f6d9f976058">orxSTRUCTURE_GUID_MASK_REF_COUNTER</a> &gt;&gt; <a class="code" href="group__orx_structure.html#ga9efb82113bef8ee5831a7181befc2fe9">orxSTRUCTURE_GUID_SHIFT_REF_COUNTER</a>));
 <a name="l00346"></a>00346 
 <a name="l00347"></a>00347   <span class="comment">/* Stores it */</span>
-<a name="l00348"></a>00348   <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID = <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID &amp; ~<a class="code" href="group__orx_structure.html#gaaca12f0bb21db0f43fb52f6d9f976058">orxSTRUCTURE_GUID_MASK_REF_COUNTER</a> | (u64Counter &lt;&lt; <a class="code" href="group__orx_structure.html#ga9efb82113bef8ee5831a7181befc2fe9">orxSTRUCTURE_GUID_SHIFT_REF_COUNTER</a>);
+<a name="l00348"></a>00348   <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID = (<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID &amp; ~<a class="code" href="group__orx_structure.html#gaaca12f0bb21db0f43fb52f6d9f976058">orxSTRUCTURE_GUID_MASK_REF_COUNTER</a>) | (u64Counter &lt;&lt; <a class="code" href="group__orx_structure.html#ga9efb82113bef8ee5831a7181befc2fe9">orxSTRUCTURE_GUID_SHIFT_REF_COUNTER</a>);
 <a name="l00349"></a>00349 
 <a name="l00350"></a>00350   <span class="comment">/* Done! */</span>
 <a name="l00351"></a>00351   <span class="keywordflow">return</span>;
@@ -268,7 +268,7 @@
 <a name="l00371"></a>00371   u64Counter--;
 <a name="l00372"></a>00372 
 <a name="l00373"></a>00373   <span class="comment">/* Stores it */</span>
-<a name="l00374"></a>00374   <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID = <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID &amp; ~<a class="code" href="group__orx_structure.html#gaaca12f0bb21db0f43fb52f6d9f976058">orxSTRUCTURE_GUID_MASK_REF_COUNTER</a> | (u64Counter &lt;&lt; <a class="code" href="group__orx_structure.html#ga9efb82113bef8ee5831a7181befc2fe9">orxSTRUCTURE_GUID_SHIFT_REF_COUNTER</a>);
+<a name="l00374"></a>00374   <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID = (<a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(_pStructure)-&gt;u64GUID &amp; ~<a class="code" href="group__orx_structure.html#gaaca12f0bb21db0f43fb52f6d9f976058">orxSTRUCTURE_GUID_MASK_REF_COUNTER</a>) | (u64Counter &lt;&lt; <a class="code" href="group__orx_structure.html#ga9efb82113bef8ee5831a7181befc2fe9">orxSTRUCTURE_GUID_SHIFT_REF_COUNTER</a>);
 <a name="l00375"></a>00375 
 <a name="l00376"></a>00376   <span class="comment">/* Done! */</span>
 <a name="l00377"></a>00377   <span class="keywordflow">return</span>;

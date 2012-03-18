@@ -27,7 +27,7 @@
  * @date 23/01/2010
  * @author iarwain@orx-project.org
  *
- * iPhone display plugin implementation
+ * iOS display plugin implementation
  *
  */
 
@@ -785,7 +785,7 @@ static orxView *spoInstance;
 
 @end
 
-static orxINLINE orxDISPLAY_MATRIX *orxDisplay_iPhone_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, orxFLOAT _fPosX, orxFLOAT _fPosY, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFLOAT _fRotation, orxFLOAT _fPivotX, orxFLOAT _fPivotY)
+static orxINLINE orxDISPLAY_MATRIX *orxDisplay_iOS_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, orxFLOAT _fPosX, orxFLOAT _fPosY, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFLOAT _fRotation, orxFLOAT _fPivotX, orxFLOAT _fPivotY)
 {
   orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY;
 
@@ -819,7 +819,7 @@ static orxINLINE orxDISPLAY_MATRIX *orxDisplay_iPhone_InitMatrix(orxDISPLAY_MATR
   return _pmMatrix;
 }
 
-static orxDISPLAY_PROJ_MATRIX *orxDisplay_iPhone_OrthoProjMatrix(orxDISPLAY_PROJ_MATRIX *_pmResult, orxFLOAT _fLeft, orxFLOAT _fRight, orxFLOAT _fBottom, orxFLOAT _fTop, orxFLOAT _fNear, orxFLOAT _fFar)
+static orxDISPLAY_PROJ_MATRIX *orxDisplay_iOS_OrthoProjMatrix(orxDISPLAY_PROJ_MATRIX *_pmResult, orxFLOAT _fLeft, orxFLOAT _fRight, orxFLOAT _fBottom, orxFLOAT _fTop, orxFLOAT _fNear, orxFLOAT _fFar)
 {
   orxFLOAT                fDeltaX, fDeltaY, fDeltaZ;
   orxDISPLAY_PROJ_MATRIX *pmResult;
@@ -858,7 +858,7 @@ static orxDISPLAY_PROJ_MATRIX *orxDisplay_iPhone_OrthoProjMatrix(orxDISPLAY_PROJ
   return _pmResult;
 }
 
-static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *_pstShader)
+static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
   static const orxSTRING szVertexShaderSource =
   "attribute vec2 __vPosition__;"
@@ -1022,7 +1022,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iPhone_CompileShader(orxDISPLAY_SHADER *
   return eResult;
 }
 
-static void orxFASTCALL orxDisplay_iPhone_InitShader(orxDISPLAY_SHADER *_pstShader)
+static void orxFASTCALL orxDisplay_iOS_InitShader(orxDISPLAY_SHADER *_pstShader)
 {
   /* Uses shader's program */
   glUseProgram(_pstShader->uiProgram);
@@ -1065,7 +1065,7 @@ static void orxFASTCALL orxDisplay_iPhone_InitShader(orxDISPLAY_SHADER *_pstShad
   return;
 }
 
-static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
+static void orxFASTCALL orxDisplay_iOS_DrawArrays()
 {
   /* Has data? */
   if(sstDisplay.s32BufferIndex > 0)
@@ -1113,7 +1113,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
         if(pstShader->bActive != orxFALSE)
         {
           /* Inits shader */
-          orxDisplay_iPhone_InitShader(pstShader);
+          orxDisplay_iOS_InitShader(pstShader);
 
           /* Draws arrays */
           glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, 0);
@@ -1139,7 +1139,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawArrays()
   return;
 }
 
-static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxBOOL bSmoothing;
 
@@ -1150,7 +1150,7 @@ static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitma
   if(_pstBitmap != sstDisplay.pstLastBitmap)
   {
     /* Draws remaining items */
-    orxDisplay_iPhone_DrawArrays();
+    orxDisplay_iOS_DrawArrays();
 
     /* Binds source's texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
@@ -1202,7 +1202,7 @@ static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitma
   if(bSmoothing != _pstBitmap->bSmoothing)
   {
     /* Draws remaining items */
-    orxDisplay_iPhone_DrawArrays();
+    orxDisplay_iOS_DrawArrays();
 
     /* Smoothing? */
     if(bSmoothing != orxFALSE)
@@ -1233,7 +1233,7 @@ static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitma
   if(_eBlendMode != sstDisplay.eLastBlendMode)
   {
     /* Draws remaining items */
-    orxDisplay_iPhone_DrawArrays();
+    orxDisplay_iOS_DrawArrays();
 
     /* Stores it */
     sstDisplay.eLastBlendMode = _eBlendMode;
@@ -1278,12 +1278,12 @@ static orxINLINE void orxDisplay_iPhone_PrepareBitmap(const orxBITMAP *_pstBitma
   return;
 }
 
-static orxINLINE void orxDisplay_iPhone_DrawBitmap(const orxBITMAP *_pstBitmap, const orxDISPLAY_MATRIX *_pmTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxINLINE void orxDisplay_iOS_DrawBitmap(const orxBITMAP *_pstBitmap, const orxDISPLAY_MATRIX *_pmTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   GLfloat fWidth, fHeight;
 
   /* Prepares bitmap for drawing */
-  orxDisplay_iPhone_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode);
+  orxDisplay_iOS_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode);
 
   /* Gets bitmap working size */
   fWidth  = (GLfloat)(_pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX);
@@ -1293,7 +1293,7 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(const orxBITMAP *_pstBitmap, 
   if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
   {
     /* Draw arrays */
-    orxDisplay_iPhone_DrawArrays();
+    orxDisplay_iOS_DrawArrays();
   }
 
   /* Fills the vertex list */
@@ -1329,7 +1329,7 @@ static orxINLINE void orxDisplay_iPhone_DrawBitmap(const orxBITMAP *_pstBitmap, 
   return;
 }
 
-static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
+static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
 {
   orxFILE    *pstFile;
   orxBITMAP  *pstBitmap = orxNULL;
@@ -1595,7 +1595,7 @@ static orxBITMAP *orxDisplay_iPhone_LoadPVRBitmap(const orxSTRING _zFilename)
   return pstBitmap;
 }
 
-static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
+static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill, orxBOOL _bOpen)
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
@@ -1607,7 +1607,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber,
     orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Inits it */
-    orxDisplay_iPhone_InitShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+    orxDisplay_iOS_InitShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Selects arrays */
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
@@ -1701,7 +1701,7 @@ static void orxFASTCALL orxDisplay_iPhone_DrawPrimitive(orxU32 _u32VertexNumber,
   return;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreenBitmap()
+orxBITMAP *orxFASTCALL orxDisplay_iOS_GetScreenBitmap()
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1710,7 +1710,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_GetScreenBitmap()
   return sstDisplay.pstScreen;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxDISPLAY_MATRIX mTransform;
   const orxCHAR    *pc;
@@ -1726,13 +1726,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   orxASSERT(_pstTransform != orxNULL);
 
   /* Inits matrix */
-  orxDisplay_iPhone_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
+  orxDisplay_iOS_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
   /* Gets character's height */
   fHeight = _pstMap->fCharacterHeight;
 
   /* Prepares font for drawing */
-  orxDisplay_iPhone_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
+  orxDisplay_iOS_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
 
   /* For all characters */
   for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), fX = 0.0f, fY = 0.0f;
@@ -1783,7 +1783,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
           if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
           {
             /* Draw arrays */
-            orxDisplay_iPhone_DrawArrays();
+            orxDisplay_iOS_DrawArrays();
           }
 
           /* Outputs vertices and texture coordinates */
@@ -1832,7 +1832,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformText(const orxSTRING _zString, 
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawLine(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1842,7 +1842,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawLine(const orxVECTOR *_pvStart, cons
   orxASSERT(_pvEnd != orxNULL);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* Copies vertices */
   sstDisplay.astVertexList[0].fX = (GLfloat)(_pvStart->fX);
@@ -1855,13 +1855,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawLine(const orxVECTOR *_pvStart, cons
   sstDisplay.astVertexList[1].stRGBA = _stColor;
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(2, _stColor, orxFALSE, orxTRUE);
+  orxDisplay_iOS_DrawPrimitive(2, _stColor, orxFALSE, orxTRUE);
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor)
 {
   orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1872,7 +1872,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolyline(const orxVECTOR *_avVertexL
   orxASSERT(_u32VertexNumber > 0);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* For all vertices */
   for(i = 0; i < _u32VertexNumber; i++)
@@ -1886,13 +1886,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolyline(const orxVECTOR *_avVertexL
   }
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(_u32VertexNumber, _stColor, orxFALSE, orxTRUE);
+  orxDisplay_iOS_DrawPrimitive(_u32VertexNumber, _stColor, orxFALSE, orxTRUE);
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawPolygon(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor, orxBOOL _bFill)
 {
   orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1903,7 +1903,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexLi
   orxASSERT(_u32VertexNumber > 0);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* For all vertices */
   for(i = 0; i < _u32VertexNumber; i++)
@@ -1917,13 +1917,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawPolygon(const orxVECTOR *_avVertexLi
   }
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(_u32VertexNumber, _stColor, _bFill, orxFALSE);
+  orxDisplay_iOS_DrawPrimitive(_u32VertexNumber, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT _fRadius, orxRGBA _stColor, orxBOOL _bFill)
 {
   orxU32    i;
   orxFLOAT  fAngle;
@@ -1935,7 +1935,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, o
   orxASSERT(_fRadius >= orxFLOAT_0);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* For all vertices */
   for(i = 0, fAngle = orxFLOAT_0; i < orxDISPLAY_KU32_CIRCLE_LINE_NUMBER; i++, fAngle += orxMATH_KF_2_PI / orxDISPLAY_KU32_CIRCLE_LINE_NUMBER)
@@ -1949,13 +1949,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawCircle(const orxVECTOR *_pvCenter, o
   }
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill, orxFALSE);
+  orxDisplay_iOS_DrawPrimitive(orxDISPLAY_KU32_CIRCLE_LINE_NUMBER, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
 {
   orxVECTOR vOrigin;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1965,7 +1965,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawOBox(const orxOBOX *_pstBox, orxRGBA
   orxASSERT(_pstBox != orxNULL);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* Gets origin */
   orxVector_Sub(&vOrigin, &(_pstBox->vPosition), &(_pstBox->vPivot));
@@ -1987,13 +1987,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_DrawOBox(const orxOBOX *_pstBox, orxRGBA
   sstDisplay.astVertexList[3].stRGBA = _stColor;
 
   /* Draws it */
-  orxDisplay_iPhone_DrawPrimitive(4, _stColor, _bFill, orxFALSE);
+  orxDisplay_iOS_DrawPrimitive(4, _stColor, _bFill, orxFALSE);
 
   /* Done! */
   return eResult;
 }
 
-void orxFASTCALL orxDisplay_iPhone_DeleteBitmap(orxBITMAP *_pstBitmap)
+void orxFASTCALL orxDisplay_iOS_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -2014,7 +2014,7 @@ void orxFASTCALL orxDisplay_iPhone_DeleteBitmap(orxBITMAP *_pstBitmap)
   return;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
+orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
 {
   orxBITMAP *pstBitmap;
 
@@ -2076,7 +2076,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_CreateBitmap(orxU32 _u32Width, orxU32 _
   return pstBitmap;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxDisplay_iOS_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2120,7 +2120,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_ClearBitmap(orxBITMAP *_pstBitmap, orxRG
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
+orxSTATUS orxFASTCALL orxDisplay_iOS_Swap()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2128,7 +2128,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* Swaps */
   [sstDisplay.poView Swap];
@@ -2137,7 +2137,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Swap()
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   orxU32    u32Width, u32Height;
   orxSTATUS eResult;
@@ -2224,7 +2224,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapData(orxBITMAP *_pstBitmap, con
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   orxU32    u32BufferSize;
   orxSTATUS eResult;
@@ -2296,7 +2296,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapData(orxBITMAP *_pstBitmap, orx
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2307,7 +2307,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColorKey(orxBITMAP *_pstBitmap,
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2326,7 +2326,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapColor(orxBITMAP *_pstBitmap, or
   return eResult;
 }
 
-orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap)
+orxRGBA orxFASTCALL orxDisplay_iOS_GetBitmapColor(const orxBITMAP *_pstBitmap)
 {
   orxRGBA stResult = 0;
 
@@ -2345,7 +2345,7 @@ orxRGBA orxFASTCALL orxDisplay_iPhone_GetBitmapColor(const orxBITMAP *_pstBitmap
   return stResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitmap)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2356,7 +2356,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
   if(_pstBitmap != sstDisplay.pstDestinationBitmap)
   {
     /* Draws remaining items */
-    orxDisplay_iPhone_DrawArrays();
+    orxDisplay_iOS_DrawArrays();
     glFlush();
     glASSERT();
 
@@ -2390,7 +2390,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
       {
         /* Inits projection matrix */
-        orxDisplay_iPhone_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+        orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
         /* Passes it to shader */
         glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
@@ -2421,7 +2421,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetDestinationBitmap(orxBITMAP *_pstBitm
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_iOS_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxDISPLAY_MATRIX mTransform;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -2435,13 +2435,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_BlitBitmap(const orxBITMAP *_pstSrc, orx
   orxVector_Set(&(mTransform.vY), orxFLOAT_0, orxFLOAT_1, _fPosY);
 
   /* Draws it */
-  orxDisplay_iPhone_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
+  orxDisplay_iOS_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxDISPLAY_MATRIX mTransform;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -2452,13 +2452,13 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
   orxASSERT(_pstTransform != orxNULL);
 
   /* Inits matrix */
-  orxDisplay_iPhone_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
+  orxDisplay_iOS_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
   /* No repeat? */
   if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
   {
     /* Draws it */
-    orxDisplay_iPhone_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
+    orxDisplay_iOS_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
   }
   else
   {
@@ -2466,7 +2466,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
     GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
 
     /* Prepares bitmap for drawing */
-    orxDisplay_iPhone_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+    orxDisplay_iOS_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
 
     /* Inits bitmap height */
     fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
@@ -2515,7 +2515,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
         if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
         {
           /* Draws arrays */
-          orxDisplay_iPhone_DrawArrays();
+          orxDisplay_iOS_DrawArrays();
         }
 
         /* Outputs vertices and texture coordinates */
@@ -2553,7 +2553,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_TransformBitmap(const orxBITMAP *_pstSrc
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
   orxBOOL         bPNG = orxFALSE;
   orxU32          u32Length;
@@ -2713,7 +2713,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SaveBitmap(const orxBITMAP *_pstBitmap, 
   return eResult;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
+orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
 {
   NSString   *poName;
   orxBITMAP  *pstBitmap = orxNULL;
@@ -2731,7 +2731,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
     if([sstDisplay.poView bCompressedTextureSupport] != NO)
     {
       /* Loads texture */
-      pstBitmap = orxDisplay_iPhone_LoadPVRBitmap(_zFilename);
+      pstBitmap = orxDisplay_iOS_LoadPVRBitmap(_zFilename);
     }
     else
     {
@@ -2899,7 +2899,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iPhone_LoadBitmap(const orxSTRING _zFilename)
 }
 
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2917,7 +2917,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetBitmapSize(const orxBITMAP *_pstBitma
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxFASTCALL orxDisplay_iOS_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2934,7 +2934,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_GetScreenSize(orxFLOAT *_pfWidth, orxFLO
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2946,7 +2946,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap,
   if(_pstBitmap == sstDisplay.pstScreen)
   {
     /* Draws remaining items */
-    orxDisplay_iPhone_DrawArrays();
+    orxDisplay_iOS_DrawArrays();
 
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
@@ -2977,7 +2977,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetBitmapClipping(orxBITMAP *_pstBitmap,
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_EnableVSync(orxBOOL _bEnable)
+orxSTATUS orxFASTCALL orxDisplay_iOS_EnableVSync(orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2991,7 +2991,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_EnableVSync(orxBOOL _bEnable)
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxDisplay_iPhone_IsVSyncEnabled()
+orxBOOL orxFASTCALL orxDisplay_iOS_IsVSyncEnabled()
 {
   orxBOOL bResult = orxTRUE;
 
@@ -3005,7 +3005,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_IsVSyncEnabled()
   return bResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetFullScreen(orxBOOL _bFullScreen)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetFullScreen(orxBOOL _bFullScreen)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -3019,7 +3019,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetFullScreen(orxBOOL _bFullScreen)
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxDisplay_iPhone_IsFullScreen()
+orxBOOL orxFASTCALL orxDisplay_iOS_IsFullScreen()
 {
   orxBOOL bResult = orxTRUE;
 
@@ -3033,7 +3033,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_IsFullScreen()
   return bResult;
 }
 
-orxU32 orxFASTCALL orxDisplay_iPhone_GetVideoModeCounter()
+orxU32 orxFASTCALL orxDisplay_iOS_GetVideoModeCounter()
 {
   orxU32 u32Result = 0;
 
@@ -3047,7 +3047,7 @@ orxU32 orxFASTCALL orxDisplay_iPhone_GetVideoModeCounter()
   return u32Result;
 }
 
-orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iPhone_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iOS_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
   orxDISPLAY_VIDEO_MODE *pstResult = orxNULL;
 
@@ -3061,7 +3061,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iPhone_GetVideoMode(orxU32 _u32Ind
   return pstResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -3076,7 +3076,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetVideoMode(const orxDISPLAY_VIDEO_MODE
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxDisplay_iPhone_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
+orxBOOL orxFASTCALL orxDisplay_iOS_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
   orxBOOL bResult = orxTRUE;
 
@@ -3090,7 +3090,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_IsVideoModeAvailable(const orxDISPLAY_VIDE
   return bResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
+orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 {
   orxSTATUS eResult;
 
@@ -3293,7 +3293,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_Init()
   return eResult;
 }
 
-void orxFASTCALL orxDisplay_iPhone_Exit()
+void orxFASTCALL orxDisplay_iOS_Exit()
 {
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
@@ -3327,7 +3327,7 @@ void orxFASTCALL orxDisplay_iPhone_Exit()
   return;
 }
 
-orxBOOL orxFASTCALL orxDisplay_iPhone_HasShaderSupport()
+orxBOOL orxFASTCALL orxDisplay_iOS_HasShaderSupport()
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -3336,7 +3336,7 @@ orxBOOL orxFASTCALL orxDisplay_iPhone_HasShaderSupport()
   return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -3454,7 +3454,7 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
         orxMemory_Zero(pstShader->astParamInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO));
 
         /* Compiles it */
-        if(orxDisplay_iPhone_CompileShader(pstShader) != orxSTATUS_FAILURE)
+        if(orxDisplay_iOS_CompileShader(pstShader) != orxSTATUS_FAILURE)
         {
           /* Updates result */
           hResult = (orxHANDLE)pstShader;
@@ -3481,7 +3481,7 @@ orxHANDLE orxFASTCALL orxDisplay_iPhone_CreateShader(const orxSTRING _zCode, con
   return hResult;
 }
 
-void orxFASTCALL orxDisplay_iPhone_DeleteShader(orxHANDLE _hShader)
+void orxFASTCALL orxDisplay_iOS_DeleteShader(orxHANDLE _hShader)
 {
   orxDISPLAY_SHADER *pstShader;
 
@@ -3508,7 +3508,7 @@ void orxFASTCALL orxDisplay_iPhone_DeleteShader(orxHANDLE _hShader)
   return;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_StartShader(orxHANDLE _hShader)
+orxSTATUS orxFASTCALL orxDisplay_iOS_StartShader(orxHANDLE _hShader)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxSTATUS           eResult = orxSTATUS_SUCCESS;
@@ -3518,7 +3518,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StartShader(orxHANDLE _hShader)
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
@@ -3541,7 +3541,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StartShader(orxHANDLE _hShader)
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
+orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxSTATUS           eResult = orxSTATUS_SUCCESS;
@@ -3551,7 +3551,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
   orxASSERT(_hShader != orxHANDLE_UNDEFINED);
 
   /* Draws remaining items */
-  orxDisplay_iPhone_DrawArrays();
+  orxDisplay_iOS_DrawArrays();
 
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
@@ -3563,7 +3563,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
     if(pstShader->bInitialized == orxFALSE)
     {
       /* Inits it */
-      orxDisplay_iPhone_InitShader(pstShader);
+      orxDisplay_iOS_InitShader(pstShader);
 
       /* Defines the vertex list */
       sstDisplay.astVertexList[0].fX  =
@@ -3595,7 +3595,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
       sstDisplay.s32BufferIndex = 4;
 
       /* Draws arrays */
-      orxDisplay_iPhone_DrawArrays();
+      orxDisplay_iOS_DrawArrays();
     }
 
     /* Clears texture counter */
@@ -3630,7 +3630,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_StopShader(orxHANDLE _hShader)
   return eResult;
 }
 
-orxS32 orxFASTCALL orxDisplay_iPhone_GetParameterID(const orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)
+orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxS32              s32Result;
@@ -3741,7 +3741,7 @@ orxS32 orxFASTCALL orxDisplay_iPhone_GetParameterID(const orxHANDLE _hShader, co
   return s32Result;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, orxS32 _s32ID, const orxBITMAP *_pstValue)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderBitmap(orxHANDLE _hShader, orxS32 _s32ID, const orxBITMAP *_pstValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxSTATUS           eResult;
@@ -3808,7 +3808,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderBitmap(orxHANDLE _hShader, orxS
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxSTATUS           eResult;
@@ -3840,7 +3840,7 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderFloat(orxHANDLE _hShader, orxS3
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue)
 {
   orxDISPLAY_SHADER  *pstShader;
   orxSTATUS           eResult;
@@ -3879,47 +3879,47 @@ orxSTATUS orxFASTCALL orxDisplay_iPhone_SetShaderVector(orxHANDLE _hShader, orxS
  ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_Init, DISPLAY, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_Exit, DISPLAY, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_Swap, DISPLAY, SWAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetScreenBitmap, DISPLAY, GET_SCREEN_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_CreateBitmap, DISPLAY, CREATE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DeleteBitmap, DISPLAY, DELETE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_LoadBitmap, DISPLAY, LOAD_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_ClearBitmap, DISPLAY, CLEAR_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_BlitBitmap, DISPLAY, BLIT_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_TransformText, DISPLAY, TRANSFORM_TEXT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawLine, DISPLAY, DRAW_LINE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawPolyline, DISPLAY, DRAW_POLYLINE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawPolygon, DISPLAY, DRAW_POLYGON);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawCircle, DISPLAY, DRAW_CIRCLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DrawOBox, DISPLAY, DRAW_OBOX);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_CreateShader, DISPLAY, CREATE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_DeleteShader, DISPLAY, DELETE_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_StartShader, DISPLAY, START_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_StopShader, DISPLAY, STOP_SHADER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetParameterID, DISPLAY, GET_PARAMETER_ID);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_EnableVSync, DISPLAY, ENABLE_VSYNC);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iPhone_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_Init, DISPLAY, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_Exit, DISPLAY, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_Swap, DISPLAY, SWAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetScreenBitmap, DISPLAY, GET_SCREEN_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_CreateBitmap, DISPLAY, CREATE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DeleteBitmap, DISPLAY, DELETE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_LoadBitmap, DISPLAY, LOAD_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawLine, DISPLAY, DRAW_LINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawPolyline, DISPLAY, DRAW_POLYLINE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawPolygon, DISPLAY, DRAW_POLYGON);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawCircle, DISPLAY, DRAW_CIRCLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawOBox, DISPLAY, DRAW_OBOX);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_CreateShader, DISPLAY, CREATE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DeleteShader, DISPLAY, DELETE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_StartShader, DISPLAY, START_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_StopShader, DISPLAY, STOP_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetParameterID, DISPLAY, GET_PARAMETER_ID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_EnableVSync, DISPLAY, ENABLE_VSYNC);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
 orxPLUGIN_USER_CORE_FUNCTION_END();

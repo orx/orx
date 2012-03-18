@@ -11,6 +11,7 @@ orx 1.4 (dev)
 * IMPORTANT: Added window resize support (both in code or via direct user manipulation of the handles)
 * IMPORTANT: Added 64b GUID for all orx structures
 * IMPORTANT: Added Box2D debug display (in non-release builds only) when config property Physics.ShowDebug is set
+* IMPORTANT: Replaced __orxIPHONE__ by __orxIOS__
 * IMPORTANT: Fixed Retina display for iOS devices
 * IMPORTANT: Added compressed texture support for iOS devices, powered by TDomhan
 * IMPORTANT: Added ogg/vorbis support for iOS devices (not hardware accelerated)

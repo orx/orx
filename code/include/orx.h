@@ -121,7 +121,7 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
-#ifdef __orxIPHONE__
+#ifdef __orxIOS__
 
   #ifdef __orxOBJC__
 
@@ -194,7 +194,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
   #endif /* __orxOBJC__ */
 
-#else /* __orxIPHONE__ */
+#else /* __orxIOS__ */
 
   #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
@@ -335,7 +335,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 
   #endif /* __orxANDROID_NATIVE__ */
 
-#endif /* __orxIPHONE__ */
+#endif /* __orxIOS__ */
 
 #endif /* __orxPLUGIN__ */
 

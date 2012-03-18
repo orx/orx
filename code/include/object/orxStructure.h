@@ -345,7 +345,7 @@ static orxINLINE void                                   orxStructure_IncreaseCou
   orxASSERT(u64Counter <= (orxSTRUCTURE_GUID_MASK_REF_COUNTER >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER));
 
   /* Stores it */
-  orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER | (u64Counter << orxSTRUCTURE_GUID_SHIFT_REF_COUNTER);
+  orxSTRUCTURE(_pStructure)->u64GUID = (orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER) | (u64Counter << orxSTRUCTURE_GUID_SHIFT_REF_COUNTER);
 
   /* Done! */
   return;
@@ -371,7 +371,7 @@ static orxINLINE void                                   orxStructure_DecreaseCou
   u64Counter--;
 
   /* Stores it */
-  orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER | (u64Counter << orxSTRUCTURE_GUID_SHIFT_REF_COUNTER);
+  orxSTRUCTURE(_pStructure)->u64GUID = (orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER) | (u64Counter << orxSTRUCTURE_GUID_SHIFT_REF_COUNTER);
 
   /* Done! */
   return;

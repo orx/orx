@@ -23,11 +23,11 @@
  */
 
 /**
- * @file orxiPhone.m
+ * @file orxiOS.m
  * @date 03/03/2010
  * @author iarwain@orx-project.org
  *
- * iPhone orx main application
+ * iOS orx main application
  *
  */
 
@@ -37,10 +37,10 @@
 #include "orx.h"
 
 
-#if defined(__orxIPHONE__) && defined(__orxOBJC__)
+#if defined(__orxIOS__) && defined(__orxOBJC__)
 
-#define orxIPHONE_KZ_CONFIG_SECTION                   "iPhone"
-#define orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY   "AccelerometerFrequency"
+#define orxIOS_KZ_CONFIG_SECTION                      "iOS"
+#define orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY      "AccelerometerFrequency"
 
 
 /** Main function pointer
@@ -182,15 +182,15 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
       /* Pushes config section */
-      orxConfig_PushSection(orxIPHONE_KZ_CONFIG_SECTION);
+      orxConfig_PushSection(orxIOS_KZ_CONFIG_SECTION);
 
       /* Has valid accelerometer frequency? */
-      if(orxConfig_HasValue(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
+      if(orxConfig_HasValue(orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
       {
         orxFLOAT fFrequency;
 
         /* Valid? */
-        if((fFrequency = orxConfig_GetFloat(orxIPHONE_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
+        if((fFrequency = orxConfig_GetFloat(orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
         {
           /* Applies it */
           [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / fFrequency];
@@ -257,4 +257,4 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 
 @end
 
-#endif /* __orxIPHONE__ && __orxOBJC__ */
+#endif /* __orxIOS__ && __orxOBJC__ */

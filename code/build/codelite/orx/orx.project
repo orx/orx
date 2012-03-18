@@ -12,9 +12,6 @@
   <Dependencies>
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="GP2X Release">
-    <Project Name="orxLIB"/>
-  </Dependencies>
   <Dependencies Name="Linux Dynamic Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
@@ -31,9 +28,6 @@
     <Project Name="orxLIB"/>
   </Dependencies>
   <Dependencies Name="Win32 Dynamic Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="GP2X Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
   <Dependencies Name="Win32 Embedded Static Debug">
@@ -79,91 +73,6 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="GP2X Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" C_Options="-g" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxSTATIC__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-        <Preprocessor Value="_REENTRANT"/>
-      </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/gp2x/liborxd.a -Wl,--no-whole-archive" Required="yes">
-        <LibraryPath Value="../../../lib/static/gp2x"/>
-        <Library Value="dl"/>
-        <Library Value="m"/>
-      </Linker>
-      <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/gp2X/orxd.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.gpe" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
-      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
-        <![CDATA[]]>
-      </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
-        <PostConnectCommands/>
-        <StartupCommands/>
-      </Debugger>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <RebuildCommand/>
-        <CleanCommand/>
-        <BuildCommand/>
-        <PreprocessFileCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-      <Completion>
-        <ClangCmpFlags/>
-        <ClangPP/>
-        <SearchPaths/>
-      </Completion>
-    </Configuration>
-    <Configuration Name="GP2X Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" C_Options="-O2" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxSTATIC__"/>
-        <Preprocessor Value="_REENTRANT"/>
-      </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/gp2x/liborx.a -Wl,--no-whole-archive" Required="yes">
-        <LibraryPath Value="../../../lib/static/gp2x"/>
-        <Library Value="dl"/>
-        <Library Value="m"/>
-      </Linker>
-      <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="../../../bin/gp2X/orx.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orx.gpe" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
-      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
-        <![CDATA[]]>
-      </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
-        <PostConnectCommands/>
-        <StartupCommands/>
-      </Debugger>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <RebuildCommand/>
-        <CleanCommand/>
-        <BuildCommand/>
-        <PreprocessFileCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-      <Completion>
-        <ClangCmpFlags/>
-        <ClangPP/>
-        <SearchPaths/>
-      </Completion>
-    </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g -m32" C_Options="-g -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
