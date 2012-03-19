@@ -438,9 +438,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           orxMemory_Zero(pstStructure, sstStructure.astInfo[_eStructureID].u32Size);
 
           /* Checks */
-          orxASSERT(_eStructureID <= (orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
-          orxASSERT(u32ItemID <= (orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
-          orxASSERT(sstStructure.u32InstanceCounter <= (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
+          orxASSERT(_eStructureID <= (orxU32)(orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
+          orxASSERT(u32ItemID <= (orxU32)(orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
+          orxASSERT(sstStructure.u32InstanceCounter <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
 
           /* Stores GUID */
           pstStructure->u64GUID = ((orxU64)_eStructureID << orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID)
