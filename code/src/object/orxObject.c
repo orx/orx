@@ -115,6 +115,7 @@
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
+#define orxOBJECT_KZ_CONFIG_FX_DELAY_LIST       "FXDelayList"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
@@ -366,6 +367,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
 
+  /* Done! */
   return;
 }
 
@@ -1132,13 +1134,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has FX? */
       if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
       {
-        orxS32 i;
+        orxS32 i, s32DelayNumber;
+
+        /* Gets number of delays */
+        s32DelayNumber = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST);
 
         /* For all defined FXs */
         for(i = 0; i < s32Number; i++)
         {
+          orxFLOAT fDelay;
+
+          /* Gets its delay */
+          fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
+          fDelay = orxMAX(fDelay, orxFLOAT_0);
+
           /* Adds it */
-          orxObject_AddFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i));
+          orxObject_AddDelayedFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i), fDelay);
         }
       }
 

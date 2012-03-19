@@ -407,7 +407,7 @@ static orxINLINE void orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "List for value <%s> is too long, more than 65535 values have been found.", _pstValue->zValue);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "List for value <%s> is too long, more than 65535 values have been found.", _pstValue->zValue);
       }
     }
     else if(*pc == orxCONFIG_KC_RANDOM_SEPARATOR)
@@ -735,7 +735,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", _zKey);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to duplicate key string(%s).", _zKey);
 
           /* Deletes allocated string */
           orxString_Delete(pstEntry->zKey);
@@ -747,7 +747,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate zValue string(%s).", _zValue);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to duplicate zValue string(%s).", _zValue);
 
         /* Deletes entry */
         orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
@@ -844,7 +844,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating section name failed.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Duplicating section name failed.");
 
           /* Deletes its bank */
           orxBank_Delete(pstSection->pstEntryBank);
@@ -859,7 +859,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config bank.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to create config bank.");
 
         /* Deletes the section */
         orxBank_Free(sstConfig.pstSectionBank, pstSection);
@@ -915,7 +915,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
         orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Warning: deleted section <%s> was previously pushed and has to be removed from stack.", _pstSection->zName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section <%s> was previously pushed and has to be removed from stack.", _pstSection->zName);
       }
     }
 
@@ -944,7 +944,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Warning: section <%s> can't be deleted as it's protected by %d entities.", _pstSection->zName, _pstSection->s32ProtectionCounter);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section <%s> can't be deleted as it's protected by %d entities.", _pstSection->zName, _pstSection->s32ProtectionCounter);
   }
 
   return;
@@ -1043,7 +1043,7 @@ static orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, or
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S32 random from config value <%s>.", _pstValue->zValue);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1167,7 +1167,7 @@ static orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, or
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 random from config value <%s>.", _pstValue->zValue);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1291,7 +1291,7 @@ static orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get FLOAT random from config value <%s>.", _pstValue->zValue);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1533,7 +1533,7 @@ static orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVa
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get VECTOR random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get VECTOR random from config value <%s>.", _pstValue->zValue);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1678,7 +1678,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create history bank.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to create history bank.");
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
@@ -1723,13 +1723,13 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       }
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't allocate stack bank and/or section bank/table.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate stack bank and/or section bank/table.");
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize config module when it was already initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Tried to initialize config module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -2028,7 +2028,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             if(orxString_NCompare(pcLineStart, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't load config file [%s]: invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load config file [%s]: invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
 
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
@@ -2184,7 +2184,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 }
 
                 /* Logs */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
 
                 /* Deletes entry */
                 orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
@@ -2246,7 +2246,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
                 {
                   /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                   /* Updates new line start */
                   pcLineStart = pc + 1;
@@ -2270,13 +2270,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 *pc = orxCHAR_NULL;
 
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                 /* Loads file */
                 orxConfig_Load(pcLineStart + 1);
 
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                 /* Restores current section */
                 sstConfig.pstCurrentSection = pstCurrentSection;
@@ -2314,7 +2314,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 {
                   /* Logs message */
                   *pc = orxCHAR_NULL;
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%s> incomplete, closing character '%c' not found.", pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Section name <%s> incomplete, closing character '%c' not found.", pcLineStart + 1, orxCONFIG_KC_SECTION_END);
 
                   /* Updates new line start */
                   pcLineStart = pc + 1;
@@ -2443,7 +2443,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 {
                   /* Logs message */
                   *pc = orxCHAR_NULL;
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
                 }
               }
             }
@@ -2479,7 +2479,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   else
   {
     /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't load config file [%s]: can't find/open file.", _zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load config file [%s]: can't find/open file.", _zFileName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2526,7 +2526,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     eResult = orxConfig_Load(sstConfig.zBaseFile);
 
     /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
 
     /* For all entries in history */
     for(pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
@@ -2537,7 +2537,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
       eResult = orxConfig_Load(*pzHistoryEntry);
 
       /* Logs */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", *pzHistoryEntry);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config file [%s] has been reloaded.", *pzHistoryEntry);
     }
 
     /* Restores history flag */
@@ -2549,7 +2549,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config history isn't stored. Please check your config file under the [Config] section.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config history isn't stored. Please check your config file under the [Config] section.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2741,13 +2741,13 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s>: can't open file!", _zFileName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't save config file <%s>: can't open file!", _zFileName);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
   }
 
   /* Profiles */
@@ -2897,14 +2897,14 @@ orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const or
       if(pstSrcFile == orxNULL)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't copy config file <%s> -> <%s>: can't open source file.", _zSrcFileName, _zDstFileName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't copy config file <%s> -> <%s>: can't open source file.", _zSrcFileName, _zDstFileName);
       }
 
       /* Invalid destination file? */
       if(pstDstFile == orxNULL)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't copy config file <%s> -> <%s>: can't open destination file.", _zSrcFileName, _zDstFileName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't copy config file <%s> -> <%s>: can't open destination file.", _zSrcFileName, _zDstFileName);
       }
 
       /* Updates result */
@@ -2914,7 +2914,7 @@ orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const or
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't copy config file <%s> -> <%s>: source and destination must be different.", _zSrcFileName, _zDstFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't copy config file <%s> -> <%s>: source and destination must be different.", _zSrcFileName, _zDstFileName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -3026,7 +3026,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %0X, %0X).", _zSectionName, u32SectionID, u32ParentID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to create config section with parameters (%s, %0X, %0X).", _zSectionName, u32SectionID, u32ParentID);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -3063,7 +3063,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to select config section (%s), invalid name.", _zSectionName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to select config section (%s), invalid name.", _zSectionName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -3147,7 +3147,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't rename section <%s> -> <%s>: section not found.", _zSectionName, _zNewSectionName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: section not found.", _zSectionName, _zNewSectionName);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -3156,7 +3156,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't rename section <%s> -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -3165,7 +3165,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't rename section <%s> -> <%s>: empty name.", _zSectionName, _zNewSectionName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: empty name.", _zSectionName, _zNewSectionName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -4283,7 +4283,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 list item value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S32 list item value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4322,7 +4322,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4361,7 +4361,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32Li
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get FLOAT list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4400,7 +4400,7 @@ const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get STRING list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get STRING list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4439,7 +4439,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32List
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get BOOL list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get BOOL list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4479,7 +4479,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 list item config value <%s.%s>, invalid index: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCounter);
     }
   }
 
@@ -4539,7 +4539,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
     if(u32Index >= orxCONFIG_KU32_BUFFER_SIZE - 1)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cannot write config string list as the list would exceed %ld bytes in memory.", orxCONFIG_KU32_BUFFER_SIZE);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Cannot write config string list as the list would exceed %ld bytes in memory.", orxCONFIG_KU32_BUFFER_SIZE);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -4556,7 +4556,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cannot write config string list as no or too many item(s) are provided.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Cannot write config string list as no or too many item(s) are provided.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

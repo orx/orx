@@ -249,6 +249,7 @@
 typedef enum __orxDEBUG_LEVEL_t
 {
   orxDEBUG_LEVEL_ANIM = 0,                    /**< Anim Debug */
+  orxDEBUG_LEVEL_CONFIG,                      /**< Config Debug */
   orxDEBUG_LEVEL_CLOCK,                       /**< Clock Debug */
   orxDEBUG_LEVEL_DISPLAY,                     /**< Display Debug */
   orxDEBUG_LEVEL_FILE,                        /**< File Debug */
