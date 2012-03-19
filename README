@@ -1,5 +1,5 @@
 
-Orx - Portable Game Engine  (Version 1.4 rc0)
+Orx - Portable Game Engine  (Version 1.4 pre)
 
 =============================================================================
 
@@ -14,7 +14,7 @@ Intro
 
 Orx is a 2D-oriented, data-driven, portable game engine focused primarily on extreme ease of use.
 
-This is the first release candidate for orx v1.4rc0. If you find any bugs,
+This is the first release candidate for orx v1.4. If you find any bugs,
 please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board,
 or via orx's SourceForge page/tracker.
 
