@@ -1917,46 +1917,53 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Different destination bitmap? */
-  if (_pstBitmap != sstDisplay.pstDestinationBitmap) {
+  if (_pstBitmap != sstDisplay.pstDestinationBitmap)
+  {
     /* Draws remaining items */
+    glFlush();
     orxDisplay_Android_DrawArrays();
 
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _pstBitmap;
 
-    /* Screen? */
-    if(_pstBitmap == sstDisplay.pstScreen)
+    if(_pstBitmap != orxNULL)
     {
-      /* Unbinds frame buffer */
-      glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      glASSERT();
+      /* Screen? */
+      if(_pstBitmap == sstDisplay.pstScreen)
+      {
+        /* Unbinds frame buffer */
+        orxPROFILER_PUSH_MARKER("glBindFramebuffer screen");
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        orxPROFILER_POP_MARKER();
+        glASSERT();
+        glFlush();
+        glASSERT();
 
-      /* Updates result */
-      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-      glASSERT();
-    }
-    else if(_pstBitmap != orxNULL)
-    {
-      /* Binds frame buffer */
-      glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
-      glASSERT();
+        /* Updates result */
+        eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        glASSERT();
+      }
+      else
+      {
+        /* Binds frame buffer */
+        orxPROFILER_PUSH_MARKER("glBindFramebuffer viewport");
+        glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
+        orxPROFILER_POP_MARKER();
+        glASSERT();
+        glFlush();
+        glASSERT();
 
-      /* Links it to frame buffer */  
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-      glASSERT();
+        /* Links it to frame buffer */  
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
+        glASSERT();
+        glFlush();
+        glASSERT();
 
-      /* Updates result */
-      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-      glASSERT();
-    }
-    else
-    {
-      eResult = orxSTATUS_FAILURE;
-    }
+        /* Updates result */
+        eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        glASSERT();
+      }
 
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
       /* Is screen? */
       if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
       {
@@ -1977,6 +1984,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       /* Passes it to shader */
       glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       glASSERT();
+
+    }
+    else
+    {
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
