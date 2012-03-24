@@ -921,7 +921,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawLine(const 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawPolyline(const orxVECTOR *_avVertexList, orxU32 _u32VertexNumber, orxRGBA _stColor);
 
-/** Draws a (closed) polygon
+/** Draws a (closed) polygon; filled polygons *need* to be either convex or star-shaped concave with the first vertex part of the polygon's kernel
  * @param[in]   _avVertexList                         List of vertices
  * @param[in]   _u32VertexNumber                      Number of vertices in the list
  * @param[in]   _stColor                              Color
