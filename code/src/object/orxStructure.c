@@ -104,10 +104,10 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
  */
 typedef struct __orxSTRUCTURE_STATIC_t
 {
-  orxSTRUCTURE_STORAGE        astStorage[orxSTRUCTURE_ID_NUMBER]; /**< Structure banks */
-  orxSTRUCTURE_REGISTER_INFO  astInfo[orxSTRUCTURE_ID_NUMBER];    /**< Structure info */
-  orxU32                      u32InstanceCounter;                 /**< Instance counter */
-  orxU32                      u32Flags;                           /**< Control flags */
+  orxSTRUCTURE_STORAGE        astStorage[orxSTRUCTURE_ID_NUMBER];           /**< Structure banks */
+  orxSTRUCTURE_REGISTER_INFO  astInfo[orxSTRUCTURE_ID_NUMBER];              /**< Structure info */
+  orxU32                      au32InstanceCounter[orxSTRUCTURE_ID_NUMBER];  /**< Structure instance counters */
+  orxU32                      u32Flags;                                     /**< Control flags */
 
 } orxSTRUCTURE_STATIC;
 
@@ -440,12 +440,12 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           /* Checks */
           orxASSERT(_eStructureID <= (orxU32)(orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
           orxASSERT(u32ItemID <= (orxU32)(orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
-          orxASSERT(sstStructure.u32InstanceCounter <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
+          orxASSERT(sstStructure.au32InstanceCounter[_eStructureID] <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
 
           /* Stores GUID */
           pstStructure->u64GUID = ((orxU64)_eStructureID << orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID)
                                 | ((orxU64)u32ItemID << orxSTRUCTURE_GUID_SHIFT_ITEM_ID)
-                                | ((orxU64)sstStructure.u32InstanceCounter << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
+                                | ((orxU64)sstStructure.au32InstanceCounter[_eStructureID] << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
 
           /* Stores storage handle */
           pstStructure->hStorageNode = (orxHANDLE)pstNode;
@@ -454,7 +454,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           pstNode->pstStructure = pstStructure;
 
           /* Updates instance ID */
-          sstStructure.u32InstanceCounter = (sstStructure.u32InstanceCounter + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
+          sstStructure.au32InstanceCounter[_eStructureID] = (sstStructure.au32InstanceCounter[_eStructureID] + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
         }
         else
         {
