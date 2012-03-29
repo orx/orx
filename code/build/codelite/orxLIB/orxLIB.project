@@ -228,7 +228,7 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="-m32" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/dynamic/liborxd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
@@ -267,7 +267,7 @@
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
-      <Linker Options="-s" Required="yes"/>
+      <Linker Options="-s -m32" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/dynamic/liborx.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
@@ -316,7 +316,7 @@
         <Preprocessor Value="__orxEMBEDDED__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="" Required="yes">
+      <Linker Options="-m32" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
@@ -381,7 +381,7 @@
         <Preprocessor Value="__orxPROFILER__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="-s" Required="yes">
+      <Linker Options="-s -m32" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
@@ -445,7 +445,7 @@
         <Preprocessor Value="__orxEMBEDDED__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="-s" Required="yes">
+      <Linker Options="-s -m32" Required="yes">
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
         <LibraryPath Value="../../../../extern/libsndfile-1.0.22/lib/linux"/>
@@ -510,7 +510,7 @@
         <Preprocessor Value="__orxEMBEDDED__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="-m32" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/static/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
@@ -556,7 +556,7 @@
         <Preprocessor Value="__orxEMBEDDED__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="-s" Required="yes"/>
+      <Linker Options="-s -m32" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/static/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
@@ -594,7 +594,7 @@
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="-m32" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/static/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
@@ -631,7 +631,7 @@
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
-      <Linker Options="-s" Required="yes"/>
+      <Linker Options="-s -m32" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="../../../lib/static/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">

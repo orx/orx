@@ -78,7 +78,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
         <Library Value="dl"/>
@@ -119,7 +119,7 @@
       <Compiler Options="-O2 -m32" C_Options="-O2 -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
@@ -161,7 +161,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
       </Linker>
@@ -201,7 +201,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxp"/>
       </Linker>
@@ -240,7 +240,7 @@
       <Compiler Options="-O2 -m32" C_Options="-O2 -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
       </Linker>
@@ -282,7 +282,7 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
@@ -338,7 +338,7 @@
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
         <LibraryPath Value="../../../../extern/glfw-2.7/lib/linux"/>
         <LibraryPath Value="../../../../extern/SOIL/lib/linux"/>
@@ -394,7 +394,7 @@
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="dl"/>
         <Library Value="m"/>
@@ -435,7 +435,7 @@
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
+      <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive -Wl,-rpath ./" Required="yes">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="dl"/>
         <Library Value="m"/>
