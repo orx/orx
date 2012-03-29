@@ -603,7 +603,7 @@ void orxFASTCALL orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
 #else /* __orxWINDOWS__ */
 
   /* Has valid handle? */
-  if(((orxS32)_pstFileInfo->hInternal) != 0)
+  if(((DIR *)_pstFileInfo->hInternal) != NULL)
   {
     /* Closes the search */
     closedir((DIR *)_pstFileInfo->hInternal);
