@@ -713,14 +713,6 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
 
-    /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-    glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-    glASSERT();
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-    glASSERT();
-
     /* Has VBO support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
     {
@@ -978,12 +970,6 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
-
-  /* Selects arrays */
-  glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-  glASSERT();
-  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-  glASSERT();
 
   /* Disables texturing */
   glDisable(GL_TEXTURE_2D);
@@ -2258,10 +2244,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
-    /* Enables clipping */
-    glEnable(GL_SCISSOR_TEST);
-    glASSERT();
-
     /* Is screen? */
     if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
     {
@@ -2669,6 +2651,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Inits OpenGL */
         glEnable(GL_TEXTURE_2D);
         glASSERT();
+        glEnable(GL_SCISSOR_TEST);
+        glASSERT();
         glDisable(GL_LIGHTING);
         glASSERT();
         glDisable(GL_FOG);
@@ -2686,6 +2670,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glASSERT();
         glEnableClientState(GL_COLOR_ARRAY);
+        glASSERT();
+
+        /* Selects arrays */
+        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+        glASSERT();
+        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+        glASSERT();
+        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
 
         /* Has framebuffer support? */
