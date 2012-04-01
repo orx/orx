@@ -893,7 +893,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(const void *_pStructure)
     else
     {
       /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is not tree type.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is not tree type.");
     }
   }
   else
