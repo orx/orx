@@ -85,44 +85,6 @@
  */
 #define orxCLAMP(V, MIN, MAX)     orxMAX(orxMIN(V, MAX), MIN)
 
-/** Gets circularly clamped (for ring spaces) value between two boundaries [MIN, MAX[
- * @param[in]   V                               Value to clamp
- * @param[in]   MIN                             Minimum boundary
- * @param[in]   MAX                             Maximum boundary
- * @return      Circularly clamped value between MIN & MAX
- */
-#define orxCIRCULAR_CLAMP_INC_MIN(V, MIN, MAX)  \
-do                                              \
-{                                               \
-  while((V) < (MIN))                            \
-  {                                             \
-    (V) += ((MAX) - (MIN));                     \
-  }                                             \
-  while((V) >= (MAX))                           \
-  {                                             \
-    (V) -= ((MAX) - (MIN));                     \
-  }                                             \
-} while(orxFALSE)
-
-/** Gets circularly clamped (for ring spaces) value between two boundaries ]MIN, MAX]
- * @param[in]   V                               Value to clamp
- * @param[in]   MIN                             Minimum boundary
- * @param[in]   MAX                             Maximum boundary
- * @return      Circularly clamped value between MIN & MAX
- */
-#define orxCIRCULAR_CLAMP_INC_MAX(V, MIN, MAX)  \
-do                                              \
-{                                               \
-  while((V) <= (MIN))                           \
-  {                                             \
-    (V) += ((MAX) - (MIN));                     \
-  }                                             \
-  while((V) > (MAX))                            \
-  {                                             \
-    (V) -= ((MAX) - (MIN));                     \
-  }                                             \
-} while(orxFALSE)
-
 /** Converts an orxFLOAT to an orxU32
  * @param[in]   V                               Value to convert
  * @return      Converted value
