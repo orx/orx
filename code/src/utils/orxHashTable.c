@@ -33,6 +33,7 @@
 #include "utils/orxHashTable.h"
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "utils/orxString.h"
 
 
@@ -223,6 +224,9 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxHashTable_Get");
+
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
@@ -237,17 +241,11 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
     pstCell = pstCell->pstNext;
   }
 
-  /* Cell found ? */
-  if(pstCell != orxNULL)
-  {
-    /* Returns associated datas */
-    return pstCell->pData;
-  }
-  else
-  {
-    /* Key not found, returns orxNULL */
-    return orxNULL;
-  }
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return((pstCell != orxNULL) ? pstCell->pData : orxNULL);
 }
 
 /** Set an item value.
@@ -260,6 +258,9 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
 {
   orxU32 u32Index;                      /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxHashTable_Set");
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -299,6 +300,9 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return orxSTATUS_SUCCESS;
 }
@@ -315,6 +319,9 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
   orxU32 u32Index;                      /* Hash index */
   orxHASHTABLE_CELL *pstCell;             /* New cell to add */
   orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxHashTable_Add");
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -350,6 +357,10 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return eStatus;
 }
 
@@ -364,6 +375,9 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
   orxHASHTABLE_CELL *pstCell = orxNULL;       /* Cell used to traverse */
   orxHASHTABLE_CELL *pstRemoveCell = orxNULL; /* Cell to remove */
   orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxHashTable_Remove");
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -417,6 +431,10 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
     _pstHashTable->u32Counter--;
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
   return eStatus;
 }
 
