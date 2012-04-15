@@ -113,7 +113,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
   u32Size = orxMath_GetNextPowerOfTwo(_u32NbKey);
 
   /* Allocate memory for a hash table */
-  pstHashTable = (orxHASHTABLE *)orxMemory_Allocate(sizeof(orxHASHTABLE) + ((u32Size - 1) * sizeof(orxHASHTABLE_CELL *)), _eMemType);
+  pstHashTable = (orxHASHTABLE *)orxMemory_Allocate(sizeof(orxHASHTABLE) + (u32Size * sizeof(orxHASHTABLE_CELL *)), _eMemType);
 
   /* Enough memory ? */
   if(pstHashTable != orxNULL)
@@ -129,7 +129,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     }
 
     /* Clean values */
-    orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE) + ((u32Size - 1) * sizeof(orxHASHTABLE_CELL *)));
+    orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE) + (u32Size * sizeof(orxHASHTABLE_CELL *)));
 
     /* Allocate bank for cells */
     pstHashTable->pstBank = orxBank_Create((orxU16)u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
