@@ -1368,6 +1368,11 @@ orxBODY_JOINT *orxFASTCALL orxBody_GetNextJoint(const orxBODY *_pstBody, const o
         /* Gets first destination joint */
         pstResult = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
       }
+      else
+      {
+        /* Gets next source joint */
+        pstResult = orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST(_pstBodyJoint);
+      }
     }
     else
     {

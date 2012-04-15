@@ -50,13 +50,19 @@ typedef struct __orxHASHTABLE_CELL_t
 } orxHASHTABLE_CELL;
 
 /** Hash Table */
+#ifdef __orxMSVC__
+  #pragma warning(disable : 4200)
+#endif /* __orxMSVC__ */
 struct __orxHASHTABLE_t
 {
   orxBANK            *pstBank;                                /**< Bank where are stored cells : 4 */
   orxU32              u32Counter;                             /**< Hashtable item counter : 8 */
   orxU32              u32Size;                                /**< Hashtable size : 12 */
-  orxHASHTABLE_CELL  *apstCell[1];                            /**< Hash table */
+  orxHASHTABLE_CELL  *apstCell[0];                            /**< Hash table */
 };
+#ifdef __orxMSVC__
+  #pragma warning(default : 4200)
+#endif /* __orxMSVC__ */
 
 
 /***************************************************************************
