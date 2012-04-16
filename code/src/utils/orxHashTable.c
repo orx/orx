@@ -522,6 +522,99 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
   return hResult;
 }
 
+/** Optimizes a hashtable for read accesses (minimizes number of cache misses upon collisions)
+ * @param[in] _pstHashTable HashTable to optimize
+ * @return orxSTATUS_SUCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxHashTable_Optimize");
+
+  /* Checks */
+  orxASSERT(_pstHashTable != orxNULL);
+
+  /* Has elements? */
+  if(_pstHashTable->u32Counter > 0)
+  {
+    orxHASHTABLE_CELL *astWorkBuffer;
+
+    /* Allocates work buffer */
+    astWorkBuffer = (orxHASHTABLE_CELL *)orxMemory_Allocate(_pstHashTable->u32Counter * sizeof(orxHASHTABLE_CELL), orxMEMORY_TYPE_TEMP);
+
+    /* Valid? */
+    if(astWorkBuffer != orxNULL)
+    {
+      orxU32              u32KeyIndex, u32BufferIndex, i;
+      orxHASHTABLE_CELL  *pstCell, *pstPreviousCell;
+
+      /* For all cells */
+      for(i = 0, u32KeyIndex = 0, u32BufferIndex = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++, u32BufferIndex++)
+      {
+        /* Linked cell? */
+        if((pstCell != orxNULL) && (pstCell->pstNext != orxNULL))
+        {
+          /* Gets next in line */
+          pstCell = pstCell->pstNext;
+        }
+        else
+        {
+          /* Finds next head cell */
+          do{pstCell = _pstHashTable->apstCell[u32KeyIndex++];} while(pstCell == orxNULL);
+        }
+
+        /* Stores it */
+        orxMemory_Copy(&astWorkBuffer[u32BufferIndex], pstCell, sizeof(orxHASHTABLE_CELL));
+      }
+
+      /* Clears bank */
+      orxBank_Clear(_pstHashTable->pstBank);
+
+      /* For all ordered cells */
+      for(i = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++)
+      {
+        /* Allocates new cell */
+        pstPreviousCell = pstCell;
+        pstCell         = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
+
+        /* Checks */
+        orxASSERT(pstCell != orxNULL);
+
+        /* Stores its data */
+        orxMemory_Copy(pstCell, &astWorkBuffer[i], sizeof(orxHASHTABLE_CELL));
+
+        /* Chained? */
+        if((pstPreviousCell != orxNULL) && (pstPreviousCell->pstNext != orxNULL))
+        {
+          /* Updates chaining */
+          pstPreviousCell->pstNext = pstCell;
+        }
+        else
+        {
+          /* Updates head pointer */
+          _pstHashTable->apstCell[orxHashTable_FindIndex(_pstHashTable, pstCell->u32Key)] = pstCell;
+        }
+      }
+
+      /* Clears work buffer */
+      orxMemory_Free(astWorkBuffer);
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
 /*******************************************************************************
  * DEBUG FUNCTION
  ******************************************************************************/

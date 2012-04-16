@@ -191,6 +191,9 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
       vOrigin.fX += pstGlyph->fWidth + _pstFont->vCharacterSpacing.fX;
     }
 
+    /* Optimizes character table */
+    orxHashTable_Optimize(_pstFont->pstMap->pstCharacterTable);
+
     /* Stores character height */
     _pstFont->pstMap->fCharacterHeight = _pstFont->fCharacterHeight;
 

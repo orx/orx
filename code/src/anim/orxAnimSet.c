@@ -1512,6 +1512,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
+        /* Optimizes its ID table */
+        orxHashTable_Optimize(pstResult->pstIDTable);
+
         /* For all links */
         for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
         {

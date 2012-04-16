@@ -2491,6 +2491,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   /* External call? */
   if(sstConfig.u32LoadCounter == 0)
   {
+    /* Optimizes the section table */
+    orxHashTable_Optimize(sstConfig.pstSectionTable);
+
     /* Profiles */
     orxPROFILER_POP_MARKER();
   }

@@ -139,6 +139,13 @@ extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindFirst(orxHASHTA
 extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
 /** @} */
 
+/** Optimizes a hashtable for read accesses (minimizes number of cache misses upon collisions)
+ * @param[in] _pstHashTable HashTable to optimize
+ * @return orxSTATUS_SUCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Optimize(orxHASHTABLE *_pstHashTable);
+
+
 /*******************************************************************************
  * DEBUG FUNCTION
  ******************************************************************************/
