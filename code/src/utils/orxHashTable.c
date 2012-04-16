@@ -530,9 +530,6 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxHashTable_Optimize");
-
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
@@ -607,9 +604,6 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
       eResult = orxSTATUS_FAILURE;
     }
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
