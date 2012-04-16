@@ -146,19 +146,6 @@ extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindNext(orxHASHTAB
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Optimize(orxHASHTABLE *_pstHashTable);
 
 
-/*******************************************************************************
- * DEBUG FUNCTION
- ******************************************************************************/
-
-#ifdef __orxDEBUG__
-
-/** Print the content of a Hash table
- * @param[in] _pstHashTable  Hash table to display
- */
-extern orxDLLAPI void orxFASTCALL               orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable);
-
-#endif /* __orxDEBUG__ */
-
 #endif /* _orxHASHTABLE_H_ */
 
 /** @} */
