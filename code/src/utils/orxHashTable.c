@@ -198,7 +198,7 @@ orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
  * @param[in] _pstHashTable         Concerned hash table
  * @return    Item number
  */
-orxU32 orxFASTCALL orxHashTable_GetCounter(orxHASHTABLE *_pstHashTable)
+orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
 {
   orxU32 u32Result = orxU32_UNDEFINED;
 
@@ -442,80 +442,72 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
  * Search functions
  ******************************************************************************/
 
-orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData)
+/** Gets the next item in the hashtable and returns an iterator for next search
+ * @param[in]   _pstHashTable   Concerned HashTable
+ * @param[in]   _hIterator      Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
+ * @param[out]  _pu32Key        Current element key
+ * @param[out]  _ppData         Current element data
+ * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
+ */
+orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)
 {
-  orxHANDLE hResult = orxHANDLE_UNDEFINED;
-  orxU32    u32Cell;
+  orxHASHTABLE_CELL  *pstCell;
+  orxU32              u32Index;
+  orxHANDLE           hResult;
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
-  for(u32Cell = 0; u32Cell < _pstHashTable->u32Size; u32Cell++)
+  /* Has iterator? */
+  if((_hIterator != orxNULL) && (_hIterator != orxHANDLE_UNDEFINED))
   {
-    if(_pstHashTable->apstCell[u32Cell] != orxNULL)
-    {
-      if(_pu32Key != orxNULL)
-      {
-          *_pu32Key = _pstHashTable->apstCell[u32Cell]->u32Key;
-      }
-      if(_ppData!=orxNULL)
-      {
-          *_ppData = _pstHashTable->apstCell[u32Cell]->pData;
-      }
+    /* Gets current cell */
+    pstCell = (orxHASHTABLE_CELL *)_hIterator;
 
-      /* Updates result */
-      hResult = (orxHANDLE)(_pstHashTable->apstCell[u32Cell]);
-      break;
-    }
-  }
+    /* Gets start index */
+    u32Index = orxHashTable_FindIndex(_pstHashTable, pstCell->u32Key) + 1;
 
-  /* Done! */
-  return hResult;
-}
-
-orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)
-{
-  orxHASHTABLE_CELL *pIter = (orxHASHTABLE_CELL*)_hIterator;
-  orxU32             u32Cell;
-  orxHANDLE          hResult = orxHANDLE_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(_pstHashTable != orxNULL && _hIterator != orxHANDLE_UNDEFINED);
-
-  if(pIter->pstNext != orxNULL)
-  {
-    if(_pu32Key != orxNULL)
-    {
-      *_pu32Key = pIter->pstNext->u32Key;
-    }
-    if(_ppData != orxNULL)
-    {
-      *_ppData = pIter->pstNext->pData;
-    }
-
-    /* Updates result */
-    hResult = (orxHANDLE)(pIter->pstNext);
+    /* Updates temporary result */
+    pstCell = pstCell->pstNext;
   }
   else
   {
-    for(u32Cell = orxHashTable_FindIndex(_pstHashTable, pIter->u32Key) + 1; u32Cell < _pstHashTable->u32Size; u32Cell++)
-    {
-      if(_pstHashTable->apstCell[u32Cell]!=orxNULL)
-      {
-        if(_pu32Key!=orxNULL)
-        {
-          *_pu32Key = _pstHashTable->apstCell[u32Cell]->u32Key;
-        }
-        if(_ppData!=orxNULL)
-        {
-          *_ppData = _pstHashTable->apstCell[u32Cell]->pData;
-        }
+    /* Starts a new search */
+    u32Index  = 0;
+    pstCell   = orxNULL;
+  }
 
-        /* Updates result */
-        hResult = (orxHANDLE)(_pstHashTable->apstCell[u32Cell]);
-        break;
-      }
+  /* Should search for next cell? */
+  if(pstCell == orxNULL)
+  {
+    /* Finds next head cell */
+    for(; (pstCell == orxNULL) && (u32Index < _pstHashTable->u32Size); pstCell = _pstHashTable->apstCell[u32Index++]);
+  }
+
+  /* Found? */
+  if(pstCell != orxNULL)
+  {
+    /* Asked for key? */
+    if(_pu32Key != orxNULL)
+    {
+      /* Updates it */
+      *_pu32Key = pstCell->u32Key;
     }
+
+    /* Asked for data? */
+    if(_ppData != orxNULL)
+    {
+      /* Updates it */
+      *_ppData = pstCell->pData;
+    }
+
+    /* Updates result */
+    hResult = (orxHANDLE)pstCell;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = orxHANDLE_UNDEFINED;
   }
 
   /* Done! */
