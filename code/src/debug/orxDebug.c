@@ -408,12 +408,12 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 #ifdef __orxMSVC__
 
       /* Writes info */
-      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%u)", _zFunction, pc, _u32Line);
+      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%lu)", _zFunction, pc, _u32Line);
 
 #else /* __orxMSVC__ */
 
       /* Writes info */
-      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%u)", _zFunction, pc, (unsigned int)_u32Line);
+      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " (%s() - %s:%lu)", _zFunction, pc, (unsigned int)_u32Line);
 
 #endif /* __orxMSVC__ */
     }

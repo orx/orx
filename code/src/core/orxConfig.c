@@ -129,6 +129,8 @@ typedef enum __orxCONFIG_VALUE_TYPE_t
   orxCONFIG_VALUE_TYPE_FLOAT,
   orxCONFIG_VALUE_TYPE_S32,
   orxCONFIG_VALUE_TYPE_U32,
+  orxCONFIG_VALUE_TYPE_S64,
+  orxCONFIG_VALUE_TYPE_U64,
   orxCONFIG_VALUE_TYPE_BOOL,
   orxCONFIG_VALUE_TYPE_VECTOR,
 
@@ -151,19 +153,23 @@ typedef struct __orxCONFIG_VALUE_t
   union
   {
     orxVECTOR           vValue;             /**< Vector value : 24 */
-    orxBOOL             bValue;             /**< Bool value : 16 */
-    orxFLOAT            fValue;             /**< Float value : 16 */
     orxU32              u32Value;           /**< U32 value : 16 */
     orxS32              s32Value;           /**< S32 value : 16 */
+    orxU64              u64Value;           /**< U64 value : 20 */
+    orxS64              s64Value;           /**< S64 value : 20 */
+    orxFLOAT            fValue;             /**< Float value : 16 */
+    orxBOOL             bValue;             /**< Bool value : 16 */
   };                                        /**< Union value : 24 */
 
   union
   {
     orxVECTOR           vAltValue;          /**< Alternate vector value : 36 */
-    orxBOOL             bAltValue;          /**< Alternate bool value : 28 */
-    orxFLOAT            fAltValue;          /**< Alternate float value : 28 */
     orxU32              u32AltValue;        /**< Alternate U32 value : 28 */
     orxS32              s32AltValue;        /**< Alternate S32 value : 28 */
+    orxU64              u64AltValue;        /**< Alternate U64 value : 32 */
+    orxS64              s64AltValue;        /**< Alternate S64 value : 32 */
+    orxFLOAT            fAltValue;          /**< Alternate float value : 28 */
+    orxBOOL             bAltValue;          /**< Alternate bool value : 28 */
   };                                        /**< Union value : 36 */
 
 } orxCONFIG_VALUE;
@@ -944,7 +950,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section <%s> can't be deleted as it's protected by %d entities.", _pstSection->zName, _pstSection->s32ProtectionCounter);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section <%s> can't be deleted as it's protected by %ld entities.", _pstSection->zName, _pstSection->s32ProtectionCounter);
   }
 
   return;
@@ -1196,6 +1202,254 @@ static orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, or
 
   /* Done! */
   return u32Result;
+}
+
+/** Reads a signed integer value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s32ListIndex      List index
+ * @return The value
+ */
+static orxINLINE orxS64 orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+{
+  orxS64 s64Result = 0;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s32ListIndex < (orxS32)_pstValue->u16ListCounter);
+
+  /* Random index? */
+  if(_s32ListIndex < 0)
+  {
+    /* Not a list? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s32ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCounter - 1);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->u16Type == (orxU16)orxCONFIG_VALUE_TYPE_S64) && (_s32ListIndex == (orxS32)_pstValue->u16CacheIndex))
+  {
+    /* Random? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Updates result */
+      s64Result = orxMath_GetRandomS64(_pstValue->s64Value, _pstValue->s64AltValue);
+    }
+    else
+    {
+      /* Updates result */
+      s64Result = _pstValue->s64Value;
+    }
+  }
+  else
+  {
+    orxS64          s64Value;
+    const orxSTRING zRemainder;
+    const orxSTRING zStart;
+
+    /* Gets wanted value */
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+
+    /* Gets value */
+    if(orxString_ToS64(zStart, &s64Value, &zRemainder) != orxSTATUS_FAILURE)
+    {
+      orxS32  s32RandomSeparatorIndex = 0;
+      orxBOOL bRandom = orxFALSE;
+
+      /* Random? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Valid? */
+        if((s32RandomSeparatorIndex >= 0) && (*(zRemainder + s32RandomSeparatorIndex + 1) != orxCONFIG_KC_RANDOM_SEPARATOR))
+        {
+          /* Updates random status */
+          bRandom = orxTRUE;
+        }
+      }
+
+      /* Random? */
+      if(bRandom != orxFALSE)
+      {
+        orxS64 s64OtherValue;
+
+        /* Has another value? */
+        if(orxString_ToS64(zRemainder + s32RandomSeparatorIndex + 1, &s64OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates cache */
+          _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S64;
+          _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
+          _pstValue->s64Value       = s64Value;
+          _pstValue->s64AltValue    = s64OtherValue;
+
+          /* Updates result */
+          s64Result = orxMath_GetRandomS64(s64Value, s64OtherValue);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S64 random from config value <%s>.", _pstValue->zValue);
+
+          /* Clears cache */
+          _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+
+          /* Updates result */
+          s64Result = s64Value;
+        }
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S64;
+        _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
+        _pstValue->s64Value       = s64Value;
+
+        /* Updates result */
+        s64Result = s64Value;
+      }
+    }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
+    }
+  }
+
+  /* Done! */
+  return s64Result;
+}
+
+/** Reads an unsigned integer value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s32ListIndex      List index
+ * @return The value
+ */
+static orxINLINE orxU64 orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+{
+  orxU64 u64Result = 0;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s32ListIndex < (orxS32)_pstValue->u16ListCounter);
+
+  /* Random index? */
+  if(_s32ListIndex < 0)
+  {
+    /* Not a list? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s32ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxS32)_pstValue->u16ListCounter - 1);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->u16Type == (orxU16)orxCONFIG_VALUE_TYPE_U64) && (_s32ListIndex == (orxS32)_pstValue->u16CacheIndex))
+  {
+    /* Random? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Updates result */
+      u64Result = orxMath_GetRandomU64(_pstValue->u64Value, _pstValue->u64AltValue);
+    }
+    else
+    {
+      /* Updates result */
+      u64Result = _pstValue->u64Value;
+    }
+  }
+  else
+  {
+    orxU64          u64Value;
+    const orxSTRING zRemainder;
+    const orxSTRING zStart;
+
+    /* Gets wanted value */
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+
+    /* Gets value */
+    if(orxString_ToU64(zStart, &u64Value, &zRemainder) != orxSTATUS_FAILURE)
+    {
+      orxS32  s32RandomSeparatorIndex = 0;
+      orxBOOL bRandom = orxFALSE;
+
+      /* Random? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Valid? */
+        if((s32RandomSeparatorIndex >= 0) && (*(zRemainder + s32RandomSeparatorIndex + 1) != orxCONFIG_KC_RANDOM_SEPARATOR))
+        {
+          /* Updates random status */
+          bRandom = orxTRUE;
+        }
+      }
+
+      /* Random? */
+      if(bRandom != orxFALSE)
+      {
+        orxU64 u64OtherValue;
+
+        /* Has another value? */
+        if(orxString_ToU64(zRemainder + s32RandomSeparatorIndex + 1, &u64OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates cache */
+          _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U64;
+          _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
+          _pstValue->u64Value       = u64Value;
+          _pstValue->u64AltValue    = u64OtherValue;
+
+          /* Updates result */
+          u64Result = orxMath_GetRandomU64(u64Value, u64OtherValue);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U64 random from config value <%s>.", _pstValue->zValue);
+
+          /* Clears cache */
+          _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+
+          /* Updates result */
+          u64Result = u64Value;
+        }
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U64;
+        _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
+        _pstValue->u64Value       = u64Value;
+
+        /* Updates result */
+        u64Result = u64Value;
+      }
+    }
+    else
+    {
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
+    }
+  }
+
+  /* Done! */
+  return u64Result;
 }
 
 /** Reads a float value from config value
@@ -3762,6 +4016,72 @@ orxU32 orxFASTCALL orxConfig_GetU32(const orxSTRING _zKey)
   return u32Result;
 }
 
+/** Reads a signed integer value from config (will take a random value if a list is provided for this key)
+ * @param[in] _zKey             Key name
+ * @return The value
+ */
+orxS64 orxFASTCALL orxConfig_GetS64(const orxSTRING _zKey)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxS64            s64Result;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Found? */
+  if(pstValue != orxNULL)
+  {
+    /* Updates result */
+    s64Result = orxConfig_GetS64FromValue(pstValue, -1);
+  }
+  else
+  {
+    /* Updates result */
+    s64Result = 0;
+  }
+
+  /* Done! */
+  return s64Result;
+}
+
+/** Reads an unsigned integer value from config (will take a random value if a list is provided for this key)
+ * @param[in] _zKey             Key name
+ * @return The value
+ */
+orxU64 orxFASTCALL orxConfig_GetU64(const orxSTRING _zKey)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxU64            u64Result;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Found? */
+  if(pstValue != orxNULL)
+  {
+    /* Updates result */
+    u64Result = orxConfig_GetU64FromValue(pstValue, -1);
+  }
+  else
+  {
+    /* Updates result */
+    u64Result = 0;
+  }
+
+  /* Done! */
+  return u64Result;
+}
+
 /** Reads a float value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
@@ -4003,7 +4323,85 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
   orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%u", _u32Value);
+  orxString_Print(zValue, "%lu", _u32Value);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Writes an integer value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _s64Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           zValue[32];
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Clears buffer */
+  orxMemory_Zero(zValue, 32 * sizeof(orxCHAR));
+
+  /* Gets literal value */
+  orxString_Print(zValue, "%lld", _s64Value);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Writes an unsigned integer value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _u64Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           zValue[32];
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Clears buffer */
+  orxMemory_Zero(zValue, 32 * sizeof(orxCHAR));
+
+  /* Gets literal value */
+  orxString_Print(zValue, "%llu", _u64Value);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));

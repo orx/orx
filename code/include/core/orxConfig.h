@@ -237,6 +237,18 @@ extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetS32(const orxSTRING _
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetU32(const orxSTRING _zKey);
 
+/** Reads a signed integer value from config (will take a random value if a list is provided for this key)
+ * @param[in] _zKey             Key name
+ * @return The value
+ */
+extern orxDLLAPI orxS64 orxFASTCALL           orxConfig_GetS64(const orxSTRING _zKey);
+
+/** Reads an unsigned integer value from config (will take a random value if a list is provided for this key)
+ * @param[in] _zKey             Key name
+ * @return The value
+ */
+extern orxDLLAPI orxU64 orxFASTCALL           orxConfig_GetU64(const orxSTRING _zKey);
+
 /** Reads a float value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
@@ -282,6 +294,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetS32(const orxSTRING _
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value);
+
+/** Writes a signed integer value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _s64Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value);
+
+/** Writes an unsigned integer value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _u64Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value);
 
 /** Writes a float value to config
  * @param[in] _zKey             Key name

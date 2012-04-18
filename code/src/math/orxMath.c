@@ -102,13 +102,13 @@ orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
 orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
 {
   orxU32 u32Temp, u32Result;
- 
+
   /* Gets next random number */
   u32Temp = orxMath_Xor128();
- 
+
   /* Updates result */
   u32Result = _u32Min + (u32Temp % ((_u32Max - _u32Min) + 1));
- 
+
   /* Done! */
   return u32Result;
 }
@@ -125,10 +125,49 @@ orxS32 orxFASTCALL orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)
 
   /* Gets next random number */
   u32Temp = orxMath_Xor128();
- 
+
   /* Updates result */
   s32Result = _s32Min + (u32Temp % ((_s32Max - _s32Min) + 1));
 
   /* Done! */
   return s32Result;
+}
+
+/** Gets a random orxU64 value
+ * @param[in]   _u64Min                         Minimum boundary (inclusive)
+ * @param[in]   _u64Max                         Maximum boundary (inclusive)
+ * @return      Random value
+ */
+orxU64 orxFASTCALL orxMath_GetRandomU64(orxU64 _u64Min, orxU64 _u64Max)
+{
+  orxU64 u64Temp, u64Result;
+
+  /* Gets next random number */
+  u64Temp = ((orxU64)orxMath_Xor128() << 32) | (orxU64)orxMath_Xor128();
+
+  /* Updates result */
+  u64Result = _u64Min + (u64Temp % ((_u64Max - _u64Min) + 1));
+
+  /* Done! */
+  return u64Result;
+}
+
+/** Gets a random orxS64 value
+ * @param[in]   _s64Min                         Minimum boundary (inclusive)
+ * @param[in]   _s64Max                         Maximum boundary (inclusive)
+ * @return      Random value
+ */
+orxS64 orxFASTCALL orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max)
+{
+  orxU64 u64Temp;
+  orxS64 s64Result;
+
+  /* Gets next random number */
+  u64Temp = ((orxU64)orxMath_Xor128() << 32) | (orxU64)orxMath_Xor128();
+
+  /* Updates result */
+  s64Result = _s64Min + (u64Temp % ((_s64Max - _s64Min) + 1));
+
+  /* Done! */
+  return s64Result;
 }

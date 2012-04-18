@@ -53,6 +53,9 @@
 
   #pragma warning(disable : 4996)
 
+  #define strtoll   _strtoi64
+  #define strtoull  _strtoui64
+
 #endif /* __orxMSVC__ */
 
 #include <stdio.h>
@@ -905,6 +908,194 @@ static orxINLINE orxSTATUS              orxString_ToU32(const orxSTRING _zString
   {
     /* Gets decimal value */
     eResult = orxString_ToU32Base(_zString, 10, _pu32OutValue, _pzRemaining);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Converts a String to a signed int value using the given base
+ * @param[in]   _zString        String To convert
+ * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _ps64OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE orxSTATUS              orxString_ToS64Base(const orxSTRING _zString, orxU32 _u32Base, orxS64 *_ps64OutValue, const orxSTRING *_pzRemaining)
+{
+  orxCHAR    *pcEnd;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(_ps64OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Convert */
+  *_ps64OutValue = strtoll(_zString, &pcEnd, (size_t)_u32Base);
+  
+  /* Valid conversion ? */
+  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Asks for remaining string? */
+  if(_pzRemaining != orxNULL)
+  {
+    /* Stores it */
+    *_pzRemaining = pcEnd;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Converts a String to a signed int value, guessing the base
+ * @param[in]   _zString        String To convert
+ * @param[out]  _ps64OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE orxSTATUS              orxString_ToS64(const orxSTRING _zString, orxS64 *_ps64OutValue, const orxSTRING *_pzRemaining)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(_ps64OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Hexadecimal? */
+  if((_zString[0] != orxCHAR_EOL)
+  && (_zString[0] == '0')
+  && (_zString[1] != orxCHAR_EOL)
+  && ((_zString[1] | 0x20) == 'x'))
+  {
+    /* Gets hexa value */
+    eResult = orxString_ToS64Base(_zString + 2, 16, _ps64OutValue, _pzRemaining);
+  }
+  /* Binary? */
+  else if((_zString[0] != orxCHAR_EOL)
+       && (_zString[0] == '0')
+       && (_zString[1] != orxCHAR_EOL)
+       && ((_zString[1] | 0x20) == 'b'))
+  {
+    /* Gets binary value */
+    eResult = orxString_ToS64Base(_zString + 2, 2, _ps64OutValue, _pzRemaining);
+  }
+  /* Octal? */
+  else if((_zString[0] != orxCHAR_EOL)
+       && ((_zString[0] | 0x20) == '0')
+       && ((_zString[1]) >= '0')
+       && ((_zString[1]) <= '9'))
+  {
+    /* Gets octal value */
+    eResult = orxString_ToS64Base(_zString + 1, 8, _ps64OutValue, _pzRemaining);
+  }
+  /* Decimal */
+  else
+  {
+    /* Gets decimal value */
+    eResult = orxString_ToS64Base(_zString, 10, _ps64OutValue, _pzRemaining);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Converts a String to an unsigned int value using the given base
+ * @param[in]   _zString        String To convert
+ * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _pu64OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE orxSTATUS              orxString_ToU64Base(const orxSTRING _zString, orxU32 _u32Base, orxU64 *_pu64OutValue, const orxSTRING *_pzRemaining)
+{
+  orxCHAR    *pcEnd;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(_pu64OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Convert */
+  *_pu64OutValue = strtoull(_zString, &pcEnd, (size_t)_u32Base);
+  
+  /* Valid conversion ? */
+  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Asks for remaining string? */
+  if(_pzRemaining != orxNULL)
+  {
+    /* Stores it */
+    *_pzRemaining = pcEnd;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Converts a String to an unsigned int value, guessing the base
+ * @param[in]   _zString        String To convert
+ * @param[out]  _pu64OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE orxSTATUS              orxString_ToU64(const orxSTRING _zString, orxU64 *_pu64OutValue, const orxSTRING *_pzRemaining)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(_pu64OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Hexadecimal? */
+  if((_zString[0] != orxCHAR_EOL)
+  && (_zString[0] == '0')
+  && (_zString[1] != orxCHAR_EOL)
+  && ((_zString[1] | 0x20) == 'x'))
+  {
+    /* Gets hexa value */
+    eResult = orxString_ToU64Base(_zString + 2, 16, _pu64OutValue, _pzRemaining);
+  }
+  /* Binary? */
+  else if((_zString[0] != orxCHAR_EOL)
+       && (_zString[0] == '0')
+       && (_zString[1] != orxCHAR_EOL)
+       && ((_zString[1] | 0x20) == 'b'))
+  {
+    /* Gets binary value */
+    eResult = orxString_ToU64Base(_zString + 2, 2, _pu64OutValue, _pzRemaining);
+  }
+  /* Octal? */
+  else if((_zString[0] != orxCHAR_EOL)
+       && ((_zString[0] | 0x20) == '0')
+       && ((_zString[1]) >= '0')
+       && ((_zString[1]) <= '9'))
+  {
+    /* Gets octal value */
+    eResult = orxString_ToU64Base(_zString + 1, 8, _pu64OutValue, _pzRemaining);
+  }
+  /* Decimal */
+  else
+  {
+    /* Gets decimal value */
+    eResult = orxString_ToU64Base(_zString, 10, _pu64OutValue, _pzRemaining);
   }
 
   /* Done! */
