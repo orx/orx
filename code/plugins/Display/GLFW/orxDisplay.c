@@ -2402,7 +2402,6 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  int       iWidth, iHeight, iDepth;
   orxU8   **aau8BufferArray;
   orxSTATUS eResult;
 
@@ -2412,6 +2411,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Has specified video mode? */
   if(_pstVideoMode != orxNULL)
   {
+    int iWidth, iHeight, iDepth;
+
     /* Gets its info */
     iWidth  = (int)_pstVideoMode->u32Width;
     iHeight = (int)_pstVideoMode->u32Height;

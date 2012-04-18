@@ -152,8 +152,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
         s_winWidth = ev->m_data.m_size.m_w;
         s_winHeight = ev->m_data.m_size.m_h;
       }
-      if (ev)
-        NVEventDoneWithEvent(true);
+      NVEventDoneWithEvent(true);
     }
   }
   
