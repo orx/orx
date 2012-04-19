@@ -1740,6 +1740,7 @@ extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _z
           switch(pstParam->eType)
           {
             case orxSHADER_PARAM_TYPE_FLOAT:
+            case orxSHADER_PARAM_TYPE_TIME:
             {
               orxS32 s32Offset;
 

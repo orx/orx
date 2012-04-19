@@ -2662,6 +2662,7 @@ orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const 
           switch(pstParam->eType)
           {
             case orxSHADER_PARAM_TYPE_FLOAT:
+            case orxSHADER_PARAM_TYPE_TIME:
             {
               orxS32 s32Offset;
 

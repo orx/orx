@@ -2741,6 +2741,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
             switch(pstParam->eType)
             {
               case orxSHADER_PARAM_TYPE_FLOAT:
+              case orxSHADER_PARAM_TYPE_TIME:
               {
                 /* Adds its literal value */
                 s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);

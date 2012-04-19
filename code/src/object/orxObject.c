@@ -160,16 +160,17 @@ struct __orxOBJECT_t
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructureList[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 88 */
   void             *pUserData;                  /**< User data : 92 */
-  orxFLOAT          fLifeTime;                  /**< Life time : 96 */
-  const orxSTRING   zReference;                 /**< Config reference : 100 */
-  orxFLOAT          fRepeatX;                   /**< Object repeat X : 104 */
-  orxFLOAT          fRepeatY;                   /**< Object repeat Y : 108 */
-  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 112 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 116 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 128 */
-  orxCOLOR          stColor;                    /**< Object color : 144 */
-  orxOBJECT        *pstChild;                   /**< Child: 148 */
-  orxOBJECT        *pstSibling;                 /**< Sibling: 152 */
+  const orxSTRING   zReference;                 /**< Config reference : 96 */
+  orxFLOAT          fLifeTime;                  /**< Life time : 100 */
+  orxFLOAT          fActiveTime;                /**< Active time : 104 */
+  orxFLOAT          fRepeatX;                   /**< Object repeat X : 108 */
+  orxFLOAT          fRepeatY;                   /**< Object repeat Y : 112 */
+  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 116 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 120 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 132 */
+  orxCOLOR          stColor;                    /**< Object color : 148 */
+  orxOBJECT        *pstChild;                   /**< Child: 152 */
+  orxOBJECT        *pstSibling;                 /**< Sibling: 156 */
 };
 
 /** Static structure
@@ -258,6 +259,9 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
         /* Uses default info */
         pstClockInfo = _pstClockInfo;
       }
+
+      /* Updates its active time */
+      pstObject->fActiveTime += pstClockInfo->fDT;
 
       /* Has life time? */
       if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
@@ -488,6 +492,9 @@ orxOBJECT *orxFASTCALL orxObject_Create()
 
     /* Inits flags */
     orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
+
+    /* Inits active time */
+    pstObject->fActiveTime = orxFLOAT_0;
 
     /* Increases counter */
     orxStructure_IncreaseCounter(pstObject);
@@ -4576,6 +4583,25 @@ orxFLOAT orxFASTCALL orxObject_GetLifeTime(const orxOBJECT *_pstObject)
 
   /* Updates result */
   fResult = orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME) ? _pstObject->fLifeTime : orx2F(-1.0f);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets object active time
+ * @param[in]   _pstObject      Concerned object
+ * @return      Active time
+ */
+orxFLOAT orxFASTCALL orxObject_GetActiveTime(const orxOBJECT *_pstObject)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  fResult = _pstObject->fActiveTime;
 
   /* Done! */
   return fResult;

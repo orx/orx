@@ -711,6 +711,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_ps
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJECT *_pstObject);
 
+/** Gets object active time
+ * @param[in]   _pstObject      Concerned object
+ * @return      Active time
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
+
 
 /** Picks the first active object with graphic "under" the given position
  * @param[in]   _pvPosition     Position to pick from

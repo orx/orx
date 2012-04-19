@@ -75,6 +75,7 @@
 #define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
 
 #define orxSHADER_KZ_SCREEN                   "screen"
+#define orxSHADER_KZ_TIME                     "time"
 
 
 /***************************************************************************
@@ -433,6 +434,8 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                 }
                 else
                 {
+                  orxBOOL bIsTime = orxFALSE;
+
                   /* Is a list? */
                   if(bIsList != orxFALSE)
                   {
@@ -447,8 +450,19 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                       /* Valid? */
                       if(zValue != orxSTRING_EMPTY)
                       {
+                        /* Is time? */
+                        if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
+                        {
+                          /* Marks as time */
+                          bIsTime = orxTRUE;
+
+                          /* Logs message */
+                          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't use array for time parameter. <%s> will be declared as a regular variable.", pstResult->zReference, pstResult, zParamName);
+
+                          break;
+                        }
                         /* Is screen? */
-                        if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
+                        else if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
                         {
                           /* Gets its texture */
                           ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
@@ -471,8 +485,14 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                     /* Valid? */
                     if(zValue != orxSTRING_EMPTY)
                     {
+                      /* Is time? */
+                      if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
+                      {
+                        /* Marks as time */
+                        bIsTime = orxTRUE;
+                      }
                       /* Is screen? */
-                      if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
+                      else if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
                       {
                         /* Gets its texture */
                         ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
@@ -490,8 +510,17 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                     }
                   }
 
-                  /* Adds texture param */
-                  orxShader_AddTextureParam(pstResult, zParamName, s32ParamListCounter, (const orxTEXTURE **)as8ValueBuffer);
+                  /* Is time? */
+                  if(bIsTime != orxFALSE)
+                  {
+                    /* Adds time param */
+                    orxShader_AddTimeParam(pstResult, zParamName);
+                  }
+                  else
+                  {
+                    /* Adds texture param */
+                    orxShader_AddTextureParam(pstResult, zParamName, s32ParamListCounter, (const orxTEXTURE **)as8ValueBuffer);
+                  }
                 }
               }
             }
@@ -659,8 +688,9 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      orxTEXTURE            *pstOwnerTexture = orxNULL;
-      orxSHADER_PARAM_VALUE *pstParamValue;
+      orxTEXTURE             *pstOwnerTexture = orxNULL;
+      orxSHADER_PARAM_VALUE  *pstParamValue;
+      orxFLOAT                fTime = orxFLOAT_0;
 
       /* Has owner? */
       if(_pstOwner != orxNULL)
@@ -670,8 +700,16 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
         {
           case orxSTRUCTURE_ID_OBJECT:
           {
+            orxOBJECT *pstOwner;
+
+            /* Gets cast owner */
+            pstOwner = orxOBJECT(_pstOwner);
+
             /* Gets its working texture */
-            pstOwnerTexture = orxObject_GetWorkingTexture(orxOBJECT(_pstOwner));
+            pstOwnerTexture = orxObject_GetWorkingTexture(pstOwner);
+
+            /* Gets its active time */
+            fTime = orxObject_GetActiveTime(pstOwner);
 
             break;
           }
@@ -746,6 +784,14 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               break;
             }
 
+            case orxSHADER_PARAM_TYPE_TIME:
+            {
+              /* Sets it */
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, fTime);
+
+              break;
+            }
+
             default:
             {
               break;
@@ -810,6 +856,20 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
 
               /* Sets it */
               orxDisplay_SetShaderVector(_pstShader->hData, pstParamValue->s32ID, &(stPayload.vValue));
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_TIME:
+            {
+              /* Updates value */
+              stPayload.fValue = fTime;
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
+
+              /* Sets it */
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, stPayload.fValue);
 
               break;
             }
@@ -1093,6 +1153,74 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Couldn't allocate space for vector parameter <%s>.", _pstShader->zReference, _pstShader, _zName);
         }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a time parameter definition to a shader (parameters need to be set before compiling the shader code)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+
+  /* Valid? */
+  if((_zName != orxNULL) && (_zName != orxSTRING_EMPTY))
+  {
+    orxSHADER_PARAM       *pstParam;
+    orxSHADER_PARAM_VALUE *pstParamValue;
+
+    /* Allocates param */
+    pstParam = (orxSHADER_PARAM *)orxBank_Allocate(_pstShader->pstParamBank);
+
+    /* Valid? */
+    if(pstParam != orxNULL)
+    {
+      /* Clears it */
+      orxMemory_Zero(pstParam, sizeof(orxSHADER_PARAM));
+
+      /* Inits it */
+      pstParam->eType         = orxSHADER_PARAM_TYPE_TIME;
+      pstParam->zName         = orxString_Duplicate(_zName);
+      pstParam->u32ArraySize  = 0;
+
+      /* Adds it to list */
+      orxLinkList_AddEnd(&(_pstShader->stParamList), &(pstParam->stNode));
+
+      /* Allocates value */
+      pstParamValue = (orxSHADER_PARAM_VALUE *)orxBank_Allocate(_pstShader->pstParamValueBank);
+
+      /* Valid? */
+      if(pstParamValue != orxNULL)
+      {
+        /* Clears it */
+        orxMemory_Zero(pstParamValue, sizeof(orxSHADER_PARAM_VALUE));
+
+        /* Inits it */
+        pstParamValue->pstParam = pstParam;
+        pstParamValue->s32Index = -1;
+        pstParamValue->fValue   = orxFLOAT_0;
+
+        /* Adds it to list */
+        orxLinkList_AddEnd(&(_pstShader->stParamValueList), &(pstParamValue->stNode));
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Couldn't allocate space for float parameter <%s>.", _pstShader->zReference, _pstShader, _zName);
       }
     }
   }
