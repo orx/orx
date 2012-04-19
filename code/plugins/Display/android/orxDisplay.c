@@ -1831,8 +1831,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     {
       /* Draws remaining items */
       orxDisplay_Android_DrawArrays();
-	  glFlush();
-      glASSERT();
 
       /* Stores it */
       sstDisplay.pstDestinationBitmap = _pstBitmap;
@@ -1847,8 +1845,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
           orxPROFILER_PUSH_MARKER("glBindFramebuffer screen");
           glBindFramebuffer(GL_FRAMEBUFFER, 0);
           orxPROFILER_POP_MARKER();
-          glASSERT();
-          glFlush();
           glASSERT();
 
           /* Updates result */
@@ -1865,8 +1861,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
 
           /* Links it to frame buffer */
           glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-          glASSERT();
-          glFlush();
           glASSERT();
 
           /* Updates result */

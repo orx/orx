@@ -597,8 +597,6 @@ static orxView *spoInstance;
     /* Binds screen frame buffer */
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiScreenFrameBuffer);
     glASSERT();
-    glFlush();
-    glASSERT();
 
     /* Updates result */
     bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
@@ -612,8 +610,6 @@ static orxView *spoInstance;
 
     /* Links texture to it */
     glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-    glASSERT();
-    glFlush();
     glASSERT();
 
     /* Updates result */
@@ -2359,8 +2355,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
   {
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
-    glFlush();
-    glASSERT();
 
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _pstBitmap;

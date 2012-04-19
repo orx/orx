@@ -1767,8 +1767,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
         /* Binds default frame buffer */
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         glASSERT();
-        glFlush();
-        glASSERT();
 
         /* Updates result */
         eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
