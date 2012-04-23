@@ -73,8 +73,9 @@
 /** Misc defines
  */
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME         "Texture"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER       "TextureCorner"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN       "TextureOrigin"
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE         "TextureSize"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER       "TextureCorner" /**< Kept for retro-compatibility reason */
 #define orxGRAPHIC_KZ_CONFIG_TEXT_NAME            "Text"
 #define orxGRAPHIC_KZ_CONFIG_PIVOT                "Pivot"
 #define orxGRAPHIC_KZ_CONFIG_COLOR                "Color"
@@ -395,9 +396,25 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             /* Inits default 2D flags */
             u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
-            /* Has corners? */
-            if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
+            /* Has origin/size? */
+            if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN) != orxFALSE)
             && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+            {
+              orxVECTOR vTextureOrigin, vTextureSize;
+
+              /* Gets both values */
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
+
+              /* Stores them */
+              pstResult->fLeft    = vTextureOrigin.fX;
+              pstResult->fTop     = vTextureOrigin.fY;
+              pstResult->fWidth   = vTextureSize.fX;
+              pstResult->fHeight  = vTextureSize.fY;
+            }
+            /* Has corner/size? */
+            else if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
+                 && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
             {
               orxVECTOR vTextureCorner, vTextureSize;
 
