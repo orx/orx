@@ -34,8 +34,8 @@
  * @addtogroup orxStructure
  *
  * Structure module
- * Allows to creates and handle structures.
- * Structures can be referenced by other structures (or objects).
+ * Allows to create and handle structures.
+ * Structures can be referenced by other structures.
  *
  * @{
  */
@@ -47,7 +47,6 @@
 #include "orxInclude.h"
 
 #include "core/orxClock.h"
-#include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
 
@@ -76,6 +75,7 @@
 #define orxSPAWNER(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, SPAWNER)
 #define orxTEXT(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXT)
 #define orxTEXTURE(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)
+#define orxTIMELINE(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, TIMELINE)
 #define orxVIEWPORT(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, VIEWPORT)
 
 /** Structure register macro
@@ -123,6 +123,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_SHADERPOINTER,
   orxSTRUCTURE_ID_SOUNDPOINTER,
   orxSTRUCTURE_ID_SPAWNER,
+  orxSTRUCTURE_ID_TIMELINE,
 
   orxSTRUCTURE_ID_LINKABLE_NUMBER,
 

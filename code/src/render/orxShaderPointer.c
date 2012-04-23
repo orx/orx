@@ -769,7 +769,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
   return eResult;
 }
 
-/** Removes a shader using using its config ID
+/** Removes a shader using its config ID
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _zShaderConfigID  Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

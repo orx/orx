@@ -43,6 +43,7 @@ LOCAL_SRC_FILES = \
 	physics/orxPhysics.c      \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
+	object/orxTimeLine.c      \
 	object/orxFrame.c         \
 	object/orxFX.c            \
 	object/orxFXPointer.c     \
@@ -115,6 +116,7 @@ LOCAL_SRC_FILES = \
 	physics/orxPhysics.c      \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
+	object/orxTimeLine.c      \
 	object/orxFrame.c         \
 	object/orxFX.c            \
 	object/orxFXPointer.c     \

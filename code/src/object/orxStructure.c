@@ -32,6 +32,7 @@
 
 #include "object/orxStructure.h"
 
+#include "debug/orxDebug.h"
 #include "memory/orxBank.h"
 #include "debug/orxProfiler.h"
 #include "utils/orxLinkList.h"

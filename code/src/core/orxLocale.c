@@ -232,6 +232,11 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
               /* Sends it */
               orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
             }
+            else
+            {
+              /* Unprotects it */
+              eResult = orxConfig_ProtectSection(_zLanguage, orxFALSE);
+            }
           }
 
           break;

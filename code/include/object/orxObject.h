@@ -550,7 +550,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
-/** Removes an FX using using its config ID
+/** Removes an FX using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -572,7 +572,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SynchronizeFX(orxOBJECT *_
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID);
 
-/** Removes a sound using using its config ID
+/** Removes a sound using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zSoundConfigID Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -607,7 +607,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
-/** Removes a shader using using its config ID
+/** Removes a shader using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

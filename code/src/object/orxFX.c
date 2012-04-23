@@ -326,13 +326,13 @@ orxSTATUS orxFASTCALL orxFX_Init()
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create FX hashtable storage.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create FX hashtable storage.");
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to initialize the FX module when it was already initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to initialize the FX module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -343,6 +343,14 @@ orxSTATUS orxFASTCALL orxFX_Init()
   {
     /* Inits Flags */
     orxFLAG_SET(sstFX.u32Flags, orxFX_KU32_STATIC_FLAG_READY, orxFX_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Deletes reference table if needed */
+    if(sstFX.pstReferenceTable != orxNULL)
+    {
+      orxHashTable_Delete(sstFX.pstReferenceTable);
+    }
   }
 
   /* Done! */
@@ -371,7 +379,7 @@ void orxFASTCALL orxFX_Exit()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit from the FX module when it wasn't initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit from the FX module when it wasn't initialized.");
   }
 
   return;
@@ -402,7 +410,7 @@ orxFX *orxFASTCALL orxFX_Create()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create FX structure.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create FX structure.");
   }
 
   /* Done! */
@@ -448,16 +456,16 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
       {
         orxU32 i;
 
-        /* Stores its reference */
-        pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
         /* Adds it to reference table */
         if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
           orxU32 u32SlotCounter;
+
+          /* Stores its reference */
+          pstResult->zReference = orxConfig_GetCurrentSection();
+
+          /* Protects it */
+          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
           /* Gets number of declared slots */
           u32SlotCounter = orxConfig_GetListCounter(orxFX_KZ_CONFIG_SLOT_LIST);
@@ -469,7 +477,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
             for(i = orxFX_KU32_SLOT_NUMBER; i < u32SlotCounter; i++)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[%s]: Too many slots for this FX, can't add slot <%s>.", _zConfigID, orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i));
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Too many slots for this FX, can't add slot <%s>.", _zConfigID, orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i));
             }
 
             /* Updates slot counter */
@@ -514,7 +522,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to add hash table.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add FX to hashtable.");
 
           /* Deletes it */
           orxFX_Delete(pstResult);
@@ -530,7 +538,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't create FX because config section (%s) couldn't be found.", _zConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create FX because config section (%s) couldn't be found.", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -950,7 +958,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
               default:
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve.");
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid curve.");
 
                 /* Skips it */
                 continue;
@@ -1070,7 +1078,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 else
                 {
                   /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid color blend mix for FX: only one type of color space can be used at once.");
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid color blend mix for FX: only one type of color space can be used at once.");
                 }
 
                 break;
@@ -1218,7 +1226,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
               default:
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid FX type when trying to apply FX.");
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid FX type when trying to apply FX.");
 
                 break;
               }
@@ -2347,7 +2355,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve type for FX. Use %s, %s, %s, %s, %s or %s", orxFX_KZ_LINEAR, orxFX_KZ_TRIANGLE, orxFX_KZ_SQUARE, orxFX_KZ_SINE, orxFX_KZ_SMOOTH, orxFX_KZ_SMOOTHER);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid curve type for FX. Use %s, %s, %s, %s, %s or %s", orxFX_KZ_LINEAR, orxFX_KZ_TRIANGLE, orxFX_KZ_SQUARE, orxFX_KZ_SINE, orxFX_KZ_SMOOTH, orxFX_KZ_SMOOTHER);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -2593,7 +2601,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Config file does not have section named (%s).", _zSlotID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Config file does not have section named (%s).", _zSlotID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

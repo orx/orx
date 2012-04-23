@@ -192,58 +192,65 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
         fFXLocalStartTime = fLastTime - pstFXPointer->astFXList[i].fStartTime;
         fFXLocalEndTime   = pstFXPointer->fTime - pstFXPointer->astFXList[i].fStartTime;
 
-        /* Is the first time? */
-        if(!orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_PLAYED))
+        /* Is the FX reached? */
+        if(fFXLocalEndTime >= orxFLOAT_0)
         {
-          orxFX_EVENT_PAYLOAD stPayload;
-
-          /* Inits event payload */
-          orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
-          stPayload.pstFX   = pstFX;
-          stPayload.zFXName = orxFX_GetName(pstFX);
-
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_START, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
-        }
-
-        /* Updates its status */
-        orxFLAG_SET(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_PLAYED, orxFXPOINTER_HOLDER_KU32_FLAG_NONE);
-
-        /* Applies FX from last time to now */
-        if(orxFX_Apply(pstFX, pstObject, fFXLocalStartTime, fFXLocalEndTime) == orxSTATUS_FAILURE)
-        {
-          orxFX_EVENT_PAYLOAD stPayload;
-
-          /* Inits event payload */
-          orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
-          stPayload.pstFX   = pstFX;
-          stPayload.zFXName = orxFX_GetName(pstFX);
-
-          /* Is a looping FX? */
-          if(orxFX_IsLooping(pstFX) != orxFALSE)
+          /* Is the first time? */
+          if(!orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_PLAYED))
           {
-            /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_LOOP, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+            orxFX_EVENT_PAYLOAD stPayload;
 
-            /* Updates its start time */
-            pstFXPointer->astFXList[i].fStartTime = pstFXPointer->fTime;
+            /* Inits event payload */
+            orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
+            stPayload.pstFX   = pstFX;
+            stPayload.zFXName = orxFX_GetName(pstFX);
+
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_START, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
           }
-          else
+
+          /* Updates its status */
+          orxFLAG_SET(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_PLAYED, orxFXPOINTER_HOLDER_KU32_FLAG_NONE);
+
+          /* Applies FX from last time to now */
+          if(orxFX_Apply(pstFX, pstObject, fFXLocalStartTime, fFXLocalEndTime) == orxSTATUS_FAILURE)
           {
-            /* Decreases its reference counter */
-            orxStructure_DecreaseCounter(pstFX);
+            orxFX_EVENT_PAYLOAD stPayload;
 
-            /* Removes its reference */
-            pstFXPointer->astFXList[i].pstFX = orxNULL;
+            /* Inits event payload */
+            orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
+            stPayload.pstFX   = pstFX;
+            stPayload.zFXName = orxFX_GetName(pstFX);
 
-            /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_STOP, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
-
-            /* Is internal? */
-            if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+            /* Is a looping FX? */
+            if(orxFX_IsLooping(pstFX) != orxFALSE)
             {
-              /* Deletes it */
-              orxFX_Delete(pstFX);
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_LOOP, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+
+              /* Updates its start time */
+              pstFXPointer->astFXList[i].fStartTime = pstFXPointer->fTime;
+            }
+            else
+            {
+              /* Decreases its reference counter */
+              orxStructure_DecreaseCounter(pstFX);
+
+              /* Removes its reference */
+              pstFXPointer->astFXList[i].pstFX = orxNULL;
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_STOP, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+
+              /* Is internal? */
+              if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+              {
+                /* Deletes it */
+                orxFX_Delete(pstFX);
+              }
             }
           }
         }
@@ -258,6 +265,7 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
   return eResult;
 }
 
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
@@ -271,6 +279,7 @@ void orxFASTCALL orxFXPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_FX);
 
@@ -302,13 +311,13 @@ orxSTATUS orxFASTCALL orxFXPointer_Init()
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to register linked list structure.");
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to load FX pointer module when it was already initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to load FX pointer module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -337,7 +346,7 @@ void orxFASTCALL orxFXPointer_Exit()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit FX pointer module when it wasn't initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit FX pointer module when it wasn't initialized.");
   }
 
   return;
@@ -372,7 +381,7 @@ orxFXPOINTER *orxFASTCALL orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create FX pointer structure.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create FX pointer structure.");
   }
 
   /* Done! */
@@ -560,7 +569,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for FX.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No available slots for FX.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -735,7 +744,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading FX <%s> from config failed.", _zFXConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Loading FX <%s> from config failed.", _zFXConfigID);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -807,7 +816,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
   return eResult;
 }
 
-/** Removes an FX using using its config ID
+/** Removes an FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -930,7 +939,7 @@ orxSTATUS orxFASTCALL orxFXPointer_Synchronize(orxFXPOINTER *_pstFXPointer, cons
       if(j == orxFXPOINTER_KU32_FX_NUMBER)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
       }
     }
   }

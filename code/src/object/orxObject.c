@@ -409,6 +409,11 @@ orxSTATUS orxFASTCALL orxObject_Init()
           /* Inits Flags */
           sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
         }
+        else
+        {
+          /* Unregisters structure type */
+          orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
+        }
       }
     }
     else
@@ -509,7 +514,7 @@ orxOBJECT *orxFASTCALL orxObject_Create()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create object object. hehe");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create object.");
   }
 
   return pstObject;
@@ -625,12 +630,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       const orxSTRING zClockName;
       const orxSTRING zSpawnerName;
       const orxSTRING zCameraName;
-      orxFRAME *pstFrame;
-      orxBODY  *pstBody;
-      orxU32    u32FrameFlags, u32Flags;
-      orxS32    s32Number;
-      orxVECTOR vValue, vParentSize, vColor;
-      orxBOOL   bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE;
+      orxFRAME       *pstFrame;
+      orxBODY        *pstBody;
+      orxU32          u32FrameFlags, u32Flags;
+      orxS32          s32Number;
+      orxVECTOR       vValue, vParentSize, vColor;
+      orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE;
 
       /* Defaults to 2D flags */
       u32Flags = orxOBJECT_KU32_FLAG_2D;
@@ -3739,7 +3744,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
   return eResult;
 }
 
-/** Removes an FX using using its config ID
+/** Removes an FX using its config ID
  * @param[in]   _pstObject      Concerned FXPointer
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -3900,7 +3905,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
   return eResult;
 }
 
-/** Removes a sound using using its config ID
+/** Removes a sound using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zSoundConfigID Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -4066,7 +4071,7 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
-/** Removes a shader using using its config ID
+/** Removes a shader using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

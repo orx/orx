@@ -155,7 +155,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromCon
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
-/** Removes an FX using using its config ID
+/** Removes an FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -182,7 +182,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL           orxFXPointer_GetTime(const orxFX
  * @param[in]   _fTime        Time to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT _fTime);
+extern orxDLLAPI orxSTATUS orxFASTCALL        	orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT _fTime);
 
 #endif /* _orxFXPointer_H_ */
 

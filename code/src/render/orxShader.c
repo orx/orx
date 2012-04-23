@@ -354,17 +354,17 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
-        /* Stores its reference */
-        pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
         /* Adds it to reference table */
         if(orxHashTable_Add(sstShader.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
           orxS32          i, s32Number;
           const orxSTRING zCode;
+
+          /* Stores its reference */
+          pstResult->zReference = orxConfig_GetCurrentSection();
+
+          /* Protects it */
+          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
           /* For all parameters */
           for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)

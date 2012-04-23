@@ -89,6 +89,7 @@
 #include "object/orxObject.h"
 #include "object/orxSpawner.h"
 #include "object/orxStructure.h"
+#include "object/orxTimeLine.h"
 
 #include "plugin/orxPlugin.h"
 #include "plugin/orxPluginCore.h"
