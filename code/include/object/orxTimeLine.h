@@ -73,9 +73,9 @@ typedef enum __orxTIMELINE_EVENT_t
  */
 typedef struct __orxTIMELINE_EVENT_PAYLOAD_t
 {
-  const orxSTRING zEvent;                       /**< Event text : 4 */
-  orxTIMELINE    *pstTimeLine;                  /**< TimeLine reference : 8 */
-  const orxSTRING zTrackName;                   /**< Track name : 12 */
+  orxTIMELINE    *pstTimeLine;                  /**< TimeLine reference : 4 */
+  const orxSTRING zTrackName;                   /**< Track name : 8 */
+  const orxSTRING zEvent;                       /**< Event text : 12 */
   orxFLOAT        fTimeStamp;                   /**< Event time : 16 */
 
 } orxTIMELINE_EVENT_PAYLOAD;

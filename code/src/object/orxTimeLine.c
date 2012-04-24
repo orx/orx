@@ -44,6 +44,14 @@
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4200)
+
+  #include "malloc.h"
+
+#endif /* __orxMSVC__ */
+
 
 /** Module flags
  */
@@ -97,9 +105,6 @@ typedef struct __orxTIMELINE_TRACK_EVENT_t
 
 /** TimeLine track
  */
-#ifdef __orxMSVC__
-  #pragma warning(disable : 4200)
-#endif /* __orxMSVC__ */
 typedef struct __orxTIMELINE_TRACK_t
 {
   const orxSTRING           zReference;               /**< Track reference : 4 */
@@ -109,9 +114,6 @@ typedef struct __orxTIMELINE_TRACK_t
   orxTIMELINE_TRACK_EVENT   astEventList[0];          /**< Track event list */
 
 } orxTIMELINE_TRACK;
-#ifdef __orxMSVC__
-  #pragma warning(default : 4200)
-#endif /* __orxMSVC__ */
 
 /** TimeLine track holder
  */
@@ -164,56 +166,165 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
 {
   orxTIMELINE_TRACK *pstResult = orxNULL;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxTimeLine_CreateTrack");
+
   /* Pushes section */
   if((orxConfig_HasSection(_zTrackID) != orxFALSE)
   && (orxConfig_PushSection(_zTrackID) != orxSTATUS_FAILURE))
   {
-    orxU32 u32EventCounter = 0;
+    orxU32 u32EventCounter = 0, u32KeyCounter;
 
-    //! TODO: Finds event counter
-
-    /* Allocates track */
-    pstResult = (orxTIMELINE_TRACK *)orxMemory_Allocate(sizeof(orxTIMELINE_TRACK) + (u32EventCounter * sizeof(orxTIMELINE_TRACK_EVENT)), orxMEMORY_TYPE_MAIN);
+    /* Gets number of keys */
+    u32KeyCounter = orxConfig_GetKeyCounter();
 
     /* Valid? */
-    if(pstResult != orxNULL)
+    if(u32KeyCounter > 0)
     {
-      /* Stores its ID */
-      pstResult->u32ID = orxString_ToCRC(_zTrackID);
+      orxU32 i;
 
-      /* Adds it to reference table */
-      if(orxHashTable_Add(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
+#ifdef __orxMSVC__
+
+      orxFLOAT *afTimeList = (orxFLOAT *)alloca(u32KeyCounter * sizeof(orxFLOAT));
+
+#else /* __orxMSVC__ */
+
+      orxFLOAT afTimeList[u32KeyCounter];
+
+#endif /* __orxMSVC__ */
+
+      /* For all time entries */
+      for(i = 0; i < u32KeyCounter; i++)
       {
-        //! TODO: Adds all events
+        /* Inits it */
+        afTimeList[i] = orxFLOAT_MAX;
+      }
 
-        /* Stores its reference */
-        pstResult->zReference = orxConfig_GetCurrentSection();
+      /* For all config keys */
+      for(i = 0; i < u32KeyCounter; i++)
+      {
+        const orxSTRING zKey;
+        orxFLOAT        fTime;
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+        /* Gets it */
+        zKey = orxConfig_GetKey(i);
 
-        /* Updates track counters */
-        pstResult->u32RefCounter    = 0;
-        pstResult->u32EventCounter  = u32EventCounter;
-
-        /* Should keep in cache? */
-        if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+        /* Is a valid time stamp? */
+        if((orxString_ToFloat(zKey, &fTime, orxNULL) != orxSTATUS_FAILURE)
+        && (fTime >= orxFLOAT_0))
         {
-          /* Increases its reference counter to keep it in cache table */
-          pstResult->u32RefCounter++;
+          /* Stores it */
+          afTimeList[i] = fTime;
+
+          /* Updates event counter */
+          u32EventCounter += orxConfig_GetListCounter(zKey);
+        }
+        else
+        {
+          /* Not keep in cache? */
+          if(orxString_Compare(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE, zKey) != 0)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "TimeLine track [%s]: ignoring invalid key (%s).", _zTrackID, zKey);
+          }
+        }
+      }
+
+      /* Allocates track */
+      pstResult = (orxTIMELINE_TRACK *)orxMemory_Allocate(sizeof(orxTIMELINE_TRACK) + (u32EventCounter * sizeof(orxTIMELINE_TRACK_EVENT)), orxMEMORY_TYPE_MAIN);
+
+      /* Valid? */
+      if(pstResult != orxNULL)
+      {
+        /* Stores its ID */
+        pstResult->u32ID = orxString_ToCRC(_zTrackID);
+
+        /* Adds it to reference table */
+        if(orxHashTable_Add(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
+        {
+          orxU32 u32EventIndex;
+
+          /* For all events */
+          for(u32EventIndex = 0; u32EventIndex < u32EventCounter;)
+          {
+            const orxSTRING zKey;
+            orxFLOAT        fTime;
+            orxU32          u32KeyIndex, u32ListCounter;
+
+            /* Finds time to add next */
+            for(fTime = orxFLOAT_MAX, u32KeyIndex = orxU32_UNDEFINED, i = 0; i < u32KeyCounter; i++)
+            {
+              /* Is sooner? */
+              if(afTimeList[i] < fTime)
+              {
+                /* Stores it */
+                fTime       = afTimeList[i];
+                u32KeyIndex = i;
+              }
+            }
+
+            /* Checks */
+            orxASSERT(u32KeyIndex != orxU32_UNDEFINED);
+
+            /* Gets corresponding key */
+            zKey = orxConfig_GetKey(u32KeyIndex);
+
+            /* For all events */
+            for(i = 0, u32ListCounter = orxConfig_GetListCounter(zKey);
+                i < u32ListCounter;
+                i++, u32EventIndex++)
+            {
+              /* Checks */
+              orxASSERT(u32EventIndex < u32EventCounter);
+
+              /* Stores event */
+              pstResult->astEventList[u32EventIndex].fTimeStamp = fTime;
+              pstResult->astEventList[u32EventIndex].zEventText = orxString_Duplicate(orxConfig_GetListString(zKey, i));
+            }
+
+            /* Clears time entry */
+            afTimeList[u32KeyIndex] = orxFLOAT_MAX;
+          }
+
+          /* Stores its reference */
+          pstResult->zReference = orxConfig_GetCurrentSection();
+
+          /* Protects it */
+          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
+          /* Updates track counters */
+          pstResult->u32RefCounter    = 0;
+          pstResult->u32EventCounter  = u32EventCounter;
+
+          /* Should keep in cache? */
+          if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+          {
+            /* Increases its reference counter to keep it in cache table */
+            pstResult->u32RefCounter++;
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add track to hashtable.");
+
+          /* Deletes it */
+          orxMemory_Free(pstResult);
+
+          /* Updates result */
+          pstResult = orxNULL;
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add track to hashtable.");
-
-        /* Deletes it */
-        orxMemory_Free(pstResult);
-
-        /* Updates result */
-        pstResult = orxNULL;
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section is empty.", _zTrackID);
       }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: memory allocation failure.", _zTrackID);
     }
 
     /* Pops previous section */
@@ -222,8 +333,11 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't add track to TimeLine because config section (%s) couldn't be found.", _zTrackID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section not found.", _zTrackID);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
@@ -239,6 +353,8 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
   /* Not referenced? */
   if(_pstTrack->u32RefCounter == 0)
   {
+    orxU32 i;
+
     /* Has an ID? */
     if((_pstTrack->zReference != orxNULL)
     && (_pstTrack->zReference != orxSTRING_EMPTY))
@@ -248,6 +364,13 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
 
       /* Unprotects it */
       orxConfig_ProtectSection(_pstTrack->zReference, orxFALSE);
+    }
+
+    /* For all its events */
+    for(i = 0; i < _pstTrack->u32EventCounter; i++)
+    {
+      /* Frees its text event */
+      orxString_Delete(_pstTrack->astEventList[i].zEventText);
     }
 
     /* Deletes it */
@@ -960,3 +1083,9 @@ const orxSTRING orxFASTCALL orxTimeLine_GetName(const orxTIMELINE *_pstTimeLine)
   /* Done! */
   return zResult;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4200)
+
+#endif /* __orxMSVC__ */

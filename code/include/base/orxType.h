@@ -169,6 +169,7 @@
 /* *** Float constants *** */
 static const orxFLOAT             orxFLOAT_0            = orx2F(0.0f);
 static const orxFLOAT             orxFLOAT_1            = orx2F(1.0f);
+static const orxFLOAT             orxFLOAT_MAX          = orx2F(1e37);
 
 
 /* *** Undefined constants *** */
