@@ -134,7 +134,7 @@ struct __orxTIMELINE_t
   orxSTRUCTURE             *pstOwner;                 /**< Owner structure : 20 */
   orxFLOAT                  fTime;                    /**< Time : 24 */
   const orxSTRING           zReference;               /**< TimeLine reference : 28 */
-  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 220 */
+  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 284 */
 };
 
 /** Static structure
@@ -293,7 +293,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
           /* Updates track counters */
-          pstResult->u32RefCounter    = 0;
+          pstResult->u32RefCounter    = 1;
           pstResult->u32EventCounter  = u32EventCounter;
 
           /* Should keep in cache? */
@@ -686,7 +686,7 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create()
  * @param[in]   _zConfigID            Config ID
  * @ return orxTIMELINE / orxNULL
  */
-orxTIMELINE *orxFASTCALL orxTIMELINE_CreateFromConfig(const orxSTRING _zConfigID)
+orxTIMELINE *orxFASTCALL orxTimeLine_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxU32        u32ID;
   orxTIMELINE  *pstResult;
