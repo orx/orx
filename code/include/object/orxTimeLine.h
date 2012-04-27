@@ -61,6 +61,7 @@ typedef enum __orxTIMELINE_EVENT_t
   orxTIMELINE_EVENT_TRACK_STOP,                 /**< Event sent when a track stops */
   orxTIMELINE_EVENT_TRACK_ADD,                  /**< Event sent when a track is added */
   orxTIMELINE_EVENT_TRACK_REMOVE,               /**< Event sent when a track is removed */
+  orxTIMELINE_EVENT_LOOP,                       /**< Event sent when a track is looping */
   orxTIMELINE_EVENT_TRIGGER,                    /**< Event sent when an event is triggered */
 
   orxTIMELINE_EVENT_NUMBER,

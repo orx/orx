@@ -70,11 +70,12 @@
 
 #define orxTIMELINE_KU32_MASK_ALL                     0xFFFFFFFF  /**< All mask */
 
-/** Track flags
+/** Holder flags
  */
 #define orxTIMELINE_HOLDER_KU32_FLAG_NONE             0x00000000  /**< No flag */
 
 #define orxTIMELINE_HOLDER_KU32_FLAG_PLAYED           0x10000000  /**< Played flag */
+#define orxTIMELINE_HOLDER_KU32_FLAG_LOOP             0x20000000  /**< Loop flag */
 
 #define orxTIMELINE_HOLDER_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
@@ -86,6 +87,7 @@
 
 #define orxTIMELINE_KU32_TRACK_NUMBER                 16
 
+#define orxTIMELINE_KZ_CONFIG_LOOP                    "Loop"
 #define orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
 
 
@@ -504,17 +506,30 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             stPayload.pstTimeLine = pstTimeLine;
             stPayload.zTrackName  = pstTrack->zReference;
 
-            /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+            /* Is a looping track? */
+            if(orxFLAG_TEST(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_LOOP))
+            {
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_LOOP, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
 
-            /* Removes its reference */
-            pstTimeLine->astTrackList[i].pstTrack = orxNULL;
+              /* Resets track */
+              pstTimeLine->astTrackList[i].u32NextEventIndex  = 0;
+              pstTimeLine->astTrackList[i].fStartTime         = pstTimeLine->fTime;
+            }
+            else
+            {
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
 
-            /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+              /* Removes its reference */
+              pstTimeLine->astTrackList[i].pstTrack = orxNULL;
 
-            /* Deletes it */
-            orxTimeLine_DeleteTrack(pstTrack);
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+
+              /* Deletes it */
+              orxTimeLine_DeleteTrack(pstTrack);
+            }
           }
           else
           {
@@ -854,11 +869,26 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     /* Valid? */
     if(pstTrack != orxNULL)
     {
+      orxU32 u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+
+      /* Pushes its config section */
+      orxConfig_PushSection(pstTrack->zReference);
+
+      /* Should loop? */
+      if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_LOOP) != orxFALSE)
+      {
+        /* Updates flags */
+        u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_LOOP;
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
+
       /* Updates track holder */
       _pstTimeLine->astTrackList[u32Index].pstTrack           = pstTrack;
       _pstTimeLine->astTrackList[u32Index].fStartTime         = _pstTimeLine->fTime;
       _pstTimeLine->astTrackList[u32Index].u32NextEventIndex  = 0;
-      _pstTimeLine->astTrackList[u32Index].u32Flags           = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+      _pstTimeLine->astTrackList[u32Index].u32Flags           = u32Flags;
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;

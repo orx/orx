@@ -239,7 +239,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Logs info */
-        orxLOG("[%s::%s::%s] has been triggered at (%g)", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent, pstPayload->fTimeStamp);
+        orxLOG("[%s::%s::%s] has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
       }
 
       break;
