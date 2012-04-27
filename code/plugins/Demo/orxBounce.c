@@ -69,7 +69,12 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
   orxPROFILER_PUSH_MARKER("Bounce_EventHandler");
 
   /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER) || (_pstEvent->eType == orxEVENT_TYPE_SOUND) || (_pstEvent->eType == orxEVENT_TYPE_DISPLAY));
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS)
+         || (_pstEvent->eType == orxEVENT_TYPE_INPUT)
+         || (_pstEvent->eType == orxEVENT_TYPE_SHADER)
+         || (_pstEvent->eType == orxEVENT_TYPE_SOUND)
+         || (_pstEvent->eType == orxEVENT_TYPE_DISPLAY)
+         || (_pstEvent->eType == orxEVENT_TYPE_TIMELINE));
 
   /* Depending on event type */
   switch(_pstEvent->eType)
@@ -217,9 +222,27 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 
         /* Updates window */
         orxDisplay_SetVideoMode(orxNULL);
-
-        break;
       }
+
+      break;
+    }
+
+    /* TimeLine */
+    case orxEVENT_TYPE_TIMELINE:
+    {
+      /* New event triggered? */
+      if(_pstEvent->eID == orxTIMELINE_EVENT_TRIGGER)
+      {
+        orxTIMELINE_EVENT_PAYLOAD *pstPayload;
+
+        /* Gets event payload */
+        pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Logs info */
+        orxLOG("[%s::%s::%s] has been triggered at (%g)", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent, pstPayload->fTimeStamp);
+      }
+
+      break;
     }
 
     default:
@@ -409,6 +432,7 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   else
   {

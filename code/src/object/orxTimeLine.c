@@ -658,6 +658,7 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create(const orxSTRUCTURE *_pstOwner)
 
   /* Checks */
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstOwner);
 
   /* Creates TimeLine */
   pstResult = orxTIMELINE(orxStructure_Create(orxSTRUCTURE_ID_TIMELINE));

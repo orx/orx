@@ -44,6 +44,7 @@
 #include "object/orxFrame.h"
 #include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
+#include "object/orxTimeLine.h"
 #include "render/orxCamera.h"
 #include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
@@ -118,6 +119,7 @@
 #define orxOBJECT_KZ_CONFIG_FX_DELAY_LIST       "FXDelayList"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
+#define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
 #define orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST    "ChildJointList"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
@@ -1192,6 +1194,19 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
       }
 
+      /* Has TimeLine tracks? */
+      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_TRACK_LIST)) > 0)
+      {
+        orxS32 i;
+
+        /* For all defined tracks */
+        for(i = 0; i < s32Number; i++)
+        {
+          /* Adds it */
+          orxObject_AddTimeLineTrack(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRACK_LIST, i));
+        }
+      }
+
       /* Has smoothing value? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SMOOTHING) != orxFALSE)
       {
@@ -1397,6 +1412,12 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
         case orxSTRUCTURE_ID_SPAWNER:
         {
           orxSpawner_Delete(orxSPAWNER(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_TIMELINE:
+        {
+          orxTimeLine_Delete(orxTIMELINE(pstStructure));
           break;
         }
 
@@ -4147,6 +4168,147 @@ orxBOOL orxFASTCALL orxObject_IsShaderEnabled(const orxOBJECT *_pstObject)
   {
     /* Updates result */
     bResult = orxShaderPointer_IsEnabled(pstShaderPointer);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Adds a timeline track to an object using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID)
+{
+  orxTIMELINE  *pstTimeLine;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zTrackConfigID != orxNULL) && (_zTrackConfigID != orxSTRING_EMPTY));
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    /* Gets its TimeLine */
+    pstTimeLine = orxOBJECT_GET_STRUCTURE(_pstObject, TIMELINE);
+
+    /* Doesn't exist? */
+    if(pstTimeLine == orxNULL)
+    {
+      /* Creates one */
+      pstTimeLine = orxTimeLine_Create(orxSTRUCTURE(_pstObject));
+
+      /* Valid? */
+      if(pstTimeLine != orxNULL)
+      {
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstTimeLine));
+
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_TIMELINE].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Adds timeline track from config */
+          eResult = orxTimeLine_AddTrackFromConfig(pstTimeLine, _zTrackConfigID);
+        }
+      }
+    }
+    else
+    {
+      /* Adds timeline track from config */
+      eResult = orxTimeLine_AddTrackFromConfig(pstTimeLine, _zTrackConfigID);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a timeline track using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zTrackConfigID Config ID of the timeline track to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID)
+{
+  orxTIMELINE  *pstTimeLine;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its TimeLine */
+  pstTimeLine = orxOBJECT_GET_STRUCTURE(_pstObject, TIMELINE);
+
+  /* Valid? */
+  if(pstTimeLine != orxNULL)
+  {
+    /* Removes timeline track from config */
+    eResult = orxTimeLine_RemoveTrackFromConfig(pstTimeLine, _zTrackConfigID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Enables an object's timeline
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _bEnable          Enable / disable
+ */
+void orxFASTCALL orxObject_EnableTimeLine(orxOBJECT *_pstObject, orxBOOL _bEnable)
+{
+  orxTIMELINE *pstTimeLine;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its TimeLine */
+  pstTimeLine = orxOBJECT_GET_STRUCTURE(_pstObject, TIMELINE);
+
+  /* Valid? */
+  if(pstTimeLine != orxNULL)
+  {
+    /* Enables it */
+    orxTimeLine_Enable(pstTimeLine, _bEnable);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Is an object's timeline enabled?
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxObject_IsTimeLineEnabled(const orxOBJECT *_pstObject)
+{
+  orxTIMELINE  *pstTimeLine;
+  orxBOOL       bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its TimeLine */
+  pstTimeLine = orxOBJECT_GET_STRUCTURE(_pstObject, TIMELINE);
+
+  /* Valid? */
+  if(pstTimeLine != orxNULL)
+  {
+    /* Updates result */
+    bResult = orxTimeLine_IsEnabled(pstTimeLine);
   }
   else
   {

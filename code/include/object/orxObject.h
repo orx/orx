@@ -626,6 +626,32 @@ extern orxDLLAPI void orxFASTCALL           orxObject_EnableShader(orxOBJECT *_p
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxOBJECT *_pstObject);
 
+/** Adds a timeline track to an object using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Removes a timeline track using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zTrackConfigID Config ID of the timeline track to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Enables an object's timeline
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _bEnable          Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_EnableTimeLine(orxOBJECT *_pstObject, orxBOOL _bEnable);
+
+/** Is an object's timeline enabled?
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTimeLineEnabled(const orxOBJECT *_pstObject);
+
 
 /** Gets object config name
  * @param[in]   _pstObject      Concerned object
