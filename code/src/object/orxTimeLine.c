@@ -86,7 +86,6 @@
 
 #define orxTIMELINE_KU32_TRACK_NUMBER                 16
 
-#define orxTIMELINE_KZ_CONFIG_TRACK_LIST              "TrackList"
 #define orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
 
 
@@ -131,10 +130,9 @@ typedef struct __orxTIMELINE_TRACK_HOLDER_t
 struct __orxTIMELINE_t
 {
   orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 16 */
-  orxSTRUCTURE             *pstOwner;                 /**< Owner structure : 20 */
+  const orxSTRUCTURE       *pstOwner;                 /**< Owner structure : 20 */
   orxFLOAT                  fTime;                    /**< Time : 24 */
-  const orxSTRING           zReference;               /**< TimeLine reference : 28 */
-  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 284 */
+  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 276 */
 };
 
 /** Static structure
@@ -651,9 +649,10 @@ void orxFASTCALL orxTimeLine_Exit()
 }
 
 /** Creates an empty TimeLine
+ * @param[in]   _pstOwner                       TimeLine's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxTIMELINE / orxNULL
  */
-orxTIMELINE *orxFASTCALL orxTimeLine_Create()
+orxTIMELINE *orxFASTCALL orxTimeLine_Create(const orxSTRUCTURE *_pstOwner)
 {
   orxTIMELINE *pstResult;
 
@@ -666,6 +665,9 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create()
   /* Created? */
   if(pstResult != orxNULL)
   {
+    /* Stores owner */
+    pstResult->pstOwner = _pstOwner;
+
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxTIMELINE_KU32_FLAG_ENABLED, orxTIMELINE_KU32_MASK_ALL);
 
@@ -676,95 +678,6 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create()
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create TimeLine structure.");
-  }
-
-  /* Done! */
-  return pstResult;
-}
-
-/** Creates a TimeLine from config
- * @param[in]   _zConfigID            Config ID
- * @ return orxTIMELINE / orxNULL
- */
-orxTIMELINE *orxFASTCALL orxTimeLine_CreateFromConfig(const orxSTRING _zConfigID)
-{
-  orxU32        u32ID;
-  orxTIMELINE  *pstResult;
-
-  /* Checks */
-  orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
-
-  /* Gets TimeLine ID */
-  u32ID = orxString_ToCRC(_zConfigID);
-
-  /* Pushes section */
-  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
-  {
-    /* Creates TimeLine */
-    pstResult = orxTimeLine_Create();
-
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      orxU32 u32TrackCounter, i;
-
-      /* Stores its reference */
-      pstResult->zReference = orxConfig_GetCurrentSection();
-
-      /* Protects it */
-      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
-      /* Gets number of declared tracks */
-      u32TrackCounter = orxConfig_GetListCounter(orxTIMELINE_KZ_CONFIG_TRACK_LIST);
-
-      /* Too many tracks? */
-      if(u32TrackCounter > orxTIMELINE_KU32_TRACK_NUMBER)
-      {
-        /* For all exceeding tracks */
-        for(i = orxTIMELINE_KU32_TRACK_NUMBER; i < u32TrackCounter; i++)
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Too many track for this TimeLine, can't add track <%s>.", _zConfigID, orxConfig_GetListString(orxTIMELINE_KZ_CONFIG_TRACK_LIST, i));
-        }
-
-        /* Updates track counter */
-        u32TrackCounter = orxTIMELINE_KU32_TRACK_NUMBER;
-      }
-
-      /* For all tracks */
-      for(i = 0; i < u32TrackCounter; i++)
-      {
-        const orxSTRING zTrackName;
-
-        /* Gets its name */
-        zTrackName = orxConfig_GetListString(orxTIMELINE_KZ_CONFIG_TRACK_LIST, i);
-
-        /* Valid? */
-        if((zTrackName != orxNULL) && (zTrackName != orxSTRING_EMPTY))
-        {
-          /* Adds track from config */
-          orxTimeLine_AddTrackFromConfig(pstResult, zTrackName);
-        }
-        else
-        {
-          /* Stops */
-          break;
-        }
-      }
-    }
-
-    /* Pops previous section */
-    orxConfig_PopSection();
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine because config section (%s) couldn't be found.", _zConfigID);
-
-    /* Updates result */
-    pstResult = orxNULL;
   }
 
   /* Done! */
@@ -819,14 +732,6 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
         /* Deletes it */
         orxTimeLine_DeleteTrack(pstTrack);
       }
-    }
-
-    /* Has an ID? */
-    if((_pstTimeLine->zReference != orxNULL)
-    && (_pstTimeLine->zReference != orxSTRING_EMPTY))
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstTimeLine->zReference, orxFALSE);
     }
 
     /* Deletes structure */
@@ -961,7 +866,7 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: No room for a new track, can't add track <%s>.", _pstTimeLine->zReference, _zTrackID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No room for a new track in TimeLine, can't add track <%s>.", _zTrackID);
   }
 
   /* Done! */
@@ -1054,34 +959,6 @@ orxFLOAT orxFASTCALL orxTimeLine_GetTrackDuration(const orxSTRING _zTrackID)
 
   /* Done! */
   return fResult;
-}
-
-/** Gets TimeLine name
- * @param[in]   _pstTimeLine          Concerned TimeLine
- * @return      orxSTRING / orxSTRING_EMPTY
- */
-const orxSTRING orxFASTCALL orxTimeLine_GetName(const orxTIMELINE *_pstTimeLine)
-{
-  const orxSTRING zResult;
-
-  /* Checks */
-  orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTimeLine);
-
-  /* Has reference? */
-  if(_pstTimeLine->zReference != orxNULL)
-  {
-    /* Updates result */
-    zResult = _pstTimeLine->zReference;
-  }
-  else
-  {
-    /* Updates result */
-    zResult = orxSTRING_EMPTY;
-  }
-
-  /* Done! */
-  return zResult;
 }
 
 #ifdef __orxMSVC__

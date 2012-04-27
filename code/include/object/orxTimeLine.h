@@ -95,15 +95,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_Init();
 extern orxDLLAPI void orxFASTCALL               orxTimeLine_Exit();
 
 /** Creates an empty TimeLine
+ * @param[in]   _pstOwner                       TimeLine's owner used for event callbacks (usually an orxOBJECT)
  * @return orxTIMELINE / orxNULL
  */
-extern orxDLLAPI orxTIMELINE *orxFASTCALL       orxTimeLine_Create();
-
-/** Creates a TimeLine from config
- * @param[in]   _zConfigID    Config ID
- * @ return orxTIMELINE / orxNULL
- */
-extern orxDLLAPI orxTIMELINE *orxFASTCALL       orxTimeLine_CreateFromConfig(const orxSTRING _zConfigID);
+extern orxDLLAPI orxTIMELINE *orxFASTCALL       orxTimeLine_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes a TimeLine
  * @param[in] _pstTimeLine            Concerned TimeLine
@@ -148,12 +143,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_RemoveTrackFromConfi
  * @return      Duration if found, -orxFLOAT_1 otherwise
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL           orxTimeLine_GetTrackDuration(const orxSTRING _zTrackID);
-
-/** Gets TimeLine name
- * @param[in]   _pstTimeLine          Concerned TimeLine
- * @return      orxSTRING / orxSTRING_EMPTY
- */
-extern orxDLLAPI const orxSTRING orxFASTCALL    orxTimeLine_GetName(const orxTIMELINE *_pstTimeLine);
 
 #endif /* _orxTIMELINE_H_ */
 
