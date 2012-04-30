@@ -429,7 +429,7 @@ orxBOOL orxFASTCALL orxEvent_IsSending()
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  bResult = (sstEvent.s32EventSendCounter > 0) ? orxTRUE : orxFALSE;
+  bResult = (sstEvent.s32EventSendCounter != 0) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
