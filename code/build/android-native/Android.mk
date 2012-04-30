@@ -33,6 +33,7 @@ LOCAL_SRC_FILES = \
 	render/orxShader.c        \
 	math/orxMath.c            \
 	math/orxVector.c          \
+	core/orxCommand.c         \
 	core/orxConfig.c          \
 	core/orxEvent.c           \
 	core/orxSystem.c          \
@@ -106,6 +107,7 @@ LOCAL_SRC_FILES = \
 	render/orxShader.c        \
 	math/orxMath.c            \
 	math/orxVector.c          \
+	core/orxCommand.c         \
 	core/orxConfig.c          \
 	core/orxEvent.c           \
 	core/orxSystem.c          \

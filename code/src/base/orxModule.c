@@ -52,6 +52,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_BODY, orxBody);
   orxMODULE_REGISTER(orxMODULE_ID_CAMERA, orxCamera);
   orxMODULE_REGISTER(orxMODULE_ID_CLOCK, orxClock);
+  orxMODULE_REGISTER(orxMODULE_ID_COMMAND, orxCommand);
   orxMODULE_REGISTER(orxMODULE_ID_CONFIG, orxConfig);
   orxMODULE_REGISTER(orxMODULE_ID_DISPLAY, orxDisplay);
   orxMODULE_REGISTER(orxMODULE_ID_EVENT, orxEvent);
