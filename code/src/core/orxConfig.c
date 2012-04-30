@@ -2438,7 +2438,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 }
 
                 /* Logs */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config entry [%s.%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
 
                 /* Deletes entry */
                 orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
