@@ -173,7 +173,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
   if((orxConfig_HasSection(_zTrackID) != orxFALSE)
   && (orxConfig_PushSection(_zTrackID) != orxSTATUS_FAILURE))
   {
-    orxU32 u32EventCounter = 0, u32KeyCounter;
+    orxU32 u32KeyCounter;
 
     /* Gets number of keys */
     u32KeyCounter = orxConfig_GetKeyCounter();
@@ -181,7 +181,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
     /* Valid? */
     if(u32KeyCounter > 0)
     {
-      orxU32 i;
+      orxU32 u32EventCounter = 0, i;
 
 #ifdef __orxMSVC__
 
@@ -413,7 +413,6 @@ static orxINLINE void orxTimeLine_DeleteAll()
 static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
   orxTIMELINE  *pstTimeLine;
-  orxOBJECT    *pstObject;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
   /* Profiles */
@@ -426,9 +425,6 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
 
   /* Gets TimeLine */
   pstTimeLine = orxTIMELINE(_pstStructure);
-
-  /* Gets calling object */
-  pstObject = orxOBJECT(_pstCaller);
 
   /* Is enabled? */
   if(orxTimeLine_IsEnabled(pstTimeLine) != orxFALSE)

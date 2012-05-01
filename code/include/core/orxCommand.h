@@ -93,11 +93,21 @@ extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();
 //extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);
 //
 //
+///** Evaluates a command
+// * @param[in]   _zCommandLine Command name + arguments
+// * @param[out]  _pstResult  Variable that will contain the result
+// * @return      Command result if found, orxNULL otherwise
+// */
+//extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);
+//
 ///** Executes a command
 // * @param[in]   _zCommand     Command name
-// * @return      Command result (orxSTRING) if found, orxNULL otherwise
+// * @param[in]   _u32ArgNumber Number of arguments sent to the command
+// * @param[in]   _astArgList   List of arguments sent to the command
+// * @param[out]  _pstResult  Variable that will contain the result
+// * @return      Command result if found, orxNULL otherwise
 // */
-//extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand);
+//extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
 //
 //
 ///** Gets command prototype

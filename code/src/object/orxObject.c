@@ -2471,9 +2471,6 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   /* Valid? */
   if(pstAnimPointer != orxNULL)
   {
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-
     /* Links it to the object */
     eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstAnimPointer));
 

@@ -65,7 +65,6 @@
  */
 typedef struct __orxSYSTEM_STATIC_t
 {
-  orxU32    u32Flags;
   orxDOUBLE dStartTime;
 
 #ifdef __orxWINDOWS__
@@ -74,6 +73,8 @@ typedef struct __orxSYSTEM_STATIC_t
   orxBOOL   bUseHighPerformanceTimer;
 
 #endif /* __orxWINDOWS__ */
+
+  orxU32    u32Flags;
 
 } orxSYSTEM_STATIC;
 

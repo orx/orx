@@ -539,9 +539,6 @@ static orxINLINE void orxRender_RenderProfiler()
       /* Gets its time */
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
 
-      /* Gets its depth */
-      u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
-
       /* Sets font's color */
       orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
 
