@@ -74,53 +74,56 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Init();
 extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();
 
 
-///** Registers a command
-// * @param[in]   _zCommand     Command name
-// * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-// */
-//extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand);
-//
-///** Unregisters a command
-// * @param[in]   _zCommand     Command name
-// * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-// */
-//extern orxDLLAPI orxCOMMAND *orxFASTCALL              orxCommand_Unregister(const orxSTRING _zCommand);
-//
-///** Is a command registered?
-// * @param[in]   _zCommand     Command name
-// * @return      orxTRUE / orxFALSE
-// */
-//extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);
-//
-//
-///** Evaluates a command
-// * @param[in]   _zCommandLine Command name + arguments
-// * @param[out]  _pstResult  Variable that will contain the result
-// * @return      Command result if found, orxNULL otherwise
-// */
-//extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);
-//
-///** Executes a command
-// * @param[in]   _zCommand     Command name
-// * @param[in]   _u32ArgNumber Number of arguments sent to the command
-// * @param[in]   _astArgList   List of arguments sent to the command
-// * @param[out]  _pstResult  Variable that will contain the result
-// * @return      Command result if found, orxNULL otherwise
-// */
-//extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
-//
-//
-///** Gets command prototype
-// * @param[in]   _zCommand     Command name
-// * @return      orxCOMMAND_DEFINITION / orxNULL
-// */
-//extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(const orxSTRING _zCommand);
-//
-///** Gets next command using the base name + last found command (handy for autocompletion and for listing all the commands)
-// * @param[in]   _zCommand     orxNULL to find the first command, last found command or beginning of a command name otherwise
-// * @return      Next command name if found, orxNULL otherwise
-// */
-//extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zCommand);
+/** Registers a command
+* @param[in]   _zCommand      Command name
+* @param[in]   _u32ParamNumber Number of arguments sent to the command
+* @param[in]   _pstResult     Result
+* @param[in]   _astParamList  List of parameters of the command
+* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_VAR *_pstResult, orxU32 _u32ParamNumber, const orxCOMMAND_VAR *_astParamList);
+
+/** Unregisters a command
+* @param[in]   _zCommand      Command name
+* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Unregister(const orxSTRING _zCommand);
+
+/** Is a command registered?
+* @param[in]   _zCommand      Command name
+* @return      orxTRUE / orxFALSE
+*/
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);
+
+/** Gets command prototype
+* @param[in]   _zCommand      Command name
+* @return      Literal prototype / orxNULL
+*/
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(const orxSTRING _zCommand);
+
+
+/** Evaluates a command
+* @param[in]   _zCommandLine  Command name + arguments
+* @param[out]  _pstResult     Variable that will contain the result
+* @return      Command result if found, orxNULL otherwise
+*/
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VALUE *_pstResult);
+
+/** Executes a command
+* @param[in]   _zCommand      Command name
+* @param[in]   _u32ArgNumber  Number of arguments sent to the command
+* @param[out]  _pstResult     Variable that will contain the result
+* @param[out]  _astArgList    List of arguments sent to the command
+* @return      Command result if found, orxNULL otherwise
+*/
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VALUE *_astArgList, orxCOMMAND_VALUE *_pstResult);
+
+
+/** Gets next command using the base name + last found command (handy for autocompletion and for listing all the commands)
+* @param[in]   _zCommand      orxNULL to find the first command, last found command or beginning of a command name otherwise
+* @return      Next command name if found, orxNULL otherwise
+*/
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zCommand);
 
 
 #endif /* _orxCOMMAND_H_ */
