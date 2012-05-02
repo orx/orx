@@ -60,6 +60,11 @@ typedef enum __orxCOMMAND_EVENT_t
 } orxCOMMAND_EVENT;
 
 
+/** Command structures */
+typedef struct __orxCOMMAND_VAR_t                     orxCOMMAND_VAR;
+typedef struct __orxCOMMAND_VAR_DEF_t                 orxCOMMAND_VAR_DEF;
+
+
 /** Command module setup
  */
 extern orxDLLAPI void orxFASTCALL                     orxCommand_Setup();
@@ -81,7 +86,7 @@ extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();
 * @param[in]   _astParamList  List of parameters of the command
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_VAR *_pstResult, orxU32 _u32ParamNumber, const orxCOMMAND_VAR *_astParamList);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_VAR_DEF *_pstResult, orxU32 _u32ParamNumber, const orxCOMMAND_VAR_DEF *_astParamList);
 
 /** Unregisters a command
 * @param[in]   _zCommand      Command name
@@ -107,7 +112,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(co
 * @param[out]  _pstResult     Variable that will contain the result
 * @return      Command result if found, orxNULL otherwise
 */
-extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VALUE *_pstResult);
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);
 
 /** Executes a command
 * @param[in]   _zCommand      Command name
@@ -116,7 +121,7 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const 
 * @param[out]  _astArgList    List of arguments sent to the command
 * @return      Command result if found, orxNULL otherwise
 */
-extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VALUE *_astArgList, orxCOMMAND_VALUE *_pstResult);
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
 
 
 /** Gets next command using the base name + last found command (handy for autocompletion and for listing all the commands)
