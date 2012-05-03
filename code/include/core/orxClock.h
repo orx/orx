@@ -26,14 +26,14 @@
  * @file orxClock.h
  * @date 28/01/2004
  * @author iarwain@orx-project.org
- * 
- * @todo 
+ *
+ * @todo
  * - Add freezing behaviour
  */
 
 /**
  * @addtogroup orxClock
- * 
+ *
  * Clock module
  * Module that handles clocks which is the low level kernel part of orx execution.
  * @{
@@ -81,7 +81,7 @@ typedef enum __orxCLOCK_MOD_TYPE_t
   orxCLOCK_MOD_TYPE_NUMBER,
 
   orxCLOCK_MOD_TYPE_NONE = orxENUM_NONE,
-    
+
 } orxCLOCK_MOD_TYPE;
 
 
@@ -113,7 +113,7 @@ typedef struct __orxCLOCK_INFO_t
   orxCLOCK_MOD_TYPE eModType;                         /**< Clock mod type : 12 */
   orxFLOAT          fModValue;                        /**< Clock mod value : 16 */
   orxFLOAT          fDT;                              /**< Clock DT (time ellapsed between 2 clock calls in seconds) : 20 */
-  orxFLOAT          fTime;                            /**< Clock time : 24 */ 
+  orxFLOAT          fTime;                            /**< Clock time : 24 */
 
 } orxCLOCK_INFO;
 

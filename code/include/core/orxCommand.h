@@ -59,10 +59,56 @@ typedef enum __orxCOMMAND_EVENT_t
 
 } orxCOMMAND_EVENT;
 
+/** Variable type enum
+ */
+typedef enum __orxCOMMAND_VAR_TYPE_t
+{
+  orxCOMMAND_VAR_TYPE_STRING = 0,
+  orxCOMMAND_VAR_TYPE_FLOAT,
+  orxCOMMAND_VAR_TYPE_S32,
+  orxCOMMAND_VAR_TYPE_U32,
+  orxCOMMAND_VAR_TYPE_S64,
+  orxCOMMAND_VAR_TYPE_U64,
+  orxCOMMAND_VAR_TYPE_BOOL,
+  orxCOMMAND_VAR_TYPE_VECTOR,
 
-/** Command structures */
-typedef struct __orxCOMMAND_VAR_t                     orxCOMMAND_VAR;
-typedef struct __orxCOMMAND_VAR_DEF_t                 orxCOMMAND_VAR_DEF;
+  orxCOMMAND_VAR_TYPE_NUMBER,
+
+  orxCOMMAND_VAR_TYPE_NONE = orxENUM_NONE
+
+} orxCOMMAND_VAR_TYPE;
+
+
+/** Variable definition structure
+ */
+typedef struct __orxCOMMAND_VAR_DEF_t
+{
+  const orxSTRING       zName;                        /**< Name : 4 */
+  orxCOMMAND_VAR_TYPE   eType;                        /**< Type : 8 */
+
+} orxCOMMAND_VAR_DEF;
+
+/** Variable structure */
+typedef struct __orxCOMMAND_VAR_t
+{
+  union
+  {
+    orxVECTOR           vValue;                       /**< Vector value : 24 */
+    orxSTRING           zValue;                       /**< String value : 4 */
+    orxU32              u32Value;                     /**< U32 value : 4 */
+    orxS32              s32Value;                     /**< S32 value : 4 */
+    orxU64              u64Value;                     /**< U64 value : 8 */
+    orxS64              s64Value;                     /**< S64 value : 8 */
+    orxFLOAT            fValue;                       /**< Float value : 4 */
+    orxBOOL             bValue;                       /**< Bool value : 4 */
+  };
+
+  orxCOMMAND_VAR_DEF    stDefinition;                 /**< Definition : 32 */
+
+} orxCOMMAND_VAR;
+
+/** Command function type */
+typedef orxCOMMAND_VAR *(orxFASTCALL *orxCOMMAND_FUNCTION)(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
 
 
 /** Command module setup
@@ -81,12 +127,13 @@ extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();
 
 /** Registers a command
 * @param[in]   _zCommand      Command name
+* @param[in]   _pfnFunction   Associated function
 * @param[in]   _u32ParamNumber Number of arguments sent to the command
-* @param[in]   _pstResult     Result
 * @param[in]   _astParamList  List of parameters of the command
+* @param[in]   _pstResult     Result
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_VAR_DEF *_pstResult, orxU32 _u32ParamNumber, const orxCOMMAND_VAR_DEF *_astParamList);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION *_pfnFunction, orxU32 _u32ParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult);
 
 /** Unregisters a command
 * @param[in]   _zCommand      Command name
@@ -117,8 +164,8 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const 
 /** Executes a command
 * @param[in]   _zCommand      Command name
 * @param[in]   _u32ArgNumber  Number of arguments sent to the command
+* @param[in]   _astArgList    List of arguments sent to the command
 * @param[out]  _pstResult     Variable that will contain the result
-* @param[out]  _astArgList    List of arguments sent to the command
 * @return      Command result if found, orxNULL otherwise
 */
 extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
