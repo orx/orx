@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
@@ -197,6 +198,39 @@ static orxOBJECT_STATIC sstObject;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: Get Name
+ */
+void orxFASTCALL orxObject_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Updates result */
+  _pstResult->zValue = (pstObject != orxNULL) ? orxObject_GetName(pstObject) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the object commands
+ */
+static orxINLINE void orxObject_RegisterCommands()
+{
+  orxCOMMAND_VAR_DEF  stResult;
+  orxCOMMAND_VAR_DEF  astParamList[1];
+  orxSTATUS           eStatus;
+
+  // Command: Get Name
+  astParamList[0].eType = orxCOMMAND_VAR_TYPE_U64;
+  astParamList[0].zName = "GUID";
+  stResult.eType        = orxCOMMAND_VAR_TYPE_STRING;
+  stResult.zName        = "Name";
+  eStatus               = orxCommand_Register("Object.GetName", orxObject_CommandGetName, 1, astParamList, &stResult);
+  orxASSERT(eStatus != orxSTATUS_FAILURE);
+}
 
 /** Deletes all the objects
  */
@@ -363,6 +397,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_COMMAND);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TEXTURE);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FONT);
@@ -409,6 +444,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
+          /* Registers commands */
+          orxObject_RegisterCommands();
+
           /* Inits Flags */
           sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
         }
