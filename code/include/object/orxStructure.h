@@ -391,6 +391,19 @@ static orxINLINE orxU32                                 orxStructure_GetRefCount
   return((orxU32)((orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNTER) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER));
 }
 
+/** Gets structure GUID
+ * @param[in]   _pStructure    Concerned structure
+ * @return      orxU64
+ */
+static orxINLINE orxU64                                 orxStructure_GetGUID(const void *_pStructure)
+{
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pStructure);
+
+  /* Done! */
+  return orxSTRUCTURE(_pStructure)->u64GUID;
+}
+
 /** Gets structure ID
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE_ID

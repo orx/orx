@@ -1599,7 +1599,7 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pPare
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
-  orxASSERT((_pParent == orxNULL) || ((((orxSTRUCTURE *)(_pParent))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pParent == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pParent) < orxSTRUCTURE_ID_NUMBER));
 
   /* Gets frame */
   pstFrame = _pstSpawner->pstFrame;
@@ -1673,7 +1673,7 @@ void orxFASTCALL orxSpawner_SetOwner(orxSPAWNER *_pstSpawner, void *_pOwner)
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
-  orxASSERT((_pOwner == orxNULL) || ((((orxSTRUCTURE *)(_pOwner))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pOwner == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pOwner) < orxSTRUCTURE_ID_NUMBER));
 
   /* Sets new owner */
   _pstSpawner->pstOwner = orxSTRUCTURE(_pOwner);

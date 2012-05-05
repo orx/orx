@@ -97,6 +97,7 @@ typedef struct __orxCOMMAND_STATIC_t
 {
   orxBANK                  *pstBank;                  /**< Command bank */
   orxHASHTABLE             *pstTable;                 /**< Command table */
+  orxS32                    s32StackIndex;            /**< Stack index */
   orxCHAR                   acBuffer[orxCOMMAND_KU32_BUFFER_SIZE]; /**< Evaluate buffer */
   orxU32                    u32Flags;                 /**< Control flags */
 
@@ -133,7 +134,182 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
     /* Trigger */
     case orxTIMELINE_EVENT_TRIGGER:
     {
-      //! TODO
+      orxCOMMAND_VAR              stResult;
+      orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
+      const orxCHAR              *pcSrc;
+      orxCHAR                    *pcDst;
+      orxU32                      u32PushCounter;
+      orxS32                      s32GUIDLength;
+      orxCHAR                     acGUID[20];
+
+      /* Pushes config section */
+      orxConfig_PushSection(orxCOMMAND_KZ_CONFIG_SECTION);
+
+      /* Gets owner's GUID */
+      s32GUIDLength = orxString_NPrint(acGUID, 20, "0x%llx", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
+
+      /* Gets payload */
+      pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* For all push markers / spaces */
+      for(pcSrc = pstPayload->zEvent, u32PushCounter = 0; (*pcSrc == orxCOMMAND_KC_PUSH_MARKER) || (*pcSrc == ' ') || (*pcSrc == '\t'); pcSrc++)
+      {
+        /* Is a push marker? */
+        if(*pcSrc == orxCOMMAND_KC_PUSH_MARKER)
+        {
+          /* Updates push counter */
+          u32PushCounter++;
+        }
+      }
+
+      /* For all characters */
+      for(pcDst = sstCommand.acBuffer; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE - 1);)
+      {
+        /* Depending on character */
+        switch(*pcSrc)
+        {
+          case orxCOMMAND_KC_GUID_MARKER:
+          {
+            /* Replaces it with GUID */
+            orxString_Copy(pcDst, acGUID);
+
+            /* Updates pointers */
+            pcSrc++;
+            pcDst += s32GUIDLength;
+
+            break;
+          }
+
+          case orxCOMMAND_KC_POP_MARKER:
+          {
+            const orxSTRING zValue;
+            orxCHAR         acStackKey[16];
+
+            /* Sets key name */
+            orxString_NPrint(acStackKey, 16, orxCOMMAND_KZ_CONFIG_STACK_PREFIX"%ld", --sstCommand.s32StackIndex);
+
+            /* Checks */
+            orxASSERT(sstCommand.s32StackIndex >= 0);
+
+            /* Gets stacked value */
+            zValue = orxConfig_GetString(acStackKey);
+
+            /* Replaces it with GUID */
+            orxString_Copy(pcDst, zValue);
+
+            /* Updates pointers */
+            pcSrc++;
+            pcDst += orxString_GetLength(zValue);
+
+            break;
+          }
+
+          default:
+          {
+            /* Copies it */
+            *pcDst++ = *pcSrc++;
+
+            break;
+          }
+        }
+      }
+
+      /* Copies end of string */
+      *pcDst = orxCHAR_NULL;
+
+      /* Updates internal status */
+      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL, orxCOMMAND_KU32_STATIC_FLAG_NONE);
+
+      /* Evaluates command */
+      if(orxCommand_Evaluate(sstCommand.acBuffer, &stResult) != orxNULL)
+      {
+        /* For all requested pushes */
+        while(u32PushCounter > 0)
+        {
+          orxCHAR acStackKey[16];
+
+          /* Sets key name */
+          orxString_NPrint(acStackKey, 16, orxCOMMAND_KZ_CONFIG_STACK_PREFIX"%ld", sstCommand.s32StackIndex++);
+
+          /* Depending on result type */
+          switch(stResult.eType)
+          {
+            default:
+            case orxCOMMAND_VAR_TYPE_STRING:
+            {
+              /* Stores it */
+              orxConfig_SetString(acStackKey, stResult.zValue);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_FLOAT:
+            {
+              /* Stores it */
+              orxConfig_SetFloat(acStackKey, stResult.fValue);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_S32:
+            {
+              /* Stores it */
+              orxConfig_SetS32(acStackKey, stResult.s32Value);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_U32:
+            {
+              /* Stores it */
+              orxConfig_SetU32(acStackKey, stResult.u32Value);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_S64:
+            {
+              /* Stores it */
+              orxConfig_SetS64(acStackKey, stResult.s64Value);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_U64:
+            {
+              /* Stores it */
+              orxConfig_SetU64(acStackKey, stResult.u64Value);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_BOOL:
+            {
+              /* Stores it */
+              orxConfig_SetBool(acStackKey, stResult.bValue);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_VECTOR:
+            {
+              /* Stores it */
+              orxConfig_SetVector(acStackKey, &(stResult.vValue));
+
+              break;
+            }
+          }
+
+          /* Updates push counter */
+          u32PushCounter--;
+        }
+      }
+
+      /* Updates internal status */
+      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_NONE, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL);
+
+      /* Pops config section */
+      orxConfig_PopSection();
 
       break;
     }
@@ -741,8 +917,12 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid command.", _zCommandLine);
+        /* Not an internal call? */
+        if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid command.", _zCommandLine);
+        }
       }
     }
     else
