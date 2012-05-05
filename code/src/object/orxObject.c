@@ -215,12 +215,38 @@ void orxFASTCALL orxObject_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/** Command: Create
+ */
+void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Creates object */
+  pstObject = orxObject_CreateFromConfig(_astArgList[0].zValue);
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxStructure_GetID(orxSTRUCTURE(pstObject));
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->eType     = orxCOMMAND_VAR_TYPE_NONE;
+    _pstResult->u64Value  = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the object commands
  */
 static orxINLINE void orxObject_RegisterCommands()
 {
   orxCOMMAND_VAR_DEF  stResult;
-  orxCOMMAND_VAR_DEF  astParamList[1];
+  orxCOMMAND_VAR_DEF  astParamList[16];
   orxSTATUS           eStatus;
 
   // Command: Get Name
@@ -229,6 +255,14 @@ static orxINLINE void orxObject_RegisterCommands()
   stResult.eType        = orxCOMMAND_VAR_TYPE_STRING;
   stResult.zName        = "Name";
   eStatus               = orxCommand_Register("Object.GetName", orxObject_CommandGetName, 1, astParamList, &stResult);
+  orxASSERT(eStatus != orxSTATUS_FAILURE);
+
+  // Command: Create
+  astParamList[0].eType = orxCOMMAND_VAR_TYPE_STRING;
+  astParamList[0].zName = "Name";
+  stResult.eType        = orxCOMMAND_VAR_TYPE_U64;
+  stResult.zName        = "GUID";
+  eStatus               = orxCommand_Register("Object.Create", orxObject_CommandCreate, 1, astParamList, &stResult);
   orxASSERT(eStatus != orxSTATUS_FAILURE);
 }
 
