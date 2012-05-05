@@ -1175,7 +1175,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
  */
 const orxSTRING orxFASTCALL orxInput_GetCurrentSet()
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));

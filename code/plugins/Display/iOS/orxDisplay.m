@@ -887,7 +887,7 @@ static orxDISPLAY_PROJ_MATRIX *orxDisplay_iOS_OrthoProjMatrix(orxDISPLAY_PROJ_MA
   }
 
   /* Done! */
-  return _pmResult;
+  return pmResult;
 }
 
 static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_pstShader)
@@ -2784,12 +2784,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
           CGColorSpaceRef   oColorSpace;
           CGContextRef      oContext;
           GLint             iTexture;
-          orxU32            iImageSize;
-          GLubyte          *au8ImagePointer;
           orxRGBA          *pstPixel, *pstImageEnd;
-
-          iImageSize = uiRealWidth * uiRealHeight;
-          au8ImagePointer = au8ImageBuffer;
 
           /* Creates a device color space */
           oColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -3415,9 +3410,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
           }
 
           /* Adds code */
-          s32Offset = orxString_NPrint(pc, s32Free, "%s\n", _zCode);
-          pc       += s32Offset;
-          s32Free  -= s32Offset;
+          orxString_NPrint(pc, s32Free, "%s\n", _zCode);
 
           /* For all gl_TexCoord[0] */
           for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
@@ -3803,15 +3796,11 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderBitmap(orxHANDLE _hShader, orxS32 
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue)
 {
-  orxDISPLAY_SHADER  *pstShader;
-  orxSTATUS           eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
-
-  /* Gets shader */
-  pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Valid? */
   if(_s32ID >= 0)
@@ -3835,16 +3824,12 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderFloat(orxHANDLE _hShader, orxS32 _
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue)
 {
-  orxDISPLAY_SHADER  *pstShader;
-  orxSTATUS           eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
   orxASSERT(_pvValue != orxNULL);
-
-  /* Gets shader */
-  pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Valid? */
   if(_s32ID >= 0)

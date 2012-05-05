@@ -1139,13 +1139,10 @@ static orxU32 orxFASTCALL orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pst
     /* Not in simulation mode? */
     if(_bSimulate == orxFALSE)
     {
-      orxU32 u32Link, u32LinkIndex, u32Loop;
+      orxU32 u32LinkIndex, u32Loop;
 
       /* Gets direct link id */
       u32LinkIndex = u32BaseIndex + u32Result;
-
-      /* Gets direct link */
-      u32Link = _pstLinkTable->au32LinkArray[u32LinkIndex];
 
       /* Gets current loop counter */
       u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);

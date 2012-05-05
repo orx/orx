@@ -82,9 +82,9 @@
   #if defined(__orxIOS__)
 
     #undef __orxPLUGIN_DYNAMIC__
-    #undef orxPLUGIN_OPEN(PLUGIN)
-    #undef orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)
-    #undef orxPLUGIN_CLOSE(PLUGIN)
+    #undef orxPLUGIN_OPEN
+    #undef orxPLUGIN_GET_SYMBOL_ADDRESS
+    #undef orxPLUGIN_CLOSE
 
   #else /* __orxIOS__ */
 

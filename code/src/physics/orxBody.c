@@ -896,6 +896,14 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
         orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
       }
     }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't create part (%s)", _zConfigID);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
 
     /* Pops previous section */
     orxConfig_PopSection();
