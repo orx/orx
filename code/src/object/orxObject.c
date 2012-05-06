@@ -224,17 +224,63 @@ void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_
   /* Creates object */
   pstObject = orxObject_CreateFromConfig(_astArgList[0].zValue);
 
+  /* Updates result */
+  _pstResult->u64Value = (pstObject != orxNULL) ? orxStructure_GetGUID(orxSTRUCTURE(pstObject)) : orxU64_UNDEFINED;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Delete
+ */
+void orxFASTCALL orxObject_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
   /* Valid? */
   if(pstObject != orxNULL)
   {
+    /* Marks it for deletion */
+    orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+
     /* Updates result */
-    _pstResult->u64Value = orxStructure_GetGUID(orxSTRUCTURE(pstObject));
+    _pstResult->u64Value = _astArgList[0].u64Value;
   }
   else
   {
     /* Updates result */
-    _pstResult->eType     = orxCOMMAND_VAR_TYPE_NONE;
-    _pstResult->u64Value  = orxU64_UNDEFINED;
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetLifeTime
+ */
+void orxFASTCALL orxObject_CommandSetLifeTime(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates its life time */
+    orxObject_SetLifeTime(pstObject, _astArgList[1].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
   }
 
   /* Done! */
@@ -250,6 +296,12 @@ static orxINLINE void orxObject_RegisterCommands()
 
   // Command: Create
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "Name", orxCOMMAND_VAR_TYPE_STRING);
+
+  // Command: Delete
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
+
+  // Command: SetLifeTime
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT);
 }
 
 /** Deletes all the objects

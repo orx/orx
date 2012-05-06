@@ -381,7 +381,7 @@ static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, o
       _pstCommand->pfnFunction(_u32ArgNumber, _astArgList, _pstResult);
 
       /* Updates result */
-      pstResult = (_pstResult->eType != orxCOMMAND_VAR_TYPE_NONE) ? _pstResult : orxNULL;
+      pstResult = _pstResult;
     }
   }
 
