@@ -245,25 +245,11 @@ void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_
  */
 static orxINLINE void orxObject_RegisterCommands()
 {
-  orxCOMMAND_VAR_DEF  stResult;
-  orxCOMMAND_VAR_DEF  astParamList[16];
-  orxSTATUS           eStatus;
-
   // Command: Get Name
-  astParamList[0].eType = orxCOMMAND_VAR_TYPE_U64;
-  astParamList[0].zName = "GUID";
-  stResult.eType        = orxCOMMAND_VAR_TYPE_STRING;
-  stResult.zName        = "Name";
-  eStatus               = orxCommand_Register("Object.GetName", orxObject_CommandGetName, 1, astParamList, &stResult);
-  orxASSERT(eStatus != orxSTATUS_FAILURE);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
 
   // Command: Create
-  astParamList[0].eType = orxCOMMAND_VAR_TYPE_STRING;
-  astParamList[0].zName = "Name";
-  stResult.eType        = orxCOMMAND_VAR_TYPE_U64;
-  stResult.zName        = "GUID";
-  eStatus               = orxCommand_Register("Object.Create", orxObject_CommandCreate, 1, astParamList, &stResult);
-  orxASSERT(eStatus != orxSTATUS_FAILURE);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "Name", orxCOMMAND_VAR_TYPE_STRING);
 }
 
 /** Deletes all the objects
