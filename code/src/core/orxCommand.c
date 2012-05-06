@@ -33,6 +33,7 @@
 #include "core/orxCommand.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
@@ -66,7 +67,7 @@
 #define orxCOMMAND_KC_STRING_MARKER                   '"'         /**< String marker character */
 #define orxCOMMAND_KC_PUSH_MARKER                     '>'         /**< Push marker character */
 #define orxCOMMAND_KC_POP_MARKER                      '<'         /**< Pop marker character */
-#define orxCOMMAND_KC_GUID_MARKER                     '-'         /**< GUID marker character */
+#define orxCOMMAND_KC_GUID_MARKER                     '^'         /**< GUID marker character */
 
 
 #define orxCOMMAND_KU32_TABLE_SIZE                    256
@@ -124,6 +125,9 @@ static orxCOMMAND_STATIC sstCommand;
 static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxCommand_Process");
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_TIMELINE);
@@ -320,6 +324,9 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -395,6 +402,7 @@ void orxFASTCALL orxCommand_Setup()
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_PROFILER);
 
   /* Done! */
   return;
@@ -694,6 +702,9 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 {
   orxCOMMAND_VAR *pstResult = orxNULL;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxCommand_Evaluate");
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
   orxASSERT(_zCommandLine != orxNULL);
@@ -932,6 +943,9 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return pstResult;
 }
@@ -946,6 +960,9 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxCOMMAND_VAR *pstResult = orxNULL;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxCommand_Execute");
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
@@ -976,6 +993,9 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command: [%s] is not registered.", _zCommand);
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
