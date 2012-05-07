@@ -28,7 +28,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Add mask test for level displaying
  * - Add graphical debug from outside, using a shared debug info array
  * - Enhance logging, use of different log levels / colors
  */
