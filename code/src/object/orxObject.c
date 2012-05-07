@@ -287,21 +287,264 @@ void orxFASTCALL orxObject_CommandSetLifeTime(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: AddTrack
+ */
+void orxFASTCALL orxObject_CommandAddTrack(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Adds time line */
+    orxObject_AddTimeLineTrack(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveTrack
+ */
+void orxFASTCALL orxObject_CommandRemoveTrack(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Removes time line */
+    orxObject_RemoveTimeLineTrack(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: AddFX
+ */
+void orxFASTCALL orxObject_CommandAddFX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Adds FX */
+    orxObject_AddFX(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveFX
+ */
+void orxFASTCALL orxObject_CommandRemoveFX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Removes FX */
+    orxObject_RemoveFX(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: AddShader
+ */
+void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Adds shader */
+    orxObject_AddShader(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveShader
+ */
+void orxFASTCALL orxObject_CommandRemoveShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Removes shader */
+    orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: AddSound
+ */
+void orxFASTCALL orxObject_CommandAddSound(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Adds sound */
+    orxObject_AddSound(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveSound
+ */
+void orxFASTCALL orxObject_CommandRemoveSound(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Removes sound*/
+    orxObject_RemoveSound(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the object commands
  */
 static orxINLINE void orxObject_RegisterCommands()
 {
-  // Command: Get Name
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
-
   // Command: Create
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "Name", orxCOMMAND_VAR_TYPE_STRING);
-
   // Command: Delete
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
 
+  // Command: Get Name
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
+
   // Command: SetLifeTime
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT);
+
+  // Command: AddTrack
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "TimeLine", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: RemoveTrack
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "TimeLine", orxCOMMAND_VAR_TYPE_STRING);
+
+  // Command: AddFX
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "FX", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: RemoveFX
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "FX", orxCOMMAND_VAR_TYPE_STRING);
+
+  // Command: AddShader
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Shader", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: RemoveShader
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Shader", orxCOMMAND_VAR_TYPE_STRING);
+
+  // Command: AddSound
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: RemoveSound
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
 }
 
 /** Deletes all the objects
