@@ -3264,50 +3264,6 @@ orxVECTOR *orxFASTCALL orxObject_GetMassCenter(const orxOBJECT *_pstObject, orxV
   return pvResult;
 }
 
-/** Sets object text string, if object is associated to a text
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zString        String to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, const orxSTRING _zString)
-{
-  orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Gets graphic */
-  pstGraphic = orxGRAPHIC(_pstObject->astStructureList[orxSTRUCTURE_ID_GRAPHIC].pstStructure);
-
-  /* Valid text graphic? */
-  if((pstGraphic != orxNULL) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
-  {
-    orxTEXT *pstText;
-
-    /* Gets text */
-    pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
-
-    /* Valid? */
-    if(pstText != orxNULL)
-    {
-      /* Updates its string */
-      eResult = orxText_SetString(pstText, _zString);
-
-      /* Valid */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        /* Updates graphic */
-        orxGraphic_UpdateSize(pstGraphic);
-      }
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Applies a torque
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fTorque        Torque to apply
@@ -3549,6 +3505,50 @@ orxOBJECT *orxFASTCALL orxObject_Raycast(const orxVECTOR *_pvStart, const orxVEC
 
   /* Done! */
   return pstResult;
+}
+
+/** Sets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zString        String to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, const orxSTRING _zString)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxGRAPHIC(_pstObject->astStructureList[orxSTRUCTURE_ID_GRAPHIC].pstStructure);
+
+  /* Valid text graphic? */
+  if((pstGraphic != orxNULL) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
+  {
+    orxTEXT *pstText;
+
+    /* Gets text */
+    pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
+
+    /* Valid? */
+    if(pstText != orxNULL)
+    {
+      /* Updates its string */
+      eResult = orxText_SetString(pstText, _zString);
+
+      /* Valid */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates graphic */
+        orxGraphic_UpdateSize(pstGraphic);
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets object's bounding box (OBB)
