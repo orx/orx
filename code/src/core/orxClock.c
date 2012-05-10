@@ -79,7 +79,7 @@
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
-#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.015f)
+#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.005f)
 
 
 /***************************************************************************
