@@ -716,10 +716,6 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     /* Has VBO support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
     {
-      /* Binds index buffer */
-      glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
-      glASSERT();
-
       /* No offset in the index list */
       pIndexContext = (GLvoid *)0;
     }
@@ -2651,6 +2647,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glEnable(GL_TEXTURE_2D);
         glASSERT();
         glEnable(GL_SCISSOR_TEST);
+        glASSERT();
+        glDisable(GL_DITHER);
         glASSERT();
         glDisable(GL_LIGHTING);
         glASSERT();

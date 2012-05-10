@@ -826,6 +826,9 @@ static void orxFASTCALL orxSoundSystem_iOS_UpdateStreaming(const orxCLOCK_INFO *
 {
   orxLINKLIST_NODE *pstNode;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateStreaming");
+
   /* Is recording? */
   if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
   {
@@ -846,6 +849,9 @@ static void orxFASTCALL orxSoundSystem_iOS_UpdateStreaming(const orxCLOCK_INFO *
     /* Fills its stream */
     orxSoundSystem_iOS_FillStream(pstSound);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_iOS_Init()

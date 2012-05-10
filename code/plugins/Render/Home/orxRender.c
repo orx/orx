@@ -238,6 +238,9 @@ static orxINLINE void orxRender_RenderProfiler()
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderProfiler");
 
+  /* Disables marker operations */
+  orxProfiler_EnableMarkerOperations(orxFALSE);
+
   /* Gets default font */
   pstFont = orxFont_GetDefaultFont();
 
@@ -651,6 +654,9 @@ static orxINLINE void orxRender_RenderProfiler()
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
+
+  /* Re-enables marker operations */
+  orxProfiler_EnableMarkerOperations(orxTRUE);
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -1581,7 +1587,7 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Clears screen */
-  orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+  orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0x00));
 
   /* Sends render start event */
   bRender = (orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_START) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;

@@ -364,6 +364,8 @@ static orxView *spoInstance;
         /* Inits it */
         glEnable(GL_TEXTURE_2D);
         glASSERT();
+        glDisable(GL_DITHER);
+        glASSERT();
         glDisable(GL_LIGHTING);
         glASSERT();
         glDisable(GL_FOG);
@@ -465,6 +467,8 @@ static orxView *spoInstance;
       {
         /* Inits it */
         glEnable(GL_TEXTURE_2D);
+        glASSERT();
+        glDisable(GL_DITHER);
         glASSERT();
         glDisable(GL_LIGHTING);
         glASSERT();
@@ -1104,10 +1108,6 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
   {
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
-
-    /* Binds index buffer */
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
-    glASSERT();
 
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)

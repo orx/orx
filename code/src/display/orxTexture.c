@@ -377,9 +377,6 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
 {
   orxTEXTURE *pstTexture;
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
-
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_zBitmapFileName != orxNULL);
@@ -395,6 +392,9 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
   }
   else
   {
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+
     /* Sets internal flag */
     orxFLAG_SET(sstTexture.u32Flags, orxTEXTURE_KU32_STATIC_FLAG_INTERNAL, orxTEXTURE_KU32_STATIC_FLAG_NONE);
 
@@ -439,10 +439,10 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid texture created.");
     }
-  }
 
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+  }
 
   /* Done! */
   return pstTexture;

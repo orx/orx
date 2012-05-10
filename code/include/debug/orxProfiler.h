@@ -126,6 +126,11 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_PushMarker(orxS32 
  */
 extern orxDLLAPI void orxFASTCALL                 orxProfiler_PopMarker();
 
+/** Enables marker push/pop operations
+ * @param[in] _bEnable          Enable
+ */
+extern orxDLLAPI void orxFASTCALL                 orxProfiler_EnableMarkerOperations(orxBOOL _bEnable);
+
 
 /** Resets all markers (usually called at the end of the frame)
  */

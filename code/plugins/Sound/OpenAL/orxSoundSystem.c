@@ -740,6 +740,9 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(const orxCLOCK_INF
 {
   orxLINKLIST_NODE *pstNode;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateStreaming");
+
   /* Is recording? */
   if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
   {
@@ -760,6 +763,9 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(const orxCLOCK_INF
     /* Fills its stream */
     orxSoundSystem_OpenAL_FillStream(pstSound);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
