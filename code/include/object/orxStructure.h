@@ -86,8 +86,7 @@
 /** Structure assert
  */
 #define orxSTRUCTURE_ASSERT(STRUCTURE)                          \
-  orxASSERT((STRUCTURE) != orxNULL);                            \
-  orxASSERT(((((orxSTRUCTURE *)(STRUCTURE))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((STRUCTURE != orxNULL) && (((((orxSTRUCTURE *)(STRUCTURE))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER));
 
 /** Structure magic number
  */
