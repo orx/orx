@@ -907,10 +907,6 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
 
-    /* Binds index buffer */
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
-    glASSERT();
-
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)
     {
