@@ -33,6 +33,7 @@
 #include "orxInclude.h"
 
 #include "core/orxConfig.h"
+#include "core/orxCommand.h"
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
@@ -266,6 +267,125 @@ static struct __orxCONFIG_BOM_DEFINITION_t
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: Get Parent
+ */
+void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxConfig_GetParent(_astArgList[0].zValue);
+  if(_pstResult->zValue == orxNULL)
+  {
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Set Parent
+ */
+void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (orxConfig_SetParent(_astArgList[0].zValue, _astArgList[1].zValue) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Create Section
+ */
+void orxFASTCALL orxConfig_CommandCreateSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (orxConfig_SelectSection(_astArgList[0].zValue) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Has Section
+ */
+void orxFASTCALL orxConfig_CommandHasSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxConfig_HasSection(_astArgList[0].zValue));
+
+  /* Done! */
+  return;
+}
+
+/** Command: Has Value
+ */
+void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes section */
+  orxConfig_PushSection(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->bValue = (orxConfig_HasValue(_astArgList[1].zValue));
+
+  /* Pops section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+/** Command: Get Value
+ */
+void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes section */
+  orxConfig_PushSection(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = orxConfig_GetString(_astArgList[1].zValue);
+
+  /* Pops section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+/** Command: Set Value
+ */
+void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes section */
+  orxConfig_PushSection(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[1].zValue : orxSTRING_EMPTY;
+
+  /* Pops section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the config commands
+ */
+static orxINLINE void orxConfig_RegisterCommands()
+{
+  // Command: Get Parent
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, "Section", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: Set Parent
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 2, "Section", orxCOMMAND_VAR_TYPE_STRING, "Parent", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: Create Section
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, "Section", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: Has Section
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, "Section", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: Has Value
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: Get Value
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING);
+  // Command: Set Value
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING, "Value", orxCOMMAND_VAR_TYPE_STRING);
+}
 
 static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
@@ -1830,6 +1950,7 @@ void orxFASTCALL orxConfig_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_COMMAND);
 
   return;
 }
@@ -1894,6 +2015,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
 
       /* Inits Flags */
       orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY, orxCONFIG_KU32_STATIC_MASK_ALL);
+
+      /* Registers commands */
+      orxConfig_RegisterCommands();
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
