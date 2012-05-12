@@ -495,8 +495,64 @@ void orxFASTCALL orxObject_CommandRemoveSound(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes sound*/
+    /* Removes sound */
     orxObject_RemoveSound(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetVolume
+ */
+void orxFASTCALL orxObject_CommandSetVolume(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its volume */
+    orxObject_SetVolume(pstObject, _astArgList[1].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetPitch
+ */
+void orxFASTCALL orxObject_CommandSetPitch(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its pitch */
+    orxObject_SetPitch(pstObject, _astArgList[1].fValue);
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -545,6 +601,11 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
   // Command: RemoveSound
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
+
+  // Command: SetVolume
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetVolume, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Volume", orxCOMMAND_VAR_TYPE_FLOAT);
+  // Command: SetPitch
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Pitch", orxCOMMAND_VAR_TYPE_FLOAT);
 }
 
 /** Deletes all the objects
