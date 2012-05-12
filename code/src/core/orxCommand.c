@@ -34,17 +34,18 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
-#include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
 #include "object/orxTimeLine.h"
 #include "utils/orxHashTable.h"
+#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 #ifdef __orxMSVC__
 
   #include "malloc.h"
+  #pragma warning(disable : 4200)
 
 #endif /* __orxMSVC__ */
 
@@ -61,9 +62,6 @@
 
 /** Misc
  */
-#define orxCOMMAND_KZ_CONFIG_SECTION                  "-=orxCommand=-"
-#define orxCOMMAND_KZ_CONFIG_STACK_PREFIX             "Stack"
-
 #define orxCOMMAND_KC_STRING_MARKER                   '"'         /**< String marker character */
 #define orxCOMMAND_KC_PUSH_MARKER                     '>'         /**< Push marker character */
 #define orxCOMMAND_KC_POP_MARKER                      '<'         /**< Pop marker character */
@@ -79,6 +77,15 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Command stack entry
+ */
+typedef struct __orxCOMMAND_STACK_ENTRY_t
+{
+  orxLINKLIST_NODE          stNode;                   /**< Linklist node : 12 */
+  orxCHAR                   zValue[0];                /**< Value */
+
+} orxCOMMAND_STACK_ENTRY;
 
 /** Command structure
  */
@@ -98,7 +105,7 @@ typedef struct __orxCOMMAND_STATIC_t
 {
   orxBANK                  *pstBank;                  /**< Command bank */
   orxHASHTABLE             *pstTable;                 /**< Command table */
-  orxS32                    s32StackIndex;            /**< Stack index */
+  orxLINKLIST               stResultStack;            /**< Command result stack */
   orxCHAR                   acBuffer[orxCOMMAND_KU32_BUFFER_SIZE]; /**< Evaluate buffer */
   orxU32                    u32Flags;                 /**< Control flags */
 
@@ -146,9 +153,6 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       orxS32                      s32GUIDLength;
       orxCHAR                     acGUID[20];
 
-      /* Pushes config section */
-      orxConfig_PushSection(orxCOMMAND_KZ_CONFIG_SECTION);
-
       /* Gets owner's GUID */
       s32GUIDLength = orxString_NPrint(acGUID, 20, "0x%llx", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
 
@@ -186,24 +190,26 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 
           case orxCOMMAND_KC_POP_MARKER:
           {
-            const orxSTRING zValue;
-            orxCHAR         acStackKey[16];
+            orxCOMMAND_STACK_ENTRY *pstEntry;
 
-            /* Sets key name */
-            orxString_NPrint(acStackKey, 16, orxCOMMAND_KZ_CONFIG_STACK_PREFIX"%ld", --sstCommand.s32StackIndex);
+            /* Gets last stack entry */
+            pstEntry = (orxCOMMAND_STACK_ENTRY *)orxLinkList_GetLast(&(sstCommand.stResultStack));
 
             /* Checks */
-            orxASSERT(sstCommand.s32StackIndex >= 0);
+            orxASSERT(pstEntry != orxNULL);
 
-            /* Gets stacked value */
-            zValue = orxConfig_GetString(acStackKey);
+            /* Replaces marker with GUID */
+            orxString_Copy(pcDst, pstEntry->zValue);
 
-            /* Replaces it with GUID */
-            orxString_Copy(pcDst, zValue);
+            /* Removes stack entry */
+            orxLinkList_Remove(&(pstEntry->stNode));
+
+            /* Deletes it */
+            orxMemory_Free(pstEntry);
 
             /* Updates pointers */
             pcSrc++;
-            pcDst += orxString_GetLength(zValue);
+            pcDst += orxString_GetLength(pstEntry->zValue);
 
             break;
           }
@@ -230,10 +236,12 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
         /* For all requested pushes */
         while(u32PushCounter > 0)
         {
-          orxCHAR acStackKey[16];
+          orxCOMMAND_STACK_ENTRY *pstEntry;
+          orxCHAR                 acValue[64];
+          const orxSTRING         zValue = acValue;
 
-          /* Sets key name */
-          orxString_NPrint(acStackKey, 16, orxCOMMAND_KZ_CONFIG_STACK_PREFIX"%ld", sstCommand.s32StackIndex++);
+          /* Inits value */
+          acValue[63] = orxCHAR_NULL;
 
           /* Depending on result type */
           switch(stResult.eType)
@@ -241,8 +249,8 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             default:
             case orxCOMMAND_VAR_TYPE_STRING:
             {
-              /* Stores it */
-              orxConfig_SetString(acStackKey, stResult.zValue);
+              /* Updates pointer */
+              zValue = stResult.zValue;
 
               break;
             }
@@ -250,7 +258,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_FLOAT:
             {
               /* Stores it */
-              orxConfig_SetFloat(acStackKey, stResult.fValue);
+              orxString_NPrint(acValue, 63, "%g", stResult.fValue);
 
               break;
             }
@@ -258,7 +266,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_S32:
             {
               /* Stores it */
-              orxConfig_SetS32(acStackKey, stResult.s32Value);
+              orxString_NPrint(acValue, 63, "%ld", stResult.s32Value);
 
               break;
             }
@@ -266,7 +274,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_U32:
             {
               /* Stores it */
-              orxConfig_SetU32(acStackKey, stResult.u32Value);
+              orxString_NPrint(acValue, 63, "%lu", stResult.u32Value);
 
               break;
             }
@@ -274,7 +282,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_S64:
             {
               /* Stores it */
-              orxConfig_SetS64(acStackKey, stResult.s64Value);
+              orxString_NPrint(acValue, 63, "%lld", stResult.s64Value);
 
               break;
             }
@@ -282,7 +290,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_U64:
             {
               /* Stores it */
-              orxConfig_SetU64(acStackKey, stResult.u64Value);
+              orxString_NPrint(acValue, 63, "%llu", stResult.u64Value);
 
               break;
             }
@@ -290,19 +298,31 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_BOOL:
             {
               /* Stores it */
-              orxConfig_SetBool(acStackKey, stResult.bValue);
+              orxString_NPrint(acValue, 63, "%s", (stResult.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_VECTOR:
             {
-              /* Stores it */
-              orxConfig_SetVector(acStackKey, &(stResult.vValue));
+              /* Gets literal value */
+              orxString_NPrint(acValue, 63, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, stResult.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, stResult.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, stResult.vValue.fZ, orxSTRING_KC_VECTOR_END);
 
               break;
             }
           }
+
+          /* Allocates stack entry */
+          pstEntry = (orxCOMMAND_STACK_ENTRY *)orxMemory_Allocate(sizeof(orxCOMMAND_STACK_ENTRY) + ((orxString_GetLength(zValue) + 1) * sizeof(orxCHAR)), orxMEMORY_TYPE_MAIN);
+
+          /* Inits it */
+          orxMemory_Zero(&(pstEntry->stNode), sizeof(orxLINKLIST_NODE));
+
+          /* Stores value */
+          orxString_Copy(pstEntry->zValue, zValue);
+
+          /* Adds it to stack */
+          orxLinkList_AddEnd(&(sstCommand.stResultStack), &(pstEntry->stNode));
 
           /* Updates push counter */
           u32PushCounter--;
@@ -311,9 +331,6 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 
       /* Updates internal status */
       orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_NONE, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL);
-
-      /* Pops config section */
-      orxConfig_PopSection();
 
       break;
     }
@@ -400,7 +417,6 @@ void orxFASTCALL orxCommand_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_PROFILER);
 
@@ -492,7 +508,18 @@ void orxFASTCALL orxCommand_Exit()
   /* Initialized? */
   if(sstCommand.u32Flags & orxCOMMAND_KU32_STATIC_FLAG_READY)
   {
-    orxCOMMAND *pstCommand;
+    orxCOMMAND_STACK_ENTRY *pstEntry;
+    orxCOMMAND             *pstCommand;
+
+    /* While there are entries in the result stack */
+    while((pstEntry = (orxCOMMAND_STACK_ENTRY *)orxLinkList_GetLast(&(sstCommand.stResultStack))) != orxNULL)
+    {
+      /* Removes it */
+      orxLinkList_Remove(&(pstEntry->stNode));
+
+      /* Deletes it */
+      orxMemory_Free(pstEntry);
+    }
 
     /* While there are registered commands */
     while(orxHashTable_GetNext(sstCommand.pstTable, orxNULL, orxNULL, (void **)&pstCommand) != orxHANDLE_UNDEFINED)
@@ -1000,3 +1027,9 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32
   /* Done! */
   return pstResult;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4200)
+
+#endif /* __orxMSVC__ */
