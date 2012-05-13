@@ -265,6 +265,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition);
 
+/** Sets object world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPosition     Object world position
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition);
+
 /** Sets object rotation
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fRotation      Object rotation (radians)
@@ -272,12 +279,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPosition(orxOBJECT *_ps
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
 
+/** Sets object world rotation
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRotation      Object world rotation (radians)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
+
 /** Sets object scale
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvScale        Object scale vector
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale);
+
+/** Sets object world scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvScale        Object world scale vector
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale);
 
 /** Get object pivot
  * @param[in]   _pstObject      Concerned object

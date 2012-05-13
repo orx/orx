@@ -288,7 +288,7 @@ void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMA
 void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = (orxConfig_SetParent(_astArgList[0].zValue, _astArgList[1].zValue) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+  _pstResult->zValue = (orxConfig_SetParent(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -372,19 +372,19 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
 static orxINLINE void orxConfig_RegisterCommands()
 {
   // Command: Get Parent
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, "Section", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, "Section", orxCOMMAND_VAR_TYPE_STRING);
   // Command: Set Parent
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 2, "Section", orxCOMMAND_VAR_TYPE_STRING, "Parent", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, "Section", orxCOMMAND_VAR_TYPE_STRING, "Parent", orxCOMMAND_VAR_TYPE_STRING);
   // Command: Create Section
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, "Section", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, "Section", orxCOMMAND_VAR_TYPE_STRING);
   // Command: Has Section
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, "Section", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, "Section", orxCOMMAND_VAR_TYPE_STRING);
   // Command: Has Value
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING);
   // Command: Get Value
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 0, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING);
   // Command: Set Value
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING, "Value", orxCOMMAND_VAR_TYPE_STRING);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, "Section", orxCOMMAND_VAR_TYPE_STRING, "Key", orxCOMMAND_VAR_TYPE_STRING, "Value", orxCOMMAND_VAR_TYPE_STRING);
 }
 
 static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orxBOOL _bBlockMode)

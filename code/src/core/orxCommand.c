@@ -92,9 +92,10 @@ typedef struct __orxCOMMAND_STACK_ENTRY_t
 typedef struct __orxCOMMAND_t
 {
   orxCOMMAND_FUNCTION       pfnFunction;              /**< Function : 4 */
-  orxCOMMAND_VAR_DEF        stResult;                 /**< Result definition : 12 */
-  orxSTRING                 zName;                    /**< Name : 16 */
-  orxU32                    u32ParamNumber;           /**< Param number : 20 */
+  orxSTRING                 zName;                    /**< Name : 8 */
+  orxCOMMAND_VAR_DEF        stResult;                 /**< Result definition : 16 */
+  orxU16                    u16RequiredParamNumber;   /**< Required param number : 18 */
+  orxU16                    u16OptionalParamNumber;   /**< Optional param number : 20 */
   orxCOMMAND_VAR_DEF       *astParamList;             /**< Param list : 24 */
 
 } orxCOMMAND;
@@ -154,7 +155,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       orxCHAR                     acGUID[20];
 
       /* Gets owner's GUID */
-      s32GUIDLength = orxString_NPrint(acGUID, 20, "0x%llx", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
+      s32GUIDLength = orxString_NPrint(acGUID, 20, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
 
       /* Gets payload */
       pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
@@ -290,7 +291,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             case orxCOMMAND_VAR_TYPE_U64:
             {
               /* Stores it */
-              orxString_NPrint(acValue, 63, "%llu", stResult.u64Value);
+              orxString_NPrint(acValue, 63, "0x%016llX", stResult.u64Value);
 
               break;
             }
@@ -354,14 +355,16 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
  * @param[in]   _u32ArgNumber  Number of arguments sent to the command
  * @param[in]   _astArgList    List of arguments sent to the command
  * @param[out]  _pstResult     Variable that will contain the result
- * @return      Command result if found, orxNULL otherwise
+ * @return      Command result if successfully executed, orxNULL otherwise
  */
 static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, orxBOOL _bCheckArgList, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxCOMMAND_VAR *pstResult = orxNULL;
 
   /* Valid number of arguments? */
-  if(_u32ArgNumber == _pstCommand->u32ParamNumber)
+  if((_bCheckArgList == orxFALSE)
+  || ((_u32ArgNumber >= (orxU32)_pstCommand->u16RequiredParamNumber)
+   && (_u32ArgNumber <= (orxU32)_pstCommand->u16RequiredParamNumber + (orxU32)_pstCommand->u16OptionalParamNumber)))
   {
     orxU32 i;
 
@@ -548,12 +551,13 @@ void orxFASTCALL orxCommand_Exit()
 /** Registers a command
 * @param[in]   _zCommand      Command name
 * @param[in]   _pfnFunction   Associated function
-* @param[in]   _u32ParamNumber Number of arguments sent to the command
+* @param[in]   _u32RequiredParamNumber Number of required parameters of the command
+* @param[in]   _u32OptionalParamNumber Number of optional parameters of the command
 * @param[in]   _astParamList  List of parameters of the command
 * @param[in]   _pstResult     Result
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION _pfnFunction, orxU32 _u32ParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult)
+orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -561,6 +565,8 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
   orxASSERT(_zCommand != orxNULL);
   orxASSERT(_pfnFunction != orxNULL);
+  orxASSERT(_u32RequiredParamNumber <= 0xFFFF);
+  orxASSERT(_u32OptionalParamNumber <= 0xFFFF);
   orxASSERT(_astParamList != orxNULL);
   orxASSERT(_pstResult != orxNULL);
 
@@ -586,20 +592,21 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
         orxU32 i;
 
         /* Inits it */
-        pstCommand->pfnFunction     = _pfnFunction;
-        pstCommand->stResult.zName  = orxString_Duplicate(_pstResult->zName);
-        pstCommand->stResult.eType  = _pstResult->eType;
-        pstCommand->zName           = orxString_Duplicate(_zCommand);
-        pstCommand->u32ParamNumber  = _u32ParamNumber;
+        pstCommand->pfnFunction             = _pfnFunction;
+        pstCommand->stResult.zName          = orxString_Duplicate(_pstResult->zName);
+        pstCommand->stResult.eType          = _pstResult->eType;
+        pstCommand->zName                   = orxString_Duplicate(_zCommand);
+        pstCommand->u16RequiredParamNumber  = (orxU16)_u32RequiredParamNumber;
+        pstCommand->u16OptionalParamNumber  = (orxU16)_u32OptionalParamNumber;
 
         /* Allocates parameter list */
-        pstCommand->astParamList    = (orxCOMMAND_VAR_DEF *)orxMemory_Allocate(_u32ParamNumber * sizeof(orxCOMMAND_VAR_DEF), orxMEMORY_TYPE_MAIN);
+        pstCommand->astParamList = (orxCOMMAND_VAR_DEF *)orxMemory_Allocate((_u32RequiredParamNumber + _u32OptionalParamNumber) * sizeof(orxCOMMAND_VAR_DEF), orxMEMORY_TYPE_MAIN);
 
         /* Checks */
         orxASSERT(pstCommand->astParamList != orxNULL);
 
         /* For all parameters */
-        for(i = 0; i < _u32ParamNumber; i++)
+        for(i = 0; i < _u32RequiredParamNumber + _u32OptionalParamNumber; i++)
         {
           /* Inits it */
           pstCommand->astParamList[i].zName = orxString_Duplicate(_astParamList[i].zName);
@@ -662,7 +669,7 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
       eResult = orxHashTable_Remove(sstCommand.pstTable, u32ID);
 
       /* For all its parameters */
-      for(i = 0; i < pstCommand->u32ParamNumber; i++)
+      for(i = 0; i < (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber; i++)
       {
         /* Deletes its name */
         orxString_Delete(pstCommand->astParamList[i].zName);
@@ -776,11 +783,11 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
       {
         orxSTATUS       eStatus;
         const orxSTRING zArg;
-        orxU32          u32ArgNumber;
+        orxU32          u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
 
 #ifdef __orxMSVC__
 
-        orxCOMMAND_VAR *astArgList = (orxCOMMAND_VAR *)alloca(pstCommand->u32ParamNumber * sizeof(orxCOMMAND_VAR));
+        orxCOMMAND_VAR *astArgList = (orxCOMMAND_VAR *)alloca(u32ParamNumber * sizeof(orxCOMMAND_VAR));
 
 #else /* __orxMSVC__ */
 
@@ -790,7 +797,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 
         /* For the remainder of the buffer? */
         for(pc++, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
-            (u32ArgNumber < pstCommand->u32ParamNumber) && (eStatus != orxSTATUS_FAILURE) && (pc - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE) && (*pc != orxCHAR_NULL);
+            (u32ArgNumber < u32ParamNumber) && (pc - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE) && (*pc != orxCHAR_NULL);
             pc++, u32ArgNumber++)
         {
           /* Skips all whitespaces */
@@ -867,9 +874,6 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
                   }
                 }
 
-                /* Ends it */
-                *(orxCHAR *)pc = orxCHAR_NULL;
-
                 /* Stores its value */
                 astArgList[u32ArgNumber].zValue = zArg;
 
@@ -932,20 +936,55 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
                 break;
               }
             }
+
+            /* Interrupted? */
+            if((eStatus == orxSTATUS_FAILURE) || (*pc == orxCHAR_NULL))
+            {
+              /* Updates argument counter */
+              u32ArgNumber++;
+
+              /* Stops processing */
+              break;
+            }
+            else
+            {
+              /* Ends current argument */
+              *(orxCHAR *)pc = orxCHAR_NULL;
+            }
           }
         }
 
         /* Error? */
-        if(eStatus == orxSTATUS_FAILURE)
+        if((eStatus == orxSTATUS_FAILURE) || (u32ArgNumber < (orxU32)pstCommand->u16RequiredParamNumber))
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], wrong argument #%ld <%s>.", _zCommandLine, u32ArgNumber, zArg);
-        }
-        /* Not all arguments? */
-        else if(u32ArgNumber != pstCommand->u32ParamNumber)
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected (%ld) arguments, found (%ld).", _zCommandLine, pstCommand->u32ParamNumber, u32ArgNumber);
+          /* Internal call? */
+          if(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL))
+          {
+            const orxCHAR *pcTemp;
+
+            /* Restores command line */
+            for(pcTemp = sstCommand.acBuffer; pcTemp < pc; pcTemp++)
+            {
+              /* Null char? */
+              if(*pcTemp == orxCHAR_NULL)
+              {
+                /* Restores a space */
+                *(orxCHAR *)pcTemp = ' ';
+              }
+            }
+          }
+
+          /* Incorrect parameter? */
+          if(eStatus == orxSTATUS_FAILURE)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], wrong argument #%ld <%s>.", _zCommandLine, u32ArgNumber, zArg);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected %ld[+%ld] arguments, found %ld.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, u32ArgNumber);
+          }
         }
         else
         {

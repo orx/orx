@@ -120,19 +120,19 @@ do                                                                              
   orxSTATUS           eStatus;                                                                                      \
   stResult.eType  = RESULT_TYPE;                                                                                    \
   stResult.zName  = RESULT_NAME;                                                                                    \
-  eStatus         = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, 0, orxNULL, &stResult); \
+  eStatus         = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, 0, 0, orxNULL, &stResult); \
   orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                          \
 } while(orxFALSE)
 
-#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, PARAM_NUMBER, ...)                              \
+#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)        \
 do                                                                                                                                  \
 {                                                                                                                                   \
   orxCOMMAND_VAR_DEF  stResult;                                                                                                     \
-  orxCOMMAND_VAR_DEF  astParamList[PARAM_NUMBER] = {__VA_ARGS__};                                                                   \
+  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER] = {__VA_ARGS__};                                            \
   orxSTATUS           eStatus;                                                                                                      \
   stResult.eType  = RESULT_TYPE;                                                                                                    \
   stResult.zName  = RESULT_NAME;                                                                                                    \
-  eStatus         = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, PARAM_NUMBER, astParamList, &stResult); \
+  eStatus         = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &stResult); \
   orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                          \
 } while(orxFALSE)
 
@@ -154,12 +154,13 @@ extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();
 /** Registers a command
 * @param[in]   _zCommand      Command name
 * @param[in]   _pfnFunction   Associated function
-* @param[in]   _u32ParamNumber Number of arguments sent to the command
+* @param[in]   _u32RequiredParamNumber Number of required parameters of the command
+* @param[in]   _u32OptionalParamNumber Number of optional parameters of the command
 * @param[in]   _astParamList  List of parameters of the command
 * @param[in]   _pstResult     Result
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION _pfnFunction, orxU32 _u32ParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult);
 
 /** Unregisters a command
 * @param[in]   _zCommand      Command name

@@ -199,22 +199,6 @@ static orxOBJECT_STATIC sstObject;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Command: Get Name
- */
-void orxFASTCALL orxObject_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  orxOBJECT *pstObject;
-
-  /* Gets object */
-  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
-
-  /* Updates result */
-  _pstResult->zValue = (pstObject != orxNULL) ? orxObject_GetName(pstObject) : orxSTRING_EMPTY;
-
-  /* Done! */
-  return;
-}
-
 /** Command: Create
  */
 void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -254,6 +238,235 @@ void orxFASTCALL orxObject_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_
     /* Updates result */
     _pstResult->u64Value = orxU64_UNDEFINED;
   }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetPosition
+ */
+void orxFASTCALL orxObject_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Global? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its position */
+      orxObject_SetWorldPosition(pstObject, &(_astArgList[1].vValue));
+    }
+    else
+    {
+      /* Sets its position */
+      orxObject_SetPosition(pstObject, &(_astArgList[1].vValue));
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetRotation
+ */
+void orxFASTCALL orxObject_CommandSetRotation(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Global? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its rotation */
+      orxObject_SetWorldRotation(pstObject, _astArgList[1].fValue);
+    }
+    else
+    {
+      /* Sets its rotation */
+      orxObject_SetRotation(pstObject, _astArgList[1].fValue);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetScale
+ */
+void orxFASTCALL orxObject_CommandSetScale(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Global? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its scale */
+      orxObject_SetWorldScale(pstObject, &(_astArgList[1].vValue));
+    }
+    else
+    {
+      /* Sets its scale */
+      orxObject_SetScale(pstObject, &(_astArgList[1].vValue));
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetPosition
+ */
+void orxFASTCALL orxObject_CommandGetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Global? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Gets its position */
+      orxObject_GetWorldPosition(pstObject, &(_pstResult->vValue));
+    }
+    else
+    {
+      /* Gets its position */
+      orxObject_GetPosition(pstObject, &(_pstResult->vValue));
+    }
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetRotation
+ */
+void orxFASTCALL orxObject_CommandGetRotation(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Global? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Gets its rotation */
+      _pstResult->fValue = orxObject_GetWorldRotation(pstObject);
+    }
+    else
+    {
+      /* Gets its position */
+      _pstResult->fValue = orxObject_GetRotation(pstObject);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetScale
+ */
+void orxFASTCALL orxObject_CommandGetScale(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Global? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Gets its scale */
+      orxObject_GetWorldScale(pstObject, &(_pstResult->vValue));
+    }
+    else
+    {
+      /* Gets its scale */
+      orxObject_GetScale(pstObject, &(_pstResult->vValue));
+    }
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetName
+ */
+void orxFASTCALL orxObject_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Updates result */
+  _pstResult->zValue = (pstObject != orxNULL) ? orxObject_GetName(pstObject) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -571,41 +784,54 @@ void orxFASTCALL orxObject_CommandSetPitch(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 static orxINLINE void orxObject_RegisterCommands()
 {
-  // Command: Create
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "Name", orxCOMMAND_VAR_TYPE_STRING);
-  // Command: Delete
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
+  /* Command: Create */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, "Name", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: Delete */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, "GUID", orxCOMMAND_VAR_TYPE_U64);
 
-  // Command: Get Name
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, "GUID", orxCOMMAND_VAR_TYPE_U64);
+  /* Command: SetPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPosition, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 1, "GUID", orxCOMMAND_VAR_TYPE_U64, "Position", orxCOMMAND_VAR_TYPE_VECTOR, "Global", orxCOMMAND_VAR_TYPE_BOOL);
+  /* Command: SetRotation */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRotation, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 1, "GUID", orxCOMMAND_VAR_TYPE_U64, "Rotation", orxCOMMAND_VAR_TYPE_FLOAT, "Global", orxCOMMAND_VAR_TYPE_BOOL);
+  /* Command: SetScale */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetScale, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 1, "GUID", orxCOMMAND_VAR_TYPE_U64, "Scale", orxCOMMAND_VAR_TYPE_VECTOR, "Global", orxCOMMAND_VAR_TYPE_BOOL);
+  /* Command: GetPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, "GUID", orxCOMMAND_VAR_TYPE_U64, "Global", orxCOMMAND_VAR_TYPE_BOOL);
+  /* Command: GetRotation */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRotation, "Rotation", orxCOMMAND_VAR_TYPE_FLOAT, 1, 1, "GUID", orxCOMMAND_VAR_TYPE_U64, "Global", orxCOMMAND_VAR_TYPE_BOOL);
+  /* Command: GetScale */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetScale, "Scale", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, "GUID", orxCOMMAND_VAR_TYPE_U64, "Global", orxCOMMAND_VAR_TYPE_BOOL);
 
-  // Command: SetLifeTime
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT);
+  /* Command: GetName */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, "GUID", orxCOMMAND_VAR_TYPE_U64);
 
-  // Command: AddTrack
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "TimeLine", orxCOMMAND_VAR_TYPE_STRING);
-  // Command: RemoveTrack
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "TimeLine", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: SetLifeTime */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT);
 
-  // Command: AddFX
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "FX", orxCOMMAND_VAR_TYPE_STRING);
-  // Command: RemoveFX
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "FX", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: AddTrack */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "TimeLine", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: RemoveTrack */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "TimeLine", orxCOMMAND_VAR_TYPE_STRING);
 
-  // Command: AddShader
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Shader", orxCOMMAND_VAR_TYPE_STRING);
-  // Command: RemoveShader
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Shader", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: AddFX */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "FX", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: RemoveFX */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "FX", orxCOMMAND_VAR_TYPE_STRING);
 
-  // Command: AddSound
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
-  // Command: RemoveSound
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: AddShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "Shader", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: RemoveShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "Shader", orxCOMMAND_VAR_TYPE_STRING);
 
-  // Command: SetVolume
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetVolume, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Volume", orxCOMMAND_VAR_TYPE_FLOAT);
-  // Command: SetPitch
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, "GUID", orxCOMMAND_VAR_TYPE_U64, "Pitch", orxCOMMAND_VAR_TYPE_FLOAT);
+  /* Command: AddSound */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
+  /* Command: RemoveSound */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "Sound", orxCOMMAND_VAR_TYPE_STRING);
+
+  /* Command: SetVolume */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetVolume, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "Volume", orxCOMMAND_VAR_TYPE_FLOAT);
+  /* Command: SetPitch */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, "GUID", orxCOMMAND_VAR_TYPE_U64, "Pitch", orxCOMMAND_VAR_TYPE_FLOAT);
 }
 
 /** Deletes all the objects
@@ -2349,6 +2575,55 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
   return eResult;
 }
 
+/** Sets object world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPosition     Object world position
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    orxBODY *pstBody;
+
+    /* Sets object position */
+    orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, _pvPosition);
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Updates body position */
+      orxBody_SetPosition(pstBody, _pvPosition);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets object rotation
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fRotation      Object rotation (radians)
@@ -2397,7 +2672,55 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
   return eResult;
 }
 
-/** Sets Object scale
+/** Sets object world rotation
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRotation      Object world rotation (radians)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    orxBODY *pstBody;
+
+    /* Sets Object rotation */
+    orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_GLOBAL, _fRotation);
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Updates body rotation */
+      orxBody_SetRotation(pstBody, _fRotation);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object scale
  * @param[in]   _pstObject      Concerned Object
  * @param[in]   _pvScale        Object scale vector
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -2433,6 +2756,55 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
 
       /* Updates body scale */
       orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object world scale
+ * @param[in]   _pstObject      Concerned Object
+ * @param[in]   _pvScale        Object world scale vector
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvScale != orxNULL);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    orxBODY *pstBody;
+
+    /* Sets frame scale */
+    orxFrame_SetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Updates body scale */
+      orxBody_SetScale(pstBody, _pvScale);
     }
   }
   else
