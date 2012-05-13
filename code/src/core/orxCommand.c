@@ -791,7 +791,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 
 #else /* __orxMSVC__ */
 
-        orxCOMMAND_VAR astArgList[pstCommand->u32ParamNumber];
+        orxCOMMAND_VAR astArgList[u32ParamNumber];
 
 #endif /* __orxMSVC__ */
 
