@@ -80,15 +80,18 @@ void orxFASTCALL orxMath_InitRandom(orxS32 _s32Seed)
  */
 orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
 {
-  orxU32   u32Temp;
+  union
+  {
+    orxU32    u32Value;
+    orxFLOAT  fValue;
+  } stSwap;
   orxFLOAT fResult;
 
-  /* Gets next random number */
-  u32Temp = orxMath_Xor128();
+  /* Gets next random number (as float) */
+  stSwap.u32Value = (orxMath_Xor128() >> 9) | 0x3f800000;
 
   /* Updates result */
-  *((orxU32 *)&fResult) = (u32Temp >> 9) | 0x3f800000;
-  fResult               = _fMin + (fResult - orxFLOAT_1) * (_fMax - _fMin);
+  fResult = _fMin + (stSwap.fValue - orxFLOAT_1) * (_fMax - _fMin);
 
   /* Done! */
   return fResult;

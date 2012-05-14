@@ -60,15 +60,17 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a16c0efd019bd520dfef7cc1a19efc26a">orxSHADER_PARAM_TYPE_FLOAT</a> =  0, 
 <a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1aca1cd5084b7446611bf9da4f12825ab6">orxSHADER_PARAM_TYPE_TEXTURE</a>, 
 <a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a36cbd46542870010116d81e44c5e1e44">orxSHADER_PARAM_TYPE_VECTOR</a>, 
-<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a79b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ab26810b41b2fe47fc98399c7a213b584">orxSHADER_PARAM_TYPE_TIME</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ae8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a79b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ae8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> =  orxENUM_NONE
 <br/>
  }</td></tr>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gaee59c669a705b28e66cc8ff5f2c0ae48">orxShader_AddFloatParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga82b3b438d904bd790dfb062ae77d31aa">orxShader_AddTextureParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> **_apstValueList)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga4a302c1f77503f9da2376807f7e8edb9">orxShader_AddTimeParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga49da9795481144df82fc146aa777e499">orxShader_AddVectorParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avValueList)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga80c39a9086eab3bd3e1b143c27cfb87e">orxShader_CompileCode</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zCode)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga797b23fe634e863a7c3befd9cda7d13b">orxShader_Create</a> ()</td></tr>
@@ -89,7 +91,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <dl class="date"><dt><b>Date:</b></dt><dd>11/04/2009 </dd></dl>
 <dl class="author"><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000062">Todo:</a></b></dt><dd></dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000063">Todo:</a></b></dt><dd></dd></dl>
 
 <p>Definition in file <a class="el" href="orx_shader_8h_source.html">orxShader.h</a>.</p>
 </div>

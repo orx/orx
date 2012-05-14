@@ -70,7 +70,7 @@
 <a name="l00071"></a>00071 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_hash_table.html#gac4c44cf291c85a9b5808c9c8ad4e9585">orxHashTable_Delete</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable);
 <a name="l00072"></a>00072 
 <a name="l00077"></a>00077 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_hash_table.html#gad92b73fba98413e285bc2ef0c5ef6567">orxHashTable_Clear</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable);
-<a name="l00084"></a>00084 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL             <a class="code" href="group__orx_hash_table.html#ga1a50c687acf8e8992ac839811dd64693">orxHashTable_GetCounter</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable);
+<a name="l00084"></a>00084 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL             <a class="code" href="group__orx_hash_table.html#ga1cb31319da82205b9daa63016cead824">orxHashTable_GetCounter</a>(<span class="keyword">const</span> <a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable);
 <a name="l00085"></a>00085 
 <a name="l00093"></a>00093 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL              <a class="code" href="group__orx_hash_table.html#ga571fd07a3d33dc289777ba8ce34b1e3b">orxHashTable_Get</a>(<span class="keyword">const</span> <a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key);
 <a name="l00094"></a>00094 
@@ -80,21 +80,12 @@
 <a name="l00110"></a>00110 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_hash_table.html#ga9d540c1f5bc92a3b850df09dd1ea4a59">orxHashTable_Add</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key, <span class="keywordtype">void</span> *_pData);
 <a name="l00111"></a>00111 
 <a name="l00117"></a>00117 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_hash_table.html#gac1f16963dd17dae7ba05c603f5f931df">orxHashTable_Remove</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key);
-<a name="l00130"></a>00130 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL          <a class="code" href="group__orx_hash_table.html#ga125074b981e66465224f074a2ef034bd">orxHashTable_FindFirst</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 *_pu32Key, <span class="keywordtype">void</span> **_ppData);
-<a name="l00131"></a>00131 
-<a name="l00139"></a>00139 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL          <a class="code" href="group__orx_hash_table.html#ga4ea5f78c0ce764331d1c029e438dc4ce">orxHashTable_FindNext</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, <span class="keywordtype">void</span> **_ppData);
-<a name="l00142"></a>00142 <span class="comment">/*******************************************************************************</span>
-<a name="l00143"></a>00143 <span class="comment"> * DEBUG FUNCTION</span>
-<a name="l00144"></a>00144 <span class="comment"> ******************************************************************************/</span>
-<a name="l00145"></a>00145 
-<a name="l00146"></a>00146 <span class="preprocessor">#ifdef __orxDEBUG__</span>
-<a name="l00147"></a>00147 <span class="preprocessor"></span>
-<a name="l00151"></a>00151 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL               orxHashTable_DebugPrint(<span class="keyword">const</span> <a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable);
-<a name="l00152"></a>00152 
-<a name="l00153"></a>00153 <span class="preprocessor">#endif </span><span class="comment">/* __orxDEBUG__ */</span>
-<a name="l00154"></a>00154 
-<a name="l00155"></a>00155 <span class="preprocessor">#endif </span><span class="comment">/* _orxHASHTABLE_H_ */</span>
-<a name="l00156"></a>00156 
+<a name="l00131"></a>00131 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL          <a class="code" href="group__orx_hash_table.html#gaf1aff657499de3be4f7664777d78cf43">orxHashTable_GetNext</a>(<span class="keyword">const</span> <a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, <span class="keywordtype">void</span> **_ppData);
+<a name="l00138"></a>00138 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL          <a class="code" href="group__orx_hash_table.html#ga4c7dc1294ce43ca8854946bd388be572">orxHashTable_Optimize</a>(<a class="code" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable);
+<a name="l00139"></a>00139 
+<a name="l00140"></a>00140 
+<a name="l00141"></a>00141 <span class="preprocessor">#endif </span><span class="comment">/* _orxHASHTABLE_H_ */</span>
+<a name="l00142"></a>00142 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>
