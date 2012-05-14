@@ -84,9 +84,9 @@ CXX = arm-linux-androideabi-g++
 CC = arm-linux-androideabi-gcc
 AR = arm-linux-androideabi-ar
 CPPFLAGS = -fno-exceptions -fno-rtti -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID -D__orxBANK_ALIGN__
-CFLAGS = -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID -D__orxBANK_ALIGN__
-ARMV7A_FLAGS_RELEASE = -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O1
-ARMV5TE_FLAGS_RELEASE = -O1
+CFLAGS = -DNO_MALLINFO=1 -D__orxANDROID__ -DANDROID -D__orxBANK_ALIGN__ 
+ARMV7A_FLAGS_RELEASE = -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O2 -fno-strict-aliasing
+ARMV5TE_FLAGS_RELEASE = -O2 -fno-strict-aliasing
 ARMV7A_FLAGS_DEBUG = -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O0 -g
 ARMV5TE_FLAGS_DEBUG = -O0 -g
 
