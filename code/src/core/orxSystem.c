@@ -45,16 +45,13 @@
 
 #else /* __orxWINDOWS__ */
 
-#ifdef __orxMAC
+#ifdef __orxMAC__
 
 #include <mach/mach_time.h>
 
-#else /* __orxMAC__ */
-
-#include <unistd.h>
-
 #endif /* __orxMAC__ */
 
+#include <unistd.h>
 #include <sys/time.h>
 
 #endif /* __orxWINDOWS__ */
