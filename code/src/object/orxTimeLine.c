@@ -221,8 +221,9 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
         }
         else
         {
-          /* Not keep in cache? */
-          if(orxString_Compare(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE, zKey) != 0)
+          /* Not keep in cache nor loop? */
+          if((orxString_Compare(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE, zKey) != 0)
+          && (orxString_Compare(orxTIMELINE_KZ_CONFIG_LOOP, zKey) != 0))
           {
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "TimeLine track [%s]: ignoring invalid key (%s).", _zTrackID, zKey);
