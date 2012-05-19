@@ -45,11 +45,11 @@
 
 #else /* __orxWINDOWS__ */
 
-#ifdef __orxMAC__
+#if defined(__orxMAC__) || defined(__orxIOS__)
 
 #include <mach/mach_time.h>
 
-#endif /* __orxMAC__ */
+#endif /* __orxMAC__ || __orxIOS__ */
 
 #include <unistd.h>
 #include <sys/time.h>
@@ -80,15 +80,15 @@ typedef struct __orxSYSTEM_STATIC_t
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
   orxDOUBLE dResolution;
 
-  #else /* __orxMAC__ */
+  #else /* __orxMAC__ || __orxIOS__ */
   
   orxBOOL bUseMonotonic;
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -135,11 +135,11 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
   
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
   dResult = orx2D(mach_absolute_time()) * sstSystem.dResolution;
 
-  #else /* __orxMAC__ */
+  #else /* __orxMAC__ || __orxIOS__ */
 
     #ifdef CLOCK_MONOTONIC
 
@@ -183,7 +183,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     }
   }
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -222,11 +222,11 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
     mach_timebase_info_data_t stInfo;
 
-  #else /* __orxMAC__ */
+  #else /* __orxMAC__ || __orxIOS__ */
 
     #ifdef CLOCK_MONOTONIC
 
@@ -234,7 +234,7 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     #endif /* CLOCK_MONOTONIC */
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -260,7 +260,7 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
 #else /* __orxWINDOWS __ */
 
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
     /* Gets time base info */
     mach_timebase_info(&stInfo);
@@ -268,7 +268,7 @@ orxSTATUS orxFASTCALL orxSystem_Init()
     /* Stores resolution */
     sstSystem.dResolution = orx2D(stInfo.numer) / orx2D(stInfo.denom * 1.0e9);
 
-  #else /* __orxMAC__ */
+  #else /* __orxMAC__ || __orxIOS__ */
 
     #ifdef CLOCK_MONOTONIC
 
@@ -281,7 +281,7 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     #endif /* CLOCK_MONOTONIC */
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
