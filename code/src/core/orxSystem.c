@@ -146,22 +146,26 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
 
     #ifdef CLOCK_MONOTONIC
 
-    /* Use monotonic clock? */
-    if(sstSystem.bUseMonotonic != orxFALSE)
-    {
-      struct timespec stCurrentTime;
+  /* Use monotonic clock? */
+  if(sstSystem.bUseMonotonic != orxFALSE)
+  {
+    struct timespec stCurrentTime;
 
-      /* Gets current time */
-      clock_gettime(CLOCK_MONOTONIC, &stCurrentTime);
+    /* Gets current time */
+    clock_gettime(CLOCK_MONOTONIC, &stCurrentTime);
 
-      /* Updates result */
-      dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
-    }
-    else
+    /* Updates result */
+    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
+  }
+  else
 
     #endif /* CLOCK_MONOTONIC */
 
+  {
+
     #if !defined(__orxANDROID_NATIVE__) && !defined(__orxANDROID__)
+
+    struct timeval stCurrentTime;
 
     /* Gets current time */
     if(gettimeofday(&stCurrentTime, NULL) == 0)
@@ -180,6 +184,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
       /* Updates result */
       dResult = orx2D(0.0);
     }
+  }
 
   #endif /* __orxMAC__ */
 
