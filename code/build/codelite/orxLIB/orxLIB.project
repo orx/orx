@@ -330,6 +330,7 @@
         <Library Value="openal"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="rt"/>
         <Library Value="glfw"/>
         <Library Value="SOIL"/>
         <Library Value="Box2D"/>
@@ -395,6 +396,7 @@
         <Library Value="openal"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="rt"/>
         <Library Value="glfw"/>
         <Library Value="SOIL"/>
         <Library Value="Box2D"/>
@@ -459,6 +461,7 @@
         <Library Value="openal"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="rt"/>
         <Library Value="glfw"/>
         <Library Value="SOIL"/>
         <Library Value="Box2D"/>
@@ -691,6 +694,7 @@
         <Library Value="openal"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="rt"/>
         <Library Value="glfw"/>
         <Library Value="SOIL"/>
         <Library Value="Box2D"/>
@@ -755,6 +759,7 @@
         <Library Value="openal"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="rt"/>
         <Library Value="glfw"/>
         <Library Value="SOIL"/>
         <Library Value="Box2D"/>
@@ -818,6 +823,7 @@
         <Library Value="openal"/>
         <Library Value="dl"/>
         <Library Value="m"/>
+        <Library Value="rt"/>
         <Library Value="glfw"/>
         <Library Value="SOIL"/>
         <Library Value="Box2D"/>
