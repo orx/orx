@@ -45,7 +45,16 @@
 
 #else /* __orxWINDOWS__ */
 
+#ifdef __orxMAC
+
+#include <mach/mach_time.h>
+
+#else /* __orxMAC__ */
+
 #include <unistd.h>
+
+#endif /* __orxMAC__ */
+
 #include <sys/time.h>
 
 #endif /* __orxWINDOWS__ */
@@ -71,6 +80,18 @@ typedef struct __orxSYSTEM_STATIC_t
 
   orxDOUBLE dFrequency;
   orxBOOL   bUseHighPerformanceTimer;
+
+#else /* __orxWINDOWS__ */
+
+  #ifdef __orxMAC__
+
+  orxDOUBLE dResolution;
+
+  #else /* __orxMAC__ */
+  
+  orxBOOL bUseMonotonic;
+
+  #endif /* __orxMAC__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -117,45 +138,50 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
   
 #else /* __orxWINDOWS__ */
 
-  #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
+  #ifdef __orxMAC__
 
-  struct timespec stCurrentTime;
-  
-  /* Gets current time */
-  if(clock_gettime(CLOCK_MONOTONIC, &stCurrentTime) == 0)
-  {
-    /* Updates result */
-    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
-  }  
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
+  dResult = orx2D(mach_absolute_time()) * sstSystem.dResolution;
 
-    /* Updates result */
-    dResult = orx2D(0.0);
-  }
+  #else /* __orxMAC__ */
 
-  #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
+    #ifdef CLOCK_MONOTONIC
 
-  struct timeval stCurrentTime;
+    /* Use monotonic clock? */
+    if(sstSystem.bUseMonotonic != orxFALSE)
+    {
+      struct timespec stCurrentTime;
 
-  /* Gets current time */
-  if(gettimeofday(&stCurrentTime, NULL) == 0)
-  {
-    /* Updates result */
-    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_usec) * orx2D(0.000001));
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
+      /* Gets current time */
+      clock_gettime(CLOCK_MONOTONIC, &stCurrentTime);
 
-    /* Updates result */
-    dResult = orx2D(0.0);
-  }
+      /* Updates result */
+      dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
+    }
+    else
 
-  #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
+    #endif /* CLOCK_MONOTONIC */
+
+    #if !defined(__orxANDROID_NATIVE__) && !defined(__orxANDROID__)
+
+    /* Gets current time */
+    if(gettimeofday(&stCurrentTime, NULL) == 0)
+    {
+      /* Updates result */
+      dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_usec) * orx2D(0.000001));
+    }
+    else
+
+    #endif /* !__orxANDROID_NATIVE__ && !__orxANDROID__ */
+
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
+
+      /* Updates result */
+      dResult = orx2D(0.0);
+    }
+
+  #endif /* __orxMAC__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -192,6 +218,22 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     LARGE_INTEGER s64Frequency;
 
+#else /* __orxWINDOWS__ */
+
+  #ifdef __orxMAC__
+
+    mach_timebase_info_data_t stInfo;
+
+  #else /* __orxMAC__ */
+
+    #ifdef CLOCK_MONOTONIC
+
+    struct timespec stCurrentTime;
+
+    #endif /* CLOCK_MONOTONIC */
+
+  #endif /* __orxMAC__ */
+
 #endif /* __orxWINDOWS__ */
 
     /* Cleans static controller */
@@ -214,6 +256,31 @@ orxSTATUS orxFASTCALL orxSystem_Init()
       sstSystem.bUseHighPerformanceTimer = orxFALSE;
     }
 
+#else /* __orxWINDOWS __ */
+
+  #ifdef __orxMAC__
+
+    /* Gets time base info */
+    mach_timebase_info(&stInfo);
+
+    /* Stores resolution */
+    sstSystem.dResolution = orx2D(stInfo.numer) / orx2D(stInfo.denom * 1.0e9);
+
+  #else /* __orxMAC__ */
+
+    #ifdef CLOCK_MONOTONIC
+
+    /* Can get monotonic time? */
+    if(clock_gettime(CLOCK_MONOTONIC, &stCurrentTime) == 0)
+    {
+      /* Updates status */
+      sstSystem.bUseMonotonic = orxTRUE;
+    }
+
+    #endif /* CLOCK_MONOTONIC */
+
+  #endif /* __orxMAC__ */
+
 #endif /* __orxWINDOWS__ */
 
     /* Gets start time */
@@ -231,7 +298,7 @@ orxSTATUS orxFASTCALL orxSystem_Init()
  */
 void orxFASTCALL orxSystem_Exit()
 {
-  /* Module initialized ? */
+  /* Checks */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
     /* Cleans static controller */
@@ -248,7 +315,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetTime()
 {
   orxDOUBLE dCurrentTime;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets current time */
@@ -266,7 +333,7 @@ orxS32 orxFASTCALL orxSystem_GetRealTime()
   time_t  stTime;
   orxS32  s32Result;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets time */
@@ -281,7 +348,7 @@ orxS32 orxFASTCALL orxSystem_GetRealTime()
  */
 void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 {
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_fSeconds >= orxFLOAT_0);
 
