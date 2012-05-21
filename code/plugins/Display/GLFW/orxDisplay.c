@@ -2263,14 +2263,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
 
 orxU32 orxFASTCALL orxDisplay_GLFW_GetVideoModeCounter()
 {
-  GLFWvidmode astModeList[64];
+  GLFWvidmode astModeList[256];
   orxU32      u32Result = 0;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Gets video mode list */
-  u32Result = (orxU32)glfwGetVideoModes(astModeList, 64);
+  u32Result = (orxU32)glfwGetVideoModes(astModeList, 256);
 
   /* Done! */
   return u32Result;
@@ -2278,7 +2278,7 @@ orxU32 orxFASTCALL orxDisplay_GLFW_GetVideoModeCounter()
 
 orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  GLFWvidmode             astModeList[64];
+  GLFWvidmode             astModeList[256];
   orxU32                  u32Counter;
   orxDISPLAY_VIDEO_MODE  *pstResult;
 
@@ -2287,7 +2287,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
   orxASSERT(_pstVideoMode != orxNULL);
 
   /* Gets video mode list */
-  u32Counter = (orxU32)glfwGetVideoModes(astModeList, 64);
+  u32Counter = (orxU32)glfwGetVideoModes(astModeList, 256);
 
   /* Is index valid? */
   if(_u32Index < u32Counter)
