@@ -2343,7 +2343,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
     && ((_pstVideoMode->u32Depth == (orxU32)(astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits))
      || ((_pstVideoMode->u32Depth == 32)
       && (astModeList[i].RedBits + astModeList[i].GreenBits + astModeList[i].BlueBits == 24)))
-    && ((_pstVideoMode->u32RefreshRate == astModeList[i].RefreshRate)
+    && ((_pstVideoMode->u32RefreshRate == (orxU32)astModeList[i].RefreshRate)
      || (_pstVideoMode->u32RefreshRate == 0)))
     {
       /* Updates result */
