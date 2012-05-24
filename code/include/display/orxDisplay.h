@@ -98,7 +98,7 @@ typedef struct __orxDISPLAY_TRANSFORM_t
  */
 typedef struct __orxDISPLAY_VIDEO_MODE_t
 {
-  orxU32  u32Width, u32Height, u32Depth;
+  orxU32  u32Width, u32Height, u32Depth, u32RefreshRate;
 
 } orxDISPLAY_VIDEO_MODE;
 
@@ -170,6 +170,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_WIDTH          "ScreenWidth"
 #define orxDISPLAY_KZ_CONFIG_HEIGHT         "ScreenHeight"
 #define orxDISPLAY_KZ_CONFIG_DEPTH          "ScreenDepth"
+#define orxDISPLAY_KZ_CONFIG_REFRESH_RATE   "RefreshRate"
 #define orxDISPLAY_KZ_CONFIG_FULLSCREEN     "FullScreen"
 #define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE   "AllowResize"
 #define orxDISPLAY_KZ_CONFIG_DECORATION     "Decoration"
@@ -213,10 +214,12 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
   orxU32  u32Width;                                     /**< Screen width : 4 */
   orxU32  u32Height;                                    /**< Screen height : 8 */
   orxU32  u32Depth;                                     /**< Screen depth : 12 */
-  orxU32  u32PreviousWidth;                             /**< Previous screen width : 16 */
-  orxU32  u32PreviousHeight;                            /**< Previous screen height : 20 */
-  orxU32  u32PreviousDepth;                             /**< Previous screen depth : 24 */
-  orxBOOL bFullScreen;                                  /**< FullScreen? : 28 */
+  orxU32  u32RefreshRate;                               /**< Refresh rate: 16 */
+  orxU32  u32PreviousWidth;                             /**< Previous screen width : 20 */
+  orxU32  u32PreviousHeight;                            /**< Previous screen height : 24 */
+  orxU32  u32PreviousDepth;                             /**< Previous screen depth : 28 */
+  orxU32  u32PreviousRefreshRate;                       /**< Previous refresh rate : 32 */
+  orxBOOL bFullScreen;                                  /**< FullScreen? : 36 */
 
 } orxDISPLAY_EVENT_PAYLOAD;
 
