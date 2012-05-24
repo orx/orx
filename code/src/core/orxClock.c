@@ -79,7 +79,7 @@
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
-#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.005f)
+#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
 
 
 /***************************************************************************
@@ -577,8 +577,15 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Unlocks clocks */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
-    /* Waits for next time slice */
-    orxSystem_Delay(orxMAX(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT, orxFLOAT_0));
+    /* Gets real remaining delay */
+    fDelay = fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT - orx2F(orxSystem_GetTime() - sstClock.dTime);
+
+    /* Should delay? */
+    if(fDelay > orxFLOAT_0)
+    {
+      /* Waits for next time slice */
+      orxSystem_Delay(fDelay);
+    }
   }
 
   /* Done! */

@@ -40,7 +40,6 @@
 
 #ifdef __orxWINDOWS__
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 #else /* __orxWINDOWS__ */
@@ -243,6 +242,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
 #ifdef __orxWINDOWS__
 
+    /* Asks for small time slices */
+    timeBeginPeriod(1);
+
     /* Should use high performance timer? */
     if(QueryPerformanceFrequency(&s64Frequency))
     {
@@ -303,6 +305,13 @@ void orxFASTCALL orxSystem_Exit()
   /* Checks */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
+#ifdef __orxWINDOWS__
+
+     /* Resets time slices */
+     timeEndPeriod(1);
+
+#endif /* __orxWINDOWS__ */
+
     /* Cleans static controller */
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
   }
