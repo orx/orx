@@ -61,7 +61,7 @@
 /* Native Android? */
 #elif defined(__orxANDROID_NATIVE__)
 
-#include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+#include "../plugins/Keyboard/android-native/orxKeyboard.cpp"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Joystick/android-native/orxJoystick.c"

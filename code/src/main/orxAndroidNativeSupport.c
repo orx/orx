@@ -147,6 +147,12 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
       }
       return 1;
     }
+
+    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
+      orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + AINPUT_EVENT_TYPE_KEY, AINPUT_EVENT_TYPE_KEY, orxNULL, orxNULL, event);
+      return 1;
+    }
+
     return 0;
 }
 

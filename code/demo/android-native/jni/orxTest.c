@@ -119,6 +119,16 @@ static orxSTATUS orxFASTCALL Run()
     orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
   }
 
+  // Is quit action active?
+  if(orxInput_IsActive("Quit"))
+  {
+    // Logs
+    orxLOG("Quit action triggered, exiting!");
+
+    // Sets return value to orxSTATUS_FAILURE, meaning we want to exit
+    return orxSTATUS_FAILURE;
+  }
+
   return orxSTATUS_SUCCESS;
 }
 
