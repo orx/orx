@@ -310,27 +310,9 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             ev->m_data.m_key.m_code, 
             (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
 
-            orxKEYBOARD_EVENT_PAYLOAD stKeyPayload;
-            orxMemory_Zero(&stKeyPayload, sizeof(orxKEYBOARD_EVENT_PAYLOAD));
-
-            /* Stores keycode */ 
-            stKeyPayload.eKey = (orxKEYBOARD_KEY)ev->m_data.m_key.m_code;
-
-            switch(ev->m_data.m_key.m_action)
-            {
-            case NV_KEYACTION_DOWN:
-              /* Asks the keyboard plugin for translation */
-              orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stKeyPayload);
-              /* Sends the final event */
-              orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_PRESSED, orxNULL, orxNULL, &stKeyPayload);
-              break;
-            case NV_KEYACTION_UP:
-              /* Asks the keyboard plugin for translation */
-              orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stKeyPayload);
-              /* Sends the final event */
-              orxEVENT_SEND(orxEVENT_TYPE_KEYBOARD, orxKEYBOARD_EVENT_KEY_RELEASED, orxNULL, orxNULL, &stKeyPayload);
-              break;
-            }
+            /* Send reserved event, used bu the keyboard plugin, to store the keyboard event */
+            orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY, NV_EVENT_KEY, orxNULL, orxNULL, &ev->m_data.m_key);
+            
             break;
 
           case NV_EVENT_CHAR:

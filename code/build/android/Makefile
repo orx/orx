@@ -91,6 +91,9 @@ ARMV7A_FLAGS_DEBUG = -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -O0 -g
 ARMV5TE_FLAGS_DEBUG = -O0 -g
 
 all: $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT) $(armeabi_profile_OUT) $(armeabi-v7a_profile_OUT) $(armeabi_OUT) $(armeabi-v7a_OUT)
+release: $(armeabi_OUT) $(armeabi-v7a_OUT)
+debug: $(armeabi_debug_OUT) $(armeabi-v7a_debug_OUT)
+profile: $(armeabi_profile_OUT) $(armeabi-v7a_profile_OUT)
 
 armeabi/debug/%.o: %.cpp
 	mkdir -p $(dir $@)

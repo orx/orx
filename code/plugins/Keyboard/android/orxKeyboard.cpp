@@ -228,25 +228,20 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  orxKEYBOARD_EVENT_PAYLOAD *pstPayload;
+  NVEventKey *pstNVEventKey;
 
   /* Gets payload */
-  pstPayload = (orxKEYBOARD_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+  pstNVEventKey = (NVEventKey *) _pstEvent->pstPayload;
 
-  /* Depending on ID */
-  switch(_pstEvent->eID)
+  switch(pstNVEventKey->m_action)
   {
-  /* Keyboard? */
-  case orxKEYBOARD_EVENT_KEY_PRESSED:
-    sstKeyboard.abKeyPressed[(orxU32)pstPayload->eKey] = orxTRUE;
-    break;
-  case orxKEYBOARD_EVENT_KEY_RELEASED:
-    sstKeyboard.abKeyPressed[(orxU32)pstPayload->eKey] = orxFALSE;
-    break;
+    case NV_KEYACTION_DOWN:
+      sstKeyboard.abKeyPressed[(orxU32)pstNVEventKey->m_code] = orxTRUE;
+      break;
+    case NV_KEYACTION_UP:
+      sstKeyboard.abKeyPressed[(orxU32)pstNVEventKey->m_code] = orxFALSE;
+      break;
   }
-
-  /* Stores key translation */
-  pstPayload->eKey = orxKeyboard_Android_GetKey((NVKeyCode)pstPayload->eKey);
 
   /* Done! */
   return eResult;
@@ -263,7 +258,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
     
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
       for(i = 0; i < NV_MAX_KEYCODE; i++)
@@ -286,7 +281,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + orxEVENT_TYPE_KEYBOARD), orxKeyboard_Android_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY), orxKeyboard_Android_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
@@ -316,7 +311,7 @@ extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY 
   else
   {
     /* Logs message */
-    orxLOG("Key <%s> is not handled by this plugin.", orxKeyboard_GetKeyName(_eKey));
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD,"Key <%s> is not handled by this plugin.", orxKeyboard_GetKeyName(_eKey));
 
     /* Updates result */
     bResult = orxFALSE;
