@@ -147,7 +147,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           struct android_poll_source *pstSource;
 
           /* For all system events */
-          while((s32Ident = ALooper_pollAll(((s32Animating != 0) || (pstApp->destroyRequested != 0)) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
+          while((s32Ident = ALooper_pollAll((s32Animating != 0) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
           {
              /* Valid source? */
              if(pstSource != NULL)
@@ -184,7 +184,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           }
 
           /* Should update? */
-          if((s32Animating != 0) || (pstApp->destroyRequested != 0))
+          if(s32Animating != 0)
           {
             /* Sends frame start event */
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);

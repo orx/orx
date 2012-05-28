@@ -406,6 +406,15 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glASSERT();
 
+        /* Has index buffer? */
+        if(sstDisplay.uiIndexBuffer != 0)
+        {
+          /* Deletes it */
+          glDeleteBuffers(1, &(sstDisplay.uiIndexBuffer));
+          glASSERT();
+          sstDisplay.uiIndexBuffer = 0;
+        }
+
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT done");
         break;
       }
@@ -509,6 +518,18 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
         /* generate frame buffer */
         glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
+        glASSERT();
+
+	/* Generates index buffer object (IBO) */
+        glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
+        glASSERT();
+
+        /* Binds it */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+        glASSERT();
+
+        /* Fills it */
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
         glASSERT();
 
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "RESTORE_CONTEXT done");

@@ -122,7 +122,7 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_p
   {
     case orxSYSTEM_EVENT_ACCELERATE:
     {
-      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+     orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
       /* Gets payload */
       pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
@@ -141,7 +141,7 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_p
 
       break;
     }
-    case orxSYSTEM_EVENT_BACKGROUND:
+    case orxSYSTEM_EVENT_FOCUS_LOST:
     {
       if (poAccelerometerSensor != orxNULL)
       {
@@ -150,7 +150,7 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_p
 
       break;
     }
-    case orxSYSTEM_EVENT_FOREGROUND:
+    case orxSYSTEM_EVENT_FOCUS_GAINED:
     {
       if (poAccelerometerSensor != orxNULL)
       {

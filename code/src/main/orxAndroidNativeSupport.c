@@ -72,30 +72,38 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
     case APP_CMD_INIT_WINDOW:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_INIT_WINDOW\n");
       // The window is being shown, get it ready.
-      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
+      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_INIT_WINDOW);
       break;
-    case APP_CMD_TERM_WINDOW:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_TERM_WINDOW\n");
-      // The window is being hidden or closed, clean it up.
-      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
-      break;
-    case APP_CMD_LOST_FOCUS:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_LOST_FOCUS\n");
-      /* Sends event */
+    case APP_CMD_PAUSE:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_PAUSE\n");
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
       {
         /* Adds render inhibiter */
         orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
       }
       break;
-    case APP_CMD_GAINED_FOCUS:
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_GAINED_FOCUS\n");
-      /* Sends event */
+    case APP_CMD_RESUME:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_RESUME\n");
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
       {
         /* Removes render inhibiter */
         orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
       }
+      break;
+    case APP_CMD_TERM_WINDOW:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_TERM_WINDOW\n");
+      // The window is being hidden or closed, clean it up.
+      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_TERM_WINDOW);
+      break;
+    case APP_CMD_LOST_FOCUS:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_LOST_FOCUS\n");
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+      break;
+    case APP_CMD_GAINED_FOCUS:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_GAINED_FOCUS\n");
+      /* Sends event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
       break;
     case APP_CMD_DESTROY:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_DESTROY\n");
@@ -554,9 +562,27 @@ void android_main(struct android_app *_pstApp)
 
   #endif
 
+  ANativeActivity_finish(pstApp->activity);
+
+  pstApp->onAppCmd = NULL;
+  pstApp->onInputEvent = NULL;
+
+  orxS32 s32Ident, s32Events;
+  struct android_poll_source *pstSource;
+
+  /* wait for destroyRequest */
+  while(pstApp->destroyRequested != 1)
+  {
+    s32Ident = ALooper_pollAll(0, NULL, (int *)&s32Events, (void **)&pstSource);
+    /* Valid source? */
+    if(pstSource != NULL)
+    {
+      /* Process its event */
+      pstSource->process(pstApp, pstSource);
+    }
+  }
+
   orxAndroid_ReleaseMainArgs();
   orxAndroid_DetachThread();
-
-  return;
 }
 
