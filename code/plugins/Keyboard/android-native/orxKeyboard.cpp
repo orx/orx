@@ -182,7 +182,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
     
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + AINPUT_EVENT_TYPE_KEY), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 2), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
       for(i = 0; i < AKEYCODE_BUTTON_MODE + 1; i++)

@@ -510,13 +510,13 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   }
 
   /* Is a system event? */
-  if(_pstEvent->eType == orxEVENT_TYPE_DISPLAY)
+  if(_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + 1)
   {
     switch (_pstEvent->eID)
     {
-      case orxDISPLAY_EVENT_INIT_WINDOW:
+      case 0:
       {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxDISPLAY_EVENT_INIT_WINDOW");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxANDROID_NATIVE_DISPLAY_EVENT_INIT_WINDOW");
 
         if (orxAndroid_GetNativeWindow() != NULL)
         {
@@ -641,9 +641,9 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
         break;
       }
-      case orxDISPLAY_EVENT_TERM_WINDOW:
+      case 1:
       {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxDISPLAY_EVENT_TERM_WINDOW");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxANDROID_NATIVE_DISPLAY_EVENT_TERM_WINDOW");
 
         term_display();
 
@@ -2663,7 +2663,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glASSERT();
 
         /* Updates result */
-        eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
+        eResult = orxEvent_AddHandler((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), orxDisplay_Android_EventHandler);
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
         s32Animating = 1;
 

@@ -200,12 +200,6 @@ typedef enum __orxDISPLAY_EVENT_t
   orxDISPLAY_EVENT_RESTORE_CONTEXT,
 
 #endif /*  __orxANDROID__ */
-#ifdef __orxANDROID_NATIVE__
-
-  orxDISPLAY_EVENT_TERM_WINDOW,
-  orxDISPLAY_EVENT_INIT_WINDOW,
-
-#endif /* __orxANDROID_NATIVE */
 
   orxDISPLAY_EVENT_NUMBER,
 

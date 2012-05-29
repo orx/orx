@@ -72,7 +72,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
     case APP_CMD_INIT_WINDOW:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_INIT_WINDOW\n");
       // The window is being shown, get it ready.
-      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_INIT_WINDOW);
+      orxEvent_SendShort((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), (orxENUM) 0);
       break;
     case APP_CMD_PAUSE:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_PAUSE\n");
@@ -93,7 +93,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
     case APP_CMD_TERM_WINDOW:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_TERM_WINDOW\n");
       // The window is being hidden or closed, clean it up.
-      orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_TERM_WINDOW);
+      orxEvent_SendShort((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), (orxENUM) 1);
       break;
     case APP_CMD_LOST_FOCUS:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_LOST_FOCUS\n");
@@ -157,7 +157,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
     }
 
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
-      orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + AINPUT_EVENT_TYPE_KEY, AINPUT_EVENT_TYPE_KEY, orxNULL, orxNULL, event);
+      orxEVENT_SEND((orxEVENT_TYPE_FIRST_RESERVED + 2), orxNULL, orxNULL, orxNULL, event);
       return 1;
     }
 
