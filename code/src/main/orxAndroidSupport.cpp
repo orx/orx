@@ -178,7 +178,7 @@ static bool renderFrame(bool allocateIfNeeded)
         if (!allocateIfNeeded)
             return false;
 
-        orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_RESTORE_CONTEXT);
+		orxEvent_SendShort(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED, NV_EVENT_FOCUS_GAINED);
         s_glesLoaded = true;
     }
 
@@ -381,7 +381,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 
           case NV_EVENT_SURFACE_DESTROYED:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
-            orxEvent_SendShort(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SAVE_CONTEXT);
+            orxEvent_SendShort(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST, NV_EVENT_FOCUS_LOST);
             s_glesLoaded = false;
               
             NVEventDestroySurfaceEGL();

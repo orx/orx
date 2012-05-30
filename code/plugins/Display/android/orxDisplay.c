@@ -306,11 +306,13 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Is a display move? */
-  if(_pstEvent->eType == orxEVENT_TYPE_DISPLAY)
+  if(_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST ||
+     pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED)
   {
     switch (_pstEvent->eID)
     {
-      case orxDISPLAY_EVENT_SAVE_CONTEXT:
+      /* Need to save context? */
+      case NV_EVENT_FOCUS_LOST:
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT");
 
@@ -418,7 +420,8 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT done");
         break;
       }
-      case orxDISPLAY_EVENT_RESTORE_CONTEXT:
+      /* Need to restore context? */
+      case NV_EVENT_FOCUS_GAINED:
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "RESTORE_CONTEXT");
 
@@ -2633,8 +2636,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Sends it */
         orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
 
-        /* Updates result */
-        eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
+        /* Register special event type to save / restore opengl context, it doesn't correpond to NV_EVENT_FOCUS_GAINED / NV_EVENT_FOCUS_LOST */
+        /* It correspond to the instant where save / restore are required */
+        eResult = orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED, orxDisplay_Android_EventHandler);
+        eResult = orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST  , orxDisplay_Android_EventHandler);
 
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
@@ -2664,7 +2669,8 @@ void orxFASTCALL orxDisplay_Android_Exit()
 {
   if (sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED, orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST  , orxDisplay_Android_EventHandler);
 
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
