@@ -646,7 +646,7 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure   = orxFLOAT_1;
+  stPayload.stTouch.fPressure = orxFLOAT_1;
 
   /* For all new touches */
   for(UITouch *poTouch in _poTouchList)
@@ -686,7 +686,7 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure   = orxFLOAT_1;
+  stPayload.stTouch.fPressure = orxFLOAT_1;
 
   /* For all moved touches */
   for(UITouch *poTouch in _poTouchList)
@@ -723,7 +723,7 @@ static orxView *spoInstance;
 
   /* Inits event's payload */
   orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure   = orxFLOAT_0;
+  stPayload.stTouch.fPressure = orxFLOAT_0;
 
   /* For all ended touches */
   for(UITouch *poTouch in _poTouchList)

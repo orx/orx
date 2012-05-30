@@ -39,7 +39,7 @@
   #include <jni.h>
   #include <android/log.h>
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE */
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 
 #ifdef __orxMSVC__

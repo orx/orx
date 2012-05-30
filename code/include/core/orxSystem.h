@@ -95,8 +95,6 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
   {
     orxU32      u32FrameCounter;
 
-#if defined(__orxIOS__) || defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
     /* Touch event */
     struct
     {
@@ -111,9 +109,6 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       orxDOUBLE dTime;
       orxVECTOR vAcceleration;
     } stAccelerometer;
-
-#endif
-
   };
 
 } orxSYSTEM_EVENT_PAYLOAD;

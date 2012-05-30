@@ -62,10 +62,10 @@
  */
 typedef struct __orxMOUSE_STATIC_t
 {
-  orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc;
+  orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel, bClearMove;
+  orxBOOL     bClearWheel, bClearMove, bButtonPressed;
   orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
@@ -163,6 +163,70 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
 
   /* Clears internal wheel move */
   sstMouse.fInternalWheelMove = orxFLOAT_0;
+
+  /* Is left button pressed? */
+  if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
+  {
+    orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+    stPayload.stTouch.dTime     = orxSystem_GetTime();
+    stPayload.stTouch.u32ID     = 0;
+    stPayload.stTouch.fX        = sstMouse.vMouseBackup.fX;
+    stPayload.stTouch.fY        = sstMouse.vMouseBackup.fY;
+    stPayload.stTouch.fPressure = orxFLOAT_1;
+
+    /* Wasn't pressed before? */
+    if(sstMouse.bButtonPressed == orxFALSE)
+    {
+      /* Sends touch event */
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+
+      /* Updates button pressed status */
+      sstMouse.bButtonPressed = orxTRUE;
+
+      /* Stores touch position */
+      orxVector_Copy(&(sstMouse.vMouseTouch), &(sstMouse.vMouseBackup));
+    }
+    else
+    {
+      /* Has moved? */
+      if(orxVector_AreEqual(&(sstMouse.vMouseBackup), &(sstMouse.vMouseTouch)) == orxFALSE)
+      {
+        /* Sends touch event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
+
+        /* Stores touch position */
+        orxVector_Copy(&(sstMouse.vMouseTouch), &(sstMouse.vMouseBackup));
+      }
+    }
+  }
+  else
+  {
+    /* Was previously pressed? */
+    if(sstMouse.bButtonPressed != orxFALSE)
+    {
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      stPayload.stTouch.dTime     = orxSystem_GetTime();
+      stPayload.stTouch.u32ID     = 0;
+      stPayload.stTouch.fX        = sstMouse.vMouseBackup.fX;
+      stPayload.stTouch.fY        = sstMouse.vMouseBackup.fY;
+      stPayload.stTouch.fPressure = orxFLOAT_0;
+
+      /* Sends touch event */
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+
+      /* Updates button pressed status */
+      sstMouse.bButtonPressed = orxFALSE;
+
+      /* Clears touch position */
+      orxVector_Copy(&(sstMouse.vMouseTouch), &orxVECTOR_0);
+    }
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();

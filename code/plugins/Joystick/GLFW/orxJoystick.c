@@ -94,7 +94,7 @@ static orxJOYSTICK_STATIC sstJoystick;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Event handler
+/** Updated joystick info
  */
 static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 {
@@ -130,6 +130,43 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   return;
 }
 
+/** Update callback
+ */
+static void orxFASTCALL orxJoystick_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxJoystick_GLFW_Update");
+
+  /* Was first joystick present since the beginning? */
+  if(sstJoystick.astJoyInfoList[0].bIsConnected != orxFALSE)
+  {
+     /* Updates it */
+     orxJoystick_GLFW_UpdateInfo(0);
+
+     /* Still connected? */
+     if(sstJoystick.astJoyInfoList[0].bIsConnected != orxFALSE)
+     {
+       orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+       /* Inits event payload */
+       orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+       stPayload.stAccelerometer.dTime = orxSystem_GetTime();
+       stPayload.stAccelerometer.vAcceleration.fX = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_X_1];
+       stPayload.stAccelerometer.vAcceleration.fY = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Y_1];
+       stPayload.stAccelerometer.vAcceleration.fZ = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Z_1];
+
+       /* Sends accelerometer event */
+       orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stPayload);
+     }
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
 orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -143,17 +180,32 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
     /* Is GLFW window opened? */
     if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
     {
-      /* Gets core clock's info */
-      sstJoystick.pstClockInfo = orxClock_GetInfo(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE));
+      orxCLOCK *pstClock;
+
+      /* Gets core clock */
+      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+      /* Gets its info */
+      sstJoystick.pstClockInfo = orxClock_GetInfo(pstClock);
 
       /* Success? */
       if(sstJoystick.pstClockInfo != orxNULL)
       {
-        /* Updates status */
-        sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
+        /* Registers event update function */
+        eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
 
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates first joystick */
+          orxJoystick_GLFW_UpdateInfo(0);
+
+          /* Updates status */
+          sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
       }
     }
   }
@@ -167,6 +219,9 @@ void orxFASTCALL orxJoystick_GLFW_Exit()
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters update function */
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxJoystick_GLFW_Update);
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }
@@ -189,8 +244,8 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
-    /* Updates its info */
-    orxJoystick_GLFW_UpdateInfo(u32ID);
+      /* Updates its info */
+      orxJoystick_GLFW_UpdateInfo(u32ID);
 
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
@@ -240,8 +295,8 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
-    /* Updates its info */
-    orxJoystick_GLFW_UpdateInfo(u32ID);
+      /* Updates its info */
+      orxJoystick_GLFW_UpdateInfo(u32ID);
 
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
