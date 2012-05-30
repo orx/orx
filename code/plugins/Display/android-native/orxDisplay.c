@@ -2693,7 +2693,8 @@ void orxFASTCALL orxDisplay_Android_Exit()
 {
   if (sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
 
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
