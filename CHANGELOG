@@ -1,17 +1,23 @@
-
+changel
 Orx - Portable Game Engine  (Version 1.3)
 
 =============================================================================
 
 orx 1.4 (dev)
 ---
+* IMPORTANT: Added TimeLine module for non-interactive timed sequences (can be defined in config)
+* IMPORTANT: Added Command module that can evaluate/execute literal commands at runtime (commands can also be registered by user at runtime)
+* IMPORTANT: Commands stored in timeline tracks will be automatically parsed/executed using a special syntax to access owner's GUID
 * IMPORTANT: Added linux x86_64 support + added corresponding project files/precompiled dependencies
 * IMPORTANT: Much more efficient version of Android (non-native) plugins
+* IMPORTANT: Renamed the config property TextureCorner to TextureOrigin to match internal code naming convention
 * IMPORTANT: Added primitive draw support (line, circle, polygon, box)
 * IMPORTANT: Added window resize support (both in code or via direct user manipulation of the handles)
+* IMPORTANT: MainClockFrequency should now work much smoother and lower CPU use in any non-vsync case
 * IMPORTANT: Added 64b GUID for all orx structures
 * IMPORTANT: Added Box2D debug display (in non-release builds only) when config property Physics.ShowDebug is set
 * IMPORTANT: Replaced __orxIPHONE__ by __orxIOS__
+* IMPORTANT: Renamed orxObject_GetChild/orxObject_GetSibling to orxObject_GetOwnedChild/orxObject_GetOwnedSibling
 * IMPORTANT: Fixed Retina display for iOS devices
 * IMPORTANT: Added compressed texture support for iOS devices, powered by TDomhan
 * IMPORTANT: Added ogg/vorbis support for iOS devices (not hardware accelerated)
@@ -20,18 +26,28 @@ orx 1.4 (dev)
 * IMPORTANT: FXs can now be used for modifying the color of objects using HSL or HSV color spaces (for more natural blendings)
 * IMPORTANT: FXs can now be used for modifying volume and pitch of sounds over time (with curves) on objects
 * IMPORTANT: Multitouch support is now unified across Android and iOS devices (still handled via events)
+* IMPORTANT: Single touch and accelerometer are now emulated on computers via system events using left mouse click / first joystick data
 * IMPORTANT: Big speed optimization for debug builds: they will only flush the debug log to disk when quiting
+* IMPORTANT: Added automated shader parameter "time" that will contain the owner's active time (only available for objects as owners)
+* IMPORTANT: Calling orxDisplay_SetVideoMode() will always clear the cached texture/blend mode (useful after custom rendering)
+* IMPORTANT: Replaced orxHashTable_FindFirst/orxHashTable_FindNext with orxHashTable_GetNext
 * Config lists can now span multiple lines provided each line to be continued ends with #
+* Added 64b int/uint support for config values, math random number and string conversion
+* Added FXDelayList config property for objects
 * Added PNG write support for computer versions (SDL/GLFW)
 * Replaced old PNRG with a Xor128 one (as fast as the previous one but with a much better quality of distribution and a huge cycle size)
 * Added possibility to create/modify sound samples and streams at runtime
 * Iconification is now correctly supported on computers
 * Added Smoother(step) curve for orxFXs
+* Added possibility to filter output of log/debug messages based on their categories
 * Memory bank elements can now be aligned on cache line size by defining __orxBANK_ALIGN__
+* Added orxHashTable_Optimize that optimizes an already filled hash table for cache misses upon collisions during read accesses
 * Fixed using an object hierarchy + bodies with respect to speed update
 * Fixed spawning of physics object when UseSelfAsParent is set
 * Fixed applying physics impulse/force not using the center of mass correctly by default + not using local space
-* Improved profiler display + support portrait orientation + added some more internal markers
+* Added monotonic clock support on linux, mac os x and iOS
+* Added support for refresh rate in video modes (only used for computers in the glfw plugin)
+* Improved profiler display + support portrait orientation + added some more internal markers + markers are ignored during profiler rendering
 * Added new maths functions : smooth/smoother steps + catmull-rom sline interpolation
 * Fixed orxBody_GetMassCenter() not returning a scale-invariant position
 * Fixed NPOT texture support for iOS devices
@@ -60,6 +76,7 @@ orx 1.4 (dev)
 * Added index buffer object optimization for all rendering
 * Removed obsolete orxSYSTEM_EVENT_MOUSE_IN/_OUT events
 * Added debug error message when loading config files with an unsupported unicode encoding (only UTF-8 is supported)
+* Removed obsolete __orxWII__ and __orxGP2X__ defines
 * Misc fixes, optimizations and additions
 
 orx 1.3rc0
