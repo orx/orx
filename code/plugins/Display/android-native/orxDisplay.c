@@ -392,124 +392,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Is a system event? */
-  if(_pstEvent->eType == orxEVENT_TYPE_SYSTEM)
-  {
-    switch (_pstEvent->eID)
-    {
-      case orxSYSTEM_EVENT_BACKGROUND:
-      {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT");
-
-        /* Gets bitmap counter */
-        sstDisplay.s32BitmapCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstBitmapBank) - 1;
-
-        /* Valid? */
-        if(sstDisplay.s32BitmapCounter > 0)
-        {
-          orxBITMAP  *pstBitmap;
-          orxU32      u32Index;
-
-          /* Allocates buffer array */
-          sstDisplay.aau8BufferArray = (orxU8 **)orxMemory_Allocate(sstDisplay.s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
-
-          /* Checks */
-          orxASSERT(sstDisplay.aau8BufferArray != orxNULL);
-
-          /* For all bitmaps */
-          for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL), u32Index = 0;
-              pstBitmap != orxNULL;
-              pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
-          {
-            /* Not screen? */
-            if(pstBitmap != sstDisplay.pstScreen)
-            {
-              GLuint uiFrameBuffer;
-
-              /* Allocates its buffer */
-              sstDisplay.aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-              /* Checks */
-              orxASSERT(sstDisplay.aau8BufferArray[u32Index] != orxNULL);
-
-              /* Generates frame buffer */
-              glGenFramebuffers(1, &uiFrameBuffer);
-              glASSERT();
-
-              /* Binds frame buffer */
-              glBindFramebuffer(GL_FRAMEBUFFER, uiFrameBuffer);
-              glASSERT();
-
-              /* Links it to frame buffer */
-              glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
-              glASSERT();
-
-              glCheckFramebufferStatus(GL_FRAMEBUFFER);
-              glASSERT();
-
-              /* Inits viewport */
-              glViewport(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight);
-              glASSERT();
-
-              /* Reads OpenGL data */
-              glReadPixels(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index++]);
-              glASSERT();
-
-              /* Deletes it */
-              glDeleteTextures(1, &(pstBitmap->uiTexture));
-              glASSERT();
-
-              /* unBinds frame buffer */
-              glBindFramebuffer(GL_FRAMEBUFFER, 0);
-              glASSERT();
-
-              /* Deletes it */
-              glDeleteFramebuffers(1, &uiFrameBuffer);
-              glASSERT();
-            }
-          }
-        }
-
-        /* Gets shader counter */
-        sstDisplay.s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
-
-        /* Valid? */
-        if(sstDisplay.s32ShaderCounter > 0)
-        {
-          orxDISPLAY_SHADER *pstShader;
-
-          /* For all shaders */
-          for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-              pstShader != orxNULL;
-              pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-          {
-            /* Deletes its program */
-            glDeleteProgram(pstShader->uiProgram);
-            glASSERT();
-            pstShader->uiProgram = (GLuint)orxHANDLE_UNDEFINED;
-          }
-        }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glASSERT();
-
-        /* Has index buffer? */
-        if(sstDisplay.uiIndexBuffer != 0)
-        {
-          /* Deletes it */
-          glDeleteBuffers(1, &(sstDisplay.uiIndexBuffer));
-          glASSERT();
-          sstDisplay.uiIndexBuffer = 0;
-        }
-
-        sstDisplay.bNeedToRestoreContext = orxTRUE;
-
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT done");
-        break;
-      }
-    }
-  }
-
-  /* Is a system event? */
   if(_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + 1)
   {
     switch (_pstEvent->eID)
@@ -644,6 +526,114 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
       case 1:
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxANDROID_NATIVE_DISPLAY_EVENT_TERM_WINDOW");
+
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT");
+
+        /* Gets bitmap counter */
+        sstDisplay.s32BitmapCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstBitmapBank) - 1;
+
+        /* Valid? */
+        if(sstDisplay.s32BitmapCounter > 0)
+        {
+          orxBITMAP  *pstBitmap;
+          orxU32      u32Index;
+
+          /* Allocates buffer array */
+          sstDisplay.aau8BufferArray = (orxU8 **)orxMemory_Allocate(sstDisplay.s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
+
+          /* Checks */
+          orxASSERT(sstDisplay.aau8BufferArray != orxNULL);
+
+          /* For all bitmaps */
+          for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL), u32Index = 0;
+              pstBitmap != orxNULL;
+              pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
+          {
+            /* Not screen? */
+            if(pstBitmap != sstDisplay.pstScreen)
+            {
+              GLuint uiFrameBuffer;
+
+              /* Allocates its buffer */
+              sstDisplay.aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+
+              /* Checks */
+              orxASSERT(sstDisplay.aau8BufferArray[u32Index] != orxNULL);
+
+              /* Generates frame buffer */
+              glGenFramebuffers(1, &uiFrameBuffer);
+              glASSERT();
+
+              /* Binds frame buffer */
+              glBindFramebuffer(GL_FRAMEBUFFER, uiFrameBuffer);
+              glASSERT();
+
+              /* Links it to frame buffer */
+              glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
+              glASSERT();
+
+              glCheckFramebufferStatus(GL_FRAMEBUFFER);
+              glASSERT();
+
+              /* Inits viewport */
+              glViewport(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight);
+              glASSERT();
+
+              /* Reads OpenGL data */
+              glReadPixels(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index++]);
+              glASSERT();
+
+              /* Deletes it */
+              glDeleteTextures(1, &(pstBitmap->uiTexture));
+              glASSERT();
+
+              /* unBinds frame buffer */
+              glBindFramebuffer(GL_FRAMEBUFFER, 0);
+              glASSERT();
+
+              /* Deletes it */
+              glDeleteFramebuffers(1, &uiFrameBuffer);
+              glASSERT();
+
+            }
+          }
+        }
+
+        /* Gets shader counter */
+        sstDisplay.s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
+
+        /* Valid? */
+        if(sstDisplay.s32ShaderCounter > 0)
+        {
+          orxDISPLAY_SHADER *pstShader;
+
+          /* For all shaders */
+          for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+              pstShader != orxNULL;
+              pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+          {
+            /* Deletes its program */
+            glDeleteProgram(pstShader->uiProgram);
+            glASSERT();
+            pstShader->uiProgram = (GLuint)orxHANDLE_UNDEFINED;
+          }
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glASSERT();
+
+        /* Has index buffer? */
+        if(sstDisplay.uiIndexBuffer != 0)
+        {
+          /* Deletes it */
+          glDeleteBuffers(1, &(sstDisplay.uiIndexBuffer));
+          glASSERT();
+          sstDisplay.uiIndexBuffer = 0;
+        }
+
+        sstDisplay.bNeedToRestoreContext = orxTRUE;
+
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT done");
 
         term_display();
 
@@ -2664,7 +2654,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Updates result */
         eResult = orxEvent_AddHandler((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), orxDisplay_Android_EventHandler);
-        eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
         s32Animating = 1;
 
         orxAndroid_AcquireWakeLock();
@@ -2694,7 +2683,6 @@ void orxFASTCALL orxDisplay_Android_Exit()
   if (sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
     orxEvent_RemoveHandler((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), orxDisplay_Android_EventHandler);
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
 
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
