@@ -307,7 +307,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
   /* Is a display move? */
   if(_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST ||
-     pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED)
+     _pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED)
   {
     switch (_pstEvent->eID)
     {
@@ -2638,8 +2638,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Register special event type to save / restore opengl context, it doesn't correpond to NV_EVENT_FOCUS_GAINED / NV_EVENT_FOCUS_LOST */
         /* It correspond to the instant where save / restore are required */
-        eResult = orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED, orxDisplay_Android_EventHandler);
-        eResult = orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST  , orxDisplay_Android_EventHandler);
+        eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED), orxDisplay_Android_EventHandler);
+        eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST)  , orxDisplay_Android_EventHandler);
 
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
@@ -2669,8 +2669,8 @@ void orxFASTCALL orxDisplay_Android_Exit()
 {
   if (sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED, orxDisplay_Android_EventHandler);
-    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST  , orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED), orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST)  , orxDisplay_Android_EventHandler);
 
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))

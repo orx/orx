@@ -178,7 +178,7 @@ static bool renderFrame(bool allocateIfNeeded)
         if (!allocateIfNeeded)
             return false;
 
-		orxEvent_SendShort(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED, NV_EVENT_FOCUS_GAINED);
+		orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED), NV_EVENT_FOCUS_GAINED);
         s_glesLoaded = true;
     }
 
@@ -311,7 +311,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
 
             /* Send reserved event, used bu the keyboard plugin, to store the keyboard event */
-            orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY, NV_EVENT_KEY, orxNULL, orxNULL, &ev->m_data.m_key);
+            orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY, NV_EVENT_KEY, orxNULL, orxNULL, &ev->m_data.m_key);
             
             break;
 
@@ -381,7 +381,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 
           case NV_EVENT_SURFACE_DESTROYED:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
-            orxEvent_SendShort(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST, NV_EVENT_FOCUS_LOST);
+            orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST), NV_EVENT_FOCUS_LOST);
             s_glesLoaded = false;
               
             NVEventDestroySurfaceEGL();
