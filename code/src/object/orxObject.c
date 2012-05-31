@@ -500,6 +500,160 @@ void orxFASTCALL orxObject_CommandSetLifeTime(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: SetOwner
+ */
+void orxFASTCALL orxObject_CommandSetOwner(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxSTRUCTURE *pstOwner;
+
+    /* Gets owner */
+    pstOwner = orxStructure_Get(_astArgList[1].u64Value);
+
+    /* Valid? */
+    if(pstOwner != orxNULL)
+    {
+      /* Updates its owner */
+      orxObject_SetOwner(pstObject, pstOwner);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetOwner
+ */
+void orxFASTCALL orxObject_CommandGetOwner(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxSTRUCTURE *pstOwner;
+
+    /* Gets its owner */
+    pstOwner = orxObject_GetOwner(pstObject);
+
+    /* Valid? */
+    if(pstOwner != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstOwner);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetOwnedChild
+ */
+void orxFASTCALL orxObject_CommandGetOwnedChild(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxOBJECT *pstOwnedChild;
+
+    /* Gets its owned child */
+    pstOwnedChild = orxObject_GetOwnedChild(pstObject);
+
+    /* Valid? */
+    if(pstOwnedChild != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstOwnedChild);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetOwnedSibling
+ */
+void orxFASTCALL orxObject_CommandGetOwnedSibling(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxOBJECT *pstOwnedSibling;
+
+    /* Gets its owned sibling */
+    pstOwnedSibling = orxObject_GetOwnedSibling(pstObject);
+
+    /* Valid? */
+    if(pstOwnedSibling != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstOwnedSibling);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddTrack
  */
 void orxFASTCALL orxObject_CommandAddTrack(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -785,53 +939,63 @@ void orxFASTCALL orxObject_CommandSetPitch(orxU32 _u32ArgNumber, const orxCOMMAN
 static orxINLINE void orxObject_RegisterCommands()
 {
   /* Command: Create */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Create, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: Delete */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetPosition */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPosition, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Position", orxCOMMAND_VAR_TYPE_VECTOR}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPosition, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Position", orxCOMMAND_VAR_TYPE_VECTOR}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetRotation */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRotation, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Rotation", orxCOMMAND_VAR_TYPE_FLOAT}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRotation, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Rotation", orxCOMMAND_VAR_TYPE_FLOAT}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetScale */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetScale, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Scale", orxCOMMAND_VAR_TYPE_VECTOR}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetScale, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Scale", orxCOMMAND_VAR_TYPE_VECTOR}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetPosition */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetRotation */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRotation, "Rotation", orxCOMMAND_VAR_TYPE_FLOAT, 1, 1, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRotation, "Rotation", orxCOMMAND_VAR_TYPE_FLOAT, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetScale */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetScale, "Scale", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetScale, "Scale", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: GetName */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetLifeTime */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_FLOAT});
+
+  /* Command: SetOwner */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetOwner */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwner, "Owner", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetOwnedChild */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwnedChild, "Owned Child", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetOwnedSibling */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwnedSibling, "Owned Sibling", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
 
   /* Command: AddTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: AddFX */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveFX */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: AddShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: AddSound */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveSound */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveSound, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveSound, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: SetVolume */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetVolume, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Volume", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetVolume, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Volume", orxCOMMAND_VAR_TYPE_FLOAT});
   /* Command: SetPitch */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "GUID", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"GUID", orxCOMMAND_VAR_TYPE_U64}, {"Pitch", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pitch", orxCOMMAND_VAR_TYPE_FLOAT});
 }
 
 /** Deletes all the objects
