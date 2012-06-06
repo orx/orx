@@ -683,21 +683,27 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Get(orxU64 _u64GUID)
   /* Gets structure ID */
   u64StructureID = (_u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID;
 
-  /* Checks */
-  orxASSERT(u64StructureID < orxSTRUCTURE_ID_NUMBER);
-
-  /* Gets structure at index */
-  pstResult = (orxSTRUCTURE *)orxBank_GetAtIndex(sstStructure.astStorage[u64StructureID].pstStructureBank, (orxU32)((_u64GUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
-
   /* Valid? */
-  if(pstResult != orxNULL)
+  if(u64StructureID < orxSTRUCTURE_ID_NUMBER)
   {
-    /* Invalid instance ID? */
-    if((pstResult->u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID) != (_u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID))
+    /* Gets structure at index */
+    pstResult = (orxSTRUCTURE *)orxBank_GetAtIndex(sstStructure.astStorage[u64StructureID].pstStructureBank, (orxU32)((_u64GUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
+
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      /* Clears result */
-      pstResult = orxNULL;
+      /* Invalid instance ID? */
+      if((pstResult->u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID) != (_u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID))
+      {
+        /* Clears result */
+        pstResult = orxNULL;
+      }
     }
+  }
+  else
+  {
+    /* Clears result */
+    pstResult = orxNULL;
   }
 
   /* Done! */
