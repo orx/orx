@@ -189,7 +189,7 @@
     #define orxASSERT(TEST, ...)                                                                  \
       if(!(TEST))                                                                                 \
       {                                                                                           \
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : <" #TEST ">", ##__VA_ARGS__); \
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", ##__VA_ARGS__); \
         orxBREAK();                                                                               \
       }
   #else /* __orxGCC__ */
@@ -197,7 +197,7 @@
       #define orxASSERT(TEST, ...)                                                                \
         if(!(TEST))                                                                               \
         {                                                                                         \
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : <" #TEST ">", __VA_ARGS__); \
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", __VA_ARGS__); \
           orxBREAK();                                                                             \
         }
     #endif /* __orxMSVC__ */
@@ -236,8 +236,7 @@
 
 /* *** Debug defines. *** */
 
-#define orxDEBUG_KS32_BUFFER_MAX_NUMBER       32
-#define orxDEBUG_KS32_BUFFER_OUTPUT_SIZE      1024
+#define orxDEBUG_KS32_BUFFER_OUTPUT_SIZE      2048
 
 #define orxDEBUG_KZ_DATE_FORMAT               "[%Y-%m-%d %H:%M:%S]"
 
@@ -273,7 +272,6 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
 
   orxDEBUG_LEVEL_ASSERT,                      /**< Assert Debug */
-  orxDEBUG_LEVEL_CRITICAL_ASSERT,             /**< Critical Assert Debug */
 
   orxDEBUG_LEVEL_NUMBER,
 

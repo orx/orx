@@ -612,7 +612,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         glASSERT();
 
         /* Outputs log */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:\n%s\n", acBuffer);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
 
         /* Deletes program */
         glDeleteObjectARB(hProgram);
@@ -628,7 +628,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       glASSERT();
 
       /* Outputs log */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:\n%s\n", acBuffer);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
 
       /* Deletes shader objects & program */
       glDeleteObjectARB(hVertexShader);
@@ -648,7 +648,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     glASSERT();
 
     /* Outputs log */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:\n%s\n", acBuffer);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
 
     /* Deletes shader objects & program */
     glDeleteObjectARB(hVertexShader);
