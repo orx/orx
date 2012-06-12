@@ -119,7 +119,7 @@ static orxSTATUS orxScroll_Init()
     orxCHAR acWaveGroupID[32];
 
     /* Gets its name */
-    orxString_Print(acWaveGroupID, "WaveGroup%ld", i + 1);
+    orxString_Print(acWaveGroupID, "WaveGroup%d", i + 1);
 
     /* Creates it */
     apstWaveGroupList[i] = orxObject_CreateFromConfig(acWaveGroupID);

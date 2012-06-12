@@ -148,7 +148,7 @@ const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButto
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for button #%ld.", _eButton);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for button #%d.", _eButton);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;
@@ -210,7 +210,7 @@ const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for axis #%ld.", _eAxis);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for axis #%d.", _eAxis);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;

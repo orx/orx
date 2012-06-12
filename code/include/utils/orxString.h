@@ -390,7 +390,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
   else if(*pu8Byte < 0xC0)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: multi-byte sequence non-leading byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: multi-byte sequence non-leading byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
     /* Updates result */
     u32Result = orxU32_UNDEFINED;
@@ -399,7 +399,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
   else if(*pu8Byte < 0xC2)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: overlong 2-byte sequence starting with byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: overlong 2-byte sequence starting with byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
     /* Updates result */
     u32Result = orxU32_UNDEFINED;
@@ -419,7 +419,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 2-byte sequence non-trailing byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 2-byte sequence non-trailing byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
       /* Updates result */
       u32Result = orxU32_UNDEFINED;
@@ -446,7 +446,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 3-byte sequence non-trailing byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 3-byte sequence non-trailing byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
         /* Updates result */
         u32Result = orxU32_UNDEFINED;
@@ -455,7 +455,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 3-byte sequence non-trailing byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 3-byte sequence non-trailing byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
       /* Updates result */
       u32Result = orxU32_UNDEFINED;
@@ -488,7 +488,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 4-byte sequence non-trailing byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 4-byte sequence non-trailing byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
           /* Updates result */
           u32Result = orxU32_UNDEFINED;
@@ -497,7 +497,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 4-byte sequence non-trailing byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 4-byte sequence non-trailing byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
         /* Updates result */
         u32Result = orxU32_UNDEFINED;
@@ -506,7 +506,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 4-byte sequence non-trailing byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: 4-byte sequence non-trailing byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
       /* Updates result */
       u32Result = orxU32_UNDEFINED;
@@ -515,7 +515,7 @@ static orxU32 orxFASTCALL               orxString_GetFirstCharacterCodePoint(con
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: invalid out-of-bound byte '%c' (0x%2X) at index %ld.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Invalid or non-UTF-8 string at <0x%X>: invalid out-of-bound byte '%c' (0x%2X) at index %d.", _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 
     /* Updates result */
     u32Result = orxU32_UNDEFINED;

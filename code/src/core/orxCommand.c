@@ -73,7 +73,7 @@
 
 #define orxCOMMAND_KU32_BUFFER_SIZE                   4096
 
-#define orxCOMMAND_KZ_ERROR_VALUE                     "COMMAND_FAILURE"
+#define orxCOMMAND_KZ_ERROR_VALUE                     "STACK_ERROR"
 
 
 /***************************************************************************
@@ -227,7 +227,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
                 case orxCOMMAND_VAR_TYPE_S32:
                 {
                   /* Stores it */
-                  orxString_NPrint(acValue, 63, "%ld", pstEntry->stValue.s32Value);
+                  orxString_NPrint(acValue, 63, "%d", pstEntry->stValue.s32Value);
                 
                   break;
                 }
@@ -235,7 +235,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
                 case orxCOMMAND_VAR_TYPE_U32:
                 {
                   /* Stores it */
-                  orxString_NPrint(acValue, 63, "%lu", pstEntry->stValue.u32Value);
+                  orxString_NPrint(acValue, 63, "%u", pstEntry->stValue.u32Value);
                 
                   break;
                 }
@@ -395,7 +395,7 @@ static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, o
         if(_astArgList[i].eType != _pstCommand->astParamList[i].eType)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command [%s]: invalid type for argument #%ld (%s).", _pstCommand->zName, i + 1, _pstCommand->astParamList[i].zName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command [%s]: invalid type for argument #%d (%s).", _pstCommand->zName, i + 1, _pstCommand->astParamList[i].zName);
 
           /* Stops */
           break;
@@ -1011,12 +1011,12 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
           if(eStatus == orxSTATUS_FAILURE)
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], wrong argument #%ld <%s>.", _zCommandLine, u32ArgNumber, zArg);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid argument #%d.", _zCommandLine, u32ArgNumber);
           }
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected %ld[+%ld] arguments, found %ld.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, u32ArgNumber);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected %d[+%d] arguments, found %d.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, u32ArgNumber);
           }
         }
         else

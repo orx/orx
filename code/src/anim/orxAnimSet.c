@@ -356,7 +356,7 @@ static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_T
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table not linked at index %ld.", _u32LinkIndex);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table not linked at index %d.", _u32LinkIndex);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -432,7 +432,7 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABL
       default :
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid property while looking in link table element %ld.", _u32LinkIndex);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid property while looking in link table element %d.", _u32LinkIndex);
 
         /* Undefined result */
         u32Value = orxU32_UNDEFINED;
@@ -444,7 +444,7 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABL
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid link index %ld.", _u32LinkIndex);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid link index %d.", _u32LinkIndex);
 
     /* Undefined result */
     u32Value = orxU32_UNDEFINED;
@@ -1870,7 +1870,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index(%ld) given.", u32AnimIndex);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index(%d) given.", u32AnimIndex);
 
       /* Failed */
       eResult = orxSTATUS_FAILURE;

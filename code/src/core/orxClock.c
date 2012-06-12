@@ -266,7 +266,7 @@ static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO 
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%ld).", *peModType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%d).", *peModType);
 
       /* Falls through */
     }

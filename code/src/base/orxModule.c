@@ -406,7 +406,7 @@ orxSTATUS orxFASTCALL orxModule_InitAll()
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to initialized module ID (%ld).", eID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to initialized module ID (%d).", eID);
     }
   }
 

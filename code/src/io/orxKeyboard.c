@@ -188,7 +188,7 @@ const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "No name defined for key #%ld.", _eKey);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "No name defined for key #%d.", _eKey);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;

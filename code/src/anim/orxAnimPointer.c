@@ -937,7 +937,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid ID for the anim pointer.", _u32AnimID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%d is not a valid ID for the anim pointer.", _u32AnimID);
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -996,7 +996,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPoint
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid ID for the anim pointer.", _u32AnimID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%d is not a valid ID for the anim pointer.", _u32AnimID);
 
         /* Can't process */
         eResult = orxSTATUS_FAILURE;

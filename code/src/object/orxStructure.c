@@ -184,7 +184,7 @@ orxSTATUS orxFASTCALL orxStructure_Init()
       orxU32 j;
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create bank with ID (%ld).", i);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create bank with ID (%d).", i);
 
       /* For all created banks */
       for(j = 0; j < i; j++)

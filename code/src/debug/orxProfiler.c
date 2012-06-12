@@ -257,7 +257,7 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get a marker ID for <%s> as the limit of %ld markers has been reached!", _zName, orxPROFILER_KU32_MAX_MARKER_NUMBER);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get a marker ID for <%s> as the limit of %d markers has been reached!", _zName, orxPROFILER_KU32_MAX_MARKER_NUMBER);
 
       /* Updates marker ID */
       s32MarkerID = orxPROFILER_KS32_MARKER_ID_NONE;
@@ -392,7 +392,7 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker <%s> [ID: %ld] as it's already currently pushed.", pstMarker->zName, _s32MarkerID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker <%s> [ID: %d] as it's already currently pushed.", pstMarker->zName, _s32MarkerID);
 
         /* Updates marker pops to skip */
         sstProfiler.s32MarkerPopToSkip++;
@@ -401,7 +401,7 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker: invalid ID [%ld].", _s32MarkerID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker: invalid ID [%d].", _s32MarkerID);
 
       /* Updates marker pops to skip */
       sstProfiler.s32MarkerPopToSkip++;
@@ -714,7 +714,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     dResult = orx2D(0.0);
@@ -749,7 +749,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerMaxTime(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     dResult = orx2D(0.0);
@@ -784,7 +784,7 @@ const orxSTRING orxFASTCALL orxProfiler_GetMarkerName(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     zResult = orxSTRING_EMPTY;
@@ -819,7 +819,7 @@ orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     u32Result = 0;
@@ -854,7 +854,7 @@ orxBOOL orxFASTCALL orxProfiler_IsUniqueMarker(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     bResult = orxFALSE;
@@ -892,7 +892,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get start time of marker <%s> [ID: %ld] as it hasn't been uniquely pushed.", sstProfiler.astMarkerList[s32ID].zName, _s32MarkerID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get start time of marker <%s> [ID: %d] as it hasn't been uniquely pushed.", sstProfiler.astMarkerList[s32ID].zName, _s32MarkerID);
 
       /* Updates result */
       dResult = orx2D(0.0);
@@ -901,7 +901,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     dResult = orx2D(0.0);
@@ -939,7 +939,7 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get push depth of marker <%s> [ID: %ld] as it hasn't been uniquely pushed.", sstProfiler.astMarkerList[s32ID].zName, _s32MarkerID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get push depth of marker <%s> [ID: %d] as it hasn't been uniquely pushed.", sstProfiler.astMarkerList[s32ID].zName, _s32MarkerID);
 
       /* Updates result */
       u32Result = 0;
@@ -948,7 +948,7 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%ld].", _s32MarkerID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
     u32Result = 0;

@@ -1098,7 +1098,7 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
             if(orxStructure_Update(pstObject->astStructureList[i].pstStructure, pstObject, pstClockInfo) == orxSTATUS_FAILURE)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%ld for object <%s>.", i, orxObject_GetName(pstObject));
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%d for object <%s>.", i, orxObject_GetName(pstObject));
             }
           }
         }
@@ -2127,7 +2127,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure id(%ld).", eStructureID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure id(%d).", eStructureID);
 
     /* Wrong structure ID */
     eResult = orxSTATUS_FAILURE;

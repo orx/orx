@@ -780,11 +780,11 @@ void orxFASTCALL orxBank_DebugPrint(const orxBANK *_pstBank)
   orxASSERT(_pstBank != orxNULL);
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "\n\n\n********* Bank (%x) *********", _pstBank);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16NbCellPerSegments = %lu", _pstBank->u16NbCellPerSegments);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32ElemSize = %lu", _pstBank->u32ElemSize);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16NbCellPerSegments = %u", _pstBank->u16NbCellPerSegments);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32ElemSize = %u", _pstBank->u32ElemSize);
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32Flags = %x", _pstBank->u32Flags);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* eMemType = %lu", _pstBank->eMemType);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16SizeSegmentBitField = %lu", _pstBank->u16SizeSegmentBitField);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* eMemType = %u", _pstBank->eMemType);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16SizeSegmentBitField = %u", _pstBank->u16SizeSegmentBitField);
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "\n* **** SEGMENTS ******");
 
@@ -793,7 +793,7 @@ void orxFASTCALL orxBank_DebugPrint(const orxBANK *_pstBank)
   while(pstSegment != orxNULL)
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "\n* ** Segment (%x) ***", pstSegment);
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32NbFree = %lu", pstSegment->u32NbFree);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32NbFree = %u", pstSegment->u32NbFree);
     orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* pstNext = %x", pstSegment->pstNext);
     orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* pSegmentData = %x", pstSegment->pSegmentData);
 
