@@ -39,7 +39,6 @@
 #include "memory/orxBank.h"
 #include "object/orxTimeLine.h"
 #include "utils/orxHashTable.h"
-#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 #ifdef __orxMSVC__
@@ -70,8 +69,11 @@
 
 #define orxCOMMAND_KU32_TABLE_SIZE                    256
 #define orxCOMMAND_KU32_BANK_SIZE                     128
+#define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
 
 #define orxCOMMAND_KU32_BUFFER_SIZE                   4096
+
+#define orxCOMMAND_KZ_ERROR_VALUE                     "COMMAND_FAILURE"
 
 
 /***************************************************************************
@@ -82,8 +84,7 @@
  */
 typedef struct __orxCOMMAND_STACK_ENTRY_t
 {
-  orxLINKLIST_NODE          stNode;                   /**< Linklist node : 12 */
-  orxCHAR                   zValue[0];                /**< Value */
+  orxCOMMAND_VAR            stValue;                  /**< Value : 28 */
 
 } orxCOMMAND_STACK_ENTRY;
 
@@ -106,7 +107,7 @@ typedef struct __orxCOMMAND_STATIC_t
 {
   orxBANK                  *pstBank;                  /**< Command bank */
   orxHASHTABLE             *pstTable;                 /**< Command table */
-  orxLINKLIST               stResultStack;            /**< Command result stack */
+  orxBANK                  *pstResultBank;            /**< Command result bank */
   orxCHAR                   acBuffer[orxCOMMAND_KU32_BUFFER_SIZE]; /**< Evaluate buffer */
   orxU32                    u32Flags;                 /**< Control flags */
 
@@ -172,7 +173,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       }
 
       /* For all characters */
-      for(pcDst = sstCommand.acBuffer; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE - 1);)
+      for(pcDst = sstCommand.acBuffer; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE - 1); pcSrc++)
       {
         /* Depending on character */
         switch(*pcSrc)
@@ -182,8 +183,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
             /* Replaces it with GUID */
             orxString_Copy(pcDst, acGUID);
 
-            /* Updates pointers */
-            pcSrc++;
+            /* Updates pointer */
             pcDst += s32GUIDLength;
 
             break;
@@ -191,26 +191,109 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 
           case orxCOMMAND_KC_POP_MARKER:
           {
-            orxCOMMAND_STACK_ENTRY *pstEntry;
+            /* Valid? */
+            if(orxBank_GetCounter(sstCommand.pstResultBank) > 0)
+            {
+              orxCOMMAND_STACK_ENTRY *pstEntry;
+              orxCHAR                 acValue[64];
+              const orxSTRING         zValue = acValue;
 
-            /* Gets last stack entry */
-            pstEntry = (orxCOMMAND_STACK_ENTRY *)orxLinkList_GetLast(&(sstCommand.stResultStack));
+              /* Gets last stack entry */
+              pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCounter(sstCommand.pstResultBank) - 1);
+            
+              /* Inits value */
+              acValue[63] = orxCHAR_NULL;
+            
+              /* Depending on type */
+              switch(pstEntry->stValue.eType)
+              {
+                default:
+                case orxCOMMAND_VAR_TYPE_STRING:
+                {
+                  /* Updates pointer */
+                  zValue = pstEntry->stValue.zValue;
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_FLOAT:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%g", pstEntry->stValue.fValue);
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_S32:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%ld", pstEntry->stValue.s32Value);
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_U32:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%lu", pstEntry->stValue.u32Value);
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_S64:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%lld", pstEntry->stValue.s64Value);
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_U64:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "0x%016llX", pstEntry->stValue.u64Value);
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_BOOL:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%s", (pstEntry->stValue.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
+                
+                  break;
+                }
+                
+                case orxCOMMAND_VAR_TYPE_VECTOR:
+                {
+                  /* Gets literal value */
+                  orxString_NPrint(acValue, 63, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, pstEntry->stValue.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fZ, orxSTRING_KC_VECTOR_END);
+                
+                  break;
+                }
+              }
 
-            /* Checks */
-            orxASSERT(pstEntry != orxNULL);
+              /* Replaces marker with stacked value */
+              orxString_Copy(pcDst, zValue);
 
-            /* Replaces marker with GUID */
-            orxString_Copy(pcDst, pstEntry->zValue);
+              /* Updates pointers */
+              pcDst += orxString_GetLength(zValue);
 
-            /* Removes stack entry */
-            orxLinkList_Remove(&(pstEntry->stNode));
+              /* Is a string value? */
+              if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
+              {
+                /* Deletes it */
+                orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
+              }
 
-            /* Deletes it */
-            orxMemory_Free(pstEntry);
-
-            /* Updates pointers */
-            pcSrc++;
-            pcDst += orxString_GetLength(pstEntry->zValue);
+              /* Deletes stack entry */
+              orxBank_Free(sstCommand.pstResultBank, pstEntry);
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", pstPayload->zEvent);
+            }
 
             break;
           }
@@ -218,7 +301,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
           default:
           {
             /* Copies it */
-            *pcDst++ = *pcSrc++;
+            *pcDst++ = *pcSrc;
 
             break;
           }
@@ -232,102 +315,36 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL, orxCOMMAND_KU32_STATIC_FLAG_NONE);
 
       /* Evaluates command */
-      if(orxCommand_Evaluate(sstCommand.acBuffer, &stResult) != orxNULL)
+      if(orxCommand_Evaluate(sstCommand.acBuffer, &stResult) == orxNULL)
       {
-        /* For all requested pushes */
-        while(u32PushCounter > 0)
+        /* Stores error */
+        stResult.eType  = orxCOMMAND_VAR_TYPE_STRING;
+        stResult.zValue = orxCOMMAND_KZ_ERROR_VALUE;
+      }
+
+      /* For all requested pushes */
+      while(u32PushCounter > 0)
+      {
+        orxCOMMAND_STACK_ENTRY *pstEntry;
+
+        /* Allocates stack entry */
+        pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_Allocate(sstCommand.pstResultBank);
+
+        /* Is a string value? */
+        if(stResult.eType == orxCOMMAND_VAR_TYPE_STRING)
         {
-          orxCOMMAND_STACK_ENTRY *pstEntry;
-          orxCHAR                 acValue[64];
-          const orxSTRING         zValue = acValue;
-
-          /* Inits value */
-          acValue[63] = orxCHAR_NULL;
-
-          /* Depending on result type */
-          switch(stResult.eType)
-          {
-            default:
-            case orxCOMMAND_VAR_TYPE_STRING:
-            {
-              /* Updates pointer */
-              zValue = stResult.zValue;
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_FLOAT:
-            {
-              /* Stores it */
-              orxString_NPrint(acValue, 63, "%g", stResult.fValue);
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_S32:
-            {
-              /* Stores it */
-              orxString_NPrint(acValue, 63, "%ld", stResult.s32Value);
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_U32:
-            {
-              /* Stores it */
-              orxString_NPrint(acValue, 63, "%lu", stResult.u32Value);
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_S64:
-            {
-              /* Stores it */
-              orxString_NPrint(acValue, 63, "%lld", stResult.s64Value);
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_U64:
-            {
-              /* Stores it */
-              orxString_NPrint(acValue, 63, "0x%016llX", stResult.u64Value);
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_BOOL:
-            {
-              /* Stores it */
-              orxString_NPrint(acValue, 63, "%s", (stResult.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
-
-              break;
-            }
-
-            case orxCOMMAND_VAR_TYPE_VECTOR:
-            {
-              /* Gets literal value */
-              orxString_NPrint(acValue, 63, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, stResult.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, stResult.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, stResult.vValue.fZ, orxSTRING_KC_VECTOR_END);
-
-              break;
-            }
-          }
-
-          /* Allocates stack entry */
-          pstEntry = (orxCOMMAND_STACK_ENTRY *)orxMemory_Allocate(sizeof(orxCOMMAND_STACK_ENTRY) + ((orxString_GetLength(zValue) + 1) * sizeof(orxCHAR)), orxMEMORY_TYPE_MAIN);
-
-          /* Inits it */
-          orxMemory_Zero(&(pstEntry->stNode), sizeof(orxLINKLIST_NODE));
-
-          /* Stores value */
-          orxString_Copy(pstEntry->zValue, zValue);
-
-          /* Adds it to stack */
-          orxLinkList_AddEnd(&(sstCommand.stResultStack), &(pstEntry->stNode));
-
-          /* Updates push counter */
-          u32PushCounter--;
+          /* Duplicates it */
+          pstEntry->stValue.eType = orxCOMMAND_VAR_TYPE_STRING;
+          pstEntry->stValue.zValue = orxString_Duplicate(stResult.zValue);
         }
+        else
+        {
+          /* Stores value */
+          orxMemory_Copy(&(pstEntry->stValue), &stResult, sizeof(orxCOMMAND_STACK_ENTRY));
+        }
+
+        /* Updates push counter */
+        u32PushCounter--;
       }
 
       /* Updates internal status */
@@ -446,11 +463,12 @@ orxSTATUS orxFASTCALL orxCommand_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Creates bank */
-      sstCommand.pstBank = orxBank_Create(orxCOMMAND_KU32_BANK_SIZE, sizeof(orxCOMMAND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      /* Creates banks */
+      sstCommand.pstBank        = orxBank_Create(orxCOMMAND_KU32_BANK_SIZE, sizeof(orxCOMMAND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstCommand.pstResultBank  = orxBank_Create(orxCOMMAND_KU32_RESULT_BANK_SIZE, sizeof(orxCOMMAND_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Valid? */
-      if(sstCommand.pstBank != orxNULL)
+      if((sstCommand.pstBank != orxNULL) && (sstCommand.pstResultBank != orxNULL))
       {
         /* Creates table */
         sstCommand.pstTable = orxHashTable_Create(orxCOMMAND_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -469,8 +487,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
           /* Removes event handler */
           orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
 
-          /* Deletes bank */
+          /* Deletes banks */
           orxBank_Delete(sstCommand.pstBank);
+          orxBank_Delete(sstCommand.pstResultBank);
 
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command table.");
@@ -478,11 +497,18 @@ orxSTATUS orxFASTCALL orxCommand_Init()
       }
       else
       {
+        /* Partly initialized? */
+        if(sstCommand.pstBank != orxNULL)
+        {
+          /* Deletes bank */
+          orxBank_Delete(sstCommand.pstBank);
+        }
+        
         /* Removes event handler */
         orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command bank.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command banks.");
       }
     }
     else
@@ -511,17 +537,23 @@ void orxFASTCALL orxCommand_Exit()
   /* Initialized? */
   if(sstCommand.u32Flags & orxCOMMAND_KU32_STATIC_FLAG_READY)
   {
-    orxCOMMAND_STACK_ENTRY *pstEntry;
-    orxCOMMAND             *pstCommand;
+    orxCOMMAND *pstCommand;
+    orxU32      i;
 
-    /* While there are entries in the result stack */
-    while((pstEntry = (orxCOMMAND_STACK_ENTRY *)orxLinkList_GetLast(&(sstCommand.stResultStack))) != orxNULL)
+    /* For all entries in the result stack */
+    for(i = 0; i < orxBank_GetCounter(sstCommand.pstResultBank); i++)
     {
-      /* Removes it */
-      orxLinkList_Remove(&(pstEntry->stNode));
+      orxCOMMAND_STACK_ENTRY *pstEntry;
 
-      /* Deletes it */
-      orxMemory_Free(pstEntry);
+      /* Gets it */
+      pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, i);
+
+      /* Is a string value? */
+      if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
+      {
+        /* Deletes it */
+        orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
+      }
     }
 
     /* While there are registered commands */
@@ -534,8 +566,9 @@ void orxFASTCALL orxCommand_Exit()
     /* Deletes table */
     orxHashTable_Delete(sstCommand.pstTable);
 
-    /* Deletes bank */
+    /* Deletes banks */
     orxBank_Delete(sstCommand.pstBank);
+    orxBank_Delete(sstCommand.pstResultBank);
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
