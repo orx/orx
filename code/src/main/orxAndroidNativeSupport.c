@@ -158,7 +158,9 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
       orxEVENT_SEND((orxEVENT_TYPE_FIRST_RESERVED + 2), orxNULL, orxNULL, orxNULL, event);
-      return 1;
+
+      if(AKeyEvent_getKeyCode(event) != AKEYCODE_VOLUME_UP && AKeyEvent_getKeyCode(event) != AKEYCODE_VOLUME_DOWN)
+        return 1;
     }
 
     return 0;
