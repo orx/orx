@@ -2403,7 +2403,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
   orxU8   **aau8BufferArray;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -2493,9 +2493,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
@@ -2644,15 +2641,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
         stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
         stPayload.bFullScreen             = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
-
-        /* Pushes display section */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-        /* Updates its title */
-        glfwSetWindowTitle(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
-
-        /* Pops config section */
-        orxConfig_PopSection();
 
         /* Inits extensions */
         orxDisplay_GLFW_InitExtensions();
@@ -2824,19 +2812,31 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       }
     }
   }
-  else
+  
+  /* Succesful? */
+  if(eResult != orxSTATUS_FAILURE)
   {
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Isn't fullscreen? */
+    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    {
+      orxVECTOR vPosition;
+
+      /* Has position value? */
+      if(orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+      {
+        /* Updates window's position */
+        glfwSetWindowPos((int)vPosition.fX, (int)vPosition.fY);
+      }            
+    }
 
     /* Updates its title */
     glfwSetWindowTitle(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
 
     /* Pops config section */
     orxConfig_PopSection();
-
-	/* Updates result */
-	eResult = orxSTATUS_SUCCESS;
   }
 
   /* Clears last blend mode & last bitmap */
@@ -3062,9 +3062,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         {
           orxCLOCK *pstClock;
 
-          /* Updates its title */
-          glfwSetWindowTitle(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
-
           /* Has VSync value? */
           if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
           {
@@ -3075,6 +3072,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           {
             /* Enables vertical sync */
             orxDisplay_GLFW_EnableVSync(orxTRUE);
+          }
+
+          /* Has VSync value? */
+          if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+          {
+            /* Updates vertical sync */
+            orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
           }
 
           /* Inits info */
