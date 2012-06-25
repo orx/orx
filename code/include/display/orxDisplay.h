@@ -231,6 +231,11 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
+/** Orx view controller interface
+ */
+@interface orxViewController : UIViewController
+@end
+
 /** Orx view interface
  */
 @interface orxView : UIView

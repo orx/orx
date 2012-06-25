@@ -258,6 +258,41 @@ static unsigned char gPVRTexIdentifier[4] = "PVR!";
  * Private functions                                                       *
  ***************************************************************************/
 
+/** orxView controller class
+ */
+@implementation orxViewController
+
+- (void) loadView
+{
+  CGRect stFrame;
+
+  /* Gets application's size */
+  stFrame = [[UIScreen mainScreen] applicationFrame];
+  stFrame.origin.y = 0.0;
+
+  /* Is in landscape mode? */
+  if(UIInterfaceOrientationIsLandscape([self interfaceOrientation]))
+  {
+    CGFloat fTemp;
+
+    /* Swaps width and height */
+    fTemp = stFrame.size.width;
+    stFrame.size.width = stFrame.size.height;
+    stFrame.size.height = fTemp;
+  }
+
+  /* Creates and inits orx view */
+  self.view = [[orxView alloc] initWithFrame:stFrame];
+  [self.view release];
+}
+
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)_oInterfaceOrientation
+{
+  return YES;
+}
+
+@end
+
 /** orxView class
  */
 static orxView *spoInstance;
@@ -402,6 +437,7 @@ static orxView *spoInstance;
       spoInstance = self;
 
       /* Creates frame & render buffers */
+      uiScreenFrameBuffer = uiTextureFrameBuffer = uiRenderBuffer = 0;
       [self CreateBuffers];
 
       /* Updates result */
@@ -523,6 +559,27 @@ static orxView *spoInstance;
 - (BOOL) CreateBuffers
 {
   BOOL bResult = YES;
+
+  /* Has screen frame buffer? */
+  if(uiScreenFrameBuffer != 0)
+  {
+    /* Deletes it */
+    glDeleteFramebuffers(1, &uiScreenFrameBuffer);
+  }
+
+  /* Has texture frame buffer? */
+  if(uiTextureFrameBuffer != 0)
+  {
+    /* Deletes it */
+    glDeleteFramebuffers(1, &uiTextureFrameBuffer);
+  }
+
+  /* Has render buffer? */
+  if(uiRenderBuffer != 0)
+  {
+    /* Deletes it */
+    glDeleteRenderbuffers(1, &uiRenderBuffer);
+  }
 
   /* Generates frame buffers */
   glGenFramebuffersOES(1, &uiScreenFrameBuffer);

@@ -60,7 +60,7 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 @implementation orxAppDelegate
 
 @synthesize poWindow;
-@synthesize poView;
+@synthesize poViewController;
 
 - (void) applicationDidFinishLaunching:(UIApplication *)_poApplication
 {
@@ -74,13 +74,15 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 
   /* Creates orx view */
   stFrame.origin.y = 0.0;
-  poView = [[orxView alloc] initWithFrame:stFrame];
+
+  /* Creates view controller */
+  self.poViewController = [[orxViewController alloc] init];
 
   /* Sets black background color */
   [poWindow setBackgroundColor: [UIColor blackColor]];
 
-  /* Attaches its window */
-  [poWindow addSubview:poView];
+  /* Attaches controller to window */
+  [poWindow setRootViewController:poViewController];
 
   /* Activates window */
   [poWindow makeKeyAndVisible];
@@ -91,10 +93,10 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 
 - (void) dealloc
 {
-  /* Releases view & window */
-  [poView release];
+  /* Releases view controller & window */
+  [poViewController release];
   [poWindow release];
-  
+
   /* Calls parent method */
   [super dealloc];
 }

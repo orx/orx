@@ -131,12 +131,12 @@ static void orxFASTCALL orx_MainSetup()
  */
 @interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
 {
-  UIWindow *poWindow;
-  orxView  *poView;
+  UIWindow           *poWindow;
+  orxViewController  *poViewController;
 }
 
-@property (nonatomic, retain) UIWindow *poWindow;
-@property (nonatomic, retain) UIView   *poView;
+@property (nonatomic, retain) UIWindow         *poWindow;
+@property (nonatomic, retain) UIViewController *poViewController;
 
 - (void)  MainLoop;
 
