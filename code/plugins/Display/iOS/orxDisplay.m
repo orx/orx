@@ -262,16 +262,43 @@ static unsigned char gPVRTexIdentifier[4] = "PVR!";
  */
 @implementation orxViewController
 
+@synthesize eOrientation;
+
+- (orxViewController *) init
+{
+  orxViewController  *poViewController;
+  NSString           *zOrientation;
+
+  /* Calls parent method */
+  poViewController = [super init];
+
+  /* Gets literal initial orientation from Info.pList file */
+  zOrientation = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"] objectAtIndex:0];
+
+  /* Stores orientation */
+  eOrientation = ([zOrientation isEqualToString:@"UIInterfaceOrientationPortrait"])
+                 ? UIInterfaceOrientationPortrait
+                 : ([zOrientation isEqualToString:@"UIInterfaceOrientationLandscapeLeft"])
+                   ? UIInterfaceOrientationLandscapeLeft
+                   : ([zOrientation isEqualToString:@"UIInterfaceOrientationLandscapeRight"])
+                     ? UIInterfaceOrientationLandscapeRight
+                     : UIInterfaceOrientationPortraitUpsideDown;
+
+  /* Done! */
+  return poViewController;
+}
+
 - (void) loadView
 {
-  CGRect stFrame;
+  CGRect    stFrame;
+  orxView  *poView;
 
   /* Gets application's size */
   stFrame = [[UIScreen mainScreen] applicationFrame];
   stFrame.origin.y = 0.0;
 
   /* Is in landscape mode? */
-  if(UIInterfaceOrientationIsLandscape([self interfaceOrientation]))
+  if(UIInterfaceOrientationIsLandscape(eOrientation))
   {
     CGFloat fTemp;
 
@@ -282,13 +309,15 @@ static unsigned char gPVRTexIdentifier[4] = "PVR!";
   }
 
   /* Creates and inits orx view */
-  self.view = [[orxView alloc] initWithFrame:stFrame];
-  [self.view release];
+  poView = [[orxView alloc] initWithFrame:stFrame];
+  self.view = poView;
+  [poView release];
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)_oInterfaceOrientation
 {
-  return YES;
+  /* Done! */
+  return (eOrientation == _oInterfaceOrientation) ? YES : NO;
 }
 
 @end

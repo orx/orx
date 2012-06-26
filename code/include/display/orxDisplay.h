@@ -234,6 +234,13 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 /** Orx view controller interface
  */
 @interface orxViewController : UIViewController
+{
+@private
+  UIInterfaceOrientation eOrientation;
+}
+
+@property                     UIInterfaceOrientation eOrientation;
+
 @end
 
 /** Orx view interface
