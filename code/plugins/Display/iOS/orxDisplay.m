@@ -264,16 +264,22 @@ static unsigned char gPVRTexIdentifier[4] = "PVR!";
 
 @synthesize eOrientation;
 
-- (orxViewController *) init
+- (void) loadView
 {
-  orxViewController  *poViewController;
-  NSString           *zOrientation;
+  CGRect    stFrame;
+  orxView  *poView;
+  NSString *zOrientation;
 
-  /* Calls parent method */
-  poViewController = [super init];
+  /* Gets application's size */
+  stFrame = [[UIScreen mainScreen] applicationFrame];
+  stFrame.origin.y = 0.0;
 
   /* Gets literal initial orientation from Info.pList file */
-  zOrientation = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"] objectAtIndex:0];
+  zOrientation = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIInterfaceOrientation"];
+  if(zOrientation == nil)
+  {
+    zOrientation = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"] objectAtIndex:0];
+  }
 
   /* Stores orientation */
   eOrientation = ([zOrientation isEqualToString:@"UIInterfaceOrientationPortrait"])
@@ -283,19 +289,6 @@ static unsigned char gPVRTexIdentifier[4] = "PVR!";
                    : ([zOrientation isEqualToString:@"UIInterfaceOrientationLandscapeRight"])
                      ? UIInterfaceOrientationLandscapeRight
                      : UIInterfaceOrientationPortraitUpsideDown;
-
-  /* Done! */
-  return poViewController;
-}
-
-- (void) loadView
-{
-  CGRect    stFrame;
-  orxView  *poView;
-
-  /* Gets application's size */
-  stFrame = [[UIScreen mainScreen] applicationFrame];
-  stFrame.origin.y = 0.0;
 
   /* Is in landscape mode? */
   if(UIInterfaceOrientationIsLandscape(eOrientation))
@@ -316,8 +309,20 @@ static unsigned char gPVRTexIdentifier[4] = "PVR!";
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)_oInterfaceOrientation
 {
+  NSString *zOrientation;
+
+  /* Depending on orientation */
+  switch(_oInterfaceOrientation)
+  {
+    case UIInterfaceOrientationPortrait:            zOrientation = @"UIInterfaceOrientationPortrait"; break;
+    case UIInterfaceOrientationPortraitUpsideDown:  zOrientation = @"UIInterfaceOrientationPortraitUpsideDown"; break;
+    case UIInterfaceOrientationLandscapeLeft:       zOrientation = @"UIInterfaceOrientationLandscapeLeft"; break;
+    case UIInterfaceOrientationLandscapeRight:      zOrientation = @"UIInterfaceOrientationLandscapeRight"; break;
+    default:                                        zOrientation = @"Undefined"; break;
+  }
+
   /* Done! */
-  return (eOrientation == _oInterfaceOrientation) ? YES : NO;
+  return [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"] containsObject:zOrientation];
 }
 
 @end
