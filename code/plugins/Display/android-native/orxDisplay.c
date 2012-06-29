@@ -66,6 +66,9 @@
 
 /**  Misc defines
  */
+
+#define PVR_TEXTURE_FLAG_TYPE_MASK              0xFF
+
 #ifdef __orxDEBUG__
 
 #define glASSERT()                                                      \
@@ -100,6 +103,90 @@ typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t
   orxDISPLAY_ATTRIBUTE_LOCATION_NONE = orxENUM_NONE
 
 } orxDISPLAY_ATTRIBUTE_LOCATION;
+
+#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
+
+/** PVR texture file header
+ */
+typedef struct _PVRTexHeader
+{
+  uint32_t headerLength;
+  uint32_t height;
+  uint32_t width;
+  uint32_t numMipmaps;
+  uint32_t flags;
+  uint32_t dataLength;
+  uint32_t bpp;
+  uint32_t bitmaskRed;
+  uint32_t bitmaskGreen;
+  uint32_t bitmaskBlue;
+  uint32_t bitmaskAlpha;
+  uint32_t pvrTag;
+  uint32_t numSurfs;
+
+  typedef unsigned char * BytePtr;
+
+  bool needsBytesSwapped()
+  {
+    union {
+      int testWord;
+      char testByte[sizeof(int)];
+    }endianTest; 
+    endianTest.testWord = 1;
+    if( endianTest.testByte[0] == 1 )
+      return false;
+    else
+      return true;
+  }
+  
+  template <class T>
+  inline void swapBytes(  T &s )
+  {
+    if( sizeof( T ) == 1 ) 
+      return;
+    
+    T d = s;
+    BytePtr sptr = (BytePtr)&s;
+    BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]);
+    
+    for( unsigned int i = 0; i < sizeof(T); i++ )
+      *(sptr++) = *(dptr--);
+  }
+
+  void swapBytes()
+  {
+    swapBytes(headerLength);
+    swapBytes(height);
+    swapBytes(width);
+    swapBytes(numMipmaps);
+    swapBytes(flags);
+    swapBytes(dataLength);
+    swapBytes(bpp);
+    swapBytes(bitmaskRed);
+    swapBytes(bitmaskGreen);
+    swapBytes(bitmaskBlue);
+    swapBytes(bitmaskAlpha);
+    swapBytes(pvrTag);
+    swapBytes(numSurfs);
+  }
+
+} PVRTexHeader;
+
+/** PVR texture types
+ */
+enum
+{
+  kPVRTextureFlagTypeOGLARGB4444 = 16,
+  kPVRTextureFlagTypeOGLARGB1555,
+  kPVRTextureFlagTypeOGLARGB8888,
+  kPVRTextureFlagTypeOGLRGB565,
+  kPVRTextureFlagTypeOGLRGB555,
+  kPVRTextureFlagTypeOGLRGB888,
+  kPVRTextureFlagTypePVRTC_2 = 24,
+  kPVRTextureFlagTypePVRTC_4
+};
+
+#endif
 
 /** Internal matrix structure
  */
@@ -233,6 +320,12 @@ extern "C" {
 /** Static data
  */
 static orxDISPLAY_STATIC sstDisplay;
+
+#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
+
+static char gPVRTexIdentifier[5] = "PVR!";
+
+#endif
 
 static int init_display() {
     // initialize OpenGL ES and EGL
@@ -2171,6 +2264,268 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
   return eResult;
 }
 
+#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
+
+#include <sys/endian.h>
+
+static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
+{
+  orxFILE    *pstFile;
+  orxBITMAP  *pstBitmap = orxNULL;
+
+  /* Opens file */
+  pstFile = orxFile_Open(_zFilename, orxFILE_KU32_FLAG_OPEN_READ);
+
+  /* Success? */
+  if(pstFile != orxNULL)
+  {
+    PVRTexHeader  stHeader;
+    orxS32        s32FileSize;
+
+    /* Gets file size */
+    s32FileSize = orxFile_GetSize(pstFile);
+
+    /* Loads PVR header from file */
+    if((s32FileSize >= (orxS32)sizeof(PVRTexHeader))
+    && (orxFile_Read(&stHeader, sizeof(PVRTexHeader), 1, pstFile) > 0))
+    {
+      /* Swaps the header's bytes to host format */
+      if(stHeader.needsBytesSwapped())
+        stHeader.swapBytes();
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "pvr header: %x,%x,%x,%x", ((stHeader.pvrTag >>  0) & 0xff), ((stHeader.pvrTag >>  8) & 0xff),  ((stHeader.pvrTag >>  16) & 0xff), ((stHeader.pvrTag >>  24) & 0xff));
+
+      /* Is a valid PVR header? */
+      if((gPVRTexIdentifier[0] == ((stHeader.pvrTag >>  0) & 0xFF))
+      && (gPVRTexIdentifier[1] == ((stHeader.pvrTag >>  8) & 0xFF))
+      && (gPVRTexIdentifier[2] == ((stHeader.pvrTag >> 16) & 0xFF))
+      && (gPVRTexIdentifier[3] == ((stHeader.pvrTag >> 24) & 0xFF)))
+      {
+        orxS32  u32FormatFlags;
+        orxU32  u32BPP;
+        orxBOOL bHasAlpha, bCompressed, bValidInfo = orxTRUE;
+        GLenum  eInternalFormat, eTextureType = 0;
+
+        /* Gets format flags */
+        u32FormatFlags = stHeader.flags & PVR_TEXTURE_FLAG_TYPE_MASK;
+
+        /* Updates alpha info */
+        bHasAlpha = (stHeader.bitmaskAlpha != 0) ? orxTRUE : orxFALSE;
+
+        /* Depending on format */
+        switch(u32FormatFlags)
+        {
+          case kPVRTextureFlagTypeOGLARGB4444:
+          {
+            /* Updates info */
+            eInternalFormat = GL_UNSIGNED_SHORT_4_4_4_4;
+            eTextureType    = GL_RGBA;
+            u32BPP          = 16;
+            bCompressed     = orxFALSE;
+
+            break;
+          }
+
+          case kPVRTextureFlagTypeOGLARGB1555:
+          {
+            /* Updates info */
+            eInternalFormat = GL_UNSIGNED_SHORT_5_5_5_1;
+            eTextureType    = GL_RGBA;
+            u32BPP          = 16;
+            bCompressed     = orxFALSE;
+
+            break;
+          }
+
+          case kPVRTextureFlagTypeOGLARGB8888:
+          {
+            /* Updates info */
+            eInternalFormat = GL_UNSIGNED_BYTE;
+            eTextureType    = GL_RGBA;
+            u32BPP          = 32;
+            bCompressed     = orxFALSE;
+
+            break;
+          }
+
+          case kPVRTextureFlagTypeOGLRGB565:
+          {
+            /* Updates info */
+            eInternalFormat = GL_UNSIGNED_SHORT_5_6_5;
+            eTextureType    = GL_RGB;
+            u32BPP          = 16;
+            bCompressed     = orxFALSE;
+
+            break;
+          }
+
+          case kPVRTextureFlagTypeOGLRGB888:
+          {
+            /* Updates info */
+            eInternalFormat = GL_UNSIGNED_BYTE;
+            eTextureType    = GL_RGB;
+            u32BPP          = 24;
+            bCompressed     = orxFALSE;
+
+            break;
+          }
+
+          case kPVRTextureFlagTypePVRTC_2:
+          {
+            /* Updates info */
+            eInternalFormat = (bHasAlpha != orxFALSE) ? GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG : GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+            bCompressed     = orxTRUE;
+            u32BPP          = 2;
+
+            break;
+          }
+
+          case kPVRTextureFlagTypePVRTC_4:
+          {
+            /* Updates info */
+            eInternalFormat = (bHasAlpha != orxFALSE) ? GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG : GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+            bCompressed     = orxTRUE;
+            u32BPP          = 4;
+
+            break;
+          }
+
+          default:
+          case kPVRTextureFlagTypeOGLRGB555:
+          {
+            /* Not supported */
+            bValidInfo = orxFALSE;
+
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: invalid format, aborting.", _zFilename);
+
+            break;
+          }
+        }
+
+        /* Valid info? */
+        if(bValidInfo != orxFALSE)
+        {
+          orxS32  u32DataSize;
+          orxU8  *au8ImageBuffer;
+
+          /* Gets the image size (eventual mipmaps will be ignored) */
+          u32DataSize = (stHeader.width * stHeader.height * u32BPP) / 8;
+
+          /* Allocates buffer */
+          au8ImageBuffer = (orxU8 *)orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_VIDEO);
+
+          /* Reads the image content (mimaps will be ignored) */
+          if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) > 0)
+          {
+            /* Allocates bitmap */
+            pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+
+            /* Success? */
+            if(pstBitmap != orxNULL)
+            {
+              GLint iTexture;
+
+              /* Pushes config section */
+              orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+              /* Inits bitmap */
+              pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+              pstBitmap->fWidth         = orxU2F(stHeader.width);
+              pstBitmap->fHeight        = orxU2F(stHeader.height);
+              pstBitmap->u32RealWidth   = stHeader.width;
+              pstBitmap->u32RealHeight  = stHeader.height;
+              pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+              pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+              pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+              orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+              orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+              /* Backups current texture */
+              glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+              glASSERT();
+
+              /* Creates new texture */
+              glGenTextures(1, &pstBitmap->uiTexture);
+              glASSERT();
+              glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+              glASSERT();
+              glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+              glASSERT();
+              glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+              glASSERT();
+              glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+              glASSERT();
+              glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+              glASSERT();
+
+              /* Compressed? */
+              if(bCompressed != orxFALSE)
+              {
+                /* Loads compressed data */
+                glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, stHeader.width, stHeader.height, 0, u32DataSize, au8ImageBuffer);
+              }
+              else
+              {
+                /* Loads data */
+                glTexImage2D(GL_TEXTURE_2D, 0, eTextureType, stHeader.width, stHeader.height, 0, eTextureType, eInternalFormat, au8ImageBuffer);
+              }
+              glASSERT();
+
+              /* Restores previous texture */
+              glBindTexture(GL_TEXTURE_2D, iTexture);
+              glASSERT();
+
+              /* Pops config section */
+              orxConfig_PopSection();
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: out of memory, aborting.", _zFilename);
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: invalid data, aborting.", _zFilename);
+          }
+
+          /* Frees data */
+          orxMemory_Free(au8ImageBuffer);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: invalid pixel format, aborting.", _zFilename);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: invalid header format, aborting.", _zFilename);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: invalid file size, aborting.", _zFilename);
+    }
+
+    /* Closes file */
+    orxFile_Close(pstFile);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: file not found, aborting.", _zFilename);
+  }
+
+  /* Done! */
+  return pstBitmap;
+}
+
+#endif
+
 orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
 {
   unsigned char  *pu8ImageData;
@@ -2181,122 +2536,138 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFileName != orxNULL);
 
-  /* open file in assets */
+#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
 
-  ANativeActivity *activity = orxAndroid_GetNativeActivity();
-  AAsset* file = AAssetManager_open(activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
-  if(file != NULL)
+  pstResult = orxDisplay_Android_LoadPVRBitmap(_zFileName);
+
+  /* Not already loaded? */
+  if(pstResult == orxNULL)
   {
-    /* read the file in memory */
-    off_t length = AAsset_getLength(file);
-    unsigned char *pu8FileBuffer = (orxU8 *)orxMemory_Allocate(length * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
-    /* Checks */
-    orxASSERT(pu8FileBuffer != orxNULL);
+#endif
 
-    AAsset_read(file, pu8FileBuffer, length);
-
-    /* Loads image */
-    pu8ImageData = SOIL_load_image_from_memory(pu8FileBuffer, length, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
-
-    /* Valid? */
-    if(pu8ImageData != NULL)
+    /* open file in assets */
+    ANativeActivity *activity = orxAndroid_GetNativeActivity();
+    AAsset* file = AAssetManager_open(activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
+    if(file != NULL)
     {
-      /* Allocates bitmap */
-      pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+      /* read the file in memory */
+      off_t length = AAsset_getLength(file);
+
+      unsigned char *pu8FileBuffer = (orxU8 *)orxMemory_Allocate(length * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+      /* Checks */
+      orxASSERT(pu8FileBuffer != orxNULL);
+
+      AAsset_read(file, pu8FileBuffer, length);
+
+      /* Loads image */
+      pu8ImageData = SOIL_load_image_from_memory(pu8FileBuffer, length, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
 
       /* Valid? */
-      if(pstResult != orxNULL)
+      if(pu8ImageData != NULL)
       {
-        GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize, uiRealWidth, uiRealHeight;
-        GLint   iTexture;
-        orxU8  *pu8ImageBuffer;
+        /* Allocates bitmap */
+        pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-        /* Gets its real size */
-        uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
-        uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
-
-        /* Pushes display section */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-        /* Inits bitmap */
-        pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-        pstResult->fWidth         = orxU2F(uiWidth);
-        pstResult->fHeight        = orxU2F(uiHeight);
-        pstResult->u32RealWidth   = uiRealWidth;
-        pstResult->u32RealHeight  = uiRealHeight;
-        pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
-        pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
-        pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-        orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
-        orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
-
-        /* Allocates buffer */
-        pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-        /* Checks */
-        orxASSERT(pu8ImageBuffer != orxNULL);
-
-        /* Gets line sizes */
-        uiLineSize      = uiWidth * 4 * sizeof(orxU8);
-        uiRealLineSize  = uiRealWidth * 4 * sizeof(orxU8);
-
-        /* Clears padding */
-        orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
-
-        /* For all lines */
-        for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
-            i < uiHeight;
-            i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
+        /* Valid? */
+        if(pstResult != orxNULL)
         {
-          /* Copies data */
-          orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+          GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize, uiRealWidth, uiRealHeight;
+          GLint   iTexture;
+          orxU8  *pu8ImageBuffer;
 
-          /* Adds padding */
-          orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+          /* Gets its real size */
+          uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
+          uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
+
+          /* Pushes display section */
+          orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+          /* Inits bitmap */
+          pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+          pstResult->fWidth         = orxU2F(uiWidth);
+          pstResult->fHeight        = orxU2F(uiHeight);
+          pstResult->u32RealWidth   = uiRealWidth;
+          pstResult->u32RealHeight  = uiRealHeight;
+          pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
+          pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
+          pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+          orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
+          orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
+
+          /* Allocates buffer */
+          pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+
+          /* Checks */
+          orxASSERT(pu8ImageBuffer != orxNULL);
+
+          /* Gets line sizes */
+          uiLineSize      = uiWidth * 4 * sizeof(orxU8);
+          uiRealLineSize  = uiRealWidth * 4 * sizeof(orxU8);
+
+          /* Clears padding */
+          orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
+
+          /* For all lines */
+          for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
+              i < uiHeight;
+              i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
+          {
+            /* Copies data */
+            orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+
+            /* Adds padding */
+            orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+          }
+
+          /* Backups current texture */
+          glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+          glASSERT();
+
+          /* Creates new texture */
+          glGenTextures(1, &pstResult->uiTexture);
+          glASSERT();
+          glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
+          glASSERT();
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+          glASSERT();
+
+          /* Restores previous texture */
+          glBindTexture(GL_TEXTURE_2D, iTexture);
+          glASSERT();
+
+          /* Frees image buffer */
+          orxMemory_Free(pu8ImageBuffer);
+
+          /* Pops config section */
+          orxConfig_PopSection();
         }
 
-        /* Backups current texture */
-        glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-        glASSERT();
-
-        /* Creates new texture */
-        glGenTextures(1, &pstResult->uiTexture);
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstResult->u32RealWidth, pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-
-        /* Restores previous texture */
-        glBindTexture(GL_TEXTURE_2D, iTexture);
-        glASSERT();
-
-        /* Frees image buffer */
-        orxMemory_Free(pu8ImageBuffer);
-
-        /* Pops config section */
-        orxConfig_PopSection();
+        /* Deletes surface */
+        SOIL_free_image_data(pu8ImageData);
       }
 
-      /* Deletes surface */
-      SOIL_free_image_data(pu8ImageData);
+      /* close file */
+      AAsset_close(file);
+
+      /* free memory */
+      orxMemory_Free(pu8FileBuffer);
     }
 
-    /* close file */
-    AAsset_close(file);
+#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
 
-    /* free memory */
-    orxMemory_Free(pu8FileBuffer);
   }
+
+#endif
 
   /* Done! */
   return pstResult;
@@ -2626,7 +2997,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Uses it */
         orxDisplay_StopShader(orxNULL);
 
-	/* Generates index buffer object (IBO) */
+        /* Generates index buffer object (IBO) */
         glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
         glASSERT();
 
@@ -3180,8 +3551,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
       glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       glASSERT();
 
-			/* Updates texture counter */
-			pstShader->iTextureCounter++;
+      /* Updates texture counter */
+      pstShader->iTextureCounter++;
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
