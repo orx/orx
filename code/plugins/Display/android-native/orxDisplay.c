@@ -106,8 +106,6 @@ typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t
 
 } orxDISPLAY_ATTRIBUTE_LOCATION;
 
-#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
-
 /** PVR texture file header
  */
 typedef struct _PVRTexHeader
@@ -187,8 +185,6 @@ enum
   kPVRTextureFlagTypePVRTC_2 = 24,
   kPVRTextureFlagTypePVRTC_4
 };
-
-#endif
 
 /** Internal matrix structure
  */
@@ -324,12 +320,8 @@ extern "C" {
 /** Static data
  */
 static orxDISPLAY_STATIC sstDisplay;
-
-#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
-
 static char gPVRTexIdentifier[5] = "PVR!";
-
-#endif
+static const orxSTRING szPVRExtention = ".pvr";
 
 static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
 {
@@ -2095,10 +2087,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
   return eResult;
 }
 
-#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
-
-#include <sys/endian.h>
-
 static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
 {
   orxFILE    *pstFile;
@@ -2355,8 +2343,6 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
   return pstBitmap;
 }
 
-#endif
-
 orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
 {
   unsigned char  *pu8ImageData;
@@ -2367,16 +2353,12 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFileName != orxNULL);
 
-#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
-
-  pstResult = orxDisplay_Android_LoadPVRBitmap(_zFileName);
+  if(orxString_SearchString(_zFileName, szPVRExtention) != orxNULL)
+    pstResult = orxDisplay_Android_LoadPVRBitmap(_zFileName);
 
   /* Not already loaded? */
   if(pstResult == orxNULL)
   {
-
-#endif
-
     /* open file in assets */
     ANativeActivity *activity = orxAndroid_GetNativeActivity();
     AAsset* file = AAssetManager_open(activity->assetManager, _zFileName, AASSET_MODE_RANDOM);
@@ -2493,12 +2475,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
       /* free memory */
       orxMemory_Free(pu8FileBuffer);
     }
-
-#ifdef __orxANDROID_NATIVE_PVR_SUPPORT__
-
   }
-
-#endif
 
   /* Done! */
   return pstResult;
