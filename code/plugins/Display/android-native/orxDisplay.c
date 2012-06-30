@@ -49,7 +49,9 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_READY         0x00000001  /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_SHADER        0x00000002  /**< Shader support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER   0x00000004  /**< Has depth buffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY 0x00000008 /** egl window inited */
+#define orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY 0x00000008  /** egl context inited */
+#define orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE   0x00000010  /** has a surface */
+#define orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND 0x00000020  /** surface bound */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -289,10 +291,12 @@ typedef struct __orxDISPLAY_STATIC_t
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
 
-  orxBOOL                   bNeedToRestoreContext;
   EGLDisplay                display;
   EGLSurface                surface;
   EGLContext                context;
+  EGLConfig                 config;
+  EGLint                    format;
+
   int32_t                   width;
   int32_t                   height;
 } orxDISPLAY_STATIC;
@@ -327,136 +331,188 @@ static char gPVRTexIdentifier[5] = "PVR!";
 
 #endif
 
-static int init_display() {
-    // initialize OpenGL ES and EGL
+static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
+{
+  EGLint count = 0;
+  if (!eglGetConfigs(disp, NULL, 0, &count))
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "defaultEGLChooser cannot query count of all configs");
+    return orxFALSE;
+  }
 
-    /*
-     * Here specify the attributes of the desired configuration.
-     * Below, we select an EGLConfig with at least 8 bits per color
-     * component compatible with on-screen windows
-     */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config count = %d", count);
 
-    const EGLint attribs16[] = {
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 5,
-            EGL_GREEN_SIZE, 6,
-            EGL_RED_SIZE, 5,
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_NONE
-    };
-    const EGLint attribs24[] = {
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_NONE
-    };
-    EGLint w, h, dummy, format;
-    EGLint numConfigs;
-    EGLConfig config;
-    EGLSurface surface;
-    EGLContext context;
+  EGLConfig* configs = new EGLConfig[count];
+  if (!eglGetConfigs(disp, configs, count, &count))
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "defaultEGLChooser cannot query all configs");
+    return orxFALSE;
+  }
 
-    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  int bestMatch = 1<<30;
+  int bestIndex = -1;
 
-    eglInitialize(display, 0, 0);
+  int i;
+  for (i = 0; i < count; i++)
+  {
+    int match = 0;
+    EGLint surfaceType = 0;
+    EGLint blueBits = 0;
+    EGLint greenBits = 0;
+    EGLint redBits = 0;
+    EGLint alphaBits = 0;
+    EGLint depthBits = 0;
+    EGLint stencilBits = 0;
+    EGLint renderableFlags = 0;
 
-    if (sstDisplay.u32Depth == 16)
+    eglGetConfigAttrib(disp, configs[i], EGL_SURFACE_TYPE, &surfaceType);
+    eglGetConfigAttrib(disp, configs[i], EGL_BLUE_SIZE, &blueBits);
+    eglGetConfigAttrib(disp, configs[i], EGL_GREEN_SIZE, &greenBits);
+    eglGetConfigAttrib(disp, configs[i], EGL_RED_SIZE, &redBits);
+    eglGetConfigAttrib(disp, configs[i], EGL_ALPHA_SIZE, &alphaBits);
+    eglGetConfigAttrib(disp, configs[i], EGL_DEPTH_SIZE, &depthBits);
+    eglGetConfigAttrib(disp, configs[i], EGL_STENCIL_SIZE, &stencilBits);
+    eglGetConfigAttrib(disp, configs[i], EGL_RENDERABLE_TYPE, &renderableFlags);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config[%d]: R%dG%dB%dA%d D%dS%d Type=%04x Render=%04x",
+      i, redBits, greenBits, blueBits, alphaBits, depthBits, stencilBits, surfaceType, renderableFlags);
+
+    if ((surfaceType & EGL_WINDOW_BIT) == 0)
+      continue;
+    if ((renderableFlags & EGL_OPENGL_ES2_BIT) == 0)
+      continue;
+    if (depthBits < 16)
+      continue;
+    if ((redBits < 5) || (greenBits < 6) || (blueBits < 5))
+      continue;
+
+    int penalty = depthBits - 16;
+    match += penalty * penalty;
+    penalty = redBits - 5;
+    match += penalty * penalty;
+    penalty = greenBits - 6;
+    match += penalty * penalty;
+    penalty = blueBits - 5;
+    match += penalty * penalty;
+    penalty = alphaBits;
+    match += penalty * penalty;
+    penalty = stencilBits;
+    match += penalty * penalty;
+
+    if ((match < bestMatch) || (bestIndex == -1))
     {
-      eglChooseConfig(display, attribs16, &config, 1, &numConfigs);
+      bestMatch = match;
+      bestIndex = i;
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config[%d] is the new best config", i);
     }
-    else
-    {
-      eglChooseConfig(display, attribs24, &config, 1, &numConfigs);
-    }
+  }
 
-    #ifdef __orxDEBUG__
-    int i;
-    EGLint value;
-    for(i = 0; i < numConfigs; i++)
-    {
-      eglGetConfigAttrib(display, config, EGL_BUFFER_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_BUFFER_SIZE = %d", value);
-      eglGetConfigAttrib(display, config, EGL_ALPHA_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_ALPHA_SIZE = %d", value);
-      eglGetConfigAttrib(display, config, EGL_BLUE_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_BLUE_SIZE = %d", value);
-      eglGetConfigAttrib(display, config, EGL_GREEN_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_GREEN_SIZE = %d", value);
-      eglGetConfigAttrib(display, config, EGL_RED_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_RED_SIZE = %d", value);
-      eglGetConfigAttrib(display, config, EGL_DEPTH_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_DEPTH_SIZE = %d", value);
-      eglGetConfigAttrib(display, config, EGL_STENCIL_SIZE, &value);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL_STENCIL_SIZE = %d", value);
-    }
-    #endif
+  if (bestIndex < 0)
+  {
+    delete[] configs;
+    return orxFALSE;
+  }
 
-    /* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
-     * guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
-     * As soon as we picked a EGLConfig, we can safely reconfigure the
-     * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
-    eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
+  bestConfig = configs[bestIndex];
+  delete[] configs;
 
-    ANativeWindow *window = orxAndroid_GetNativeWindow();
-    ANativeWindow_setBuffersGeometry(window, 0, 0, format);
-
-    surface = eglCreateWindowSurface(display, config, window, NULL);
-
-    const EGLint context_attrib[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-    context = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attrib);
-
-    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Unable to eglMakeCurrent");
-        return -1;
-    }
-
-    eglQuerySurface(display, surface, EGL_WIDTH, &w);
-    eglQuerySurface(display, surface, EGL_HEIGHT, &h);
-
-    sstDisplay.display = display;
-    sstDisplay.context = context;
-    sstDisplay.surface = surface;
-    sstDisplay.width = w;
-    sstDisplay.height = h;
-
-    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-
-    return 0;
+  return orxTRUE; 
 }
 
-static void term_display() {
-    if (sstDisplay.display != EGL_NO_DISPLAY) {
-        eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (sstDisplay.context != EGL_NO_CONTEXT) {
-            eglDestroyContext(sstDisplay.display, sstDisplay.context);
-        }
-        if (sstDisplay.surface != EGL_NO_SURFACE) {
-            eglDestroySurface(sstDisplay.display, sstDisplay.surface);
-        }
-        eglTerminate(sstDisplay.display);
-    }
-    s32Animating = 0;
-    sstDisplay.display = EGL_NO_DISPLAY;
-    sstDisplay.context = EGL_NO_CONTEXT;
-    sstDisplay.surface = EGL_NO_SURFACE;
 
-    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY);
+static void create_EGLContext()
+{
+  // create EGL context
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "create_EGLContext()");
+
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY) == 0);
+
+  sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  eglInitialize(sstDisplay.display, 0, 0);
+  if(defaultEGLChooser(sstDisplay.display, sstDisplay.config) == orxFALSE)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGLChooser failed!");
+  }
+  eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
+  EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+  sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
+
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+}
+
+
+static void create_EGLSurface()
+{
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "create_EGLSurface()");
+
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY) == orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == 0);
+
+  ANativeWindow *window = orxAndroid_GetNativeWindow();
+  ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
+  sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
+  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &sstDisplay.width);
+  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &sstDisplay.height);
+
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+}
+
+static void bind_EGLSurface()
+{
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "bind_EGLSurface()");
+
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == 0);
+
+  eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
+  s32Animating = 1;
+
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+}
+
+static void unbind_EGLSurface()
+{
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "unbind_EGLSurface()");
+
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND);
+
+  eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, sstDisplay.context);
+
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND);
+}
+
+static void destroy_EGLSurface()
+{
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "destroy_EGLSurface()");
+
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == 0);
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
+
+  eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+  eglDestroySurface(sstDisplay.display, sstDisplay.surface);
+
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
+}
+
+static void destroy_EGLContext()
+{
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "destroy_EGLContext()");
+
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == 0);
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY) == orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
+
+  eglDestroyContext(sstDisplay.display, sstDisplay.context);
+  eglTerminate(sstDisplay.display);
+
+  s32Animating = 0;
+
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
 }
 
 static orxINLINE orxBOOL initGLESConfig()
 {
   /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY) == orxDISPLAY_KU32_STATIC_FLAG_DISPLAY_READY);
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND);
 
-  /* print out supported GL_EXTENSIONS */
-//  const GLubyte* extensions = glGetString(GL_EXTENSIONS);
-//  glASSERT();
-//  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GL_EXTENSIONS string: %s", extensions);
-//  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GL_EXTENSIONS");
-
-  /* Inits it */
   /* Enables vextex attribute arrays */
   glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
   glASSERT();
@@ -493,243 +549,18 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxANDROID_NATIVE_DISPLAY_EVENT_INIT_WINDOW");
 
-        if (orxAndroid_GetNativeWindow() != NULL)
-        {
-          init_display();
-          initGLESConfig();
-
-          /* restore context? */
-          if(sstDisplay.bNeedToRestoreContext == orxTRUE)
-          {
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "RESTORE_CONTEXT");
-
-            /* Creates texture for screen backup */
-            glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-            glASSERT();
-            glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-            glASSERT();
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-            glASSERT();
-
-
-            /* Clears destination bitmap */
-            sstDisplay.pstDestinationBitmap = orxNULL;
-
-            /* Clears new display surface */
-            glClear(GL_COLOR_BUFFER_BIT);
-            glASSERT();
-
-            /* Had bitmaps? */
-            if(sstDisplay.s32BitmapCounter > 0)
-            {
-              orxBITMAP  *pstBitmap;
-              orxU32      u32Index;
-
-              /* For all bitmaps */
-              for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL), u32Index = 0;
-                  pstBitmap != orxNULL;
-                  pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
-              {
-                /* Not screen? */
-                if(pstBitmap != sstDisplay.pstScreen)
-                {
-                  /* Creates new texture */
-                  glGenTextures(1, &pstBitmap->uiTexture);
-                  glASSERT();
-                  glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
-                  glASSERT();
-                  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index]);
-                  glASSERT();
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                  glASSERT();
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                  glASSERT();
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-                  glASSERT();
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-                  glASSERT();
-
-                  /* Deletes buffer */
-                  orxMemory_Free(sstDisplay.aau8BufferArray[u32Index++]);
-                }
-              }
-
-              /* Deletes buffer array */
-              orxMemory_Free(sstDisplay.aau8BufferArray);
-            }
-
-            /* Had shaders? */
-            if(sstDisplay.s32ShaderCounter > 0)
-            {
-              orxDISPLAY_SHADER *pstShader;
-
-              /* For all shaders */
-              for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-                  pstShader != orxNULL;
-                  pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-              {
-                /* Compiles it */
-                orxDisplay_Android_CompileShader(pstShader);
-              }
-            }
-
-            /* Uses default shader */
-            orxDisplay_StopShader(orxNULL);
-
-            /* Clears counters */
-            sstDisplay.s32BitmapCounter = sstDisplay.s32ShaderCounter = 0;
-
-            /* Clears last blend mode & last bitmap */
-            sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-            sstDisplay.pstLastBitmap  = orxNULL;
-
-            /* generate frame buffer */
-            glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
-            glASSERT();
-
-            /* Generates index buffer object (IBO) */
-            glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
-            glASSERT();
-
-            /* Binds it */
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
-            glASSERT();
-
-            /* Fills it */
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
-            glASSERT();
-
-            s32Animating = 1;
-            sstDisplay.bNeedToRestoreContext = orxFALSE;
-
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "RESTORE_CONTEXT done");
-          }
-        }
-
+        create_EGLSurface();
+        bind_EGLSurface();
+        s32Animating = 1;
         break;
       }
       case 1:
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxANDROID_NATIVE_DISPLAY_EVENT_TERM_WINDOW");
 
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT");
-
-        /* Gets bitmap counter */
-        sstDisplay.s32BitmapCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstBitmapBank) - 1;
-
-        /* Valid? */
-        if(sstDisplay.s32BitmapCounter > 0)
-        {
-          orxBITMAP  *pstBitmap;
-          orxU32      u32Index;
-
-          /* Allocates buffer array */
-          sstDisplay.aau8BufferArray = (orxU8 **)orxMemory_Allocate(sstDisplay.s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
-
-          /* Checks */
-          orxASSERT(sstDisplay.aau8BufferArray != orxNULL);
-
-          /* For all bitmaps */
-          for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL), u32Index = 0;
-              pstBitmap != orxNULL;
-              pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
-          {
-            /* Not screen? */
-            if(pstBitmap != sstDisplay.pstScreen)
-            {
-              GLuint uiFrameBuffer;
-
-              /* Allocates its buffer */
-              sstDisplay.aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-              /* Checks */
-              orxASSERT(sstDisplay.aau8BufferArray[u32Index] != orxNULL);
-
-              /* Generates frame buffer */
-              glGenFramebuffers(1, &uiFrameBuffer);
-              glASSERT();
-
-              /* Binds frame buffer */
-              glBindFramebuffer(GL_FRAMEBUFFER, uiFrameBuffer);
-              glASSERT();
-
-              /* Links it to frame buffer */
-              glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
-              glASSERT();
-
-              glCheckFramebufferStatus(GL_FRAMEBUFFER);
-              glASSERT();
-
-              /* Inits viewport */
-              glViewport(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight);
-              glASSERT();
-
-              /* Reads OpenGL data */
-              glReadPixels(0, 0, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, sstDisplay.aau8BufferArray[u32Index++]);
-              glASSERT();
-
-              /* Deletes it */
-              glDeleteTextures(1, &(pstBitmap->uiTexture));
-              glASSERT();
-
-              /* unBinds frame buffer */
-              glBindFramebuffer(GL_FRAMEBUFFER, 0);
-              glASSERT();
-
-              /* Deletes it */
-              glDeleteFramebuffers(1, &uiFrameBuffer);
-              glASSERT();
-
-            }
-          }
-        }
-
-        /* Gets shader counter */
-        sstDisplay.s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
-
-        /* Valid? */
-        if(sstDisplay.s32ShaderCounter > 0)
-        {
-          orxDISPLAY_SHADER *pstShader;
-
-          /* For all shaders */
-          for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
-              pstShader != orxNULL;
-              pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
-          {
-            /* Deletes its program */
-            glDeleteProgram(pstShader->uiProgram);
-            glASSERT();
-            pstShader->uiProgram = (GLuint)orxHANDLE_UNDEFINED;
-          }
-        }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glASSERT();
-
-        /* Has index buffer? */
-        if(sstDisplay.uiIndexBuffer != 0)
-        {
-          /* Deletes it */
-          glDeleteBuffers(1, &(sstDisplay.uiIndexBuffer));
-          glASSERT();
-          sstDisplay.uiIndexBuffer = 0;
-        }
-
-        sstDisplay.bNeedToRestoreContext = orxTRUE;
-
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "SAVE_CONTEXT done");
-
-        term_display();
-
+        unbind_EGLSurface();
+        destroy_EGLSurface();
+        s32Animating = 0;
         break;
       }
       default:
@@ -2877,6 +2708,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
+    create_EGLContext();
     orxAndroid_WaitForWindow();
 
     orxU32 i;
@@ -2911,17 +2743,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         if (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
         {
           /* Updates flags */
-           sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
-        }
-        else
-        {
-          sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
+           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
         }
 
-        sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+        sstDisplay.u32Depth = 16;
 
-        // Init EGL context
-        init_display();
+        // Init EGLSurface
+        create_EGLSurface();
+        bind_EGLSurface();
 
         // Init OpenGL ES 2.0
         initGLESConfig();
@@ -3063,8 +2892,6 @@ void orxFASTCALL orxDisplay_Android_Exit()
       orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
     }
 
-    sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
-
     glDeleteFramebuffers(1, &sstDisplay.uiFrameBuffer);
     glASSERT();
 
@@ -3076,6 +2903,12 @@ void orxFASTCALL orxDisplay_Android_Exit()
       glASSERT();
       sstDisplay.uiIndexBuffer = 0;
     }
+
+    unbind_EGLSurface();
+    destroy_EGLSurface();
+    destroy_EGLContext();
+
+    sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
 
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);
