@@ -58,12 +58,17 @@
 /* *** Platform dependent base declarations */
 
 /* No processor defines? */
-#if !defined(__orxPPC__) && !defined(__orxX86_64__) && !defined(__orxX86__)
+#if !defined(__orxPPC__) && !defined(__orxPPC64__) && !defined(__orxX86_64__) && !defined(__orxX86__)
 
   /* PowerPC? */
-  #if defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__)
+  #if defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__) || defined(__powerpc__)
 
     #define __orxPPC__
+
+  /* PowerPC 64? */
+  #elif defined(__powerpc64__) || defined(__POWERPC64__)
+
+    #define __orxPPC64__
 
   /* x86_64? */
   #elif defined(__x86_64)
@@ -77,7 +82,7 @@
 
   #endif
 
-#endif /* !__orxPPC__ && !__orxX86_64__ && !__orxX86__ */
+#endif /* !__orxPPC__ && !__orxPPC64__ && !__orxX86_64__ && !__orxX86__ */
 
 /* Power PC? */
 #ifdef __orxPPC__
@@ -229,7 +234,7 @@
   /* Linux / Mac / iOS */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-    #if defined(__orxPPC__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+    #if defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
       #define orxFASTCALL
 
@@ -237,7 +242,7 @@
 
       #define orxCDECL
 
-    #else /* __orxPPC__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+    #else /* __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -253,7 +258,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxPPC__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+    #endif /* __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))

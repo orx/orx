@@ -44,15 +44,15 @@
 
 #endif /* __orxMSVC__ */
 
-#ifdef __orxX86_64__
+#if defined(__orxX86_64__) || defined(__orxPPC64__)
 
   #define orxPHYSICS_CAST_HELPER   (orxS64)
 
-#else /* __orxX86_64__ */
+#else /* __orxX86_64__ || __orxPPC64__ */
 
   #define orxPHYSICS_CAST_HELPER
 
-#endif /* __orxX86_64__ */
+#endif /* __orxX86_64__ || __orxPPC64__ */
 
 
 #if defined(__orxDEBUG__) || defined(__orxPROFILER__)

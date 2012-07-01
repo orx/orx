@@ -167,11 +167,11 @@ typedef struct __orxSTRUCTURE_t
   orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12/16 */
   orxU32          u32Flags;       /**< Flags : 16/20 */
 
-#ifdef __orxX86_64__
+#if defined(__orxX86_64__) || defined(__orxPPC64__)
 
   orxU8           au8Padding[12]; /**< Extra padding to be 16-bit aligned on 64bit architectures */
 
-#endif /* __orxX86_64__ */
+#endif /* __orxX86_64__ || __orxPPC64__ */
 
 } orxSTRUCTURE;
 

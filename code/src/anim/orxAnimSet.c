@@ -46,15 +46,15 @@
 
 #endif /* __orxMSVC__ */
 
-#ifdef __orxX86_64__
+#if defined(__orxX86_64__) || defined(__orxPPC64__)
 
   #define orxANIMSET_CAST_HELPER   (orxU64)
 
-#else /* __orxX86_64__ */
+#else /* __orxX86_64__ || __orxPPC64__ */
 
   #define orxANIMSET_CAST_HELPER
 
-#endif /* __orxX86_64__ */
+#endif /* __orxX86_64__ || __orxPPC64__ */
 
 
 /** Module flags
