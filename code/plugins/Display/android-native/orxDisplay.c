@@ -2213,12 +2213,12 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
           case FOURCC_ATC_RGB_EA:
             eInternalFormat     = GL_ATC_RGBA_EXPLICIT_ALPHA_AMD;
             bCompressed         = orxTRUE;
-            bHasAlpha           = orxFALSE;
+            bHasAlpha           = orxTRUE;
             break;
           case FOURCC_ATC_RGB_IA:
             eInternalFormat     = GL_ATC_RGBA_INTERPOLATED_ALPHA_AMD;
             bCompressed         = orxTRUE;
-            bHasAlpha           = orxFALSE;
+            bHasAlpha           = orxTRUE;
             break;
           default:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: unsupported FOURCC code = [0x%x].", _zFilename, stHeader.ddspf.dwFourCC);
