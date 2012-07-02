@@ -42,6 +42,8 @@
 #include <android/native_activity.h>
 #include <android/sensor.h>
 
+#include <sys/endian.h>
+
 /** Module flags
  */
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags */
@@ -123,53 +125,6 @@ typedef struct _PVRTexHeader
   uint32_t bitmaskAlpha;
   uint32_t pvrTag;
   uint32_t numSurfs;
-
-  typedef unsigned char * BytePtr;
-
-  bool needsBytesSwapped()
-  {
-    union {
-      int testWord;
-      char testByte[sizeof(int)];
-    }endianTest; 
-    endianTest.testWord = 1;
-    if( endianTest.testByte[0] == 1 )
-      return false;
-    else
-      return true;
-  }
-  
-  template <class T>
-  inline void swapBytes(  T &s )
-  {
-    if( sizeof( T ) == 1 ) 
-      return;
-    
-    T d = s;
-    BytePtr sptr = (BytePtr)&s;
-    BytePtr dptr = &(((BytePtr)&d)[sizeof(T)-1]);
-    
-    for( unsigned int i = 0; i < sizeof(T); i++ )
-      *(sptr++) = *(dptr--);
-  }
-
-  void swapBytes()
-  {
-    swapBytes(headerLength);
-    swapBytes(height);
-    swapBytes(width);
-    swapBytes(numMipmaps);
-    swapBytes(flags);
-    swapBytes(dataLength);
-    swapBytes(bpp);
-    swapBytes(bitmaskRed);
-    swapBytes(bitmaskGreen);
-    swapBytes(bitmaskBlue);
-    swapBytes(bitmaskAlpha);
-    swapBytes(pvrTag);
-    swapBytes(numSurfs);
-  }
-
 } PVRTexHeader;
 
 /** PVR texture types
@@ -2109,9 +2064,19 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
     && (orxFile_Read(&stHeader, sizeof(PVRTexHeader), 1, pstFile) > 0))
     {
       /* Swaps the header's bytes to host format */
-      if(stHeader.needsBytesSwapped())
-        stHeader.swapBytes();
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "pvr header: %x,%x,%x,%x", ((stHeader.pvrTag >>  0) & 0xff), ((stHeader.pvrTag >>  8) & 0xff),  ((stHeader.pvrTag >>  16) & 0xff), ((stHeader.pvrTag >>  24) & 0xff));
+      letoh32(stHeader.headerLength);
+      letoh32(stHeader.height);
+      letoh32(stHeader.width);
+      letoh32(stHeader.numMipmaps);
+      letoh32(stHeader.flags);
+      letoh32(stHeader.dataLength);
+      letoh32(stHeader.bpp);
+      letoh32(stHeader.bitmaskRed);
+      letoh32(stHeader.bitmaskGreen);
+      letoh32(stHeader.bitmaskBlue);
+      letoh32(stHeader.bitmaskAlpha);
+      letoh32(stHeader.pvrTag);
+      letoh32(stHeader.numSurfs);
 
       /* Is a valid PVR header? */
       if((gPVRTexIdentifier[0] == ((stHeader.pvrTag >>  0) & 0xFF))
