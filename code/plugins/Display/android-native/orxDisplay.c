@@ -141,6 +141,75 @@ enum
   kPVRTextureFlagTypePVRTC_4
 };
 
+// Various DDS file defines
+#define DDSD_CAPS             0x00000001l
+#define DDSD_HEIGHT           0x00000002l
+#define DDSD_WIDTH            0x00000004l
+#define DDSD_PIXELFORMAT      0x00001000l
+#define DDS_ALPHAPIXELS       0x00000001l
+#define DDS_FOURCC            0x00000004l
+#define DDS_PITCH             0x00000008l
+#define DDS_COMPLEX           0x00000008l
+#define DDS_RGB               0x00000040l
+#define DDS_TEXTURE           0x00001000l
+#define DDS_MIPMAPCOUNT       0x00020000l
+#define DDS_LINEARSIZE        0x00080000l
+#define DDS_VOLUME            0x00200000l
+#define DDS_MIPMAP            0x00400000l
+#define DDS_DEPTH             0x00800000l
+
+#define DDS_CUBEMAP           0x00000200L
+#define DDS_CUBEMAP_POSITIVEX 0x00000400L
+#define DDS_CUBEMAP_NEGATIVEX 0x00000800L
+#define DDS_CUBEMAP_POSITIVEY 0x00001000L
+#define DDS_CUBEMAP_NEGATIVEY 0x00002000L
+#define DDS_CUBEMAP_POSITIVEZ 0x00004000L
+#define DDS_CUBEMAP_NEGATIVEZ 0x00008000L
+
+#define FOURCC_DXT1 0x31545844 //(MAKEFOURCC('D','X','T','1'))
+#define FOURCC_DXT3 0x33545844 //(MAKEFOURCC('D','X','T','3'))
+#define FOURCC_DXT5 0x35545844 //(MAKEFOURCC('D','X','T','5'))
+
+#define DDS_MAGIC_FLIPPED     0x0F7166ED
+
+/* GL_EXT_texture_compression_s3tc */
+#ifndef GL_EXT_texture_compression_s3tc
+/* GL_COMPRESSED_RGB_S3TC_DXT1_EXT defined in GL_EXT_texture_compression_dxt1 already. */
+/* GL_COMPRESSED_RGBA_S3TC_DXT1_EXT defined in GL_EXT_texture_compression_dxt1 already. */
+#define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT  0x83F2
+#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
+#endif
+
+/** DDS file format structures.
+ */
+typedef struct _DDS_PIXELFORMAT 
+{
+    uint32_t dwSize;
+    uint32_t dwFlags;
+    uint32_t dwFourCC;
+    uint32_t dwRGBBitCount;
+    uint32_t dwRBitMask;
+    uint32_t dwGBitMask;
+    uint32_t dwBBitMask;
+    uint32_t dwABitMask;
+} DDS_PIXELFORMAT;
+
+typedef struct _DDS_HEADER 
+{
+    uint32_t dwSize;
+    uint32_t dwFlags;
+    uint32_t dwHeight;
+    uint32_t dwWidth;
+    uint32_t dwPitchOrLinearSize;
+    uint32_t dwDepth;
+    uint32_t dwMipMapCount;
+    uint32_t dwReserved1[11];
+    DDS_PIXELFORMAT ddspf;
+    uint32_t dwCaps1;
+    uint32_t dwCaps2;
+    uint32_t dwReserved2[3];
+} DDS_HEADER;
+
 /** Internal matrix structure
  */
 typedef struct __orxDISPLAY_MATRIX_t
@@ -277,6 +346,8 @@ extern "C" {
 static orxDISPLAY_STATIC sstDisplay;
 static char gPVRTexIdentifier[5] = "PVR!";
 static const orxSTRING szPVRExtention = ".pvr";
+static char gDDSTexIdentifier[5] = "DDS ";
+static const orxSTRING szDDSExtention = ".dds";
 
 static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
 {
@@ -2042,6 +2113,297 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
   return eResult;
 }
 
+static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
+{
+  orxFILE    *pstFile;
+  orxBITMAP  *pstBitmap = orxNULL;
+
+  /* Opens file */
+  pstFile = orxFile_Open(_zFilename, orxFILE_KU32_FLAG_OPEN_READ);
+
+  /* Success? */
+  if(pstFile != orxNULL)
+  {
+    DDS_HEADER stHeader;
+    orxS32        s32FileSize;
+    orxCHAR       filecode[4];
+
+    // read in file marker, make sure its a DDS file
+    orxFile_Read(filecode, 1, 4, pstFile);
+    if(orxMemory_Compare(filecode, gDDSTexIdentifier, 4) != 0)
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "!> No DDS marker in file header: %s", _zFilename);
+      orxFile_Close(pstFile);
+      return orxNULL;
+    }
+
+    /* Gets file size */
+    s32FileSize = orxFile_GetSize(pstFile);
+
+    /* Loads DDS header from file */
+    if(orxFile_Read(&stHeader, sizeof(DDS_HEADER), 1, pstFile) > 0)
+    {
+      /* Swaps the header's bytes to host format */
+      letoh32(stHeader.dwSize);
+      letoh32(stHeader.dwFlags);
+      letoh32(stHeader.dwHeight);
+      letoh32(stHeader.dwWidth);
+      letoh32(stHeader.dwPitchOrLinearSize);
+      letoh32(stHeader.dwDepth);
+      letoh32(stHeader.dwMipMapCount);
+      letoh32(stHeader.dwCaps1);
+      letoh32(stHeader.dwCaps2);
+      letoh32(stHeader.ddspf.dwSize);
+      letoh32(stHeader.ddspf.dwFlags);
+      letoh32(stHeader.ddspf.dwFourCC);
+      letoh32(stHeader.ddspf.dwRGBBitCount);
+      letoh32(stHeader.ddspf.dwRBitMask);
+      letoh32(stHeader.ddspf.dwGBitMask);
+      letoh32(stHeader.ddspf.dwBBitMask);
+      letoh32(stHeader.ddspf.dwABitMask);
+
+      // check if image is a cubempap
+      if(stHeader.dwCaps2 & DDS_CUBEMAP)
+      {
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: cubemap not supported, aborting.", _zFilename);
+        orxFile_Close(pstFile);
+        return orxNULL;
+      }
+
+      // check if image is a volume texture
+      if((stHeader.dwCaps2 & DDS_VOLUME) && (stHeader.dwDepth > 0))
+      {
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: volume texture not supported, aborting.", _zFilename);
+        orxFile_Close(pstFile);
+        return orxNULL;
+      }
+
+      orxBOOL bHasAlpha, bCompressed = orxTRUE;
+      GLenum  eInternalFormat, eTextureType = 0;
+      orxU32  u32BPP;
+
+      // figure out what the image format is
+      if (stHeader.ddspf.dwFlags & DDS_FOURCC) 
+      {
+        switch(stHeader.ddspf.dwFourCC) 
+        {
+          case FOURCC_DXT1:
+            eInternalFormat     = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            bCompressed         = orxTRUE;
+            bHasAlpha           = orxFALSE;
+          break;
+          case FOURCC_DXT3:
+            eInternalFormat     = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            bCompressed         = orxTRUE;
+            bHasAlpha           = orxTRUE;
+            break;
+          case FOURCC_DXT5:
+            eInternalFormat     = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            bCompressed         = orxTRUE;
+            bHasAlpha           = orxTRUE;
+            break;
+          default:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: unsupported FOURCC code = [0x%x], from file: %s", _zFilename, stHeader.ddspf.dwFourCC);
+            orxFile_Close(pstFile);
+            return orxNULL;
+        }
+      }
+      else
+      {
+        // Check for a supported pixel format
+        if ((stHeader.ddspf.dwRGBBitCount == 32) &&
+            (stHeader.ddspf.dwRBitMask == 0x000000FF) &&
+            (stHeader.ddspf.dwGBitMask == 0x0000FF00) &&
+            (stHeader.ddspf.dwBBitMask == 0x00FF0000) &&
+            (stHeader.ddspf.dwABitMask == 0xFF000000))
+        {
+          // We support D3D's A8B8G8R8, which is actually RGBA in linear
+          // memory, equivalent to GL's RGBA
+          eTextureType     = GL_RGBA;
+          bHasAlpha        = orxTRUE;
+          u32BPP           = 32;
+          eInternalFormat  = GL_UNSIGNED_BYTE;
+          bCompressed      = orxFALSE;
+        }
+        else if ((stHeader.ddspf.dwRGBBitCount == 16) &&
+            (stHeader.ddspf.dwRBitMask == 0x0000F800) &&
+            (stHeader.ddspf.dwGBitMask == 0x000007E0) &&
+            (stHeader.ddspf.dwBBitMask == 0x0000001F) &&
+            (stHeader.ddspf.dwABitMask == 0x00000000))
+        {
+          // We support D3D's R5G6B5, which is actually RGB in linear
+          // memory.  It is equivalent to GL's GL_UNSIGNED_SHORT_5_6_5
+          eTextureType     = GL_RGB;
+          bHasAlpha        = orxFALSE;
+          u32BPP           = 16;
+          eInternalFormat  = GL_UNSIGNED_SHORT_5_6_5;
+          bCompressed      = orxFALSE;
+        } 
+        else if ((stHeader.ddspf.dwRGBBitCount == 8) &&
+            (stHeader.ddspf.dwRBitMask == 0x00000000) &&
+            (stHeader.ddspf.dwGBitMask == 0x00000000) &&
+            (stHeader.ddspf.dwBBitMask == 0x00000000) &&
+            (stHeader.ddspf.dwABitMask == 0x000000FF))
+        {
+          // We support D3D's A8
+          eTextureType     = GL_ALPHA;
+          bHasAlpha        = orxTRUE;
+          u32BPP           = 8;
+          eInternalFormat  = GL_UNSIGNED_BYTE;
+          bCompressed      = orxFALSE;
+        }
+        else if ((stHeader.ddspf.dwRGBBitCount == 8) &&
+            (stHeader.ddspf.dwRBitMask == 0x000000FF) &&
+            (stHeader.ddspf.dwGBitMask == 0x00000000) &&
+            (stHeader.ddspf.dwBBitMask == 0x00000000) &&
+            (stHeader.ddspf.dwABitMask == 0x00000000))
+        {
+          // We support D3D's L8 (flagged as 8 bits of red only)
+          eTextureType     = GL_LUMINANCE;
+          bHasAlpha        = orxFALSE;
+          u32BPP           = 8;
+          eInternalFormat  = GL_UNSIGNED_BYTE;
+          bCompressed      = orxFALSE;
+        } 
+        else if ((stHeader.ddspf.dwRGBBitCount == 16) &&
+            (((stHeader.ddspf.dwRBitMask == 0x000000FF) &&
+              (stHeader.ddspf.dwGBitMask == 0x00000000) &&
+              (stHeader.ddspf.dwBBitMask == 0x00000000) &&
+              (stHeader.ddspf.dwABitMask == 0x0000FF00)) ||
+             ((stHeader.ddspf.dwRBitMask == 0x000000FF) && // GIMP header for L8A8
+              (stHeader.ddspf.dwGBitMask == 0x000000FF) &&  // Ugh
+              (stHeader.ddspf.dwBBitMask == 0x000000FF) &&
+              (stHeader.ddspf.dwABitMask == 0x0000FF00)))
+            )
+        {
+          // We support D3D's A8L8 (flagged as 8 bits of red and 8 bits of alpha)
+          eTextureType     = GL_LUMINANCE_ALPHA;
+          bHasAlpha        = orxTRUE;
+          u32BPP           = 16;
+          eInternalFormat  = GL_UNSIGNED_BYTE;
+          bCompressed      = orxFALSE;
+        } 
+        else
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: image data is not DXTC or supported RGB(A) format.", _zFilename);
+          orxFile_Close(pstFile);
+          return orxNULL;
+        }
+      }
+
+      orxS32  u32DataSize;
+      orxU8  *au8ImageBuffer;
+
+      if(bCompressed == orxTRUE)
+      {
+        u32DataSize = ((stHeader.dwWidth + 3)/4)*((stHeader.dwHeight + 3)/4) * (eInternalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 8 : 16); 
+      }
+      else
+      {
+        u32DataSize = (stHeader.dwWidth * stHeader.dwHeight * u32BPP) / 8;
+      }
+
+      /* Allocates buffer */
+      au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_VIDEO);
+
+      /* Reads the image content (mimaps will be ignored) */
+      if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) > 0)
+      {
+        /* Allocates bitmap */
+        pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+
+        /* Success? */
+        if(pstBitmap != orxNULL)
+        {
+          GLint iTexture;
+
+          /* Pushes config section */
+          orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+          /* Inits bitmap */
+          pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+          pstBitmap->fWidth         = orxU2F(stHeader.dwWidth);
+          pstBitmap->fHeight        = orxU2F(stHeader.dwHeight);
+          pstBitmap->u32RealWidth   = stHeader.dwWidth;
+          pstBitmap->u32RealHeight  = stHeader.dwHeight;
+          pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+          pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+          pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+          orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+          orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+          /* Backups current texture */
+          glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+          glASSERT();
+
+          /* Creates new texture */
+          glGenTextures(1, &pstBitmap->uiTexture);
+          glASSERT();
+          glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+          glASSERT();
+
+          /* Compressed? */
+          if(bCompressed != orxFALSE)
+          {
+            /* Loads compressed data */
+            glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, stHeader.dwWidth, stHeader.dwHeight, 0, u32DataSize, au8ImageBuffer);
+          }
+          else
+          {
+            /* Loads data */
+            glTexImage2D(GL_TEXTURE_2D, 0, eTextureType, stHeader.dwWidth, stHeader.dwHeight, 0, eTextureType, eInternalFormat, au8ImageBuffer);
+          }
+          glASSERT();
+
+          /* Restores previous texture */
+          glBindTexture(GL_TEXTURE_2D, iTexture);
+          glASSERT();
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: out of memory, aborting.", _zFilename);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: invalid data, aborting.", _zFilename);
+      }
+
+      /* Frees data */
+      orxMemory_Free(au8ImageBuffer);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: invalid header, aborting.", _zFilename);
+    }
+
+    /* Closes file */
+    orxFile_Close(pstFile);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: file not found, aborting.", _zFilename);
+  }
+
+  /* Done! */
+  return pstBitmap;
+}
+
 static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
 {
   orxFILE    *pstFile;
@@ -2320,6 +2682,9 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
 
   if(orxString_SearchString(_zFileName, szPVRExtention) != orxNULL)
     pstResult = orxDisplay_Android_LoadPVRBitmap(_zFileName);
+
+  if(orxString_SearchString(_zFileName, szDDSExtention) != orxNULL)
+    pstResult = orxDisplay_Android_LoadDDSBitmap(_zFileName);
 
   /* Not already loaded? */
   if(pstResult == orxNULL)
