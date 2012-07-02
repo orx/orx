@@ -512,16 +512,25 @@ void orxFASTCALL orxObject_CommandSetOwner(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    orxSTRUCTURE *pstOwner;
-
-    /* Gets owner */
-    pstOwner = orxStructure_Get(_astArgList[1].u64Value);
-
-    /* Valid? */
-    if(pstOwner != orxNULL)
+    /* Has owner? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].u64Value != 0))
     {
-      /* Updates its owner */
-      orxObject_SetOwner(pstObject, pstOwner);
+      orxSTRUCTURE *pstOwner;
+
+      /* Gets owner */
+      pstOwner = orxStructure_Get(_astArgList[1].u64Value);
+
+      /* Valid? */
+      if(pstOwner != orxNULL)
+      {
+        /* Updates its owner */
+        orxObject_SetOwner(pstObject, pstOwner);
+      }
+    }
+    else
+    {
+      /* Removes owner */
+      orxObject_SetOwner(pstObject, orxNULL);
     }
 
     /* Updates result */
@@ -1000,7 +1009,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_FLOAT});
 
   /* Command: SetOwner */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner", orxCOMMAND_VAR_TYPE_U64});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetOwner */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwner, "Owner", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetOwnedChild */
