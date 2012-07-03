@@ -98,10 +98,15 @@
 #endif /* __orxPPC__ */
 
 /* No compiler defines? */
-#if !defined(__orxGCC__) && !defined(__orxMSVC__)
+#if !defined(__orxLLVM__) && !defined(__orxGCC__) && !defined(__orxMSVC__)
+
+  /* LLVM? */
+  #if defined(__llvm__)
+
+    #define __orxLLVM__
 
   /* GCC? */
-  #if defined(__GNUC__)
+  #elif defined(__GNUC__)
 
     #define __orxGCC__
 
@@ -112,11 +117,11 @@
 
   #else
 
-    #error "Couldn't guess compiler define. Please provide it (__orxGCC__/__orxMSVC__)"
+    #error "Couldn't guess compiler define. Please provide it (__orxLLVM__/__orxGCC__/__orxMSVC__)"
 
   #endif
 
-#endif /* !__orxGCC__ && !__orxMSVC__ */
+#endif /* !__orxLLVM__ && !__orxGCC__ && !__orxMSVC__ */
 
 
 /* No platform defines? */
@@ -223,6 +228,10 @@
 
     #define orxINLINE         inline
 
+  #elif defined(__orxLLVM__)
+
+    #define orxINLINE         inline
+
   #elif defined(__orxMSVC__)
 
     #define orxINLINE         __inline
@@ -234,7 +243,7 @@
   /* Linux / Mac / iOS */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-    #if defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+    #if defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
       #define orxFASTCALL
 
@@ -242,7 +251,7 @@
 
       #define orxCDECL
 
-    #else /* __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+    #else /* __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -258,7 +267,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+    #endif /* __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))

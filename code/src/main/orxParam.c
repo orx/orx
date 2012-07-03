@@ -72,7 +72,7 @@
 #define orxPARAM_KZ_CONFIG_SECTION        "Param"     /**< Param config section name */
 
 
-#ifdef __orxGCC__
+#if defined(__orxGCC__) || defined(__orxLLVM__)
 
   #define orxPARAM_LOG(STRING, ...)                                                                         \
   do                                                                                                        \
@@ -84,7 +84,7 @@
     _orxDebug_RestoreFlags();                                                                               \
   } while(orxFALSE)
 
-#else /* __orxGCC__ */
+#else /* __orxGCC__ || __orxLLVM__ */
   #ifdef __orxMSVC__
 
     #define orxPARAM_LOG(STRING, ...)                                                                       \
@@ -98,7 +98,7 @@
     } while(orxFALSE)
 
   #endif /* __orxMSVC__ */
-#endif /* __orcGCC__ */
+#endif /* __orcGCC__ || __orxLLVM__ */
 
 
 /***************************************************************************

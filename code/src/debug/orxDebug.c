@@ -270,7 +270,7 @@ void orxFASTCALL _orxDebug_Break()
 
   /* Compiler specific */
 
-  #ifdef __orxGCC__
+  #if defined(__orxGCC__) || defined(__orxLLVM__)
 
     #if defined(__orxIOS__)
 
@@ -298,7 +298,7 @@ void orxFASTCALL _orxDebug_Break()
 
     #endif
 
-  #endif /* __orxGCC__ */
+  #endif /* __orxGCC__ || __orxLLVM__ */
 
   #ifdef __orxMSVC__
 

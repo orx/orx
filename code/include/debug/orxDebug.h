@@ -76,7 +76,7 @@
 /* *** Debug Macros *** */
 
 /* Log message, compiler specific */
-#ifdef __orxGCC__
+#if defined(__orxGCC__) || defined(__orxLLVM__)
 
   #define orxLOG(STRING, ...)                                                                                     \
   do                                                                                                              \
@@ -108,7 +108,7 @@
     _orxDebug_RestoreFlags();                                                                                     \
   } while(orxFALSE)
 
-#else /* __orxGCC__ */
+#else /* __orxGCC__ || __orxLLVM__ */
   #ifdef __orxMSVC__
 
     #define orxLOG(STRING, ...)                                                                                   \
@@ -142,7 +142,7 @@
     } while(orxFALSE)
 
   #endif /* __orxMSVC__ */
-#endif /* __orcGCC__ */
+#endif /* __orcGCC__ || __orxLLVM__ */
 
 #define orxDEBUG_INIT()                       _orxDebug_Init()
 #define orxDEBUG_EXIT()                       _orxDebug_Exit()
@@ -150,13 +150,13 @@
 #ifdef __orxDEBUG__
 
   /* Debug print, compiler specific */
-  #ifdef __orxGCC__
+  #if defined(__orxGCC__) || defined(__orxLLVM__)
     #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
-  #else /* __orxGCC__ */
+  #else /* __orxGCC__ || __orxLLVM__ */
     #ifdef __orxMSVC__
       #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
     #endif /* __orxMSVC__ */
-  #endif /* __orcGCC__ */
+  #endif /* __orcGCC__ || __orxLLVM__ */
 
   /* End platform specific */
 
@@ -185,14 +185,14 @@
     } while(orxFALSE)
 
   /* Assert */
-  #ifdef __orxGCC__
+  #if defined(__orxGCC__) || defined(__orxLLVM__)
     #define orxASSERT(TEST, ...)                                                                  \
       if(!(TEST))                                                                                 \
       {                                                                                           \
         orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", ##__VA_ARGS__); \
         orxBREAK();                                                                               \
       }
-  #else /* __orxGCC__ */
+  #else /* __orxGCC__ || __orxLLVM__ */
     #ifdef __orxMSVC__
       #define orxASSERT(TEST, ...)                                                                \
         if(!(TEST))                                                                               \
@@ -201,7 +201,7 @@
           orxBREAK();                                                                             \
         }
     #endif /* __orxMSVC__ */
-  #endif /* __orcGCC__ */
+  #endif /* __orcGCC__ || __orxLLVM__ */
 
 #else /* __orxDEBUG__ */
 

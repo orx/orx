@@ -98,6 +98,12 @@
     typedef signed    long long   orxS64;
 
   #endif /* __orxGCC__ */
+  #ifdef __orxLLVM__
+
+    typedef unsigned  long long   orxU64;
+    typedef signed    long long   orxS64;
+
+  #endif /* __orxLLVM__ */
   #ifdef __orxMSVC__
 
     typedef unsigned  __int64     orxU64;
