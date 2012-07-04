@@ -1770,6 +1770,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
         /* Updates result */
         eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
         glASSERT();
+
+        /* Flushes pending commands */
+        glFlush();
+        glASSERT();
       }
       /* Valid texture? */
       else if(_pstBitmap != orxNULL)

@@ -2462,6 +2462,10 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
       /* Is screen? */
       if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
       {
+        /* Flushes pending commands */
+        glFlush();
+        glASSERT();
+
         /* Inits viewport */
         glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
         glASSERT();
