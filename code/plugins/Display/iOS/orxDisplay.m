@@ -599,6 +599,7 @@ static orxView *spoInstance;
   {
     /* Deletes it */
     glDeleteFramebuffers(1, &uiScreenFrameBuffer);
+    glASSERT();
   }
 
   /* Has texture frame buffer? */
@@ -606,6 +607,7 @@ static orxView *spoInstance;
   {
     /* Deletes it */
     glDeleteFramebuffers(1, &uiTextureFrameBuffer);
+    glASSERT();
   }
 
   /* Has render buffer? */
@@ -613,6 +615,7 @@ static orxView *spoInstance;
   {
     /* Deletes it */
     glDeleteRenderbuffers(1, &uiRenderBuffer);
+    glASSERT();
   }
 
   /* Generates frame buffers */
