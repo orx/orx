@@ -12,7 +12,7 @@ This engine is licensed under the zlib license, see the LICENSE file for details
 Intro
 -----
 
-Orx is a 2D-oriented, data-driven, portable game engine focused primarily on extreme ease of use.
+Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 
 This is the first release candidate for orx v1.4. If you find any bugs,
 please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board,
@@ -22,6 +22,7 @@ The current features of orx engine are:
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
 - automatic differential scrolling and depth scaling upon request
+- timeline and commands module allow config-driven scripting-like features
 - animation engine (including a chaining graph & custom animation events for synchronization)
 - fragment (pixel) shader support
 - collision handling and rigid body physics
@@ -53,10 +54,10 @@ Supported Platforms
 
 The engine compiles and is tested for:
 - Linux (x86/x86-64 with codelite)
-- Win32 (msvs2008, msvs2010 and mingw32 with code::blocks or codelite)
-- MacOS X (ppc/x86 with xcode), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
+- Windows (x86 with msvs2008, msvs2010 and mingw32 with code::blocks or codelite)
+- MacOS X (ppc/x86/x86_64 with xcode), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
-- Android (NDK build files)
+- Android (NDK build files, no simulator support)
 
 
 Versions
@@ -76,7 +77,7 @@ The embedded version will store everything in orx's library, meaning you won't b
 to choose which plugin to use at runtime, but will also be more compact. This will
 also make orx run considerably faster.
 
-From the download page you'll find precompiled binaries for Win32, Linux (x86), MacOS X (ppc/x86),
+From the download page you'll find precompiled binaries for Windows (x86), Linux (x86/x86_64), MacOS X (ppc/x86/x86_64),
 iOS and Android, using the dynamic embedded versions only.
 If you want to use the non-embedded versions (to use with your own plugins)
 or the static ones, you'll need to compile orx yourself from the source.
@@ -104,8 +105,8 @@ Here is a list with a small description for each package.
 - orx-doc-1.4rc0.zip: orx's API doxygen documentation + PDF version of the English wiki (detailed tutorials and config system)
 
 - orx-src-1.4rc0.zip: orx's source code including build projects for
-  . codelite (Win32 and Linux, all versions)
-  . msvs2008 & msvs2010 (Win32 Visual Studio, all versions)
+  . codelite (Windows and Linux, all versions)
+  . msvs2008 & msvs2010 (Windows Visual Studio, all versions)
   . xcode (2.4+, for MacOS X, non-static versions; 4.2 for iOS, static embedded versions)
   . ndk build files for Android (static embedded versions)
 NB: You'll need orx-extern-1.4rc0.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
@@ -116,15 +117,15 @@ The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
 Warning for slow connections: this package is ~69MB.
 
-- orx-tools-1.4rc0.zip: orx's additional set of tools (Win32, Linux and MacOS X) containing:
+- orx-tools-1.4rc0.zip: orx's additional set of tools (Windows, Linux and MacOS X) containing:
   . orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
   . orxFontGen: command line tool based on FreeType2 for generating custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
 
 - orx-dev-linux-1.4rc0.tar.bz2      : orx's dynamic embedded precompiled binaries for Linux (x86), release and debug.
 - orx-dev-mac-1.4rc0.zip            : orx's dynamic embedded precompiled binaries for MacOS X (ppc/x86), release and debug.
-- orx-dev-mingw-1.4rc0.zip          : orx's dynamic embedded precompiled binaries for Win32 (mingw), release and debug.
-- orx-dev-msvs2008-1.4rc0.zip       : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2008), release and debug.
-- orx-dev-msvs2010-1.4rc0.zip       : orx's dynamic embedded precompiled binaries for Win32 (Visual Studio 2010), release and debug.
+- orx-dev-mingw-1.4rc0.zip          : orx's dynamic embedded precompiled binaries for Windows (mingw), release and debug.
+- orx-dev-msvs2008-1.4rc0.zip       : orx's dynamic embedded precompiled binaries for Windows (Visual Studio 2008), release and debug.
+- orx-dev-msvs2010-1.4rc0.zip       : orx's dynamic embedded precompiled binaries for Windows (Visual Studio 2010), release and debug.
 
 - orx-full-ios-1.4rc0.zip           : orx's static embedded precompiled binaries for iOS, release/debug, simulator/device + doc + source + XCode project file.
 - orx-full-android-1.4rc0.zip       : orx's static embedded precompiled binaries for Android, release/debug + doc + source + NDK build files.
@@ -132,9 +133,9 @@ Warning for slow connections: this package is ~69MB.
 
 - orx-tutorial-linux-1.4rc0.tar.bz2 : orx's precompiled tutorial for Linux (x86), release only.
 - orx-tutorial-mac-1.4rc0.zip       : orx's precompiled tutorial for MacOS X (ppc/x86), release only.
-- orx-tutorial-mingw-1.4rc0.zip     : orx's precompiled tutorial for Win32 (mingw), release only.
-- orx-tutorial-msvs2008-1.4rc0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2008), release only.
-- orx-tutorial-msvs2010-1.4rc0.zip  : orx's precompiled tutorial for Win32 (Visual Studio 2010), release only.
+- orx-tutorial-mingw-1.4rc0.zip     : orx's precompiled tutorial for Windows (mingw), release only.
+- orx-tutorial-msvs2008-1.4rc0.zip  : orx's precompiled tutorial for Windows (Visual Studio 2008), release only.
+- orx-tutorial-msvs2010-1.4rc0.zip  : orx's precompiled tutorial for Windows (Visual Studio 2010), release only.
 
 All the *-dev-* packages above include:
  . orx release/debug libraries used for linking
@@ -148,7 +149,7 @@ All the *-tutorial-* packages above include:
  . precompiled binaries (orx link library, orx runtime library and launcher, external runtime library)
  . headers to include at compile time
  . Template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
- . project files (xcode (MacOS X), codelite (Win32 mingw & Linux x86), msvs2008 & msvs2010)
+ . project files (xcode (MacOS X), codelite (Windows mingw & Linux x86), msvs2008 & msvs2010)
 
 NB: Most of the binaries have been packed using UPX (http://upx.sf.net) for the sake of bandwidth.
 You can unpack them (upx -d) if you feel like it, but it shouldn't affect their execution anyway.
@@ -192,18 +193,22 @@ but those should be easy enough to decipher.
 However, you might want to specify them manually for cross-compiling or
 use them so that your code will behave differently depending on the architecture
 for which you're compiling. Here's a quick list of these flags:
+- __orxARM__          : orx is being compiled for an ARM architecture
 - __orxPPC__          : orx is being compiled for a PowerPC architecture
+- __orxPPC64__        : orx is being compiled for a PowerPC 64 architecture
+- __orxX86__          : orx is being compiled for a x86 architecture
 - __orxX86_64__       : orx is being compiled for a x86-64 architecture
 - __orxLITTLE_ENDIAN  : orx is being compiled for a little endian architecture
 - __orxBIG_ENDIAN     : orx is being compiled for a big endian architecture
 - __orxGCC__          : orx is being compiled with gcc
 - __orxMSVC__         : orx is being compiled with visual studio C/C++
-- __orxWINDOWS__      : orx is being compiled for Win32
-- __orxLINUX__        : orx is being compiled for Linux (x86)
-- __orxMAC__          : orx is being compiled for MacOS X (ppc/x86)
+- __orxWINDOWS__      : orx is being compiled for Windows (x86)
+- __orxMAC__          : orx is being compiled for MacOS X (ppc/x86/x86_64)
+- __orxLINUX__        : orx is being compiled for Linux (x86/x86_64)
 - __orxIOS__          : orx is being compiled for iOS
 - __orxANDROID__      : orx is being compiled for Android
 - __orxANDROID_NATIVE_: orx is being compiled for Android native (2.3+)
+- __orxRASPBERRY_PI_  : orx is being compiled for Raspberry Pi
 - __orxCPP__          : orx is being compiled with a C++ compiler
 - __orxOBJC__         : orx is being compiled with an Objective-C compiler
 - __orxFREEBASIC__    : orx is being compiled for FreeBasic, WIP
