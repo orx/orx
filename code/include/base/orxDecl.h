@@ -137,11 +137,6 @@
 
     #define __orxWINDOWS__
 
-  /* Linux? */
-  #elif defined(linux) || defined(__linux__)
-
-    #define __orxLINUX__
-
   /* iOS? */
   #elif TARGET_OS_IPHONE
 
@@ -160,15 +155,20 @@
 
     #endif /* __ANDROID_API__ >= 9 */
 
-  /* Mac? */
-  #elif TARGET_OS_MAC
-
-    #define __orxMAC__
-
   /* Raspberry Pi */
   #elif defined(__orxARM__)
 
     #define __orxRASPBERRY_PI__
+
+  /* Linux? */
+  #elif defined(linux) || defined(__linux__)
+
+    #define __orxLINUX__
+
+  /* Mac? */
+  #elif TARGET_OS_MAC
+
+    #define __orxMAC__
 
   #else
 
