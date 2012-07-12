@@ -147,7 +147,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           struct android_poll_source *pstSource;
 
           /* For all system events */
-          while((s32Ident = ALooper_pollAll((s32Animating != 0) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
+          while((s32Ident = ALooper_pollAll((s32Animating != 0 || sbStopByEvent != orxFALSE) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
           {
              /* Valid source? */
              if(pstSource != NULL)
@@ -182,7 +182,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
               }
             }
           }
-
           /* Should update? */
           if(s32Animating != 0)
           {
@@ -203,7 +202,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           }
         }
       }
-
       /* Removes event handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 

@@ -445,19 +445,20 @@ static void create_EGLContext()
   // create EGL context
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "create_EGLContext()");
 
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY) == 0);
-
-  sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-  eglInitialize(sstDisplay.display, 0, 0);
-  if(defaultEGLChooser(sstDisplay.display, sstDisplay.config) == orxFALSE)
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY))
   {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGLChooser failed!");
-  }
-  eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
-  EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-  sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
+    sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglInitialize(sstDisplay.display, 0, 0);
+    if(defaultEGLChooser(sstDisplay.display, sstDisplay.config) == orxFALSE)
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGLChooser failed!");
+    }
+    eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
+    EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+    sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
 
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+  }
 }
 
 
@@ -466,15 +467,17 @@ static void create_EGLSurface()
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "create_EGLSurface()");
 
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY) == orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == 0);
 
-  ANativeWindow *window = orxAndroid_GetNativeWindow();
-  ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
-  sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
-  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &sstDisplay.width);
-  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &sstDisplay.height);
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE))
+  {
+    ANativeWindow *window = orxAndroid_GetNativeWindow();
+    ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
+    sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
+    eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &sstDisplay.width);
+    eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &sstDisplay.height);
 
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+  }
 }
 
 static void bind_EGLSurface()
@@ -482,23 +485,25 @@ static void bind_EGLSurface()
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "bind_EGLSurface()");
 
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == 0);
 
-  eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
-  s32Animating = 1;
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND))
+  {
+    eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
+    s32Animating = 1;
 
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+  }
 }
 
 static void unbind_EGLSurface()
 {
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "unbind_EGLSurface()");
 
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND);
-
-  eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, sstDisplay.context);
-
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND);
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND))
+  {
+    eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, sstDisplay.context);
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND);
+  }
 }
 
 static void destroy_EGLSurface()
@@ -506,12 +511,13 @@ static void destroy_EGLSurface()
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "destroy_EGLSurface()");
 
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND) == 0);
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
 
-  eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-  eglDestroySurface(sstDisplay.display, sstDisplay.surface);
-
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE))
+  {
+    eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroySurface(sstDisplay.display, sstDisplay.surface);
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE);
+  }
 }
 
 static void destroy_EGLContext()
@@ -519,14 +525,16 @@ static void destroy_EGLContext()
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "destroy_EGLContext()");
 
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_HAS_SURFACE) == 0);
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY) == orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
 
-  eglDestroyContext(sstDisplay.display, sstDisplay.context);
-  eglTerminate(sstDisplay.display);
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY))
+  {
+    eglDestroyContext(sstDisplay.display, sstDisplay.context);
+    eglTerminate(sstDisplay.display);
 
-  s32Animating = 0;
+    s32Animating = 0;
 
-  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
+  }
 }
 
 static orxINLINE orxBOOL initGLESConfig()
