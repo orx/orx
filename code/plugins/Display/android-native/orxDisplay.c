@@ -1939,6 +1939,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       /* Is screen? */
       if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
       {
+        /* Flushes pending commands */
+        glFlush();
+        glASSERT();
+
         /* Inits viewport */
         glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
         glASSERT();
