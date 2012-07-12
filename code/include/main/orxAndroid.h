@@ -86,7 +86,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 #elif defined (__orxANDROID_NATIVE__)
 
   #include <android/log.h>
-  #include <android_native_app_glue.h>
+  #include <nv_native_app_glue.h>
   #include <android/sensor.h>
 
 #define  LOG_TAG    "orxAndroid.h"
@@ -97,7 +97,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 extern struct android_app *pstApp;
 extern orxS32                     u32NbParams;
 extern orxSTRING                 *azParams;
-extern orxS32                     s32Animating;
 extern const ASensor             *poAccelerometerSensor;
 extern ASensorEventQueue         *poSensorEventQueue;
 
@@ -147,7 +146,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           struct android_poll_source *pstSource;
 
           /* For all system events */
-          while((s32Ident = ALooper_pollAll((s32Animating != 0 || sbStopByEvent != orxFALSE) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
+          while((s32Ident = ALooper_pollAll((nv_app_status_interactable(pstApp) || sbStopByEvent != orxFALSE) ? 0 : -1, NULL, (int *)&s32Events, (void **)&pstSource)) >= 0)
           {
              /* Valid source? */
              if(pstSource != NULL)
@@ -183,7 +182,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
             }
           }
           /* Should update? */
-          if(s32Animating != 0)
+          if(nv_app_status_interactable(pstApp))
           {
             /* Sends frame start event */
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);

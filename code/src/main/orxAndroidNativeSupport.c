@@ -32,7 +32,7 @@
  */
 
 #include <android/log.h>
-#include <android_native_app_glue.h>
+#include <nv_native_app_glue.h>
 #include <android/sensor.h>
 #include <pthread.h>
 
@@ -51,7 +51,6 @@ static pthread_key_t       s_jniEnvKey = 0;
 
 orxU32                     u32NbParams;
 orxSTRING                 *azParams;
-orxS32                     s32Animating;
 const ASensor             *poAccelerometerSensor;
 ASensorEventQueue         *poSensorEventQueue;
 struct android_app        *pstApp;
@@ -573,7 +572,7 @@ void android_main(struct android_app *_pstApp)
   struct android_poll_source *pstSource;
 
   /* wait for destroyRequest */
-  while(pstApp->destroyRequested != 1)
+  while(nv_app_status_running(pstApp) != 0)
   {
     s32Ident = ALooper_pollAll(0, NULL, (int *)&s32Events, (void **)&pstSource);
     /* Valid source? */

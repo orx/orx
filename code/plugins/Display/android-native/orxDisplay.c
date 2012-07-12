@@ -324,10 +324,6 @@ typedef struct __orxDISPLAY_STATIC_t
   int32_t                   height;
 } orxDISPLAY_STATIC;
 
-
-/** Extern data */
-extern int                  s32Animating;
-
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -489,7 +485,6 @@ static void bind_EGLSurface()
   if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND))
   {
     eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
-    s32Animating = 1;
 
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SURFACE_BOUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
   }
@@ -530,8 +525,6 @@ static void destroy_EGLContext()
   {
     eglDestroyContext(sstDisplay.display, sstDisplay.context);
     eglTerminate(sstDisplay.display);
-
-    s32Animating = 0;
 
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTEXT_READY);
   }
@@ -580,7 +573,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
         create_EGLSurface();
         bind_EGLSurface();
-        s32Animating = 1;
         break;
       }
       case 1:
@@ -589,7 +581,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
         unbind_EGLSurface();
         destroy_EGLSurface();
-        s32Animating = 0;
         break;
       }
       default:
@@ -3201,7 +3192,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Updates result */
         eResult = orxEvent_AddHandler((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), orxDisplay_Android_EventHandler);
-        s32Animating = 1;
 
         orxAndroid_AcquireWakeLock();
     }
