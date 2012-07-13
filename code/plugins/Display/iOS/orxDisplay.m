@@ -357,7 +357,10 @@ static orxView *spoInstance;
 
 + (orxView *) GetInstance
 {
-  return spoInstance;
+  @synchronized(self)
+  {
+    return spoInstance;
+  }
 }
 
 - (id) initWithFrame:(CGRect)_stFrame
