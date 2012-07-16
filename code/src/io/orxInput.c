@@ -34,6 +34,7 @@
 
 #include "io/orxInput.h"
 #include "core/orxClock.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
@@ -152,6 +153,96 @@ static orxINPUT_STATIC sstInput;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: SelectSet
+ */
+void orxFASTCALL orxInput_CommandSelectSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Selects it */
+  orxInput_SelectSet(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = (sstInput.pstCurrentSet != orxNULL) ? sstInput.pstCurrentSet->zName : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetCurrentSet
+ */
+void orxFASTCALL orxInput_CommandGetCurrentSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (sstInput.pstCurrentSet != orxNULL) ? sstInput.pstCurrentSet->zName : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetValue 
+ */
+void orxFASTCALL orxInput_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Permanently? */
+  if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+  {
+    /* Sets it */
+    orxInput_SetPermanentValue(_astArgList[0].zValue, _astArgList[1].fValue);
+  }
+  else
+  {
+    /* Sets it */
+    orxInput_SetValue(_astArgList[0].zValue, _astArgList[1].fValue);
+  }
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: ResetValue
+ */
+void orxFASTCALL orxInput_CommandResetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Resets it */
+  orxInput_ResetValue(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetValue
+ */
+void orxFASTCALL orxInput_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->fValue = orxInput_GetValue(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the input commands
+ */
+static orxINLINE void orxInput_RegisterCommands()
+{
+  /* Command: SelectSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SelectSet, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetCurrentSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Name", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+
+  /* Command: SetValue */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Name", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Name", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: ResetValue */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, ResetValue, "Name", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetValue */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetValue, "Value", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+}
 
 static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
 {
@@ -814,6 +905,7 @@ void orxFASTCALL orxInput_Setup()
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_PROFILER);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_KEYBOARD);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_MOUSE);
@@ -860,6 +952,9 @@ orxSTATUS orxFASTCALL orxInput_Init()
 
           /* Loads from input */
           orxInput_Load(orxSTRING_EMPTY);
+
+          /* Registers commands */
+          orxInput_RegisterCommands();
         }
         else
         {
