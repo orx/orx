@@ -500,6 +500,62 @@ void orxFASTCALL orxObject_CommandSetLifeTime(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: Enable
+ */
+void orxFASTCALL orxObject_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates it */
+    orxObject_Enable(pstObject, _astArgList[1].bValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Pause
+ */
+void orxFASTCALL orxObject_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates it */
+    orxObject_Pause(pstObject, _astArgList[1].bValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetOwner
  */
 void orxFASTCALL orxObject_CommandSetOwner(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1007,6 +1063,11 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: SetLifeTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_FLOAT});
+
+  /* Command: Enable */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: Pause */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: SetOwner */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner", orxCOMMAND_VAR_TYPE_U64});
