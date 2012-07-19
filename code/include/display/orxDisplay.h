@@ -56,29 +56,28 @@
 
 /** Misc defines
  */
-typedef orxU32                      orxRGBA;
+typedef struct __orxRGBA_t
+{
+  union
+  {
+    struct
+    {
+      orxU8 u8R, u8G, u8B, u8A;
+    };
 
-#ifdef __orxBIG_ENDIAN__
+    orxU32  u32RGBA;
+  };
 
-  #define orx2RGBA(R, G, B, A)      ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
-  #define orxRGBA_R(RGBA)           (orxU8)(((RGBA) >> 24) & 0xFF)
-  #define orxRGBA_G(RGBA)           (orxU8)(((RGBA) >> 16) & 0xFF)
-  #define orxRGBA_B(RGBA)           (orxU8)(((RGBA) >> 8) & 0xFF)
-  #define orxRGBA_A(RGBA)           (orxU8)((RGBA) & 0xFF)
+} orxRGBA;
 
-#else /* __orxBIG_ENDIAN__ */
-
-  #define orx2RGBA(R, G, B, A)      ((((A) & 0xFF) << 24) | (((B) & 0xFF) << 16) | (((G) & 0xFF) << 8) | ((R) & 0xFF))
-  #define orxRGBA_R(RGBA)           (orxU8)((RGBA) & 0xFF)
-  #define orxRGBA_G(RGBA)           (orxU8)(((RGBA) >> 8) & 0xFF)
-  #define orxRGBA_B(RGBA)           (orxU8)(((RGBA) >> 16) & 0xFF)
-  #define orxRGBA_A(RGBA)           (orxU8)(((RGBA) >> 24) & 0xFF)
-
-#endif /* __orxBIG_ENDIAN__ */
+#define orx2RGBA(R, G, B, A)        orxRGBA_Set((orxU8)(R), (orxU8)(G), (orxU8)(B), (orxU8)(A))
+#define orxRGBA_R(RGBA)             RGBA.u8R
+#define orxRGBA_G(RGBA)             RGBA.u8G
+#define orxRGBA_B(RGBA)             RGBA.u8B
+#define orxRGBA_A(RGBA)             RGBA.u8A
 
 #define orxCOLOR_NORMALIZER         (orx2F(1.0f / 255.0f))
 #define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
-
 
 typedef struct __orxBITMAP_t        orxBITMAP;
 
@@ -266,6 +265,28 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 /** Display module setup
  */
 extern orxDLLAPI void orxFASTCALL orxDisplay_Setup();
+
+/** Sets all components of an orxRGBA
+ * @param[in]   _u8R            Red value to set
+ * @param[in]   _u8G            Green value to set
+ * @param[in]   _u8B            Blue value to set
+ * @param[in]   _u8A            Alpha value to set
+ * @return      orxRGBA
+ */
+static orxINLINE orxRGBA          orxRGBA_Set(orxU8 _u8R, orxU8 _u8G, orxU8 _u8B, orxU8 _u8A)
+{
+  orxRGBA stResult;
+  
+  // Updates result
+  stResult.u8R = _u8R;
+  stResult.u8G = _u8G;
+  stResult.u8B = _u8B;
+  stResult.u8A = _u8A;
+
+  // Done!
+  return stResult;
+}
+
 
 /** Sets all components from an orxRGBA
  * @param[in]   _pstColor       Concerned color
