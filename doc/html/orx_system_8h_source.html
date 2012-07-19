@@ -104,44 +104,39 @@
 <a name="l00095"></a>00095   {
 <a name="l00096"></a><a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e">00096</a>     orxU32      <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e">u32FrameCounter</a>;
 <a name="l00097"></a>00097 
-<a name="l00098"></a>00098 <span class="preprocessor">#if defined(__orxIOS__) || defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)</span>
-<a name="l00099"></a>00099 <span class="preprocessor"></span>
-<a name="l00100"></a>00100     <span class="comment">/* Touch event */</span>
-<a name="l00101"></a>00101     <span class="keyword">struct</span>
-<a name="l00102"></a>00102     {
-<a name="l00103"></a>00103       orxDOUBLE dTime;
-<a name="l00104"></a>00104       orxU32    u32ID;
-<a name="l00105"></a>00105       orxFLOAT  fX, fY, fPressure;
-<a name="l00106"></a>00106     } stTouch;
-<a name="l00107"></a>00107 
-<a name="l00108"></a>00108     <span class="comment">/* Accelerometer event */</span>
-<a name="l00109"></a>00109     <span class="keyword">struct</span>
-<a name="l00110"></a>00110     {
-<a name="l00111"></a>00111       orxDOUBLE dTime;
-<a name="l00112"></a>00112       <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> vAcceleration;
-<a name="l00113"></a>00113     } stAccelerometer;
-<a name="l00114"></a>00114 
-<a name="l00115"></a>00115 <span class="preprocessor">#endif</span>
-<a name="l00116"></a>00116 <span class="preprocessor"></span>
-<a name="l00117"></a>00117   };
-<a name="l00118"></a>00118 
-<a name="l00119"></a>00119 } <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a>;
+<a name="l00098"></a>00098     <span class="comment">/* Touch event */</span>
+<a name="l00099"></a>00099     <span class="keyword">struct</span>
+<a name="l00100"></a>00100     {
+<a name="l00101"></a><a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#aad6712007fe3c3806e41f125df97d0ba">00101</a>       orxDOUBLE <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#aad6712007fe3c3806e41f125df97d0ba">dTime</a>;
+<a name="l00102"></a><a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#acac2246d17351b95043ae2ccc1bf707d">00102</a>       orxU32    <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#acac2246d17351b95043ae2ccc1bf707d">u32ID</a>;
+<a name="l00103"></a><a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#afa397a944c58aba55102e489d98517e2">00103</a>       orxFLOAT  fX, <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#afa397a944c58aba55102e489d98517e2">fY</a>, fPressure;
+<a name="l00104"></a>00104     } stTouch;
+<a name="l00105"></a>00105 
+<a name="l00106"></a>00106     <span class="comment">/* Accelerometer event */</span>
+<a name="l00107"></a>00107     <span class="keyword">struct</span>
+<a name="l00108"></a>00108     {
+<a name="l00109"></a>00109       orxDOUBLE dTime;
+<a name="l00110"></a><a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f">00110</a>       <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f">vAcceleration</a>;
+<a name="l00111"></a>00111     } stAccelerometer;
+<a name="l00112"></a>00112   };
+<a name="l00113"></a>00113 
+<a name="l00114"></a>00114 } <a class="code" href="structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html">orxSYSTEM_EVENT_PAYLOAD</a>;
+<a name="l00115"></a>00115 
+<a name="l00116"></a>00116 
+<a name="l00119"></a>00119 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem_Setup</a>();
 <a name="l00120"></a>00120 
-<a name="l00121"></a>00121 
-<a name="l00124"></a>00124 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem_Setup</a>();
+<a name="l00124"></a>00124 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL  <a class="code" href="group__orx_system.html#ga8f8e70a14127981e4a4632b3442c9ee4">orxSystem_Init</a>();
 <a name="l00125"></a>00125 
-<a name="l00129"></a>00129 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL  <a class="code" href="group__orx_system.html#ga8f8e70a14127981e4a4632b3442c9ee4">orxSystem_Init</a>();
-<a name="l00130"></a>00130 
-<a name="l00133"></a>00133 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_system.html#ga74d43ae1172730cfce4c9ced3be48b8c">orxSystem_Exit</a>();
+<a name="l00128"></a>00128 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_system.html#ga74d43ae1172730cfce4c9ced3be48b8c">orxSystem_Exit</a>();
+<a name="l00129"></a>00129 
+<a name="l00133"></a>00133 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxDOUBLE orxFASTCALL  <a class="code" href="group__orx_system.html#gad0379fde6ecee8fba3a24a8e018debeb">orxSystem_GetTime</a>();
 <a name="l00134"></a>00134 
-<a name="l00138"></a>00138 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxDOUBLE orxFASTCALL  <a class="code" href="group__orx_system.html#gad0379fde6ecee8fba3a24a8e018debeb">orxSystem_GetTime</a>();
+<a name="l00138"></a>00138 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL     <a class="code" href="group__orx_system.html#ga1442c7adb3923bc10fccb7fa2bd07bef">orxSystem_GetRealTime</a>();
 <a name="l00139"></a>00139 
-<a name="l00143"></a>00143 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL     <a class="code" href="group__orx_system.html#ga1442c7adb3923bc10fccb7fa2bd07bef">orxSystem_GetRealTime</a>();
+<a name="l00143"></a>00143 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_system.html#ga619076c8c23194cbdcb437fff14335bd">orxSystem_Delay</a>(orxFLOAT _fSeconds);
 <a name="l00144"></a>00144 
-<a name="l00148"></a>00148 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL       <a class="code" href="group__orx_system.html#ga619076c8c23194cbdcb437fff14335bd">orxSystem_Delay</a>(orxFLOAT _fSeconds);
-<a name="l00149"></a>00149 
-<a name="l00150"></a>00150 <span class="preprocessor">#endif </span><span class="comment">/* _orxSYSTEM_H_ */</span>
-<a name="l00151"></a>00151 
+<a name="l00145"></a>00145 <span class="preprocessor">#endif </span><span class="comment">/* _orxSYSTEM_H_ */</span>
+<a name="l00146"></a>00146 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

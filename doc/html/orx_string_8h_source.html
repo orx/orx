@@ -360,7 +360,7 @@
 <a name="l00390"></a>00390   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xC0)
 <a name="l00391"></a>00391   {
 <a name="l00392"></a>00392     <span class="comment">/* Logs message */</span>
-<a name="l00393"></a>00393     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: multi-byte sequence non-leading byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00393"></a>00393     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: multi-byte sequence non-leading byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00394"></a>00394 
 <a name="l00395"></a>00395     <span class="comment">/* Updates result */</span>
 <a name="l00396"></a>00396     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -369,7 +369,7 @@
 <a name="l00399"></a>00399   <span class="keywordflow">else</span> <span class="keywordflow">if</span>(*pu8Byte &lt; 0xC2)
 <a name="l00400"></a>00400   {
 <a name="l00401"></a>00401     <span class="comment">/* Logs message */</span>
-<a name="l00402"></a>00402     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: overlong 2-byte sequence starting with byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00402"></a>00402     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: overlong 2-byte sequence starting with byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00403"></a>00403 
 <a name="l00404"></a>00404     <span class="comment">/* Updates result */</span>
 <a name="l00405"></a>00405     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -389,7 +389,7 @@
 <a name="l00419"></a>00419     <span class="keywordflow">else</span>
 <a name="l00420"></a>00420     {
 <a name="l00421"></a>00421       <span class="comment">/* Logs message */</span>
-<a name="l00422"></a>00422       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 2-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00422"></a>00422       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 2-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00423"></a>00423 
 <a name="l00424"></a>00424       <span class="comment">/* Updates result */</span>
 <a name="l00425"></a>00425       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -416,7 +416,7 @@
 <a name="l00446"></a>00446       <span class="keywordflow">else</span>
 <a name="l00447"></a>00447       {
 <a name="l00448"></a>00448         <span class="comment">/* Logs message */</span>
-<a name="l00449"></a>00449         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00449"></a>00449         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00450"></a>00450 
 <a name="l00451"></a>00451         <span class="comment">/* Updates result */</span>
 <a name="l00452"></a>00452         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -425,7 +425,7 @@
 <a name="l00455"></a>00455     <span class="keywordflow">else</span>
 <a name="l00456"></a>00456     {
 <a name="l00457"></a>00457       <span class="comment">/* Logs message */</span>
-<a name="l00458"></a>00458       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00458"></a>00458       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 3-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00459"></a>00459 
 <a name="l00460"></a>00460       <span class="comment">/* Updates result */</span>
 <a name="l00461"></a>00461       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -458,7 +458,7 @@
 <a name="l00488"></a>00488         <span class="keywordflow">else</span>
 <a name="l00489"></a>00489         {
 <a name="l00490"></a>00490           <span class="comment">/* Logs message */</span>
-<a name="l00491"></a>00491           <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00491"></a>00491           <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00492"></a>00492 
 <a name="l00493"></a>00493           <span class="comment">/* Updates result */</span>
 <a name="l00494"></a>00494           u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -467,7 +467,7 @@
 <a name="l00497"></a>00497       <span class="keywordflow">else</span>
 <a name="l00498"></a>00498       {
 <a name="l00499"></a>00499         <span class="comment">/* Logs message */</span>
-<a name="l00500"></a>00500         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00500"></a>00500         <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00501"></a>00501 
 <a name="l00502"></a>00502         <span class="comment">/* Updates result */</span>
 <a name="l00503"></a>00503         u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -476,7 +476,7 @@
 <a name="l00506"></a>00506     <span class="keywordflow">else</span>
 <a name="l00507"></a>00507     {
 <a name="l00508"></a>00508       <span class="comment">/* Logs message */</span>
-<a name="l00509"></a>00509       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00509"></a>00509       <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: 4-byte sequence non-trailing byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00510"></a>00510 
 <a name="l00511"></a>00511       <span class="comment">/* Updates result */</span>
 <a name="l00512"></a>00512       u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;
@@ -485,7 +485,7 @@
 <a name="l00515"></a>00515   <span class="keywordflow">else</span>
 <a name="l00516"></a>00516   {
 <a name="l00517"></a>00517     <span class="comment">/* Logs message */</span>
-<a name="l00518"></a>00518     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: invalid out-of-bound byte &#39;%c&#39; (0x%2X) at index %ld.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
+<a name="l00518"></a>00518     <a class="code" href="group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2">orxDEBUG_PRINT</a>(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Invalid or non-UTF-8 string at &lt;0x%X&gt;: invalid out-of-bound byte &#39;%c&#39; (0x%2X) at index %d.&quot;</span>, _zString, *pu8Byte, *pu8Byte, pu8Byte - (orxU8 *)_zString);
 <a name="l00519"></a>00519 
 <a name="l00520"></a>00520     <span class="comment">/* Updates result */</span>
 <a name="l00521"></a>00521     u32Result = <a class="code" href="group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21">orxU32_UNDEFINED</a>;

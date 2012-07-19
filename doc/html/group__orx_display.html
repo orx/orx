@@ -39,9 +39,10 @@ Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html">orxDISPLAY_EVENT_PAYLOAD</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a></td></tr>
 <tr><td colspan="2"><h2><a name="define-members"></a>
 Defines</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaae5504c40f1e53363e9184cbcf0e76f2">orx2RGBA</a>(R, G, B, A)&#160;&#160;&#160;((((A) &amp; 0xFF) &lt;&lt; 24) | (((B) &amp; 0xFF) &lt;&lt; 16) | (((G) &amp; 0xFF) &lt;&lt; 8) | ((R) &amp; 0xFF))</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaae5504c40f1e53363e9184cbcf0e76f2">orx2RGBA</a>(R, G, B, A)&#160;&#160;&#160;orxRGBA_Set((orxU8)(R), (orxU8)(G), (orxU8)(B), (orxU8)(A))</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga4c6e0944dd96095ef654b764c93346f3">orxCOLOR_DENORMALIZER</a>&#160;&#160;&#160;(orx2F(255.0f))</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga016ec946d3256a431fb1d267955670e8">orxCOLOR_NORMALIZER</a>&#160;&#160;&#160;(orx2F(1.0f / 255.0f))</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gabaaa6113ef0c67d277f9da4b0d7e3bd3">orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE</a>&#160;&#160;&#160;&quot;AllowResize&quot;</td></tr>
@@ -50,6 +51,8 @@ Defines</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga84a632229162932161247c99e67605fd">orxDISPLAY_KZ_CONFIG_DEPTHBUFFER</a>&#160;&#160;&#160;&quot;DepthBuffer&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac69de78a168e653e5b92467f294328d1">orxDISPLAY_KZ_CONFIG_FULLSCREEN</a>&#160;&#160;&#160;&quot;FullScreen&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad5566d8dc330ac06b979eda31d80e3ca">orxDISPLAY_KZ_CONFIG_HEIGHT</a>&#160;&#160;&#160;&quot;ScreenHeight&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaa287680bea018a30033b8429defc2d99">orxDISPLAY_KZ_CONFIG_POSITION</a>&#160;&#160;&#160;&quot;ScreenPosition&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga093b52d235bab6c2688aa558a8ad41c7">orxDISPLAY_KZ_CONFIG_REFRESH_RATE</a>&#160;&#160;&#160;&quot;RefreshRate&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0f78f3c80268bddeaeb1b55d2090e649">orxDISPLAY_KZ_CONFIG_SECTION</a>&#160;&#160;&#160;&quot;Display&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga638cb8650bf097c243c44a9dd57bb863">orxDISPLAY_KZ_CONFIG_SMOOTH</a>&#160;&#160;&#160;&quot;Smoothing&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga92a769a3391090a7c8cde88a1a9d5da0">orxDISPLAY_KZ_CONFIG_TITLE</a>&#160;&#160;&#160;&quot;Title&quot;</td></tr>
@@ -59,14 +62,13 @@ Defines</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga98c23e98dd889ded3df024dba4f4b136">orxDISPLAY_KZ_SHADER_SUFFIX_LEFT</a>&#160;&#160;&#160;&quot;_left&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac7c00862a44ea6807d9cb3ae2daed091">orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT</a>&#160;&#160;&#160;&quot;_right&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0d9a06196c1582c71d23acc93e1fd0c2">orxDISPLAY_KZ_SHADER_SUFFIX_TOP</a>&#160;&#160;&#160;&quot;_top&quot;</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga7fa359660d9c77056030146c0fa7dd98">orxRGBA_A</a>(RGBA)&#160;&#160;&#160;(orxU8)(((RGBA) &gt;&gt; 24) &amp; 0xFF)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga12afc061feff0993ee3cbff9ffed989d">orxRGBA_B</a>(RGBA)&#160;&#160;&#160;(orxU8)(((RGBA) &gt;&gt; 16) &amp; 0xFF)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga924f29dca5169a0bb652055181973844">orxRGBA_G</a>(RGBA)&#160;&#160;&#160;(orxU8)(((RGBA) &gt;&gt; 8) &amp; 0xFF)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga4cb83fc6ae094cb493ac85d030a818e3">orxRGBA_R</a>(RGBA)&#160;&#160;&#160;(orxU8)((RGBA) &amp; 0xFF)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga7fa359660d9c77056030146c0fa7dd98">orxRGBA_A</a>(RGBA)&#160;&#160;&#160;RGBA.u8A</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga12afc061feff0993ee3cbff9ffed989d">orxRGBA_B</a>(RGBA)&#160;&#160;&#160;RGBA.u8B</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga924f29dca5169a0bb652055181973844">orxRGBA_G</a>(RGBA)&#160;&#160;&#160;RGBA.u8G</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga4cb83fc6ae094cb493ac85d030a818e3">orxRGBA_R</a>(RGBA)&#160;&#160;&#160;RGBA.u8R</td></tr>
 <tr><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef struct __orxBITMAP_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">typedef orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a></td></tr>
 <tr><td colspan="2"><h2><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> { <br/>
@@ -101,22 +103,22 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga05cda88588a9d81eb9b7fd0f1e8d9023">orxColor_Set</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRGB, orxFLOAT _fAlpha)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga8f6266088a52a7f0788cc80313ed8c07">orxColor_SetAlpha</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor, orxFLOAT _fAlpha)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3daedd0e0aa7fcc50fb73fbb819cea6f">orxColor_SetRGB</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRGB)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga48dd71934bc9a9fd394d300cfc928cd9">orxColor_SetRGBA</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stRGBA)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3a2b947697a399f021b75c94d7cfd1b6">orxColor_ToRGBA</a> (const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga48dd71934bc9a9fd394d300cfc928cd9">orxColor_SetRGBA</a> (<a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stRGBA)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3a2b947697a399f021b75c94d7cfd1b6">orxColor_ToRGBA</a> (const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga12fd4665890a8cfedf810f9168f4405c">orxDisplay_BlitBitmap</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, <a class="el" href="group__orx_display.html#ga06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga497ef75237b5ba9a4fad420e761be164">orxDisplay_ClearBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga497ef75237b5ba9a4fad420e761be164">orxDisplay_ClearBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gacfe7630f589a37750b8a64611b5fcedc">orxDisplay_CreateBitmap</a> (orxU32 _u32Width, orxU32 _u32Height)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaa9943e90cc99fcbafaf56c63f62525c7">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf17f6bda43eee81dd41e66acb61478c2">orxDisplay_DeleteBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2">orxDisplay_DeleteShader</a> (orxHANDLE _hShader)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332">orxDisplay_DrawCircle</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCenter, orxFLOAT _fRadius, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031">orxDisplay_DrawLine</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c">orxDisplay_DrawOBox</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258">orxDisplay_DrawPolygon</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avVertexList, orxU32 _u32VertexNumber, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3">orxDisplay_DrawPolyline</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avVertexList, orxU32 _u32VertexNumber, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332">orxDisplay_DrawCircle</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCenter, orxFLOAT _fRadius, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031">orxDisplay_DrawLine</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c">orxDisplay_DrawOBox</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258">orxDisplay_DrawPolygon</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avVertexList, orxU32 _u32VertexNumber, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor, orxBOOL _bFill)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3">orxDisplay_DrawPolyline</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avVertexList, orxU32 _u32VertexNumber, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf463e1f2aa57d66db163d6306bfe433a">orxDisplay_EnableVSync</a> (orxBOOL _bEnable)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0af5c24229c1176913296242dfa2d4da">orxDisplay_Exit</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad115c2a3c5a27410cc1509bb100bf44c">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad115c2a3c5a27410cc1509bb100bf44c">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae1da1268cc2137d50a7026d1c29e3a2a">orxDisplay_GetBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad88758772634d94e250d0163567af051">orxDisplay_GetBitmapSize</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab67814d8200a6d3f0348fba25be8981d">orxDisplay_GetParameterID</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)</td></tr>
@@ -134,8 +136,8 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9ab637c5b295fdd11024c270327db5e4">orxDisplay_LoadBitmap</a> (const orxSTRING _zFileName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae3acb236a4a537a86ff72091dc556829">orxDisplay_SaveBitmap</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxSTRING _zFileName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga6ed6d3266bdcd9baf06f65877c074100">orxDisplay_SetBitmapClipping</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac46c653446e1a50b19715ffb1a181cde">orxDisplay_SetBitmapColor</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga18aa50eae6667cacdfc804e0643bfa47">orxDisplay_SetBitmapColorKey</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> _stColor, orxBOOL _bEnable)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac46c653446e1a50b19715ffb1a181cde">orxDisplay_SetBitmapColor</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga18aa50eae6667cacdfc804e0643bfa47">orxDisplay_SetBitmapColorKey</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> _stColor, orxBOOL _bEnable)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239">orxDisplay_SetBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad4098ceb20034f92eabf178087d29b27">orxDisplay_SetDestinationBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga26e2f135b978a2dc39e53a8465940e42">orxDisplay_SetFullScreen</a> (orxBOOL _bFullScreen)</td></tr>
@@ -149,6 +151,7 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gafaabd0c9b95224c08f531072369e80bf">orxDisplay_Swap</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf204b686964752a587a58444b1a59c45">orxDisplay_TransformBitmap</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, const <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#ga06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga8769b56a32923375fb48d0a65f0cf8cd">orxDisplay_TransformText</a> (const orxSTRING _zString, const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstFont, const <a class="el" href="structorx_c_h_a_r_a_c_t_e_r___m_a_p.html">orxCHARACTER_MAP</a> *_pstMap, const <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#ga06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga98c4144bac171f50a69bb4e46cdd3e77">orxRGBA_Set</a> (orxU8 _u8R, orxU8 _u8G, orxU8 _u8B, orxU8 _u8A)</td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>Display plugin module Module that handles display </p>
@@ -184,13 +187,13 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;((((A) &amp; 0xFF) &lt;&lt; 24) | (((B) &amp; 0xFF) &lt;&lt; 16) | (((G) &amp; 0xFF) &lt;&lt; 8) | ((R) &amp; 0xFF))</td>
+          <td></td><td>&#160;&#160;&#160;orxRGBA_Set((orxU8)(R), (orxU8)(G), (orxU8)(B), (orxU8)(A))</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00071">71</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00073">73</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -235,7 +238,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00174">174</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00175">175</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -250,7 +253,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00175">175</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00176">176</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -265,7 +268,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00172">172</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00171">171</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -280,7 +283,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00179">179</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00180">180</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -295,7 +298,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00173">173</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00174">174</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -310,7 +313,37 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00171">171</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00170">170</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaa287680bea018a30033b8429defc2d99"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_CONFIG_POSITION" ref="gaa287680bea018a30033b8429defc2d99" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_CONFIG_POSITION&#160;&#160;&#160;&quot;ScreenPosition&quot;</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00172">172</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga093b52d235bab6c2688aa558a8ad41c7"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_KZ_CONFIG_REFRESH_RATE" ref="ga093b52d235bab6c2688aa558a8ad41c7" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDISPLAY_KZ_CONFIG_REFRESH_RATE&#160;&#160;&#160;&quot;RefreshRate&quot;</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00173">173</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -326,7 +359,7 @@ Functions</h2></td></tr>
 <div class="memdoc">
 <p>Config parameters </p>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00169">169</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00168">168</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -341,7 +374,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00177">177</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00178">178</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -356,7 +389,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00176">176</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00177">177</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -371,7 +404,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00178">178</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00179">179</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -386,7 +419,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00170">170</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00169">169</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -401,7 +434,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00186">186</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00187">187</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -416,7 +449,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00185">185</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00186">186</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -431,7 +464,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00187">187</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00188">188</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -447,7 +480,7 @@ Functions</h2></td></tr>
 <div class="memdoc">
 <p>Shader texture suffixes </p>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00184">184</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00185">185</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -460,13 +493,13 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">RGBA&#160;)</td>
-          <td>&#160;&#160;&#160;(orxU8)(((RGBA) &gt;&gt; 24) &amp; 0xFF)</td>
+          <td>&#160;&#160;&#160;RGBA.u8A</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00075">75</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00077">77</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -479,13 +512,13 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">RGBA&#160;)</td>
-          <td>&#160;&#160;&#160;(orxU8)(((RGBA) &gt;&gt; 16) &amp; 0xFF)</td>
+          <td>&#160;&#160;&#160;RGBA.u8B</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00074">74</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00076">76</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -498,13 +531,13 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">RGBA&#160;)</td>
-          <td>&#160;&#160;&#160;(orxU8)(((RGBA) &gt;&gt; 8) &amp; 0xFF)</td>
+          <td>&#160;&#160;&#160;RGBA.u8G</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00073">73</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00075">75</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -517,13 +550,13 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">RGBA&#160;)</td>
-          <td>&#160;&#160;&#160;(orxU8)((RGBA) &amp; 0xFF)</td>
+          <td>&#160;&#160;&#160;RGBA.u8R</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00072">72</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00074">74</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -539,23 +572,7 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00083">83</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga4b169842d0b74697bea8a9fea74f7f1d"></a><!-- doxytag: member="orxDisplay.h::orxRGBA" ref="ga4b169842d0b74697bea8a9fea74f7f1d" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef orxU32 <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Misc defines </p>
-
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00059">59</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00082">82</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -586,7 +603,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00140">140</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00139">139</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -612,7 +629,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00192">192</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00193">193</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -642,7 +659,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00126">126</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00125">125</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -681,7 +698,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00379">379</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00409">409</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -719,7 +736,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00474">474</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00504">504</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -757,7 +774,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00643">643</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00673">673</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -795,7 +812,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00397">397</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00427">427</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -833,7 +850,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00568">568</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00598">598</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -878,7 +895,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00289">289</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00319">319</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -916,7 +933,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> / orxNULL </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00331">331</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00361">361</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -954,7 +971,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00311">311</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00341">341</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -971,7 +988,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stRGBA</em>&#160;</td>
         </tr>
         <tr>
@@ -982,7 +999,7 @@ Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Sets all components from an orxRGBA </p>
+<p>Sets all components from an <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstColor</td><td>Concerned color </td></tr>
@@ -992,7 +1009,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00266">266</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00296">296</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -1001,7 +1018,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">static orxINLINE <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> orxColor_ToRGBA </td>
+          <td class="memname">static orxINLINE <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> orxColor_ToRGBA </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *&#160;</td>
           <td class="paramname"> <em>_pstColor</em>&#160;)</td>
@@ -1010,16 +1027,16 @@ Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Gets orxRGBA from an <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </p>
+<p>Gets <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> from an <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstColor</td><td>Concerned color </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>orxRGBA </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00349">349</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00379">379</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -1093,7 +1110,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>&#160;</td>
         </tr>
         <tr>
@@ -1255,7 +1272,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>, </td>
         </tr>
         <tr>
@@ -1305,7 +1322,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>&#160;</td>
         </tr>
         <tr>
@@ -1342,7 +1359,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>, </td>
         </tr>
         <tr>
@@ -1391,7 +1408,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>, </td>
         </tr>
         <tr>
@@ -1441,7 +1458,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>&#160;</td>
         </tr>
         <tr>
@@ -1512,7 +1529,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a> orxFASTCALL orxDisplay_GetBitmapColor </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> orxFASTCALL orxDisplay_GetBitmapColor </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&#160;</td>
           <td class="paramname"> <em>_pstBitmap</em>&#160;)</td>
@@ -1528,7 +1545,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>orxRGBA </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> </dd></dl>
 
 </div>
 </div>
@@ -2004,7 +2021,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>&#160;</td>
         </tr>
         <tr>
@@ -2040,7 +2057,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#ga4b169842d0b74697bea8a9fea74f7f1d">orxRGBA</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a>&#160;</td>
           <td class="paramname"> <em>_stColor</em>, </td>
         </tr>
         <tr>
@@ -2513,6 +2530,58 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga98c4144bac171f50a69bb4e46cdd3e77"></a><!-- doxytag: member="orxDisplay.h::orxRGBA_Set" ref="ga98c4144bac171f50a69bb4e46cdd3e77" args="(orxU8 _u8R, orxU8 _u8G, orxU8 _u8B, orxU8 _u8A)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> orxRGBA_Set </td>
+          <td>(</td>
+          <td class="paramtype">orxU8&#160;</td>
+          <td class="paramname"> <em>_u8R</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU8&#160;</td>
+          <td class="paramname"> <em>_u8G</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU8&#160;</td>
+          <td class="paramname"> <em>_u8B</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU8&#160;</td>
+          <td class="paramname"> <em>_u8A</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Sets all components of an <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u8R</td><td>Red value to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u8G</td><td>Green value to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u8B</td><td>Blue value to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u8A</td><td>Alpha value to set </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00276">276</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>

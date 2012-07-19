@@ -162,10 +162,10 @@
 <a name="l00166"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">00166</a>   orxU64          <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">u64GUID</a>;          
 <a name="l00167"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723">00167</a>   orxHANDLE       <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723">hStorageNode</a>;   
 <a name="l00168"></a><a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef">00168</a>   orxU32          <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef">u32Flags</a>;       
-<a name="l00170"></a>00170 <span class="preprocessor">#ifdef __orxX86_64__</span>
+<a name="l00170"></a>00170 <span class="preprocessor">#if defined(__orxX86_64__) || defined(__orxPPC64__)</span>
 <a name="l00171"></a>00171 <span class="preprocessor"></span>
 <a name="l00172"></a>00172   orxU8           au8Padding[12]; 
-<a name="l00174"></a>00174 <span class="preprocessor">#endif </span><span class="comment">/* __orxX86_64__ */</span>
+<a name="l00174"></a>00174 <span class="preprocessor">#endif </span><span class="comment">/* __orxX86_64__ || __orxPPC64__ */</span>
 <a name="l00175"></a>00175 
 <a name="l00176"></a>00176 } <a class="code" href="group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>;
 <a name="l00177"></a>00177 
