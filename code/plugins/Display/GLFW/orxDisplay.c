@@ -120,15 +120,6 @@ typedef struct __orxDISPLAY_MATRIX_t
 
 } orxDISPLAY_MATRIX;
 
-/** Internal vertex structure
- */
-typedef struct __orxDISPLAY_VERTEX_t
-{
-  GLfloat   fX, fY, fU, fV;
-  orxRGBA   stRGBA;
-
-} orxDISPLAY_VERTEX;
-
 /** Internal bitmap structure
  */
 struct __orxBITMAP_t
@@ -1325,6 +1316,22 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 
   /* Draws it */
   orxDisplay_GLFW_DrawPrimitive(4, _stColor, _bFill, orxFALSE);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_u32VertexNumber > 2);
+  orxASSERT(_astVertexList != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -3723,6 +3730,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolyline, DISPLAY, DRAW_POL
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolygon, DISPLAY, DRAW_POLYGON);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawOBox, DISPLAY, DRAW_OBOX);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawMesh, DISPLAY, DRAW_MESH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteShader, DISPLAY, DELETE_SHADER);

@@ -143,14 +143,6 @@ typedef struct __orxDISPLAY_MATRIX_t
 
 } orxDISPLAY_MATRIX;
 
-/** Internal vertex structure
- */
-typedef struct __orxDISPLAY_VERTEX_t
-{
-  orxFLOAT  fX, fY, fU, fV;
-  orxRGBA   stRGBA;
-} orxDISPLAY_VERTEX;
-
 /** Internal projection matrix structure
  */
 typedef struct __orxDISPLAY_PROJ_MATRIX_t
@@ -2088,6 +2080,22 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_DrawOBox(const orxOBOX *_pstBox, orxRGBA _s
   return eResult;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_u32VertexNumber > 2);
+  orxASSERT(_astVertexList != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
 void orxFASTCALL orxDisplay_iOS_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   /* Checks */
@@ -3984,6 +3992,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawPolyline, DISPLAY, DRAW_POLY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawPolygon, DISPLAY, DRAW_POLYGON);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawOBox, DISPLAY, DRAW_OBOX);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DrawMesh, DISPLAY, DRAW_MESH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DeleteShader, DISPLAY, DELETE_SHADER);

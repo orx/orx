@@ -81,6 +81,16 @@ typedef struct __orxRGBA_t
 
 typedef struct __orxBITMAP_t        orxBITMAP;
 
+/** Vertex info structure
+ */
+typedef struct __orxDISPLAY_VERTEX_t
+{
+  orxFLOAT  fX, fY;
+  orxFLOAT  fU, fV;
+  orxRGBA   stRGBA;
+
+} orxDISPLAY_VERTEX;
+
 /** Transform structure
  */
 typedef struct __orxDISPLAY_TRANSFORM_t
@@ -977,6 +987,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCircle(cons
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill);
 
+/** Draws a textured mesh
+ * @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
+ * @param[in]   _eBlendMode                           Blend mode
+ * @param[in]   _u32VertexNumber                      Number of vertices in the mesh
+ * @param[in]   _astVertexList                        List of vertices
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList);
 
 /** Has shader support?
  * @return orxTRUE / orxFALSE

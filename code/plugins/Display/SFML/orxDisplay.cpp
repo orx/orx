@@ -1692,6 +1692,22 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawOBox(const orxOBOX *_pstBox
   return eResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFLM_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_u32VertexNumber > 2);
+  orxASSERT(_astVertexList != orxNULL);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_HasShaderSupport()
 {
   /* Checks */
@@ -2039,6 +2055,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawPolyline, DISPLAY, DRAW_POL
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawPolygon, DISPLAY, DRAW_POLYGON);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawOBox, DISPLAY, DRAW_OBOX);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawMesh, DISPLAY, DRAW_MESH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteShader, DISPLAY, DELETE_SHADER);

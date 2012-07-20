@@ -100,6 +100,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawPolyline, orxSTATUS, const orxVECT
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawPolygon, orxSTATUS, const orxVECTOR *, orxU32, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawCircle, orxSTATUS, const orxVECTOR *, orxFLOAT, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, orxRGBA, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawMesh, orxSTATUS, const orxBITMAP *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE, orxU32, const orxDISPLAY_VERTEX *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *);
@@ -161,6 +162,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_POLYLINE, orxDisplay_DrawPolylin
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_POLYGON, orxDisplay_DrawPolygon)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_CIRCLE, orxDisplay_DrawCircle)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_OBOX, orxDisplay_DrawOBox)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_MESH, orxDisplay_DrawMesh)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, HAS_SHADER_SUPPORT, orxDisplay_HasShaderSupport)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_SHADER, orxDisplay_CreateShader)
@@ -231,6 +233,11 @@ orxSTATUS orxFASTCALL orxDisplay_DrawCircle(const orxVECTOR *_pvCenter, orxFLOAT
 orxSTATUS orxFASTCALL orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawOBox)(_pstBox, _stColor, _bFill);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexCounter, const orxDISPLAY_VERTEX *_astVertexList)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawMesh)(_pstBitmap, _eSmoothing, _eBlendMode, _u32VertexCounter, _astVertexList);
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
