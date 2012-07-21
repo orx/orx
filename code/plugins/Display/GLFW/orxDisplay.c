@@ -1323,15 +1323,50 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  const orxBITMAP  *pstBitmap;
+  GLfloat           fWidth, fHeight;
+  orxU32            i;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_u32VertexNumber > 2);
   orxASSERT(_astVertexList != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Gets bitmap to use */
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.pstLastBitmap;
+
+  /* Prepares bitmap for drawing */
+  orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
+
+  /* Gets bitmap working size */
+  fWidth  = (GLfloat)(pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX);
+  fHeight = (GLfloat)(pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY);
+
+  /* End of buffer? */
+  if(sstDisplay.s32BufferIndex + _u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  {
+    /* Draw arrays */
+    orxDisplay_GLFW_DrawArrays();
+  }
+
+  /* For all vertices */
+  for(i = 0; i < _u32VertexNumber; i++)
+  {
+    // Copies position
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fX = _astVertexList[i].fX;
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fY = _astVertexList[i].fY;
+
+    // Updates UV
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fU = (GLfloat)(pstBitmap->fRecRealWidth * (_astVertexList[i].fU + orxDISPLAY_KF_BORDER_FIX));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fV = (GLfloat)(orxFLOAT_1 - pstBitmap->fRecRealHeight * (_astVertexList[i].fV + orxDISPLAY_KF_BORDER_FIX));
+
+    // Copies color
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].stRGBA = _astVertexList[i].stRGBA;
+  }
+
+  /* Updates index */
+  sstDisplay.s32BufferIndex += _u32VertexNumber;
 
   /* Done! */
   return eResult;
