@@ -1324,7 +1324,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
   const orxBITMAP  *pstBitmap;
-  GLfloat           fWidth, fHeight;
+  GLfloat           fWidth, fHeight, fXCoef, fYCoef, fXBorder, fYBorder;
   orxU32            i;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
@@ -1343,6 +1343,21 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   fWidth  = (GLfloat)(pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX);
   fHeight = (GLfloat)(pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY);
 
+  /* Gets X & Y coefs */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+  {
+    fXCoef = fYCoef = orxFLOAT_1;
+  }
+  else
+  {
+    fXCoef = pstBitmap->fWidth * pstBitmap->fRecRealWidth;
+    fYCoef = pstBitmap->fHeight * pstBitmap->fRecRealHeight;
+  }
+
+  /* Gets X & Y border fixes */
+  fXBorder = pstBitmap->fRecRealWidth * orxDISPLAY_KF_BORDER_FIX;
+  fYBorder = pstBitmap->fRecRealHeight * orxDISPLAY_KF_BORDER_FIX;
+
   /* End of buffer? */
   if(sstDisplay.s32BufferIndex + _u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
   {
@@ -1353,15 +1368,15 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   /* For all vertices */
   for(i = 0; i < _u32VertexNumber; i++)
   {
-    // Copies position
+    /* Copies position */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fX = _astVertexList[i].fX;
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fY = _astVertexList[i].fY;
 
-    // Updates UV
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fU = (GLfloat)(pstBitmap->fRecRealWidth * (_astVertexList[i].fU + orxDISPLAY_KF_BORDER_FIX));
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fV = (GLfloat)(orxFLOAT_1 - pstBitmap->fRecRealHeight * (_astVertexList[i].fV + orxDISPLAY_KF_BORDER_FIX));
+    /* Updates UV */
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
 
-    // Copies color
+    /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].stRGBA = _astVertexList[i].stRGBA;
   }
 

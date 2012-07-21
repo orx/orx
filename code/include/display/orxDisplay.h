@@ -992,7 +992,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const 
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @param[in]   _u32VertexNumber                      Number of vertices in the mesh
- * @param[in]   _astVertexList                        List of vertices
+ * @param[in]   _astVertexList                        List of vertices (XY coordinates are in pixels and UV ones are normalized)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList);
