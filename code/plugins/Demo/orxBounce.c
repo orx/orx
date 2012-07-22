@@ -94,8 +94,8 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     orxVector_Sub(&vVertex2, &savTrailPointList[u32Index], &vOffset);
 
     /* Stores vertices */
-    STORE_VERTEX(i * 2, vVertex1.fX, vVertex1.fY, 0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER), orx2RGBA(0xFF, 0x00, 0xFF, 0xFF * i / TRAIL_POINT_NUMBER));
-    STORE_VERTEX(i * 2 + 1, vVertex2.fX, vVertex2.fY, 1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER), orx2RGBA(0xFF, 0x00, 0xFF, 0xFF * i / TRAIL_POINT_NUMBER));
+    STORE_VERTEX(i * 2, vVertex1.fX, vVertex1.fY, 0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0x00, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER - 1)));
+    STORE_VERTEX(i * 2 + 1, vVertex2.fX, vVertex2.fY, 1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0x00, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER - 1)));
   }
 
   /* Draws trail */
