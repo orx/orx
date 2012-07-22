@@ -86,7 +86,7 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     if(i < TRAIL_POINT_NUMBER - 1)
     {
       /* Gets offset vector */
-      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(20.0f));
+      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(15.0f));
     }
 
     /* Computes vertices positions */
