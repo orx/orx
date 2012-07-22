@@ -1325,7 +1325,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
 {
   const orxBITMAP  *pstBitmap;
   GLfloat           fWidth, fHeight, fXCoef, fYCoef, fXBorder, fYBorder;
-  orxU32            i;
+  orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1359,29 +1359,50 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   fYBorder = pstBitmap->fRecRealHeight * orxDISPLAY_KF_BORDER_FIX;
 
   /* End of buffer? */
-  if(sstDisplay.s32BufferIndex + _u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
   {
     /* Draw arrays */
     orxDisplay_GLFW_DrawArrays();
+
+    /* Too many vertices? */
+    if(_u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2)
+    {
+      /* Updates vertex number */
+      u32VertexNumber = orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2;
+
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", u32VertexNumber, _u32VertexNumber);
+    }
   }
 
   /* For all vertices */
-  for(i = 0; i < _u32VertexNumber; i++)
+  for(i = 0, iIndex = 0; i < u32VertexNumber; i++, iIndex++)
   {
     /* Copies position */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fX = _astVertexList[i].fX;
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fY = _astVertexList[i].fY;
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fX = _astVertexList[i].fX;
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
 
     /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
 
     /* Copies color */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + i].stRGBA = _astVertexList[i].stRGBA;
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
+
+    /* Quad extremity? */
+    if((i != 1) && ((i & 1) == 1))
+    {
+      /* Copies last two vertices */
+      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 1]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
+      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 2]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), sizeof(orxDISPLAY_VERTEX));
+
+      /* Updates index */
+      iIndex += 2;
+    }
   }
 
   /* Updates index */
-  sstDisplay.s32BufferIndex += _u32VertexNumber;
+  sstDisplay.s32BufferIndex += iIndex;
 
   /* Done! */
   return eResult;
