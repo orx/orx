@@ -875,6 +875,11 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           }
         }
       }
+      else
+      {
+        /* Updates result, aborted by user request */
+        eResult = orxSTATUS_SUCCESS;
+      }
 
       /* Sends stop event */
       orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
