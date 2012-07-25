@@ -104,7 +104,7 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
 
 /** Updates trail
  */
-static orxSTATUS orxFASTCALL orxBounce_UpdateTrail(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxBounce_UpdateTrail(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxVECTOR vMousePos;
 
@@ -116,9 +116,6 @@ static orxSTATUS orxFASTCALL orxBounce_UpdateTrail(const orxCLOCK_INFO *_pstCloc
 
   /* Updates trail index */
   su32TrailIndex = (su32TrailIndex + 1) % TRAIL_POINT_NUMBER;
-
-  /* Done! */
-  return orxSTATUS_SUCCESS;
 }
 
 /** Bounce event handler

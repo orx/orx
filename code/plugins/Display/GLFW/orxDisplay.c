@@ -1372,6 +1372,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
 
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", u32VertexNumber, _u32VertexNumber);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -1399,6 +1402,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
       /* Updates index */
       iIndex += 2;
     }
+  }
+
+  /* Odd number of vertices in the triangle strip? */
+  if(iIndex & 1)
+  {
+    /* Completes the quad */
+    orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
+    iIndex++;
   }
 
   /* Updates index */
@@ -2894,7 +2905,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       }
     }
   }
-  
+
   /* Succesful? */
   if(eResult != orxSTATUS_FAILURE)
   {
@@ -2911,7 +2922,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       {
         /* Updates window's position */
         glfwSetWindowPos((int)vPosition.fX, (int)vPosition.fY);
-      }            
+      }
     }
 
     /* Updates its title */
