@@ -1428,6 +1428,13 @@ void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
+    /* Is last used bitmap? */
+    if(sstDisplay.pstLastBitmap == _pstBitmap)
+    {
+      /* Resets it */
+      sstDisplay.pstLastBitmap = orxNULL;
+    }
+
     /* Deletes its texture */
     glDeleteTextures(1, &(_pstBitmap->uiTexture));
     glASSERT();
