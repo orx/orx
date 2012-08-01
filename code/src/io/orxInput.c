@@ -179,7 +179,7 @@ void orxFASTCALL orxInput_CommandGetCurrentSet(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
-/** Command: SetValue 
+/** Command: SetValue
  */
 void orxFASTCALL orxInput_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -516,7 +516,7 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
         /* Marks it for reset */
         orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL, orxINPUT_KU32_ENTRY_FLAG_NONE);
       }
-      
+
       /* For all bindings */
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
@@ -699,7 +699,7 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
 
               /* Gets last active index */
               u32LastActiveIndex = (pstEntry->u32Status & orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING) >> orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING;
-              
+
               /* Checks */
               orxASSERT(u32LastActiveIndex < orxINPUT_KU32_BINDING_NUMBER);
 
@@ -1242,7 +1242,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
 
           /* Updates it */
           orxInput_Update(orxNULL, orxNULL);
-          
+
           break;
         }
       }
@@ -1463,20 +1463,20 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
 orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _fValue)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_zInputName != orxNULL);
-  
+
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
   {
     orxINPUT_ENTRY *pstEntry, *pstSelectedEntry = orxNULL;
     orxU32          u32EntryID;
-    
+
     /* Gets entry ID */
     u32EntryID = orxString_ToCRC(_zInputName);
-    
+
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
@@ -1525,20 +1525,20 @@ orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _f
 orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, orxFLOAT _fValue)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_zInputName != orxNULL);
-  
+
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
   {
     orxINPUT_ENTRY *pstEntry, *pstSelectedEntry = orxNULL;
     orxU32          u32EntryID;
-    
+
     /* Gets entry ID */
     u32EntryID = orxString_ToCRC(_zInputName);
-    
+
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
@@ -1549,7 +1549,7 @@ orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, or
       {
         /* Updates selection */
         pstSelectedEntry = pstEntry;
-        
+
         break;
       }
     }
@@ -1586,20 +1586,20 @@ orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, or
 orxSTATUS orxFASTCALL orxInput_ResetValue(const orxSTRING _zInputName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_zInputName != orxNULL);
-  
+
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
   {
     orxINPUT_ENTRY *pstEntry;
     orxU32          u32EntryID;
-    
+
     /* Gets entry ID */
     u32EntryID = orxString_ToCRC(_zInputName);
-    
+
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
@@ -1610,13 +1610,13 @@ orxSTATUS orxFASTCALL orxInput_ResetValue(const orxSTRING _zInputName)
       {
         /* Clears its value */
         pstEntry->fExternalValue = orxFLOAT_0;
-        
+
         /* Updates its status */
         orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_PERMANENT);
-        
+
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
-        
+
         break;
       }
     }
@@ -2200,7 +2200,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
 
       break;
     }
- 
+
     default:
     {
       /* Logs message */

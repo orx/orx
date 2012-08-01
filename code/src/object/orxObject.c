@@ -2082,7 +2082,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       }
 
       /* *** Children *** */
-      
+
       /* Has child list? */
       if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_CHILD_LIST)) > 0)
       {

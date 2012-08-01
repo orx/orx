@@ -32,9 +32,10 @@
 
 #include "core/orxLocale.h"
 
-#include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
+#include "core/orxCommand.h"
+#include "core/orxEvent.h"
 #include "utils/orxString.h"
 
 
@@ -80,6 +81,86 @@ static orxLOCALE_STATIC sstLocale;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Command: SelectLanguage
+ */
+void orxFASTCALL orxLocale_CommandSelectLanguage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Selects it */
+  orxLocale_SelectLanguage(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = (sstLocale.zCurrentLanguage != orxNULL) ? sstLocale.zCurrentLanguage : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetCurrentLanguage
+ */
+void orxFASTCALL orxLocale_CommandGetCurrentLanguage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (sstLocale.zCurrentLanguage != orxNULL) ? sstLocale.zCurrentLanguage : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetString
+ */
+void orxFASTCALL orxLocale_CommandSetString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Sets it */
+  orxLocale_SetString(_astArgList[0].zValue, _astArgList[1].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetString
+ */
+void orxFASTCALL orxLocale_CommandGetString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxLocale_GetString(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the locale commands
+ */
+static orxINLINE void orxLocale_RegisterCommands()
+{
+  /* Command: SelectLanguage */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SelectLanguage, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetCurrentLanguage */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetCurrentLanguage, "Name", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+
+  /* Command: SetString */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SetString, "Name", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING}, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetString */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+}
+
+/** Unregisters all the locale commands
+ */
+static orxINLINE void orxLocale_UnregisterCommands()
+{
+  /* Command: SelectLanguage */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Locale, SelectLanguage);
+  /* Command: GetCurrentLanguage */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Locale, GetCurrentLanguage);
+
+  /* Command: SetString */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Locale, SetString);
+  /* Command: GetString */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Locale, GetString);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -92,6 +173,7 @@ void orxFASTCALL orxLocale_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_COMMAND);
 
   return;
 }
@@ -127,6 +209,9 @@ orxSTATUS orxFASTCALL orxLocale_Init()
     /* Pops config section */
     orxConfig_PopSection();
 
+    /* Registers commands */
+    orxLocale_RegisterCommands();
+
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -150,6 +235,9 @@ void orxFASTCALL orxLocale_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY))
   {
+    /* Unregisters commands */
+    orxLocale_UnregisterCommands();
+
     /* Has selected language? */
     if(sstLocale.zCurrentLanguage != orxNULL)
     {
