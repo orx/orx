@@ -244,6 +244,23 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetValue, "Value", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
 }
 
+/** Unregisters all the input commands
+ */
+static orxINLINE void orxInput_UnregisterCommands()
+{
+  /* Command: SelectSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SelectSet);
+  /* Command: GetCurrentSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetCurrentSet);
+
+  /* Command: SetValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SetValue);
+  /* Command: ResetValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, ResetValue);
+  /* Command: GetValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetValue);
+}
+
 static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxFLOAT fResult = orxFLOAT_0;
@@ -994,6 +1011,9 @@ void orxFASTCALL orxInput_Exit()
   {
     orxCLOCK     *pstClock;
     orxINPUT_SET *pstSet;
+
+    /* Unregisters commands */
+    orxInput_UnregisterCommands();
 
     /* While there's still a set */
     while((pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList))) != orxNULL)

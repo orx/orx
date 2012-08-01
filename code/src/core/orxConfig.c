@@ -387,6 +387,26 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_STRING});
 }
 
+/** Unregisters all the config commands
+ */
+static orxINLINE void orxConfig_UnregisterCommands()
+{
+  // Command: Get Parent
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
+  // Command: Set Parent
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetParent);
+  // Command: Create Section
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
+  // Command: Has Section
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
+  // Command: Has Value
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasValue);
+  // Command: Get Value
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetValue);
+  // Command: Set Value
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetValue);
+}
+
 static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
   orxSTRING zResult;
@@ -2124,6 +2144,9 @@ void orxFASTCALL orxConfig_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
+    /* Unregisters commands */
+    orxConfig_UnregisterCommands();
+
     /* Clears all data */
     orxConfig_Clear();
 

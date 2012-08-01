@@ -125,6 +125,12 @@ do                                                                              
   orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                          \
 } while(orxFALSE)
 
+#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                         \
+do                                                                                                                                  \
+{                                                                                                                                   \
+  orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                        \
+} while(orxFALSE)
+
 
 /** Command module setup
  */

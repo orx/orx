@@ -1166,6 +1166,81 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current", orxCOMMAND_VAR_TYPE_BOOL});
 }
 
+/** Unregisters all the object commands
+ */
+static orxINLINE void orxObject_UnregisterCommands()
+{
+  /* Command: Create */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Create);
+  /* Command: Delete */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Delete);
+
+  /* Command: GetID */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetID);
+
+  /* Command: SetPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPosition);
+  /* Command: SetRotation */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetRotation);
+  /* Command: SetScale */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetScale);
+  /* Command: GetPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPosition);
+  /* Command: GetRotation */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetRotation);
+  /* Command: GetScale */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetScale);
+
+  /* Command: GetName */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetName);
+
+  /* Command: SetLifeTime */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetLifeTime);
+
+  /* Command: Enable */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Enable);
+  /* Command: Pause */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Pause);
+
+  /* Command: SetOwner */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOwner);
+  /* Command: GetOwner */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOwner);
+  /* Command: GetOwnedChild */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOwnedChild);
+  /* Command: GetOwnedSibling */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOwnedSibling);
+
+
+  /* Command: AddTrack */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddTrack);
+  /* Command: RemoveTrack */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveTrack);
+
+  /* Command: AddFX */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddFX);
+  /* Command: RemoveFX */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveFX);
+
+  /* Command: AddShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddShader);
+  /* Command: RemoveShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveShader);
+
+  /* Command: AddSound */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddSound);
+  /* Command: RemoveSound */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveSound);
+
+  /* Command: SetVolume */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetVolume);
+  /* Command: SetPitch */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPitch);
+
+  /* Command: SetAnim */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnim);
+}
+
 /** Deletes all the objects
  */
 static orxINLINE void orxObject_DeleteAll()
@@ -1417,6 +1492,9 @@ void orxFASTCALL orxObject_Exit()
   /* Initialized? */
   if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters commands */
+    orxObject_UnregisterCommands();
+
     /* Deletes object list */
     orxObject_DeleteAll();
 
