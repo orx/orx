@@ -338,8 +338,6 @@ static orxView *spoInstance;
 
 @interface orxView ()
 
-+ (orxView *) GetInstance;
-
 - (BOOL) CreateThreadContext;
 - (BOOL) CreateBuffers;
 - (BOOL) CreateRenderTarget:(const orxBITMAP *)_pstBitmap;
@@ -363,9 +361,31 @@ static orxView *spoInstance;
 
 + (orxView *) GetInstance
 {
+  return spoInstance;
+}
+
+- (void) NotifyAcceleration:(UIAcceleration *)_poAcceleration
+{
   @synchronized(self)
   {
-    return spoInstance;
+    orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+
+    /* Checks */
+    orxASSERT(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER);
+
+    /* Gets payload */
+    pstPayload = &(sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber].stPayload);
+
+    /* Inits it */
+    orxMemory_Zero(pstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+    pstPayload->stTouch.fPressure = orxFLOAT_1;
+
+    /* Updates it */
+    pstPayload->stAccelerometer.dTime = _poAcceleration.timestamp + sstDisplay.dTouchTimeCorrection;
+    orxVector_Set(&(pstPayload->stAccelerometer.vAcceleration), orx2F(_poAcceleration.x), orx2F(-_poAcceleration.y), orx2F(-_poAcceleration.z));
+
+    /* Stores event info */
+    sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber++].eID = orxSYSTEM_EVENT_ACCELERATE;
   }
 }
 

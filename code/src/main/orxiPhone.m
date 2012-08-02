@@ -152,15 +152,16 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 
 - (void) accelerometer:(UIAccelerometer *)_poAccelerometer didAccelerate:(UIAcceleration *)_poAcceleration
 {
-  orxSYSTEM_EVENT_PAYLOAD stPayload;
-  
-  /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stAccelerometer.dTime = orx2D(_poAcceleration.timestamp);
-  orxVector_Set(&(stPayload.stAccelerometer.vAcceleration), orx2F(_poAcceleration.x), orx2F(-_poAcceleration.y), orx2F(-_poAcceleration.z));
+  orxView *poView;
 
-  /* Sends it */
-  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, self, orxNULL, &stPayload);
+  /* Gets view instance */
+  poView = [orxView GetInstance];
+
+  /* Checks */
+  orxASSERT(poView != nil);
+
+  /* Notifies acceleration */
+  [poView NotifyAcceleration:_poAcceleration];
 }
 
 - (void) MainLoop

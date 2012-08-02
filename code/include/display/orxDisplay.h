@@ -262,6 +262,10 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
   BOOL          bShaderSupport, bCompressedTextureSupport;
 }
 
++ (orxView *) GetInstance;
+
+- (void) NotifyAcceleration:(UIAcceleration *)_poAcceleration;
+
 @property (nonatomic, retain) EAGLContext  *poMainContext;
 @property (nonatomic, retain) EAGLContext  *poThreadContext;
 @property                     BOOL          bShaderSupport;
