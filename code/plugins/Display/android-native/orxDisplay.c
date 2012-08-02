@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Copyright (c) 2008-2010 Orx-Project
-   *
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
  * arising from the use of this software.
@@ -185,7 +185,7 @@ enum
 
 /** DDS file format structures.
  */
-typedef struct _DDS_PIXELFORMAT 
+typedef struct _DDS_PIXELFORMAT
 {
     uint32_t dwSize;
     uint32_t dwFlags;
@@ -197,7 +197,7 @@ typedef struct _DDS_PIXELFORMAT
     uint32_t dwABitMask;
 } DDS_PIXELFORMAT;
 
-typedef struct _DDS_HEADER 
+typedef struct _DDS_HEADER
 {
     uint32_t dwSize;
     uint32_t dwFlags;
@@ -424,7 +424,7 @@ static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
   bestConfig = configs[bestIndex];
   delete[] configs;
 
-  return orxTRUE; 
+  return orxTRUE;
 }
 
 
@@ -2202,9 +2202,9 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
       orxU32  u32BPP;
 
       // figure out what the image format is
-      if (stHeader.ddspf.dwFlags & DDS_FOURCC) 
+      if (stHeader.ddspf.dwFlags & DDS_FOURCC)
       {
-        switch(stHeader.ddspf.dwFourCC) 
+        switch(stHeader.ddspf.dwFourCC)
         {
           case FOURCC_DXT1:
             eInternalFormat     = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -2272,7 +2272,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
           u32BPP           = 16;
           eInternalFormat  = GL_UNSIGNED_SHORT_5_6_5;
           bCompressed      = orxFALSE;
-        } 
+        }
         else if ((stHeader.ddspf.dwRGBBitCount == 8) &&
             (stHeader.ddspf.dwRBitMask == 0x00000000) &&
             (stHeader.ddspf.dwGBitMask == 0x00000000) &&
@@ -2298,7 +2298,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
           u32BPP           = 8;
           eInternalFormat  = GL_UNSIGNED_BYTE;
           bCompressed      = orxFALSE;
-        } 
+        }
         else if ((stHeader.ddspf.dwRGBBitCount == 16) &&
             (((stHeader.ddspf.dwRBitMask == 0x000000FF) &&
               (stHeader.ddspf.dwGBitMask == 0x00000000) &&
@@ -2316,7 +2316,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
           u32BPP           = 16;
           eInternalFormat  = GL_UNSIGNED_BYTE;
           bCompressed      = orxFALSE;
-        } 
+        }
         else
         {
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: image data is not DXTC or supported RGB(A) format.", _zFilename);
@@ -2335,7 +2335,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
           case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
           case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
           case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-            u32DataSize = ((stHeader.dwWidth + 3)/4)*((stHeader.dwHeight + 3)/4) * (eInternalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 8 : 16); 
+            u32DataSize = ((stHeader.dwWidth + 3)/4)*((stHeader.dwHeight + 3)/4) * (eInternalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 8 : 16);
             break;
           case GL_ATC_RGB_AMD:
             u32DataSize = (((stHeader.dwWidth + 3) & 0xFFFFFFFC) * ((stHeader.dwHeight + 3) & 0xFFFFFFFC)) / 2;

@@ -50,8 +50,8 @@ const orxSTRING    orxSTRING_FALSE     = "false";
 
 #elif defined(__orxMAC__)
 
-  const orxCHAR    orxCHAR_EOL         = '\r';
-  const orxSTRING  orxSTRING_EOL       = "\r";
+  const orxCHAR    orxCHAR_EOL         = '\n';
+  const orxSTRING  orxSTRING_EOL       = "\n";
 
 #endif
 

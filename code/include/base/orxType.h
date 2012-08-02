@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxType
- * 
+ *
  * Base types
  *
  * @{
@@ -118,7 +118,7 @@
 
     typedef void *                orxHANDLE;
 
-    #if defined(__orxX86_64__) || defined(__orxPPC64__) 
+    #if defined(__orxX86_64__) || defined(__orxPPC64__)
 
     typedef unsigned  long long   orxU64;
     typedef unsigned  int         orxU32;
