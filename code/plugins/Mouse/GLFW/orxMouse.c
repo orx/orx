@@ -278,7 +278,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
       if(pstClock != orxNULL)
       {
         /* Registers event update function */
-        eResult = orxClock_Register(pstClock, orxMouse_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWEST);
+        eResult = orxClock_Register(pstClock, orxMouse_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_HIGHEST);
       }
 
       /* Success? */

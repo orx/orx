@@ -192,7 +192,7 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
       if(sstJoystick.pstClockInfo != orxNULL)
       {
         /* Registers event update function */
-        eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
+        eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHEST);
 
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)

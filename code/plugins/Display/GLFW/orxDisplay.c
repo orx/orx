@@ -287,9 +287,6 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_Update");
 
-  /* Polls events */
-  glfwPollEvents();
-
   /* Foreground? */
   if(glfwGetWindowParam(GLFW_ICONIFIED) == GL_FALSE)
   {
