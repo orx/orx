@@ -59,6 +59,8 @@
 
 #define orxDISPLAY_KU32_TOUCH_NUMBER            16
 
+#define orxDISPLAY_KU32_EVENT_INFO_NUMBER       32
+
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 
@@ -205,6 +207,15 @@ typedef struct __orxDISPLAY_TOUCH_INFO_t
   const UITouch  *poTouch;
 } orxDISPLAY_TOUCH_INFO;
 
+/** Internal event info
+ */
+typedef struct __orxDISPLAY_EVENT_INFO_t
+{
+   orxSYSTEM_EVENT_PAYLOAD  stPayload;
+   orxENUM                  eID;
+
+} orxDISPLAY_EVENT_INFO;
+
 /** Static structure
  */
 typedef struct __orxDISPLAY_STATIC_t
@@ -224,6 +235,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32ActiveShaderCounter;
   orxS32                    s32BufferIndex;
   orxDOUBLE                 dTouchTimeCorrection;
+  orxU32                    u32EventInfoNumber;
   orxView                  *poView;
   orxU32                    u32Flags;
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
@@ -231,6 +243,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
   orxDISPLAY_TOUCH_INFO     astTouchInfoList[orxDISPLAY_KU32_TOUCH_NUMBER];
+  orxDISPLAY_EVENT_INFO     astEventInfoList[orxDISPLAY_KU32_EVENT_INFO_NUMBER];
 
 } orxDISPLAY_STATIC;
 
@@ -331,6 +344,7 @@ static orxView *spoInstance;
 - (BOOL) CreateBuffers;
 - (BOOL) CreateRenderTarget:(const orxBITMAP *)_pstBitmap;
 - (BOOL) IsExtensionSupported:(NSString *)_zExtension;
+- (void) ProcessEvents;
 - (void) Swap;
 
 @end
@@ -714,6 +728,24 @@ static orxView *spoInstance;
   return bResult;
 }
 
+- (void) ProcessEvents
+{
+  @synchronized(self)
+  {
+    orxU32 i;
+
+    /* For all events */
+    for(i = 0; i < sstDisplay.u32EventInfoNumber; i++)
+    {
+      /* Sends it */
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, sstDisplay.astEventInfoList[i].eID, orxNULL, orxNULL, &(sstDisplay.astEventInfoList[i].stPayload));
+    }
+
+    /* Clears event info number */
+    sstDisplay.u32EventInfoNumber = 0;
+  }
+}
+
 - (void) Swap
 {
   /* Swaps */
@@ -731,38 +763,44 @@ static orxView *spoInstance;
 
 - (void) touchesBegan:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-  /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure = orxFLOAT_1;
-
-  /* For all new touches */
-  for(UITouch *poTouch in _poTouchList)
+  @synchronized(self)
   {
-    CGPoint vViewPosition;
-    orxU32  u32ID;
+    /* For all new touches */
+    for(UITouch *poTouch in _poTouchList)
+    {
+      CGPoint                   vViewPosition;
+      orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+      orxU32                    u32ID;
 
-    /* Finds first empty slot */
-    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != nil); u32ID++);
+      /* Finds first empty slot */
+      for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != nil); u32ID++);
 
-    /* Checks */
-    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+      /* Checks */
+      orxASSERT(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER);
+      orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
 
-    /* Stores touch */
-    sstDisplay.astTouchInfoList[u32ID].poTouch = poTouch;
+      /* Stores touch */
+      sstDisplay.astTouchInfoList[u32ID].poTouch = poTouch;
 
-    /* Gets its position inside view */
-    vViewPosition = [poTouch locationInView:self];
+      /* Gets its position inside view */
+      vViewPosition = [poTouch locationInView:self];
 
-    /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
-    stPayload.stTouch.u32ID = u32ID;
-    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
-    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+      /* Gets payload */
+      pstPayload = &(sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber].stPayload);
 
-    /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, _poEvent, orxNULL, &stPayload);
+      /* Inits it */
+      orxMemory_Zero(pstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      pstPayload->stTouch.fPressure = orxFLOAT_1;
+
+      /* Updates it */
+      pstPayload->stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
+      pstPayload->stTouch.u32ID = u32ID;
+      pstPayload->stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+      pstPayload->stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+      /* Stores event info */
+      sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber++].eID = orxSYSTEM_EVENT_TOUCH_BEGIN;
+    }
   }
 
   /* Done! */
@@ -771,35 +809,41 @@ static orxView *spoInstance;
 
 - (void) touchesMoved:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-  /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure = orxFLOAT_1;
-
-  /* For all moved touches */
-  for(UITouch *poTouch in _poTouchList)
+  @synchronized(self)
   {
-    CGPoint vViewPosition;
-    orxU32  u32ID;
+    /* For all moved touches */
+    for(UITouch *poTouch in _poTouchList)
+    {
+      CGPoint                   vViewPosition;
+      orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+      orxU32                    u32ID;
 
-    /* Finds corresponding slot */
-    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
+      /* Finds corresponding slot */
+      for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
 
-    /* Checks */
-    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+      /* Checks */
+      orxASSERT(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER);
+      orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
 
-    /* Gets its position inside view */
-    vViewPosition = [poTouch locationInView:self];
+      /* Gets its position inside view */
+      vViewPosition = [poTouch locationInView:self];
 
-    /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
-    stPayload.stTouch.u32ID = u32ID;
-    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
-    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+      /* Gets payload */
+      pstPayload = &(sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber].stPayload);
 
-    /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, _poEvent, orxNULL, &stPayload);
+      /* Inits it */
+      orxMemory_Zero(pstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      pstPayload->stTouch.fPressure = orxFLOAT_1;
+
+      /* Updates it */
+      pstPayload->stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
+      pstPayload->stTouch.u32ID = u32ID;
+      pstPayload->stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+      pstPayload->stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+      /* Stores event info */
+      sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber++].eID = orxSYSTEM_EVENT_TOUCH_MOVE;
+    }
   }
 
   /* Done! */
@@ -808,38 +852,44 @@ static orxView *spoInstance;
 
 - (void) touchesEnded:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-  /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure = orxFLOAT_0;
-
-  /* For all ended touches */
-  for(UITouch *poTouch in _poTouchList)
+  @synchronized(self)
   {
-    CGPoint vViewPosition;
-    orxU32  u32ID;
+    /* For all ended touches */
+    for(UITouch *poTouch in _poTouchList)
+    {
+      CGPoint                   vViewPosition;
+      orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+      orxU32                    u32ID;
 
-    /* Finds corresponding slot */
-    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
+      /* Finds corresponding slot */
+      for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
 
-    /* Checks */
-    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+      /* Checks */
+      orxASSERT(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER);
+      orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
 
-    /* Removes touch */
-    sstDisplay.astTouchInfoList[u32ID].poTouch = nil;
+      /* Removes touch */
+      sstDisplay.astTouchInfoList[u32ID].poTouch = nil;
 
-    /* Gets its position inside view */
-    vViewPosition = [poTouch locationInView:self];
+      /* Gets its position inside view */
+      vViewPosition = [poTouch locationInView:self];
 
-    /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
-    stPayload.stTouch.u32ID = u32ID;
-    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
-    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+      /* Gets payload */
+      pstPayload = &(sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber].stPayload);
 
-    /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, _poEvent, orxNULL, &stPayload);
+      /* Inits it */
+      orxMemory_Zero(pstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      pstPayload->stTouch.fPressure = orxFLOAT_0;
+
+      /* Updates it */
+      pstPayload->stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
+      pstPayload->stTouch.u32ID = u32ID;
+      pstPayload->stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+      pstPayload->stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+      /* Stores event info */
+      sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber++].eID = orxSYSTEM_EVENT_TOUCH_END;
+    }
   }
 
   /* Done! */
@@ -848,38 +898,44 @@ static orxView *spoInstance;
 
 - (void) touchesCancelled:(NSSet *)_poTouchList withEvent:(UIEvent *)_poEvent
 {
-  orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-  /* Inits event's payload */
-  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-  stPayload.stTouch.fPressure   = orxFLOAT_0;
-
-  /* For all cancelled touches */
-  for(UITouch *poTouch in _poTouchList)
+  @synchronized(self)
   {
-    CGPoint vViewPosition;
-    orxU32  u32ID;
+    /* For all cancelled touches */
+    for(UITouch *poTouch in _poTouchList)
+    {
+      CGPoint                   vViewPosition;
+      orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+      orxU32                    u32ID;
 
-    /* Finds corresponding slot */
-    for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
+      /* Finds corresponding slot */
+      for(u32ID = 0; (u32ID < orxDISPLAY_KU32_TOUCH_NUMBER) && (sstDisplay.astTouchInfoList[u32ID].poTouch != poTouch); u32ID++);
 
-    /* Checks */
-    orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
+      /* Checks */
+      orxASSERT(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER);
+      orxASSERT(u32ID < orxDISPLAY_KU32_TOUCH_NUMBER);
 
-    /* Removes touch */
-    sstDisplay.astTouchInfoList[u32ID].poTouch = nil;
+      /* Removes touch */
+      sstDisplay.astTouchInfoList[u32ID].poTouch = nil;
 
-    /* Gets its position inside view */
-    vViewPosition = [poTouch locationInView:self];
+      /* Gets its position inside view */
+      vViewPosition = [poTouch locationInView:self];
 
-    /* Updates payload */
-    stPayload.stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
-    stPayload.stTouch.u32ID = u32ID;
-    stPayload.stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
-    stPayload.stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+      /* Gets payload */
+      pstPayload = &(sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber].stPayload);
 
-    /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, _poEvent, orxNULL, &stPayload);
+      /* Inits it */
+      orxMemory_Zero(pstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      pstPayload->stTouch.fPressure = orxFLOAT_0;
+
+      /* Updates it */
+      pstPayload->stTouch.dTime = poTouch.timestamp + sstDisplay.dTouchTimeCorrection;
+      pstPayload->stTouch.u32ID = u32ID;
+      pstPayload->stTouch.fX    = orx2F(self.contentScaleFactor * vViewPosition.x);
+      pstPayload->stTouch.fY    = orx2F(self.contentScaleFactor * vViewPosition.y);
+
+      /* Stores event info */
+      sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber++].eID = orxSYSTEM_EVENT_TOUCH_END;
+    }
   }
 
   /* Done! */
@@ -893,13 +949,22 @@ static orxView *spoInstance;
   /* Shake? */
   if(_eMotion == UIEventSubtypeMotionShake)
   {
-    orxSYSTEM_EVENT_PAYLOAD stPayload;
+    @synchronized(self)
+    {
+      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
-    /* Inits event's payload */
-    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      /* Checks */
+      orxASSERT(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER);
 
-    /* Sends it */
-    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOTION_SHAKE, _poEvent, orxNULL, &stPayload);
+      /* Gets payload */
+      pstPayload = &(sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber].stPayload);
+
+      /* Inits it */
+      orxMemory_Zero(pstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+      /* Stores event info */
+      sstDisplay.astEventInfoList[sstDisplay.u32EventInfoNumber++].eID = orxSYSTEM_EVENT_MOTION_SHAKE;
+    }
   }
 
   /* Done! */
@@ -909,6 +974,21 @@ static orxView *spoInstance;
 #endif
 
 @end
+
+static void orxFASTCALL orxDisplay_iOS_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_Update");
+
+  /* Processes accumulated events */
+  [sstDisplay.poView ProcessEvents];
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
 
 static orxINLINE orxDISPLAY_MATRIX *orxDisplay_iOS_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, orxFLOAT _fPosX, orxFLOAT _fPosY, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFLOAT _fRotation, orxFLOAT _fPivotX, orxFLOAT _fPivotY)
 {
@@ -3288,190 +3368,201 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    /* For all indices */
-    for(i = 0, u16Index = 0; i < orxDISPLAY_KU32_INDEX_BUFFER_SIZE; i += 6, u16Index += 4)
+    /* Registers update function */
+    eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Computes them */
-      sstDisplay.au16IndexList[i]     = u16Index;
-      sstDisplay.au16IndexList[i + 1] = u16Index;
-      sstDisplay.au16IndexList[i + 2] = u16Index + 1;
-      sstDisplay.au16IndexList[i + 3] = u16Index + 2;
-      sstDisplay.au16IndexList[i + 4] = u16Index + 3;
-      sstDisplay.au16IndexList[i + 5] = u16Index + 3;
-    }
-
-    /* Creates banks */
-    sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-    sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Valid? */
-    if((sstDisplay.pstBitmapBank != orxNULL)
-    && (sstDisplay.pstShaderBank != orxNULL))
-    {
-      orxDISPLAY_EVENT_PAYLOAD  stPayload;
-      GLint                     iWidth, iHeight;
-
-      /* Pushes display section */
-      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-      /* Stores view instance */
-      sstDisplay.poView = [orxView GetInstance];
-
-      /* Depth buffer? */
-      if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+      /* For all indices */
+      for(i = 0, u16Index = 0; i < orxDISPLAY_KU32_INDEX_BUFFER_SIZE; i += 6, u16Index += 4)
       {
-        /* Inits flags */
-        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
+        /* Computes them */
+        sstDisplay.au16IndexList[i]     = u16Index;
+        sstDisplay.au16IndexList[i + 1] = u16Index;
+        sstDisplay.au16IndexList[i + 2] = u16Index + 1;
+        sstDisplay.au16IndexList[i + 3] = u16Index + 2;
+        sstDisplay.au16IndexList[i + 4] = u16Index + 3;
+        sstDisplay.au16IndexList[i + 5] = u16Index + 3;
+      }
+
+      /* Creates banks */
+      sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Valid? */
+      if((sstDisplay.pstBitmapBank != orxNULL)
+      && (sstDisplay.pstShaderBank != orxNULL))
+      {
+        orxDISPLAY_EVENT_PAYLOAD  stPayload;
+        GLint                     iWidth, iHeight;
+
+        /* Pushes display section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+        /* Stores view instance */
+        sstDisplay.poView = [orxView GetInstance];
+
+        /* Depth buffer? */
+        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+        {
+          /* Inits flags */
+          sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
+        }
+        else
+        {
+          /* Inits flags */
+          sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
+        }
+
+        /* Creates OpenGL thread context */
+        [sstDisplay.poView CreateThreadContext];
+
+        /* Has NPOT texture support? */
+        if(([sstDisplay.poView bShaderSupport] != NO) || ([sstDisplay.poView IsExtensionSupported:@"GL_APPLE_texture_2D_limited_npot"] != NO))
+        {
+          /* Updates status flags */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+        }
+        else
+        {
+          /* Updates status flags */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
+        }
+
+        /* Gets render buffer's size */
+        glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
+        glASSERT();
+        glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
+        glASSERT();
+
+        /* Inits default values */
+        sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+        sstDisplay.pstScreen                  = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+        orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
+        sstDisplay.pstScreen->fWidth          = iWidth;
+        sstDisplay.pstScreen->fHeight         = iHeight;
+        sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fWidth) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
+        sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fHeight) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
+        sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
+        sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+        orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
+        sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
+        sstDisplay.dTouchTimeCorrection       = orxSystem_GetTime() - orx2D([[NSProcessInfo processInfo] systemUptime]);
+        sstDisplay.u32EventInfoNumber         = 0;
+
+        /* Updates config info */
+        orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
+        orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
+
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Gets max texture unit number */
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
+        glASSERT();
+
+        /* Has shader support? */
+        if([sstDisplay.poView bShaderSupport] != NO)
+        {
+          static const orxSTRING szFragmentShaderSource =
+          "precision mediump float;"
+          "varying vec2 ___TexCoord___;"
+          "varying vec4 ___Color___;"
+          "uniform sampler2D __Texture__;"
+          "void main()"
+          "{"
+          "  gl_FragColor = ___Color___ * texture2D(__Texture__, ___TexCoord___);"
+          "}";
+          static const orxSTRING szNoTextureFragmentShaderSource =
+          "precision mediump float;"
+          "varying vec2 ___TexCoord___;"
+          "varying vec4 ___Color___;"
+          "uniform sampler2D __Texture__;"
+          "void main()"
+          "{"
+          "  gl_FragColor = ___Color___;"
+          "}";
+
+          /* Inits flags */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
+          /* Creates texture for screen backup */
+          glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
+          glASSERT();
+          glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+          glASSERT();
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+          glASSERT();
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+          glASSERT();
+
+          /* Creates default shaders */
+          sstDisplay.pstDefaultShader   = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
+          sstDisplay.pstNoTextureShader = orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
+
+          /* Uses it */
+          orxDisplay_StopShader(orxNULL);
+        }
+        else
+        {
+          /* Inits flags */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+        }
+
+        /* Generates index buffer object (IBO) */
+        glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
+        glASSERT();
+
+        /* Binds it */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+        glASSERT();
+
+        /* Fills it */
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
+        glASSERT();
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+        stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+        stPayload.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
+        stPayload.u32Depth    = 32;
+        stPayload.bFullScreen = orxTRUE;
+
+        /* Sends it */
+        orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
-        /* Inits flags */
-        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
+        /* Deletes banks */
+        orxBank_Delete(sstDisplay.pstBitmapBank);
+        sstDisplay.pstBitmapBank = orxNULL;
+        orxBank_Delete(sstDisplay.pstShaderBank);
+        sstDisplay.pstShaderBank = orxNULL;
+
+        /* Unregisters update function */
+        orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
       }
-
-      /* Creates OpenGL thread context */
-      [sstDisplay.poView CreateThreadContext];
-
-      /* Has NPOT texture support? */
-      if(([sstDisplay.poView bShaderSupport] != NO) || ([sstDisplay.poView IsExtensionSupported:@"GL_APPLE_texture_2D_limited_npot"] != NO))
-      {
-        /* Updates status flags */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-      }
-      else
-      {
-        /* Updates status flags */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
-      }
-
-      /* Gets render buffer's size */
-      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
-      glASSERT();
-      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
-      glASSERT();
-
-      /* Inits default values */
-      sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-      sstDisplay.pstScreen                  = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
-      orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-      sstDisplay.pstScreen->fWidth          = iWidth;
-      sstDisplay.pstScreen->fHeight         = iHeight;
-      sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fWidth) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-      sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fHeight) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
-      sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
-      sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
-      orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
-      orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
-      sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
-      sstDisplay.dTouchTimeCorrection       = orxSystem_GetTime() - orx2D([[NSProcessInfo processInfo] systemUptime]);
-
-      /* Updates config info */
-      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
-      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
-      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
-
-      /* Pops config section */
-      orxConfig_PopSection();
-
-      /* Gets max texture unit number */
-      glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
-      glASSERT();
-
-      /* Has shader support? */
-      if([sstDisplay.poView bShaderSupport] != NO)
-      {
-        static const orxSTRING szFragmentShaderSource =
-        "precision mediump float;"
-        "varying vec2 ___TexCoord___;"
-        "varying vec4 ___Color___;"
-        "uniform sampler2D __Texture__;"
-        "void main()"
-        "{"
-        "  gl_FragColor = ___Color___ * texture2D(__Texture__, ___TexCoord___);"
-        "}";
-        static const orxSTRING szNoTextureFragmentShaderSource =
-        "precision mediump float;"
-        "varying vec2 ___TexCoord___;"
-        "varying vec4 ___Color___;"
-        "uniform sampler2D __Texture__;"
-        "void main()"
-        "{"
-        "  gl_FragColor = ___Color___;"
-        "}";
-
-        /* Inits flags */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-
-        /* Creates texture for screen backup */
-        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glASSERT();
-
-        /* Creates default shaders */
-        sstDisplay.pstDefaultShader   = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
-        sstDisplay.pstNoTextureShader = orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
-
-        /* Uses it */
-        orxDisplay_StopShader(orxNULL);
-      }
-      else
-      {
-        /* Inits flags */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-      }
-
-      /* Generates index buffer object (IBO) */
-      glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
-      glASSERT();
-
-      /* Binds it */
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
-      glASSERT();
-
-      /* Fills it */
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
-      glASSERT();
-
-      /* Inits event payload */
-      orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-      stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
-      stPayload.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
-      stPayload.u32Depth    = 32;
-      stPayload.bFullScreen = orxTRUE;
-
-      /* Sends it */
-      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* Deletes banks */
-      orxBank_Delete(sstDisplay.pstBitmapBank);
-      sstDisplay.pstBitmapBank = orxNULL;
-      orxBank_Delete(sstDisplay.pstShaderBank);
-      sstDisplay.pstShaderBank = orxNULL;
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
     }
   }
   else
   {
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -3483,6 +3574,9 @@ void orxFASTCALL orxDisplay_iOS_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters update function */
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
+
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {

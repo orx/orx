@@ -31,7 +31,7 @@
  *
  */
 
- 
+
 #include <jni.h>
 #include <android/log.h>
 
@@ -67,7 +67,7 @@ static orxSYSTEM_EVENT_PAYLOAD sstPayload;
 int32_t NVEventAppInit(int32_t argc, char** argv)
 {
   NvFInit();
-  
+
   return 0;
 }
 
@@ -88,9 +88,9 @@ orxDOUBLE GetBootTime()
 int GetRotation()
 {
   jint rotation;
-  
+
   JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
-    
+
   jclass clsContext = poJEnv->FindClass("android/content/Context");
   orxASSERT(clsContext != orxNULL);
   jmethodID getSystemService = poJEnv->GetMethodID(clsContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
@@ -122,9 +122,9 @@ int GetRotation()
     orxASSERT(getOrientation != orxNULL);
     rotation =  poJEnv->CallIntMethod(defaultDisplay, getOrientation);
   }
-  
+
   orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "rotation = %d", (int) rotation);
-  
+
   return (int) rotation;
 }
 
@@ -155,7 +155,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
       NVEventDoneWithEvent(true);
     }
   }
-  
+
   DEBUG("EGL ready !!!");
 
   /* Call main function */
@@ -255,15 +255,15 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
     signed char xSrc;
     signed char ySrc;
   };
-  
+
   static const AxisSwap axisSwap[] = {
     {-1, -1, 0, 1 },   // ROTATION_0
     { 1, -1, 1, 0 },   // ROTATION_90
     { 1,  1, 0, 1 },   // ROTATION_180
     {-1,  1, 1, 0 } }; // ROTATION_270
-    
+
   const AxisSwap& as = axisSwap[s_displayRotation];
-  
+
   screenVec[0] = (float)as.negateX * canVec[ as.xSrc ];
   screenVec[1] = (float)as.negateY * canVec[ as.ySrc ];
   screenVec[2] = canVec[2];
@@ -273,7 +273,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 {
   s_displayRotation = GetRotation();
   s_glesLoaded = true;
-  
+
   /* Inits the engine */
   if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
   {
@@ -306,13 +306,13 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           switch (ev->m_type)
           {
           case NV_EVENT_KEY:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s", 
-            ev->m_data.m_key.m_code, 
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s",
+            ev->m_data.m_key.m_code,
             (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
 
             /* Send reserved event, used bu the keyboard plugin, to store the keyboard event */
             orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY, NV_EVENT_KEY, orxNULL, orxNULL, &ev->m_data.m_key);
-            
+
             break;
 
           case NV_EVENT_CHAR:
@@ -334,11 +334,11 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             case NV_TOUCHACTION_DOWN:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayload);
               break;
-                
+
             case NV_TOUCHACTION_UP:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayload);
               break;
-                
+
             case NV_TOUCHACTION_MOVE:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayload);
               break;
@@ -365,7 +365,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             case NV_MULTITOUCH_POINTER_UP:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayloadMulti);
               break;
-                
+
             case NV_MULTITOUCH_MOVE:
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayloadMulti);
               break;
@@ -383,7 +383,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
             orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST), NV_EVENT_FOCUS_LOST);
             s_glesLoaded = false;
-              
+
             NVEventDestroySurfaceEGL();
             break;
 
@@ -410,7 +410,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           case NV_EVENT_START:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Start event");
             break;
-              
+
           case NV_EVENT_STOP:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Stop event");
             break;
@@ -421,7 +421,7 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 
             float canVec[3];
             float screenVec[3];
-            
+
             canVec[0] = orx2F(ev->m_data.m_accel.m_x);
             canVec[1] = orx2F(ev->m_data.m_accel.m_y);
             canVec[2] = orx2F(ev->m_data.m_accel.m_z);
@@ -448,14 +448,14 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "UNKNOWN event");
             break;
           };
-            
+
           /* if we do not NULL out the event, then we return that we handled it by default */
           if (ev)
             NVEventDoneWithEvent(true);
         }
 
         // Do not bother to initialize _any_ of EGL, much less go ahead
-        // and render to the screen unless we have all we need to go 
+        // and render to the screen unless we have all we need to go
         // ahead and do our thing.  In many cases,
         // devices will bring us part-way up and then take us down.
         // So, before we bother to init EGL (much less the rendering

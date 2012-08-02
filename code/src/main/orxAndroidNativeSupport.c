@@ -118,7 +118,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
     /* struct engine* engine = (struct engine*)app->userData; */
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
       orxSYSTEM_EVENT_PAYLOAD stPayload;
-    	
+
       /* read event data */
       int32_t x = AMotionEvent_getX(event, 0);
       int32_t y = AMotionEvent_getY(event, 0);
@@ -138,13 +138,13 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
           break;
         }
-        
+
         case AMOTION_EVENT_ACTION_UP:
         {
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
           break;
         }
-        
+
         case AMOTION_EVENT_ACTION_MOVE:
         {
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
@@ -264,10 +264,10 @@ void orxAndroid_DetachThread()
 orxS32 orxAndroid_GetRotation()
 {
   jint rotation;
-  
+
   JNIEnv *poJEnv = orxAndroid_GetCurrentJNIEnv();
   ANativeActivity *activity = orxAndroid_GetNativeActivity();
-   
+
   jclass clsContext = (*poJEnv)->FindClass(poJEnv, "android/content/Context");
   orxASSERT(clsContext != orxNULL);
   jmethodID getSystemService = (*poJEnv)->GetMethodID(poJEnv, clsContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
@@ -290,7 +290,7 @@ orxS32 orxAndroid_GetRotation()
   orxASSERT(getRotation != orxNULL)
   rotation =  (*poJEnv)->CallIntMethod(poJEnv, defaultDisplay, getRotation);
   orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "rotation = %d", (int) rotation);
-  
+
   return (orxS32) rotation;
 }
 
@@ -303,14 +303,14 @@ void orxAndroid_AcquireWakeLock()
         /* Acquires wake lock */
         jclass contextClass = (*poJEnv)->FindClass(poJEnv, "android/content/Context");
         orxASSERT(contextClass != orxNULL);
-        
+
         jmethodID getSystemService = (*poJEnv)->GetMethodID(poJEnv, contextClass, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
         orxASSERT(getSystemService != orxNULL);
         jfieldID POWER_SERVICE_ID = (*poJEnv)->GetStaticFieldID(poJEnv, contextClass, "POWER_SERVICE", "Ljava/lang/String;");
         orxASSERT(POWER_SERVICE_ID != orxNULL);
         jstring POWER_SERVICE = (*poJEnv)->GetStaticObjectField(poJEnv, contextClass, POWER_SERVICE_ID);
         orxASSERT(POWER_SERVICE != orxNULL);
-        
+
         /* Retrieves the PowerManager service and wakelock */
         jobject powerManager = (*poJEnv)->CallObjectMethod(poJEnv, activity->clazz, getSystemService, POWER_SERVICE);
         orxASSERT(powerManager != orxNULL);
@@ -326,7 +326,7 @@ void orxAndroid_AcquireWakeLock()
         jint ON_AFTER_RELEASE = (*poJEnv)->GetStaticIntField(poJEnv, contextClass, ON_AFTER_RELEASE_ID);
         jstring tag = (*poJEnv)->NewStringUTF(poJEnv, "orx");
         orxASSERT(tag != orxNULL);
-        
+
         jobject wakelock = (*poJEnv)->CallObjectMethod(poJEnv, powerManager, newWakeLock, SCREEN_BRIGHT_WAKE_LOCK | ON_AFTER_RELEASE, tag);
         orxASSERT(wakelock != orxNULL);
         /* keep a global reference to release on Exit */
@@ -338,7 +338,7 @@ void orxAndroid_AcquireWakeLock()
         jmethodID acquire = (*poJEnv)->GetMethodID(poJEnv, wakeLockClass, "acquire", "()V");
         orxASSERT(acquire != orxNULL);
         (*poJEnv)->CallVoidMethod(poJEnv, wakelock, acquire);
-        
+
         jthrowable exc = (*poJEnv)->ExceptionOccurred(poJEnv);
         if(exc)
         {
@@ -366,7 +366,7 @@ void orxAndroid_ReleaseWakeLock()
           (*poJEnv)->ExceptionDescribe(poJEnv);
           (*poJEnv)->ExceptionClear(poJEnv);
         }
-        
+
         /* delete global reference */
         (*poJEnv)->DeleteGlobalRef(poJEnv, oWakeLock);
         oWakeLock = orxNULL;
@@ -417,7 +417,7 @@ static int copy_args (const char * input, int argc, char ** argv)
             i++;
         }
     }
-    if (i != argc) 
+    if (i != argc)
         return -1;
     return 0;
 }
@@ -458,13 +458,13 @@ void orxAndroid_GetMainArgs()
 	orxASSERT(intent != orxNULL);
 	jclass intentClass = (*poJEnv)->GetObjectClass(poJEnv, intent);
 	orxASSERT(intentClass != orxNULL);
-	
+
 	/* retrieve componentName */
 	jmethodID getComponent = (*poJEnv)->GetMethodID(poJEnv, intentClass, "getComponent", "()Landroid/content/ComponentName;");
 	orxASSERT(getComponent != orxNULL);
 	jobject componentName = (*poJEnv)->CallObjectMethod(poJEnv, intent, getComponent);
 	orxASSERT(componentName != orxNULL);
-	
+
 	/* retrieve PackageManager */
 	jmethodID getPackageManager = (*poJEnv)->GetMethodID(poJEnv, activityClass, "getPackageManager", "()Landroid/content/pm/PackageManager;");
 	orxASSERT(getPackageManager != orxNULL);
@@ -472,14 +472,14 @@ void orxAndroid_GetMainArgs()
 	orxASSERT(packageManager != orxNULL);
 	jclass packageManagerClass = (*poJEnv)->GetObjectClass(poJEnv, packageManager);
 	orxASSERT(packageManagerClass != orxNULL);
-	
+
 	/* retrieve GET_META_DATA static field */
 	jclass abstractPackageManagerClass = (*poJEnv)->FindClass(poJEnv, "android/content/pm/PackageManager");
 	orxASSERT(abstractPackageManagerClass != orxNULL);
 	jfieldID GET_META_DATA_ID = (*poJEnv)->GetStaticFieldID(poJEnv, abstractPackageManagerClass, "GET_META_DATA", "I");
 	orxASSERT(GET_META_DATA_ID != orxNULL);
 	jint GET_META_DATA = (*poJEnv)->GetStaticIntField(poJEnv, abstractPackageManagerClass, GET_META_DATA_ID);
-	
+
 	/* retrive ActivityInfo */
 	jmethodID getActivityInfo = (*poJEnv)->GetMethodID(poJEnv, packageManagerClass, "getActivityInfo", "(Landroid/content/ComponentName;I)Landroid/content/pm/ActivityInfo;");
 	orxASSERT(getActivityInfo != orxNULL);
@@ -487,7 +487,7 @@ void orxAndroid_GetMainArgs()
 	orxASSERT(activityInfo != orxNULL);
 	jclass activityInfoClass = (*poJEnv)->GetObjectClass(poJEnv, activityInfo);
 	orxASSERT(activityInfoClass != orxNULL);
-	
+
 	/* retrieve metaData Bundle */
 	jfieldID metaDataID = (*poJEnv)->GetFieldID(poJEnv, activityInfoClass, "metaData", "Landroid/os/Bundle;");
 	orxASSERT(metaDataID != orxNULL);
@@ -495,7 +495,7 @@ void orxAndroid_GetMainArgs()
 	orxASSERT(metaData != orxNULL);
 	jclass metaDataClass = (*poJEnv)->GetObjectClass(poJEnv, metaData);
 	orxASSERT(metaDataClass != orxNULL);
-	
+
 	/* retrieve cmd_line String */
 	jmethodID getString = (*poJEnv)->GetMethodID(poJEnv, metaDataClass, "getString", "(Ljava/lang/String;)Ljava/lang/String;");
 	orxASSERT(getString != orxNULL);
@@ -506,12 +506,12 @@ void orxAndroid_GetMainArgs()
 	{
     const char* cmd_line = (*poJEnv)->GetStringUTFChars(poJEnv, orx_cmd_line, NULL);
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "orx.cmd_line = %s", cmd_line);
-    
+
     if (argc_argv (cmd_line, (int *) &u32NbParams, (char***) &azParams) == -1)
     {
       LOGE("Something went wrong.");
     }
-    
+
     (*poJEnv)->ReleaseStringUTFChars(poJEnv, orx_cmd_line, cmd_line);
 	}
 	else
@@ -529,7 +529,7 @@ void orxAndroid_ReleaseMainArgs()
   {
     free(azParams[i]);
   }
-  
+
   free(azParams);
 }
 
