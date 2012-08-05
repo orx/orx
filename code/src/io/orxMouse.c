@@ -32,6 +32,7 @@
 
 #include "io/orxMouse.h"
 #include "plugin/orxPluginCore.h"
+#include "core/orxCommand.h"
 #include "debug/orxDebug.h"
 
 
@@ -43,6 +44,82 @@
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: Get Position
+ */
+void orxFASTCALL orxMouse_CommandGetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  orxMouse_GetPosition(&(_pstResult->vValue));
+
+  /* Done! */
+  return;
+}
+
+/** Command: Set Position
+ */
+void orxFASTCALL orxMouse_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates position */
+  orxMouse_SetPosition(&(_astArgList[0].vValue));
+
+  /* Updates result */
+  orxMouse_GetPosition(&(_pstResult->vValue));
+
+  /* Done! */
+  return;
+}
+
+/** Command: Show Cursor
+ */
+void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Shoud hide cursor? */
+  if((_u32ArgNumber > 0) && (_astArgList[0].bValue == orxFALSE))
+  {
+    /* Hides it */
+    orxMouse_ShowCursor(orxFALSE);
+
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+  else
+  {
+    /* Shows it */
+    orxMouse_ShowCursor(orxTRUE);
+
+    /* Updates result */
+    _pstResult->bValue = orxTRUE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the mouse commands
+ */
+static orxINLINE void orxMouse_RegisterCommands()
+{
+  // Command: Get Position
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 0, 0);
+  // Command: Set Position
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
+
+  // Command: Show Cursor
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
+}
+
+/** Registers all the mouse commands
+ */
+static orxINLINE void orxMouse_UnregisterCommands()
+{
+  // Command: Get Position
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, GetPosition);
+  // Command: Set Position
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetPosition);
+  // Command: Show Cursor
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, ShowCursor);
+}
 
 
 /***************************************************************************
@@ -59,6 +136,7 @@ void orxFASTCALL orxMouse_Setup()
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_DISPLAY);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_COMMAND);
 
   return;
 }
@@ -174,13 +252,30 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
  */
 orxSTATUS orxFASTCALL orxMouse_Init()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Init)();
+  orxSTATUS eResult;
+
+  /* Inits module */
+  eResult = orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Init)();
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Registers commands */
+    orxMouse_RegisterCommands();
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Exits from the mouse module
  */
 void orxFASTCALL orxMouse_Exit()
 {
+  /* Unregisters commands */
+  orxMouse_UnregisterCommands();
+
+  /* Exits from module */
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
 }
 
