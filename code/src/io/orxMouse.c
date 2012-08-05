@@ -45,7 +45,7 @@
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Command: Get Position
+/** Command: GetPosition
  */
 void orxFASTCALL orxMouse_CommandGetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -56,7 +56,7 @@ void orxFASTCALL orxMouse_CommandGetPosition(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
-/** Command: Set Position
+/** Command: SetPosition
  */
 void orxFASTCALL orxMouse_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -70,7 +70,7 @@ void orxFASTCALL orxMouse_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
-/** Command: Show Cursor
+/** Command: ShowCursor
  */
 void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -100,12 +100,12 @@ void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMA
  */
 static orxINLINE void orxMouse_RegisterCommands()
 {
-  // Command: Get Position
+  // Command: GetPosition
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 0, 0);
-  // Command: Set Position
+  // Command: SetPosition
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
 
-  // Command: Show Cursor
+  // Command: ShowCursor
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
 }
 
@@ -113,11 +113,11 @@ static orxINLINE void orxMouse_RegisterCommands()
  */
 static orxINLINE void orxMouse_UnregisterCommands()
 {
-  // Command: Get Position
+  // Command: GetPosition
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, GetPosition);
-  // Command: Set Position
+  // Command: SetPosition
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetPosition);
-  // Command: Show Cursor
+  // Command: ShowCursor
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, ShowCursor);
 }
 

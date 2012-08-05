@@ -268,7 +268,7 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Command: Get Parent
+/** Command: GetParent
  */
 void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -283,7 +283,7 @@ void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-/** Command: Set Parent
+/** Command: SetParent
  */
 void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -294,7 +294,7 @@ void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-/** Command: Create Section
+/** Command: CreateSection
  */
 void orxFASTCALL orxConfig_CommandCreateSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -305,7 +305,7 @@ void orxFASTCALL orxConfig_CommandCreateSection(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
-/** Command: Has Section
+/** Command: HasSection
  */
 void orxFASTCALL orxConfig_CommandHasSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -316,7 +316,7 @@ void orxFASTCALL orxConfig_CommandHasSection(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
-/** Command: Has Value
+/** Command: HasValue
  */
 void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -333,7 +333,7 @@ void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
-/** Command: Get Value
+/** Command: GetValue
  */
 void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -350,7 +350,7 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
-/** Command: Set Value
+/** Command: SetValue
  */
 void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -371,19 +371,19 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 static orxINLINE void orxConfig_RegisterCommands()
 {
-  // Command: Get Parent
+  // Command: GetParent
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
-  // Command: Set Parent
+  // Command: SetParent
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Parent", orxCOMMAND_VAR_TYPE_STRING});
-  // Command: Create Section
+  // Command: CreateSection
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
-  // Command: Has Section
+  // Command: HasSection
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
-  // Command: Has Value
+  // Command: HasValue
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
-  // Command: Get Value
+  // Command: GetValue
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
-  // Command: Set Value
+  // Command: SetValue
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_STRING});
 }
 
@@ -391,19 +391,19 @@ static orxINLINE void orxConfig_RegisterCommands()
  */
 static orxINLINE void orxConfig_UnregisterCommands()
 {
-  // Command: Get Parent
+  // Command: GetParent
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
-  // Command: Set Parent
+  // Command: SetParent
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetParent);
-  // Command: Create Section
+  // Command: CreateSection
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
-  // Command: Has Section
+  // Command: HasSection
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
-  // Command: Has Value
+  // Command: HasValue
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasValue);
-  // Command: Get Value
+  // Command: GetValue
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetValue);
-  // Command: Set Value
+  // Command: SetValue
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetValue);
 }
 

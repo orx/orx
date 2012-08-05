@@ -168,7 +168,6 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
  * @return      Owner / orxNULL
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
-/** @} */
 
 /** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
  * @param[in]   _pstObject    Concerned object

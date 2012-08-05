@@ -481,6 +481,183 @@ void orxFASTCALL orxObject_CommandGetScale(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: SetSpeed
+ */
+void orxFASTCALL orxObject_CommandSetSpeed(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Relative? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its relative speed */
+      orxObject_SetRelativeSpeed(pstObject, &(_astArgList[1].vValue));
+    }
+    else
+    {
+      /* Sets its speed */
+      orxObject_SetSpeed(pstObject, &(_astArgList[1].vValue));
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetAngularVelocity
+ */
+void orxFASTCALL orxObject_CommandSetAngularVelocity(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its angular velocity */
+    orxObject_SetAngularVelocity(pstObject, _astArgList[1].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetCustomGravity
+ */
+void orxFASTCALL orxObject_CommandSetCustomGravity(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its custom gravity */
+    orxObject_SetCustomGravity(pstObject, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetSpeed
+ */
+void orxFASTCALL orxObject_CommandGetSpeed(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Relative? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Gets its relative speed */
+      orxObject_GetRelativeSpeed(pstObject, &(_pstResult->vValue));
+    }
+    else
+    {
+      /* Gets its speed */
+      orxObject_GetSpeed(pstObject, &(_pstResult->vValue));
+    }
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetAngularVelocity
+ */
+void orxFASTCALL orxObject_CommandGetAngularVelocity(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its angular velocity */
+    _pstResult->fValue = orxObject_GetAngularVelocity(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetCustomGravity
+ */
+void orxFASTCALL orxObject_CommandGetCustomGravity(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its custom gravity */
+    orxObject_GetCustomGravity(pstObject, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetName
  */
 void orxFASTCALL orxObject_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1116,6 +1293,19 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetScale */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetScale, "Scale", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Global", orxCOMMAND_VAR_TYPE_BOOL});
 
+  /* Command: SetSpeed */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetSpeed, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Speed", orxCOMMAND_VAR_TYPE_VECTOR}, {"Relative", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: SetAngularVelocity */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAngularVelocity, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"AngularVelocity", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: SetCustomGravity */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetCustomGravity, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"CustomGravity", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetSpeed */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetSpeed, "Speed", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Relative", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetAngularVelocity */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAngularVelocity, "AngularVelocity", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetCustomGravity */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCustomGravity, "CustomGravity", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: GetName */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -1190,6 +1380,19 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetRotation);
   /* Command: GetScale */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetScale);
+
+  /* Command: SetSpeed */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetSpeed);
+  /* Command: SetAngularVelocity */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAngularVelocity);
+  /* Command: SetCustomGravity */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetCustomGravity);
+  /* Command: GetSpeed */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetSpeed);
+  /* Command: GetAngularVelocity */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAngularVelocity);
+  /* Command: GetCustomGravity */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetCustomGravity);
 
   /* Command: GetName */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetName);
