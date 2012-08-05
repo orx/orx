@@ -74,23 +74,11 @@ void orxFASTCALL orxMouse_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMM
  */
 void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  /* Shoud hide cursor? */
-  if((_u32ArgNumber > 0) && (_astArgList[0].bValue == orxFALSE))
-  {
-    /* Hides it */
-    orxMouse_ShowCursor(orxFALSE);
+  /* Updates cursor */
+  orxMouse_ShowCursor(_astArgList[0].bValue);
 
-    /* Updates result */
-    _pstResult->bValue = orxFALSE;
-  }
-  else
-  {
-    /* Shows it */
-    orxMouse_ShowCursor(orxTRUE);
-
-    /* Updates result */
-    _pstResult->bValue = orxTRUE;
-  }
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue;
 
   /* Done! */
   return;
@@ -106,7 +94,7 @@ static orxINLINE void orxMouse_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
 
   // Command: ShowCursor
-  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
 }
 
 /** Registers all the mouse commands
