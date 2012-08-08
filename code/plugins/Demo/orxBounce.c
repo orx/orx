@@ -274,7 +274,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 
         /* Updates title string */
         orxConfig_PushSection("Bounce");
-        orxString_NPrint(acBuffer, 1024, "%s (%dx%d)", orxConfig_GetString("Title"), pstPayload->u32Width, pstPayload->u32Height);
+        orxString_NPrint(acBuffer, 1023, "%s (%dx%d)", orxConfig_GetString("Title"), pstPayload->u32Width, pstPayload->u32Height);
+        acBuffer[1023] = orxCHAR_NULL;
         orxConfig_PopSection();
 
         /* Updates display module config content */

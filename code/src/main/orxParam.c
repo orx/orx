@@ -648,7 +648,8 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     orxCHAR zLocalName[256], zPath[256];
 
     /* Copies it locally */
-    orxString_NPrint(zLocalName, 256, "%s", sstParam.azParams[0]);
+    orxString_NPrint(zLocalName, 255, "%s", sstParam.azParams[0]);
+    zLocalName[255] = orxCHAR_NULL;
 
     /* Finds last '.' */
     for(s32Index = orxString_SearchCharIndex(zLocalName, '.', 0);
@@ -683,7 +684,8 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     }
 
     /* Gets debug path */
-    orxString_NPrint(zPath, 256, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
+    orxString_NPrint(zPath, 255, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
+    zPath[255] = orxCHAR_NULL;
 
     /* Stores base names for debug */
     orxDEBUG_SETBASEFILENAME(zPath);

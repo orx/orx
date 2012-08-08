@@ -88,12 +88,12 @@ void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMA
  */
 static orxINLINE void orxMouse_RegisterCommands()
 {
-  // Command: GetPosition
+  /* Command: GetPosition */
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 0, 0);
-  // Command: SetPosition
+  /* Command: SetPosition */
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
 
-  // Command: ShowCursor
+  /* Command: ShowCursor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
 }
 
@@ -101,11 +101,11 @@ static orxINLINE void orxMouse_RegisterCommands()
  */
 static orxINLINE void orxMouse_UnregisterCommands()
 {
-  // Command: GetPosition
+  /* Command: GetPosition */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, GetPosition);
-  // Command: SetPosition
+  /* Command: SetPosition */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetPosition);
-  // Command: ShowCursor
+  /* Command: ShowCursor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, ShowCursor);
 }
 

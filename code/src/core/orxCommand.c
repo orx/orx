@@ -51,27 +51,28 @@
 
 /** Module flags
  */
-#define orxCOMMAND_KU32_STATIC_FLAG_NONE              0x00000000  /**< No flags */
+#define orxCOMMAND_KU32_STATIC_FLAG_NONE              0x00000000                      /**< No flags */
 
-#define orxCOMMAND_KU32_STATIC_FLAG_READY             0x00000001  /**< Ready flag */
-#define orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL     0x10000000  /** <Internal call flag */
+#define orxCOMMAND_KU32_STATIC_FLAG_READY             0x00000001                      /**< Ready flag */
+#define orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL     0x10000000                      /** <Internal call flag */
 
-#define orxCOMMAND_KU32_STATIC_MASK_ALL               0xFFFFFFFF  /**< All mask */
+#define orxCOMMAND_KU32_STATIC_MASK_ALL               0xFFFFFFFF                      /**< All mask */
 
 
 /** Misc
  */
-#define orxCOMMAND_KC_STRING_MARKER                   '"'         /**< String marker character */
-#define orxCOMMAND_KC_PUSH_MARKER                     '>'         /**< Push marker character */
-#define orxCOMMAND_KC_POP_MARKER                      '<'         /**< Pop marker character */
-#define orxCOMMAND_KC_GUID_MARKER                     '^'         /**< GUID marker character */
+#define orxCOMMAND_KC_STRING_MARKER                   '"'                             /**< String marker character */
+#define orxCOMMAND_KC_PUSH_MARKER                     '>'                             /**< Push marker character */
+#define orxCOMMAND_KC_POP_MARKER                      '<'                             /**< Pop marker character */
+#define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
 
 
 #define orxCOMMAND_KU32_TABLE_SIZE                    256
 #define orxCOMMAND_KU32_BANK_SIZE                     128
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
 
-#define orxCOMMAND_KU32_BUFFER_SIZE                   4096
+#define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
+#define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
 #define orxCOMMAND_KZ_ERROR_VALUE                     "STACK_ERROR"
 
@@ -84,7 +85,7 @@
  */
 typedef struct __orxCOMMAND_STACK_ENTRY_t
 {
-  orxCOMMAND_VAR            stValue;                  /**< Value : 28 */
+  orxCOMMAND_VAR            stValue;                                                  /**< Value : 28 */
 
 } orxCOMMAND_STACK_ENTRY;
 
@@ -92,12 +93,12 @@ typedef struct __orxCOMMAND_STACK_ENTRY_t
  */
 typedef struct __orxCOMMAND_t
 {
-  orxCOMMAND_FUNCTION       pfnFunction;              /**< Function : 4 */
-  orxSTRING                 zName;                    /**< Name : 8 */
-  orxCOMMAND_VAR_DEF        stResult;                 /**< Result definition : 16 */
-  orxU16                    u16RequiredParamNumber;   /**< Required param number : 18 */
-  orxU16                    u16OptionalParamNumber;   /**< Optional param number : 20 */
-  orxCOMMAND_VAR_DEF       *astParamList;             /**< Param list : 24 */
+  orxCOMMAND_FUNCTION       pfnFunction;                                              /**< Function : 4 */
+  orxSTRING                 zName;                                                    /**< Name : 8 */
+  orxCOMMAND_VAR_DEF        stResult;                                                 /**< Result definition : 16 */
+  orxU16                    u16RequiredParamNumber;                                   /**< Required param number : 18 */
+  orxU16                    u16OptionalParamNumber;                                   /**< Optional param number : 20 */
+  orxCOMMAND_VAR_DEF       *astParamList;                                             /**< Param list : 24 */
 
 } orxCOMMAND;
 
@@ -105,11 +106,12 @@ typedef struct __orxCOMMAND_t
  */
 typedef struct __orxCOMMAND_STATIC_t
 {
-  orxBANK                  *pstBank;                  /**< Command bank */
-  orxHASHTABLE             *pstTable;                 /**< Command table */
-  orxBANK                  *pstResultBank;            /**< Command result bank */
-  orxCHAR                   acBuffer[orxCOMMAND_KU32_BUFFER_SIZE]; /**< Evaluate buffer */
-  orxU32                    u32Flags;                 /**< Control flags */
+  orxBANK                  *pstBank;                                                  /**< Command bank */
+  orxHASHTABLE             *pstTable;                                                 /**< Command table */
+  orxBANK                  *pstResultBank;                                            /**< Command result bank */
+  orxCHAR                   acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE];   /**< Evaluate buffer */
+  orxCHAR                   acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE]; /**< Prototype buffer */
+  orxU32                    u32Flags;                                                 /**< Control flags */
 
 } orxCOMMAND_STATIC;
 
@@ -126,6 +128,39 @@ static orxCOMMAND_STATIC sstCommand;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _eType)
+{
+  const orxSTRING zResult;
+
+#define orxCOMMAND_DECLARE_TYPE_NAME(TYPE) case orxCOMMAND_VAR_TYPE_##TYPE: zResult = "orx"#TYPE; break
+
+  /* Depending on type */
+  switch(_eType)
+  {
+    orxCOMMAND_DECLARE_TYPE_NAME(STRING);
+    orxCOMMAND_DECLARE_TYPE_NAME(FLOAT);
+    orxCOMMAND_DECLARE_TYPE_NAME(S32);
+    orxCOMMAND_DECLARE_TYPE_NAME(U32);
+    orxCOMMAND_DECLARE_TYPE_NAME(S64);
+    orxCOMMAND_DECLARE_TYPE_NAME(U64);
+    orxCOMMAND_DECLARE_TYPE_NAME(BOOL);
+    orxCOMMAND_DECLARE_TYPE_NAME(VECTOR);
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "No name defined for command var type #%d.", _eType);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 
 /** Event handler
  * @param[in]   _pstEvent                     Sent event
@@ -156,7 +191,8 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       orxCHAR                     acGUID[20];
 
       /* Gets owner's GUID */
-      s32GUIDLength = orxString_NPrint(acGUID, 20, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
+      acGUID[19]    = orxCHAR_NULL;
+      s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
 
       /* Gets payload */
       pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
@@ -173,7 +209,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       }
 
       /* For all characters */
-      for(pcDst = sstCommand.acBuffer; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE - 1); pcSrc++)
+      for(pcDst = sstCommand.acEvaluateBuffer; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1); pcSrc++)
       {
         /* Depending on character */
         switch(*pcSrc)
@@ -315,7 +351,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL, orxCOMMAND_KU32_STATIC_FLAG_NONE);
 
       /* Evaluates command */
-      if(orxCommand_Evaluate(sstCommand.acBuffer, &stResult) == orxNULL)
+      if(orxCommand_Evaluate(sstCommand.acEvaluateBuffer, &stResult) == orxNULL)
       {
         /* Stores error */
         stResult.eType  = orxCOMMAND_VAR_TYPE_STRING;
@@ -760,6 +796,68 @@ orxBOOL orxFASTCALL orxCommand_IsRegistered(const orxSTRING _zCommand)
   return bResult;
 }
 
+/** Gets a command's (text) prototype (beware: result won't persist from one call to the other)
+* @param[in]   _zCommand      Command name
+* @return      Command prototype / orxSTRING_EMPTY
+*/
+const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zCommand != orxNULL);
+
+  /* Valid? */
+  if((_zCommand != orxNULL) & (_zCommand != orxSTRING_EMPTY))
+  {
+    orxU32      u32ID;
+    orxCOMMAND *pstCommand;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zCommand);
+
+    /* Gets command */
+    pstCommand = (orxCOMMAND *)orxHashTable_Get(sstCommand.pstTable, u32ID);
+
+    /* Success? */
+    if(pstCommand != orxNULL)
+    {
+      orxU32 i, u32Size;
+
+      /* Prints result and function name */
+      u32Size = orxString_NPrint(sstCommand.acPrototypeBuffer, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1, "{%s %s} %s", orxCommand_GetTypeString(pstCommand->stResult.eType), pstCommand->stResult.zName, pstCommand->zName);
+
+      /* For all required arguments */
+      for(i = 0; i < (orxU32)pstCommand->u16RequiredParamNumber; i++)
+      {
+        /* Prints it */
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " (%s %s)", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), pstCommand->astParamList[i].zName);
+      }
+
+      /* For all optional arguments */
+      for(; i < (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber; i++)
+      {
+        /* Prints it */
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " [%s %s]", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), pstCommand->astParamList[i].zName);
+      }
+
+      /* Had no parameters? */
+      if(i == 0)
+      {
+        /* Prints function end */
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " <void>");
+      }
+
+      /* Updates result */
+      zResult = sstCommand.acPrototypeBuffer;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Evaluates a command
 * @param[in]   _zCommandLine  Command name + arguments
 * @param[out]  _pstResult     Variable that will contain the result
@@ -786,11 +884,11 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
     if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL))
     {
       /* Copies command line to work buffer */
-      orxString_NCopy(sstCommand.acBuffer, _zCommandLine, orxCOMMAND_KU32_BUFFER_SIZE);
+      orxString_NCopy(sstCommand.acEvaluateBuffer, _zCommandLine, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE);
     }
 
     /* Gets start of command */
-    zCommand = orxString_SkipWhiteSpaces(sstCommand.acBuffer);
+    zCommand = orxString_SkipWhiteSpaces(sstCommand.acEvaluateBuffer);
 
     /* Valid? */
     if(zCommand != orxSTRING_EMPTY)
@@ -830,7 +928,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 
         /* For the remainder of the buffer? */
         for(pc++, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
-            (u32ArgNumber < u32ParamNumber) && (pc - sstCommand.acBuffer < orxCOMMAND_KU32_BUFFER_SIZE) && (*pc != orxCHAR_NULL);
+            (u32ArgNumber < u32ParamNumber) && (pc - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE) && (*pc != orxCHAR_NULL);
             pc++, u32ArgNumber++)
         {
           /* Skips all whitespaces */
@@ -996,7 +1094,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
             const orxCHAR *pcTemp;
 
             /* Restores command line */
-            for(pcTemp = sstCommand.acBuffer; pcTemp < pc; pcTemp++)
+            for(pcTemp = sstCommand.acEvaluateBuffer; pcTemp < pc; pcTemp++)
             {
               /* Null char? */
               if(*pcTemp == orxCHAR_NULL)

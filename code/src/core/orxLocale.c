@@ -110,22 +110,11 @@ void orxFASTCALL orxLocale_CommandGetCurrentLanguage(orxU32 _u32ArgNumber, const
  */
 void orxFASTCALL orxLocale_CommandSetString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  const orxSTRING zLanguageBackup;
-
-  /* Backups current language */
-  zLanguageBackup = sstLocale.zCurrentLanguage;
-
-  /* Sets desired language */
-  sstLocale.zCurrentLanguage = _astArgList[0].zValue;
-
   /* Sets string */
-  orxLocale_SetString(_astArgList[1].zValue, _astArgList[2].zValue);
+  orxLocale_SetString(_astArgList[0].zValue, _astArgList[1].zValue);
 
   /* Updates result */
-  _pstResult->zValue = _astArgList[1].zValue;
-
-  /* Restores previous language */
-  sstLocale.zCurrentLanguage = zLanguageBackup;
+  _pstResult->zValue = _astArgList[0].zValue;
 
   /* Done! */
   return;
@@ -135,19 +124,8 @@ void orxFASTCALL orxLocale_CommandSetString(orxU32 _u32ArgNumber, const orxCOMMA
  */
 void orxFASTCALL orxLocale_CommandGetString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  const orxSTRING zLanguageBackup;
-
-  /* Backups current language */
-  zLanguageBackup = sstLocale.zCurrentLanguage;
-
-  /* Sets desired language */
-  sstLocale.zCurrentLanguage = _astArgList[0].zValue;
-
   /* Updates result */
-  _pstResult->zValue = orxLocale_GetString(_astArgList[1].zValue);
-
-  /* Restores previous language */
-  sstLocale.zCurrentLanguage = zLanguageBackup;
+  _pstResult->zValue = orxLocale_GetString(_astArgList[0].zValue);
 
   /* Done! */
   return;
@@ -163,9 +141,9 @@ static orxINLINE void orxLocale_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetCurrentLanguage, "Language", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: SetString */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SetString, "Key", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Language", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SetString, "Key", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetString */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetString, "String", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Language", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Key", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the locale commands

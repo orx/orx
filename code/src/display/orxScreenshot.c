@@ -162,7 +162,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
     do
     {
       /* Gets file to find name */
-      orxString_NPrint(sstScreenshot.acScreenshotBuffer, orxSCREENSHOT_KU32_BUFFER_SIZE, "%s/%s%0*d.%s", zDirectory, zBaseName, u32Digits, sstScreenshot.u32ScreenshotIndex + 1, zExtension);
+      orxString_NPrint(sstScreenshot.acScreenshotBuffer, orxSCREENSHOT_KU32_BUFFER_SIZE - 1, "%s/%s%0*d.%s", zDirectory, zBaseName, u32Digits, sstScreenshot.u32ScreenshotIndex + 1, zExtension);
 
       /* Updates screenshot index */
       sstScreenshot.u32ScreenshotIndex++;

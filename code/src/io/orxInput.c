@@ -232,16 +232,16 @@ void orxFASTCALL orxInput_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND
 static orxINLINE void orxInput_RegisterCommands()
 {
   /* Command: SelectSet */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SelectSet, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SelectSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentSet */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Name", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: SetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Name", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Name", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Input", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Input", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent = orxFALSE", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: ResetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, ResetValue, "Name", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, ResetValue, "Input", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetValue, "Value", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetValue, "Value", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the input commands
