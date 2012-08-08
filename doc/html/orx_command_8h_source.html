@@ -116,22 +116,22 @@
 <a name="l00111"></a><a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">00111</a> <span class="keyword">typedef</span> <a class="code" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> (orxFASTCALL *<a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a>)(orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
 <a name="l00112"></a>00112 
 <a name="l00113"></a>00113 
-<a name="l00116"></a><a class="code" href="group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2">00116</a> <span class="preprocessor">#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)        \</span>
-<a name="l00117"></a>00117 <span class="preprocessor">do                                                                                                                                  \</span>
-<a name="l00118"></a>00118 <span class="preprocessor">{                                                                                                                                   \</span>
-<a name="l00119"></a>00119 <span class="preprocessor">  orxCOMMAND_VAR_DEF  stResult;                                                                                                     \</span>
-<a name="l00120"></a>00120 <span class="preprocessor">  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                        \</span>
-<a name="l00121"></a>00121 <span class="preprocessor">  orxSTATUS           eStatus;                                                                                                      \</span>
-<a name="l00122"></a>00122 <span class="preprocessor">  stResult.eType  = RESULT_TYPE;                                                                                                    \</span>
-<a name="l00123"></a>00123 <span class="preprocessor">  stResult.zName  = RESULT_NAME;                                                                                                    \</span>
-<a name="l00124"></a>00124 <span class="preprocessor">  eStatus         = orxCommand_Register(#MODULE&quot;.&quot;#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &amp;stResult);\</span>
-<a name="l00125"></a>00125 <span class="preprocessor">  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                          \</span>
+<a name="l00116"></a><a class="code" href="group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2">00116</a> <span class="preprocessor">#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                \</span>
+<a name="l00117"></a>00117 <span class="preprocessor">do                                                                                                                                                          \</span>
+<a name="l00118"></a>00118 <span class="preprocessor">{                                                                                                                                                           \</span>
+<a name="l00119"></a>00119 <span class="preprocessor">  orxCOMMAND_VAR_DEF  stResult;                                                                                                                             \</span>
+<a name="l00120"></a>00120 <span class="preprocessor">  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                \</span>
+<a name="l00121"></a>00121 <span class="preprocessor">  orxSTATUS           eStatus;                                                                                                                              \</span>
+<a name="l00122"></a>00122 <span class="preprocessor">  stResult.eType    = RESULT_TYPE;                                                                                                                          \</span>
+<a name="l00123"></a>00123 <span class="preprocessor">  stResult.zName    = RESULT_NAME;                                                                                                                          \</span>
+<a name="l00124"></a>00124 <span class="preprocessor">  eStatus           = orxCommand_Register(#MODULE&quot;.&quot;#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &amp;stResult); \</span>
+<a name="l00125"></a>00125 <span class="preprocessor">  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                  \</span>
 <a name="l00126"></a>00126 <span class="preprocessor">} while(orxFALSE)</span>
 <a name="l00127"></a>00127 <span class="preprocessor"></span>
-<a name="l00128"></a><a class="code" href="group__orx_command.html#gac5f19d9731fa026b64528d186415fe67">00128</a> <span class="preprocessor">#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                         \</span>
-<a name="l00129"></a>00129 <span class="preprocessor">do                                                                                                                                  \</span>
-<a name="l00130"></a>00130 <span class="preprocessor">{                                                                                                                                   \</span>
-<a name="l00131"></a>00131 <span class="preprocessor">  orxCommand_Unregister(#MODULE&quot;.&quot;#COMMAND);                                                                                        \</span>
+<a name="l00128"></a><a class="code" href="group__orx_command.html#gac5f19d9731fa026b64528d186415fe67">00128</a> <span class="preprocessor">#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                 \</span>
+<a name="l00129"></a>00129 <span class="preprocessor">do                                                                                                                                                          \</span>
+<a name="l00130"></a>00130 <span class="preprocessor">{                                                                                                                                                           \</span>
+<a name="l00131"></a>00131 <span class="preprocessor">  orxCommand_Unregister(#MODULE&quot;.&quot;#COMMAND);                                                                                                                \</span>
 <a name="l00132"></a>00132 <span class="preprocessor">} while(orxFALSE)</span>
 <a name="l00133"></a>00133 <span class="preprocessor"></span>
 <a name="l00134"></a>00134 
@@ -148,14 +148,16 @@
 <a name="l00165"></a>00165 
 <a name="l00170"></a>00170 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL                  <a class="code" href="group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6">orxCommand_IsRegistered</a>(<span class="keyword">const</span> orxSTRING _zCommand);
 <a name="l00171"></a>00171 
-<a name="l00172"></a>00172 
-<a name="l00178"></a>00178 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga4a93da7541fa0b08c97b165375a76896">orxCommand_Evaluate</a>(<span class="keyword">const</span> orxSTRING _zCommandLine, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
-<a name="l00179"></a>00179 
-<a name="l00187"></a>00187 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga317d7bfeacbcb33333bd37f8a0b70a38">orxCommand_Execute</a>(<span class="keyword">const</span> orxSTRING _zCommand, orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
-<a name="l00188"></a>00188 
-<a name="l00189"></a>00189 
-<a name="l00190"></a>00190 <span class="preprocessor">#endif </span><span class="comment">/* _orxCOMMAND_H_ */</span>
-<a name="l00191"></a>00191 
+<a name="l00176"></a>00176 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL          <a class="code" href="group__orx_command.html#ga4c56c946e55b4fe9dc77ac1a85c0c9a6">orxCommand_GetPrototype</a>(<span class="keyword">const</span> orxSTRING _zCommand);
+<a name="l00177"></a>00177 
+<a name="l00178"></a>00178 
+<a name="l00184"></a>00184 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga4a93da7541fa0b08c97b165375a76896">orxCommand_Evaluate</a>(<span class="keyword">const</span> orxSTRING _zCommandLine, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
+<a name="l00185"></a>00185 
+<a name="l00193"></a>00193 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga317d7bfeacbcb33333bd37f8a0b70a38">orxCommand_Execute</a>(<span class="keyword">const</span> orxSTRING _zCommand, orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
+<a name="l00194"></a>00194 
+<a name="l00195"></a>00195 
+<a name="l00196"></a>00196 <span class="preprocessor">#endif </span><span class="comment">/* _orxCOMMAND_H_ */</span>
+<a name="l00197"></a>00197 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>
