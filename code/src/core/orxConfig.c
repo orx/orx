@@ -73,6 +73,7 @@
 #define orxCONFIG_VALUE_KU16_FLAG_RANDOM          0x0002      /**< Random flag */
 #define orxCONFIG_VALUE_KU16_FLAG_INHERITANCE     0x0004      /**< Inheritance flag */
 #define orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE      0x0008      /**< Block mode flag */
+#define orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE      0x0010      /**< Self value flag */
 
 #define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /**< All mask */
 
@@ -523,8 +524,17 @@ static orxINLINE void orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue)
   if((*(_pstValue->zValue) == orxCONFIG_KC_INHERITANCE_MARKER)
   && (*(_pstValue->zValue + 1) != orxCONFIG_KC_INHERITANCE_MARKER))
   {
-    /* Updates flags */
-    u16Flags = orxCONFIG_VALUE_KU16_FLAG_INHERITANCE;
+    /* Self value? */
+    if(*(_pstValue->zValue + 1) == orxCHAR_NULL)
+    {
+      /* Updates flags */
+      u16Flags = orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE;
+    }
+    else
+    {
+      /* Updates flags */
+      u16Flags = orxCONFIG_VALUE_KU16_FLAG_INHERITANCE;
+    }
   }
   else
   {
@@ -614,14 +624,23 @@ static orxINLINE orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue, or
   orxASSERT(_pstValue != orxNULL);
   orxASSERT(_s32Index >= 0);
 
-  /* Gets to the correct item start */
-  for(zResult = _pstValue->zValue, s32Counter = _s32Index; s32Counter > 0; zResult++)
+  /* Is self value? */
+  if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE))
   {
-    /* Null character? */
-    if(*zResult == orxCHAR_NULL)
+    /* Updates result */
+    zResult = sstConfig.pstCurrentSection->zName;
+  }
+  else
+  {
+    /* Gets to the correct item start */
+    for(zResult = _pstValue->zValue, s32Counter = _s32Index; s32Counter > 0; zResult++)
     {
-      /* Updates counter */
-      s32Counter--;
+      /* Null character? */
+      if(*zResult == orxCHAR_NULL)
+      {
+        /* Updates counter */
+        s32Counter--;
+      }
     }
   }
 
