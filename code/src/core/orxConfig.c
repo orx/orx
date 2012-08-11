@@ -291,7 +291,7 @@ void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMA
 void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = (orxConfig_SetParent(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+  _pstResult->zValue = (orxConfig_SetParent(_astArgList[0].zValue, (_u32ArgNumber > 1) ? ((_astArgList[1].zValue[0] != orxCONFIG_KC_INHERITANCE_MARKER) ? _astArgList[1].zValue : orxSTRING_EMPTY) : orxNULL) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -799,7 +799,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
     }
 
     /* Valid parent ID */
-    if(u32ParentID != 0)
+    if((u32ParentID != 0) && (u32ParentID != orxU32_UNDEFINED))
     {
       orxCONFIG_SECTION *pstSection;
 
@@ -3081,7 +3081,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           orxCONFIG_ENTRY   *pstEntry;
 
           /* Has a parent ID? */
-          if(pstSection->u32ParentID != 0)
+          if((pstSection->u32ParentID != 0) && (pstSection->u32ParentID != orxU32_UNDEFINED))
           {
             /* Gets it from table */
             pstParentSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, pstSection->u32ParentID);
@@ -3095,8 +3095,17 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
           else
           {
-            /* Writes section name */
-            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            /* Forces no default section? */
+            if(pstSection->u32ParentID == orxU32_UNDEFINED)
+            {
+              /* Writes section name */
+              u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%c%s%c%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            }
+            else
+            {
+              /* Writes section name */
+              u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            }
           }
 
           /* Encrypt? */
@@ -3398,6 +3407,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
   {
     orxCONFIG_SECTION  *pstSection;
     orxCHAR            *pcNameEnd;
+    orxBOOL             bNewParent;
     orxU32              u32SectionID, u32ParentID;
     orxS32              s32MarkerIndex;
 
@@ -3407,8 +3417,6 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     /* Found? */
     if(s32MarkerIndex >= 0)
     {
-      const orxSTRING zParent;
-
       /* Cuts the name */
       *((orxSTRING)_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
 
@@ -3427,16 +3435,30 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
         pcNameEnd = orxNULL;
       }
 
-      /* Gets parent name */
-      for(zParent = _zSectionName + s32MarkerIndex + 1; *zParent == ' '; zParent++);
+      if(_zSectionName[s32MarkerIndex + 1] == orxCONFIG_KC_INHERITANCE_MARKER)
+      {
+        /* Forces 'no default' parent ID */
+        u32ParentID = orxU32_UNDEFINED;
+      }
+      else
+      {
+        const orxSTRING zParent;
 
-      /* Gets its parent ID */
-      u32ParentID = orxString_ToCRC(zParent);
+        /* Gets parent name */
+        for(zParent = _zSectionName + s32MarkerIndex + 1; *zParent == ' '; zParent++);
+
+        /* Gets its parent ID */
+        u32ParentID = orxString_ToCRC(zParent);
+      }
+
+      /* Asks for new parent to be set */
+      bNewParent = orxTRUE;
     }
     else
     {
       /* Clears parent ID */
-      u32ParentID = orxU32_UNDEFINED;
+      u32ParentID = 0;
+      bNewParent  = orxFALSE;
 
       /* Clears end of name */
       pcNameEnd = orxNULL;
@@ -3469,7 +3491,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
     if(pstSection == orxNULL)
     {
       /* Creates it */
-      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, (u32ParentID != orxU32_UNDEFINED) ? u32ParentID : 0);
+      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, u32ParentID);
 
       /* Success? */
       if(pstSection != orxNULL)
@@ -3492,7 +3514,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
       if(sstConfig.u32LoadCounter != 0)
       {
         /* Has new parent ID? */
-        if(u32ParentID != orxU32_UNDEFINED)
+        if(bNewParent != orxFALSE)
         {
           /* Updates parent ID */
           pstSection->u32ParentID = u32ParentID;
@@ -3631,7 +3653,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
 
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
- * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased
+ * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased, if orxSTRING_EMPTY is provided, "no default parent" will be enforced
  */
 orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName)
 {
@@ -3667,6 +3689,15 @@ orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const o
       {
         /* Updates concerned section's parent */
         pstSection->u32ParentID = sstConfig.pstCurrentSection->u32ID;
+      }
+      else
+      {
+        /* Force no parent? */
+        if(_zParentName == orxSTRING_EMPTY)
+        {
+          /* Updates parent ID */
+          pstSection->u32ParentID = orxU32_UNDEFINED;
+        }
       }
     }
     else
@@ -3707,7 +3738,7 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
     if(orxConfig_SelectSection(_zSectionName) != orxSTATUS_FAILURE)
     {
       /* Has parent? */
-      if(sstConfig.pstCurrentSection->u32ParentID != 0)
+      if((sstConfig.pstCurrentSection->u32ParentID != 0) && (sstConfig.pstCurrentSection->u32ParentID != orxU32_UNDEFINED))
       {
         orxCONFIG_SECTION *pstParentSection;
 

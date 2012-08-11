@@ -147,7 +147,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_RenameSection(const orxS
 
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
- * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased
+ * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased, if orxSTRING_EMPTY is provided, "no default parent" will be enforced
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName);
