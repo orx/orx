@@ -144,26 +144,6 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxMouse_GLFW_Update");
 
-  /* Should clear wheel? */
-  if(sstMouse.bClearWheel != orxFALSE)
-  {
-    /* Clears it */
-    sstMouse.fWheelMove   = orxFLOAT_0;
-    sstMouse.bClearWheel  = orxFALSE;
-  }
-
-  /* Should clear move? */
-  if(sstMouse.bClearMove != orxFALSE)
-  {
-    /* Clears it */
-    sstMouse.vMouseMove.fX  =
-    sstMouse.vMouseMove.fY  = orxFLOAT_0;
-    sstMouse.bClearMove     = orxFALSE;
-  }
-
-  /* Clears internal wheel move */
-  sstMouse.fInternalWheelMove = orxFLOAT_0;
-
   /* Is left button pressed? */
   if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
   {
@@ -235,6 +215,34 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
   return;
 }
 
+/** Clean callback
+ */
+static void orxFASTCALL orxMouse_GLFW_Clean(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Should clear wheel? */
+  if(sstMouse.bClearWheel != orxFALSE)
+  {
+    /* Clears it */
+    sstMouse.fWheelMove   = orxFLOAT_0;
+    sstMouse.bClearWheel  = orxFALSE;
+  }
+
+  /* Should clear move? */
+  if(sstMouse.bClearMove != orxFALSE)
+  {
+    /* Clears it */
+    sstMouse.vMouseMove.fX  =
+    sstMouse.vMouseMove.fY  = orxFLOAT_0;
+    sstMouse.bClearMove     = orxFALSE;
+  }
+
+  /* Clears internal wheel move */
+  sstMouse.fInternalWheelMove = orxFLOAT_0;
+
+  /* Done! */
+  return;
+}
+
 orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -277,8 +285,20 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
       /* Valid? */
       if(pstClock != orxNULL)
       {
-        /* Registers event update function */
+        /* Registers update function */
         eResult = orxClock_Register(pstClock, orxMouse_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_HIGHEST);
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Registers clean function */
+          eResult = orxClock_Register(pstClock, orxMouse_GLFW_Clean, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWER);
+        }
+        else
+        {
+          /* Unregisters update function */
+          orxClock_Unregister(pstClock, orxMouse_GLFW_Update);
+        }
       }
 
       /* Success? */
@@ -321,8 +341,16 @@ void orxFASTCALL orxMouse_GLFW_Exit()
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
+    orxCLOCK *pstClock;
+
+    /* Gets core clock */
+    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxMouse_GLFW_Update);
+    orxClock_Unregister(pstClock, orxMouse_GLFW_Update);
+
+    /* Unregisters clean function */
+    orxClock_Unregister(pstClock, orxMouse_GLFW_Clean);
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxMouse_GLFW_EventHandler);
