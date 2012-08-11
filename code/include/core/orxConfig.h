@@ -134,18 +134,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_CopyFile(const orxSTRING
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SelectSection(const orxSTRING _zSectionName);
 
 /** Renames a section
  * @param[in] _zSectionName     Section to rename
  * @param[in] _zNewSectionName  New name for the section
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_RenameSection(const orxSTRING _zSectionName, const orxSTRING _zNewSectionName);
 
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
  * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName);
 
@@ -154,6 +157,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRIN
  * @return Section's parent name / orxNULL
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
+
+/** Sets default parent for all sections
+ * @param[in] _zSectionName     Section name that will be used as an implicit default parent section for all config sections, if orxNULL is provided, default parent will be removed
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetDefaultParent(const orxSTRING _zSectionName);
 
 /** Gets current working section
  * @return Current selected section

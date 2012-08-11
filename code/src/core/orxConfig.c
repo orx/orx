@@ -99,6 +99,7 @@
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_HISTORY               "History"   /**< Keep config history */
+#define orxCONFIG_KZ_CONFIG_DEFAULT_PARENT        "DefaultParent" /**< Default parent for sections */
 #define orxCONFIG_KZ_CONFIG_IGNORE_PATH           "IgnorePath"/**< Ignore paths in config values */
 
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
@@ -224,6 +225,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxU32              u32LoadCounter;       /**< Load counter */
   orxSTRING           zEncryptionKey;       /**< Encryption key */
   orxU32              u32EncryptionKeySize; /**< Encryption key size */
+  orxU32              u32DefaultParentID;   /**< Section ID of the default parent */
   orxCHAR            *pcEncryptionChar;     /**< Current encryption char */
   orxLINKLIST         stSectionList;        /**< Section list */
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
@@ -773,13 +775,36 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
   }
   else
   {
+    orxU32 u32ParentID;
+
     /* Has parent? */
     if(sstConfig.pstCurrentSection->u32ParentID != 0)
+    {
+      /* Selects it */
+      u32ParentID = sstConfig.pstCurrentSection->u32ParentID;
+    }
+    else
+    {
+      /* Isn't the default parent? */
+      if(sstConfig.pstCurrentSection->u32ID != sstConfig.u32DefaultParentID)
+      {
+        /* Selects default parent */
+        u32ParentID = sstConfig.u32DefaultParentID;
+      }
+      else
+      {
+        /* No parent */
+        u32ParentID = 0;
+      }
+    }
+
+    /* Valid parent ID */
+    if(u32ParentID != 0)
     {
       orxCONFIG_SECTION *pstSection;
 
       /* Gets it from table */
-      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, sstConfig.pstCurrentSection->u32ParentID);
+      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ParentID);
 
       /* Valid? */
       if(pstSection != orxNULL)
@@ -2076,6 +2101,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
         /* Asks for reload */
         bReload = orxTRUE;
       }
+
+      /* Sets default parent */
+      orxConfig_SetDefaultParent(orxConfig_GetString(orxCONFIG_KZ_CONFIG_DEFAULT_PARENT));
 
       /* Should keep history? */
       if(orxConfig_GetBool(orxCONFIG_KZ_CONFIG_HISTORY) != orxFALSE)
@@ -3701,6 +3729,29 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
 
   /* Done! */
   return zResult;
+}
+
+orxSTATUS orxFASTCALL orxConfig_SetDefaultParent(const orxSTRING _zSectionName)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if((_zSectionName != orxNULL) && (_zSectionName != orxSTRING_EMPTY))
+  {
+    /* Stores its ID */
+    sstConfig.u32DefaultParentID = orxString_ToCRC(_zSectionName);
+  }
+  else
+  {
+    /* Clears default parent ID */
+    sstConfig.u32DefaultParentID = 0;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets current working section
