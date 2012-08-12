@@ -191,17 +191,17 @@ extern orxDLLAPI void orxFASTCALL             orxKeyboard_Exit();
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
 
-/** Returns orxTRUE if there are keypresses waiting in the input buffer.
- * @return orxTRUE if keys have been pressed, else orxFALSE
+/** Gets the next key from the keyboard buffer and removes it from there
+ * @return orxKEYBOARD_KEY, orxKEYBOARD_KEY_NONE if the buffer is empty
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxKeyboard_Hit();
+extern orxDLLAPI orxKEYBOARD_KEY orxFASTCALL  orxKeyboard_ReadKey();
 
-/** Gets the next character from the keyboard buffer
- * @return orxKEYBOARD_KEY
+/** Gets the next UTF-8 encoded string from the keyboard buffer and removes it from there
+ * @return UTF-8 encoded string
  */
-extern orxDLLAPI orxKEYBOARD_KEY orxFASTCALL  orxKeyboard_Read();
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxKeyboard_ReadString();
 
-/** Empties the keyboard buffer.
+/** Empties the keyboard buffer (both keys and chars)
  */
 extern orxDLLAPI void orxFASTCALL             orxKeyboard_ClearBuffer();
 

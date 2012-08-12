@@ -293,65 +293,32 @@ orxBOOL orxFASTCALL orxKeyboard_SDL_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return bResult;
 }
 
-orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SDL_Read()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SDL_ReadKey()
 {
-  orxU8          *pu8KeyState;
-  orxU32          i;
-  int             iKeyNumber;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* Gets key state */
-  pu8KeyState = SDL_GetKeyState(&iKeyNumber);
-
-  /* Checks */
-  orxASSERT(iKeyNumber <= SDLK_LAST);
-
-  /* For all keys */
-  for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
-  {
-    SDLKey eSDLKey;
-
-    /* Gets SDL key enum */
-    eSDLKey = orxKeyboard_SDL_GetSDLKey((orxKEYBOARD_KEY)i);
-
-    /* Is pressed? */
-    if(pu8KeyState[eSDLKey])
-    {
-      /* Updates result */
-      eResult = (orxKEYBOARD_KEY)i;
-
-      break;
-    }
-  }
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxKeyboard_SDL_Hit()
+const orxSTRING orxFASTCALL orxKeyboard_SDL_ReadString()
 {
-  orxBOOL bResult;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* Updates result */
-  bResult = (orxKeyboard_SDL_Read() != orxKEYBOARD_KEY_NONE) ? orxTRUE : orxFALSE;
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
-  return bResult;
+  return zResult;
 }
 
 void orxFASTCALL orxKeyboard_SDL_ClearBuffer()
 {
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* Not implemented yet */
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
   return;
@@ -365,7 +332,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_Init, KEYBOARD, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_Exit, KEYBOARD, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_Hit, KEYBOARD, HIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_Read, KEYBOARD, READ);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ReadKey, KEYBOARD, READ_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
 orxPLUGIN_USER_CORE_FUNCTION_END();

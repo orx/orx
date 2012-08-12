@@ -57,6 +57,7 @@
  */
 typedef int GLFWKey;
 
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -81,6 +82,126 @@ static orxKEYBOARD_STATIC sstKeyboard;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_GetKey(GLFWKey _eKey)
+{
+  orxKEYBOARD_KEY eResult;
+
+  /* Depending on key */
+  switch(_eKey)
+  {
+    case GLFW_KEY_ESC:              {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
+    case GLFW_KEY_SPACE:            {eResult = orxKEYBOARD_KEY_SPACE; break;}
+    case GLFW_KEY_ENTER:            {eResult = orxKEYBOARD_KEY_RETURN; break;}
+    case GLFW_KEY_BACKSPACE:        {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
+    case GLFW_KEY_TAB:              {eResult = orxKEYBOARD_KEY_TAB; break;}
+    case GLFW_KEY_PAGEUP:           {eResult = orxKEYBOARD_KEY_PAGEUP; break;}
+    case GLFW_KEY_PAGEDOWN:         {eResult = orxKEYBOARD_KEY_PAGEDOWN; break;}
+    case GLFW_KEY_END:              {eResult = orxKEYBOARD_KEY_END; break;}
+    case GLFW_KEY_HOME:             {eResult = orxKEYBOARD_KEY_HOME; break;}
+    case GLFW_KEY_INSERT:           {eResult = orxKEYBOARD_KEY_INSERT; break;}
+    case GLFW_KEY_DEL:              {eResult = orxKEYBOARD_KEY_DELETE; break;}
+    case GLFW_KEY_KP_ADD:           {eResult = orxKEYBOARD_KEY_ADD; break;}
+    case GLFW_KEY_KP_SUBTRACT:      {eResult = orxKEYBOARD_KEY_SUBTRACT; break;}
+    case GLFW_KEY_KP_MULTIPLY:      {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}
+    case GLFW_KEY_KP_DIVIDE:        {eResult = orxKEYBOARD_KEY_DIVIDE; break;}
+    case GLFW_KEY_PAUSE:            {eResult = orxKEYBOARD_KEY_PAUSE; break;}
+    case GLFW_KEY_RALT:             {eResult = orxKEYBOARD_KEY_RALT; break;}
+    case GLFW_KEY_RCTRL:            {eResult = orxKEYBOARD_KEY_RCTRL; break;}
+    case GLFW_KEY_RSHIFT:           {eResult = orxKEYBOARD_KEY_RSHIFT; break;}
+    case GLFW_KEY_RSUPER:           {eResult = orxKEYBOARD_KEY_RSYSTEM; break;}
+    case GLFW_KEY_LALT:             {eResult = orxKEYBOARD_KEY_LALT; break;}
+    case GLFW_KEY_LCTRL:            {eResult = orxKEYBOARD_KEY_LCTRL; break;}
+    case GLFW_KEY_LSHIFT:           {eResult = orxKEYBOARD_KEY_LSHIFT; break;}
+    case GLFW_KEY_LSUPER:           {eResult = orxKEYBOARD_KEY_LSYSTEM; break;}
+    case GLFW_KEY_MENU:             {eResult = orxKEYBOARD_KEY_MENU; break;}
+    case '[':                       {eResult = orxKEYBOARD_KEY_LBRACKET; break;}
+    case ']':                       {eResult = orxKEYBOARD_KEY_RBRACKET; break;}
+    case ';':                       {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}
+    case ',':                       {eResult = orxKEYBOARD_KEY_COMMA; break;}
+    case '.':                       {eResult = orxKEYBOARD_KEY_PERIOD; break;}
+    case '\'':                      {eResult = orxKEYBOARD_KEY_QUOTE; break;}
+    case '/':                       {eResult = orxKEYBOARD_KEY_SLASH; break;}
+    case '\\':                      {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
+    case '`':                       {eResult = orxKEYBOARD_KEY_TILDE; break;}
+    case '=':                       {eResult = orxKEYBOARD_KEY_EQUAL; break;}
+    case '-':                       {eResult = orxKEYBOARD_KEY_DASH; break;}
+    case GLFW_KEY_F1:               {eResult = orxKEYBOARD_KEY_F1; break;}
+    case GLFW_KEY_F2:               {eResult = orxKEYBOARD_KEY_F2; break;}
+    case GLFW_KEY_F3:               {eResult = orxKEYBOARD_KEY_F3; break;}
+    case GLFW_KEY_F4:               {eResult = orxKEYBOARD_KEY_F4; break;}
+    case GLFW_KEY_F5:               {eResult = orxKEYBOARD_KEY_F5; break;}
+    case GLFW_KEY_F6:               {eResult = orxKEYBOARD_KEY_F6; break;}
+    case GLFW_KEY_F7:               {eResult = orxKEYBOARD_KEY_F7; break;}
+    case GLFW_KEY_F8:               {eResult = orxKEYBOARD_KEY_F8; break;}
+    case GLFW_KEY_F9:               {eResult = orxKEYBOARD_KEY_F9; break;}
+    case GLFW_KEY_F10:              {eResult = orxKEYBOARD_KEY_F10; break;}
+    case GLFW_KEY_F11:              {eResult = orxKEYBOARD_KEY_F11; break;}
+    case GLFW_KEY_F12:              {eResult = orxKEYBOARD_KEY_F12; break;}
+    case GLFW_KEY_F13:              {eResult = orxKEYBOARD_KEY_F13; break;}
+    case GLFW_KEY_F14:              {eResult = orxKEYBOARD_KEY_F14; break;}
+    case GLFW_KEY_F15:              {eResult = orxKEYBOARD_KEY_F15; break;}
+    case GLFW_KEY_UP:               {eResult = orxKEYBOARD_KEY_UP; break;}
+    case GLFW_KEY_RIGHT:            {eResult = orxKEYBOARD_KEY_RIGHT; break;}
+    case GLFW_KEY_DOWN:             {eResult = orxKEYBOARD_KEY_DOWN; break;}
+    case GLFW_KEY_LEFT:             {eResult = orxKEYBOARD_KEY_LEFT; break;}
+    case GLFW_KEY_KP_0:             {eResult = orxKEYBOARD_KEY_NUMPAD_0; break;}
+    case GLFW_KEY_KP_1:             {eResult = orxKEYBOARD_KEY_NUMPAD_1; break;}
+    case GLFW_KEY_KP_2:             {eResult = orxKEYBOARD_KEY_NUMPAD_2; break;}
+    case GLFW_KEY_KP_3:             {eResult = orxKEYBOARD_KEY_NUMPAD_3; break;}
+    case GLFW_KEY_KP_4:             {eResult = orxKEYBOARD_KEY_NUMPAD_4; break;}
+    case GLFW_KEY_KP_5:             {eResult = orxKEYBOARD_KEY_NUMPAD_5; break;}
+    case GLFW_KEY_KP_6:             {eResult = orxKEYBOARD_KEY_NUMPAD_6; break;}
+    case GLFW_KEY_KP_7:             {eResult = orxKEYBOARD_KEY_NUMPAD_7; break;}
+    case GLFW_KEY_KP_8:             {eResult = orxKEYBOARD_KEY_NUMPAD_8; break;}
+    case GLFW_KEY_KP_9:             {eResult = orxKEYBOARD_KEY_NUMPAD_9; break;}
+    case GLFW_KEY_KP_ENTER:         {eResult = orxKEYBOARD_KEY_NUMPAD_RETURN; break;}
+    case GLFW_KEY_KP_DECIMAL:       {eResult = orxKEYBOARD_KEY_NUMPAD_DECIMAL; break;}
+    case GLFW_KEY_KP_NUM_LOCK:      {eResult = orxKEYBOARD_KEY_NUM_LOCK; break;}
+    case GLFW_KEY_SCROLL_LOCK:      {eResult = orxKEYBOARD_KEY_SCROLL_LOCK; break;}
+    case GLFW_KEY_CAPS_LOCK:        {eResult = orxKEYBOARD_KEY_CAPS_LOCK; break;}
+    case 'A':                       {eResult = orxKEYBOARD_KEY_A; break;}
+    case 'Z':                       {eResult = orxKEYBOARD_KEY_Z; break;}
+    case 'E':                       {eResult = orxKEYBOARD_KEY_E; break;}
+    case 'R':                       {eResult = orxKEYBOARD_KEY_R; break;}
+    case 'T':                       {eResult = orxKEYBOARD_KEY_T; break;}
+    case 'Y':                       {eResult = orxKEYBOARD_KEY_Y; break;}
+    case 'U':                       {eResult = orxKEYBOARD_KEY_U; break;}
+    case 'I':                       {eResult = orxKEYBOARD_KEY_I; break;}
+    case 'O':                       {eResult = orxKEYBOARD_KEY_O; break;}
+    case 'P':                       {eResult = orxKEYBOARD_KEY_P; break;}
+    case 'Q':                       {eResult = orxKEYBOARD_KEY_Q; break;}
+    case 'S':                       {eResult = orxKEYBOARD_KEY_S; break;}
+    case 'D':                       {eResult = orxKEYBOARD_KEY_D; break;}
+    case 'F':                       {eResult = orxKEYBOARD_KEY_F; break;}
+    case 'G':                       {eResult = orxKEYBOARD_KEY_G; break;}
+    case 'H':                       {eResult = orxKEYBOARD_KEY_H; break;}
+    case 'J':                       {eResult = orxKEYBOARD_KEY_J; break;}
+    case 'K':                       {eResult = orxKEYBOARD_KEY_K; break;}
+    case 'L':                       {eResult = orxKEYBOARD_KEY_L; break;}
+    case 'M':                       {eResult = orxKEYBOARD_KEY_M; break;}
+    case 'W':                       {eResult = orxKEYBOARD_KEY_W; break;}
+    case 'X':                       {eResult = orxKEYBOARD_KEY_X; break;}
+    case 'C':                       {eResult = orxKEYBOARD_KEY_C; break;}
+    case 'V':                       {eResult = orxKEYBOARD_KEY_V; break;}
+    case 'B':                       {eResult = orxKEYBOARD_KEY_B; break;}
+    case 'N':                       {eResult = orxKEYBOARD_KEY_N; break;}
+    case '0':                       {eResult = orxKEYBOARD_KEY_0; break;}
+    case '1':                       {eResult = orxKEYBOARD_KEY_1; break;}
+    case '2':                       {eResult = orxKEYBOARD_KEY_2; break;}
+    case '3':                       {eResult = orxKEYBOARD_KEY_3; break;}
+    case '4':                       {eResult = orxKEYBOARD_KEY_4; break;}
+    case '5':                       {eResult = orxKEYBOARD_KEY_5; break;}
+    case '6':                       {eResult = orxKEYBOARD_KEY_6; break;}
+    case '7':                       {eResult = orxKEYBOARD_KEY_7; break;}
+    case '8':                       {eResult = orxKEYBOARD_KEY_8; break;}
+    case '9':                       {eResult = orxKEYBOARD_KEY_9; break;}
+    default:                        {eResult = orxKEYBOARD_KEY_NONE; break;}
+  }
+
+  /* Done! */
+  return eResult;
+}
 
 static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
 {
@@ -202,6 +323,22 @@ static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
   return eResult;
 }
 
+/** Key callback
+ */
+static void GLFWCALL orxKeyboard_GLFW_KeyCallback(int _iKey, int _iAction)
+{
+  /* Done! */
+  return;
+}
+
+/** Char callback
+ */
+static void GLFWCALL orxKeyboard_GLFW_CharCallback(int _iKey, int _iAction)
+{
+  /* Done! */
+  return;
+}
+
 orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -215,6 +352,12 @@ orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
     /* Is GLFW window opened? */
     if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
     {
+      /* Registers key callback */
+      glfwSetKeyCallback(orxKeyboard_GLFW_KeyCallback);
+
+      /* Registers char callback */
+      glfwSetCharCallback(orxKeyboard_GLFW_CharCallback);
+
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
 
@@ -232,6 +375,12 @@ void orxFASTCALL orxKeyboard_GLFW_Exit()
   /* Was initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters key callback */
+    glfwSetKeyCallback(NULL);
+
+    /* Unregisters char callback */
+    glfwSetCharCallback(NULL);
+
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
   }
@@ -270,48 +419,26 @@ orxBOOL orxFASTCALL orxKeyboard_GLFW_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return bResult;
 }
 
-orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_Read()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_ReadKey()
 {
-  orxU32          i;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* For all keys */
-  for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
-  {
-    GLFWKey eGLFWKey;
-
-    /* Gets GLFW key enum */
-    eGLFWKey = orxKeyboard_GLFW_GetGLFWKey((orxKEYBOARD_KEY)i);
-
-    /* Is pressed? */
-    if(glfwGetKey((int)eGLFWKey) != GLFW_RELEASE)
-    {
-      /* Updates result */
-      eResult = (orxKEYBOARD_KEY)i;
-
-      break;
-    }
-  }
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxKeyboard_GLFW_Hit()
+const orxSTRING orxFASTCALL orxKeyboard_GLFW_ReadString()
 {
-  orxBOOL bResult;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* Updates result */
-  bResult = (orxKeyboard_GLFW_Read() != orxKEYBOARD_KEY_NONE) ? orxTRUE : orxFALSE;
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
-  return bResult;
+  return zResult;
 }
 
 void orxFASTCALL orxKeyboard_GLFW_ClearBuffer()
@@ -319,8 +446,8 @@ void orxFASTCALL orxKeyboard_GLFW_ClearBuffer()
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
-  /* Not implemented yet */
-  orxASSERT(orxFALSE && "Clear keyboard buffer is not supported by this plugin!");
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
   return;
@@ -334,7 +461,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_Init, KEYBOARD, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_Exit, KEYBOARD, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_Hit, KEYBOARD, HIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_Read, KEYBOARD, READ);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ReadKey, KEYBOARD, READ_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
 orxPLUGIN_USER_CORE_FUNCTION_END();

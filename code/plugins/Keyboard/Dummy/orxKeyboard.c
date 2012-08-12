@@ -71,7 +71,7 @@ orxBOOL orxFASTCALL orxKeyboard_Dummy_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return bResult;
 }
 
-orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Dummy_Read()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Dummy_ReadKey()
 {
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
@@ -79,12 +79,12 @@ orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Dummy_Read()
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxKeyboard_Dummy_Hit()
+const orxSTRING orxFASTCALL orxKeyboard_Dummy_ReadString()
 {
-  orxBOOL bResult = orxFALSE;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Done! */
-  return bResult;
+  return zResult;
 }
 
 void orxFASTCALL orxKeyboard_Dummy_ClearBuffer()
@@ -101,7 +101,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Init, KEYBOARD, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Exit, KEYBOARD, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Hit, KEYBOARD, HIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Read, KEYBOARD, READ);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ReadKey, KEYBOARD, READ_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
 orxPLUGIN_USER_CORE_FUNCTION_END();

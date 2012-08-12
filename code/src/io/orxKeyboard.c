@@ -209,8 +209,8 @@ const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, void, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KEY);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL, void);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxKEYBOARD_KEY, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ReadKey, orxKEYBOARD_KEY, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ReadString, const orxSTRING, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, void, void);
 
 
@@ -221,8 +221,8 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(KEYBOARD)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, INIT, orxKeyboard_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, EXIT, orxKeyboard_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, IS_KEY_PRESSED, orxKeyboard_IsKeyPressed)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, HIT, orxKeyboard_Hit)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ, orxKeyboard_Read)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ_KEY, orxKeyboard_ReadKey)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ_STRING, orxKeyboard_ReadString)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffer)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)
@@ -253,23 +253,20 @@ orxBOOL orxFASTCALL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_IsKeyPressed)(_eKey);
 }
 
-/** Returns orxTRUE if there are keypresses waiting in the input buffer.
- * @return orxTRUE if keys have been pressed, else orxFALSE
+/** Gets the next key from the keyboard buffer and removes it from there
+ * @return orxKEYBOARD_KEY, orxKEYBOARD_KEY_NONE if the buffer is empty
  */
-orxBOOL orxFASTCALL orxKeyboard_Hit()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_ReadKey()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Hit)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ReadKey)();
 }
 
-/** Returns the next character from the keyboard buffer, in ASCII format.
- * If the buffer is empty, it waits until a key is pressed.
- * The low byte of the return value contains the ASCII code of the key,
- * and the high byte the scancode.
- * @return Ascii and scancode value
+/** Gets the next UTF-8 encoded string from the keyboard buffer and removes it from there
+ * @return UTF-8 encoded string
  */
-orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Read()
+const orxSTRING orxFASTCALL orxKeyboard_ReadString()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Read)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ReadString)();
 }
 
 /**  Empties the keyboard buffer.

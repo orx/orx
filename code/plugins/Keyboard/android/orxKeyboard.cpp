@@ -322,52 +322,32 @@ extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY 
 }
 
 
-extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_Read()
+extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 {
-  orxU32          i;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* For all keys */
-  for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
-  {
-    /* Is pressed? */
-    if(orxKeyboard_Android_IsKeyPressed((orxKEYBOARD_KEY)i) != orxFALSE)
-    {
-      /* Updates result */
-      eResult = (orxKEYBOARD_KEY)i;
-
-      break;
-    }
-  }
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
   return eResult;
 }
 
-extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_Hit()
+extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_ReadString()
 {
-  orxBOOL bResult;
+  const orxSTRING zResult = orxSTRING_EMPTY;
 
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* Updates result */
-  bResult = (orxKeyboard_Android_Read() != orxKEYBOARD_KEY_NONE) ? orxTRUE : orxFALSE;
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
-  return bResult;
+  return zResult;
 }
 
 extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 {
-  /* Checks */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
-
-  /* Not implemented yet */
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  /* Not yet implemented */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
 
   /* Done! */
   return;
@@ -382,7 +362,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Init, KEYBOARD, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Exit, KEYBOARD, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Hit, KEYBOARD, HIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Read, KEYBOARD, READ);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadKey, KEYBOARD, READ_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
 orxPLUGIN_USER_CORE_FUNCTION_END();
