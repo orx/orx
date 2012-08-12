@@ -1860,7 +1860,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
+  orxASSERT(_zConfigID != orxNULL);
 
   /* Pushes section */
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
@@ -2531,8 +2531,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to find config section named %s.", _zConfigID);
+    /* Not empty? */
+    if(*_zConfigID != orxCHAR_NULL)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to find config section named %s.", _zConfigID);
+    }
 
     /* Updates result */
     pstResult = orxNULL;
