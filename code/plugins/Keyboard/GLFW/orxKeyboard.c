@@ -58,6 +58,12 @@
 typedef int GLFWKey;
 
 
+/** Misc
+ */
+#define orxKEYBOARD_KU32_BUFFER_SIZE            64
+#define orxKEYBOARD_KU32_STRING_BUFFER_SIZE     (orxKEYBOARD_KU32_BUFFER_SIZE * 4 + 1)
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -66,6 +72,10 @@ typedef int GLFWKey;
  */
 typedef struct __orxKEYBOARD_STATIC_t
 {
+  orxU32            u32KeyReadIndex, u32KeyWriteIndex, u32CharReadIndex, u32CharWriteIndex;
+  orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
+  orxU32            au32CharBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
+  orxCHAR           acStringBuffer[orxKEYBOARD_KU32_STRING_BUFFER_SIZE];
   orxU32            u32Flags;
 } orxKEYBOARD_STATIC;
 
@@ -327,6 +337,21 @@ static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
  */
 static void GLFWCALL orxKeyboard_GLFW_KeyCallback(int _iKey, int _iAction)
 {
+  /* Pressed? */
+  if(_iAction == GLFW_PRESS)
+  {
+    /* Stores it */
+    sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyWriteIndex] = (orxU32)_iKey;
+    sstKeyboard.u32KeyWriteIndex = (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+
+    /* Full? */
+    if(sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
+    {
+      /* Bounces read index */
+      sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+    }
+  }
+
   /* Done! */
   return;
 }
@@ -335,15 +360,45 @@ static void GLFWCALL orxKeyboard_GLFW_KeyCallback(int _iKey, int _iAction)
  */
 static void GLFWCALL orxKeyboard_GLFW_CharCallback(int _iKey, int _iAction)
 {
+  /* Stores it */
+  sstKeyboard.au32CharBuffer[sstKeyboard.u32CharWriteIndex] = (orxU32)_iKey;
+  sstKeyboard.u32CharWriteIndex = (sstKeyboard.u32CharWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+
+  /* Full? */
+  if(sstKeyboard.u32CharReadIndex == sstKeyboard.u32CharWriteIndex)
+  {
+    /* Bounces read index */
+    sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+  }
+
   /* Done! */
   return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxKeyboard_GLFW_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
+
+  /* Registers key callback */
+  glfwSetKeyCallback(orxKeyboard_GLFW_KeyCallback);
+
+  /* Registers char callback */
+  glfwSetCharCallback(orxKeyboard_GLFW_CharCallback);
+
+  /* Done! */
+  return eResult;
 }
 
 orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Was already initialized. */
+  /* Wasn't already initialized? */
   if(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
@@ -352,6 +407,9 @@ orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
     /* Is GLFW window opened? */
     if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
     {
+      /* Adds event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxKeyboard_GLFW_EventHandler);
+
       /* Registers key callback */
       glfwSetKeyCallback(orxKeyboard_GLFW_KeyCallback);
 
@@ -372,7 +430,7 @@ orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
 
 void orxFASTCALL orxKeyboard_GLFW_Exit()
 {
-  /* Was initialized? */
+  /* Wasn't initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Unregisters key callback */
@@ -380,6 +438,9 @@ void orxFASTCALL orxKeyboard_GLFW_Exit()
 
     /* Unregisters char callback */
     glfwSetCharCallback(NULL);
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxKeyboard_GLFW_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
@@ -421,10 +482,25 @@ orxBOOL orxFASTCALL orxKeyboard_GLFW_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 
 orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_ReadKey()
 {
-  orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
+  orxKEYBOARD_KEY eResult;
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* Not empty? */
+  if(sstKeyboard.u32KeyReadIndex != sstKeyboard.u32KeyWriteIndex)
+  {
+    /* Updates result */
+    eResult = orxKeyboard_GLFW_GetKey((GLFWKey)sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyReadIndex]);
+
+    /* Updates read index */
+    sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxKEYBOARD_KEY_NONE;
+  }
 
   /* Done! */
   return eResult;
@@ -432,10 +508,32 @@ orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_ReadKey()
 
 const orxSTRING orxFASTCALL orxKeyboard_GLFW_ReadString()
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  orxU32          u32BufferSize;
+  orxCHAR        *pc;
+  const orxSTRING zResult = sstKeyboard.acStringBuffer;
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* For all characters */
+  for(zResult = pc = sstKeyboard.acStringBuffer, u32BufferSize = orxKEYBOARD_KU32_STRING_BUFFER_SIZE - 1;
+      sstKeyboard.u32CharReadIndex != sstKeyboard.u32CharWriteIndex;
+      sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1))
+  {
+    orxU32 u32Size;
+
+    /* Writes it */
+    u32Size = orxString_PrintUTF8Character(pc, u32BufferSize, sstKeyboard.au32CharBuffer[sstKeyboard.u32CharReadIndex]);
+
+    /* Updates buffer size */
+    u32BufferSize -= u32Size;
+
+    /* Updates char pointer */
+    pc += u32Size;
+  }
+
+  /* Terminates string */
+  *pc = orxCHAR_NULL;
 
   /* Done! */
   return zResult;
@@ -446,8 +544,11 @@ void orxFASTCALL orxKeyboard_GLFW_ClearBuffer()
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Clears all buffer indices */
+  sstKeyboard.u32KeyReadIndex   =
+  sstKeyboard.u32KeyWriteIndex  = 
+  sstKeyboard.u32CharReadIndex  =
+  sstKeyboard.u32CharWriteIndex = 0;
 
   /* Done! */
   return;
