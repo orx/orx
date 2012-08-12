@@ -409,6 +409,9 @@ static orxINLINE void orxConfig_RegisterCommands()
  */
 static orxINLINE void orxConfig_UnregisterCommands()
 {
+  /* Command: Reload */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Reload);
+
   /* Command: GetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
   /* Command: SetParent */
@@ -417,6 +420,7 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
   /* Command: HasSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
+
   /* Command: HasValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasValue);
   /* Command: GetValue */

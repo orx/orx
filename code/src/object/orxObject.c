@@ -788,6 +788,52 @@ void orxFASTCALL orxObject_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/** Command: SetParent
+ */
+void orxFASTCALL orxObject_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Has parent? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].u64Value != 0))
+    {
+      orxSTRUCTURE *pstParent;
+
+      /* Gets parent */
+      pstParent = orxStructure_Get(_astArgList[1].u64Value);
+
+      /* Valid? */
+      if(pstParent != orxNULL)
+      {
+        /* Updates its parent */
+        orxObject_SetParent(pstObject, pstParent);
+      }
+    }
+    else
+    {
+      /* Removes parent */
+      orxObject_SetParent(pstObject, orxNULL);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetOwner
  */
 void orxFASTCALL orxObject_CommandSetOwner(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1317,6 +1363,9 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: Pause */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = orxFALSE", orxCOMMAND_VAR_TYPE_BOOL});
 
+  /* Command: SetParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetParent, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = orxNULL", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: SetOwner */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner = orxNULL", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetOwner */
@@ -1404,6 +1453,9 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Enable);
   /* Command: Pause */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Pause);
+
+  /* Command: SetParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetParent);
 
   /* Command: SetOwner */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOwner);
