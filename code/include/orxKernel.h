@@ -53,6 +53,7 @@
 #include "core/orxClock.h"
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
+#include "core/orxConsole.h"
 #include "core/orxEvent.h"
 #include "core/orxLocale.h"
 #include "core/orxSystem.h"

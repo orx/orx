@@ -64,65 +64,66 @@
 <a name="l00053"></a>00053 <span class="preprocessor">#include &quot;<a class="code" href="orx_clock_8h.html">core/orxClock.h</a>&quot;</span>
 <a name="l00054"></a>00054 <span class="preprocessor">#include &quot;<a class="code" href="orx_command_8h.html">core/orxCommand.h</a>&quot;</span>
 <a name="l00055"></a>00055 <span class="preprocessor">#include &quot;<a class="code" href="orx_config_8h.html">core/orxConfig.h</a>&quot;</span>
-<a name="l00056"></a>00056 <span class="preprocessor">#include &quot;<a class="code" href="orx_event_8h.html">core/orxEvent.h</a>&quot;</span>
-<a name="l00057"></a>00057 <span class="preprocessor">#include &quot;<a class="code" href="orx_locale_8h.html">core/orxLocale.h</a>&quot;</span>
-<a name="l00058"></a>00058 <span class="preprocessor">#include &quot;<a class="code" href="orx_system_8h.html">core/orxSystem.h</a>&quot;</span>
-<a name="l00059"></a>00059 
-<a name="l00060"></a>00060 <span class="preprocessor">#include &quot;<a class="code" href="orx_debug_8h.html">debug/orxDebug.h</a>&quot;</span>
-<a name="l00061"></a>00061 <span class="preprocessor">#include &quot;<a class="code" href="orx_f_p_s_8h.html">debug/orxFPS.h</a>&quot;</span>
-<a name="l00062"></a>00062 <span class="preprocessor">#include &quot;<a class="code" href="orx_profiler_8h.html">debug/orxProfiler.h</a>&quot;</span>
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064 <span class="preprocessor">#include &quot;<a class="code" href="orx_graphic_8h.html">display/orxGraphic.h</a>&quot;</span>
-<a name="l00065"></a>00065 <span class="preprocessor">#include &quot;<a class="code" href="orx_display_8h.html">display/orxDisplay.h</a>&quot;</span>
-<a name="l00066"></a>00066 <span class="preprocessor">#include &quot;<a class="code" href="orx_font_8h.html">display/orxFont.h</a>&quot;</span>
-<a name="l00067"></a>00067 <span class="preprocessor">#include &quot;<a class="code" href="orx_screenshot_8h.html">display/orxScreenshot.h</a>&quot;</span>
-<a name="l00068"></a>00068 <span class="preprocessor">#include &quot;<a class="code" href="orx_text_8h.html">display/orxText.h</a>&quot;</span>
-<a name="l00069"></a>00069 <span class="preprocessor">#include &quot;<a class="code" href="orx_texture_8h.html">display/orxTexture.h</a>&quot;</span>
-<a name="l00070"></a>00070 
-<a name="l00071"></a>00071 <span class="preprocessor">#include &quot;<a class="code" href="orx_file_8h.html">io/orxFile.h</a>&quot;</span>
-<a name="l00072"></a>00072 <span class="preprocessor">#include &quot;<a class="code" href="orx_input_8h.html">io/orxInput.h</a>&quot;</span>
-<a name="l00073"></a>00073 <span class="preprocessor">#include &quot;<a class="code" href="orx_joystick_8h.html">io/orxJoystick.h</a>&quot;</span>
-<a name="l00074"></a>00074 <span class="preprocessor">#include &quot;<a class="code" href="orx_keyboard_8h.html">io/orxKeyboard.h</a>&quot;</span>
-<a name="l00075"></a>00075 <span class="preprocessor">#include &quot;<a class="code" href="orx_mouse_8h.html">io/orxMouse.h</a>&quot;</span>
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077 <span class="preprocessor">#include &quot;<a class="code" href="orx_param_8h.html">main/orxParam.h</a>&quot;</span>
-<a name="l00078"></a>00078 
-<a name="l00079"></a>00079 <span class="preprocessor">#include &quot;<a class="code" href="orx_a_a_box_8h.html">math/orxAABox.h</a>&quot;</span>
-<a name="l00080"></a>00080 <span class="preprocessor">#include &quot;<a class="code" href="orx_math_8h.html">math/orxMath.h</a>&quot;</span>
-<a name="l00081"></a>00081 <span class="preprocessor">#include &quot;<a class="code" href="orx_o_box_8h.html">math/orxOBox.h</a>&quot;</span>
-<a name="l00082"></a>00082 <span class="preprocessor">#include &quot;<a class="code" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</span>
-<a name="l00083"></a>00083 
-<a name="l00084"></a>00084 <span class="preprocessor">#include &quot;<a class="code" href="orx_bank_8h.html">memory/orxBank.h</a>&quot;</span>
-<a name="l00085"></a>00085 <span class="preprocessor">#include &quot;<a class="code" href="orx_memory_8h.html">memory/orxMemory.h</a>&quot;</span>
-<a name="l00086"></a>00086 
-<a name="l00087"></a>00087 <span class="preprocessor">#include &quot;<a class="code" href="orx_frame_8h.html">object/orxFrame.h</a>&quot;</span>
-<a name="l00088"></a>00088 <span class="preprocessor">#include &quot;<a class="code" href="orx_f_x_8h.html">object/orxFX.h</a>&quot;</span>
-<a name="l00089"></a>00089 <span class="preprocessor">#include &quot;<a class="code" href="orx_f_x_pointer_8h.html">object/orxFXPointer.h</a>&quot;</span>
-<a name="l00090"></a>00090 <span class="preprocessor">#include &quot;<a class="code" href="orx_object_8h.html">object/orxObject.h</a>&quot;</span>
-<a name="l00091"></a>00091 <span class="preprocessor">#include &quot;<a class="code" href="orx_spawner_8h.html">object/orxSpawner.h</a>&quot;</span>
-<a name="l00092"></a>00092 <span class="preprocessor">#include &quot;<a class="code" href="orx_structure_8h.html">object/orxStructure.h</a>&quot;</span>
-<a name="l00093"></a>00093 <span class="preprocessor">#include &quot;<a class="code" href="orx_time_line_8h.html">object/orxTimeLine.h</a>&quot;</span>
-<a name="l00094"></a>00094 
-<a name="l00095"></a>00095 <span class="preprocessor">#include &quot;<a class="code" href="orx_plugin_8h.html">plugin/orxPlugin.h</a>&quot;</span>
-<a name="l00096"></a>00096 <span class="preprocessor">#include &quot;<a class="code" href="orx_plugin_core_8h.html">plugin/orxPluginCore.h</a>&quot;</span>
-<a name="l00097"></a>00097 <span class="preprocessor">#include &quot;<a class="code" href="orx_plugin_user_8h.html">plugin/orxPluginUser.h</a>&quot;</span>
-<a name="l00098"></a>00098 
-<a name="l00099"></a>00099 <span class="preprocessor">#include &quot;<a class="code" href="orx_body_8h.html">physics/orxBody.h</a>&quot;</span>
-<a name="l00100"></a>00100 <span class="preprocessor">#include &quot;<a class="code" href="orx_physics_8h.html">physics/orxPhysics.h</a>&quot;</span>
-<a name="l00101"></a>00101 
-<a name="l00102"></a>00102 <span class="preprocessor">#include &quot;<a class="code" href="orx_camera_8h.html">render/orxCamera.h</a>&quot;</span>
-<a name="l00103"></a>00103 <span class="preprocessor">#include &quot;<a class="code" href="orx_render_8h.html">render/orxRender.h</a>&quot;</span>
-<a name="l00104"></a>00104 <span class="preprocessor">#include &quot;<a class="code" href="orx_shader_8h.html">render/orxShader.h</a>&quot;</span>
-<a name="l00105"></a>00105 <span class="preprocessor">#include &quot;<a class="code" href="orx_shader_pointer_8h.html">render/orxShaderPointer.h</a>&quot;</span>
-<a name="l00106"></a>00106 <span class="preprocessor">#include &quot;<a class="code" href="orx_viewport_8h.html">render/orxViewport.h</a>&quot;</span>
-<a name="l00107"></a>00107 
-<a name="l00108"></a>00108 <span class="preprocessor">#include &quot;<a class="code" href="orx_sound_8h.html">sound/orxSound.h</a>&quot;</span>
-<a name="l00109"></a>00109 <span class="preprocessor">#include &quot;<a class="code" href="orx_sound_pointer_8h.html">sound/orxSoundPointer.h</a>&quot;</span>
-<a name="l00110"></a>00110 <span class="preprocessor">#include &quot;<a class="code" href="orx_sound_system_8h.html">sound/orxSoundSystem.h</a>&quot;</span>
-<a name="l00111"></a>00111 
+<a name="l00056"></a>00056 <span class="preprocessor">#include &quot;<a class="code" href="orx_console_8h.html">core/orxConsole.h</a>&quot;</span>
+<a name="l00057"></a>00057 <span class="preprocessor">#include &quot;<a class="code" href="orx_event_8h.html">core/orxEvent.h</a>&quot;</span>
+<a name="l00058"></a>00058 <span class="preprocessor">#include &quot;<a class="code" href="orx_locale_8h.html">core/orxLocale.h</a>&quot;</span>
+<a name="l00059"></a>00059 <span class="preprocessor">#include &quot;<a class="code" href="orx_system_8h.html">core/orxSystem.h</a>&quot;</span>
+<a name="l00060"></a>00060 
+<a name="l00061"></a>00061 <span class="preprocessor">#include &quot;<a class="code" href="orx_debug_8h.html">debug/orxDebug.h</a>&quot;</span>
+<a name="l00062"></a>00062 <span class="preprocessor">#include &quot;<a class="code" href="orx_f_p_s_8h.html">debug/orxFPS.h</a>&quot;</span>
+<a name="l00063"></a>00063 <span class="preprocessor">#include &quot;<a class="code" href="orx_profiler_8h.html">debug/orxProfiler.h</a>&quot;</span>
+<a name="l00064"></a>00064 
+<a name="l00065"></a>00065 <span class="preprocessor">#include &quot;<a class="code" href="orx_graphic_8h.html">display/orxGraphic.h</a>&quot;</span>
+<a name="l00066"></a>00066 <span class="preprocessor">#include &quot;<a class="code" href="orx_display_8h.html">display/orxDisplay.h</a>&quot;</span>
+<a name="l00067"></a>00067 <span class="preprocessor">#include &quot;<a class="code" href="orx_font_8h.html">display/orxFont.h</a>&quot;</span>
+<a name="l00068"></a>00068 <span class="preprocessor">#include &quot;<a class="code" href="orx_screenshot_8h.html">display/orxScreenshot.h</a>&quot;</span>
+<a name="l00069"></a>00069 <span class="preprocessor">#include &quot;<a class="code" href="orx_text_8h.html">display/orxText.h</a>&quot;</span>
+<a name="l00070"></a>00070 <span class="preprocessor">#include &quot;<a class="code" href="orx_texture_8h.html">display/orxTexture.h</a>&quot;</span>
+<a name="l00071"></a>00071 
+<a name="l00072"></a>00072 <span class="preprocessor">#include &quot;<a class="code" href="orx_file_8h.html">io/orxFile.h</a>&quot;</span>
+<a name="l00073"></a>00073 <span class="preprocessor">#include &quot;<a class="code" href="orx_input_8h.html">io/orxInput.h</a>&quot;</span>
+<a name="l00074"></a>00074 <span class="preprocessor">#include &quot;<a class="code" href="orx_joystick_8h.html">io/orxJoystick.h</a>&quot;</span>
+<a name="l00075"></a>00075 <span class="preprocessor">#include &quot;<a class="code" href="orx_keyboard_8h.html">io/orxKeyboard.h</a>&quot;</span>
+<a name="l00076"></a>00076 <span class="preprocessor">#include &quot;<a class="code" href="orx_mouse_8h.html">io/orxMouse.h</a>&quot;</span>
+<a name="l00077"></a>00077 
+<a name="l00078"></a>00078 <span class="preprocessor">#include &quot;<a class="code" href="orx_param_8h.html">main/orxParam.h</a>&quot;</span>
+<a name="l00079"></a>00079 
+<a name="l00080"></a>00080 <span class="preprocessor">#include &quot;<a class="code" href="orx_a_a_box_8h.html">math/orxAABox.h</a>&quot;</span>
+<a name="l00081"></a>00081 <span class="preprocessor">#include &quot;<a class="code" href="orx_math_8h.html">math/orxMath.h</a>&quot;</span>
+<a name="l00082"></a>00082 <span class="preprocessor">#include &quot;<a class="code" href="orx_o_box_8h.html">math/orxOBox.h</a>&quot;</span>
+<a name="l00083"></a>00083 <span class="preprocessor">#include &quot;<a class="code" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</span>
+<a name="l00084"></a>00084 
+<a name="l00085"></a>00085 <span class="preprocessor">#include &quot;<a class="code" href="orx_bank_8h.html">memory/orxBank.h</a>&quot;</span>
+<a name="l00086"></a>00086 <span class="preprocessor">#include &quot;<a class="code" href="orx_memory_8h.html">memory/orxMemory.h</a>&quot;</span>
+<a name="l00087"></a>00087 
+<a name="l00088"></a>00088 <span class="preprocessor">#include &quot;<a class="code" href="orx_frame_8h.html">object/orxFrame.h</a>&quot;</span>
+<a name="l00089"></a>00089 <span class="preprocessor">#include &quot;<a class="code" href="orx_f_x_8h.html">object/orxFX.h</a>&quot;</span>
+<a name="l00090"></a>00090 <span class="preprocessor">#include &quot;<a class="code" href="orx_f_x_pointer_8h.html">object/orxFXPointer.h</a>&quot;</span>
+<a name="l00091"></a>00091 <span class="preprocessor">#include &quot;<a class="code" href="orx_object_8h.html">object/orxObject.h</a>&quot;</span>
+<a name="l00092"></a>00092 <span class="preprocessor">#include &quot;<a class="code" href="orx_spawner_8h.html">object/orxSpawner.h</a>&quot;</span>
+<a name="l00093"></a>00093 <span class="preprocessor">#include &quot;<a class="code" href="orx_structure_8h.html">object/orxStructure.h</a>&quot;</span>
+<a name="l00094"></a>00094 <span class="preprocessor">#include &quot;<a class="code" href="orx_time_line_8h.html">object/orxTimeLine.h</a>&quot;</span>
+<a name="l00095"></a>00095 
+<a name="l00096"></a>00096 <span class="preprocessor">#include &quot;<a class="code" href="orx_plugin_8h.html">plugin/orxPlugin.h</a>&quot;</span>
+<a name="l00097"></a>00097 <span class="preprocessor">#include &quot;<a class="code" href="orx_plugin_core_8h.html">plugin/orxPluginCore.h</a>&quot;</span>
+<a name="l00098"></a>00098 <span class="preprocessor">#include &quot;<a class="code" href="orx_plugin_user_8h.html">plugin/orxPluginUser.h</a>&quot;</span>
+<a name="l00099"></a>00099 
+<a name="l00100"></a>00100 <span class="preprocessor">#include &quot;<a class="code" href="orx_body_8h.html">physics/orxBody.h</a>&quot;</span>
+<a name="l00101"></a>00101 <span class="preprocessor">#include &quot;<a class="code" href="orx_physics_8h.html">physics/orxPhysics.h</a>&quot;</span>
+<a name="l00102"></a>00102 
+<a name="l00103"></a>00103 <span class="preprocessor">#include &quot;<a class="code" href="orx_camera_8h.html">render/orxCamera.h</a>&quot;</span>
+<a name="l00104"></a>00104 <span class="preprocessor">#include &quot;<a class="code" href="orx_render_8h.html">render/orxRender.h</a>&quot;</span>
+<a name="l00105"></a>00105 <span class="preprocessor">#include &quot;<a class="code" href="orx_shader_8h.html">render/orxShader.h</a>&quot;</span>
+<a name="l00106"></a>00106 <span class="preprocessor">#include &quot;<a class="code" href="orx_shader_pointer_8h.html">render/orxShaderPointer.h</a>&quot;</span>
+<a name="l00107"></a>00107 <span class="preprocessor">#include &quot;<a class="code" href="orx_viewport_8h.html">render/orxViewport.h</a>&quot;</span>
+<a name="l00108"></a>00108 
+<a name="l00109"></a>00109 <span class="preprocessor">#include &quot;<a class="code" href="orx_sound_8h.html">sound/orxSound.h</a>&quot;</span>
+<a name="l00110"></a>00110 <span class="preprocessor">#include &quot;<a class="code" href="orx_sound_pointer_8h.html">sound/orxSoundPointer.h</a>&quot;</span>
+<a name="l00111"></a>00111 <span class="preprocessor">#include &quot;<a class="code" href="orx_sound_system_8h.html">sound/orxSoundSystem.h</a>&quot;</span>
 <a name="l00112"></a>00112 
-<a name="l00113"></a>00113 <span class="preprocessor">#endif </span><span class="comment">/* _orxKERNEL_H_ */</span>
-<a name="l00114"></a>00114 
+<a name="l00113"></a>00113 
+<a name="l00114"></a>00114 <span class="preprocessor">#endif </span><span class="comment">/* _orxKERNEL_H_ */</span>
+<a name="l00115"></a>00115 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

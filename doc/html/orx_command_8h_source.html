@@ -58,106 +58,95 @@
 <a name="l00042"></a>00042 <span class="preprocessor"></span>
 <a name="l00043"></a>00043 
 <a name="l00044"></a>00044 <span class="preprocessor">#include &quot;<a class="code" href="orx_include_8h.html">orxInclude.h</a>&quot;</span>
-<a name="l00045"></a>00045 <span class="preprocessor">#include &quot;<a class="code" href="orx_string_8h.html">utils/orxString.h</a>&quot;</span>
+<a name="l00045"></a>00045 <span class="preprocessor">#include &quot;<a class="code" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</span>
 <a name="l00046"></a>00046 
 <a name="l00047"></a>00047 
-<a name="l00050"></a><a class="code" href="group__orx_command.html#gab08f38012191325b5960c618da5ff0be">00050</a> <span class="keyword">typedef</span> <span class="keyword">enum</span> __orxCOMMAND_EVENT_t
+<a name="l00050"></a><a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">00050</a> <span class="keyword">typedef</span> <span class="keyword">enum</span> __orxCOMMAND_VAR_TYPE_t
 <a name="l00051"></a>00051 {
-<a name="l00052"></a><a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea0ef15f9db47bf4e25ad0163487d4f26e">00052</a>   <a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea0ef15f9db47bf4e25ad0163487d4f26e">orxCOMMAND_EVENT_REGISTER</a> = 0,                      
-<a name="l00053"></a><a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0beae2199175b4055031fe9dc8ee0491c14d">00053</a>   <a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0beae2199175b4055031fe9dc8ee0491c14d">orxCOMMAND_EVENT_UNREGISTER</a>,                        
-<a name="l00054"></a><a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea01cd35b833ac6039619f76b2878de517">00054</a>   <a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea01cd35b833ac6039619f76b2878de517">orxCOMMAND_EVENT_EXECUTE</a>,                           
-<a name="l00056"></a><a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea4cd0d53bd7c81ebeb13df168924a9728">00056</a>   <a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea4cd0d53bd7c81ebeb13df168924a9728">orxCOMMAND_EVENT_NUMBER</a>,
-<a name="l00057"></a>00057 
-<a name="l00058"></a><a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0beab0da41f14c2bf02a8c43478e8d5f6630">00058</a>   <a class="code" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0beab0da41f14c2bf02a8c43478e8d5f6630">orxCOMMAND_EVENT_NONE</a> = orxENUM_NONE
-<a name="l00059"></a>00059 
-<a name="l00060"></a>00060 } <a class="code" href="group__orx_command.html#gab08f38012191325b5960c618da5ff0be">orxCOMMAND_EVENT</a>;
-<a name="l00061"></a>00061 
-<a name="l00064"></a><a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">00064</a> <span class="keyword">typedef</span> <span class="keyword">enum</span> __orxCOMMAND_VAR_TYPE_t
-<a name="l00065"></a>00065 {
-<a name="l00066"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">00066</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">orxCOMMAND_VAR_TYPE_STRING</a> = 0,
-<a name="l00067"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">00067</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">orxCOMMAND_VAR_TYPE_FLOAT</a>,
-<a name="l00068"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b">00068</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b">orxCOMMAND_VAR_TYPE_S32</a>,
-<a name="l00069"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa0c8e1a4a4a625966d8172dc5ac115c2e">00069</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa0c8e1a4a4a625966d8172dc5ac115c2e">orxCOMMAND_VAR_TYPE_U32</a>,
-<a name="l00070"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d">00070</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d">orxCOMMAND_VAR_TYPE_S64</a>,
-<a name="l00071"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad">00071</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad">orxCOMMAND_VAR_TYPE_U64</a>,
-<a name="l00072"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">00072</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">orxCOMMAND_VAR_TYPE_BOOL</a>,
-<a name="l00073"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">00073</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">orxCOMMAND_VAR_TYPE_VECTOR</a>,
-<a name="l00074"></a>00074 
-<a name="l00075"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">00075</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">orxCOMMAND_VAR_TYPE_NUMBER</a>,
+<a name="l00052"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">00052</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">orxCOMMAND_VAR_TYPE_STRING</a> = 0,
+<a name="l00053"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">00053</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">orxCOMMAND_VAR_TYPE_FLOAT</a>,
+<a name="l00054"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b">00054</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b">orxCOMMAND_VAR_TYPE_S32</a>,
+<a name="l00055"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa0c8e1a4a4a625966d8172dc5ac115c2e">00055</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa0c8e1a4a4a625966d8172dc5ac115c2e">orxCOMMAND_VAR_TYPE_U32</a>,
+<a name="l00056"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d">00056</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d">orxCOMMAND_VAR_TYPE_S64</a>,
+<a name="l00057"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad">00057</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad">orxCOMMAND_VAR_TYPE_U64</a>,
+<a name="l00058"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">00058</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">orxCOMMAND_VAR_TYPE_BOOL</a>,
+<a name="l00059"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">00059</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">orxCOMMAND_VAR_TYPE_VECTOR</a>,
+<a name="l00060"></a>00060 
+<a name="l00061"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">00061</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">orxCOMMAND_VAR_TYPE_NUMBER</a>,
+<a name="l00062"></a>00062 
+<a name="l00063"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">00063</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">orxCOMMAND_VAR_TYPE_NONE</a> = orxENUM_NONE
+<a name="l00064"></a>00064 
+<a name="l00065"></a>00065 } <a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a>;
+<a name="l00066"></a>00066 
+<a name="l00067"></a>00067 
+<a name="l00070"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">00070</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>__orxCOMMAND_VAR_DEF_t
+<a name="l00071"></a>00071 {
+<a name="l00072"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a31bc95621905ff6dd27223d39fe2a66c">00072</a>   orxSTRING             <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a31bc95621905ff6dd27223d39fe2a66c">zName</a>;                        
+<a name="l00073"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">00073</a>   <a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a>   <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">eType</a>;                        
+<a name="l00075"></a>00075 } <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a>;
 <a name="l00076"></a>00076 
-<a name="l00077"></a><a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">00077</a>   <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">orxCOMMAND_VAR_TYPE_NONE</a> = orxENUM_NONE
-<a name="l00078"></a>00078 
-<a name="l00079"></a>00079 } <a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a>;
-<a name="l00080"></a>00080 
-<a name="l00081"></a>00081 
-<a name="l00084"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">00084</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>__orxCOMMAND_VAR_DEF_t
-<a name="l00085"></a>00085 {
-<a name="l00086"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a31bc95621905ff6dd27223d39fe2a66c">00086</a>   orxSTRING             <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a31bc95621905ff6dd27223d39fe2a66c">zName</a>;                        
-<a name="l00087"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">00087</a>   <a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a>   <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">eType</a>;                        
-<a name="l00089"></a>00089 } <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a>;
-<a name="l00090"></a>00090 
-<a name="l00092"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">00092</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>__orxCOMMAND_VAR_t
-<a name="l00093"></a>00093 {
-<a name="l00094"></a>00094   <span class="keyword">union</span>
-<a name="l00095"></a>00095   {
-<a name="l00096"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab5c41c5088ea9cf53469f33a40580807">00096</a>     <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>           <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab5c41c5088ea9cf53469f33a40580807">vValue</a>;                       
-<a name="l00097"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6">00097</a>     <span class="keyword">const</span> orxSTRING     <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6">zValue</a>;                       
-<a name="l00098"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013">00098</a>     orxU32              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013">u32Value</a>;                     
-<a name="l00099"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d">00099</a>     orxS32              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d">s32Value</a>;                     
-<a name="l00100"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca">00100</a>     orxU64              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca">u64Value</a>;                     
-<a name="l00101"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc">00101</a>     orxS64              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc">s64Value</a>;                     
-<a name="l00102"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a0def766fe232de5e5c86bf27c2621031">00102</a>     orxFLOAT            <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a0def766fe232de5e5c86bf27c2621031">fValue</a>;                       
-<a name="l00103"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa95a0ef1203b289500738649787bcc05">00103</a>     orxBOOL             <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa95a0ef1203b289500738649787bcc05">bValue</a>;                       
-<a name="l00104"></a>00104   };
-<a name="l00105"></a>00105 
-<a name="l00106"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aabf0a2589ea619ac0edd2ffaf6e87d31">00106</a>   <a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a>   <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aabf0a2589ea619ac0edd2ffaf6e87d31">eType</a>;                        
-<a name="l00108"></a>00108 } <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a>;
-<a name="l00109"></a>00109 
-<a name="l00111"></a><a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">00111</a> <span class="keyword">typedef</span> <a class="code" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> (orxFASTCALL *<a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a>)(orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
-<a name="l00112"></a>00112 
-<a name="l00113"></a>00113 
-<a name="l00116"></a><a class="code" href="group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2">00116</a> <span class="preprocessor">#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                \</span>
-<a name="l00117"></a>00117 <span class="preprocessor">do                                                                                                                                                          \</span>
-<a name="l00118"></a>00118 <span class="preprocessor">{                                                                                                                                                           \</span>
-<a name="l00119"></a>00119 <span class="preprocessor">  orxCOMMAND_VAR_DEF  stResult;                                                                                                                             \</span>
-<a name="l00120"></a>00120 <span class="preprocessor">  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                \</span>
-<a name="l00121"></a>00121 <span class="preprocessor">  orxSTATUS           eStatus;                                                                                                                              \</span>
-<a name="l00122"></a>00122 <span class="preprocessor">  stResult.eType    = RESULT_TYPE;                                                                                                                          \</span>
-<a name="l00123"></a>00123 <span class="preprocessor">  stResult.zName    = RESULT_NAME;                                                                                                                          \</span>
-<a name="l00124"></a>00124 <span class="preprocessor">  eStatus           = orxCommand_Register(#MODULE&quot;.&quot;#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &amp;stResult); \</span>
-<a name="l00125"></a>00125 <span class="preprocessor">  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                  \</span>
-<a name="l00126"></a>00126 <span class="preprocessor">} while(orxFALSE)</span>
-<a name="l00127"></a>00127 <span class="preprocessor"></span>
-<a name="l00128"></a><a class="code" href="group__orx_command.html#gac5f19d9731fa026b64528d186415fe67">00128</a> <span class="preprocessor">#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                 \</span>
-<a name="l00129"></a>00129 <span class="preprocessor">do                                                                                                                                                          \</span>
-<a name="l00130"></a>00130 <span class="preprocessor">{                                                                                                                                                           \</span>
-<a name="l00131"></a>00131 <span class="preprocessor">  orxCommand_Unregister(#MODULE&quot;.&quot;#COMMAND);                                                                                                                \</span>
-<a name="l00132"></a>00132 <span class="preprocessor">} while(orxFALSE)</span>
-<a name="l00133"></a>00133 <span class="preprocessor"></span>
+<a name="l00078"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">00078</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>__orxCOMMAND_VAR_t
+<a name="l00079"></a>00079 {
+<a name="l00080"></a>00080   <span class="keyword">union</span>
+<a name="l00081"></a>00081   {
+<a name="l00082"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab5c41c5088ea9cf53469f33a40580807">00082</a>     <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>           <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab5c41c5088ea9cf53469f33a40580807">vValue</a>;                       
+<a name="l00083"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6">00083</a>     <span class="keyword">const</span> orxSTRING     <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6">zValue</a>;                       
+<a name="l00084"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013">00084</a>     orxU32              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013">u32Value</a>;                     
+<a name="l00085"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d">00085</a>     orxS32              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d">s32Value</a>;                     
+<a name="l00086"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca">00086</a>     orxU64              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca">u64Value</a>;                     
+<a name="l00087"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc">00087</a>     orxS64              <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc">s64Value</a>;                     
+<a name="l00088"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a0def766fe232de5e5c86bf27c2621031">00088</a>     orxFLOAT            <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a0def766fe232de5e5c86bf27c2621031">fValue</a>;                       
+<a name="l00089"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa95a0ef1203b289500738649787bcc05">00089</a>     orxBOOL             <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa95a0ef1203b289500738649787bcc05">bValue</a>;                       
+<a name="l00090"></a>00090   };
+<a name="l00091"></a>00091 
+<a name="l00092"></a><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aabf0a2589ea619ac0edd2ffaf6e87d31">00092</a>   <a class="code" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a>   <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aabf0a2589ea619ac0edd2ffaf6e87d31">eType</a>;                        
+<a name="l00094"></a>00094 } <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a>;
+<a name="l00095"></a>00095 
+<a name="l00097"></a><a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">00097</a> <span class="keyword">typedef</span> <a class="code" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> (orxFASTCALL *<a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a>)(orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
+<a name="l00098"></a>00098 
+<a name="l00099"></a>00099 
+<a name="l00102"></a><a class="code" href="group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2">00102</a> <span class="preprocessor">#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                \</span>
+<a name="l00103"></a>00103 <span class="preprocessor">do                                                                                                                                                          \</span>
+<a name="l00104"></a>00104 <span class="preprocessor">{                                                                                                                                                           \</span>
+<a name="l00105"></a>00105 <span class="preprocessor">  orxCOMMAND_VAR_DEF  stResult;                                                                                                                             \</span>
+<a name="l00106"></a>00106 <span class="preprocessor">  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                \</span>
+<a name="l00107"></a>00107 <span class="preprocessor">  orxSTATUS           eStatus;                                                                                                                              \</span>
+<a name="l00108"></a>00108 <span class="preprocessor">  stResult.eType    = RESULT_TYPE;                                                                                                                          \</span>
+<a name="l00109"></a>00109 <span class="preprocessor">  stResult.zName    = RESULT_NAME;                                                                                                                          \</span>
+<a name="l00110"></a>00110 <span class="preprocessor">  eStatus           = orxCommand_Register(#MODULE&quot;.&quot;#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &amp;stResult); \</span>
+<a name="l00111"></a>00111 <span class="preprocessor">  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                  \</span>
+<a name="l00112"></a>00112 <span class="preprocessor">} while(orxFALSE)</span>
+<a name="l00113"></a>00113 <span class="preprocessor"></span>
+<a name="l00114"></a><a class="code" href="group__orx_command.html#gac5f19d9731fa026b64528d186415fe67">00114</a> <span class="preprocessor">#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                 \</span>
+<a name="l00115"></a>00115 <span class="preprocessor">do                                                                                                                                                          \</span>
+<a name="l00116"></a>00116 <span class="preprocessor">{                                                                                                                                                           \</span>
+<a name="l00117"></a>00117 <span class="preprocessor">  orxCommand_Unregister(#MODULE&quot;.&quot;#COMMAND);                                                                                                                \</span>
+<a name="l00118"></a>00118 <span class="preprocessor">} while(orxFALSE)</span>
+<a name="l00119"></a>00119 <span class="preprocessor"></span>
+<a name="l00120"></a>00120 
+<a name="l00123"></a>00123 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                     <a class="code" href="group__orx_command.html#ga74927728d29562dce492a1c305a470ad">orxCommand_Setup</a>();
+<a name="l00124"></a>00124 
+<a name="l00128"></a>00128 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                <a class="code" href="group__orx_command.html#ga8ae0806b0de227375bb09eba3f9dd5bc">orxCommand_Init</a>();
+<a name="l00129"></a>00129 
+<a name="l00132"></a>00132 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                     <a class="code" href="group__orx_command.html#ga27af115986358699ec978008aeca8455">orxCommand_Exit</a>();
+<a name="l00133"></a>00133 
 <a name="l00134"></a>00134 
-<a name="l00137"></a>00137 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                     <a class="code" href="group__orx_command.html#ga74927728d29562dce492a1c305a470ad">orxCommand_Setup</a>();
-<a name="l00138"></a>00138 
-<a name="l00142"></a>00142 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                <a class="code" href="group__orx_command.html#ga8ae0806b0de227375bb09eba3f9dd5bc">orxCommand_Init</a>();
-<a name="l00143"></a>00143 
-<a name="l00146"></a>00146 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL                     <a class="code" href="group__orx_command.html#ga27af115986358699ec978008aeca8455">orxCommand_Exit</a>();
-<a name="l00147"></a>00147 
-<a name="l00148"></a>00148 
-<a name="l00158"></a>00158 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(<span class="keyword">const</span> orxSTRING _zCommand, <span class="keyword">const</span> <a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a> _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_astParamList, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_pstResult);
-<a name="l00159"></a>00159 
-<a name="l00164"></a>00164 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                <a class="code" href="group__orx_command.html#ga055a5c596254264c5a4e7e5286a24c26">orxCommand_Unregister</a>(<span class="keyword">const</span> orxSTRING _zCommand);
-<a name="l00165"></a>00165 
-<a name="l00170"></a>00170 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL                  <a class="code" href="group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6">orxCommand_IsRegistered</a>(<span class="keyword">const</span> orxSTRING _zCommand);
+<a name="l00144"></a>00144 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(<span class="keyword">const</span> orxSTRING _zCommand, <span class="keyword">const</span> <a class="code" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a> _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_astParamList, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_pstResult);
+<a name="l00145"></a>00145 
+<a name="l00150"></a>00150 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL                <a class="code" href="group__orx_command.html#ga055a5c596254264c5a4e7e5286a24c26">orxCommand_Unregister</a>(<span class="keyword">const</span> orxSTRING _zCommand);
+<a name="l00151"></a>00151 
+<a name="l00156"></a>00156 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL                  <a class="code" href="group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6">orxCommand_IsRegistered</a>(<span class="keyword">const</span> orxSTRING _zCommand);
+<a name="l00157"></a>00157 
+<a name="l00162"></a>00162 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL          <a class="code" href="group__orx_command.html#ga4c56c946e55b4fe9dc77ac1a85c0c9a6">orxCommand_GetPrototype</a>(<span class="keyword">const</span> orxSTRING _zCommand);
+<a name="l00163"></a>00163 
+<a name="l00164"></a>00164 
+<a name="l00170"></a>00170 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga4a93da7541fa0b08c97b165375a76896">orxCommand_Evaluate</a>(<span class="keyword">const</span> orxSTRING _zCommandLine, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
 <a name="l00171"></a>00171 
-<a name="l00176"></a>00176 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL          <a class="code" href="group__orx_command.html#ga4c56c946e55b4fe9dc77ac1a85c0c9a6">orxCommand_GetPrototype</a>(<span class="keyword">const</span> orxSTRING _zCommand);
-<a name="l00177"></a>00177 
-<a name="l00178"></a>00178 
-<a name="l00184"></a>00184 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga4a93da7541fa0b08c97b165375a76896">orxCommand_Evaluate</a>(<span class="keyword">const</span> orxSTRING _zCommandLine, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
-<a name="l00185"></a>00185 
-<a name="l00193"></a>00193 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga317d7bfeacbcb33333bd37f8a0b70a38">orxCommand_Execute</a>(<span class="keyword">const</span> orxSTRING _zCommand, orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
-<a name="l00194"></a>00194 
-<a name="l00195"></a>00195 
-<a name="l00196"></a>00196 <span class="preprocessor">#endif </span><span class="comment">/* _orxCOMMAND_H_ */</span>
-<a name="l00197"></a>00197 
+<a name="l00179"></a>00179 <span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL          <a class="code" href="group__orx_command.html#ga317d7bfeacbcb33333bd37f8a0b70a38">orxCommand_Execute</a>(<span class="keyword">const</span> orxSTRING _zCommand, orxU32 _u32ArgNumber, <span class="keyword">const</span> <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult);
+<a name="l00180"></a>00180 
+<a name="l00181"></a>00181 
+<a name="l00182"></a>00182 <span class="preprocessor">#endif </span><span class="comment">/* _orxCOMMAND_H_ */</span>
+<a name="l00183"></a>00183 
 </pre></div></div>
 </div>
 <hr size="1"><address style="text-align: right;"><small>

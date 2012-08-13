@@ -173,11 +173,12 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga0d09f92bcd5854e4955faf3ce86863c2">orxKeyboard_Exit</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga1e2d858b8ecd23c4e0d56aad0137e520">orxKeyboard_GetKeyName</a> (<a class="el" href="group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe">orxKEYBOARD_KEY</a> _eKey)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga82f83416fda850a0b25f6f4075eac185">orxKeyboard_Hit</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga3d60dc20025f2febc61feec215dd4dbf">orxKeyboard_Init</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga7687c5ca36f6a69d86ce91b3ac24b908">orxKeyboard_IsKeyPressed</a> (<a class="el" href="group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe">orxKEYBOARD_KEY</a> _eKey)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe">orxKEYBOARD_KEY</a> <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#gaf0ba837523668750401c6b2a2285ef7f">orxKeyboard_Read</a> ()</td></tr>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#gac30eff35e3dab48ed446d3d95cb5807c">orxKeyboard_ReadKey</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga5535cda182c25f8db8cebbb1e71672e1">orxKeyboard_ReadString</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">orxDLLAPI void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#gae02029be67f0066490ed87031c723988">orxKeyboard_Setup</a> ()</td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
@@ -433,7 +434,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div>
 <div class="memdoc">
-<p>Empties the keyboard buffer. </p>
+<p>Empties the keyboard buffer (both keys and chars) </p>
 
 </div>
 </div>
@@ -479,24 +480,6 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga82f83416fda850a0b25f6f4075eac185"></a><!-- doxytag: member="orxKeyboard.h::orxKeyboard_Hit" ref="ga82f83416fda850a0b25f6f4075eac185" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxKeyboard_Hit </td>
-          <td>(</td>
-          <td class="paramname">&#160;)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Returns orxTRUE if there are keypresses waiting in the input buffer. </p>
-<dl class="return"><dt><b>Returns:</b></dt><dd>orxTRUE if keys have been pressed, else orxFALSE </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="ga3d60dc20025f2febc61feec215dd4dbf"></a><!-- doxytag: member="orxKeyboard.h::orxKeyboard_Init" ref="ga3d60dc20025f2febc61feec215dd4dbf" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -539,12 +522,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gaf0ba837523668750401c6b2a2285ef7f"></a><!-- doxytag: member="orxKeyboard.h::orxKeyboard_Read" ref="gaf0ba837523668750401c6b2a2285ef7f" args="()" -->
+<a class="anchor" id="gac30eff35e3dab48ed446d3d95cb5807c"></a><!-- doxytag: member="orxKeyboard.h::orxKeyboard_ReadKey" ref="gac30eff35e3dab48ed446d3d95cb5807c" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe">orxKEYBOARD_KEY</a> orxFASTCALL orxKeyboard_Read </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe">orxKEYBOARD_KEY</a> orxFASTCALL orxKeyboard_ReadKey </td>
           <td>(</td>
           <td class="paramname">&#160;)</td>
           <td></td>
@@ -552,8 +535,26 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div>
 <div class="memdoc">
-<p>Gets the next character from the keyboard buffer </p>
-<dl class="return"><dt><b>Returns:</b></dt><dd>orxKEYBOARD_KEY </dd></dl>
+<p>Gets the next key from the keyboard buffer and removes it from there </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>orxKEYBOARD_KEY, orxKEYBOARD_KEY_NONE if the buffer is empty </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga5535cda182c25f8db8cebbb1e71672e1"></a><!-- doxytag: member="orxKeyboard.h::orxKeyboard_ReadString" ref="ga5535cda182c25f8db8cebbb1e71672e1" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const orxSTRING orxFASTCALL orxKeyboard_ReadString </td>
+          <td>(</td>
+          <td class="paramname">&#160;)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Gets the next UTF-8 encoded string from the keyboard buffer and removes it from there </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>UTF-8 encoded string </dd></dl>
 
 </div>
 </div>

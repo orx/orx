@@ -54,6 +54,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_CLOCK, orxClock);
   orxMODULE_REGISTER(orxMODULE_ID_COMMAND, orxCommand);
   orxMODULE_REGISTER(orxMODULE_ID_CONFIG, orxConfig);
+  orxMODULE_REGISTER(orxMODULE_ID_CONSOLE, orxConsole);
   orxMODULE_REGISTER(orxMODULE_ID_DISPLAY, orxDisplay);
   orxMODULE_REGISTER(orxMODULE_ID_EVENT, orxEvent);
   orxMODULE_REGISTER(orxMODULE_ID_FILE, orxFile);

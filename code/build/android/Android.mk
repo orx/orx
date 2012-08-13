@@ -33,6 +33,7 @@ LOCAL_SRC_FILES = \
 	math/orxVector.c          \
 	core/orxCommand.c         \
 	core/orxConfig.c          \
+	core/orxConsole.c         \
 	core/orxEvent.c           \
 	core/orxSystem.c          \
 	core/orxClock.c           \
@@ -105,6 +106,7 @@ LOCAL_SRC_FILES = \
 	math/orxVector.c          \
 	core/orxCommand.c         \
 	core/orxConfig.c          \
+	core/orxConsole.c         \
 	core/orxEvent.c           \
 	core/orxSystem.c          \
 	core/orxClock.c           \

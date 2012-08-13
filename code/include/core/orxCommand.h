@@ -42,22 +42,8 @@
 
 
 #include "orxInclude.h"
-#include "utils/orxString.h"
+#include "math/orxVector.h"
 
-
-/** Event enum
- */
-typedef enum __orxCOMMAND_EVENT_t
-{
-  orxCOMMAND_EVENT_REGISTER = 0,                      /**< Event sent when a command is registerd */
-  orxCOMMAND_EVENT_UNREGISTER,                        /**< Event sent when a command is unregistered */
-  orxCOMMAND_EVENT_EXECUTE,                           /**< Event sent when a command is executed */
-
-  orxCOMMAND_EVENT_NUMBER,
-
-  orxCOMMAND_EVENT_NONE = orxENUM_NONE
-
-} orxCOMMAND_EVENT;
 
 /** Variable type enum
  */

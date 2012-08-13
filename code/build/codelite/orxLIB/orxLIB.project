@@ -20,6 +20,7 @@
       <File Name="../../../src/core/orxClock.c"/>
       <File Name="../../../src/core/orxCommand.c"/>
       <File Name="../../../src/core/orxConfig.c"/>
+      <File Name="../../../src/core/orxConsole.c"/>
       <File Name="../../../src/core/orxEvent.c"/>
       <File Name="../../../src/core/orxLocale.c"/>
       <File Name="../../../src/core/orxSystem.c"/>
@@ -111,6 +112,7 @@
       <File Name="../../../include/core/orxClock.h"/>
       <File Name="../../../include/core/orxCommand.h"/>
       <File Name="../../../include/core/orxConfig.h"/>
+      <File Name="../../../include/core/orxConsole.h"/>
       <File Name="../../../include/core/orxEvent.h"/>
       <File Name="../../../include/core/orxLocale.h"/>
       <File Name="../../../include/core/orxSystem.h"/>

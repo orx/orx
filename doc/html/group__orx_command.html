@@ -44,15 +44,6 @@ Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef void(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a> )(orxU32 _u32ArgNumber, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult)</td></tr>
 <tr><td colspan="2"><h2><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gab08f38012191325b5960c618da5ff0be">orxCOMMAND_EVENT</a> { <br/>
-&#160;&#160;<a class="el" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea0ef15f9db47bf4e25ad0163487d4f26e">orxCOMMAND_EVENT_REGISTER</a> =  0, 
-<a class="el" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0beae2199175b4055031fe9dc8ee0491c14d">orxCOMMAND_EVENT_UNREGISTER</a>, 
-<a class="el" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea01cd35b833ac6039619f76b2878de517">orxCOMMAND_EVENT_EXECUTE</a>, 
-<a class="el" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0bea4cd0d53bd7c81ebeb13df168924a9728">orxCOMMAND_EVENT_NUMBER</a>, 
-<br/>
-&#160;&#160;<a class="el" href="group__orx_command.html#ggab08f38012191325b5960c618da5ff0beab0da41f14c2bf02a8c43478e8d5f6630">orxCOMMAND_EVENT_NONE</a> =  orxENUM_NONE
-<br/>
- }</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">orxCOMMAND_VAR_TYPE</a> { <br/>
 &#160;&#160;<a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">orxCOMMAND_VAR_TYPE_STRING</a> =  0, 
 <a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">orxCOMMAND_VAR_TYPE_FLOAT</a>, 
@@ -152,7 +143,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 } <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
 </pre></div><p>Command registration helpers </p>
 
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00116">116</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00102">102</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
@@ -185,7 +176,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <a class="code" href="group__orx_command.html#ga055a5c596254264c5a4e7e5286a24c26">orxCommand_Unregister</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND);                                                                                                                \
 } <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)
 </pre></div>
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00128">128</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00114">114</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
@@ -202,44 +193,11 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="memdoc">
 <p>Command function type </p>
 
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00111">111</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00097">97</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
 <hr/><h2>Enumeration Type Documentation</h2>
-<a class="anchor" id="gab08f38012191325b5960c618da5ff0be"></a><!-- doxytag: member="orxCommand.h::orxCOMMAND_EVENT" ref="gab08f38012191325b5960c618da5ff0be" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__orx_command.html#gab08f38012191325b5960c618da5ff0be">orxCOMMAND_EVENT</a></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Event enum </p>
-<dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" id="ggab08f38012191325b5960c618da5ff0bea0ef15f9db47bf4e25ad0163487d4f26e"></a><!-- doxytag: member="orxCOMMAND_EVENT_REGISTER" ref="ggab08f38012191325b5960c618da5ff0bea0ef15f9db47bf4e25ad0163487d4f26e" args="" -->orxCOMMAND_EVENT_REGISTER</em>&nbsp;</td><td>
-<p>Event sent when a command is registerd </p>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab08f38012191325b5960c618da5ff0beae2199175b4055031fe9dc8ee0491c14d"></a><!-- doxytag: member="orxCOMMAND_EVENT_UNREGISTER" ref="ggab08f38012191325b5960c618da5ff0beae2199175b4055031fe9dc8ee0491c14d" args="" -->orxCOMMAND_EVENT_UNREGISTER</em>&nbsp;</td><td>
-<p>Event sent when a command is unregistered </p>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab08f38012191325b5960c618da5ff0bea01cd35b833ac6039619f76b2878de517"></a><!-- doxytag: member="orxCOMMAND_EVENT_EXECUTE" ref="ggab08f38012191325b5960c618da5ff0bea01cd35b833ac6039619f76b2878de517" args="" -->orxCOMMAND_EVENT_EXECUTE</em>&nbsp;</td><td>
-<p>Event sent when a command is executed </p>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab08f38012191325b5960c618da5ff0bea4cd0d53bd7c81ebeb13df168924a9728"></a><!-- doxytag: member="orxCOMMAND_EVENT_NUMBER" ref="ggab08f38012191325b5960c618da5ff0bea4cd0d53bd7c81ebeb13df168924a9728" args="" -->orxCOMMAND_EVENT_NUMBER</em>&nbsp;</td><td>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab08f38012191325b5960c618da5ff0beab0da41f14c2bf02a8c43478e8d5f6630"></a><!-- doxytag: member="orxCOMMAND_EVENT_NONE" ref="ggab08f38012191325b5960c618da5ff0beab0da41f14c2bf02a8c43478e8d5f6630" args="" -->orxCOMMAND_EVENT_NONE</em>&nbsp;</td><td>
-</td></tr>
-</table>
-</dd>
-</dl>
-
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00050">50</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="ga579c8c869f7eaf4fda8655892ea734aa"></a><!-- doxytag: member="orxCommand.h::orxCOMMAND_VAR_TYPE" ref="ga579c8c869f7eaf4fda8655892ea734aa" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -276,7 +234,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00064">64</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00050">50</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
