@@ -271,6 +271,28 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Command: Load
+ */
+void orxFASTCALL orxConfig_CommandLoad(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxConfig_Load(_astArgList[0].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Save
+ */
+void orxFASTCALL orxConfig_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxConfig_Save(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].bValue : orxFALSE, orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Command: Reload
  */
 void orxFASTCALL orxConfig_CommandReload(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -385,13 +407,18 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 static orxINLINE void orxConfig_RegisterCommands()
 {
+  /* Command: Load */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, Load, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"FileName", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Save */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"FileName", orxCOMMAND_VAR_TYPE_STRING}, {"Encrypt = false", orxCOMMAND_VAR_TYPE_BOOL});
+
   /* Command: Reload */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Reload, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
   /* Command: GetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetParent */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Parent = orxNULL", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: CreateSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasSection */
@@ -409,6 +436,10 @@ static orxINLINE void orxConfig_RegisterCommands()
  */
 static orxINLINE void orxConfig_UnregisterCommands()
 {
+  /* Command: Load */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Load);
+  /* Command: Save */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Save);
   /* Command: Reload */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Reload);
 

@@ -237,7 +237,7 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: SetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Input", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Input", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent = orxFALSE", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Input", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Input", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: ResetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, ResetValue, "Input", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
