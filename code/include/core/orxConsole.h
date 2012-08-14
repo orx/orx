@@ -58,6 +58,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Init();
 extern orxDLLAPI void orxFASTCALL                     orxConsole_Exit();
 
 
+/** Enables/disables the console
+ * @param[in]   _bEnable      Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL _bEnable);
+
+/** Is the console enabled?
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
+
+
 #endif /* _orxCONSOLE_H_ */
 
 /** @} */

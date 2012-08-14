@@ -46,6 +46,7 @@
 #define orxCONSOLE_KU32_STATIC_FLAG_NONE              0x00000000                      /**< No flags */
 
 #define orxCONSOLE_KU32_STATIC_FLAG_READY             0x00000001                      /**< Ready flag */
+#define orxCONSOLE_KU32_STATIC_FLAG_ENABLED           0x00000002                      /**< Enabled flag */
 
 #define orxCONSOLE_KU32_STATIC_MASK_ALL               0xFFFFFFFF                      /**< All mask */
 
@@ -147,4 +148,45 @@ void orxFASTCALL orxConsole_Exit()
 
   /* Done! */
   return;
+}
+
+/** Enables/disables the console
+ * @param[in]   _bEnable      Enable / disable
+ */
+void orxFASTCALL orxConsole_Enable(orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates status flags */
+    orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED, orxCONSOLE_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status flags */
+    orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_NONE, orxCONSOLE_KU32_STATIC_FLAG_ENABLED);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Is the console enabled?
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxConsole_IsEnabled()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
