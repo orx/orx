@@ -88,7 +88,7 @@
 typedef struct __orxCONSOLE_STATIC_t
 {
   orxCHAR                   acBuffer[orxCONSOLE_KU32_BUFFER_SIZE];                    /**< Buffer */
-  const orxSTRING           zInputSetBackup;                                          /**< Input set backup */
+  const orxSTRING           zPreviousInputSet;                                        /**< Previous input set */
   orxINPUT_TYPE             eToggleKeyType;                                           /**< Toggle key type */
   orxENUM                   eToggleKeyID;                                             /**< Toggle key ID */
   orxU32                    u32Flags;                                                 /**< Control flags */
@@ -116,6 +116,13 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxConsole_Update");
 
+  /* Should toggle? */
+  if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_TOGGLE) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_TOGGLE) != orxFALSE))
+  {
+    /* Toggles it */
+    orxConsole_Enable(!orxConsole_IsEnabled());
+  }
+
   /* Is enabled? */
   if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
   {
@@ -136,11 +143,8 @@ static void orxFASTCALL orxConsole_Start()
   /* Not already enabled? */
   if(!orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
   {
-    /* Registers update callback */
-    orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);
-
     /* Stores current input set */
-    sstConsole.zInputSetBackup = orxInput_GetCurrentSet();
+    sstConsole.zPreviousInputSet = orxInput_GetCurrentSet();
 
     /* Replaces input set */
     orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
@@ -159,17 +163,47 @@ static void orxFASTCALL orxConsole_Stop()
   /* Was enabled? */
   if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
   {
-    /* Unregisters update callback */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update);
-
     /* Restores previous input set */
-    orxInput_SelectSet(sstConsole.zInputSetBackup);
+    orxInput_SelectSet(sstConsole.zPreviousInputSet);
 
     //! TODO    
   }
 
   /* Done! */
   return;
+}
+
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_INPUT);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Select set */
+    case orxINPUT_EVENT_SELECT_SET:
+    {
+      /* Forces toggle input binding */
+      orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 
@@ -236,28 +270,62 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     /* Pops config section */
     orxConfig_PopSection();
 
-    /* Backups previous input set */
-    zPreviousSet = orxInput_GetCurrentSet();
+    /* Adds event handler */
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
 
-    /* Replaces input set */
-    eResult = orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
-
-    /* Success */
+    /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Binds inputs */
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE);
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE);
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER);
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS);
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT);
+      /* Backups previous input set */
+      zPreviousSet = orxInput_GetCurrentSet();
 
-      /* Restores previous set */
-      orxInput_SelectSet(zPreviousSet);
+      /* Replaces input set */
+      eResult = orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
 
-      /* Inits Flags */
-      sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
+      /* Success */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Binds console inputs */
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT);
+
+        /* Restores previous set */
+        orxInput_SelectSet(zPreviousSet);
+
+        /* Registers update callback */
+        eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Inits Flags */
+          sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
+        }
+        else
+        {
+          /* Remove event handler */
+          orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't register console update callback.");
+        }
+      }
+      else
+      {
+        /* Remove event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't initialize console inputs.");
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't register console's event handler.");
     }
   }
   else
@@ -282,6 +350,12 @@ void orxFASTCALL orxConsole_Exit()
   {
     /* Stops console */
     orxConsole_Stop();
+
+    /* Unregisters update callback */
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update);
+
+    /* Remove event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
 
     /* Updates flags */
     sstConsole.u32Flags &= ~orxCONSOLE_KU32_STATIC_FLAG_READY;

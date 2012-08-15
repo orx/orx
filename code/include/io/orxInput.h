@@ -79,6 +79,7 @@ typedef enum __orxINPUT_EVENT_t
 {
   orxINPUT_EVENT_ON = 0,
   orxINPUT_EVENT_OFF,
+  orxINPUT_EVENT_SELECT_SET,
 
   orxINPUT_EVENT_NUMBER,
 

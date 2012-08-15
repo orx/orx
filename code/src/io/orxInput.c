@@ -1219,8 +1219,11 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
   /* Valid? */
   if(_zSetName != orxSTRING_EMPTY)
   {
-    orxINPUT_SET *pstSet;
+    orxINPUT_SET *pstSet, *pstPreviousSet;
     orxU32        u32SetID;
+
+    /* Stores current set */
+    pstPreviousSet = sstInput.pstCurrentSet;
 
     /* Gets the set ID */
     u32SetID = orxString_ToCRC(_zSetName);
@@ -1272,8 +1275,30 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
       }
     }
 
-    /* Updates result */
-    eResult = (sstInput.pstCurrentSet != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    /* Has selected set? */
+    if(sstInput.pstCurrentSet != orxNULL)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+
+      /* Is a new set? */
+      if(sstInput.pstCurrentSet != pstPreviousSet)
+      {
+        orxINPUT_EVENT_PAYLOAD stPayload;
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
+        stPayload.zSetName = sstInput.pstCurrentSet->zName;
+
+        /* Sends it */
+        orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_SELECT_SET, orxNULL, orxNULL, &stPayload);
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
@@ -1739,7 +1764,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY))
   {
-    orxINPUT_ENTRY *pstEntry, *pstSelectedEntry = orxNULL;
+    orxINPUT_ENTRY *pstEntry;
     orxU32          u32EntryID;
 
     /* Gets entry ID */
@@ -1752,6 +1777,12 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
     {
       orxU32 i;
 
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        break;
+      }
+
       /* For all bindings */
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
@@ -1762,58 +1793,70 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
           orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: <%s> is already bound to input [%s.%s].", sstInput.pstCurrentSet->zName, _zName, orxInput_GetBindingName(_eType, _eID), sstInput.pstCurrentSet->zName, pstEntry->zName);
         }
       }
-
-      /* Found? */
-      if(pstEntry->u32ID == u32EntryID)
-      {
-        /* Updates selection */
-        pstSelectedEntry = pstEntry;
-      }
     }
 
     /* Entry not found? */
-    if(pstSelectedEntry == orxNULL)
+    if(pstEntry == orxNULL)
     {
       /* Creates a new entry */
-      pstSelectedEntry = orxInput_CreateEntry(_zName);
+      pstEntry = orxInput_CreateEntry(_zName);
     }
 
     /* Valid? */
-    if(pstSelectedEntry != orxNULL)
+    if(pstEntry != orxNULL)
     {
-      orxU32 u32OldestIndex;
+      orxU32 i;
 
-      /* Gets oldest binding index */
-      u32OldestIndex = pstSelectedEntry->u32Status & orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING;
-
-      /* Checks */
-      orxASSERT(u32OldestIndex < orxINPUT_KU32_BINDING_NUMBER);
-
-      /* Had a previous binding? */
-      if(pstSelectedEntry->astBindingList[u32OldestIndex].eType != orxINPUT_TYPE_NONE)
+      /* For all bindings */
+      for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: replacing <%s> with <%s>", sstInput.pstCurrentSet->zName, pstSelectedEntry->zName, orxInput_GetBindingName(pstSelectedEntry->astBindingList[u32OldestIndex].eType, pstSelectedEntry->astBindingList[u32OldestIndex].eID), orxInput_GetBindingName(_eType, _eID));
+        /* Is already bound to entry? */
+        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
+        {
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+
+          break;
+        }
       }
 
-      /* Updates binding */
-      pstSelectedEntry->astBindingList[u32OldestIndex].eType  = _eType;
-      pstSelectedEntry->astBindingList[u32OldestIndex].eID    = _eID;
-      pstSelectedEntry->astBindingList[u32OldestIndex].fValue = orxFLOAT_0;
+      /* Not already bound to it? */
+      if(eResult == orxSTATUS_FAILURE)
+      {
+        orxU32 u32OldestIndex;
 
-      /* Gets new oldest index */
-      u32OldestIndex = (u32OldestIndex + 1) % orxINPUT_KU32_BINDING_NUMBER;
+        /* Gets oldest binding index */
+        u32OldestIndex = pstEntry->u32Status & orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING;
 
-      /* Updates status */
-      orxFLAG_SET(pstSelectedEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_BOUND | u32OldestIndex, orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING);
+        /* Checks */
+        orxASSERT(u32OldestIndex < orxINPUT_KU32_BINDING_NUMBER);
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create an input [%s.%s].", sstInput.pstCurrentSet->zName, _zName);
+        /* Had a previous binding? */
+        if(pstEntry->astBindingList[u32OldestIndex].eType != orxINPUT_TYPE_NONE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: replacing <%s> with <%s>", sstInput.pstCurrentSet->zName, pstEntry->zName, orxInput_GetBindingName(pstEntry->astBindingList[u32OldestIndex].eType, pstEntry->astBindingList[u32OldestIndex].eID), orxInput_GetBindingName(_eType, _eID));
+        }
+
+        /* Updates binding */
+        pstEntry->astBindingList[u32OldestIndex].eType  = _eType;
+        pstEntry->astBindingList[u32OldestIndex].eID    = _eID;
+        pstEntry->astBindingList[u32OldestIndex].fValue = orxFLOAT_0;
+
+        /* Gets new oldest index */
+        u32OldestIndex = (u32OldestIndex + 1) % orxINPUT_KU32_BINDING_NUMBER;
+
+        /* Updates status */
+        orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_BOUND | u32OldestIndex, orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create an input [%s.%s].", sstInput.pstCurrentSet->zName, _zName);
+      }
     }
   }
 
@@ -2235,7 +2278,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
   {
     orxU32 eType, u32ID;
 
-    /* Gets its ID */
+    /* Gets binding ID */
     u32ID = orxString_ToCRC(_zName);
 
     /* For all input types */
@@ -2247,7 +2290,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
       /* For all bindings */
       for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
       {
-        /* Gets binding name */
+        /* Gets its name */
         zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
 
         /* Found? */
