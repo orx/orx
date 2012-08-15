@@ -144,21 +144,25 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
     /* Input */
     case orxEVENT_TYPE_INPUT:
     {
-      orxINPUT_EVENT_PAYLOAD *pstPayload;
-
-      /* Gets event payload */
-      pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Has a multi-input info? */
-      if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+      /* Not a set selection? */
+      if(_pstEvent->eID != orxINPUT_EVENT_SELECT_SET)
       {
-        /* Logs info */
-        orxLOG("[%s::%s] is %s (%s/v=%g + %s/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]), pstPayload->afValue[1]);
-      }
-      else
-      {
-        /* Logs info */
-        orxLOG("[%s::%s] is %s (%s/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0]);
+        orxINPUT_EVENT_PAYLOAD *pstPayload;
+
+        /* Gets event payload */
+        pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Has a multi-input info? */
+        if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+        {
+          /* Logs info */
+          orxLOG("[%s::%s] is %s (%s/v=%g + %s/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]), pstPayload->afValue[1]);
+        }
+        else
+        {
+          /* Logs info */
+          orxLOG("[%s::%s] is %s (%s/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0]);
+        }
       }
 
       break;
