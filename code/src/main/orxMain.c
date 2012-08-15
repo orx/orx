@@ -188,7 +188,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
-    static orxBOOL sbBackSpacePressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
+    static orxBOOL sbHomePressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
 
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
@@ -197,26 +197,26 @@ orxSTATUS orxFASTCALL orxMain_Run()
       orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
     }
 
-    /* Was backspace pressed? */
-    if(sbBackSpacePressed != orxFALSE)
+    /* Was home pressed? */
+    if(sbHomePressed != orxFALSE)
     {
       /* No longer pressed? */
-      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACKSPACE) == orxFALSE)
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) == orxFALSE)
       {
         /* Updates key status */
-        sbBackSpacePressed = orxFALSE;
+        sbHomePressed = orxFALSE;
       }
     }
     else
     {
-      /* Is backspace pressed? */
-      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACKSPACE) != orxFALSE)
+      /* Is home pressed? */
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) != orxFALSE)
       {
         /* Reloads config history */
         orxConfig_ReloadHistory();
 
         /* Updates key status */
-        sbBackSpacePressed = orxTRUE;
+        sbHomePressed = orxTRUE;
       }
     }
 

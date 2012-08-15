@@ -487,8 +487,8 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       }
     }
 
-    /* Console Display? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
+    /* Terminal Display? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
     {
 
 #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)

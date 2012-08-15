@@ -926,7 +926,7 @@ void orxFASTCALL orxPlugin_Exit()
 void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, const orxSTRING _zFileName, orxU32 _u32Line)
 {
   orxDEBUG_BACKUP_FLAG();
-  orxDEBUG_SET_FLAG(orxDEBUG_KU32_STATIC_FLAG_CONSOLE
+  orxDEBUG_SET_FLAG(orxDEBUG_KU32_STATIC_FLAG_TERMINAL
                    |orxDEBUG_KU32_STATIC_FLAG_FILE
                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,

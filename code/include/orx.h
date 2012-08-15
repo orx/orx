@@ -108,6 +108,7 @@ static void orxFASTCALL orx_MainSetup()
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONSOLE);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_INPUT);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);

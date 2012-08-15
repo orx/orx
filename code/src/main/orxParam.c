@@ -78,7 +78,7 @@
   do                                                                                                        \
   {                                                                                                         \
     _orxDebug_BackupFlags();                                                                                \
-    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                   \
+    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                  \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
     _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
     _orxDebug_RestoreFlags();                                                                               \
@@ -91,7 +91,7 @@
     do                                                                                                      \
     {                                                                                                       \
       _orxDebug_BackupFlags();                                                                              \
-      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                 \
+      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                \
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                               \
       _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
       _orxDebug_RestoreFlags();                                                                             \

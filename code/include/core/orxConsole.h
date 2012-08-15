@@ -69,6 +69,13 @@ extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL 
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
 
 
+/** Logs text to the console
+ * @param[in]   _zText        Text to log
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Log(const orxSTRING _zText);
+
+
 #endif /* _orxCONSOLE_H_ */
 
 /** @} */
