@@ -2214,6 +2214,60 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
   return zResult;
 }
 
+/** Gets a binding type and ID from its name
+ * @param[in]   _zName          Concerned input name
+ * @param[in]   _peType         Binding type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[in]   _peID           Binding ID (ID of button/key/axis to bind)
+ * @return orxSTATUS_SUCCESS if input is valid, orxSTATUS_FAILURE otherwise
+ */
+orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_TYPE *_peType, orxENUM *_peID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zName != orxNULL);
+  orxASSERT(_peType != orxNULL);
+  orxASSERT(_peID != orxNULL);
+
+  /* Valid name? */
+  if(_zName != orxSTRING_EMPTY)
+  {
+    orxU32 eType, u32ID;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zName);
+
+    /* For all input types */
+    for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
+    {
+      orxENUM   eID;
+      const orxSTRING zBinding = orxNULL;
+
+      /* For all bindings */
+      for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
+      {
+        /* Gets binding name */
+        zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
+
+        /* Found? */
+        if(orxString_ToCRC(zBinding) == u32ID)
+        {
+          /* Updates result */
+          *_peType  = (orxINPUT_TYPE)eType;
+          *_peID    = eID;
+          eResult   = orxSTATUS_SUCCESS;
+
+          break;
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets active binding (current pressed key/button/...) so as to allow on-the-fly user rebinding
  * @param[out]  _peType         Active binding type (mouse/joystick button, keyboard key or joystick axis)
  * @param[out]  _peID           Active binding ID (ID of button/key/axis to bind)

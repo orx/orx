@@ -36,6 +36,7 @@
 #include "debug/orxProfiler.h"
 #include "core/orxClock.h"
 #include "core/orxCommand.h"
+#include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "io/orxInput.h"
 #include "memory/orxMemory.h"
@@ -57,7 +58,13 @@
  */
 #define orxCONSOLE_KU32_BUFFER_SIZE                   4096                            /**< Buffer size */
 
+#define orxCONSOLE_KZ_CONFIG_SECTION                  "Console"                       /**< Config section name */
+#define orxCONSOLE_KZ_CONFIG_TOGGLE_KEY               "ToggleKey"                     /**< Toggle key */
+
 #define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
+
+#define orxCONSOLE_KZ_INPUT_TOGGLE                    "-=ToggleConsole=-"             /**< Toggle console input */
+#define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_TILDE           /**< Default toggle key */
 
 #define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
 #define orxCONSOLE_KZ_INPUT_DELETE                    "Delete"                        /**< Delete input */
@@ -82,6 +89,8 @@ typedef struct __orxCONSOLE_STATIC_t
 {
   orxCHAR                   acBuffer[orxCONSOLE_KU32_BUFFER_SIZE];                    /**< Buffer */
   const orxSTRING           zInputSetBackup;                                          /**< Input set backup */
+  orxINPUT_TYPE             eToggleKeyType;                                           /**< Toggle key type */
+  orxENUM                   eToggleKeyID;                                             /**< Toggle key ID */
   orxU32                    u32Flags;                                                 /**< Control flags */
 
 } orxCONSOLE_STATIC;
@@ -177,6 +186,7 @@ void orxFASTCALL orxConsole_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_COMMAND);
+  orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_INPUT);
@@ -201,6 +211,31 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstConsole, sizeof(orxCONSOLE_STATIC));
 
+    /* Stores default toggle key */
+    sstConsole.eToggleKeyType = orxINPUT_TYPE_KEYBOARD_KEY;
+    sstConsole.eToggleKeyID   = orxCONSOLE_KE_DEFAULT_KEY_TOGGLE;
+
+    /* Pushes its section */
+    orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
+
+    /* Has toggle key? */
+    if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != orxFALSE)
+    {
+      orxINPUT_TYPE eType;
+      orxENUM       eID;
+
+      /* Gets its type & ID */
+      if(orxInput_GetBindingType(orxConfig_GetString(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY), &eType, &eID) != orxSTATUS_FAILURE)
+      {
+        /* Stores it */
+        sstConsole.eToggleKeyType = eType;
+        sstConsole.eToggleKeyID   = eID;
+      }
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+
     /* Backups previous input set */
     zPreviousSet = orxInput_GetCurrentSet();
 
@@ -211,6 +246,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Binds inputs */
+      orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
       orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE);
       orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE);
       orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER);
