@@ -4956,6 +4956,42 @@ orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, const orxST
   return eResult;
 }
 
+/** Gets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject)
+{
+  orxGRAPHIC     *pstGraphic;
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxGRAPHIC(_pstObject->astStructureList[orxSTRUCTURE_ID_GRAPHIC].pstStructure);
+
+  /* Valid text graphic? */
+  if((pstGraphic != orxNULL) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
+  {
+    orxTEXT *pstText;
+
+    /* Gets text */
+    pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
+
+    /* Valid? */
+    if(pstText != orxNULL)
+    {
+      /* Updates result */
+      zResult = orxText_GetString(pstText);
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets object's bounding box (OBB)
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstBoundingBox Bounding box result
