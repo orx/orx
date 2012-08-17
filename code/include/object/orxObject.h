@@ -245,7 +245,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_
 /** @} */
 
 
-/** @name Pivot / frame
+/** @name Graphic
  * @{ */
 /** Sets object pivot
  * @param[in]   _pstObject      Concerned object
@@ -261,6 +261,38 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR *_pvOrigin);
 
+/** Sets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvSize       	Object size
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *_pvSize);
+
+/** Get object pivot
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPivot        Object pivot
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR *_pvPivot);
+
+/** Get object origin
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvOrigin       Object origin
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin);
+
+/** Gets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize);
+/** @} */
+
+
+/** @name Frame
+ * @{ */
 /** Sets object position
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvPosition     Object position
@@ -302,20 +334,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstOb
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale);
-
-/** Get object pivot
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvPivot        Object pivot
- * @return      orxVECTOR / orxNULL
- */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR *_pvPivot);
-
-/** Get object origin
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvOrigin       Object origin
- * @return      orxVECTOR / orxNULL
- */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin);
 
 /** Get object position
  * @param[in]   _pstObject      Concerned object
@@ -367,17 +385,6 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
-/** @} */
-
-
-/** @name Size
- * @{ */
-/** Gets object size
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvSize         Object's size
- * @return      orxVECTOR / orxNULL
- */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize);
 /** @} */
 
 

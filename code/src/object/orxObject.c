@@ -3183,9 +3183,6 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR 
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic object.");
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -3220,15 +3217,151 @@ orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic object.");
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
   return eResult;
+}
+
+/** Sets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvSize         Object size
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *_pvSize)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvSize != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Sets object size */
+    orxGraphic_SetSize(pstGraphic, _pvSize);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Get object pivot
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPivot        Object pivot
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR *_pvPivot)
+{
+  orxGRAPHIC  *pstGraphic;
+  orxVECTOR   *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPivot != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its pivot */
+     pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Get object origin
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvOrigin       Object origin
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin)
+{
+  orxGRAPHIC  *pstGraphic;
+  orxVECTOR   *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvOrigin != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its origin */
+     pvResult = orxGraphic_GetOrigin(pstGraphic, _pvOrigin);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize)
+{
+  orxGRAPHIC *pstGraphic;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvSize != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its size */
+    pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
+  }
+  else
+  {
+    /* No size */
+    orxVector_SetAll(_pvSize, orx2F(-1.0f));
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
 }
 
 /** Sets object position
@@ -3525,80 +3658,6 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
 
   /* Done! */
   return eResult;
-}
-
-/** Get object pivot
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvPivot        Object pivot
- * @return      orxVECTOR / orxNULL
- */
-orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR *_pvPivot)
-{
-  orxGRAPHIC  *pstGraphic;
-  orxVECTOR   *pvResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pvPivot != orxNULL);
-
-  /* Gets graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
-
-  /* Valid? */
-  if(pstGraphic != orxNULL)
-  {
-    /* Gets its pivot */
-     pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic object.");
-
-    /* Updates result */
-    pvResult = orxNULL;
-  }
-
-  /* Done! */
-  return pvResult;
-}
-
-/** Get object origin
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvOrigin       Object origin
- * @return      orxVECTOR / orxNULL
- */
-orxVECTOR *orxFASTCALL orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin)
-{
-  orxGRAPHIC  *pstGraphic;
-  orxVECTOR   *pvResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pvOrigin != orxNULL);
-
-  /* Gets graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
-
-  /* Valid? */
-  if(pstGraphic != orxNULL)
-  {
-    /* Gets its origin */
-     pvResult = orxGraphic_GetOrigin(pstGraphic, _pvOrigin);
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic origin.");
-
-    /* Updates result */
-    pvResult = orxNULL;
-  }
-
-  /* Done! */
-  return pvResult;
 }
 
 /** Get object position
@@ -3904,43 +3963,6 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
 
   /* Done! */
   return eResult;
-}
-
-/** Gets object size
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvSize         Object's size
- * @return      orxVECTOR / orxNULL
- */
-orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize)
-{
-  orxGRAPHIC *pstGraphic;
-  orxVECTOR  *pvResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pvSize != orxNULL);
-
-  /* Gets graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
-
-  /* Valid? */
-  if(pstGraphic != orxNULL)
-  {
-    /* Gets its size */
-    pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
-  }
-  else
-  {
-    /* No size */
-    orxVector_SetAll(_pvSize, orx2F(-1.0f));
-
-    /* Updates result */
-    pvResult = orxNULL;
-  }
-
-  /* Done! */
-  return pvResult;
 }
 
 /** Sets an object animset
