@@ -172,6 +172,7 @@ enum
 #define FOURCC_ATC_RGB       0x20435441 //(MAKEFOURCC('A','T','C',' '))
 #define FOURCC_ATC_RGB_EA    0x41435441 //(MAKEFOURCC('A','T','C','A'))
 #define FOURCC_ATC_RGB_IA    0x41435449 //(MAKEFOURCC('A','T','C','I'))
+#define FOURCC_ETC           0x20435445 //(MAKEFOURCC('E','T','C',' '))
 
 #define DDS_MAGIC_FLIPPED     0x0F7166ED
 
@@ -2236,6 +2237,11 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             bCompressed         = orxTRUE;
             bHasAlpha           = orxTRUE;
             break;
+          case FOURCC_ETC:
+            eInternalFormat     = GL_ETC1_RGB8_OES;
+            bCompressed         = orxTRUE;
+            bHasAlpha           = orxFALSE;
+            break;
           default:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load DDS texture <%s>: unsupported FOURCC code = [0x%x].", _zFilename, stHeader.ddspf.dwFourCC);
             orxFile_Close(pstFile);
@@ -2338,6 +2344,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             u32DataSize = ((stHeader.dwWidth + 3)/4)*((stHeader.dwHeight + 3)/4) * (eInternalFormat == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 8 : 16);
             break;
           case GL_ATC_RGB_AMD:
+          case GL_ETC1_RGB8_OES:
             u32DataSize = (((stHeader.dwWidth + 3) & 0xFFFFFFFC) * ((stHeader.dwHeight + 3) & 0xFFFFFFFC)) / 2;
             break;
           case GL_ATC_RGBA_EXPLICIT_ALPHA_AMD:
