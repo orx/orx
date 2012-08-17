@@ -3070,8 +3070,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    create_EGLContext();
     orxAndroid_WaitForWindow();
+    create_EGLContext();
 
     orxU32 i;
     GLushort u16Index;

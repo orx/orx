@@ -184,8 +184,9 @@ void orxAndroid_WaitForWindow()
     int events;
     struct android_poll_source* source;
 
-    while ((ident=ALooper_pollAll(pstApp->window != NULL ? 0 : -1, NULL, &events, (void**)&source)) >= 0)
+    while (!nv_app_status_valid_surface(pstApp))
     {
+      ident=ALooper_pollAll(-1, NULL, &events, (void**)&source);
       // Process this event.
       if (source != NULL)
       {
