@@ -44,16 +44,6 @@
 
 #endif /* __orxMSVC__ */
 
-#if defined(__orxX86_64__) || defined(__orxPPC64__)
-
-  #define orxPHYSICS_CAST_HELPER   (orxS64)
-
-#else /* __orxX86_64__ || __orxPPC64__ */
-
-  #define orxPHYSICS_CAST_HELPER
-
-#endif /* __orxX86_64__ || __orxPPC64__ */
-
 
 #if defined(__orxDEBUG__) || defined(__orxPROFILER__)
 
@@ -793,12 +783,12 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
       {
         /* Updates world simulation */
-        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, (orxS32) orxPHYSICS_CAST_HELPER _pContext, (orxS32)(orxS64)_pContext);
+        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations);
       }
     }
 
     /* Updates last step of world simulation */
-    sstPhysics.poWorld->Step(fDT, (orxS32)(orxS64)_pContext, (orxS32) orxPHYSICS_CAST_HELPER _pContext);
+    sstPhysics.poWorld->Step(fDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations);
 
     /* Clears forces */
     sstPhysics.poWorld->ClearForces();
@@ -2332,7 +2322,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       if(pstClock != orxNULL)
       {
         /* Registers rendering function */
-        eResult = orxClock_Register(pstClock, orxPhysics_Box2D_Update, (void *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+        eResult = orxClock_Register(pstClock, orxPhysics_Box2D_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
