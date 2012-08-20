@@ -832,15 +832,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pst
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /******************* broken since ICS 
-
   SLresult result;
   SLpermille rate = _fPitch * 1000;
-  
+
+  rate = orxCLAMP(rate, 500, 2000);
+
   result = (*_pstSound->PlayerRate)->SetRate(_pstSound->PlayerRate, rate);
   orxASSERT(SL_RESULT_SUCCESS == result);
-
-  ********************/
 
   /* Done! */
   return eResult;
