@@ -141,6 +141,7 @@ static int32_t orxFASTCALL orxKeyboard_Android_GetAKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_7:             {eResult = AKEYCODE_7; break;}
     case orxKEYBOARD_KEY_8:             {eResult = AKEYCODE_8; break;}
     case orxKEYBOARD_KEY_9:             {eResult = AKEYCODE_9; break;}
+    case orxKEYBOARD_KEY_TILDE:         {eResult = AKEYCODE_CAMERA; break;}
     default:                            {eResult = AKEYCODE_UNKNOWN; break;}
   }
 
