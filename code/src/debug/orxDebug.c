@@ -514,7 +514,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
     {
       /* Logs it */
-      orxConsole_Write(zBuffer);
+      orxConsole_Log(zBuffer);
     }
   }
 

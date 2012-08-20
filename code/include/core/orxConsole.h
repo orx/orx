@@ -70,11 +70,11 @@ extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL 
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
 
 
-/** Writes text to the console
+/** Logs to the console
  * @param[in]   _zText        Text to log
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Write(const orxSTRING _zText);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Log(const orxSTRING _zText);
 
 
 /** Sets the console font
@@ -83,10 +83,22 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Write(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetFont(const orxFONT *_pstFont);
 
-/** Gets the current console font
+/** Gets the console font
  * @return Current in-use font, orxNULL
  */
 extern orxDLLAPI const orxFONT *orxFASTCALL           orxConsole_GetFont();
+
+
+/** Sets the console log line length
+ * @param[in]   _u32LineLength Line length to use
+ * @return orxSTATUS_SUCCESS/ orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetLogLineLength(orxU32 _u32LineLength);
+
+/** Gets the console log line length
+ * @return Console log line length
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetLogLineLength();
 
 
 #endif /* _orxCONSOLE_H_ */
