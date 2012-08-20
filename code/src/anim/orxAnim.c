@@ -452,22 +452,32 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU
     /* 2D Animation? */
     if(orxFLAG_TEST(_u32Flags, orxANIM_KU32_FLAG_2D))
     {
-      /* Allocates key array */
-      pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32KeyNumber * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);
+      /* Has keys? */
+      if(_u32KeyNumber != 0)
+      {
+        /* Allocates key array */
+        pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32KeyNumber * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);
+
+        /* Cleans it */
+        orxMemory_Zero(pstAnim->astKeyList, _u32KeyNumber * sizeof(orxANIM_KEY));
+      }
 
       /* Valid? */
-      if(pstAnim->astKeyList != orxNULL)
+      if((_u32KeyNumber == 0) || (pstAnim->astKeyList != orxNULL))
       {
-        /* Allocates event array */
-        pstAnim->astEventList = (orxANIM_CUSTOM_EVENT *)orxMemory_Allocate(_u32EventNumber * sizeof(orxANIM_CUSTOM_EVENT), orxMEMORY_TYPE_MAIN);
+        /* Has events? */
+        if(_u32EventNumber != 0)
+        {
+          /* Allocates event array */
+          pstAnim->astEventList = (orxANIM_CUSTOM_EVENT *)orxMemory_Allocate(_u32EventNumber * sizeof(orxANIM_CUSTOM_EVENT), orxMEMORY_TYPE_MAIN);
+
+          /* Cleans it */
+          orxMemory_Zero(pstAnim->astEventList, _u32EventNumber * sizeof(orxANIM_CUSTOM_EVENT));
+        }
 
         /* Valid? */
-        if(pstAnim->astEventList != orxNULL)
+        if((_u32EventNumber == 0) || (pstAnim->astEventList != orxNULL))
         {
-          /* Cleans both arrays */
-          orxMemory_Zero(pstAnim->astKeyList, _u32KeyNumber * sizeof(orxANIM_KEY));
-          orxMemory_Zero(pstAnim->astEventList, _u32EventNumber * sizeof(orxANIM_CUSTOM_EVENT));
-
           /* Sets storage size & counter */
           orxAnim_SetKeyStorageSize(pstAnim, _u32KeyNumber);
           orxAnim_SetKeyCounter(pstAnim, 0);
@@ -558,7 +568,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
     }
 
     /* Valid? */
-    if(u32KeyCounter > 1)
+    if(u32KeyCounter >= 1)
     {
       /* Creates 2D animation */
       pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter, --u32EventCounter);

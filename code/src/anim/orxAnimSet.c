@@ -2274,7 +2274,7 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
       fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
 
       /* Next animation? */
-      if(*_pfTime > fLength)
+      if((fLength == orxFLOAT_0) || (*_pfTime > fLength))
       {
         /* Get next animation */
         u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_u32DstAnim != orxU32_UNDEFINED) ? _u32DstAnim : orxU32_UNDEFINED, orxFALSE);
