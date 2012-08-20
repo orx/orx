@@ -321,12 +321,12 @@ void orxFASTCALL orxObject_CommandSetRotation(orxU32 _u32ArgNumber, const orxCOM
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
       /* Sets its rotation */
-      orxObject_SetWorldRotation(pstObject, _astArgList[1].fValue);
+      orxObject_SetWorldRotation(pstObject, orxMATH_KF_DEG_TO_RAD * _astArgList[1].fValue);
     }
     else
     {
       /* Sets its rotation */
-      orxObject_SetRotation(pstObject, _astArgList[1].fValue);
+      orxObject_SetRotation(pstObject, orxMATH_KF_DEG_TO_RAD * _astArgList[1].fValue);
     }
 
     /* Updates result */
@@ -429,12 +429,12 @@ void orxFASTCALL orxObject_CommandGetRotation(orxU32 _u32ArgNumber, const orxCOM
     if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
     {
       /* Gets its rotation */
-      _pstResult->fValue = orxObject_GetWorldRotation(pstObject);
+      _pstResult->fValue = orxMATH_KF_RAD_TO_DEG * orxObject_GetWorldRotation(pstObject);
     }
     else
     {
       /* Gets its position */
-      _pstResult->fValue = orxObject_GetRotation(pstObject);
+      _pstResult->fValue = orxMATH_KF_RAD_TO_DEG * orxObject_GetRotation(pstObject);
     }
   }
   else
@@ -774,6 +774,158 @@ void orxFASTCALL orxObject_CommandGetLifeTime(orxU32 _u32ArgNumber, const orxCOM
   {
     /* Updates result */
     _pstResult->fValue = orx2F(-1.0f);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetColor
+ */
+void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its current color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Sets its alpha to opaque */
+      stColor.fAlpha = orxFLOAT_1;
+    }
+
+    /* Sets its color */
+    orxVector_Mulf(&(stColor.vRGB), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
+
+    /* Updates object */
+    orxObject_SetColor(pstObject, &stColor);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetColor
+ */
+void orxFASTCALL orxObject_CommandGetColor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Updates result */
+      orxVector_Mulf(&(_pstResult->vValue), &orxVECTOR_WHITE, orxCOLOR_DENORMALIZER);
+    }
+    else
+    {
+      /* Updates result */
+      orxVector_Mulf(&(_pstResult->vValue), &(stColor.vRGB), orxCOLOR_DENORMALIZER);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Mulf(&(_pstResult->vValue), &orxVECTOR_WHITE, orxCOLOR_DENORMALIZER);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetAlpha
+ */
+void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its current color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Sets its color to white */
+      orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+    }
+
+    /* Sets its alpha */
+    stColor.fAlpha = _astArgList[1].fValue;
+
+    /* Updates object */
+    orxObject_SetColor(pstObject, &stColor);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetAlpha
+ */
+void orxFASTCALL orxObject_CommandGetAlpha(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Updates result */
+      _pstResult->fValue = orxFLOAT_1;
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->fValue = stColor.fAlpha;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_1;
   }
 
   /* Done! */
@@ -1443,6 +1595,15 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetLifeTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetLifeTime, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: SetColor */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetColor, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetColor */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetAlpha */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAlpha, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Alpha", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: GetAlpha */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAlpha, "Alpha", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: Enable */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: Pause */
@@ -1540,6 +1701,15 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetLifeTime);
   /* Command: GetLifeTime */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetLifeTime);
+
+  /* Command: SetColor */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetColor);
+  /* Command: GetColor */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetColor);
+  /* Command: SetAlpha */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAlpha);
+  /* Command: GetAlpha */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAlpha);
 
   /* Command: Enable */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Enable);
