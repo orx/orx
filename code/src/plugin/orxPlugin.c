@@ -925,14 +925,17 @@ void orxFASTCALL orxPlugin_Exit()
  */
 void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, const orxSTRING _zFileName, orxU32 _u32Line)
 {
-  orxDEBUG_BACKUP_FLAG();
-  orxDEBUG_SET_FLAG(orxDEBUG_KU32_STATIC_FLAG_TERMINAL
-                   |orxDEBUG_KU32_STATIC_FLAG_FILE
-                   |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
-                   |orxDEBUG_KU32_STATIC_FLAG_TYPE,
-                    orxDEBUG_KU32_STATIC_MASK_USER_ALL);
+  orxU32 u32DebugFlags;
+
+  u32DebugFlags = orxDEBUG_GET_FLAGS();
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_TERMINAL
+                    |orxDEBUG_KU32_STATIC_FLAG_FILE
+                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
+                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,
+                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
   orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
-  orxDEBUG_RESTORE_FLAG();
+  orxDEBUG_SET_FLAGS(u32DebugFlags,
+                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
   return orxNULL;
 }

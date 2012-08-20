@@ -41,6 +41,7 @@
 #include "io/orxInput.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
+#include "object/orxStructure.h"
 #include "utils/orxString.h"
 
 
@@ -56,7 +57,11 @@
 
 /** Misc
  */
-#define orxCONSOLE_KU32_BUFFER_SIZE                   4096                            /**< Buffer size */
+#define orxCONSOLE_KU32_LOG_BUFFER_SIZE               8192                            /**< Log buffer size */
+#define orxCONSOLE_KU32_LOG_LINE_LENGTH               80                              /**< Log line length */
+
+#define orxCONSOLE_KU32_INPUT_ENTRY_SIZE              256                             /**< Input entry size */
+#define orxCONSOLE_KU32_INPUT_ENTRY_NUMBER            64                              /**< Input entry number */
 
 #define orxCONSOLE_KZ_CONFIG_SECTION                  "Console"                       /**< Config section name */
 #define orxCONSOLE_KZ_CONFIG_TOGGLE_KEY               "ToggleKey"                     /**< Toggle key */
@@ -83,11 +88,23 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Input entry
+ */
+typedef struct __orxCONSOLE_INPUT_ENTRY_t
+{
+  orxCHAR acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE];
+
+} orxCONSOLE_INPUT_ENTRY;
+
 /** Static structure
  */
 typedef struct __orxCONSOLE_STATIC_t
 {
-  orxCHAR                   acBuffer[orxCONSOLE_KU32_BUFFER_SIZE];                    /**< Buffer */
+  orxCHAR                   acLogBuffer[orxCONSOLE_KU32_LOG_BUFFER_SIZE];             /**< Log buffer */
+  orxCONSOLE_INPUT_ENTRY    astInputEntryList[orxCONSOLE_KU32_INPUT_ENTRY_NUMBER];    /**< Input entry number */
+  orxU32                    u32LogIndex;                                              /**< Log buffer index */
+  orxU32                    u32LogEndIndex;                                           /**< Log end index */
+  const orxFONT            *pstFont;
   const orxSTRING           zPreviousInputSet;                                        /**< Previous input set */
   orxINPUT_TYPE             eToggleKeyType;                                           /**< Toggle key type */
   orxENUM                   eToggleKeyID;                                             /**< Toggle key ID */
@@ -166,7 +183,7 @@ static void orxFASTCALL orxConsole_Stop()
     /* Restores previous input set */
     orxInput_SelectSet(sstConsole.zPreviousInputSet);
 
-    //! TODO    
+    //! TODO
   }
 
   /* Done! */
@@ -225,6 +242,8 @@ void orxFASTCALL orxConsole_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_INPUT);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_KEYBOARD);
+  orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_FONT);
 
   /* Done! */
   return;
@@ -303,6 +322,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         {
           /* Inits Flags */
           sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
+
+          /* Sets default font */
+          orxConsole_SetFont(orxFont_GetDefaultFont());
         }
         else
         {
@@ -350,6 +372,9 @@ void orxFASTCALL orxConsole_Exit()
   {
     /* Stops console */
     orxConsole_Stop();
+
+    /* Removes font */
+    orxConsole_SetFont(orxNULL);
 
     /* Unregisters update callback */
     orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update);
@@ -412,19 +437,102 @@ orxBOOL orxFASTCALL orxConsole_IsEnabled()
   return bResult;
 }
 
-/** Logs text to the console
+/** Writes text to the console
  * @param[in]   _zText        Text to log
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
+orxSTATUS orxFASTCALL orxConsole_Write(const orxSTRING _zText)
+{
+  const orxCHAR  *pc;
+  orxU32          u32LineLength;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConsole_Write");
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* For all characters */
+  for(u32LineLength = 0, pc = _zText; *pc != orxCHAR_NULL;)
+  {
+    orxU32 u32CharacterCodePoint, u32CharacterLength;
+
+    /* Gets character code point */
+    u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc);
+
+    /* Gets its length */
+    u32CharacterLength = orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
+
+    /* Not enough room left? */
+    if(sstConsole.u32LogIndex + u32CharacterLength > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
+    {
+      /* Stores log end index */
+      sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
+
+      /* Resets log index */
+      sstConsole.u32LogIndex = 0;
+    }
+
+    /* Appends character to log */
+    orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, u32CharacterLength, u32CharacterCodePoint);
+
+    /* Updates log index */
+    sstConsole.u32LogIndex += u32CharacterLength;
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the console font
+ * @param[in]   _pstFont      Font to use
+ * @return orxSTATUS_SUCCESS/ orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConsole_SetFont(const orxFONT *_pstFont)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Has a current font? */
+  if(sstConsole.pstFont != orxNULL)
+  {
+    /* Updates its reference counter */
+    orxStructure_DecreaseCounter((orxFONT *)sstConsole.pstFont);
+  }
+
+  /* Is font valid? */
+  if(_pstFont != orxNULL)
+  {
+    /* Stores it */
+    sstConsole.pstFont = _pstFont;
+
+    /* Updates its reference counter */
+    orxStructure_IncreaseCounter((orxFONT *)sstConsole.pstFont);
+  }
 
   /* Done! */
   return eResult;
+}
+
+/** Gets the current font
+ * @return Current in-use font
+ */
+const orxFONT *orxFASTCALL orxConsole_GetFont()
+{
+  const orxFONT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  pstResult = sstConsole.pstFont;
+
+  /* Done! */
+  return pstResult;
 }

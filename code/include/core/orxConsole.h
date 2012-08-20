@@ -42,6 +42,7 @@
 
 
 #include "orxInclude.h"
+#include "display/orxFont.h"
 
 
 /** Console module setup
@@ -64,16 +65,28 @@ extern orxDLLAPI void orxFASTCALL                     orxConsole_Exit();
 extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL _bEnable);
 
 /** Is the console enabled?
- * @return      orxTRUE if enabled, orxFALSE otherwise
+ * @return orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
 
 
-/** Logs text to the console
+/** Writes text to the console
  * @param[in]   _zText        Text to log
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Log(const orxSTRING _zText);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Write(const orxSTRING _zText);
+
+
+/** Sets the console font
+ * @param[in]   _pstFont      Font to use
+ * @return orxSTATUS_SUCCESS/ orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetFont(const orxFONT *_pstFont);
+
+/** Gets the current console font
+ * @return Current in-use font, orxNULL
+ */
+extern orxDLLAPI const orxFONT *orxFASTCALL           orxConsole_GetFont();
 
 
 #endif /* _orxCONSOLE_H_ */

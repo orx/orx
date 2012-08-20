@@ -31,6 +31,7 @@
 
 
 #include "debug/orxDebug.h"
+#include "core/orxConsole.h"
 
 #include <stdlib.h>
 
@@ -95,9 +96,6 @@ typedef struct __orxDEBUG_STATIC_t
 
   /* Debug flags */
   orxU32 u32DebugFlags;
-
-  /* Backup debug flags */
-  orxU32 u32BackupDebugFlags;
 
   /* Level flags */
   orxU32 u32LevelFlags;
@@ -311,31 +309,10 @@ void orxFASTCALL _orxDebug_Break()
   return;
 }
 
-/** Backups current debug flags */
-void orxFASTCALL _orxDebug_BackupFlags()
-{
-  /* Checks */
-  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
-
-  /* Backups flags */
-  sstDebug.u32BackupDebugFlags = sstDebug.u32DebugFlags;
-
-  return;
-}
-
-/** Restores last backuped flags */
-void orxFASTCALL _orxDebug_RestoreFlags()
-{
-  /* Checks */
-  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
-
-  /* Restores flags */
-  sstDebug.u32DebugFlags = sstDebug.u32BackupDebugFlags;
-
-  return;
-}
-
-/** Sets current debug flags */
+/** Sets current debug flags
+ * @param[in]   _u32Add                       Flags to add
+ * @param[in]   _u32Remove                    Flags to remove
+ */
 void orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
@@ -345,7 +322,20 @@ void orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
   sstDebug.u32DebugFlags &= ~_u32Remove;
   sstDebug.u32DebugFlags |= _u32Add;
 
+  /* Done! */
   return;
+}
+
+/** Gets current debug flags
+ * @return Current debug flags
+ */
+orxU32 orxFASTCALL _orxDebug_GetFlags()
+{
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return sstDebug.u32DebugFlags;
 }
 
 /** Logs given debug text
@@ -518,6 +508,13 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #endif /* __orxANDROID__ */
 
+    }
+
+    /* Console Display? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
+    {
+      /* Logs it */
+      orxConsole_Write(zBuffer);
     }
   }
 
