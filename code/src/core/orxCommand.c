@@ -129,6 +129,42 @@ static orxCOMMAND_STATIC sstCommand;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Command: Help
+ */
+void orxFASTCALL orxCommand_CommandHelp(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* No argument? */
+  if(_u32ArgNumber == 0)
+  {
+    /* Updates result */
+    _pstResult->zValue = "Usage: Command.Help <Command> to get the prototype of a command.";
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxCommand_GetPrototype(_astArgList[0].zValue);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the command commands
+ */
+static orxINLINE void orxCommand_RegisterCommands()
+{
+  /* Command: Help */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+}
+
+/** Unregisters all the command commands
+ */
+static orxINLINE void orxCommand_UnregisterCommands()
+{
+  /* Command: Help */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
+}
+
 static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _eType)
 {
   const orxSTRING zResult;
@@ -515,6 +551,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
           /* Inits Flags */
           sstCommand.u32Flags = orxCOMMAND_KU32_STATIC_FLAG_READY;
 
+          /* Registers commands */
+          orxCommand_RegisterCommands();
+
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
         }
@@ -575,6 +614,9 @@ void orxFASTCALL orxCommand_Exit()
   {
     orxCOMMAND *pstCommand;
     orxU32      i;
+
+    /* Unregisters commands */
+    orxCommand_UnregisterCommands();
 
     /* For all entries in the result stack */
     for(i = 0; i < orxBank_GetCounter(sstCommand.pstResultBank); i++)
@@ -853,6 +895,24 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
       zResult = sstCommand.acPrototypeBuffer;
     }
   }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets next command using an optional base
+* @param[in]   _zBase         Base name, can be set to orxNULL for no base
+* @param[in]   _zPrevious     Previous command, orxNULL to get the first command
+* @return      Next command found, orxNULL if none
+*/
+const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
+
+  //! TODO
 
   /* Done! */
   return zResult;

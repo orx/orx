@@ -530,18 +530,41 @@ void orxFASTCALL _orxDebug_EnableLevel(orxDEBUG_LEVEL _eLevel, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
 
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
-    /* Updates level flags */
-    orxFLAG_SET(sstDebug.u32LevelFlags, 1 << _eLevel, 0);
+    /* All levels? */
+    if(_eLevel == orxDEBUG_LEVEL_ALL)
+    {
+      /* Updates level flags */
+      orxFLAG_SET(sstDebug.u32LevelFlags, 0xFFFFFFFF, 0);
+    }
+    else
+    {
+      /* Checks */
+      orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+
+      /* Updates level flags */
+      orxFLAG_SET(sstDebug.u32LevelFlags, 1 << _eLevel, 0);
+    }
   }
   else
   {
-    /* Updates level flags */
-    orxFLAG_SET(sstDebug.u32LevelFlags, 0, 1 << _eLevel);
+    /* All levels? */
+    if(_eLevel == orxDEBUG_LEVEL_ALL)
+    {
+      /* Updates level flags */
+      orxFLAG_SET(sstDebug.u32LevelFlags, 0, 0xFFFFFFFF);
+    }
+    else
+    {
+      /* Checks */
+      orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+
+      /* Updates level flags */
+      orxFLAG_SET(sstDebug.u32LevelFlags, 0, 1 << _eLevel);
+    }
   }
 
   /* Done! */

@@ -385,7 +385,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           orxCHAR acValue[64];
 
           /* Inits value */        
-          acValue[0]  = '>';
+          acValue[0]  = ':';
           acValue[1]  = ' ';
           acValue[63] = orxCHAR_NULL;
 
@@ -398,7 +398,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         else
         {
           /* Logs failure */
-          orxConsole_Log("> Invalid command!");
+           orxConsole_Log(": Invalid command!");
         }
 
         /* Udates input index */
