@@ -214,6 +214,30 @@ typedef struct _DDS_HEADER
     uint32_t dwReserved2[3];
 } DDS_HEADER;
 
+
+/** KTX header
+ */
+
+typedef struct KTX_header_t {
+  orxU8  identifier[12];
+  orxU32 endianness;
+  orxU32 glType;
+  orxU32 glTypeSize;
+  orxU32 glFormat;
+  orxU32 glInternalFormat;
+  orxU32 glBaseInternalFormat;
+  orxU32 pixelWidth;
+  orxU32 pixelHeight;
+  orxU32 pixelDepth;
+  orxU32 numberOfArrayElements;
+  orxU32 numberOfFaces;
+  orxU32 numberOfMipmapLevels;
+  orxU32 bytesOfKeyValueData;
+} KTX_header;
+
+/* KTX files require an unpack alignment of 4 */
+#define KTX_GL_UNPACK_ALIGNMENT 4
+
 /** Internal matrix structure
  */
 typedef struct __orxDISPLAY_MATRIX_t
@@ -340,6 +364,7 @@ static char gPVRTexIdentifier[5] = "PVR!";
 static const orxSTRING szPVRExtention = ".pvr";
 static char gDDSTexIdentifier[5] = "DDS ";
 static const orxSTRING szDDSExtention = ".dds";
+static const orxSTRING szKTXExtention = ".ktx";
 
 static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
 {
@@ -2133,6 +2158,168 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
   return eResult;
 }
 
+static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
+{
+  orxFILE    *pstFile;
+  orxBITMAP  *pstBitmap = orxNULL;
+
+  /* Opens file */
+  pstFile = orxFile_Open(_zFilename, orxFILE_KU32_FLAG_OPEN_READ);
+
+  /* Success? */
+  if(pstFile != orxNULL)
+  {
+    KTX_header    stHeader;
+
+    /* Loads KTX header from file */
+    if(orxFile_Read(&stHeader, sizeof(KTX_header), 1, pstFile) > 0)
+    {
+      orxBOOL bCompressed = orxFALSE;
+      GLint  previousUnpackAlignment;
+
+      /* skip key/value metadata */
+      orxFile_Seek(pstFile, sizeof(KTX_header) + stHeader.bytesOfKeyValueData);
+
+      /* Check glType and glFormat */
+      if (stHeader.glType == 0 || stHeader.glFormat == 0)
+      {
+        if (stHeader.glType + stHeader.glFormat != 0)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", _zFilename);
+        }
+        bCompressed = orxTRUE;
+      }
+
+      /* KTX files require an unpack alignment of 4 */
+      glGetIntegerv(GL_UNPACK_ALIGNMENT, &previousUnpackAlignment);
+      if (previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
+      {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, KTX_GL_UNPACK_ALIGNMENT);
+      }
+
+      orxU32  u32DataSize, u32DataSizeRounded;
+      orxU8  *au8ImageBuffer;
+      GLenum  eInternalFormat, eTextureType = 0;
+
+      if (bCompressed)
+        eInternalFormat = stHeader.glInternalFormat;
+      else
+        eInternalFormat = stHeader.glBaseInternalFormat;
+
+      GLsizei pixelWidth  = stHeader.pixelWidth;
+      GLsizei pixelHeight = stHeader.pixelHeight;
+      GLsizei pixelDepth  = stHeader.pixelDepth;
+
+      if(orxFile_Read(&u32DataSize, sizeof(orxU32), 1, pstFile) > 0)
+      {
+        u32DataSizeRounded = (u32DataSize + 3) & ~(orxU32)3;
+
+        au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSizeRounded, orxMEMORY_TYPE_VIDEO);
+
+        /* Reads the image content (mimaps will be ignored) */
+        if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) > 0)
+        {
+          /* Allocates bitmap */
+          pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+
+          /* Success? */
+          if(pstBitmap != orxNULL)
+          {
+            GLint iTexture;
+
+            /* Pushes config section */
+            orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+            /* Inits bitmap */
+            pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+            pstBitmap->fWidth         = orxU2F(pixelWidth);
+            pstBitmap->fHeight        = orxU2F(pixelHeight);
+            pstBitmap->u32RealWidth   = pixelWidth;
+            pstBitmap->u32RealHeight  = pixelHeight;
+            pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+            pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+            pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+            orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+            orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+            /* Backups current texture */
+            glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+            glASSERT();
+
+            /* Creates new texture */
+            glGenTextures(1, &pstBitmap->uiTexture);
+            glASSERT();
+            glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+            glASSERT();
+
+            /* Compressed? */
+            if(bCompressed != orxFALSE)
+            {
+              /* Loads compressed data */
+              glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, pixelWidth, pixelHeight, 0, u32DataSize, au8ImageBuffer);
+            }
+            else
+            {
+              /* Loads data */
+              glTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, pixelWidth, pixelHeight, 0, stHeader.glFormat, stHeader.glType, au8ImageBuffer);
+            }
+            glASSERT();
+
+            /* Restores previous texture */
+            glBindTexture(GL_TEXTURE_2D, iTexture);
+            glASSERT();
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: out of memory, aborting.", _zFilename);
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: invalid data, aborting.", _zFilename);
+        }
+
+        /* Frees data */
+        orxMemory_Free(au8ImageBuffer);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: unexpected EOF, aborting.", _zFilename);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: invalid header, aborting.", _zFilename);
+    }
+
+    orxFile_Close(pstFile);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: file not found, aborting.", _zFilename);
+  }
+
+  /* Done! */
+  return pstBitmap;
+}
+
 static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
 {
   orxFILE    *pstFile;
@@ -2145,7 +2332,6 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
   if(pstFile != orxNULL)
   {
     DDS_HEADER stHeader;
-    orxS32        s32FileSize;
     orxCHAR       filecode[4];
 
     // read in file marker, make sure its a DDS file
@@ -2156,9 +2342,6 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
       orxFile_Close(pstFile);
       return orxNULL;
     }
-
-    /* Gets file size */
-    s32FileSize = orxFile_GetSize(pstFile);
 
     /* Loads DDS header from file */
     if(orxFile_Read(&stHeader, sizeof(DDS_HEADER), 1, pstFile) > 0)
@@ -2740,6 +2923,9 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
 
   if(orxString_SearchString(_zFileName, szDDSExtention) != orxNULL)
     pstResult = orxDisplay_Android_LoadDDSBitmap(_zFileName);
+
+  if(orxString_SearchString(_zFileName, szKTXExtention) != orxNULL)
+    pstResult = orxDisplay_Android_LoadKTXBitmap(_zFileName);
 
   /* Not already loaded? */
   if(pstResult == orxNULL)
