@@ -750,7 +750,7 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
     sstConsole.u32LogIndex += u32CharacterLength;
 
     /* EOL? */
-    if(u32CharacterCodePoint == orxCHAR_EOL)
+    if(u32CharacterCodePoint == (orxU32)orxCHAR_EOL)
     {
       /* Resets line length */
       u32LineLength = 0;
