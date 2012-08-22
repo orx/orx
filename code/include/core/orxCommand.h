@@ -155,11 +155,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Unregister(cons
 */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);
 
+
 /** Gets a command's (text) prototype (beware: result won't persist from one call to the other)
 * @param[in]   _zCommand      Command name
 * @return      Command prototype / orxSTRING_EMPTY
 */
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(const orxSTRING _zCommand);
+
+/** Gets next command using an optional base
+* @param[in]   _zBase         Base name, can be set to orxNULL for no base
+* @param[in]   _zPrevious     Previous command, orxNULL to get the first command
+* @return      Next command found, orxNULL if none
+*/
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious);
 
 
 /** Evaluates a command

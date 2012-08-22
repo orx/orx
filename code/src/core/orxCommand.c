@@ -40,6 +40,7 @@
 #include "object/orxTimeLine.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
+#include "utils/orxTree.h"
 
 #ifdef __orxMSVC__
 
@@ -69,6 +70,7 @@
 
 #define orxCOMMAND_KU32_TABLE_SIZE                    256
 #define orxCOMMAND_KU32_BANK_SIZE                     128
+#define orxCOMMAND_KU32_TRIE_BANK_SIZE                256
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
@@ -102,11 +104,23 @@ typedef struct __orxCOMMAND_t
 
 } orxCOMMAND;
 
+/** Command trie node
+ */
+typedef struct __orxCOMMAND_TRIE_NODE_t
+{
+  orxTREE_NODE              stNode;
+  const orxCOMMAND         *pstCommand;
+  orxCHAR                   cLetter;
+
+} orxCOMMAND_TRIE_NODE;
+
 /** Static structure
  */
 typedef struct __orxCOMMAND_STATIC_t
 {
   orxBANK                  *pstBank;                                                  /**< Command bank */
+  orxBANK                  *pstTrieBank;                                              /**< Command trie bank */
+  orxTREE                   stCommandTrie;                                            /**< Command trie */
   orxHASHTABLE             *pstTable;                                                 /**< Command table */
   orxBANK                  *pstResultBank;                                            /**< Command result bank */
   orxCHAR                   acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE];   /**< Evaluate buffer */
@@ -498,6 +512,16 @@ static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, o
   return pstResult;
 }
 
+static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
+{
+  //! TODO
+}
+
+static orxINLINE void orxCommand_RemoveFromTrie(const orxCOMMAND *_pstCommand)
+{
+  //! TODO
+}
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
@@ -537,10 +561,11 @@ orxSTATUS orxFASTCALL orxCommand_Init()
     {
       /* Creates banks */
       sstCommand.pstBank        = orxBank_Create(orxCOMMAND_KU32_BANK_SIZE, sizeof(orxCOMMAND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstCommand.pstTrieBank    = orxBank_Create(orxCOMMAND_KU32_TRIE_BANK_SIZE, sizeof(orxCOMMAND_TRIE_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
       sstCommand.pstResultBank  = orxBank_Create(orxCOMMAND_KU32_RESULT_BANK_SIZE, sizeof(orxCOMMAND_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Valid? */
-      if((sstCommand.pstBank != orxNULL) && (sstCommand.pstResultBank != orxNULL))
+      if((sstCommand.pstBank != orxNULL) && (sstCommand.pstTrieBank != orxNULL) && (sstCommand.pstResultBank != orxNULL))
       {
         /* Creates table */
         sstCommand.pstTable = orxHashTable_Create(orxCOMMAND_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -564,6 +589,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
 
           /* Deletes banks */
           orxBank_Delete(sstCommand.pstBank);
+          orxBank_Delete(sstCommand.pstTrieBank);
           orxBank_Delete(sstCommand.pstResultBank);
 
           /* Logs message */
@@ -572,6 +598,13 @@ orxSTATUS orxFASTCALL orxCommand_Init()
       }
       else
       {
+        /* Partly initialized? */
+        if(sstCommand.pstTrieBank != orxNULL)
+        {
+          /* Deletes bank */
+          orxBank_Delete(sstCommand.pstTrieBank);
+        }
+
         /* Partly initialized? */
         if(sstCommand.pstBank != orxNULL)
         {
@@ -646,6 +679,7 @@ void orxFASTCALL orxCommand_Exit()
 
     /* Deletes banks */
     orxBank_Delete(sstCommand.pstBank);
+    orxBank_Delete(sstCommand.pstTrieBank);
     orxBank_Delete(sstCommand.pstResultBank);
 
     /* Removes event handler */
@@ -727,6 +761,9 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
         /* Adds it to the table */
         orxHashTable_Add(sstCommand.pstTable, u32ID, pstCommand);
 
+        /* Inserts in trie */
+        orxCommand_InsertInTrie(pstCommand);
+
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -775,6 +812,9 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
     if(pstCommand != orxNULL)
     {
       orxU32 i;
+
+      /* Removes it from trie */
+      orxCommand_RemoveFromTrie(pstCommand);
 
       /* Removes it */
       eResult = orxHashTable_Remove(sstCommand.pstTable, u32ID);

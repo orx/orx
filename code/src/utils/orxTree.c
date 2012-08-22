@@ -53,8 +53,8 @@
  */
 static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBranchRemove)
 {
-  register orxTREE *pstTree;
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxTREE  *pstTree;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -76,7 +76,7 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
       }
       else
       {
-        register orxTREE_NODE *pstChild;
+        orxTREE_NODE *pstChild;
 
         /* Finds left sibling */
         for(pstChild = _pstNode->pstParent->pstChild;
@@ -129,12 +129,12 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
     }
     else
     {
-      register orxTREE_NODE *pstNewChild;
+      orxTREE_NODE *pstNewChild;
 
       /* Had child? */
       if(_pstNode->pstChild != orxNULL)
       {
-        register orxTREE_NODE *pstChild;
+        orxTREE_NODE *pstChild;
 
         /* Updates all children but last */
         for(pstChild = _pstNode->pstChild;
@@ -168,7 +168,7 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
       /* Not first child */
       else
       {
-        register orxTREE_NODE *pstChild;
+        orxTREE_NODE *pstChild;
 
         /* Find left sibling */
         for(pstChild = _pstNode->pstParent->pstChild;
@@ -232,7 +232,7 @@ orxSTATUS orxFASTCALL orxTree_Clean(orxTREE *_pstTree)
  */
 orxSTATUS orxFASTCALL orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
@@ -285,8 +285,8 @@ orxSTATUS orxFASTCALL orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
  */
 orxSTATUS orxFASTCALL orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
-  register orxTREE *pstTree;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxTREE  *pstTree;
 
   /* Checks */
   orxASSERT(_pstRefNode != orxNULL);
@@ -318,7 +318,7 @@ orxSTATUS orxFASTCALL orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE 
         }
         else
         {
-          register orxTREE_NODE *pstChild;
+          orxTREE_NODE *pstChild;
 
           /* Finds left sibling */
           for(pstChild = _pstRefNode->pstParent->pstChild;
@@ -367,6 +367,78 @@ orxSTATUS orxFASTCALL orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE 
   return eResult;
 }
 
+/** Adds a node as a sibling of another one
+ * @param[in]   _pstRefNode                     Reference node (add as a sibling of this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxTree_AddSibling(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxTREE  *pstTree;
+
+  /* Checks */
+  orxASSERT(_pstRefNode != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Isn't already in a tree? */
+  if(_pstNode->pstTree == orxNULL)
+  {
+    /* Gets tree */
+    pstTree = _pstRefNode->pstTree;
+
+    /* Valid? */
+    if(pstTree != orxNULL)
+    {
+      /* Isn't the root? */
+      if(pstTree->pstRoot != _pstRefNode)
+      {
+        /* Checks */
+        orxASSERT(_pstRefNode->pstParent != orxNULL);
+
+        /* Adds it in the tree */
+        _pstNode->pstParent   = _pstRefNode->pstParent;
+        _pstNode->pstSibling  = _pstRefNode->pstSibling;
+        _pstNode->pstTree     = pstTree;
+        _pstNode->pstChild    = orxNULL;
+
+        /* Updates ref node */
+        _pstRefNode->pstSibling = _pstNode;
+
+        /* Updates counter */
+        pstTree->u32Counter++;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't add a node as a sibling of the root node.");
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Destination's tree is invalid.");
+
+      /* No tree found */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already in a tree, use MoveAsChild instead.");
+
+    /* Already in a tree */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Adds a node as a child of another one
  * @param[in]   _pstRefNode                     Reference node (add as a child of this one)
  * @param[in]   _pstNode                        Node to add
@@ -374,8 +446,8 @@ orxSTATUS orxFASTCALL orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE 
  */
 orxSTATUS orxFASTCALL orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
-  register orxTREE *pstTree;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxTREE  *pstTree;
 
   /* Checks */
   orxASSERT(_pstRefNode != orxNULL);
@@ -431,8 +503,8 @@ orxSTATUS orxFASTCALL orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *
  */
 orxSTATUS orxFASTCALL orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
-  register orxTREE *pstTree;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxTREE  *pstTree;
 
   /* Checks */
   orxASSERT(_pstRefNode != orxNULL);
@@ -444,7 +516,7 @@ orxSTATUS orxFASTCALL orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NOD
   /* Is already in the tree? */
   if(_pstNode->pstTree == pstTree)
   {
-    register orxTREE_NODE *pstTest;
+    orxTREE_NODE *pstTest;
 
     /* Checks for preventing tree from turning into graph */
     for(pstTest = _pstRefNode;
@@ -501,8 +573,8 @@ orxSTATUS orxFASTCALL orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NOD
  */
 orxSTATUS orxFASTCALL orxTree_Remove(orxTREE_NODE *_pstNode)
 {
-  register orxTREE *pstTree;
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxTREE  *pstTree;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstNode != orxNULL);

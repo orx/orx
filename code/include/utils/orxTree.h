@@ -90,6 +90,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_AddRoot(orxTREE *_pstTre
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
 
+/** Adds a node as a sibling of another one
+ * @param[in]   _pstRefNode                     Reference node (add as a sibling of this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_AddSibling(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+
 /** Adds a node as a child of another one
  * @param[in]   _pstRefNode                     Reference node (add as a child of this one)
  * @param[in]   _pstNode                        Node to add
