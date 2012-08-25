@@ -57,7 +57,7 @@
 
 /** Misc
  */
-#define orxCONSOLE_KU32_LOG_BUFFER_SIZE               8192                            /**< Log buffer size */
+#define orxCONSOLE_KU32_LOG_BUFFER_SIZE               65536                           /**< Log buffer size */
 #define orxCONSOLE_KU32_DEFAULT_LOG_LINE_LENGTH       128                             /**< Default log line length */
 
 #define orxCONSOLE_KU32_INPUT_ENTRY_SIZE              256                             /**< Input entry size */
