@@ -1852,11 +1852,11 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create an input [%s.%s].", sstInput.pstCurrentSet->zName, _zName);
-      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create an input [%s.%s].", sstInput.pstCurrentSet->zName, _zName);
     }
   }
 

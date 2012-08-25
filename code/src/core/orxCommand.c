@@ -55,7 +55,7 @@
 #define orxCOMMAND_KU32_STATIC_FLAG_NONE              0x00000000                      /**< No flags */
 
 #define orxCOMMAND_KU32_STATIC_FLAG_READY             0x00000001                      /**< Ready flag */
-#define orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL     0x10000000                      /** <Internal call flag */
+#define orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT  0x10000000                      /** <Processing event flag */
 
 #define orxCOMMAND_KU32_STATIC_MASK_ALL               0xFFFFFFFF                      /**< All mask */
 
@@ -179,6 +179,8 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
 }
 
+/** Gets literal name of a command var type
+ */
 static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _eType)
 {
   const orxSTRING zResult;
@@ -211,254 +213,7 @@ static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _e
   return zResult;
 }
 
-
-/** Event handler
- * @param[in]   _pstEvent                     Sent event
- * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
- */
-static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxCommand_Process");
-
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_TIMELINE);
-
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Trigger */
-    case orxTIMELINE_EVENT_TRIGGER:
-    {
-      orxCOMMAND_VAR              stResult;
-      orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
-      const orxCHAR              *pcSrc;
-      orxCHAR                    *pcDst;
-      orxU32                      u32PushCounter;
-      orxS32                      s32GUIDLength;
-      orxCHAR                     acGUID[20];
-
-      /* Gets owner's GUID */
-      acGUID[19]    = orxCHAR_NULL;
-      s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)));
-
-      /* Gets payload */
-      pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* For all push markers / spaces */
-      for(pcSrc = pstPayload->zEvent, u32PushCounter = 0; (*pcSrc == orxCOMMAND_KC_PUSH_MARKER) || (*pcSrc == ' ') || (*pcSrc == '\t'); pcSrc++)
-      {
-        /* Is a push marker? */
-        if(*pcSrc == orxCOMMAND_KC_PUSH_MARKER)
-        {
-          /* Updates push counter */
-          u32PushCounter++;
-        }
-      }
-
-      /* For all characters */
-      for(pcDst = sstCommand.acEvaluateBuffer; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1); pcSrc++)
-      {
-        /* Depending on character */
-        switch(*pcSrc)
-        {
-          case orxCOMMAND_KC_GUID_MARKER:
-          {
-            /* Replaces it with GUID */
-            orxString_Copy(pcDst, acGUID);
-
-            /* Updates pointer */
-            pcDst += s32GUIDLength;
-
-            break;
-          }
-
-          case orxCOMMAND_KC_POP_MARKER:
-          {
-            /* Valid? */
-            if(orxBank_GetCounter(sstCommand.pstResultBank) > 0)
-            {
-              orxCOMMAND_STACK_ENTRY *pstEntry;
-              orxCHAR                 acValue[64];
-              const orxSTRING         zValue = acValue;
-
-              /* Gets last stack entry */
-              pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCounter(sstCommand.pstResultBank) - 1);
-            
-              /* Inits value */
-              acValue[63] = orxCHAR_NULL;
-            
-              /* Depending on type */
-              switch(pstEntry->stValue.eType)
-              {
-                default:
-                case orxCOMMAND_VAR_TYPE_STRING:
-                {
-                  /* Updates pointer */
-                  zValue = pstEntry->stValue.zValue;
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_FLOAT:
-                {
-                  /* Stores it */
-                  orxString_NPrint(acValue, 63, "%g", pstEntry->stValue.fValue);
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_S32:
-                {
-                  /* Stores it */
-                  orxString_NPrint(acValue, 63, "%d", pstEntry->stValue.s32Value);
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_U32:
-                {
-                  /* Stores it */
-                  orxString_NPrint(acValue, 63, "%u", pstEntry->stValue.u32Value);
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_S64:
-                {
-                  /* Stores it */
-                  orxString_NPrint(acValue, 63, "%lld", pstEntry->stValue.s64Value);
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_U64:
-                {
-                  /* Stores it */
-                  orxString_NPrint(acValue, 63, "0x%016llX", pstEntry->stValue.u64Value);
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_BOOL:
-                {
-                  /* Stores it */
-                  orxString_NPrint(acValue, 63, "%s", (pstEntry->stValue.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
-                
-                  break;
-                }
-                
-                case orxCOMMAND_VAR_TYPE_VECTOR:
-                {
-                  /* Gets literal value */
-                  orxString_NPrint(acValue, 63, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, pstEntry->stValue.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fZ, orxSTRING_KC_VECTOR_END);
-                
-                  break;
-                }
-              }
-
-              /* Replaces marker with stacked value */
-              orxString_Copy(pcDst, zValue);
-
-              /* Updates pointers */
-              pcDst += orxString_GetLength(zValue);
-
-              /* Is a string value? */
-              if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
-              {
-                /* Deletes it */
-                orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
-              }
-
-              /* Deletes stack entry */
-              orxBank_Free(sstCommand.pstResultBank, pstEntry);
-            }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", pstPayload->zEvent);
-            }
-
-            break;
-          }
-
-          default:
-          {
-            /* Copies it */
-            *pcDst++ = *pcSrc;
-
-            break;
-          }
-        }
-      }
-
-      /* Copies end of string */
-      *pcDst = orxCHAR_NULL;
-
-      /* Updates internal status */
-      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL, orxCOMMAND_KU32_STATIC_FLAG_NONE);
-
-      /* Evaluates command */
-      if(orxCommand_Evaluate(sstCommand.acEvaluateBuffer, &stResult) == orxNULL)
-      {
-        /* Stores error */
-        stResult.eType  = orxCOMMAND_VAR_TYPE_STRING;
-        stResult.zValue = orxCOMMAND_KZ_ERROR_VALUE;
-      }
-
-      /* For all requested pushes */
-      while(u32PushCounter > 0)
-      {
-        orxCOMMAND_STACK_ENTRY *pstEntry;
-
-        /* Allocates stack entry */
-        pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_Allocate(sstCommand.pstResultBank);
-
-        /* Is a string value? */
-        if(stResult.eType == orxCOMMAND_VAR_TYPE_STRING)
-        {
-          /* Duplicates it */
-          pstEntry->stValue.eType = orxCOMMAND_VAR_TYPE_STRING;
-          pstEntry->stValue.zValue = orxString_Duplicate(stResult.zValue);
-        }
-        else
-        {
-          /* Stores value */
-          orxMemory_Copy(&(pstEntry->stValue), &stResult, sizeof(orxCOMMAND_STACK_ENTRY));
-        }
-
-        /* Updates push counter */
-        u32PushCounter--;
-      }
-
-      /* Updates internal status */
-      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_NONE, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL);
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
-
-  /* Done! */
-  return eResult;
-}
-
 /** Runs a command
- * @param[in]   _zCommand      Command name
- * @param[in]   _bCheckArgList Check list of arguments?
- * @param[in]   _u32ArgNumber  Number of arguments sent to the command
- * @param[in]   _astArgList    List of arguments sent to the command
- * @param[out]  _pstResult     Variable that will contain the result
- * @return      Command result if successfully executed, orxNULL otherwise
  */
 static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, orxBOOL _bCheckArgList, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -510,6 +265,495 @@ static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, o
 
   /* Done! */
   return pstResult;
+}
+
+static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandLine, const orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTRING       zCommand;
+  orxCOMMAND_VAR *pstResult = orxNULL;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxCommand_Process");
+
+  /* Gets start of command */
+  zCommand = (orxCHAR *)orxString_SkipWhiteSpaces(_zCommandLine);
+
+  /* Valid? */
+  if(zCommand != orxSTRING_EMPTY)
+  {
+    orxU32      u32PushCounter, u32ID;
+    orxCHAR    *pcCommandEnd;
+    orxCOMMAND *pstCommand;
+    orxCHAR     acGUID[20];
+
+    /* For all push markers / spaces */
+    for(u32PushCounter = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (*zCommand == ' ') || (*zCommand == '\t'); zCommand++)
+    {
+      /* Is a push marker? */
+      if(*zCommand == orxCOMMAND_KC_PUSH_MARKER)
+      {
+        /* Updates push counter */
+        u32PushCounter++;
+      }
+    }
+
+    /* Finds end of command */
+    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (*pcCommandEnd != ' ') && (*pcCommandEnd != '\t') && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++);
+
+    /* Ends command */
+    *(orxCHAR *)pcCommandEnd = orxCHAR_NULL;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(zCommand);
+
+    /* Restores command end */
+    *(orxCHAR *)pcCommandEnd = ' ';
+
+    /* Gets it */
+    pstCommand = (orxCOMMAND *)orxHashTable_Get(sstCommand.pstTable, u32ID);
+
+    /* Found? */
+    if(pstCommand != orxNULL)
+    {
+      orxSTATUS       eStatus;
+      orxS32          s32GUIDLength;
+      const orxCHAR  *pcSrc;
+      orxCHAR        *pcDst;
+      const orxSTRING zArg;
+      orxU32          u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
+
+#ifdef __orxMSVC__
+
+      orxCOMMAND_VAR *astArgList = (orxCOMMAND_VAR *)alloca(u32ParamNumber * sizeof(orxCOMMAND_VAR));
+
+#else /* __orxMSVC__ */
+
+      orxCOMMAND_VAR astArgList[u32ParamNumber];
+
+#endif /* __orxMSVC__ */
+
+      /* Gets owner's GUID */
+      acGUID[19]    = orxCHAR_NULL;
+      s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", _u64GUID);
+
+      /* For all characters */
+      for(pcDst = sstCommand.acEvaluateBuffer, pcSrc = pcCommandEnd + 1; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1); pcSrc++)
+      {
+        /* Depending on character */
+        switch(*pcSrc)
+        {
+          case orxCOMMAND_KC_GUID_MARKER:
+          {
+            /* Replaces it with GUID */
+            orxString_Copy(pcDst, acGUID);
+
+            /* Updates pointer */
+            pcDst += s32GUIDLength;
+
+            break;
+          }
+
+          case orxCOMMAND_KC_POP_MARKER:
+          {
+            /* Valid? */
+            if(orxBank_GetCounter(sstCommand.pstResultBank) > 0)
+            {
+              orxCOMMAND_STACK_ENTRY *pstEntry;
+              orxCHAR                 acValue[64];
+              const orxSTRING         zValue = acValue;
+
+              /* Gets last stack entry */
+              pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCounter(sstCommand.pstResultBank) - 1);
+
+              /* Inits value */
+              acValue[63] = orxCHAR_NULL;
+
+              /* Depending on type */
+              switch(pstEntry->stValue.eType)
+              {
+                default:
+                case orxCOMMAND_VAR_TYPE_STRING:
+                {
+                  /* Updates pointer */
+                  zValue = pstEntry->stValue.zValue;
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_FLOAT:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%g", pstEntry->stValue.fValue);
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_S32:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%d", pstEntry->stValue.s32Value);
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_U32:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%u", pstEntry->stValue.u32Value);
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_S64:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%lld", pstEntry->stValue.s64Value);
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_U64:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "0x%016llX", pstEntry->stValue.u64Value);
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_BOOL:
+                {
+                  /* Stores it */
+                  orxString_NPrint(acValue, 63, "%s", (pstEntry->stValue.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
+
+                  break;
+                }
+
+                case orxCOMMAND_VAR_TYPE_VECTOR:
+                {
+                  /* Gets literal value */
+                  orxString_NPrint(acValue, 63, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, pstEntry->stValue.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fZ, orxSTRING_KC_VECTOR_END);
+
+                  break;
+                }
+              }
+
+              /* Replaces marker with stacked value */
+              orxString_Copy(pcDst, zValue);
+
+              /* Updates pointers */
+              pcDst += orxString_GetLength(zValue);
+
+              /* Is a string value? */
+              if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
+              {
+                /* Deletes it */
+                orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
+              }
+
+              /* Deletes stack entry */
+              orxBank_Free(sstCommand.pstResultBank, pstEntry);
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
+            }
+
+            break;
+          }
+
+          default:
+          {
+            /* Copies it */
+            *pcDst++ = *pcSrc;
+
+            break;
+          }
+        }
+      }
+
+      /* Copies end of string */
+      *pcDst = orxCHAR_NULL;
+
+      /* For all characters in the buffer */
+      for(pcSrc = sstCommand.acEvaluateBuffer, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
+          (u32ArgNumber < u32ParamNumber) && (pcSrc - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE) && (*pcSrc != orxCHAR_NULL);
+          pcSrc++, u32ArgNumber++)
+      {
+        /* Skips all whitespaces */
+        pcSrc = orxString_SkipWhiteSpaces(pcSrc);
+
+        /* Valid? */
+        if(*pcSrc != orxCHAR_NULL)
+        {
+          /* Gets arg's beginning */
+          zArg = pcSrc;
+
+          /* Stores its type */
+          astArgList[u32ArgNumber].eType = pstCommand->astParamList[u32ArgNumber].eType;
+
+          /* Depending on its type */
+          switch(pstCommand->astParamList[u32ArgNumber].eType)
+          {
+            default:
+            case orxCOMMAND_VAR_TYPE_STRING:
+            {
+              orxBOOL bInString = orxFALSE;
+
+              /* Is a string marker? */
+              if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
+              {
+                /* Updates arg pointer */
+                zArg++;
+                pcSrc++;
+
+                /* Is not a block delimiter or triple block delimiter? */
+                if((*pcSrc != orxCOMMAND_KC_STRING_MARKER)
+                || (*(pcSrc + 1) == orxCOMMAND_KC_STRING_MARKER))
+                {
+                  /* Updates string status */
+                  bInString = orxTRUE;
+                }
+              }
+
+              /* Finds end of argument */
+              for(; *pcSrc != orxCHAR_NULL; pcSrc++)
+              {
+                /* In string? */
+                if(bInString != orxFALSE)
+                {
+                  /* Is a string marker? */
+                  if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
+                  {
+                    /* Isn't next one also a string marker? */
+                    if(*(pcSrc + 1) != orxCOMMAND_KC_STRING_MARKER)
+                    {
+                      /* Stops */
+                      break;
+                    }
+                    else
+                    {
+                      orxCHAR *pcTemp;
+
+                      /* Erases it */
+                      for(pcTemp = (orxCHAR *)pcSrc + 1; *pcTemp != orxNULL; pcTemp++)
+                      {
+                        *pcTemp = *(pcTemp + 1);
+                      }
+                    }
+                  }
+                }
+                else
+                {
+                  /* End of string? */
+                  if((*pcSrc == ' ') || (*pcSrc == '\t'))
+                  {
+                    /* Stops */
+                    break;
+                  }
+                }
+              }
+
+              /* Stores its value */
+              astArgList[u32ArgNumber].zValue = zArg;
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_FLOAT:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToFloat(zArg, &(astArgList[u32ArgNumber].fValue), &pcSrc);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_S32:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToS32(zArg, &(astArgList[u32ArgNumber].s32Value), &pcSrc);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_U32:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToU32(zArg, &(astArgList[u32ArgNumber].u32Value), &pcSrc);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_S64:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToS64(zArg, &(astArgList[u32ArgNumber].s64Value), &pcSrc);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_U64:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToU64(zArg, &(astArgList[u32ArgNumber].u64Value), &pcSrc);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_BOOL:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToBool(zArg, &(astArgList[u32ArgNumber].bValue), &pcSrc);
+
+              break;
+            }
+
+            case orxCOMMAND_VAR_TYPE_VECTOR:
+            {
+              /* Gets its value */
+              eStatus = orxString_ToVector(zArg, &(astArgList[u32ArgNumber].vValue), &pcSrc);
+
+              break;
+            }
+          }
+
+          /* Interrupted? */
+          if((eStatus == orxSTATUS_FAILURE) || (*pcSrc == orxCHAR_NULL))
+          {
+            /* Updates argument counter */
+            u32ArgNumber++;
+
+            /* Stops processing */
+            break;
+          }
+          else
+          {
+            /* Ends current argument */
+            *(orxCHAR *)pcSrc = orxCHAR_NULL;
+          }
+        }
+      }
+
+      /* Error? */
+      if((eStatus == orxSTATUS_FAILURE) || (u32ArgNumber < (orxU32)pstCommand->u16RequiredParamNumber))
+      {
+        /* Incorrect parameter? */
+        if(eStatus == orxSTATUS_FAILURE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid argument #%d.", _zCommandLine, u32ArgNumber);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected %d[+%d] arguments, found %d.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, u32ArgNumber);
+        }
+      }
+      else
+      {
+        /* Runs it */
+        pstResult = orxCommand_Run(pstCommand, orxFALSE, u32ArgNumber, astArgList, _pstResult);
+      }
+    }
+    else
+    {
+      /* Not processing event? */
+      if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT))
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid command.", _zCommandLine);
+      }
+    }
+
+    /* Failure? */
+    if(pstResult == orxNULL)
+    {
+      /* Stores error */
+      _pstResult->eType   = orxCOMMAND_VAR_TYPE_STRING;
+      _pstResult->zValue  = orxCOMMAND_KZ_ERROR_VALUE;
+    }
+
+    /* For all requested pushes */
+    while(u32PushCounter > 0)
+    {
+      orxCOMMAND_STACK_ENTRY *pstEntry;
+
+      /* Allocates stack entry */
+      pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_Allocate(sstCommand.pstResultBank);
+
+      /* Is a string value? */
+      if(_pstResult->eType == orxCOMMAND_VAR_TYPE_STRING)
+      {
+        /* Duplicates it */
+        pstEntry->stValue.eType = orxCOMMAND_VAR_TYPE_STRING;
+        pstEntry->stValue.zValue = orxString_Duplicate(pstResult->zValue);
+      }
+      else
+      {
+        /* Stores value */
+        orxMemory_Copy(&(pstEntry->stValue), _pstResult, sizeof(orxCOMMAND_STACK_ENTRY));
+      }
+
+      /* Updates push counter */
+      u32PushCounter--;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_TIMELINE);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Trigger */
+    case orxTIMELINE_EVENT_TRIGGER:
+    {
+      orxCOMMAND_VAR              stResult;
+      orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Updates internal status */
+      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT, orxCOMMAND_KU32_STATIC_FLAG_NONE);
+
+      /* Processes command */
+      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult);
+
+      /* Updates internal status */
+      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_NONE, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT);
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
@@ -611,7 +855,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
           /* Deletes bank */
           orxBank_Delete(sstCommand.pstBank);
         }
-        
+
         /* Removes event handler */
         orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
 
@@ -978,266 +1222,8 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
   /* Valid? */
   if((_zCommandLine != orxNULL) & (_zCommandLine != orxSTRING_EMPTY))
   {
-    const orxSTRING zCommand;
-
-    /* Not an internal call? */
-    if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL))
-    {
-      /* Copies command line to work buffer */
-      orxString_NCopy(sstCommand.acEvaluateBuffer, _zCommandLine, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE);
-    }
-
-    /* Gets start of command */
-    zCommand = orxString_SkipWhiteSpaces(sstCommand.acEvaluateBuffer);
-
-    /* Valid? */
-    if(zCommand != orxSTRING_EMPTY)
-    {
-      orxU32          u32ID;
-      const orxCHAR  *pc;
-      orxCOMMAND     *pstCommand;
-
-      /* Finds end of command */
-      for(pc = zCommand + 1; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t') && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF); pc++);
-
-      /* Ends command */
-      *(orxCHAR *)pc = orxCHAR_NULL;
-
-      /* Gets its ID */
-      u32ID = orxString_ToCRC(zCommand);
-
-      /* Gets it */
-      pstCommand = (orxCOMMAND *)orxHashTable_Get(sstCommand.pstTable, u32ID);
-
-      /* Found? */
-      if(pstCommand != orxNULL)
-      {
-        orxSTATUS       eStatus;
-        const orxSTRING zArg;
-        orxU32          u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
-
-#ifdef __orxMSVC__
-
-        orxCOMMAND_VAR *astArgList = (orxCOMMAND_VAR *)alloca(u32ParamNumber * sizeof(orxCOMMAND_VAR));
-
-#else /* __orxMSVC__ */
-
-        orxCOMMAND_VAR astArgList[u32ParamNumber];
-
-#endif /* __orxMSVC__ */
-
-        /* For the remainder of the buffer? */
-        for(pc++, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
-            (u32ArgNumber < u32ParamNumber) && (pc - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE) && (*pc != orxCHAR_NULL);
-            pc++, u32ArgNumber++)
-        {
-          /* Skips all whitespaces */
-          pc = orxString_SkipWhiteSpaces(pc);
-
-          /* Valid? */
-          if(*pc != orxCHAR_NULL)
-          {
-            /* Gets arg's beginning */
-            zArg = pc;
-
-            /* Stores its type */
-            astArgList[u32ArgNumber].eType = pstCommand->astParamList[u32ArgNumber].eType;
-
-            /* Depending on its type */
-            switch(pstCommand->astParamList[u32ArgNumber].eType)
-            {
-              default:
-              case orxCOMMAND_VAR_TYPE_STRING:
-              {
-                orxBOOL bInString = orxFALSE;
-
-                /* Is a string marker? */
-                if(*pc == orxCOMMAND_KC_STRING_MARKER)
-                {
-                  /* Updates arg pointer */
-                  zArg++;
-                  pc++;
-
-                  /* Is not a block delimiter or triple block delimiter? */
-                  if((*pc != orxCOMMAND_KC_STRING_MARKER)
-                  || (*(pc + 1) == orxCOMMAND_KC_STRING_MARKER))
-                  {
-                    /* Updates string status */
-                    bInString = orxTRUE;
-                  }
-                }
-
-                /* Finds end of argument */
-                for(; *pc != orxCHAR_NULL; pc++)
-                {
-                  /* In string? */
-                  if(bInString != orxFALSE)
-                  {
-                    /* Is a string marker? */
-                    if(*pc == orxCOMMAND_KC_STRING_MARKER)
-                    {
-                      /* Isn't next one also a string marker? */
-                      if(*(pc + 1) != orxCOMMAND_KC_STRING_MARKER)
-                      {
-                        /* Stops */
-                        break;
-                      }
-                      else
-                      {
-                        orxCHAR *pcTemp;
-
-                        /* Erases it */
-                        for(pcTemp = (orxCHAR *)pc + 1; *pcTemp != orxNULL; pcTemp++)
-                        {
-                          *pcTemp = *(pcTemp + 1);
-                        }
-                      }
-                    }
-                  }
-                  else
-                  {
-                    /* End of string? */
-                    if((*pc == ' ') || (*pc == '\t'))
-                    {
-                      /* Stops */
-                      break;
-                    }
-                  }
-                }
-
-                /* Stores its value */
-                astArgList[u32ArgNumber].zValue = zArg;
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_FLOAT:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToFloat(zArg, &(astArgList[u32ArgNumber].fValue), &pc);
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_S32:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToS32(zArg, &(astArgList[u32ArgNumber].s32Value), &pc);
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_U32:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToU32(zArg, &(astArgList[u32ArgNumber].u32Value), &pc);
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_S64:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToS64(zArg, &(astArgList[u32ArgNumber].s64Value), &pc);
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_U64:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToU64(zArg, &(astArgList[u32ArgNumber].u64Value), &pc);
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_BOOL:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToBool(zArg, &(astArgList[u32ArgNumber].bValue), &pc);
-
-                break;
-              }
-
-              case orxCOMMAND_VAR_TYPE_VECTOR:
-              {
-                /* Gets its value */
-                eStatus = orxString_ToVector(zArg, &(astArgList[u32ArgNumber].vValue), &pc);
-
-                break;
-              }
-            }
-
-            /* Interrupted? */
-            if((eStatus == orxSTATUS_FAILURE) || (*pc == orxCHAR_NULL))
-            {
-              /* Updates argument counter */
-              u32ArgNumber++;
-
-              /* Stops processing */
-              break;
-            }
-            else
-            {
-              /* Ends current argument */
-              *(orxCHAR *)pc = orxCHAR_NULL;
-            }
-          }
-        }
-
-        /* Error? */
-        if((eStatus == orxSTATUS_FAILURE) || (u32ArgNumber < (orxU32)pstCommand->u16RequiredParamNumber))
-        {
-          /* Internal call? */
-          if(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL))
-          {
-            const orxCHAR *pcTemp;
-
-            /* Restores command line */
-            for(pcTemp = sstCommand.acEvaluateBuffer; pcTemp < pc; pcTemp++)
-            {
-              /* Null char? */
-              if(*pcTemp == orxCHAR_NULL)
-              {
-                /* Restores a space */
-                *(orxCHAR *)pcTemp = ' ';
-              }
-            }
-          }
-
-          /* Incorrect parameter? */
-          if(eStatus == orxSTATUS_FAILURE)
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid argument #%d.", _zCommandLine, u32ArgNumber);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected %d[+%d] arguments, found %d.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, u32ArgNumber);
-          }
-        }
-        else
-        {
-          /* Runs it */
-          pstResult = orxCommand_Run(pstCommand, orxFALSE, u32ArgNumber, astArgList, _pstResult);
-        }
-      }
-      else
-      {
-        /* Not an internal call? */
-        if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_INTERNAL_CALL))
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid command.", _zCommandLine);
-        }
-      }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
-    }
+    /* Processes it */
+    pstResult = orxCommand_Process(_zCommandLine, orxU64_UNDEFINED, _pstResult);
   }
 
   /* Profiles */
