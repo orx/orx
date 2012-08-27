@@ -173,14 +173,13 @@ static bool renderFrame(bool allocateIfNeeded)
   if (!NVEventReadyToRenderEGL(allocateIfNeeded))
       return false;
 
-    if (!s_glesLoaded)
-    {
-        if (!allocateIfNeeded)
-            return false;
+  if (!s_glesLoaded)
+  {
+    if (!allocateIfNeeded)
+      return false;
 
-		orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_GAINED), NV_EVENT_FOCUS_GAINED);
-        s_glesLoaded = true;
-    }
+    s_glesLoaded = true;
+  }
 
   /* Sends frame start event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
@@ -312,7 +311,6 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
 
             /* Send reserved event, used bu the keyboard plugin, to store the keyboard event */
             orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY, NV_EVENT_KEY, orxNULL, orxNULL, &ev->m_data.m_key);
-
             break;
 
           case NV_EVENT_CHAR:
@@ -327,8 +325,8 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
             stTouchPayload.stTouch.u32ID = 0;
             stTouchPayload.stTouch.fX = orx2F(ev->m_data.m_touch.m_x);
             stTouchPayload.stTouch.fY = orx2F(ev->m_data.m_touch.m_y);
-			stTouchPayload.stTouch.fPressure = orxFLOAT_0;
-			stTouchPayload.stTouch.dTime = orxFLOAT_0;
+            stTouchPayload.stTouch.fPressure = orxFLOAT_0;
+            stTouchPayload.stTouch.dTime = orxFLOAT_0;
             switch (ev->m_data.m_touch.m_action)
             {
             case NV_TOUCHACTION_DOWN:
@@ -348,12 +346,11 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
           case NV_EVENT_MULTITOUCH:
             orxSYSTEM_EVENT_PAYLOAD stTouchPayloadMulti;
             orxMemory_Zero(&stTouchPayloadMulti, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-			stTouchPayloadMulti.stTouch.u32ID     = ev->m_data.m_multi.m_id;
-			stTouchPayloadMulti.stTouch.fX        = orx2F(ev->m_data.m_multi.m_x);
-			stTouchPayloadMulti.stTouch.fY        = orx2F(ev->m_data.m_multi.m_y);
-			stTouchPayloadMulti.stTouch.fPressure = orx2F(ev->m_data.m_multi.m_pressure);
-			stTouchPayloadMulti.stTouch.dTime     = (orxDOUBLE)((ev->m_data.m_multi.m_eventtime / 1000.0f) - s_dOffsetTimeFromBoot);
+            stTouchPayloadMulti.stTouch.u32ID     = ev->m_data.m_multi.m_id;
+            stTouchPayloadMulti.stTouch.fX        = orx2F(ev->m_data.m_multi.m_x);
+            stTouchPayloadMulti.stTouch.fY        = orx2F(ev->m_data.m_multi.m_y);
+            stTouchPayloadMulti.stTouch.fPressure = orx2F(ev->m_data.m_multi.m_pressure);
+            stTouchPayloadMulti.stTouch.dTime     = (orxDOUBLE)((ev->m_data.m_multi.m_eventtime / 1000.0f) - s_dOffsetTimeFromBoot);
             switch (ev->m_data.m_multi.m_action)
             {
             case NV_MULTITOUCH_DOWN:
@@ -371,19 +368,23 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
               break;
             }
             break;
-          case NV_EVENT_SURFACE_CREATED:
-          case NV_EVENT_SURFACE_SIZE:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
 
+          case NV_EVENT_SURFACE_CREATED:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create event: %d x %d", s_winWidth, s_winHeight);
             s_winWidth = ev->m_data.m_size.m_w;
             s_winHeight = ev->m_data.m_size.m_h;
             break;
 
+          case NV_EVENT_SURFACE_SIZE:
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface resize event: %d x %d", s_winWidth, s_winHeight);
+            s_winWidth = ev->m_data.m_size.m_w;
+            s_winHeight = ev->m_data.m_size.m_h;
+            orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_SURFACE_SIZE), NV_EVENT_SURFACE_SIZE);
+            break;
+
           case NV_EVENT_SURFACE_DESTROYED:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
-            orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_FOCUS_LOST), NV_EVENT_FOCUS_LOST);
             s_glesLoaded = false;
-
             NVEventDestroySurfaceEGL();
             break;
 
