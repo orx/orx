@@ -4968,7 +4968,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIn
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
-  orxASSERT(_s32ListIndex < 0xFF);
+  orxASSERT(_s32ListIndex < 0xFFFF);
 
   /* Gets value */
   pstValue = orxConfig_GetValue(_zKey);
@@ -5007,7 +5007,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIn
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
-  orxASSERT(_s32ListIndex < 0xFF);
+  orxASSERT(_s32ListIndex < 0xFFFF);
 
   /* Gets value */
   pstValue = orxConfig_GetValue(_zKey);
@@ -5046,7 +5046,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32Li
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
-  orxASSERT(_s32ListIndex < 0xFF);
+  orxASSERT(_s32ListIndex < 0xFFFF);
 
   /* Gets value */
   pstValue = orxConfig_GetValue(_zKey);
@@ -5085,7 +5085,7 @@ const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS3
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
-  orxASSERT(_s32ListIndex < 0xFF);
+  orxASSERT(_s32ListIndex < 0xFFFF);
 
   /* Gets value */
   pstValue = orxConfig_GetValue(_zKey);
@@ -5124,7 +5124,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32List
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
-  orxASSERT(_s32ListIndex < 0xFF);
+  orxASSERT(_s32ListIndex < 0xFFFF);
 
   /* Gets value */
   pstValue = orxConfig_GetValue(_zKey);
@@ -5164,7 +5164,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
-  orxASSERT(_s32ListIndex < 0xFF);
+  orxASSERT(_s32ListIndex < 0xFFFF);
 
   /* Gets value */
   pstValue = orxConfig_GetValue(_zKey);
@@ -5209,7 +5209,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
   orxASSERT(_azValue != orxNULL);
 
   /* Valid? */
-  if((_u32Number > 0) && (_u32Number < 256))
+  if((_u32Number > 0) && (_u32Number < 65536))
   {
     /* Gets entry */
     pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
