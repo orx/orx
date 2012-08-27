@@ -686,7 +686,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       {
         /* Duplicates it */
         pstEntry->stValue.eType = orxCOMMAND_VAR_TYPE_STRING;
-        pstEntry->stValue.zValue = orxString_Duplicate(pstResult->zValue);
+        pstEntry->stValue.zValue = orxString_Duplicate(_pstResult->zValue);
       }
       else
       {
