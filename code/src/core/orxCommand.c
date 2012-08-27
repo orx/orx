@@ -337,7 +337,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", _u64GUID);
 
       /* For all characters */
-      for(pcDst = sstCommand.acEvaluateBuffer, pcSrc = pcCommandEnd + 1; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1); pcSrc++)
+      for(pcDst = sstCommand.acEvaluateBuffer, pcSrc = pcCommandEnd + 1; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2); pcSrc++)
       {
         /* Depending on character */
         switch(*pcSrc)
@@ -345,7 +345,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
           case orxCOMMAND_KC_GUID_MARKER:
           {
             /* Replaces it with GUID */
-            orxString_Copy(pcDst, acGUID);
+            orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
 
             /* Updates pointer */
             pcDst += s32GUIDLength;
@@ -438,7 +438,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               }
 
               /* Replaces marker with stacked value */
-              orxString_Copy(pcDst, zValue);
+              orxString_NCopy(pcDst, zValue, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
 
               /* Updates pointers */
               pcDst += orxString_GetLength(zValue);
@@ -457,6 +457,12 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
+
+              /* Replaces marker with stack error */
+              orxString_NCopy(pcDst, orxCOMMAND_KZ_ERROR_VALUE, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
+
+              /* Updates pointers */
+              pcDst += orxString_GetLength(orxCOMMAND_KZ_ERROR_VALUE);
             }
 
             break;
@@ -822,6 +828,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
 
           /* Registers commands */
           orxCommand_RegisterCommands();
+
+          /* Inits evaluate buffer */
+          sstCommand.acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1] = orxCHAR_NULL;
 
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;

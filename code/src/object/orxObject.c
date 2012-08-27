@@ -531,7 +531,7 @@ void orxFASTCALL orxObject_CommandSetAngularVelocity(orxU32 _u32ArgNumber, const
   if(pstObject != orxNULL)
   {
     /* Sets its angular velocity */
-    orxObject_SetAngularVelocity(pstObject, _astArgList[1].fValue);
+    orxObject_SetAngularVelocity(pstObject, orxMATH_KF_DEG_TO_RAD * _astArgList[1].fValue);
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -621,7 +621,7 @@ void orxFASTCALL orxObject_CommandGetAngularVelocity(orxU32 _u32ArgNumber, const
   if(pstObject != orxNULL)
   {
     /* Gets its angular velocity */
-    _pstResult->fValue = orxObject_GetAngularVelocity(pstObject);
+    _pstResult->fValue = orxMATH_KF_RAD_TO_DEG * orxObject_GetAngularVelocity(pstObject);
   }
   else
   {
