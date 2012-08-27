@@ -73,6 +73,10 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
       // The window is being shown, get it ready.
       orxEvent_SendShort((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), (orxENUM) 0);
       break;
+    case APP_CMD_WINDOW_RESIZED:
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_WINDOW_RESIZED\n");
+      orxEvent_SendShort((orxEVENT_TYPE) (orxEVENT_TYPE_FIRST_RESERVED + 1), (orxENUM) 2);
+      break;
     case APP_CMD_PAUSE:
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "APP_CMD_PAUSE\n");
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
