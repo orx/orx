@@ -70,7 +70,7 @@
 
 #define orxCOMMAND_KU32_TABLE_SIZE                    256
 #define orxCOMMAND_KU32_BANK_SIZE                     128
-#define orxCOMMAND_KU32_TRIE_BANK_SIZE                256
+#define orxCOMMAND_KU32_TRIE_BANK_SIZE                512
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
@@ -110,7 +110,7 @@ typedef struct __orxCOMMAND_TRIE_NODE_t
 {
   orxTREE_NODE              stNode;
   const orxCOMMAND         *pstCommand;
-  orxCHAR                   cLetter;
+  orxU32                    u32CharacterCodePoint;
 
 } orxCOMMAND_TRIE_NODE;
 
@@ -764,12 +764,144 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 
 static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
 {
-  //! TODO
+  orxU32                u32CharacterCodePoint;
+  const orxSTRING       zName;
+  orxCOMMAND_TRIE_NODE *pstNode;
+
+  /* Gets trie root */
+  pstNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
+
+  /* For all characters */
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstCommand->zName, &zName);
+      u32CharacterCodePoint != orxCHAR_NULL;
+      u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zName, &zName))
+  {
+    orxCOMMAND_TRIE_NODE *pstChild, *pstPrevious;
+
+    /* Is an upper case ASCII character? */
+    if((orxString_IsCharacterASCII(u32CharacterCodePoint) != orxFALSE)
+    && (u32CharacterCodePoint >= 'A')
+    && (u32CharacterCodePoint <= 'Z'))
+    {
+      /* Gets its lower case version */
+      u32CharacterCodePoint |= 0x20;
+    }
+
+    /* Find the matching place in children */
+    for(pstPrevious = orxNULL, pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstNode->stNode));
+        (pstChild != orxNULL) && (pstChild->u32CharacterCodePoint < u32CharacterCodePoint);
+        pstPrevious = pstChild, pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetSibling(&(pstChild->stNode)));
+
+    /* Not found? */
+    if((pstChild == orxNULL)
+    || (pstChild->u32CharacterCodePoint != u32CharacterCodePoint))
+    {
+      /* Creates new trie node */
+      pstChild = (orxCOMMAND_TRIE_NODE *)orxBank_Allocate(sstCommand.pstTrieBank);
+
+      /* Inits it */
+      orxMemory_Zero(pstChild, sizeof(orxCOMMAND_TRIE_NODE));
+
+      /* Has previous? */
+      if(pstPrevious != orxNULL)
+      {
+        /* Inserts it as sibling */
+        orxTree_AddSibling(&(pstPrevious->stNode), &(pstChild->stNode));
+      }
+      else
+      {
+        /* Inserts it as child */
+        orxTree_AddChild(&(pstNode->stNode), &(pstChild->stNode));
+      }
+
+      /* Stores character code point */
+      pstChild->u32CharacterCodePoint = u32CharacterCodePoint;
+    }
+
+    /* End of command name? */
+    if(*zName == orxCHAR_NULL)
+    {
+      /* Checks */
+      orxASSERT(pstChild->pstCommand == orxNULL);
+
+      /* Stores it */
+      pstChild->pstCommand = _pstCommand;
+
+      break;
+    }
+    else
+    {
+      /* Stores next node */
+      pstNode = pstChild;
+    }
+  }
+
+  /* Done! */
+  return;
 }
 
 static orxINLINE void orxCommand_RemoveFromTrie(const orxCOMMAND *_pstCommand)
 {
-  //! TODO
+  orxU32                u32CharacterCodePoint;
+  const orxSTRING       zName;
+  orxCOMMAND_TRIE_NODE *pstNode;
+
+  /* Gets trie root */
+  pstNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
+
+  /* For all characters */
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstCommand->zName, &zName);
+    u32CharacterCodePoint != orxCHAR_NULL;
+    u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zName, &zName))
+  {
+    orxCOMMAND_TRIE_NODE *pstChild;
+
+    /* Is an upper case ASCII character? */
+    if((orxString_IsCharacterASCII(u32CharacterCodePoint) != orxFALSE)
+      && (u32CharacterCodePoint >= 'A')
+      && (u32CharacterCodePoint <= 'Z'))
+    {
+      /* Gets its lower case version */
+      u32CharacterCodePoint |= 0x20;
+    }
+
+    /* Find the matching place in children */
+    for(pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstNode->stNode));
+        (pstChild != orxNULL) && (pstChild->u32CharacterCodePoint < u32CharacterCodePoint);
+        pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetSibling(&(pstChild->stNode)));
+
+    /* Found? */
+    if((pstChild != orxNULL)
+    && (pstChild->u32CharacterCodePoint == u32CharacterCodePoint))
+    {
+      /* End of command name? */
+      if(*zName == orxCHAR_NULL)
+      {
+        /* Checks */
+        orxASSERT(pstChild->pstCommand == _pstCommand);
+
+        /* Removes it */
+        pstChild->pstCommand = orxNULL;
+
+        break;
+      }
+      else
+      {
+        /* Stores next node */
+        pstNode = pstChild;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to remove command [%s] from trie (command not found).", _pstCommand->zName);
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
 }
 
 /***************************************************************************
@@ -804,10 +936,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
     orxMemory_Zero(&sstCommand, sizeof(orxCOMMAND_STATIC));
 
     /* Registers event handler */
-    eResult = orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
-
-    /* Valid? */
-    if(eResult != orxSTATUS_FAILURE)
+    if(orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler) != orxSTATUS_FAILURE)
     {
       /* Creates banks */
       sstCommand.pstBank        = orxBank_Create(orxCOMMAND_KU32_BANK_SIZE, sizeof(orxCOMMAND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -817,25 +946,43 @@ orxSTATUS orxFASTCALL orxCommand_Init()
       /* Valid? */
       if((sstCommand.pstBank != orxNULL) && (sstCommand.pstTrieBank != orxNULL) && (sstCommand.pstResultBank != orxNULL))
       {
-        /* Creates table */
-        sstCommand.pstTable = orxHashTable_Create(orxCOMMAND_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        orxCOMMAND_TRIE_NODE *pstTrieRoot;
 
-        /* Valid? */
-        if(sstCommand.pstTable != orxNULL)
+        /* Allocates trie root */
+        pstTrieRoot = (orxCOMMAND_TRIE_NODE *)orxBank_Allocate(sstCommand.pstTrieBank);
+
+        /* Success? */
+        if(pstTrieRoot != orxNULL)
         {
-          /* Inits Flags */
-          sstCommand.u32Flags = orxCOMMAND_KU32_STATIC_FLAG_READY;
+          /* Inits it */
+          orxMemory_Zero(pstTrieRoot, sizeof(orxCOMMAND_TRIE_NODE));
 
-          /* Registers commands */
-          orxCommand_RegisterCommands();
+          /* Adds it to the trie */
+          if(orxTree_AddRoot(&(sstCommand.stCommandTrie), &(pstTrieRoot->stNode)) != orxSTATUS_FAILURE)
+          {
+            /* Creates table */
+            sstCommand.pstTable = orxHashTable_Create(orxCOMMAND_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-          /* Inits evaluate buffer */
-          sstCommand.acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1] = orxCHAR_NULL;
+            /* Valid? */
+            if(sstCommand.pstTable != orxNULL)
+            {
+              /* Inits Flags */
+              sstCommand.u32Flags = orxCOMMAND_KU32_STATIC_FLAG_READY;
 
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
+              /* Registers commands */
+              orxCommand_RegisterCommands();
+
+              /* Inits evaluate buffer */
+              sstCommand.acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1] = orxCHAR_NULL;
+
+              /* Updates result */
+              eResult = orxSTATUS_SUCCESS;
+            }
+          }
         }
-        else
+
+        /* Failure? */
+        if(eResult == orxSTATUS_FAILURE)
         {
           /* Removes event handler */
           orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
@@ -846,7 +993,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
           orxBank_Delete(sstCommand.pstResultBank);
 
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command table.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command table and/or command trie.");
         }
       }
       else
@@ -926,6 +1073,9 @@ void orxFASTCALL orxCommand_Exit()
       /* Unregisters it */
       orxCommand_Unregister(pstCommand->zName);
     }
+
+    /* Clears trie */
+    orxTree_Clean(&(sstCommand.stCommandTrie));
 
     /* Deletes table */
     orxHashTable_Delete(sstCommand.pstTable);
