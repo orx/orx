@@ -70,7 +70,7 @@
 
 #define orxCOMMAND_KU32_TABLE_SIZE                    256
 #define orxCOMMAND_KU32_BANK_SIZE                     128
-#define orxCOMMAND_KU32_TRIE_BANK_SIZE                512
+#define orxCOMMAND_KU32_TRIE_BANK_SIZE                1024
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
@@ -762,17 +762,17 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
+static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _zName, orxBOOL _bReadOnly)
 {
-  orxU32                u32CharacterCodePoint;
   const orxSTRING       zName;
-  orxCOMMAND_TRIE_NODE *pstNode;
+  orxU32                u32CharacterCodePoint;
+  orxCOMMAND_TRIE_NODE *pstNode, *pstResult = orxNULL;
 
   /* Gets trie root */
   pstNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
 
   /* For all characters */
-  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstCommand->zName, &zName);
+  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zName, &zName);
       u32CharacterCodePoint != orxCHAR_NULL;
       u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zName, &zName))
   {
@@ -787,45 +787,51 @@ static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
       u32CharacterCodePoint |= 0x20;
     }
 
-    /* Find the matching place in children */
+    /* Finds the matching place in children */
     for(pstPrevious = orxNULL, pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstNode->stNode));
         (pstChild != orxNULL) && (pstChild->u32CharacterCodePoint < u32CharacterCodePoint);
         pstPrevious = pstChild, pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetSibling(&(pstChild->stNode)));
 
-    /* Not found? */
+    /* Not found and not read only? */
     if((pstChild == orxNULL)
     || (pstChild->u32CharacterCodePoint != u32CharacterCodePoint))
     {
-      /* Creates new trie node */
-      pstChild = (orxCOMMAND_TRIE_NODE *)orxBank_Allocate(sstCommand.pstTrieBank);
-
-      /* Inits it */
-      orxMemory_Zero(pstChild, sizeof(orxCOMMAND_TRIE_NODE));
-
-      /* Has previous? */
-      if(pstPrevious != orxNULL)
+      /* Not read only? */
+      if(_bReadOnly == orxFALSE)
       {
-        /* Inserts it as sibling */
-        orxTree_AddSibling(&(pstPrevious->stNode), &(pstChild->stNode));
+        /* Creates new trie node */
+        pstChild = (orxCOMMAND_TRIE_NODE *)orxBank_Allocate(sstCommand.pstTrieBank);
+
+        /* Inits it */
+        orxMemory_Zero(pstChild, sizeof(orxCOMMAND_TRIE_NODE));
+
+        /* Has previous? */
+        if(pstPrevious != orxNULL)
+        {
+          /* Inserts it as sibling */
+          orxTree_AddSibling(&(pstPrevious->stNode), &(pstChild->stNode));
+        }
+        else
+        {
+          /* Inserts it as child */
+          orxTree_AddChild(&(pstNode->stNode), &(pstChild->stNode));
+        }
+
+        /* Stores character code point */
+        pstChild->u32CharacterCodePoint = u32CharacterCodePoint;
       }
       else
       {
-        /* Inserts it as child */
-        orxTree_AddChild(&(pstNode->stNode), &(pstChild->stNode));
+        /* Stops search */
+        break;
       }
-
-      /* Stores character code point */
-      pstChild->u32CharacterCodePoint = u32CharacterCodePoint;
     }
 
-    /* End of command name? */
+    /* End of name? */
     if(*zName == orxCHAR_NULL)
     {
-      /* Checks */
-      orxASSERT(pstChild->pstCommand == orxNULL);
-
-      /* Stores it */
-      pstChild->pstCommand = _pstCommand;
+      /* Updates result */
+      pstResult = pstChild;
 
       break;
     }
@@ -837,71 +843,82 @@ static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
   }
 
   /* Done! */
+  return pstResult;
+}
+
+static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
+{
+  orxCOMMAND_TRIE_NODE *pstNode;
+
+  /* Gets command trie node */
+  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxFALSE);
+
+  /* Checks */
+  orxASSERT(pstNode != orxNULL);
+  orxASSERT(pstNode->pstCommand == orxNULL);
+
+  /* Inserts command */
+  pstNode->pstCommand = _pstCommand;
+
+  /* Done! */
   return;
 }
 
 static orxINLINE void orxCommand_RemoveFromTrie(const orxCOMMAND *_pstCommand)
 {
-  orxU32                u32CharacterCodePoint;
-  const orxSTRING       zName;
   orxCOMMAND_TRIE_NODE *pstNode;
 
-  /* Gets trie root */
-  pstNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
+  /* Finds command trie node */
+  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxTRUE);
 
-  /* For all characters */
-  for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstCommand->zName, &zName);
-    u32CharacterCodePoint != orxCHAR_NULL;
-    u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zName, &zName))
+  /* Checks */
+  orxASSERT(pstNode != orxNULL);
+  orxASSERT(pstNode->pstCommand == _pstCommand);
+
+  /* Removes command */
+  pstNode->pstCommand = orxNULL;
+
+  /* Done! */
+  return;
+}
+
+static orxINLINE const orxCOMMAND *orxCommand_FindNext(const orxCOMMAND_TRIE_NODE *_pstNode, orxCOMMAND_TRIE_NODE **_ppstPreviousNode)
+{
+  const orxCOMMAND *pstResult = orxNULL;
+
+  /* Valid node? */
+  if(_pstNode != orxNULL)
   {
-    orxCOMMAND_TRIE_NODE *pstChild;
-
-    /* Is an upper case ASCII character? */
-    if((orxString_IsCharacterASCII(u32CharacterCodePoint) != orxFALSE)
-      && (u32CharacterCodePoint >= 'A')
-      && (u32CharacterCodePoint <= 'Z'))
+    /* Has reached previous command node and found a new command? */
+    if((*_ppstPreviousNode == orxNULL)
+    && (_pstNode->pstCommand != orxNULL))
     {
-      /* Gets its lower case version */
-      u32CharacterCodePoint |= 0x20;
-    }
-
-    /* Find the matching place in children */
-    for(pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstNode->stNode));
-        (pstChild != orxNULL) && (pstChild->u32CharacterCodePoint < u32CharacterCodePoint);
-        pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetSibling(&(pstChild->stNode)));
-
-    /* Found? */
-    if((pstChild != orxNULL)
-    && (pstChild->u32CharacterCodePoint == u32CharacterCodePoint))
-    {
-      /* End of command name? */
-      if(*zName == orxCHAR_NULL)
-      {
-        /* Checks */
-        orxASSERT(pstChild->pstCommand == _pstCommand);
-
-        /* Removes it */
-        pstChild->pstCommand = orxNULL;
-
-        break;
-      }
-      else
-      {
-        /* Stores next node */
-        pstNode = pstChild;
-      }
+      /* Updates result */
+      pstResult = _pstNode->pstCommand;
     }
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to remove command [%s] from trie (command not found).", _pstCommand->zName);
+      /* Passed previous command node? */
+      if(*_ppstPreviousNode == _pstNode)
+      {
+        /* Resets previous command node value */
+        *_ppstPreviousNode = orxNULL;
+      }
 
-      break;
+      /* Finds next command from child */
+      pstResult = orxCommand_FindNext((orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(_pstNode->stNode)), _ppstPreviousNode);
+
+      /* No command found? */
+      if(pstResult == orxNULL)
+      {
+        /* Finds next command from sibling */
+        pstResult = orxCommand_FindNext((orxCOMMAND_TRIE_NODE *)orxTree_GetSibling(&(_pstNode->stNode)), _ppstPreviousNode);
+      }
     }
   }
 
   /* Done! */
-  return;
+  return pstResult;
 }
 
 /***************************************************************************
@@ -1350,12 +1367,83 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
 */
 const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious)
 {
-  const orxSTRING zResult = orxNULL;
+  orxCOMMAND_TRIE_NODE *pstBaseNode;
+  const orxSTRING       zResult = orxNULL;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
 
-  //! TODO
+  /* Has a base? */
+  if(_zBase != orxNULL)
+  {
+    /* Finds base node */
+    pstBaseNode = orxCommand_FindTrieNode(_zBase, orxTRUE);
+  }
+  else
+  {
+    /* Uses root as base node */
+    pstBaseNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
+  }
+
+  /* Found a valid base? */
+  if(pstBaseNode != orxNULL)
+  {
+    orxCOMMAND_TRIE_NODE *pstPreviousNode;
+    const orxCOMMAND     *pstNextCommand;
+
+    /* Has previous command? */
+    if(_zPrevious != orxNULL)
+    {
+      /* Gets its node */
+      pstPreviousNode = orxCommand_FindTrieNode(_zPrevious, orxTRUE);
+
+      /* Found? */
+      if((pstPreviousNode != orxNULL) && (pstPreviousNode->pstCommand != orxNULL))
+      {
+        orxCOMMAND_TRIE_NODE *pstParent;
+
+        /* Finds parent base node */
+        for(pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstPreviousNode->stNode));
+            (pstParent != orxNULL) && (pstParent != pstBaseNode);
+            pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstParent->stNode)));
+
+        /* Not found? */
+        if(pstParent == orxNULL)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s] is not a valid base of command [%s]: ignoring previous command parameter.", _zBase, _zPrevious);
+
+          /* Resets previous command node */
+          pstPreviousNode = orxNULL;
+        }        
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s] is not a valid previous command: ignoring previous command parameter.", _zPrevious);
+      }
+    }
+    else
+    {
+      /* Ignores previous command */
+      pstPreviousNode = orxNULL;
+    }
+
+    /* Finds next command */
+    pstNextCommand = orxCommand_FindNext(pstBaseNode, &pstPreviousNode);
+
+    /* Found? */
+    if(pstNextCommand != orxNULL)
+    {
+      /* Updates result */
+      zResult = pstNextCommand->zName;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get next command using base [%s]: base not found.", _zBase);
+  }
 
   /* Done! */
   return zResult;
