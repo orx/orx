@@ -112,6 +112,7 @@ typedef struct __orxCONSOLE_STATIC_t
   orxCOMMAND_VAR            stLastResult;                                             /**< Last command result */
   const orxFONT            *pstFont;                                                  /**< Font */
   const orxSTRING           zPreviousInputSet;                                        /**< Previous input set */
+  const orxSTRING           zCompletedCommand;                                        /**< Last completed command */
   orxINPUT_TYPE             eToggleKeyType;                                           /**< Toggle key type */
   orxENUM                   eToggleKeyID;                                             /**< Toggle key ID */
   orxU32                    u32Flags;                                                 /**< Control flags */
@@ -259,6 +260,17 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Gets its length */
       u32CharacterLength = orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
 
+      /* Has completed command and is space? */
+      if((sstConsole.zCompletedCommand != orxNULL)
+      && (u32CharacterCodePoint == ' '))
+      {
+        /* Updates entry length */
+        pstEntry->u32Length = orxString_GetLength(pstEntry->acBuffer);
+
+        /* Clears last completed command */
+        sstConsole.zCompletedCommand = orxNULL;
+      }
+
       /* Enough room left? */
       if(pstEntry->u32Length + u32CharacterLength < orxCONSOLE_KU32_INPUT_ENTRY_SIZE)
       {
@@ -288,7 +300,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
         /* Gets last character */
         for(pcLast = pstEntry->acBuffer, orxString_GetFirstCharacterCodePoint(pcLast, &pc);
-            *pc != orxCHAR_NULL;
+            (*pc != orxCHAR_NULL) && ((orxU32)(pc - pstEntry->acBuffer) < pstEntry->u32Length);
             pcLast = pc, orxString_GetFirstCharacterCodePoint(pcLast, &pc));
 
         /* Updates entry length */
@@ -296,6 +308,9 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
         /* Ends entry string */
         pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+
+        /* Clears last completed command */
+        sstConsole.zCompletedCommand = orxNULL;
       }
     }
 
@@ -328,13 +343,17 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Copies its content */
         orxMemory_Copy(pstEntry->acBuffer, pstHistoryEntry->acBuffer, pstHistoryEntry->u32Length + 1);
         pstEntry->u32Length = pstHistoryEntry->u32Length;
+
+        /* Clears last completed command */
+        sstConsole.zCompletedCommand = orxNULL;
       }
     }
 
     /* Autocomplete? */
     if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE) != orxFALSE))
     {
-      orxBOOL bPrintLastResult = orxFALSE;
+      const orxCHAR  *pcStart = pstEntry->acBuffer;
+      orxBOOL         bPrintLastResult = orxFALSE;
 
       /* First character? */
       if(pstEntry->u32Length == 0)
@@ -344,12 +363,22 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       }
       else
       {
-        const orxCHAR *pc, *pcLast;
+        const orxCHAR  *pc, *pcLast;
+        orxU32          u32CharacterCodePoint;
 
         /* Gets last character */
-        for(pcLast = pstEntry->acBuffer, orxString_GetFirstCharacterCodePoint(pcLast, &pc);
+        for(pcStart = pcLast = pstEntry->acBuffer, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc);
             *pc != orxCHAR_NULL;
-            pcLast = pc, orxString_GetFirstCharacterCodePoint(pcLast, &pc));
+            pcLast = pc, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc))
+        {
+          /* Space or tab? */
+          if((u32CharacterCodePoint == ' ')
+          || (u32CharacterCodePoint == '\t'))
+          {
+            /* Resets start */
+            pcStart = pc;
+          }
+        }
 
         /* Is a white space? */
         if((*pcLast == ' ') || (*pcLast == '\t'))
@@ -367,10 +396,29 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
         /* Ends string */
         pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+
+        /* Clears last completed command */
+        sstConsole.zCompletedCommand = orxNULL;
       }
       else
       {
-        //! TODO: Command completion
+        /* Ends current string */
+        pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+
+        /* Gets next command */
+        sstConsole.zCompletedCommand = orxCommand_GetNext(pcStart, sstConsole.zCompletedCommand);
+
+        /* Valid? */
+        if(sstConsole.zCompletedCommand != orxNULL)
+        {
+          orxS32 s32Offset;
+
+          /* Prints it */
+          s32Offset = orxString_NPrint(pstEntry->acBuffer, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
+
+          /* Ends string */
+          pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset] = orxCHAR_NULL;
+        }
       }
     }
 
@@ -380,6 +428,16 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Not empty? */
       if(pstEntry->u32Length != 0)
       {
+        /* Has last autocompleted command? */
+        if(sstConsole.zCompletedCommand != orxNULL)
+        {
+          /* Updates entry length */
+          pstEntry->u32Length = orxString_GetLength(pstEntry->acBuffer);
+
+          /* Clears last completed command */
+          sstConsole.zCompletedCommand = orxNULL;
+        }
+
         /* Evaluates it */
         if(orxCommand_Evaluate(pstEntry->acBuffer, &(sstConsole.stLastResult)) != orxNULL)
         {

@@ -282,7 +282,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
   if(zCommand != orxSTRING_EMPTY)
   {
     orxU32      u32PushCounter, u32ID;
-    orxCHAR    *pcCommandEnd;
+    orxCHAR    *pcCommandEnd, cBackupChar;
     orxCOMMAND *pstCommand;
     orxCHAR     acGUID[20];
 
@@ -301,13 +301,14 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (*pcCommandEnd != ' ') && (*pcCommandEnd != '\t') && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++);
 
     /* Ends command */
-    *(orxCHAR *)pcCommandEnd = orxCHAR_NULL;
+    cBackupChar               = *pcCommandEnd;
+    *(orxCHAR *)pcCommandEnd  = orxCHAR_NULL;
 
     /* Gets its ID */
     u32ID = orxString_ToCRC(zCommand);
 
     /* Restores command end */
-    *(orxCHAR *)pcCommandEnd = ' ';
+    *(orxCHAR *)pcCommandEnd = cBackupChar;
 
     /* Gets it */
     pstCommand = (orxCOMMAND *)orxHashTable_Get(sstCommand.pstTable, u32ID);
@@ -1397,8 +1398,8 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
       /* Gets its node */
       pstPreviousNode = orxCommand_FindTrieNode(_zPrevious, orxTRUE);
 
-      /* Found? */
-      if((pstPreviousNode != orxNULL) && (pstPreviousNode->pstCommand != orxNULL))
+      /* Found and different? */
+      if((pstPreviousNode != orxNULL) && (pstPreviousNode->pstCommand != orxNULL) && (pstPreviousNode != pstBaseNode))
       {
         orxCOMMAND_TRIE_NODE *pstParent;
 
