@@ -101,6 +101,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetLogLineLengt
 extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetLogLineLength();
 
 
+/** Gets log line from the end (trail)
+ * @param[in]   _u32TrailLineIndex Index of the line starting from end
+ * @return orxTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex);
+
+/** Gets input text
+ * @param[out]  _pu32CursorIndex Index (ie. character position) of the cursor (any character past it has not been validated)
+ * @return orxTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxConsole_GetInput(orxU32 *_pu32CursorIndex);
+
+
 #endif /* _orxCONSOLE_H_ */
 
 /** @} */

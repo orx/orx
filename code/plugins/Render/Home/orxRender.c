@@ -64,6 +64,12 @@
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE     orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE   orx2F(0.8f/3.0f)
 
+#define orxRENDER_KF_CONSOLE_LOG_ALPHA            orx2F(0.8f)
+#define orxRENDER_KF_CONSOLE_INPUT_ALPHA          orx2F(1.0f)
+#define orxRENDER_KF_CONSOLE_AUTOCOMPLETE_ALPHA   orx2F(0.5f)
+#define orxRENDER_KF_CONSOLE_INPUT_X              orx2F(0.02f)
+#define orxRENDER_KF_CONSOLE_INPUT_Y              orx2F(0.9f)
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -364,7 +370,7 @@ static orxINLINE void orxRender_RenderProfiler()
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
-  orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformText(acLabel, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Selects white color */
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
@@ -655,6 +661,86 @@ static orxINLINE void orxRender_RenderProfiler()
       }
     }
   }
+
+  /* Deletes pixel texture */
+  orxTexture_Delete(pstTexture);
+
+  /* Re-enables marker operations */
+  orxProfiler_EnableMarkerOperations(orxTRUE);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
+/** Renders console
+ */
+static orxINLINE void orxRender_RenderConsole()
+{
+  orxDISPLAY_TRANSFORM    stTransform;
+  orxTEXTURE             *pstTexture;
+  orxBITMAP              *pstBitmap, *pstFontBitmap;
+  orxFLOAT                fScreenWidth, fScreenHeight;
+  orxCOLOR                stColor;
+  orxU32                  u32CursorIndex;
+  orxCHAR                 cBackup;
+  const orxFONT          *pstFont;
+  const orxCHARACTER_MAP *pstMap;
+  const orxSTRING         zText;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxRender_RenderConsole");
+
+  /* Disables marker operations */
+  orxProfiler_EnableMarkerOperations(orxFALSE);
+
+  /* Gets console font */
+  pstFont = orxConsole_GetFont();
+
+  /* Gets its bitmap */
+  pstFontBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
+
+  /* Gets its map */
+  pstMap = orxFont_GetMap(pstFont);
+
+  /* Creates pixel texture */
+  pstTexture = orxTexture_CreateFromFile("pixel");
+
+  /* Gets its bitmap */
+  pstBitmap = orxTexture_GetBitmap(pstTexture);
+
+  /* Gets screen size */
+  orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+
+  /* Inits transform */
+  stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
+  stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
+  stTransform.fRotation = orxFLOAT_0;
+
+  /* Selects black color */
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x33));
+
+  /* Draws background */
+  stTransform.fDstX   = orxFLOAT_0;
+  stTransform.fDstY   = orxFLOAT_0;
+  stTransform.fScaleX = fScreenWidth;
+  stTransform.fScaleY = fScreenHeight;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+  /* Displays input */
+  zText                 = orxConsole_GetInput(&u32CursorIndex);
+  stTransform.fDstX     = orxRENDER_KF_CONSOLE_INPUT_X * fScreenWidth;
+  stTransform.fDstY     = orxRENDER_KF_CONSOLE_INPUT_Y * fScreenHeight;
+  stTransform.fScaleY   = stTransform.fScaleX = orxFLOAT_1;
+  orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_Set(&stColor, &orxVECTOR_WHITE, orxRENDER_KF_CONSOLE_AUTOCOMPLETE_ALPHA)));
+  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  cBackup               = zText[u32CursorIndex];
+  ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
+  orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_Set(&stColor, &orxVECTOR_WHITE, orxRENDER_KF_CONSOLE_LOG_ALPHA)));
+  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
@@ -1669,6 +1755,13 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
         }
+      }
+
+      /* Is console enabled? */
+      if(orxConsole_IsEnabled() != orxFALSE)
+      {
+        /* Renders it */
+        orxRender_RenderConsole();
       }
 
       /* Pops previous section */

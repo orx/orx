@@ -84,6 +84,9 @@
 #define orxCONSOLE_KE_KEY_PREVIOUS                    orxKEYBOARD_KEY_UP              /**< Previous key */
 #define orxCONSOLE_KE_KEY_NEXT                        orxKEYBOARD_KEY_DOWN            /**< Next key */
 
+#define orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY  orx2F(0.25f)
+#define orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY        orx2F(0.05f)
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -132,6 +135,21 @@ static orxCONSOLE_STATIC sstConsole;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Resets delete input
+ */
+static void orxFASTCALL orxConsole_ResetDeleteInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  /* Is delete input still active? */
+  if(orxInput_IsActive(orxCONSOLE_KZ_INPUT_DELETE) != orxFALSE)
+  {
+    /* Resets it */
+    orxInput_SetValue(orxCONSOLE_KZ_INPUT_DELETE, orxFLOAT_0);
+
+    /* Re-adds delete input reset timer */
+    orxClock_AddGlobalTimer(orxConsole_ResetDeleteInput, orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY, 1, orxNULL);
+  }
+}
 
 /** Prints last result
  */
@@ -312,6 +330,9 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Clears last completed command */
         sstConsole.zCompletedCommand = orxNULL;
       }
+
+      /* Adds delete input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetDeleteInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxNULL);
     }
 
     /* Previous history? */
@@ -371,9 +392,10 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
             *pc != orxCHAR_NULL;
             pcLast = pc, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc))
         {
-          /* Space or tab? */
+          /* Space, tab or stack marker? */
           if((u32CharacterCodePoint == ' ')
-          || (u32CharacterCodePoint == '\t'))
+          || (u32CharacterCodePoint == '\t')
+          || (u32CharacterCodePoint == '>'))
           {
             /* Resets start */
             pcStart = pc;
@@ -414,7 +436,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           orxS32 s32Offset;
 
           /* Prints it */
-          s32Offset = orxString_NPrint(pstEntry->acBuffer, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
+          s32Offset = orxString_NPrint((orxCHAR *)pcStart, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
 
           /* Ends string */
           pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset] = orxCHAR_NULL;
@@ -773,7 +795,7 @@ orxBOOL orxFASTCALL orxConsole_IsEnabled()
 orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
 {
   const orxCHAR  *pc;
-  orxU32          u32LineLength;
+  orxU32          u32LineLength, u32TextLength;
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Profiles */
@@ -781,6 +803,19 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Gets text length */
+  u32TextLength = orxString_GetLength(_zText);
+
+  /* End of buffer? */
+  if(sstConsole.u32LogIndex + u32TextLength + (u32TextLength / sstConsole.u32LogLineLength) + 1 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
+  {
+    /* Stores log end index */
+    sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
+
+    /* Resets log index */
+    sstConsole.u32LogIndex = 0;
+  }
 
   /* For all characters */
   for(u32LineLength = 0, pc = _zText; *pc != orxCHAR_NULL;)
@@ -793,45 +828,28 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
     /* Gets its length */
     u32CharacterLength = orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
 
-    /* Not enough room left? */
-    if(sstConsole.u32LogIndex + u32CharacterLength > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
-    {
-      /* Stores log end index */
-      sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
-
-      /* Resets log index */
-      sstConsole.u32LogIndex = 0;
-    }
-
-    /* Appends character to log */
-    orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, u32CharacterLength, u32CharacterCodePoint);
-
-    /* Updates log index */
-    sstConsole.u32LogIndex += u32CharacterLength;
-
     /* EOL? */
     if(u32CharacterCodePoint == (orxU32)orxCHAR_EOL)
     {
+      /* Ends string */
+      sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
+
       /* Resets line length */
       u32LineLength = 0;
     }
     else
     {
+      /* Appends character to log */
+      orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, u32CharacterLength, u32CharacterCodePoint);
+
+      /* Updates log index */
+      sstConsole.u32LogIndex += u32CharacterLength;
+
       /* End of line? */
       if(u32LineLength + 1 >= sstConsole.u32LogLineLength)
       {
-        /* Not enough room left? */
-        if(sstConsole.u32LogIndex + 1 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
-        {
-          /* Stores log end index */
-          sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
-
-          /* Resets log index */
-          sstConsole.u32LogIndex = 0;
-        }
-
-        /* Appends line feed */
-        sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_EOL;
+        /* Ends string */
+        sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
 
         /* Updates line length */
         u32LineLength = 0;
@@ -847,18 +865,8 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
   /* Need EOL? */
   if(u32LineLength != 0)
   {
-    /* Not enough room left? */
-    if(sstConsole.u32LogIndex + 1 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
-    {
-      /* Stores log end index */
-      sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
-
-      /* Resets log index */
-      sstConsole.u32LogIndex = 0;
-    }
-
-    /* Appends line feed */
-    sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_EOL;
+    /* Ends string */
+    sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
   }
 
   /* Profiles */
@@ -962,4 +970,43 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
 
   /* Done! */
   return u32Result;
+}
+
+/** Gets log line from the end (trail)
+ * @param[in]   _u32TrailLineIndex Index of the line starting from end
+ * @return orxTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  //! TODO
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets input text
+ * @param[out]  _pu32CursorIndex Index (ie. character position) of the cursor (any character past it has not been validated)
+ * @return orxTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxConsole_GetInput(orxU32 *_pu32CursorIndex)
+{
+  const orxSTRING zResult;
+
+  /* Asked for base length? */
+  if(_pu32CursorIndex != orxNULL)
+  {
+    /* Fills it */
+    *_pu32CursorIndex = sstConsole.astInputEntryList[sstConsole.u32InputIndex].u32Length;
+  }
+
+  /* Updates result */
+  zResult = sstConsole.astInputEntryList[sstConsole.u32InputIndex].acBuffer;
+
+  /* Done! */
+  return zResult;
 }
