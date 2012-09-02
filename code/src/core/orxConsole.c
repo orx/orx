@@ -97,7 +97,7 @@
 typedef struct __orxCONSOLE_INPUT_ENTRY_t
 {
   orxCHAR acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE];
-  orxU32  u32Length;
+  orxU32  u32CursorIndex;
 
 } orxCONSOLE_INPUT_ENTRY;
 
@@ -258,7 +258,8 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
   {
     const orxSTRING         zKeyboardInput;
     const orxCHAR          *pc;
-    orxS32                  s32HistoryIndex = -1;
+    orxBOOL                 bAddImplicitSpace = orxFALSE;
+    orxU32                  u32HistoryIndex = orxU32_UNDEFINED;
     orxCONSOLE_INPUT_ENTRY *pstEntry;
 
     /* Gets current entry */
@@ -278,28 +279,58 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Gets its length */
       u32CharacterLength = orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
 
-      /* Has completed command and is space? */
-      if((sstConsole.zCompletedCommand != orxNULL)
-      && (u32CharacterCodePoint == ' '))
+      /* Has completed command? */
+      if(sstConsole.zCompletedCommand != orxNULL)
       {
-        /* Updates entry length */
-        pstEntry->u32Length = orxString_GetLength(pstEntry->acBuffer);
+        /* Validation? */
+        if(u32CharacterCodePoint == ' ')
+        {
+          /* Updates cursor index */
+          pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
+        }
+        /* Ask for unstacking? */
+        else if(u32CharacterCodePoint == '<')
+        {
+          /* Updates cursor index */
+          pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
+
+          /* Enough room left? */
+          if(pstEntry->u32CursorIndex + 1 < orxCONSOLE_KU32_INPUT_ENTRY_SIZE)
+          {
+            /* Adds implicit space */
+            pstEntry->acBuffer[pstEntry->u32CursorIndex++] = ' ';
+
+            /* Asks for extra implicit space */
+            bAddImplicitSpace = orxTRUE;
+          }
+        }
+        else
+        {
+          orxU32 i;
+
+          /* Clears ends of buffer */
+          for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
+        }
 
         /* Clears last completed command */
         sstConsole.zCompletedCommand = orxNULL;
       }
 
       /* Enough room left? */
-      if(pstEntry->u32Length + u32CharacterLength < orxCONSOLE_KU32_INPUT_ENTRY_SIZE)
+      if(pstEntry->u32CursorIndex + u32CharacterLength < orxCONSOLE_KU32_INPUT_ENTRY_SIZE)
       {
         /* Appends character to entry */
-        orxString_PrintUTF8Character(pstEntry->acBuffer + pstEntry->u32Length, u32CharacterLength, u32CharacterCodePoint);
+        orxString_PrintUTF8Character(pstEntry->acBuffer + pstEntry->u32CursorIndex, u32CharacterLength, u32CharacterCodePoint);
 
         /* Updates log index */
-        pstEntry->u32Length += u32CharacterLength;
+        pstEntry->u32CursorIndex += u32CharacterLength;
 
-        /* Ends entry string */
-        pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+        /* Asked for implicit space and enough room left? */
+        if((bAddImplicitSpace != orxFALSE) && (pstEntry->u32CursorIndex + 1 < orxCONSOLE_KU32_INPUT_ENTRY_SIZE))
+        {
+          /* Adds implicit space */
+          pstEntry->acBuffer[pstEntry->u32CursorIndex++] = ' ';
+        }
       }
       else
       {
@@ -312,20 +343,24 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_DELETE) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_DELETE) != orxFALSE))
     {
       /* Has character? */
-      if(pstEntry->u32Length != 0)
+      if((pstEntry->u32CursorIndex != 0) || (pstEntry->acBuffer[0] != orxCHAR_NULL))
       {
-        const orxCHAR *pc, *pcLast;
+        orxU32  i;
+        const   orxCHAR *pc, *pcLast;
 
         /* Gets last character */
         for(pcLast = pstEntry->acBuffer, orxString_GetFirstCharacterCodePoint(pcLast, &pc);
-            (*pc != orxCHAR_NULL) && ((orxU32)(pc - pstEntry->acBuffer) < pstEntry->u32Length);
+            (*pc != orxCHAR_NULL) && ((orxU32)(pc - pstEntry->acBuffer) < pstEntry->u32CursorIndex);
             pcLast = pc, orxString_GetFirstCharacterCodePoint(pcLast, &pc));
 
-        /* Updates entry length */
-        pstEntry->u32Length = pcLast - pstEntry->acBuffer;
+        /* Updates cursor index */
+        pstEntry->u32CursorIndex = pcLast - pstEntry->acBuffer;
 
         /* Ends entry string */
-        pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+        pstEntry->acBuffer[pstEntry->u32CursorIndex] = orxCHAR_NULL;
+
+        /* Clears ends of buffer */
+        for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
 
         /* Clears last completed command */
         sstConsole.zCompletedCommand = orxNULL;
@@ -339,31 +374,42 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_PREVIOUS) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_PREVIOUS) != orxFALSE))
     {
       /* Gets previous index */
-      s32HistoryIndex = (sstConsole.u32HistoryIndex != 0) ? (orxS32)sstConsole.u32HistoryIndex - 1 : orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1;
+      u32HistoryIndex = (sstConsole.u32HistoryIndex != 0) ? sstConsole.u32HistoryIndex - 1 : orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1;
     }
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE))
     {
       /* Gets next index */
-      s32HistoryIndex = (sstConsole.u32HistoryIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : (orxS32)sstConsole.u32HistoryIndex + 1;
+      u32HistoryIndex = (sstConsole.u32HistoryIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32HistoryIndex + 1;
     }
 
     /* Should copy history entry? */
-    if(s32HistoryIndex >= 0)
+    if(u32HistoryIndex != orxU32_UNDEFINED)
     {
-      /* Valid? */
-      if(sstConsole.astInputEntryList[s32HistoryIndex].u32Length != 0)
+      /* End of history? */
+      if((sstConsole.astInputEntryList[u32HistoryIndex].u32CursorIndex == 0) || (u32HistoryIndex == sstConsole.u32InputIndex))
       {
+        /* Uses current history entry */
+        u32HistoryIndex = sstConsole.u32HistoryIndex;
+      }
+
+      /* Valid? */
+      if((sstConsole.astInputEntryList[u32HistoryIndex].u32CursorIndex != 0) && (u32HistoryIndex != sstConsole.u32InputIndex))
+      {
+        orxU32                  i;
         orxCONSOLE_INPUT_ENTRY *pstHistoryEntry;
 
         /* Updates history index */
-        sstConsole.u32HistoryIndex = (orxU32)s32HistoryIndex;
+        sstConsole.u32HistoryIndex = u32HistoryIndex;
 
         /* Gets its entry */
         pstHistoryEntry = &sstConsole.astInputEntryList[sstConsole.u32HistoryIndex];
 
         /* Copies its content */
-        orxMemory_Copy(pstEntry->acBuffer, pstHistoryEntry->acBuffer, pstHistoryEntry->u32Length + 1);
-        pstEntry->u32Length = pstHistoryEntry->u32Length;
+        orxMemory_Copy(pstEntry->acBuffer, pstHistoryEntry->acBuffer, pstHistoryEntry->u32CursorIndex + 1);
+        pstEntry->u32CursorIndex = pstHistoryEntry->u32CursorIndex;
+
+        /* Clears ends of buffer */
+        for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
 
         /* Clears last completed command */
         sstConsole.zCompletedCommand = orxNULL;
@@ -377,7 +423,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       orxBOOL         bPrintLastResult = orxFALSE;
 
       /* First character? */
-      if(pstEntry->u32Length == 0)
+      if((pstEntry->u32CursorIndex == 0) && (pstEntry->acBuffer[0] == orxCHAR_NULL))
       {
         /* Prints last result */
         bPrintLastResult = orxTRUE;
@@ -414,10 +460,10 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       if(bPrintLastResult != orxFALSE)
       {
         /* Prints it */
-        pstEntry->u32Length += orxConsole_PrintLastResult(pstEntry->acBuffer + pstEntry->u32Length, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - pstEntry->u32Length);
+        pstEntry->u32CursorIndex += orxConsole_PrintLastResult(pstEntry->acBuffer + pstEntry->u32CursorIndex, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - pstEntry->u32CursorIndex);
 
         /* Ends string */
-        pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+        pstEntry->acBuffer[pstEntry->u32CursorIndex] = orxCHAR_NULL;
 
         /* Clears last completed command */
         sstConsole.zCompletedCommand = orxNULL;
@@ -425,7 +471,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       else
       {
         /* Ends current string */
-        pstEntry->acBuffer[pstEntry->u32Length] = orxCHAR_NULL;
+        pstEntry->acBuffer[pstEntry->u32CursorIndex] = orxCHAR_NULL;
 
         /* Gets next command */
         sstConsole.zCompletedCommand = orxCommand_GetNext(pcStart, sstConsole.zCompletedCommand);
@@ -433,13 +479,23 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Valid? */
         if(sstConsole.zCompletedCommand != orxNULL)
         {
-          orxS32 s32Offset;
+          orxS32 s32Offset, i;
 
           /* Prints it */
           s32Offset = orxString_NPrint((orxCHAR *)pcStart, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
 
           /* Ends string */
           pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset] = orxCHAR_NULL;
+
+          /* Clears ends of buffer */
+          for(i = 1; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i] != orxCHAR_NULL; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i++] = orxCHAR_NULL);
+        }
+        else
+        {
+          orxU32 i;
+
+          /* Clears ends of buffer */
+          for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
         }
       }
     }
@@ -448,13 +504,13 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_ENTER) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_ENTER) != orxFALSE))
     {
       /* Not empty? */
-      if(pstEntry->u32Length != 0)
+      if(pstEntry->u32CursorIndex != 0)
       {
         /* Has last autocompleted command? */
         if(sstConsole.zCompletedCommand != orxNULL)
         {
-          /* Updates entry length */
-          pstEntry->u32Length = orxString_GetLength(pstEntry->acBuffer);
+          /* Updates cursor index */
+          pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
 
           /* Clears last completed command */
           sstConsole.zCompletedCommand = orxNULL;
@@ -1001,7 +1057,7 @@ const orxSTRING orxFASTCALL orxConsole_GetInput(orxU32 *_pu32CursorIndex)
   if(_pu32CursorIndex != orxNULL)
   {
     /* Fills it */
-    *_pu32CursorIndex = sstConsole.astInputEntryList[sstConsole.u32InputIndex].u32Length;
+    *_pu32CursorIndex = sstConsole.astInputEntryList[sstConsole.u32InputIndex].u32CursorIndex;
   }
 
   /* Updates result */

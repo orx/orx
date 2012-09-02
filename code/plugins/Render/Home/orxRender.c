@@ -51,6 +51,7 @@
 #define orxRENDER_KU32_ORDER_BANK_SIZE            256
 #define orxRENDER_KST_DEFAULT_COLOR               orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT                   "FPS: %d"
+#define orxCONSOLE_KF_BLINK_DELAY                 orx2F(0.5f)
 
 #define orxRENDER_KF_PROFILER_BORDER              orx2F(0.01f)
 #define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH     orx2F(0.5f)
@@ -64,9 +65,9 @@
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE     orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE   orx2F(0.8f/3.0f)
 
-#define orxRENDER_KF_CONSOLE_LOG_ALPHA            orx2F(0.8f)
-#define orxRENDER_KF_CONSOLE_INPUT_ALPHA          orx2F(1.0f)
-#define orxRENDER_KF_CONSOLE_AUTOCOMPLETE_ALPHA   orx2F(0.5f)
+#define orxRENDER_KST_CONSOLE_LOG_COLOR           orx2RGBA(0x77, 0x77, 0x77, 0xFF)
+#define orxRENDER_KST_CONSOLE_INPUT_COLOR         orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF)
+#define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR  orx2RGBA(0x77, 0x77, 0x77, 0xFF)
 #define orxRENDER_KF_CONSOLE_INPUT_X              orx2F(0.02f)
 #define orxRENDER_KF_CONSOLE_INPUT_Y              orx2F(0.9f)
 
@@ -97,6 +98,7 @@ typedef struct __orxRENDER_STATIC_t
   orxFRAME     *pstFrame;                         /**< Conversion frame */
   orxBANK      *pstRenderBank;                    /**< Rendering bank */
   orxLINKLIST   stRenderList;                     /**< Rendering list */
+  orxBOOL       bBlink;                           /**< Blink status */
 
 } orxRENDER_STATIC;
 
@@ -113,6 +115,17 @@ static orxRENDER_STATIC sstRender;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Blink timer
+ */
+static void orxFASTCALL orxRender_BlinkTimer(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  /* Updates blink status */
+  sstRender.bBlink = !sstRender.bBlink;
+
+  /* Done! */
+  return;
+}
 
 /** Resets profiler's maxima
  */
@@ -683,7 +696,6 @@ static orxINLINE void orxRender_RenderConsole()
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight;
-  orxCOLOR                stColor;
   orxU32                  u32CursorIndex;
   orxCHAR                 cBackup;
   const orxFONT          *pstFont;
@@ -729,16 +741,29 @@ static orxINLINE void orxRender_RenderConsole()
   stTransform.fScaleY = fScreenHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
-  /* Displays input */
-  zText                 = orxConsole_GetInput(&u32CursorIndex);
-  stTransform.fDstX     = orxRENDER_KF_CONSOLE_INPUT_X * fScreenWidth;
-  stTransform.fDstY     = orxRENDER_KF_CONSOLE_INPUT_Y * fScreenHeight;
-  stTransform.fScaleY   = stTransform.fScaleX = orxFLOAT_1;
-  orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_Set(&stColor, &orxVECTOR_WHITE, orxRENDER_KF_CONSOLE_AUTOCOMPLETE_ALPHA)));
+  /* Displays input + cursor + autocompletion */
+  stTransform.fDstX   = orxRENDER_KF_CONSOLE_INPUT_X * fScreenWidth;
+  stTransform.fDstY   = orxRENDER_KF_CONSOLE_INPUT_Y * fScreenHeight;
+  stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
+  zText               = orxConsole_GetInput(&u32CursorIndex);
+  cBackup             = zText[u32CursorIndex];
+  orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR);
+
+  /* Has room for cursor? */
+  if(u32CursorIndex < 255)
+  {
+    /* Should display it? */
+    if(sstRender.bBlink != orxFALSE)
+    {
+      ((orxCHAR*)zText)[u32CursorIndex] = '_';
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
+    }
+  }
+
   orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  cBackup               = zText[u32CursorIndex];
   ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
-  orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_Set(&stColor, &orxVECTOR_WHITE, orxRENDER_KF_CONSOLE_LOG_ALPHA)));
+  orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_INPUT_COLOR);
   orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
 
@@ -2100,6 +2125,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           orxFrame_SetRotation(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, orxFLOAT_0);
           orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
 
+          /* Adds blinking timer */
+          orxClock_AddGlobalTimer(orxRender_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, -1, orxNULL);
+
           /* Registers rendering function */
           eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
         }
@@ -2159,6 +2187,9 @@ void orxFASTCALL orxRender_Home_Exit()
   /* Initialized? */
   if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY)
   {
+    /* Removes blinking timer */
+    orxClock_RemoveGlobalTimer(orxRender_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, orxNULL);
+
     /* Unregisters rendering function */
     orxClock_Unregister(sstRender.pstClock, orxRender_RenderAll);
 

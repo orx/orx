@@ -1398,25 +1398,29 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
       /* Gets its node */
       pstPreviousNode = orxCommand_FindTrieNode(_zPrevious, orxTRUE);
 
-      /* Found and different? */
-      if((pstPreviousNode != orxNULL) && (pstPreviousNode->pstCommand != orxNULL) && (pstPreviousNode != pstBaseNode))
+      /* Found? */
+      if((pstPreviousNode != orxNULL) && (pstPreviousNode->pstCommand != orxNULL))
       {
-        orxCOMMAND_TRIE_NODE *pstParent;
-
-        /* Finds parent base node */
-        for(pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstPreviousNode->stNode));
-            (pstParent != orxNULL) && (pstParent != pstBaseNode);
-            pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstParent->stNode)));
-
-        /* Not found? */
-        if(pstParent == orxNULL)
+        /* Different than base? */
+        if(pstPreviousNode != pstBaseNode)
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s] is not a valid base of command [%s]: ignoring previous command parameter.", _zBase, _zPrevious);
+          orxCOMMAND_TRIE_NODE *pstParent;
 
-          /* Resets previous command node */
-          pstPreviousNode = orxNULL;
-        }        
+          /* Finds parent base node */
+          for(pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstPreviousNode->stNode));
+              (pstParent != orxNULL) && (pstParent != pstBaseNode);
+              pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstParent->stNode)));
+
+          /* Not found? */
+          if(pstParent == orxNULL)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s] is not a valid base of command [%s]: ignoring previous command parameter.", _zBase, _zPrevious);
+
+            /* Resets previous command node */
+            pstPreviousNode = orxNULL;
+          }
+        }
       }
       else
       {
@@ -1430,8 +1434,17 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
       pstPreviousNode = orxNULL;
     }
 
-    /* Finds next command */
-    pstNextCommand = orxCommand_FindNext(pstBaseNode, &pstPreviousNode);
+    /* If child of base valid? */
+    if(orxTree_GetChild(&(pstBaseNode->stNode)) != orxNULL)
+    {
+      /* Finds next command */
+      pstNextCommand = orxCommand_FindNext((orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstBaseNode->stNode)), &pstPreviousNode);
+    }
+    else
+    {
+      /* Gets next command */
+      pstNextCommand = (pstBaseNode != pstPreviousNode) ? pstBaseNode->pstCommand : orxNULL;
+    }
 
     /* Found? */
     if(pstNextCommand != orxNULL)
