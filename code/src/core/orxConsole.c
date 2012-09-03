@@ -1038,30 +1038,61 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
 const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex)
 {
   orxU32          i, u32LogIndex;
+  orxBOOL         bWrapped;
   const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
   /* For all lines */
-  for(i = 0, u32LogIndex = (sstConsole.u32LogIndex != 0) ? sstConsole.u32LogIndex - 1 : 0; i <= _u32TrailLineIndex; i++)
+  for(i = 0, u32LogIndex = (sstConsole.u32LogIndex != 0) ? sstConsole.u32LogIndex - 1 : 0, bWrapped = orxFALSE; i <= _u32TrailLineIndex; i++)
   {
-    /* Gets previous index */
-    u32LogIndex = (u32LogIndex != 0) ? u32LogIndex - 1 : sstConsole.u32LogEndIndex;
-
-    /* Invalid wrapped? */
-    if(u32LogIndex == orxU32_UNDEFINED)
+    /* Not wrapped yet? */
+    if(bWrapped == orxFALSE)
     {
-      /* Stops */
-      break;
+      /* End of buffer? */
+      if(u32LogIndex == 0)
+      {
+        /* Valid? */
+        if(sstConsole.u32LogEndIndex != orxU32_UNDEFINED)
+        {
+          /* Wraps around */
+          u32LogIndex = sstConsole.u32LogEndIndex;
+
+          /* Updates wrap status */
+          bWrapped = orxTRUE;
+        }
+        else
+        {
+          /* Stops */
+          break;
+        }
+      }
+      else
+      {
+        /* Updates index */
+        u32LogIndex = u32LogIndex - 1;
+      }
     }
     else
     {
-      /* Finds start of current log line */
-      while((u32LogIndex != 0) && (sstConsole.acLogBuffer[u32LogIndex] != orxCHAR_NULL))
+      /* End of buffer? */
+      if(u32LogIndex <= sstConsole.u32LogIndex)
       {
-        u32LogIndex--;
+        /* Stops */
+        break;
       }
+      else
+      {
+        /* Updates index */
+        u32LogIndex = u32LogIndex - 1;
+      }
+    }
+
+    /* Finds start of current log line */
+    while((u32LogIndex != 0) && (sstConsole.acLogBuffer[u32LogIndex] != orxCHAR_NULL))
+    {
+      u32LogIndex--;
     }
   }
 
