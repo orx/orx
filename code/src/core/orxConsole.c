@@ -727,6 +727,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
+          /* Inits log end index */
+          sstConsole.u32LogEndIndex = orxU32_UNDEFINED;
+
           /* Inits Flags */
           sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
 
@@ -1034,12 +1037,40 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
  */
 const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex)
 {
+  orxU32          i, u32LogIndex;
   const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* For all lines */
+  for(i = 0, u32LogIndex = (sstConsole.u32LogIndex != 0) ? sstConsole.u32LogIndex - 1 : 0; i <= _u32TrailLineIndex; i++)
+  {
+    /* Gets previous index */
+    u32LogIndex = (u32LogIndex != 0) ? u32LogIndex - 1 : sstConsole.u32LogEndIndex;
+
+    /* Invalid wrapped? */
+    if(u32LogIndex == orxU32_UNDEFINED)
+    {
+      /* Stops */
+      break;
+    }
+    else
+    {
+      /* Finds start of current log line */
+      while((u32LogIndex != 0) && (sstConsole.acLogBuffer[u32LogIndex] != orxCHAR_NULL))
+      {
+        u32LogIndex--;
+      }
+    }
+  }
+
+  /* Found? */
+  if(i > _u32TrailLineIndex)
+  {
+    /* Updates result */
+    zResult = &sstConsole.acLogBuffer[(u32LogIndex != 0) ? u32LogIndex + 1 : u32LogIndex];
+  }
 
   /* Done! */
   return zResult;
