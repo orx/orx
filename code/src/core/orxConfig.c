@@ -394,7 +394,7 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   orxConfig_PushSection(_astArgList[0].zValue);
 
   /* Updates result */
-  _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[1].zValue : orxSTRING_EMPTY;
+  _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
 
   /* Pops section */
   orxConfig_PopSection();

@@ -65,11 +65,13 @@
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE     orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE   orx2F(0.8f/3.0f)
 
+#define orxRENDER_KST_CONSOLE_BACKGROUND_COLOR    orx2RGBA(0x11, 0x55, 0x11, 0x99)
+#define orxRENDER_KST_CONSOLE_SEPARATOR_COLOR     orx2RGBA(0x88, 0x11, 0x11, 0xFF)
 #define orxRENDER_KST_CONSOLE_LOG_COLOR           orx2RGBA(0xAA, 0xAA, 0xAA, 0xFF)
 #define orxRENDER_KST_CONSOLE_INPUT_COLOR         orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF)
-#define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR  orx2RGBA(0x77, 0x77, 0x77, 0xFF)
-#define orxRENDER_KF_CONSOLE_INPUT_X              orx2F(0.02f)
-#define orxRENDER_KF_CONSOLE_INPUT_Y              orx2F(0.9f)
+#define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR  orx2RGBA(0x88, 0x88, 0x88, 0xFF)
+#define orxRENDER_KF_CONSOLE_MARGIN_WIDTH         orx2F(0.02f)
+#define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT        orx2F(0.05f)
 
 
 /***************************************************************************
@@ -116,11 +118,43 @@ static orxRENDER_STATIC sstRender;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Inits console
+ */
+static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOAT _fScreenHeight)
+{
+  const orxFONT  *pstFont;
+  orxFLOAT        fConsoleWidth;
+
+  /* Gets console width */
+  fConsoleWidth = _fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
+
+  /* Gets console font */
+  pstFont = orxConsole_GetFont();
+
+  /* Updates console log line length */
+  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / orxFont_GetCharacterWidth(pstFont, (orxU32)' ')));
+
+  /* Done! */
+  return;
+}
+
 /** Event handler
  */
 static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* New video mode? */
+  if((_pstEvent->eType == orxEVENT_TYPE_DISPLAY) && (_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE))
+  {
+    orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Inits console */
+    orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
+  }
 
   /* Done! */
   return eResult;
@@ -708,6 +742,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxFLOAT                fScreenWidth, fScreenHeight;
   orxU32                  u32CursorIndex, i;
   orxCHAR                 cBackup;
+  orxFLOAT                fCharacterHeight;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   const orxSTRING         zText;
@@ -727,6 +762,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* Gets its map */
   pstMap = orxFont_GetMap(pstFont);
 
+  /* Gets character height */
+  fCharacterHeight = orxFont_GetCharacterHeight(pstFont);
+
   /* Creates pixel texture */
   pstTexture = orxTexture_CreateFromFile("pixel");
 
@@ -745,15 +783,22 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x33));
 
   /* Draws background */
-  stTransform.fDstX   = orxFLOAT_0;
+  stTransform.fDstX   = orxMath_Floor(fScreenWidth * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
   stTransform.fDstY   = orxFLOAT_0;
-  stTransform.fScaleX = fScreenWidth;
-  stTransform.fScaleY = fScreenHeight;
+  stTransform.fScaleX = fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
+  stTransform.fScaleY = fScreenHeight * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT);
+  orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+  /* Draws input separator */
+  stTransform.fDstY   = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - orx2F(1.5f) * fCharacterHeight);
+  stTransform.fScaleY = orxFLOAT_1;
+  orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR);
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays input + cursor + autocompletion */
-  stTransform.fDstX   = orxRENDER_KF_CONSOLE_INPUT_X * fScreenWidth;
-  stTransform.fDstY   = orxRENDER_KF_CONSOLE_INPUT_Y * fScreenHeight;
+  stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
+  stTransform.fDstY   = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
   stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
   zText               = orxConsole_GetInput(&u32CursorIndex);
   cBackup             = zText[u32CursorIndex];
@@ -782,9 +827,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* While there are log lines to display */
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_LOG_COLOR);
-  for(i = 0, stTransform.fDstY -= orx2F(2.0f) * orxFont_GetCharacterHeight(pstFont);
-      (stTransform.fDstY >= -orxFont_GetCharacterHeight(pstFont)) && ((zText = orxConsole_GetTrailLogLine(i)) != orxSTRING_EMPTY);
-      i++, stTransform.fDstY -= orxFont_GetCharacterHeight(pstFont))
+  for(i = 0, stTransform.fDstY -= orx2F(2.0f) * fCharacterHeight;
+      (stTransform.fDstY >= -fCharacterHeight) && ((zText = orxConsole_GetTrailLogLine(i)) != orxSTRING_EMPTY);
+      i++, stTransform.fDstY -= fCharacterHeight)
   {
     /* Displays it */
     orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -2148,6 +2193,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
         /* Valid? */
         if(sstRender.pstFrame != orxNULL)
         {
+          orxFLOAT fScreenWidth, fScreenHeight;
+
           /* Inits it */
           orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);
           orxFrame_SetRotation(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, orxFLOAT_0);
@@ -2158,6 +2205,12 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
 
           /* Adds event handler */
           orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
+
+          /* Gets screen size */
+          orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+
+          /* Inits console */
+          orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
 
           /* Registers rendering function */
           eResult = orxClock_Register(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);

@@ -167,6 +167,13 @@ void orxFASTCALL orxCommand_CommandHelp(orxU32 _u32ArgNumber, const orxCOMMAND_V
  */
 static orxINLINE void orxCommand_RegisterCommands()
 {
+  /* Adds special shortcut for help command */
+  orxCOMMAND_VAR_DEF  stResult;
+  orxCOMMAND_VAR_DEF  astParamList[1] = {"Command", orxCOMMAND_VAR_TYPE_STRING};
+  stResult.eType = orxCOMMAND_VAR_TYPE_STRING;
+  stResult.zName = "Help";
+  orxCommand_Register("Help", orxCommand_CommandHelp, 0, 1, astParamList, &stResult);
+
   /* Command: Help */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command", orxCOMMAND_VAR_TYPE_STRING});
 }
@@ -175,6 +182,9 @@ static orxINLINE void orxCommand_RegisterCommands()
  */
 static orxINLINE void orxCommand_UnregisterCommands()
 {
+  /* Removes special shortcut for help command */
+  orxCommand_Unregister("Help");
+
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
 }

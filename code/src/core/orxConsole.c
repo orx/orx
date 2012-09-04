@@ -516,10 +516,13 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           sstConsole.zCompletedCommand = orxNULL;
         }
 
+        /* Logs input */
+        orxConsole_Log(pstEntry->acBuffer);
+
         /* Evaluates it */
         if(orxCommand_Evaluate(pstEntry->acBuffer, &(sstConsole.stLastResult)) != orxNULL)
         {
-          orxCHAR acValue[64];
+          orxCHAR acValue[256];
 
           /* Inits value */        
           acValue[0]  = ':';
@@ -527,7 +530,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           acValue[63] = orxCHAR_NULL;
 
           /* Prints result */
-          orxConsole_PrintLastResult(acValue + 2, 61);
+          orxConsole_PrintLastResult(acValue + 2, 253);
 
           /* Logs it */
           orxConsole_Log(acValue);
