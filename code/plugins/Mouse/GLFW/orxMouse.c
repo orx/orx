@@ -142,7 +142,7 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
 static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxMouse_GLFW_Update");
+  orxPROFILER_PUSH_MARKER("orxMouse_Update");
 
   /* Is left button pressed? */
   if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)

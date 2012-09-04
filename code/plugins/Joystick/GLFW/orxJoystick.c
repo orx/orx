@@ -135,7 +135,7 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 static void orxFASTCALL orxJoystick_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxJoystick_GLFW_Update");
+  orxPROFILER_PUSH_MARKER("orxJoystick_Update");
 
   /* Was first joystick present since the beginning? */
   if(sstJoystick.astJoyInfoList[0].bIsConnected != orxFALSE)

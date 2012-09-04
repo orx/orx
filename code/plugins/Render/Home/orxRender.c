@@ -116,9 +116,19 @@ static orxRENDER_STATIC sstRender;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Done! */
+  return eResult;
+}
+
 /** Blink timer
  */
-static void orxFASTCALL orxRender_BlinkTimer(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static void orxFASTCALL orxRender_Home_BlinkTimer(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
   /* Updates blink status */
   sstRender.bBlink = !sstRender.bBlink;
@@ -129,7 +139,7 @@ static void orxFASTCALL orxRender_BlinkTimer(const orxCLOCK_INFO *_pstInfo, void
 
 /** Resets profiler's maxima
  */
-static void orxFASTCALL orxRender_ResetProfilerMaxima(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static void orxFASTCALL orxRender_Home_ResetProfilerMaxima(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
   /* Resets profiler's maxima */
   orxProfiler_ResetAllMaxima();
@@ -140,7 +150,7 @@ static void orxFASTCALL orxRender_ResetProfilerMaxima(const orxCLOCK_INFO *_pstI
 
 /** Renders FPS counter
  */
-static orxINLINE void orxRender_RenderFPS()
+static orxINLINE void orxRender_Home_RenderFPS()
 {
   const orxFONT *pstFont;
 
@@ -240,7 +250,7 @@ static orxINLINE void orxRender_RenderFPS()
 
 /** Renders profiler info
  */
-static orxINLINE void orxRender_RenderProfiler()
+static orxINLINE void orxRender_Home_RenderProfiler()
 {
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
@@ -690,7 +700,7 @@ static orxINLINE void orxRender_RenderProfiler()
 
 /** Renders console
  */
-static orxINLINE void orxRender_RenderConsole()
+static orxINLINE void orxRender_Home_RenderConsole()
 {
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
@@ -801,7 +811,7 @@ static orxINLINE void orxRender_RenderConsole()
  * @param[in]   _eBlendMode       Blend mode
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
@@ -1163,7 +1173,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
 /** Renders a viewport
  * @param[in]   _pstViewport    Viewport to render
  */
-static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
+static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewport)
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderViewport");
@@ -1644,7 +1654,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   orxFrame_SetScale(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vObjectScale);
 
                   /* Renders it */
-                  if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
+                  if(orxRender_Home_RenderObject(pstObject, pstBitmap, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
                   {
                     /* Prints error message */
                     orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s -> orxBITMAP %p] couldn't be rendered.", pstObject, orxObject_GetName(pstObject), pstBitmap);
@@ -1711,7 +1721,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pContext     Context sent when registering callback to the clock
  */
-static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxBOOL bRender;
 
@@ -1740,7 +1750,7 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
         pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
     {
       /* Renders it */
-      orxRender_RenderViewport(pstViewport);
+      orxRender_Home_RenderViewport(pstViewport);
     }
 
     /* Restores screen bitmap clipping */
@@ -1763,20 +1773,20 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
       {
         /* Renders it */
-        orxRender_RenderFPS();
+        orxRender_Home_RenderFPS();
       }
 
       /* Should render profiler */
       if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE)
       {
         /* Renders it */
-        orxRender_RenderProfiler();
+        orxRender_Home_RenderProfiler();
 
         /* Doesn't have the reset maxima callback yet? */
         if(!orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
         {
           /* Adds it */
-          orxClock_AddGlobalTimer(orxRender_ResetProfilerMaxima, orxFLOAT_1, -1, orxNULL);
+          orxClock_AddGlobalTimer(orxRender_Home_ResetProfilerMaxima, orxFLOAT_1, -1, orxNULL);
 
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA, orxRENDER_KU32_STATIC_FLAG_NONE);
@@ -1788,7 +1798,7 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
         if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
         {
           /* Removes it */
-          orxClock_RemoveGlobalTimer(orxRender_ResetProfilerMaxima, orx2F(-1.0f), orxNULL);
+          orxClock_RemoveGlobalTimer(orxRender_Home_ResetProfilerMaxima, orx2F(-1.0f), orxNULL);
 
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
@@ -1799,7 +1809,7 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
       if(orxConsole_IsEnabled() != orxFALSE)
       {
         /* Renders it */
-        orxRender_RenderConsole();
+        orxRender_Home_RenderConsole();
       }
 
       /* Pops previous section */
@@ -2144,10 +2154,13 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
 
           /* Adds blinking timer */
-          orxClock_AddGlobalTimer(orxRender_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, -1, orxNULL);
+          orxClock_AddGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, -1, orxNULL);
+
+          /* Adds event handler */
+          orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
 
           /* Registers rendering function */
-          eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+          eResult = orxClock_Register(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
         }
         else
         {
@@ -2205,11 +2218,14 @@ void orxFASTCALL orxRender_Home_Exit()
   /* Initialized? */
   if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
+
     /* Removes blinking timer */
-    orxClock_RemoveGlobalTimer(orxRender_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, orxNULL);
+    orxClock_RemoveGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, orxNULL);
 
     /* Unregisters rendering function */
-    orxClock_Unregister(sstRender.pstClock, orxRender_RenderAll);
+    orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
 
     /* Deletes conversion frame */
     orxFrame_Delete(sstRender.pstFrame);

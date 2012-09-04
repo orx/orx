@@ -719,7 +719,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   b2Body                   *poBody;
 
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxPhysics_Box2D_Update");
+  orxPROFILER_PUSH_MARKER("orxPhysics_Update");
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
