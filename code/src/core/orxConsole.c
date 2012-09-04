@@ -641,9 +641,10 @@ void orxFASTCALL orxConsole_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_INPUT);
-  orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_KEYBOARD);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_FONT);
+
+  orxModule_AddOptionalDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_KEYBOARD);
 
   /* Done! */
   return;
