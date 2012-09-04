@@ -252,10 +252,13 @@ PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
 
 /** Render inhibiter
  */
-static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibiter(const orxEVENT *_pstEvent)
 {
+  /* Polls events */
+  glfwPollEvents();
+
   /* Done! */
-  return orxSTATUS_FAILURE;
+  return (_pstEvent->eID == orxRENDER_EVENT_START) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
 }
 
 static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
@@ -297,7 +300,7 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
       {
         /* Adds render inhibiter */
-        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibiter);
       }
 
       /* Updates foreground status */
@@ -341,7 +344,7 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
       {
         /* Adds render inhibiter */
-        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibiter);
       }
 
       /* Updates background status */
