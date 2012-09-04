@@ -254,11 +254,15 @@ PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
  */
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibiter(const orxEVENT *_pstEvent)
 {
-  /* Polls events */
-  glfwPollEvents();
+  /* Render stop? */
+  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  {
+    /* Polls events */
+    glfwPollEvents();
+  }
 
   /* Done! */
-  return (_pstEvent->eID == orxRENDER_EVENT_START) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
+  return orxSTATUS_FAILURE;
 }
 
 static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)

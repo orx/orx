@@ -1818,6 +1818,11 @@ static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, 
     /* Profiles */
     orxPROFILER_POP_MARKER();
   }
+  else
+  {
+    /* Sends render stop event */
+    orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
+  }
 
   /* Resets all profiler markers */
   orxProfiler_ResetAllMarkers();
