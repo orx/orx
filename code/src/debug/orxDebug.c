@@ -357,8 +357,18 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Empties current buffer */
     pcBuffer[0] = orxCHAR_NULL;
 
+    /* Full Time Stamp? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FULL_TIMESTAMP)
+    {
+      time_t u32Time;
+
+      /* Inits Log Time */
+      time(&u32Time);
+
+      pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FULL_FORMAT, localtime(&u32Time));
+    }
     /* Time Stamp? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
+    else if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
     {
       time_t u32Time;
 

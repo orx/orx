@@ -65,7 +65,7 @@
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE     orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE   orx2F(0.8f/3.0f)
 
-#define orxRENDER_KST_CONSOLE_LOG_COLOR           orx2RGBA(0x77, 0x77, 0x77, 0xFF)
+#define orxRENDER_KST_CONSOLE_LOG_COLOR           orx2RGBA(0xAA, 0xAA, 0xAA, 0xFF)
 #define orxRENDER_KST_CONSOLE_INPUT_COLOR         orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF)
 #define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR  orx2RGBA(0x77, 0x77, 0x77, 0xFF)
 #define orxRENDER_KF_CONSOLE_INPUT_X              orx2F(0.02f)
@@ -696,7 +696,7 @@ static orxINLINE void orxRender_RenderConsole()
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight;
-  orxU32                  u32CursorIndex;
+  orxU32                  u32CursorIndex, i;
   orxCHAR                 cBackup;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
@@ -761,11 +761,24 @@ static orxINLINE void orxRender_RenderConsole()
     }
   }
 
+  /* Displays full input, including auto-completion */
   orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+  /* Displays base input (ie. validated part) */
   ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_INPUT_COLOR);
   orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
+
+  /* While there are log lines to display */
+  orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_LOG_COLOR);
+  for(i = 0, stTransform.fDstY -= orx2F(2.0f) * orxFont_GetCharacterHeight(pstFont);
+      (stTransform.fDstY >= -orxFont_GetCharacterHeight(pstFont)) && ((zText = orxConsole_GetTrailLogLine(i)) != orxSTRING_EMPTY);
+      i++, stTransform.fDstY -= orxFont_GetCharacterHeight(pstFont))
+  {
+    /* Displays it */
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  }
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
