@@ -76,7 +76,8 @@
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
-#define orxCOMMAND_KZ_ERROR_VALUE                     "STACK_ERROR"
+#define orxCOMMAND_KZ_ERROR_VALUE                     "ERROR"
+#define orxCOMMAND_KZ_STACK_ERROR_VALUE               "STACK_ERROR"
 
 
 /***************************************************************************
@@ -470,7 +471,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
 
               /* Replaces marker with stack error */
-              orxString_NCopy(pcDst, orxCOMMAND_KZ_ERROR_VALUE, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
+              orxString_NCopy(pcDst, orxCOMMAND_KZ_STACK_ERROR_VALUE, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
 
               /* Updates pointers */
               pcDst += orxString_GetLength(orxCOMMAND_KZ_ERROR_VALUE);

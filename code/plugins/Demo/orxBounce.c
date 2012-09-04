@@ -144,8 +144,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
     /* Input */
     case orxEVENT_TYPE_INPUT:
     {
-      /* Not a set selection? */
-      if(_pstEvent->eID != orxINPUT_EVENT_SELECT_SET)
+      /* Not a set selection and console not enabled? */
+      if((_pstEvent->eID != orxINPUT_EVENT_SELECT_SET) && (orxConsole_IsEnabled() == orxFALSE))
       {
         orxINPUT_EVENT_PAYLOAD *pstPayload;
 
