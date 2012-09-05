@@ -76,6 +76,8 @@
 #define orxCONSOLE_KZ_INPUT_ENTER                     "Enter"                         /**< Enter input */
 #define orxCONSOLE_KZ_INPUT_PREVIOUS                  "Previous"                      /**< Previous input */
 #define orxCONSOLE_KZ_INPUT_NEXT                      "Next"                          /**< Next input */
+#define orxCONSOLE_KZ_INPUT_LEFT                      "Left"                          /**< Cursor move left */
+#define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
 
 #define orxCONSOLE_KE_KEY_AUTOCOMPLETE                orxKEYBOARD_KEY_TAB             /**< Autocomplete key */
 #define orxCONSOLE_KE_KEY_DELETE                      orxKEYBOARD_KEY_BACKSPACE       /**< Delete key */
@@ -83,6 +85,8 @@
 #define orxCONSOLE_KE_KEY_ENTER_ALTERNATE             orxKEYBOARD_KEY_NUMPAD_RETURN   /**< Enter alternate key */
 #define orxCONSOLE_KE_KEY_PREVIOUS                    orxKEYBOARD_KEY_UP              /**< Previous key */
 #define orxCONSOLE_KE_KEY_NEXT                        orxKEYBOARD_KEY_DOWN            /**< Next key */
+#define orxCONSOLE_KE_KEY_LEFT                        orxKEYBOARD_KEY_LEFT            /**< Left key */
+#define orxCONSOLE_KE_KEY_RIGHT                       orxKEYBOARD_KEY_RIGHT           /**< Right key */
 
 #define orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY  orx2F(0.25f)
 #define orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY        orx2F(0.05f)
@@ -345,8 +349,8 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Has character? */
       if((pstEntry->u32CursorIndex != 0) || (pstEntry->acBuffer[0] != orxCHAR_NULL))
       {
-        orxU32  i;
-        const   orxCHAR *pc, *pcLast;
+        orxU32         i;
+        const orxCHAR *pc, *pcLast;
 
         /* Gets last character */
         for(pcLast = pstEntry->acBuffer, orxString_GetFirstCharacterCodePoint(pcLast, &pc);
@@ -376,6 +380,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Gets previous index */
       u32HistoryIndex = (sstConsole.u32HistoryIndex != 0) ? sstConsole.u32HistoryIndex - 1 : orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1;
     }
+    /* Next history? */
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE))
     {
       /* Gets next index */
@@ -435,7 +440,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
         /* Gets last character */
         for(pcStart = pcLast = pstEntry->acBuffer, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc);
-            *pc != orxCHAR_NULL;
+            (*pc != orxCHAR_NULL) && ((orxU32)(pc - pstEntry->acBuffer) < pstEntry->u32CursorIndex);
             pcLast = pc, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc))
         {
           /* Space, tab or stack marker? */
@@ -550,11 +555,40 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
            orxConsole_Log(": Invalid command!");
         }
 
-        /* Udates input index */
+        /* Updates input index */
         sstConsole.u32InputIndex = (sstConsole.u32InputIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32InputIndex + 1;
 
         /* Updates history index */
         sstConsole.u32HistoryIndex = sstConsole.u32InputIndex;
+      }
+    }
+
+    /* Move cursor left? */
+    if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_LEFT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_LEFT) != orxFALSE))
+    {
+      /* Has room? */
+      if(pstEntry->u32CursorIndex > 0)
+      {
+        const orxCHAR  *pc, *pcLast;
+        orxU32          u32CharacterCodePoint;
+
+        /* Gets last character */
+        for(pcLast = pstEntry->acBuffer, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc);
+            (*pc != orxCHAR_NULL) && ((orxU32)(pc - pstEntry->acBuffer) < pstEntry->u32CursorIndex);
+            pcLast = pc, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcLast, &pc));
+
+        /* Updates cursor */
+        pstEntry->u32CursorIndex -= orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
+      }
+    }
+    /* Move cursor right? */
+    else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_RIGHT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_RIGHT) != orxFALSE))
+    {
+      /* Has room? */
+      if((pstEntry->u32CursorIndex < orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) && (pstEntry->acBuffer[pstEntry->u32CursorIndex] != orxCHAR_NULL))
+      {
+        /* Updates cursor */
+        pstEntry->u32CursorIndex += orxString_GetUTF8CharacterLength(orxString_GetFirstCharacterCodePoint(&(pstEntry->acBuffer[pstEntry->u32CursorIndex]), orxNULL));
       }
     }
   }
@@ -730,6 +764,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER_ALTERNATE);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_LEFT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_LEFT);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT);
 
         /* Restores previous set */
         orxInput_SelectSet(zPreviousSet);
