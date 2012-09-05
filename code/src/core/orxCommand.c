@@ -774,7 +774,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _zName, orxBOOL _bReadOnly)
+static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _zName, orxBOOL _bInsert)
 {
   const orxSTRING       zName;
   orxU32                u32CharacterCodePoint;
@@ -808,8 +808,8 @@ static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _
     if((pstChild == orxNULL)
     || (pstChild->u32CharacterCodePoint != u32CharacterCodePoint))
     {
-      /* Not read only? */
-      if(_bReadOnly == orxFALSE)
+      /* Insertion allowed? */
+      if(_bInsert != orxFALSE)
       {
         /* Creates new trie node */
         pstChild = (orxCOMMAND_TRIE_NODE *)orxBank_Allocate(sstCommand.pstTrieBank);
@@ -863,7 +863,7 @@ static orxINLINE void orxCommand_InsertInTrie(const orxCOMMAND *_pstCommand)
   orxCOMMAND_TRIE_NODE *pstNode;
 
   /* Gets command trie node */
-  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxFALSE);
+  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxTRUE);
 
   /* Checks */
   orxASSERT(pstNode != orxNULL);
@@ -881,7 +881,7 @@ static orxINLINE void orxCommand_RemoveFromTrie(const orxCOMMAND *_pstCommand)
   orxCOMMAND_TRIE_NODE *pstNode;
 
   /* Finds command trie node */
-  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxTRUE);
+  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxFALSE);
 
   /* Checks */
   orxASSERT(pstNode != orxNULL);
@@ -1373,11 +1373,12 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
 }
 
 /** Gets next command using an optional base
-* @param[in]   _zBase         Base name, can be set to orxNULL for no base
-* @param[in]   _zPrevious     Previous command, orxNULL to get the first command
+* @param[in]   _zBase             Base name, can be set to orxNULL for no base
+* @param[in]   _zPrevious         Previous command, orxNULL to get the first command
+* @param[out]  _pu32CommonLength  Length of the common prefix of all potential results
 * @return      Next command found, orxNULL if none
 */
-const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious)
+const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious, orxU32 *_pu32CommonLength)
 {
   orxCOMMAND_TRIE_NODE *pstBaseNode;
   const orxSTRING       zResult = orxNULL;
@@ -1389,12 +1390,18 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
   if(_zBase != orxNULL)
   {
     /* Finds base node */
-    pstBaseNode = orxCommand_FindTrieNode(_zBase, orxTRUE);
+    pstBaseNode = orxCommand_FindTrieNode(_zBase, orxFALSE);
+
+    /* Inits common length */
+    *_pu32CommonLength = orxString_GetLength(_zBase);
   }
   else
   {
     /* Uses root as base node */
     pstBaseNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
+
+    /* Clears common length */
+    *_pu32CommonLength = 0;
   }
 
   /* Found a valid base? */
@@ -1407,7 +1414,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
     if(_zPrevious != orxNULL)
     {
       /* Gets its node */
-      pstPreviousNode = orxCommand_FindTrieNode(_zPrevious, orxTRUE);
+      pstPreviousNode = orxCommand_FindTrieNode(_zPrevious, orxFALSE);
 
       /* Found? */
       if((pstPreviousNode != orxNULL) && (pstPreviousNode->pstCommand != orxNULL))
@@ -1445,11 +1452,34 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
       pstPreviousNode = orxNULL;
     }
 
-    /* If child of base valid? */
+    /* Is child of base valid? */
     if(orxTree_GetChild(&(pstBaseNode->stNode)) != orxNULL)
     {
       /* Finds next command */
       pstNextCommand = orxCommand_FindNext((orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstBaseNode->stNode)), &pstPreviousNode);
+
+      /* Found? */
+      if(pstNextCommand != orxNULL)
+      {
+        orxCOMMAND_TRIE_NODE *pstNode, *pstParent;
+        orxU32                i, u32Position;
+
+        /* Finds prefix node position */
+        for(pstNode = orxCommand_FindTrieNode(pstNextCommand->zName, orxFALSE), pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i = 0, u32Position = -1;
+            pstNode != pstBaseNode;
+            pstNode = pstParent, pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i++)
+        {
+          /* Has sibling? */
+          if((orxTree_GetSibling(&(pstNode->stNode)) != orxNULL) || ((orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstParent->stNode)) != pstNode))
+          {
+            /* Updates position */
+            u32Position = i;
+          }
+        }
+        
+        /* Updates prefix length */
+        *_pu32CommonLength = orxString_GetLength(pstNextCommand->zName) - u32Position - 1;
+      }
     }
     else
     {
@@ -1462,6 +1492,11 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
     {
       /* Updates result */
       zResult = pstNextCommand->zName;
+    }
+    else
+    {
+      /* Clears common length */
+      *_pu32CommonLength = 0;
     }
   }
   else

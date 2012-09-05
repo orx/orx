@@ -163,11 +163,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(co
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(const orxSTRING _zCommand);
 
 /** Gets next command using an optional base
-* @param[in]   _zBase         Base name, can be set to orxNULL for no base
-* @param[in]   _zPrevious     Previous command, orxNULL to get the first command
+* @param[in]   _zBase             Base name, can be set to orxNULL for no base
+* @param[in]   _zPrevious         Previous command, orxNULL to get the first command
+* @param[out]  _pu32CommonLength  Length of the common prefix of all potential results
 * @return      Next command found, orxNULL if none
 */
-extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious);
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious, orxU32 *_pu32CommonLength);
 
 
 /** Evaluates a command

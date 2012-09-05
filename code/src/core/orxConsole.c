@@ -470,11 +470,13 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       }
       else
       {
+        orxU32 u32PrefixLength;
+
         /* Ends current string */
         pstEntry->acBuffer[pstEntry->u32CursorIndex] = orxCHAR_NULL;
 
         /* Gets next command */
-        sstConsole.zCompletedCommand = orxCommand_GetNext(pcStart, sstConsole.zCompletedCommand);
+        sstConsole.zCompletedCommand = orxCommand_GetNext(pcStart, sstConsole.zCompletedCommand, &u32PrefixLength);
 
         /* Valid? */
         if(sstConsole.zCompletedCommand != orxNULL)
@@ -489,6 +491,13 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
           /* Clears ends of buffer */
           for(i = 1; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i] != orxCHAR_NULL; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i++] = orxCHAR_NULL);
+
+          /* Partial prefix? */
+          if(u32PrefixLength < (orxU32)s32Offset)
+          {
+            /* Updates cursor position */
+            pstEntry->u32CursorIndex = (pcStart - pstEntry->acBuffer) + u32PrefixLength;
+          }
         }
         else
         {

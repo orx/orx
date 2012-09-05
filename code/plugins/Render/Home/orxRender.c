@@ -72,6 +72,7 @@
 #define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR  orx2RGBA(0x88, 0x88, 0x88, 0xFF)
 #define orxRENDER_KF_CONSOLE_MARGIN_WIDTH         orx2F(0.02f)
 #define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT        orx2F(0.05f)
+#define orxRENDER_KF_CONSOLE_SPEED                orx2F(3000.0f)
 
 
 /***************************************************************************
@@ -101,6 +102,8 @@ typedef struct __orxRENDER_STATIC_t
   orxBANK      *pstRenderBank;                    /**< Rendering bank */
   orxLINKLIST   stRenderList;                     /**< Rendering list */
   orxBOOL       bBlink;                           /**< Blink status */
+  orxFLOAT      fDefaultConsoleOffset;            /**< Default console offset */
+  orxFLOAT      fConsoleOffset;                   /**< Console offset */
 
 } orxRENDER_STATIC;
 
@@ -133,6 +136,9 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
 
   /* Updates console log line length */
   orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / orxFont_GetCharacterWidth(pstFont, (orxU32)' ')));
+
+  /* Sets default console offset */
+  sstRender.fDefaultConsoleOffset = sstRender.fConsoleOffset = -_fScreenHeight;
 
   /* Done! */
   return;
@@ -784,21 +790,31 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* Draws background */
   stTransform.fDstX   = orxMath_Floor(fScreenWidth * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
-  stTransform.fDstY   = orxFLOAT_0;
+  stTransform.fDstY   = sstRender.fConsoleOffset;
   stTransform.fScaleX = fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
   stTransform.fScaleY = fScreenHeight * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT);
   orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
-  /* Draws input separator */
-  stTransform.fDstY   = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - orx2F(1.5f) * fCharacterHeight);
+  /* Draws separators */
+  stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - orx2F(1.5f) * fCharacterHeight);
   stTransform.fScaleY = orxFLOAT_1;
   orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Ceil((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fDstY   = sstRender.fConsoleOffset;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fScaleY = fScreenHeight * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT);
+  stTransform.fScaleX = orxFLOAT_1;
+  stTransform.fDstX   = orxMath_Floor(fScreenWidth * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fDstX   = orxMath_Ceil(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH));
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays input + cursor + autocompletion */
   stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
-  stTransform.fDstY   = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
+  stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
   stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
   zText               = orxConsole_GetInput(&u32CursorIndex);
   cBackup             = zText[u32CursorIndex];
@@ -828,7 +844,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* While there are log lines to display */
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_LOG_COLOR);
   for(i = 0, stTransform.fDstY -= orx2F(2.0f) * fCharacterHeight;
-      (stTransform.fDstY >= -fCharacterHeight) && ((zText = orxConsole_GetTrailLogLine(i)) != orxSTRING_EMPTY);
+      (stTransform.fDstY >= sstRender.fConsoleOffset - fCharacterHeight) && ((zText = orxConsole_GetTrailLogLine(i)) != orxSTRING_EMPTY);
       i++, stTransform.fDstY -= fCharacterHeight)
   {
     /* Displays it */
@@ -1852,6 +1868,20 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
 
       /* Is console enabled? */
       if(orxConsole_IsEnabled() != orxFALSE)
+      {
+        /* Updates its offset */
+        sstRender.fConsoleOffset += orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+        sstRender.fConsoleOffset  = orxMIN(sstRender.fConsoleOffset, orxFLOAT_0);
+      }
+      else
+      {
+        /* Updates its offset */
+        sstRender.fConsoleOffset -= orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+        sstRender.fConsoleOffset  = orxMAX(sstRender.fConsoleOffset, sstRender.fDefaultConsoleOffset);
+      }
+
+      /* Should render console? */
+      if(sstRender.fConsoleOffset != sstRender.fDefaultConsoleOffset)
       {
         /* Renders it */
         orxRender_Home_RenderConsole();
