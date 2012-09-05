@@ -142,16 +142,21 @@ static orxCONSOLE_STATIC sstConsole;
 
 /** Resets delete input
  */
-static void orxFASTCALL orxConsole_ResetDeleteInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
-  /* Is delete input still active? */
-  if(orxInput_IsActive(orxCONSOLE_KZ_INPUT_DELETE) != orxFALSE)
+  orxSTRING zInput;
+
+  /* Gets input */
+  zInput = (orxSTRING)_pContext;
+
+  /* Is input still active? */
+  if(orxInput_IsActive(zInput) != orxFALSE)
   {
     /* Resets it */
-    orxInput_SetValue(orxCONSOLE_KZ_INPUT_DELETE, orxFLOAT_0);
+    orxInput_SetValue(zInput, orxFLOAT_0);
 
-    /* Re-adds delete input reset timer */
-    orxClock_AddGlobalTimer(orxConsole_ResetDeleteInput, orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY, 1, orxNULL);
+    /* Re-adds input reset timer */
+    orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY, 1, zInput);
   }
 }
 
@@ -370,8 +375,8 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         sstConsole.zCompletedCommand = orxNULL;
       }
 
-      /* Adds delete input reset timer */
-      orxClock_AddGlobalTimer(orxConsole_ResetDeleteInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxNULL);
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxCONSOLE_KZ_INPUT_DELETE);
     }
 
     /* Previous history? */
@@ -580,6 +585,9 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Updates cursor */
         pstEntry->u32CursorIndex -= orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
       }
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxCONSOLE_KZ_INPUT_LEFT);
     }
     /* Move cursor right? */
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_RIGHT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_RIGHT) != orxFALSE))
@@ -590,6 +598,9 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Updates cursor */
         pstEntry->u32CursorIndex += orxString_GetUTF8CharacterLength(orxString_GetFirstCharacterCodePoint(&(pstEntry->acBuffer[pstEntry->u32CursorIndex]), orxNULL));
       }
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxCONSOLE_KZ_INPUT_RIGHT);
     }
   }
 
