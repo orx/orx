@@ -415,7 +415,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListVector(const orxS
  * @param[in] _u32Number        Number of values
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
 
 /** Gets key counter of the current section
  * @return Key counter of the current section if valid, 0 otherwise

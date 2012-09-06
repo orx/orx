@@ -1151,7 +1151,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
       }
 
       /* Adds set list to config */
-      orxConfig_SetStringList(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);
+      orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);
 
       /* Frees set name list memory */
       orxMemory_Free((void *)azSetNameList);

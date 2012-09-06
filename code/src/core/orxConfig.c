@@ -376,8 +376,34 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Pushes section */
   orxConfig_PushSection(_astArgList[0].zValue);
 
+  /* Has index? */
+  if(_u32ArgNumber > 2)
+  {
+    /* Updates result */
+    _pstResult->zValue = orxConfig_GetListString(_astArgList[1].zValue, _astArgList[2].s32Value);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxConfig_GetString(_astArgList[1].zValue);
+  }
+
+  /* Pops section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetListCounter
+ */
+void orxFASTCALL orxConfig_CommandGetListCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes section */
+  orxConfig_PushSection(_astArgList[0].zValue);
+
   /* Updates result */
-  _pstResult->zValue = orxConfig_GetString(_astArgList[1].zValue);
+  _pstResult->s32Value = orxConfig_GetListCounter(_astArgList[1].zValue);
 
   /* Pops section */
   orxConfig_PopSection();
@@ -427,15 +453,41 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: HasValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"[Index = -1]", orxCOMMAND_VAR_TYPE_S32});
   /* Command: SetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetListCounter */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCounter, "Counter", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Alias: Load */
+  orxCommand_AddAlias("Load", "Config.Load");
+  /* Alias: Save */
+  orxCommand_AddAlias("Save", "Config.Save");
+  /* Alias: Reload */
+  orxCommand_AddAlias("Reload", "Config.Reload");
+
+  /* Alias: Set */
+  orxCommand_AddAlias("Set", "Config.SetValue");
+  /* Alias: Get */
+  orxCommand_AddAlias("Get", "Config.GetValue");
 }
 
 /** Unregisters all the config commands
  */
 static orxINLINE void orxConfig_UnregisterCommands()
 {
+  /* Alias: Load */
+  orxCommand_RemoveAlias("Load");
+  /* Alias: Save */
+  orxCommand_RemoveAlias("Save");
+  /* Alias: Reload */
+  orxCommand_RemoveAlias("Reload");
+
+  /* Alias: Set */
+  orxCommand_RemoveAlias("Set");
+  /* Alias: Get */
+  orxCommand_RemoveAlias("Get");
+
   /* Command: Load */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Load);
   /* Command: Save */
@@ -458,6 +510,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetValue);
   /* Command: SetValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetValue);
+  /* Command: GetListCounter */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetListCounter);
 }
 
 static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orxBOOL _bBlockMode)
@@ -5195,7 +5249,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
  * @param[in] _u32Number        Number of values
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
+orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
@@ -5209,7 +5263,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
   orxASSERT(_azValue != orxNULL);
 
   /* Valid? */
-  if((_u32Number > 0) && (_u32Number < 65536))
+  if((_u32Number > 0) && (_u32Number < 0xFFFF))
   {
     /* Gets entry */
     pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
