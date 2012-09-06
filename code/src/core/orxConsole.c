@@ -525,12 +525,12 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Not empty? */
       if(pstEntry->u32CursorIndex != 0)
       {
+        /* Updates cursor index */
+        pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
+
         /* Has last autocompleted command? */
         if(sstConsole.zCompletedCommand != orxNULL)
         {
-          /* Updates cursor index */
-          pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
-
           /* Clears last completed command */
           sstConsole.zCompletedCommand = orxNULL;
         }
