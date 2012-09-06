@@ -156,6 +156,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Unregister(cons
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);
 
 
+/** Adds a command alias
+* @param[in]   _zAlias        Command alias
+* @param[in]   _zCommand      Command name
+* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRING _zCommand);
+
+/** Removes a command alias
+* @param[in]   _zAlias        Command alias
+* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_RemoveAlias(const orxSTRING _zAlias);
+
+/** Is a command alias?
+* @param[in]   _zAlias        Command alias
+* @return      orxTRUE / orxFALSE
+*/
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsAlias(const orxSTRING _zAlias);
+
+
 /** Gets a command's (text) prototype (beware: result won't persist from one call to the other)
 * @param[in]   _zCommand      Command name
 * @return      Command prototype / orxSTRING_EMPTY

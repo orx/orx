@@ -166,9 +166,6 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
 {
   orxTIMELINE_TRACK *pstResult = orxNULL;
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxTimeLine_CreateTrack");
-
   /* Pushes section */
   if((orxConfig_HasSection(_zTrackID) != orxFALSE)
   && (orxConfig_PushSection(_zTrackID) != orxSTATUS_FAILURE))
@@ -336,9 +333,6 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section not found.", _zTrackID);
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
