@@ -787,8 +787,32 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
+          orxS32 i, s32Counter;
+
           /* Inits log end index */
           sstConsole.u32LogEndIndex = orxU32_UNDEFINED;
+
+          /* Pushes config section */
+          orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
+
+          /* For all keys */
+          for(i = 0, s32Counter = orxConfig_GetKeyCounter(); i < s32Counter; i++)
+          {
+            const orxSTRING zKey;
+
+            /* Gets it */
+            zKey = orxConfig_GetKey(i);
+
+            /* Isn't toggle key? */
+            if(orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
+            {
+              /* Adds it as alias */
+              orxCommand_AddAlias(zKey, orxConfig_GetString(zKey));
+            }
+          }
+
+          /* Pops config section */
+          orxConfig_PopSection();
 
           /* Inits Flags */
           sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
