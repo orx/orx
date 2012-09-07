@@ -208,15 +208,18 @@ orxSTATUS orxFASTCALL orxTree_Clean(orxTREE *_pstTree)
   orxASSERT(_pstTree != orxNULL);
 
   /* Non empty? */
-  while((_pstTree->u32Counter != 0) && (eResult != orxSTATUS_FAILURE))
+  while((_pstTree->u32Counter > 1) && (eResult != orxSTATUS_FAILURE))
   {
     /* Removes root node */
-    eResult = orxTree_Remove(_pstTree->pstRoot);
+    eResult = orxTree_Remove(_pstTree->pstRoot->pstChild);
   }
 
   /* Successful? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    /* Removes root */
+    orxTree_Remove(_pstTree->pstRoot);
+
     /* Cleans tree */
     orxMemory_Zero(_pstTree, sizeof(orxTREE));
   }
