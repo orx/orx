@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "core/orxConsole.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
@@ -151,48 +152,6 @@ static orxCOMMAND_STATIC sstCommand;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-/** Command: Help
- */
-void orxFASTCALL orxCommand_CommandHelp(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  /* No argument? */
-  if(_u32ArgNumber == 0)
-  {
-    /* Updates result */
-    _pstResult->zValue = "Usage: Command.Help <Command> to get the prototype of a command.";
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->zValue = orxCommand_GetPrototype(_astArgList[0].zValue);
-  }
-
-  /* Done! */
-  return;
-}
-
-/** Registers all the command commands
- */
-static orxINLINE void orxCommand_RegisterCommands()
-{
-  /* Command: Help */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command", orxCOMMAND_VAR_TYPE_STRING});
-
-  /* Alias: Help */
-  orxCommand_AddAlias("Help", "Command.Help");
-}
-
-/** Unregisters all the command commands
- */
-static orxINLINE void orxCommand_UnregisterCommands()
-{
-  /* Alias: Help */
-  orxCommand_RemoveAlias("Help");
-
-  /* Command: Help */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
-}
 
 /** Gets literal name of a command var type
  */
@@ -369,7 +328,7 @@ static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _
   return pstResult;
 }
 
-static orxINLINE orxCOMMAND *orxCommand_Find(const orxSTRING _zCommand)
+static orxINLINE orxCOMMAND *orxCommand_FindNoAlias(const orxSTRING _zCommand)
 {
   orxCOMMAND_TRIE_NODE *pstNode;
   orxCOMMAND           *pstResult;
@@ -499,7 +458,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     *(orxCHAR *)pcCommandEnd  = orxCHAR_NULL;
 
     /* Gets it */
-    pstCommand = orxCommand_Find(zCommand);
+    pstCommand = orxCommand_FindNoAlias(zCommand);
 
     /* Restores command end */
     *(orxCHAR *)pcCommandEnd = cBackupChar;
@@ -957,6 +916,199 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Command: Help
+ */
+void orxFASTCALL orxCommand_CommandHelp(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* No argument? */
+  if(_u32ArgNumber == 0)
+  {
+    /* Updates result */
+    _pstResult->zValue = "Usage: Command.Help <Command> to get the prototype of a command.";
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxCommand_GetPrototype(_astArgList[0].zValue);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: ListCommands
+ */
+void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  const orxSTRING zPrefix;
+  const orxSTRING zCommand;
+  orxU32          u32Counter;
+
+  /* Gets prefix */
+  zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
+
+  /* For all commands */
+  for(zCommand = orxNULL, zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Counter = 0;
+      zCommand != orxNULL;
+      zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL))
+  {
+    /* Is a command? */
+    if(orxCommand_IsAlias(zCommand) == orxFALSE)
+    {
+      /* Logs it */
+      orxConsole_Log(zCommand);
+
+      /* Updates counter */
+      u32Counter++;
+    }
+  }
+
+  /* Updates result */
+  _pstResult->u32Value = u32Counter;
+
+  /* Done! */
+  return;
+}
+
+/* Command: AddAlias */
+void orxFASTCALL orxCommand_CommandAddAlias(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Adds alias */
+  if(orxCommand_AddAlias(_astArgList[0].zValue, _astArgList[1].zValue) != orxSTATUS_FAILURE)
+  {
+    /* Updates result */
+    _pstResult->zValue = _astArgList[0].zValue;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+/* Command: RemoveAlias */
+void orxFASTCALL orxCommand_CommandRemoveAlias(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Removes alias */
+  if(orxCommand_RemoveAlias(_astArgList[0].zValue) != orxSTATUS_FAILURE)
+  {
+    /* Updates result */
+    _pstResult->zValue = _astArgList[0].zValue;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: ListAliases
+ */
+void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  const orxSTRING zPrefix;
+  const orxSTRING zAlias;
+  orxU32          u32Counter;
+
+  /* Gets prefix */
+  zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
+
+  /* For all commands */
+  for(zAlias = orxNULL, zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Counter = 0;
+      zAlias != orxNULL;
+      zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL))
+  {
+    /* Is an alias? */
+    if(orxCommand_IsAlias(zAlias) != orxFALSE)
+    {
+      orxCOMMAND_TRIE_NODE *pstNode;
+      orxCHAR               acBuffer[256];
+
+      /* Finds alias node */
+      pstNode = orxCommand_FindTrieNode(zAlias, orxFALSE);
+
+      /* Checks */
+      orxASSERT((pstNode != orxNULL) && (pstNode->pstCommand != orxNULL));
+
+      /* Finds aliased node */
+      pstNode = orxCommand_FindTrieNode(pstNode->pstCommand->zAliasedCommandName, orxFALSE);
+
+      /* Valid? */
+      if((pstNode != orxNULL) && (pstNode->pstCommand != orxNULL))
+      {
+        /* Writes log */
+        orxString_NPrint(acBuffer, 255, "%s -> %s [%s]", zAlias, pstNode->pstCommand->zName, (pstNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
+        acBuffer[255] = orxCHAR_NULL;
+      }
+      else
+      {
+        /* Writes log */
+        orxString_NPrint(acBuffer, 255, "%s -> XX [UNBOUND]", zAlias);
+        acBuffer[255] = orxCHAR_NULL;
+      }
+
+      /* Logs it */
+      orxConsole_Log(acBuffer);
+
+      /* Updates counter */
+      u32Counter++;
+    }
+  }
+
+  /* Updates result */
+  _pstResult->u32Value = u32Counter;
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the command commands
+ */
+static orxINLINE void orxCommand_RegisterCommands()
+{
+  /* Command: Help */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: ListCommands */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: AddAlias */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, AddAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveAlias */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, RemoveAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Alias", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: ListAliases */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Alias: Help */
+  orxCommand_AddAlias("Help", "Command.Help");
+}
+
+/** Unregisters all the command commands
+ */
+static orxINLINE void orxCommand_UnregisterCommands()
+{
+  /* Alias: Help */
+  orxCommand_RemoveAlias("Help");
+
+  /* Command: Help */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
+
+  /* Command: ListCommands */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ListCommands);
+
+  /* Command: AddAlias */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, AddAlias);
+  /* Command: RemoveAlias */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, RemoveAlias);
+  /* Command: ListAliases */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ListAliases);
+}
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
@@ -1168,7 +1320,7 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
   if((_zCommand != orxNULL) && (*_zCommand != orxCHAR_NULL))
   {
     /* Not already registered? */
-    if(orxCommand_Find(_zCommand) == orxNULL)
+    if(orxCommand_FindNoAlias(_zCommand) == orxNULL)
     {
       orxCOMMAND *pstCommand;
 
@@ -1245,7 +1397,7 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
     orxCOMMAND *pstCommand;
 
     /* Gets it */
-    pstCommand = orxCommand_Find(_zCommand);
+    pstCommand = orxCommand_FindNoAlias(_zCommand);
 
     /* Found? */
     if(pstCommand != orxNULL)
@@ -1297,7 +1449,7 @@ orxBOOL orxFASTCALL orxCommand_IsRegistered(const orxSTRING _zCommand)
   if(_zCommand != orxNULL)
   {
     /* Updates result */
-    bResult = (orxCommand_Find(_zCommand) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxCommand_FindNoAlias(_zCommand) != orxNULL) ? orxTRUE : orxFALSE;
   }
   else
   {
@@ -1326,41 +1478,30 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
   /* Valid? */
   if((_zAlias != orxNULL) && (*_zAlias != orxCHAR_NULL))
   {
-    orxCOMMAND_TRIE_NODE *pstCommandNode;
+    orxCOMMAND_TRIE_NODE *pstAliasNode;
 
-    /* Finds command node */
-    pstCommandNode = orxCommand_FindTrieNode(_zCommand, orxFALSE);
+    /* Finds alias node */
+    pstAliasNode = orxCommand_FindTrieNode(_zAlias, orxTRUE);
 
-    /* Success? */
-    if((pstCommandNode != orxNULL) && (pstCommandNode->pstCommand != orxNULL))
+    /* Valid? */
+    if(pstAliasNode != orxNULL)
     {
-      orxCOMMAND_TRIE_NODE *pstAliasNode;
-
-      /* Finds alias node */
-      pstAliasNode = orxCommand_FindTrieNode(_zAlias, orxTRUE);
-
-      /* Valid? */
-      if(pstAliasNode != orxNULL)
+      /* Not already used as a command? */
+      if((pstAliasNode->pstCommand == orxNULL) || (pstAliasNode->pstCommand->bIsAlias != orxFALSE))
       {
-        /* Not already used? */
+        /* Not existing? */
         if(pstAliasNode->pstCommand == orxNULL)
         {
-          orxCOMMAND *pstAlias;
-
-          /* Creates command alias */
-          pstAlias = (orxCOMMAND *)orxBank_Allocate(sstCommand.pstBank);
+          /* Creates it */
+          pstAliasNode->pstCommand = (orxCOMMAND *)orxBank_Allocate(sstCommand.pstBank);
 
           /* Valid? */
-          if(pstAlias != orxNULL)
+          if(pstAliasNode->pstCommand != orxNULL)
           {
             /* Inits */
-            orxMemory_Zero(pstAlias, sizeof(orxCOMMAND));
-            pstAlias->zName               = orxString_Duplicate(_zAlias);
-            pstAlias->bIsAlias            = orxTRUE;
-            pstAlias->zAliasedCommandName = pstCommandNode->pstCommand->zName;
-
-            /* Stores reference */
-            pstAliasNode->pstCommand = pstAlias;
+            orxMemory_Zero(pstAliasNode->pstCommand, sizeof(orxCOMMAND));
+            pstAliasNode->pstCommand->zName    = orxString_Duplicate(_zAlias);
+            pstAliasNode->pstCommand->bIsAlias = orxTRUE;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
@@ -1374,8 +1515,26 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias: [%s] is already registered as an alias or a command.", _zAlias);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Updating alias [%s]: now pointing to [%s], previously [%s].", _zAlias, _zCommand, pstAliasNode->pstCommand->zAliasedCommandName);
+
+          /* Delete old aliased name */
+          orxString_Delete(pstAliasNode->pstCommand->zAliasedCommandName);
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
         }
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates aliased name */
+          pstAliasNode->pstCommand->zAliasedCommandName = orxString_Duplicate(_zCommand);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias: [%s] is already registered as a command.", _zAlias);
       }
     }
     else
@@ -1415,8 +1574,9 @@ orxSTATUS orxFASTCALL orxCommand_RemoveAlias(const orxSTRING _zAlias)
       /* Is an alias? */
       if((pstNode->pstCommand != orxNULL) && (pstNode->pstCommand->bIsAlias != orxFALSE))
       {
-        /* Deletes its name */
+        /* Deletes its names */
         orxString_Delete(pstNode->pstCommand->zName);
+        orxString_Delete(pstNode->pstCommand->zAliasedCommandName);
 
         /* Deletes it */
         orxBank_Free(sstCommand.pstBank, pstNode->pstCommand);
@@ -1498,7 +1658,7 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
     orxCOMMAND *pstCommand;
 
     /* Gets command */
-    pstCommand = orxCommand_Find(_zCommand);
+    pstCommand = orxCommand_FindNoAlias(_zCommand);
 
     /* Success? */
     if(pstCommand != orxNULL)
@@ -1559,7 +1719,10 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
     pstBaseNode = orxCommand_FindTrieNode(_zBase, orxFALSE);
 
     /* Inits common length */
-    *_pu32CommonLength = orxString_GetLength(_zBase);
+    if(_pu32CommonLength != orxNULL)
+    {
+      *_pu32CommonLength = orxString_GetLength(_zBase);
+    }
   }
   else
   {
@@ -1567,7 +1730,10 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
     pstBaseNode = (orxCOMMAND_TRIE_NODE *)orxTree_GetRoot(&(sstCommand.stCommandTrie));
 
     /* Clears common length */
-    *_pu32CommonLength = 0;
+    if(_pu32CommonLength != orxNULL)
+    {
+      *_pu32CommonLength = 0;
+    }
   }
 
   /* Found a valid base? */
@@ -1644,7 +1810,10 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
         }
         
         /* Updates prefix length */
-        *_pu32CommonLength = orxString_GetLength(pstNextCommand->zName) - u32Position - 1;
+        if(_pu32CommonLength != orxNULL)
+        {
+          *_pu32CommonLength = orxString_GetLength(pstNextCommand->zName) - u32Position - 1;
+        }
       }
     }
     else
@@ -1662,7 +1831,10 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
     else
     {
       /* Clears common length */
-      *_pu32CommonLength = 0;
+      if(_pu32CommonLength != orxNULL)
+      {
+        *_pu32CommonLength = 0;
+      }
     }
   }
   else
@@ -1725,7 +1897,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32
     orxCOMMAND *pstCommand;
 
     /* Gets it */
-    pstCommand = orxCommand_Find(_zCommand);
+    pstCommand = orxCommand_FindNoAlias(_zCommand);
 
     /* Found? */
     if(pstCommand != orxNULL)
