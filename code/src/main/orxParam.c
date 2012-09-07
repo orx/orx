@@ -481,6 +481,9 @@ orxSTATUS orxFASTCALL orxParam_Init()
         /* Set module as ready */
         sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
+        /* Enables param debug level */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxTRUE);
+
         /* Inits the param structure */
         orxMemory_Zero(&stParams, sizeof(orxPARAM));
         stParams.pfnParser  = orxParam_ProcessConfigParams;
@@ -601,10 +604,10 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
           {
             /* Adds it to table */
             orxHashTable_Add(sstParam.pstHashTable, u32LongName, pstParamInfo);
-
-            /* Process params */
-            eResult = orxParam_Process(pstParamInfo);
           }
+
+          /* Process params */
+          eResult = orxParam_Process(pstParamInfo);
         }
       }
       else
