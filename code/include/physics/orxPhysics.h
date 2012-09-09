@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPhysics
- * 
+ *
  * Physics plugin module
  * Module that handles physics interactions
  *
@@ -200,7 +200,7 @@ typedef struct __orxBODY_JOINT_DEF_t
     struct
     {
       orxFLOAT  fLength;                    /**< Length : 56 */
-      
+
     } stRope;                               /**< Rope : 56 */
 
     struct
@@ -547,6 +547,21 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(con
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+
+/** Sets a (revolute) body joint motor speed
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fSpeed         Speed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed);
+
+/** Sets a (revolute) body joint maximum motor torque
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fMaxMotorTorque  Maximum motor torque
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
 /** Issues a raycast to test for potential physics bodies in the way

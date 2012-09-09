@@ -1486,6 +1486,60 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBodyJoint(orxPHYSICS_BODY_JOI
   return;
 }
 
+extern "C" void orxFASTCALL orxPhysics_Box2D_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed)
+{
+  b2Joint *poJoint;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+
+  /* Gets joint */
+  poJoint = (b2Joint *)_pstBodyJoint;
+
+  /* Is a revolute joint? */
+  if(poJoint->GetType() == e_revoluteJoint)
+  {
+    /* Sets its motor speed */
+    static_cast<b2RevoluteJoint *>(poJoint)->SetMotorSpeed(_fSpeed);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set motor speed on non-revolute joint.");
+  }
+
+  /* Done! */
+  return;
+}
+
+extern "C" void orxFASTCALL orxPhysics_Box2D_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
+{
+  b2Joint *poJoint;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+
+  /* Gets joint */
+  poJoint = (b2Joint *)_pstBodyJoint;
+
+  /* Is a revolute joint? */
+  if(poJoint->GetType() == e_revoluteJoint)
+  {
+    /* Sets its max torque */
+    static_cast<b2RevoluteJoint *>(poJoint)->SetMaxMotorTorque(_fMaxTorque);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set max motor torque on non-revolute joint.");
+  }
+
+  /* Done! */
+  return;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
 {
   b2Body   *poBody;
@@ -2456,6 +2510,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartSelfFlags, PHYSICS, GET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartCheckMask, PHYSICS, GET_PART_CHECK_MASK);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsPartSolid, PHYSICS, IS_PART_SOLID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartSolid, PHYSICS, SET_PART_SOLID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -1459,6 +1459,66 @@ orxSTATUS orxFASTCALL orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint)
   return eResult;
 }
 
+/** Sets a (revolute) body joint motor speed
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fSpeed         Speed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetJointMotorSpeed(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    orxPhysics_SetJointMotorSpeed(_pstBodyJoint->pstData, _fSpeed);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a (revolute) body joint maximum motor torque
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fMaxMotorTorque  Maximum motor torque
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    orxPhysics_SetJointMaxMotorTorque(_pstBodyJoint->pstData, _fMaxTorque);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvPosition     Position to set
@@ -2441,7 +2501,7 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
 
         /* Updates speed with parent scale & rotation */
         orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
-        orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));        
+        orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
       }
 
       /* Updates position */

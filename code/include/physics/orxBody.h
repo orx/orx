@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxBody
- * 
+ *
  * Body Module
  * Allows to creates and handle physical bodies
  * They are used as container with associated properties
@@ -375,6 +375,21 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+
+/** Sets a (revolute) body joint motor speed
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fSpeed         Speed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_JointSetMotorSpeed(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed);
+
+/** Sets a (revolute) body joint maximum motor torque
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fMaxMotorTorque  Maximum motor torque
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_JointSetMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
 /** Issues a raycast to test for potential bodies in the way
