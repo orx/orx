@@ -382,14 +382,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSolid(orxBODY_PART 
  * @param[in]   _fSpeed         Speed
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_JointSetMotorSpeed(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMotorSpeed(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed);
 
 /** Sets a (revolute) body joint maximum motor torque
  * @param[in]   _pstBodyJoint   Concerned body joint
  * @param[in]   _fMaxMotorTorque  Maximum motor torque
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_JointSetMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
 /** Issues a raycast to test for potential bodies in the way
