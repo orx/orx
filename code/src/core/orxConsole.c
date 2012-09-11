@@ -78,6 +78,8 @@
 #define orxCONSOLE_KZ_INPUT_NEXT                      "Next"                          /**< Next input */
 #define orxCONSOLE_KZ_INPUT_LEFT                      "Left"                          /**< Cursor move left */
 #define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
+#define orxCONSOLE_KZ_INPUT_START                     "Start"                         /**< Cursor move start */
+#define orxCONSOLE_KZ_INPUT_END                       "End"                           /**< Cursor move end */
 
 #define orxCONSOLE_KE_KEY_AUTOCOMPLETE                orxKEYBOARD_KEY_TAB             /**< Autocomplete key */
 #define orxCONSOLE_KE_KEY_DELETE                      orxKEYBOARD_KEY_BACKSPACE       /**< Delete key */
@@ -87,6 +89,8 @@
 #define orxCONSOLE_KE_KEY_NEXT                        orxKEYBOARD_KEY_DOWN            /**< Next key */
 #define orxCONSOLE_KE_KEY_LEFT                        orxKEYBOARD_KEY_LEFT            /**< Left key */
 #define orxCONSOLE_KE_KEY_RIGHT                       orxKEYBOARD_KEY_RIGHT           /**< Right key */
+#define orxCONSOLE_KE_KEY_START                       orxKEYBOARD_KEY_HOME            /**< Start key */
+#define orxCONSOLE_KE_KEY_END                         orxKEYBOARD_KEY_END             /**< End key */
 
 #define orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY  orx2F(0.25f)
 #define orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY        orx2F(0.05f)
@@ -384,12 +388,18 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     {
       /* Gets previous index */
       u32HistoryIndex = (sstConsole.u32HistoryIndex != 0) ? sstConsole.u32HistoryIndex - 1 : orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1;
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxCONSOLE_KZ_INPUT_PREVIOUS);
     }
     /* Next history? */
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE))
     {
       /* Gets next index */
       u32HistoryIndex = (sstConsole.u32HistoryIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32HistoryIndex + 1;
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, orxCONSOLE_KZ_INPUT_NEXT);
     }
 
     /* Should copy history entry? */
@@ -566,6 +576,19 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Updates history index */
         sstConsole.u32HistoryIndex = sstConsole.u32InputIndex;
       }
+    }
+
+    /* Move cursor to start? */
+    if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_START) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_START) != orxFALSE))
+    {
+      /* Updates cursor position */
+      pstEntry->u32CursorIndex = 0;
+    }
+    /* Move cursor to end? */
+    else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_END) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_END) != orxFALSE))
+    {
+      /* Updates cursor position */
+      pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
     }
 
     /* Move cursor left? */
@@ -777,6 +800,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_LEFT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_LEFT);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END);
 
         /* Restores previous set */
         orxInput_SelectSet(zPreviousSet);
