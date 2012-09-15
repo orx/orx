@@ -290,7 +290,7 @@ orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectionName, 
   orxBOOL bResult;
 
   /* Updates result */
-  bResult = (orxString_Compare(_zFileName, orxConfig_GetSectionOrigin(_zSectionName)) == 0) ? orxTRUE : orxFALSE;
+  bResult = ((_zKeyName != orxNULL) || (orxString_Compare(_zFileName, orxConfig_GetSectionOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -3215,7 +3215,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   /* No encryption requested or has a valid key? */
   if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
-    /* Is given file name invalid? */
+    /* Is given an invalid file name? */
     if((_zFileName == orxNULL) || (_zFileName == orxSTRING_EMPTY))
     {
       /* Uses default file */

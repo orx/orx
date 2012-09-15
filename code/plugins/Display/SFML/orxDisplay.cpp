@@ -1692,7 +1692,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawOBox(const orxOBOX *_pstBox
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFLM_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
