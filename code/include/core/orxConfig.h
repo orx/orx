@@ -193,6 +193,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasSection(const orxSTRI
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ProtectSection(const orxSTRING _zSectionName, orxBOOL _bProtect);
 
+/** Gets section origin (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file)
+ * @param[in] _zSectionName     Concerned section name
+ * @return orxSTRING if found, orxSTRING_EMPTY otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSectionOrigin(const orxSTRING _zSectionName);
+
 /** Gets section counter
  * @return Section counter
  */

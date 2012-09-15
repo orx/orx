@@ -201,7 +201,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
     if(sbHomePressed != orxFALSE)
     {
       /* No longer pressed? */
-      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) == orxFALSE)
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_INSERT) == orxFALSE)
       {
         /* Updates key status */
         sbHomePressed = orxFALSE;
@@ -210,7 +210,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
     else
     {
       /* Is home pressed? */
-      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) != orxFALSE)
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_INSERT) != orxFALSE)
       {
         /* Reloads config history */
         orxConfig_ReloadHistory();
