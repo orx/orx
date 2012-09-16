@@ -1472,20 +1472,24 @@ orxBOOL orxFASTCALL orxCommand_IsRegistered(const orxSTRING _zCommand)
 */
 orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRING _zCommand)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  const orxSTRING zAlias;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
   orxASSERT(_zAlias != orxNULL);
   orxASSERT(_zCommand != orxNULL);
 
+  /* Finds start of alias */
+  zAlias = orxString_SkipWhiteSpaces(_zAlias);
+
   /* Valid? */
-  if((_zAlias != orxNULL) && (*_zAlias != orxCHAR_NULL))
+  if((zAlias != orxNULL) && (*zAlias != orxCHAR_NULL))
   {
     orxCOMMAND_TRIE_NODE *pstAliasNode;
 
     /* Finds alias node */
-    pstAliasNode = orxCommand_FindTrieNode(_zAlias, orxTRUE);
+    pstAliasNode = orxCommand_FindTrieNode(zAlias, orxTRUE);
 
     /* Valid? */
     if(pstAliasNode != orxNULL)
@@ -1494,7 +1498,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
       if((pstAliasNode->pstCommand == orxNULL) || (pstAliasNode->pstCommand->bIsAlias != orxFALSE))
       {
         /* Not self referencing? */
-        if(orxString_Compare(_zAlias, _zCommand) != 0)
+        if(orxString_Compare(zAlias, _zCommand) != 0)
         {
           orxCOMMAND_TRIE_NODE *pstNode;
 
@@ -1507,7 +1511,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
               pstNode = orxCommand_FindTrieNode(pstNode->pstCommand->zAliasedCommandName, orxFALSE))
           {
             /* Creates a loop? */
-            if(orxString_Compare(_zAlias, pstNode->pstCommand->zAliasedCommandName) == 0)
+            if(orxString_Compare(zAlias, pstNode->pstCommand->zAliasedCommandName) == 0)
             {
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
@@ -1531,13 +1535,13 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
             {
               /* Inits */
               orxMemory_Zero(pstAliasNode->pstCommand, sizeof(orxCOMMAND));
-              pstAliasNode->pstCommand->zName     = orxString_Duplicate(_zAlias);
+              pstAliasNode->pstCommand->zName     = orxString_Duplicate(zAlias);
               pstAliasNode->pstCommand->bIsAlias  = orxTRUE;
             }
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't allocate memory for alias [%s], aborting.", _zAlias);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't allocate memory for alias [%s], aborting.", zAlias);
 
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
@@ -1546,7 +1550,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Updating alias [%s]: now pointing to [%s], previously [%s].", _zAlias, _zCommand, pstAliasNode->pstCommand->zAliasedCommandName);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Updating alias [%s]: now pointing to [%s], previously [%s].", zAlias, _zCommand, pstAliasNode->pstCommand->zAliasedCommandName);
 
             /* Delete old aliased name */
             orxString_Delete(pstAliasNode->pstCommand->zAliasedCommandName);
@@ -1562,19 +1566,19 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't add/modify alias [%s] -> [%s] as it's creating a loop, aborting.", _zAlias, _zCommand);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't add/modify alias [%s] -> [%s] as it's creating a loop, aborting.", zAlias, _zCommand);
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias: [%s] is already registered as a command.", _zAlias);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias: [%s] is already registered as a command.", zAlias);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias [%s]: [%s] command not found.", _zAlias, _zCommand);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias [%s]: couldn't not insert it in trie.", zAlias);
     }
   }
 
