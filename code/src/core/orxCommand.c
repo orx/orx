@@ -1578,7 +1578,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias [%s]: couldn't not insert it in trie.", zAlias);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias [%s]: couldn't insert it in trie.", zAlias);
     }
   }
 
