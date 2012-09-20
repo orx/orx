@@ -60,13 +60,12 @@ LOCAL_SRC_FILES = \
         plugin/orxPlugin_EmbeddedList.cpp \
 	main/orxAndroidSupport.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/SOIL/include $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include $(LOCAL_PATH)/../../extern/stb_vorbis $(LOCAL_PATH)/../../extern/NvEvent/jni
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
+LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt NvEvent
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxBANK_ALIGN__
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
-LOCAL_EXPORT_LDLIBS := -L$(LOCAL_PATH)/../../../extern/NvEvent/obj/local/$(TARGET_ARCH_ABI)
-LOCAL_EXPORT_LDLIBS += -llog -lGLESv2
+LOCAL_EXPORT_LDLIBS := -llog -lGLESv2
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-8
@@ -133,13 +132,12 @@ LOCAL_SRC_FILES = \
         plugin/orxPlugin_EmbeddedList.cpp \
 	main/orxAndroidSupport.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/SOIL/include $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include $(LOCAL_PATH)/../../extern/stb_vorbis $(LOCAL_PATH)/../../extern/NvEvent/jni
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
+LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt NvEvent
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -D__orxBANK_ALIGN__
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID__ -D__orxDEBUG__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
-LOCAL_EXPORT_LDLIBS := -L$(LOCAL_PATH)/../../../extern/NvEvent/obj/local/$(TARGET_ARCH_ABI)
-LOCAL_EXPORT_LDLIBS += -llog -lGLESv2
+LOCAL_EXPORT_LDLIBS := -llog -lGLESv2
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-8
@@ -148,4 +146,5 @@ include $(BUILD_STATIC_LIBRARY)
 
 $(call import-module,orx/extern/SOIL/lib/android)
 $(call import-module,orx/extern/Box2D_2.1.3/lib/android)
+$(call import-module,orx/extern/NvEvent/lib)
 
