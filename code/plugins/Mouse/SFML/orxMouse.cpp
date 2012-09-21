@@ -306,7 +306,7 @@ extern "C" orxBOOL orxFASTCALL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eB
     case orxMOUSE_BUTTON_WHEEL_DOWN:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "The wheel button <%ld> can't be queried directly with this SFML plugin.", _eButton);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "The wheel button <%d> can't be queried directly with this SFML plugin.", _eButton);
     }
     default:
     {

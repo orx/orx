@@ -237,7 +237,7 @@ orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
     else
     {
       /* Logs message */
-      orxLOG("Requested axis <%s> (joystick ID <%ld>) is out of range.", orxJoystick_GetAxisName(_eAxis), u32ID);
+      orxLOG("Requested axis <%s> (joystick ID <%d>) is out of range.", orxJoystick_GetAxisName(_eAxis), u32ID);
 
       /* Updates result */
       fResult = orxFLOAT_0;
@@ -246,7 +246,7 @@ orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   else
   {
     /* Logs message */
-    orxLOG("Requested joystick ID <%ld> is out of range.", u32ID);
+    orxLOG("Requested joystick ID <%d> is out of range.", u32ID);
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -285,7 +285,7 @@ orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
     else
     {
       /* Logs message */
-      orxLOG("Requested button <%s> (joystick ID <%ld>) is out of range.", orxJoystick_GetButtonName(_eButton), u32ID);
+      orxLOG("Requested button <%s> (joystick ID <%d>) is out of range.", orxJoystick_GetButtonName(_eButton), u32ID);
 
       /* Updates result */
       bResult = orxFALSE;
@@ -294,7 +294,7 @@ orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
   else
   {
     /* Logs message */
-    orxLOG("Requested joystick ID <%ld> is out of range.", u32ID);
+    orxLOG("Requested joystick ID <%d> is out of range.", u32ID);
 
     /* Updates result */
     bResult = orxFALSE;
