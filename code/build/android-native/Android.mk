@@ -62,7 +62,7 @@ LOCAL_SRC_FILES = \
 	debug/orxProfiler.c       \
         plugin/orxPlugin_EmbeddedList.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/SOIL/include $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include $(LOCAL_PATH)/../../extern/stb_vorbis
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
 LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__ -D__orxBANK_ALIGN__
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__
@@ -137,7 +137,7 @@ LOCAL_SRC_FILES = \
 	debug/orxProfiler.c       \
         plugin/orxPlugin_EmbeddedList.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/SOIL/include $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include $(LOCAL_PATH)/../../extern/stb_vorbis
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
 LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__ -D__orxDEBUG__ -D__orxBANK_ALIGN__
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxDEBUG__
