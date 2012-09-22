@@ -455,7 +455,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
         if(sstDebug.pstLogFile == orxNULL)
         {
           /* Opens it */
-          sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "a+");
+          sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "ab+");
         }
 
 #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
@@ -471,7 +471,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
         if(sstDebug.pstDebugFile == orxNULL)
         {
           /* Opens it */
-          sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "a+");
+          sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "ab+");
         }
 
 #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
@@ -589,12 +589,17 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
-  /* Had a previous external name? */
-  if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
+  /* Was open? */
+  if(sstDebug.pstDebugFile != orxNULL)
   {
     /* Closes it */
     fclose(sstDebug.pstDebugFile);
+    sstDebug.pstDebugFile = orxNULL;
+  }
 
+  /* Had a previous external name? */
+  if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
+  {
     /* Deletes it */
     free(sstDebug.zDebugFile);
   }
@@ -628,12 +633,17 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
-  /* Had a previous external name? */
-  if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
+  /* Was open? */
+  if(sstDebug.pstLogFile != orxNULL)
   {
     /* Closes it */
     fclose(sstDebug.pstLogFile);
+    sstDebug.pstLogFile = orxNULL;
+  }
 
+  /* Had a previous external name? */
+  if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
+  {
     /* Deletes it */
     free(sstDebug.zLogFile);
   }

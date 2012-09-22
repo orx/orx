@@ -31,3 +31,4 @@ code/build/windows/msvs2008/Bounce
 code/build/windows/msvs2008/Scroll
 code/build/windows/msvs2008/*.ncb
 code/build/windows/msvs2008/*.suo
+code/bin/*.log
