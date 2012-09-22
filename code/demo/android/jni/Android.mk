@@ -12,4 +12,4 @@ LOCAL_ARM_MODE := arm
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,orx/code/build/android)
-$(call import-module,orx/extern/NvEvent/build)
+
