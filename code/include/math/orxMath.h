@@ -163,10 +163,10 @@ static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
 {
   _u32Value -= ((_u32Value >> 1) & 0x55555555);
   _u32Value = (((_u32Value >> 2) & 0x33333333) + (_u32Value & 0x33333333));
-  _u32Value = (((_u32Value >> 4) + _u32Value) & 0x0f0f0f0f);
+  _u32Value = (((_u32Value >> 4) + _u32Value) & 0x0F0F0F0F);
   _u32Value += (_u32Value >> 8);
   _u32Value += (_u32Value >> 16);
-  return(_u32Value & 0x0000003f);
+  return(_u32Value & 0x0000003F);
 }
 
 /** Gets the count of trailing zeros in an orxU32

@@ -467,14 +467,14 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     /* Found? */
     if(pstCommand != orxNULL)
     {
+#define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
-      orxS32                s32GUIDLength;
-      orxU32                u32BufferCounter = 0, i;
+      orxS32                s32GUIDLength, s32BufferCounter = 0, i;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
       orxCHAR              *pcDst;
       const orxSTRING       zArg;
-      const orxSTRING       azBufferList[2];
+      const orxSTRING       azBufferList[orxCOMMAND_KU32_ALIAS_MAX_DEPTH];
       orxU32                u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
 
 #ifdef __orxMSVC__
@@ -491,35 +491,30 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       acGUID[19]    = orxCHAR_NULL;
       s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", _u64GUID);
 
-      /* Gets command trie node */
-      pstCommandNode = orxCommand_FindTrieNode(zCommand, orxFALSE);
+      /* Adds input to the buffer list */
+      azBufferList[s32BufferCounter++] = pcCommandEnd + 1;
 
-      /* Restores command end */
-      *(orxCHAR *)pcCommandEnd = cBackupChar;
-
-      /* Checks */
-      orxASSERT(pstCommandNode != orxNULL);
-      orxASSERT(pstCommandNode->pstCommand != orxNULL);
-
-      /* Is an alias? */
-      if(pstCommandNode->pstCommand->bIsAlias != orxFALSE)
+      /* For all alias nodes */
+      for(pstCommandNode = orxCommand_FindTrieNode(zCommand, orxFALSE);
+          (pstCommandNode->pstCommand->bIsAlias != orxFALSE) && (s32BufferCounter < orxCOMMAND_KU32_ALIAS_MAX_DEPTH);
+          pstCommandNode = orxCommand_FindTrieNode(pstCommandNode->pstCommand->zAliasedCommandName, orxFALSE))
       {
         /* Has args? */
         if(pstCommandNode->pstCommand->zArgs != orxNULL)
         {
           /* Adds it to the buffer list */
-          azBufferList[u32BufferCounter++] = pstCommandNode->pstCommand->zArgs;
+          azBufferList[s32BufferCounter++] = pstCommandNode->pstCommand->zArgs;
         }
       }
 
-      /* Adds input to the buffer list */
-      azBufferList[u32BufferCounter++] = pcCommandEnd + 1;
+      /* Restores command end */
+      *(orxCHAR *)pcCommandEnd = cBackupChar;
 
-      /* For all buffers */
-      for(i = 0, pcDst = sstCommand.acEvaluateBuffer; i < u32BufferCounter; i++)
+      /* For all stacked buffers */
+      for(i = s32BufferCounter - 1, pcDst = sstCommand.acEvaluateBuffer; i >= 0; i--)
       {
         /* Has room for next buffer? */
-        if((i != 0) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2))
+        if((i != s32BufferCounter - 1) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2))
         {
           /* Inserts space */
           *pcDst++ = ' ';
