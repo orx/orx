@@ -159,9 +159,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(co
 /** Adds a command alias
 * @param[in]   _zAlias        Command alias
 * @param[in]   _zCommand      Command name
+* @param[in]   _zArgs         Command argument, orxNULL for none
 * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRING _zCommand);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRING _zCommand, const orxSTRING _zArgs);
 
 /** Removes a command alias
 * @param[in]   _zAlias        Command alias

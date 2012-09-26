@@ -485,16 +485,16 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCounter, "Counter", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Alias: Load */
-  orxCommand_AddAlias("Load", "Config.Load");
+  orxCommand_AddAlias("Load", "Config.Load", orxNULL);
   /* Alias: Save */
-  orxCommand_AddAlias("Save", "Config.Save");
+  orxCommand_AddAlias("Save", "Config.Save", orxNULL);
   /* Alias: Reload */
-  orxCommand_AddAlias("Reload", "Config.Reload");
+  orxCommand_AddAlias("Reload", "Config.Reload", orxNULL);
 
   /* Alias: Set */
-  orxCommand_AddAlias("Set", "Config.SetValue");
+  orxCommand_AddAlias("Set", "Config.SetValue", orxNULL);
   /* Alias: Get */
-  orxCommand_AddAlias("Get", "Config.GetValue");
+  orxCommand_AddAlias("Get", "Config.GetValue", orxNULL);
 }
 
 /** Unregisters all the config commands

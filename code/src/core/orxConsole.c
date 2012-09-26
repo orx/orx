@@ -831,8 +831,34 @@ orxSTATUS orxFASTCALL orxConsole_Init()
             /* Isn't toggle key? */
             if(orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
             {
+              const orxSTRING zAlias;
+              orxCHAR         cBackup = orxCHAR_NULL, *pc;
+
+              /* Gets its content */
+              zAlias = orxConfig_GetString(zKey);
+
+              /* Finds its end */
+              for(pc = (orxCHAR *)zAlias; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t'); pc++);
+
+              /* Has args? */
+              if(*pc != orxCHAR_NULL)
+              {
+               /* Backups character */
+               cBackup = *pc;
+
+               /* Ends alias */
+               *pc = orxCHAR_NULL;
+              }
+
               /* Adds it as alias */
-              orxCommand_AddAlias(zKey, orxConfig_GetString(zKey));
+              orxCommand_AddAlias(zKey, orxConfig_GetString(zKey), (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
+
+              /* Had args? */
+              if(cBackup != orxCHAR_NULL)
+              {
+                /* Restores it */
+                *pc = cBackup;
+              }
             }
           }
 
