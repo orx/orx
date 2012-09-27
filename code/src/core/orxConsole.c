@@ -65,6 +65,9 @@
 
 #define orxCONSOLE_KZ_CONFIG_SECTION                  "Console"                       /**< Config section name */
 #define orxCONSOLE_KZ_CONFIG_TOGGLE_KEY               "ToggleKey"                     /**< Toggle key */
+#define orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST       "InputHistoryList"              /**< Input history list */
+
+#define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension*/
 
 #define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
 
@@ -162,6 +165,116 @@ static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, voi
     /* Re-adds input reset timer */
     orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY, 1, zInput);
   }
+}
+
+
+/** Origin save callback
+ */
+orxBOOL orxFASTCALL orxConsole_HistorySaveCallback(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = ((orxString_Compare(_zSectionName, orxCONSOLE_KZ_CONFIG_SECTION) == 0) && ((_zKeyName == orxNULL) || (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) == 0))) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Saves input history
+ */
+static void orxFASTCALL orxConsole_SaveHistory()
+{
+  orxU32          i, u32Counter = 0;
+  const orxSTRING azHistoryList[orxCONSOLE_KU32_INPUT_ENTRY_NUMBER];
+
+  /* Did we cycle? */
+  if((sstConsole.u32InputIndex != orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) && (sstConsole.astInputEntryList[sstConsole.u32InputIndex + 1].u32CursorIndex != 0))
+  {
+    /* For all old entries */
+    for(i = (sstConsole.u32InputIndex + 1) % orxCONSOLE_KU32_INPUT_ENTRY_NUMBER;
+        i < orxCONSOLE_KU32_INPUT_ENTRY_NUMBER;
+        i++)
+    {
+      /* Stores it */
+      azHistoryList[u32Counter++] = sstConsole.astInputEntryList[i].acBuffer;
+    }
+  }
+
+  /* For all recent entries */
+  for(i = 0; i < sstConsole.u32InputIndex; i++)
+  {
+    /* Stores it */
+    azHistoryList[u32Counter++] = sstConsole.astInputEntryList[i].acBuffer;
+  }
+
+  /* Has entries? */
+  if(u32Counter > 0)
+  {
+    orxCHAR acBuffer[256];
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
+
+    /* Stores list */
+    orxConfig_SetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, azHistoryList, u32Counter);
+  
+    /* Pops config section */
+    orxConfig_PopSection();
+
+    /* Gets file name */
+    orxString_NPrint(acBuffer, 255, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+
+    /* Saves it */
+    orxConfig_Save(acBuffer, orxFALSE, orxConsole_HistorySaveCallback);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Loads input history
+ */
+static void orxFASTCALL orxConsole_LoadHistory()
+{
+  orxU32 i, u32Counter;
+  orxCHAR acBuffer[256];
+
+  /* Gets file name */
+  orxString_NPrint(acBuffer, 255, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+
+  /* Loads it */
+  orxConfig_Load(acBuffer);
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
+
+  /* Has saved history */
+  if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != orxFALSE)
+  {
+    /* For all history entries */
+    for(i = 0, u32Counter = orxConfig_GetListCounter(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST); i < u32Counter; i++)
+    {
+      orxCONSOLE_INPUT_ENTRY *pstEntry;
+
+      /* Gets corresponding entry */
+      pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex++]);
+
+      /* Updates it */
+      orxString_NCopy(pstEntry->acBuffer, orxConfig_GetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, i), orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1);
+      pstEntry->acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1] = orxCHAR_NULL;
+      pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
+    }
+
+    /* Updates indices */
+    sstConsole.u32InputIndex = sstConsole.u32HistoryIndex = u32Counter;
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
 }
 
 /** Prints last result
@@ -870,6 +983,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
 
           /* Sets default font */
           orxConsole_SetFont(orxFont_GetDefaultFont());
+
+          /* Loads input history */
+          orxConsole_LoadHistory();
         }
         else
         {
@@ -926,6 +1042,9 @@ void orxFASTCALL orxConsole_Exit()
 
     /* Remove event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
+
+    /* Saves input history */
+    orxConsole_SaveHistory();
 
     /* Updates flags */
     sstConsole.u32Flags &= ~orxCONSOLE_KU32_STATIC_FLAG_READY;

@@ -5413,7 +5413,10 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
     else
     {
       /* Removes last separator */
-      acBuffer[u32Index - 1] = orxCHAR_NULL;
+      if(u32Index > 0)
+      {
+        acBuffer[u32Index - 1] = orxCHAR_NULL;
+      }
 
       /* Adds new entry */
       eResult = orxConfig_AddEntry(_zKey, acBuffer, orxFALSE);
