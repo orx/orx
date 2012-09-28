@@ -377,6 +377,20 @@ void orxFASTCALL orxConfig_CommandHasSection(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
+/** Command: ClearSection
+ */
+void orxFASTCALL orxConfig_CommandClearSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Clears section */
+   orxConfig_ClearSection(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
 /** Command: HasValue
  */
 void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -474,6 +488,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: ClearSection */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: HasValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
@@ -528,6 +544,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
   /* Command: HasSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
+  /* Command: ClearSection */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, ClearSection);
 
   /* Command: HasValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasValue);
