@@ -561,6 +561,12 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     /* Updates pointer */
                     zValue = pstEntry->stValue.zValue;
 
+                    /* Has room? */
+                    if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                    {
+                       *pcDst++ = orxCOMMAND_KC_STRING_MARKER;
+                    }
+
                     break;
                   }
 
@@ -630,6 +636,12 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 /* Is a string value? */
                 if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
                 {
+                  /* Has room? */
+                  if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                  {
+                    *pcDst++ = orxCOMMAND_KC_STRING_MARKER;
+                  }
+
                   /* Deletes it */
                   orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
                 }
