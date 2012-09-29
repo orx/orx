@@ -67,6 +67,7 @@
 #define orxTIMELINE_KU32_FLAG_NONE                    0x00000000  /**< No flags */
 
 #define orxTIMELINE_KU32_FLAG_ENABLED                 0x10000000  /**< Enabled flag */
+#define orxTIMELINE_KU32_FLAG_DIRTY                   0x20000000  /**< Dirty flag */
 
 #define orxTIMELINE_KU32_MASK_ALL                     0xFFFFFFFF  /**< All mask */
 
@@ -76,6 +77,7 @@
 
 #define orxTIMELINE_HOLDER_KU32_FLAG_PLAYED           0x10000000  /**< Played flag */
 #define orxTIMELINE_HOLDER_KU32_FLAG_LOOP             0x20000000  /**< Loop flag */
+#define orxTIMELINE_HOLDER_KU32_FLAG_UPDATED          0x40000000  /**< Updated flag */
 
 #define orxTIMELINE_HOLDER_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
@@ -85,7 +87,7 @@
 #define orxTIMELINE_KU32_TRACK_TABLE_SIZE             256
 #define orxTIMELINE_KU32_TRACK_BANK_SIZE              128
 
-#define orxTIMELINE_KU32_TRACK_NUMBER                 16
+#define orxTIMELINE_KU32_TRACK_NUMBER                 8
 
 #define orxTIMELINE_KZ_CONFIG_LOOP                    "Loop"
 #define orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
@@ -134,7 +136,7 @@ struct __orxTIMELINE_t
   orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 16 */
   const orxSTRUCTURE       *pstOwner;                 /**< Owner structure : 20 */
   orxFLOAT                  fTime;                    /**< Time : 24 */
-  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 276 */
+  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 152 */
 };
 
 /** Static structure
@@ -426,6 +428,9 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
   {
     orxU32 i;
 
+    /* Cleans its flags */
+    orxStructure_SetFlags(pstTimeLine, orxTIMELINE_KU32_FLAG_NONE, orxTIMELINE_KU32_FLAG_DIRTY);
+
     /* Computes its new time cursor */
     pstTimeLine->fTime += _pstClockInfo->fDT;
 
@@ -434,11 +439,34 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
     {
       orxTIMELINE_TRACK *pstTrack;
 
+      /* Is timeline dirty? */
+      if(orxStructure_TestFlags(pstTimeLine, orxTIMELINE_KU32_FLAG_DIRTY))
+      {
+        orxU32 j;
+
+        /* For all previous tracks */
+        for(j = 0; j < i; j++)
+        {
+          /* Is defined? */
+          if(pstTimeLine->astTrackList[j].pstTrack != orxNULL)
+          {
+            /* Hasn't been updated? */
+            if(!orxFLAG_TEST(pstTimeLine->astTrackList[j].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED))
+            {
+              /* Selects it */
+              i = j;
+
+              break;
+            }
+          }
+        }
+      }
+
       /* Gets track */
       pstTrack = pstTimeLine->astTrackList[i].pstTrack;
 
-      /* Valid? */
-      if(pstTrack != orxNULL)
+      /* Valid and not already updated? */
+      if((pstTrack != orxNULL) && (!orxFLAG_TEST(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED)))
       {
         orxFLOAT fTrackLocalTime;
 
@@ -464,7 +492,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
           }
 
           /* Updates its status */
-          orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED, orxTIMELINE_HOLDER_KU32_FLAG_NONE);
+          orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED | orxTIMELINE_HOLDER_KU32_FLAG_UPDATED, orxTIMELINE_HOLDER_KU32_FLAG_NONE);
 
           /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
@@ -529,6 +557,13 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
           }
         }
       }
+    }
+
+    /* For all tracks */
+    for(i = 0; i < orxTIMELINE_KU32_TRACK_NUMBER; i++)
+    {
+      /* Clears its update flag */
+      orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED);
     }
   }
 
@@ -889,6 +924,9 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_ADD, _pstTimeLine->pstOwner, _pstTimeLine->pstOwner, &stPayload);
+
+      /* Updates timeline flags */
+      orxStructure_SetFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_DIRTY, orxTIMELINE_KU32_FLAG_NONE);
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
