@@ -860,7 +860,8 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     /* Valid? */
     if(pstTrack != orxNULL)
     {
-      orxU32 u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+      orxTIMELINE_EVENT_PAYLOAD stPayload;
+      orxU32                    u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
 
       /* Pushes its config section */
       orxConfig_PushSection(pstTrack->zReference);
@@ -880,6 +881,14 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
       _pstTimeLine->astTrackList[u32Index].fStartTime         = _pstTimeLine->fTime;
       _pstTimeLine->astTrackList[u32Index].u32NextEventIndex  = 0;
       _pstTimeLine->astTrackList[u32Index].u32Flags           = u32Flags;
+
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+      stPayload.pstTimeLine = _pstTimeLine;
+      stPayload.zTrackName  = pstTrack->zReference;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_ADD, _pstTimeLine->pstOwner, _pstTimeLine->pstOwner, &stPayload);
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
