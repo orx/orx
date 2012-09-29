@@ -508,25 +508,39 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Next history? */
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE))
     {
-      /* Gets next index */
-      u32HistoryIndex = (sstConsole.u32HistoryIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32HistoryIndex + 1;
+      /* Not already at end? */
+      if(sstConsole.u32HistoryIndex != sstConsole.u32InputIndex)
+      {
+        /* Gets next index */
+        u32HistoryIndex = (sstConsole.u32HistoryIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32HistoryIndex + 1;
 
-      /* Adds input reset timer */
-      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_NEXT);
+        /* Adds input reset timer */
+        orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_NEXT);
+      }
     }
 
     /* Should copy history entry? */
     if(u32HistoryIndex != orxU32_UNDEFINED)
     {
-      /* End of history? */
-      if((sstConsole.astInputEntryList[u32HistoryIndex].u32CursorIndex == 0) || (u32HistoryIndex == sstConsole.u32InputIndex))
+      /* Reached boundaries of history? */
+      if(sstConsole.astInputEntryList[u32HistoryIndex].u32CursorIndex == 0)
       {
         /* Uses current history entry */
         u32HistoryIndex = sstConsole.u32HistoryIndex;
       }
 
+      /* Back to input entry? */
+      if(u32HistoryIndex == sstConsole.u32InputIndex)
+      {
+        /* Clears input */
+        orxMemory_Zero(pstEntry->acBuffer, pstEntry->u32CursorIndex * sizeof(orxCHAR));
+        pstEntry->u32CursorIndex  = 0;
+
+        /* Resets history index */
+        sstConsole.u32HistoryIndex = sstConsole.u32InputIndex;
+      }
       /* Valid? */
-      if((sstConsole.astInputEntryList[u32HistoryIndex].u32CursorIndex != 0) && (u32HistoryIndex != sstConsole.u32InputIndex))
+      else if(sstConsole.astInputEntryList[u32HistoryIndex].u32CursorIndex != 0)
       {
         orxU32                  i;
         orxCONSOLE_INPUT_ENTRY *pstHistoryEntry;
