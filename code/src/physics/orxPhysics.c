@@ -73,6 +73,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyJoint, orxPHYSICS_BODY_JOINT
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyJoint, void, orxPHYSICS_BODY_JOINT *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMotorSpeed, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMaxMotorTorque, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableMotor, void, orxPHYSICS_BODY_JOINT *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetSpeed, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
@@ -141,6 +142,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_SELF_FLAGS, orxPhysics_GetPa
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_CHECK_MASK, orxPhysics_GetPartCheckMask)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_PART_SOLID, orxPhysics_IsPartSolid)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_SOLID, orxPhysics_SetPartSolid)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_MOTOR, orxPhysics_EnableMotor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MOTOR_SPEED, orxPhysics_SetJointMotorSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE, orxPhysics_SetJointMaxMotorTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, RAYCAST, orxPhysics_Raycast)
@@ -334,6 +336,11 @@ void orxFASTCALL orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJo
 void orxFASTCALL orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetJointMaxMotorTorque)(_pstBodyJoint, _fMaxTorque);
+}
+
+void orxFASTCALL orxPhysics_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_EnableMotor)(_pstBodyJoint, _bEnable);
 }
 
 orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
