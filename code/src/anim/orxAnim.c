@@ -555,9 +555,9 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
     orxMemory_Zero(acEventID, 32 * sizeof(orxCHAR));
 
     /* For all keys/events */
-    for(u32KeyCounter = 1, u32EventCounter = 1, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter), orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter);
+    for(u32KeyCounter = 0, u32EventCounter = 0, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter + 1), orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter + 1);
         orxConfig_HasValue(acID) != orxFALSE;
-        u32KeyCounter++, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter), orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter))
+        u32KeyCounter++, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter + 1), orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCounter + 1))
     {
       /* Has matching event? */
       if(orxConfig_HasValue(acEventID) != orxFALSE)
@@ -567,11 +567,11 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
       }
     }
 
-    /* Valid? */
-    if(u32KeyCounter >= 1)
+    /* Success? */
+    if(u32KeyCounter > 0)
     {
       /* Creates 2D animation */
-      pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter, --u32EventCounter);
+      pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32KeyCounter, u32EventCounter);
 
       /* Valid? */
       if(pstResult != orxNULL)
@@ -613,26 +613,10 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
             {
               const orxSTRING zEventName;
 
-              /* Gets duration ID */
-              orxString_Print(acTimeID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
-
-              /* Updates its timestamp */
-              fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
-
-              /* Adds it */
-              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
-
-                /* Deletes it */
-                orxGraphic_Delete(pstGraphic);
-              }
-
               /* Gets matching event ID */
               orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, i + 1);
 
-              /* Exist? */
+              /* Defined? */
               if(orxConfig_HasValue(acEventID) != orxFALSE)
               {
                 /* Gets its name */
@@ -651,6 +635,22 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
                     orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add event <%s> to animation <%s>.", zEventName, pstResult->zName);
                   }
                 }
+              }
+
+              /* Gets duration ID */
+              orxString_Print(acTimeID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
+
+              /* Updates its timestamp */
+              fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
+
+              /* Adds it */
+              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
+
+                /* Deletes it */
+                orxGraphic_Delete(pstGraphic);
               }
             }
           }
