@@ -800,8 +800,12 @@ static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
     /* Select set */
     case orxINPUT_EVENT_SELECT_SET:
     {
-      /* Forces toggle input binding */
-      orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
+      /* Is toggle key type valid? */
+      if(sstConsole.eToggleKeyType != orxINPUT_TYPE_NONE)
+      {
+        /* Forces toggle input binding */
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
+      }
 
       break;
     }
@@ -883,6 +887,12 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Stores it */
         sstConsole.eToggleKeyType = eType;
         sstConsole.eToggleKeyID   = eID;
+      }
+      else
+      {
+        /* Resets it */
+        sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
+        sstConsole.eToggleKeyID   = orxENUM_NONE;
       }
     }
 

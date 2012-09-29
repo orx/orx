@@ -2281,27 +2281,31 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
     /* Gets binding ID */
     u32ID = orxString_ToCRC(_zName);
 
-    /* For all input types */
-    for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
+    /* Valid? */
+    if(u32ID != 0)
     {
-      orxENUM   eID;
-      const orxSTRING zBinding = orxNULL;
-
-      /* For all bindings */
-      for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
+      /* For all input types */
+      for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
       {
-        /* Gets its name */
-        zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
+        orxENUM   eID;
+        const orxSTRING zBinding = orxNULL;
 
-        /* Found? */
-        if(orxString_ToCRC(zBinding) == u32ID)
+        /* For all bindings */
+        for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
         {
-          /* Updates result */
-          *_peType  = (orxINPUT_TYPE)eType;
-          *_peID    = eID;
-          eResult   = orxSTATUS_SUCCESS;
+          /* Gets its name */
+          zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
 
-          break;
+          /* Found? */
+          if(orxString_ToCRC(zBinding) == u32ID)
+          {
+            /* Updates result */
+            *_peType  = (orxINPUT_TYPE)eType;
+            *_peID    = eID;
+            eResult   = orxSTATUS_SUCCESS;
+
+            break;
+          }
         }
       }
     }
