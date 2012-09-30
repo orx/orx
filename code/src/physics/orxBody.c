@@ -1459,6 +1459,36 @@ orxSTATUS orxFASTCALL orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint)
   return eResult;
 }
 
+/** Enable a (revolute) body joint motor
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _bEnable        Enable / Disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_EnableMotor(orxBODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    orxPhysics_EnableMotor(_pstBodyJoint->pstData, _bEnable);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets a (revolute) body joint motor speed
  * @param[in]   _pstBodyJoint   Concerned body joint
  * @param[in]   _fSpeed         Speed
