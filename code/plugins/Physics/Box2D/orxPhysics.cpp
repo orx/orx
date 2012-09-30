@@ -1501,7 +1501,7 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_EnableMotor(orxPHYSICS_BODY_JOINT *
   if(poJoint->GetType() == e_revoluteJoint)
   {
     /* Enables / disables it */
-    static_cast<b2RevoluteJoint *>(poJoint)->EnableMotor(_bEnable);
+    static_cast<b2RevoluteJoint *>(poJoint)->EnableMotor((_bEnable != orxFALSE) ? true : false);
   }
   else
   {
