@@ -544,7 +544,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               {
                 orxCOMMAND_STACK_ENTRY *pstEntry;
                 orxCHAR                 acValue[64];
+                orxBOOL                 bUseStringMarker = orxFALSE;
                 const orxSTRING         zValue = acValue;
+                const orxCHAR          *pc;
 
                 /* Gets last stack entry */
                 pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCounter(sstCommand.pstResultBank) - 1);
@@ -561,10 +563,24 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     /* Updates pointer */
                     zValue = pstEntry->stValue.zValue;
 
-                    /* Has room? */
-                    if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                    /* For all characters */
+                    for(pc = zValue; *pc != orxCHAR_NULL; pc++)
                     {
-                       *pcDst++ = orxCOMMAND_KC_STRING_MARKER;
+                      /* Is a white space? */
+                      if((*pc == ' ') || (*pc == '\t'))
+                      {
+                        /* Has room? */
+                        if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                        {
+                          /* Adds string marker */
+                          *pcDst++ = orxCOMMAND_KC_STRING_MARKER;
+
+                          /* Updates string marker status */
+                          bUseStringMarker = orxTRUE;
+                        }
+
+                        break;
+                      }
                     }
 
                     break;
@@ -633,8 +649,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 /* Updates pointers */
                 pcDst += orxString_GetLength(zValue);
 
-                /* Is a string value? */
-                if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
+                /* Used a string marker? */
+                if(bUseStringMarker != orxFALSE)
                 {
                   /* Has room? */
                   if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
