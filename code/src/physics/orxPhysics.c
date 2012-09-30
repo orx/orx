@@ -71,9 +71,9 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyPart, void, orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyJoint, orxPHYSICS_BODY_JOINT *, orxPHYSICS_BODY *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_JOINT_DEF *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyJoint, void, orxPHYSICS_BODY_JOINT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableMotor, void, orxPHYSICS_BODY_JOINT *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMotorSpeed, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMaxMotorTorque, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableMotor, void, orxPHYSICS_BODY_JOINT *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetSpeed, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
@@ -328,6 +328,11 @@ orxSTATUS orxFASTCALL orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartSolid)(_pstBodyPart, _bSolid);
 }
 
+void orxFASTCALL orxPhysics_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_EnableMotor)(_pstBodyJoint, _bEnable);
+}
+
 void orxFASTCALL orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetJointMotorSpeed)(_pstBodyJoint, _fSpeed);
@@ -336,11 +341,6 @@ void orxFASTCALL orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJo
 void orxFASTCALL orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetJointMaxMotorTorque)(_pstBodyJoint, _fMaxTorque);
-}
-
-void orxFASTCALL orxPhysics_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_EnableMotor)(_pstBodyJoint, _bEnable);
 }
 
 orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)

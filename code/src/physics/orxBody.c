@@ -1459,7 +1459,7 @@ orxSTATUS orxFASTCALL orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint)
   return eResult;
 }
 
-/** Enable a (revolute) body joint motor
+/** Enables a (revolute) body joint motor
  * @param[in]   _pstBodyJoint   Concerned body joint
  * @param[in]   _bEnable        Enable / Disable
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

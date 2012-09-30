@@ -1500,7 +1500,7 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_EnableMotor(orxPHYSICS_BODY_JOINT *
   /* Is a revolute joint? */
   if(poJoint->GetType() == e_revoluteJoint)
   {
-    /* Sets its motor speed */
+    /* Enables / disables it */
     static_cast<b2RevoluteJoint *>(poJoint)->EnableMotor(_bEnable);
   }
   else
