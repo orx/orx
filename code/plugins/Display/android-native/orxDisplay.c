@@ -3873,7 +3873,7 @@ orxS32 orxFASTCALL orxDisplay_Android_GetParameterID(const orxHANDLE _hShader, c
   if(_bIsTexture != orxFALSE)
   {
     orxDISPLAY_PARAM_INFO  *pstInfo;
-    orxCHAR                 acBuffer[255];
+    orxCHAR                 acBuffer[256];
 
     /* Checks */
     orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
@@ -3949,7 +3949,7 @@ orxS32 orxFASTCALL orxDisplay_Android_GetParameterID(const orxHANDLE _hShader, c
     /* Array? */
     if(_s32Index >= 0)
     {
-      orxCHAR acBuffer[255];
+      orxCHAR acBuffer[256];
 
       /* Prints its name */
       orxString_NPrint(acBuffer, 255, "%s[%ld]", _zParam, _s32Index);
