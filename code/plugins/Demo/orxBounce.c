@@ -318,11 +318,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       /* Object start? */
       if(_pstEvent->eID == orxRENDER_EVENT_OBJECT_START)
       {
-        orxRENDER_EVENT_OBJECT_PAYLOAD *pstPayload;
-
-        /* Gets event payload */
-        pstPayload = (orxRENDER_EVENT_OBJECT_PAYLOAD *)_pstEvent->pstPayload;
-
         /* Is walls? */
         if(orxOBJECT(_pstEvent->hSender) == spstWalls)
         {
