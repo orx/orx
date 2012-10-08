@@ -173,9 +173,9 @@ static orxINLINE orxSTATUS orxSoundSystem_Android_OpenFile(const orxSTRING _zFil
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
-      
-      AAsset_close(asset);
     }
+     
+    AAsset_close(asset);
   }
 
   /* Done! */
