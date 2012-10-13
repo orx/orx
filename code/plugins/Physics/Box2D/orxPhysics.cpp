@@ -730,39 +730,64 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       poBody != NULL;
       poBody = poBody->GetNext())
   {
-    orxFRAME *pstFrame;
-    orxBODY  *pstBody;
-    orxVECTOR vSpeed;
+    orxOBJECT  *pstOwner;
+    orxBODY    *pstBody;
 
     /* Gets associated body */
     pstBody = orxBODY(poBody->GetUserData());
 
-    /* Gets owner's frame */
-    pstFrame = orxOBJECT_GET_STRUCTURE(orxOBJECT(orxBody_GetOwner(pstBody)), FRAME);
+    /* Gets owner */
+    pstOwner = orxOBJECT(orxBody_GetOwner(pstBody));
 
-    /* Gets its body speed */
-    orxBody_GetSpeed(pstBody, &vSpeed);
-
-    /* Is not a root child? */
-    if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
+    /* Is enabled? */
+    if(orxObject_IsEnabled(pstOwner) != orxFALSE)
     {
-      orxVECTOR vPos, vScale;
-      orxFRAME *pstParentFrame;
+      orxFRAME   *pstFrame;
+      orxVECTOR   vSpeed;
 
-      /* Updates body's position & rotation*/
-      orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
-      orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+      /* Isn't body already active? */
+      if(poBody->IsActive() == false)
+      {
+        /* Activates it */
+        poBody->SetActive(true);
+      }
 
-      /* Gets parent frame */
-      pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+      /* Gets owner's frame */
+      pstFrame = orxOBJECT_GET_STRUCTURE(pstOwner, FRAME);
 
-      /* Updates its speed with parent scale & rotation */
-      orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
-      orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+      /* Gets its body speed */
+      orxBody_GetSpeed(pstBody, &vSpeed);
+
+      /* Is not a root child? */
+      if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
+      {
+        orxVECTOR vPos, vScale;
+        orxFRAME *pstParentFrame;
+
+        /* Updates body's position & rotation*/
+        orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
+        orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+
+        /* Gets parent frame */
+        pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+        /* Updates its speed with parent scale & rotation */
+        orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+        orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+      }
+
+      /* Applies speed */
+      orxPhysics_SetSpeed((orxPHYSICS_BODY *)poBody, &vSpeed);
     }
-
-    /* Applies speed */
-    orxPhysics_SetSpeed((orxPHYSICS_BODY *)poBody, &vSpeed);
+    else
+    {
+      /* Is still active? */
+      if(poBody->IsActive() != false)
+      {
+        /* Deactivates it */
+        poBody->SetActive(false);
+      }
+    }
   }
 
   /* Is simulation enabled? */
