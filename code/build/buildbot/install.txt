@@ -10,3 +10,7 @@ How to install BuildBot
 3. Modify buildbot.*.egg/buildbot/changes/hgpoller.py to enforce UTF-8 comments
    (otherwise it'll choke when non ASCII-characters have been used in the svn history)
    line 86, in _getRevDetails, args = ['log', '--encoding', 'utf8', '-r', rev, os.linesep.join((
+
+4. On windows, add VCExpress (or DevEnv) to the PATH environment variable
+
+5. For master only: update the list of authorized users in authz_cfg
