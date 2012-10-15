@@ -2486,9 +2486,13 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
     orxS32 s32Index, s32NextIndex;
 
     /* Finds last directory separator */
-    for(s32Index = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, 0);
-        (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1)) > 0);
-        s32Index = s32NextIndex);
+    for(s32Index = 0;
+        (s32Index >= 0) && (((s32NextIndex = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, s32Index + 1)) > 0) || ((s32NextIndex = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR_LINUX, s32Index + 1)) > 0));
+        s32Index = s32NextIndex)
+    {
+      /* Enforces native directory separator */
+	  *((orxSTRING)_zBaseName + s32NextIndex) = orxCHAR_DIRECTORY_SEPARATOR;
+    }
 
     /* Found? */
     if(s32Index > 0)

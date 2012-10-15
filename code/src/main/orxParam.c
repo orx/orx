@@ -662,7 +662,9 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
         s32Index = s32NextIndex);
 
     /* Does base name have a '.'? */
-    if((s32Index > 0) && (orxString_SearchCharIndex(zLocalName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1) < 0))
+    if((s32Index > 0)
+    && (orxString_SearchCharIndex(zLocalName, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, s32Index + 1) < 0)
+    && (orxString_SearchCharIndex(zLocalName, orxCHAR_DIRECTORY_SEPARATOR_LINUX, s32Index + 1) < 0))
     {
       /* Ends basename before extension */
       *(zLocalName + s32Index) = orxCHAR_NULL;
