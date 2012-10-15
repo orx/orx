@@ -1,0 +1,28 @@
+var orx_file_8h =
+[
+    [ "orxFILE_KU32_FLAG_INFO_DIR", "orx_file_8h.html#gaf7834a06992a168a04f58274b01f8fd4", null ],
+    [ "orxFILE_KU32_FLAG_INFO_HIDDEN", "orx_file_8h.html#ga5731ca08a548c739b48914acf0136f67", null ],
+    [ "orxFILE_KU32_FLAG_INFO_NORMAL", "orx_file_8h.html#gafe605442fc348d6e43a677f0bbb40f7c", null ],
+    [ "orxFILE_KU32_FLAG_INFO_RDONLY", "orx_file_8h.html#ga676ecc30e309e73e7be89f09b51c20d7", null ],
+    [ "orxFILE_KU32_FLAG_OPEN_APPEND", "orx_file_8h.html#ga86e101811244bfbdc9bbb289d05c4ea1", null ],
+    [ "orxFILE_KU32_FLAG_OPEN_BINARY", "orx_file_8h.html#ga86b8ab492ac1345a01f7965aa32c9cf4", null ],
+    [ "orxFILE_KU32_FLAG_OPEN_READ", "orx_file_8h.html#ga0eb747b5ff0c937da5666b8fbce778b5", null ],
+    [ "orxFILE_KU32_FLAG_OPEN_WRITE", "orx_file_8h.html#ga2c82721c615d262bd4595d52909b6d26", null ],
+    [ "orxFILE", "orx_file_8h.html#ga5805808ea6ca32b9b4f559ca6ad96c82", null ],
+    [ "orxFile_Close", "orx_file_8h.html#ga8e45150c5019dc189069413c4ced085b", null ],
+    [ "orxFile_Exists", "orx_file_8h.html#ga784ed4314bd3c15827cf819acf2845bf", null ],
+    [ "orxFile_Exit", "orx_file_8h.html#ga17da9576f2412f099656dd62e02076c6", null ],
+    [ "orxFile_FindClose", "orx_file_8h.html#gaf9175eb2f39f2e2a1d60250b8c2bdd81", null ],
+    [ "orxFile_FindFirst", "orx_file_8h.html#ga053cfcea3db4c6d74d643bfa7e210773", null ],
+    [ "orxFile_FindNext", "orx_file_8h.html#gab1b28f2e382eedcc12d639ae99e83b67", null ],
+    [ "orxFile_GetInfo", "orx_file_8h.html#gab3f0c189fe842c6628177e5bdbd89166", null ],
+    [ "orxFile_GetSize", "orx_file_8h.html#ga017e8a1b07e7dac74193f5908bcabfcf", null ],
+    [ "orxFile_Init", "orx_file_8h.html#ga58fad06e476d24fe45d96f42c304eb65", null ],
+    [ "orxFile_Open", "orx_file_8h.html#ga69cb0d04489c13daba0ebd380a4ae19b", null ],
+    [ "orxFile_Print", "orx_file_8h.html#gaa488b51b271b256b7b4515516cb08dde", null ],
+    [ "orxFile_Read", "orx_file_8h.html#ga6b28e81a5fe57e673f79b20c3f6c641f", null ],
+    [ "orxFile_Seek", "orx_file_8h.html#gaad3788ccc8b930c0034b59039ab23344", null ],
+    [ "orxFile_Setup", "orx_file_8h.html#ga3211b72acbc9ff98a67d97ee757acd7d", null ],
+    [ "orxFile_Tell", "orx_file_8h.html#ga7e03dfe3355ee7eedf288737757389bf", null ],
+    [ "orxFile_Write", "orx_file_8h.html#ga179d964e4e74c7266468f7f6c54dc1ad", null ]
+];

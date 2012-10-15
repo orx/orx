@@ -1,0 +1,25 @@
+var orx_camera_8h =
+[
+    [ "orxCAMERA_KU32_FLAG_2D", "orx_camera_8h.html#ga9a1f6b4f1e78210654a689fea7eb5195", null ],
+    [ "orxCAMERA_KU32_FLAG_NONE", "orx_camera_8h.html#gaa7e36c65bb31a0dffaa87cd0212ba3a3", null ],
+    [ "orxCAMERA_KU32_MASK_USER_ALL", "orx_camera_8h.html#gab4b4bbdab06d1b31ea625840e4c5e5fd", null ],
+    [ "orxCAMERA", "orx_camera_8h.html#ga86ce25a4467cf03af68c71db1bc514de", null ],
+    [ "orxCamera_Create", "orx_camera_8h.html#ga8366c7aadf1b7503e1f01b35a0c1dbff", null ],
+    [ "orxCamera_CreateFromConfig", "orx_camera_8h.html#ga20eaded547d921b13f39a38cccbf424f", null ],
+    [ "orxCamera_Delete", "orx_camera_8h.html#ga59db45256bfd98e2bf14e2003127d764", null ],
+    [ "orxCamera_Exit", "orx_camera_8h.html#ga36d48d0c2457a62c13a17bb054774082", null ],
+    [ "orxCamera_Get", "orx_camera_8h.html#gaf95c0fa671a3f6b6b069495a4b5c6008", null ],
+    [ "orxCamera_GetFrame", "orx_camera_8h.html#ga0ddadcb114f4d34fec41a7eb6f3fe9fb", null ],
+    [ "orxCamera_GetFrustum", "orx_camera_8h.html#ga8b88cc610d014c016c46034f66014f9c", null ],
+    [ "orxCamera_GetName", "orx_camera_8h.html#gab9edd5fc69d31f154c27c87fa2e3022c", null ],
+    [ "orxCamera_GetPosition", "orx_camera_8h.html#ga763544898f06821bdc7976ed6b53f308", null ],
+    [ "orxCamera_GetRotation", "orx_camera_8h.html#ga1a7c7a04d79a5ac6fa8b2e846d20cf70", null ],
+    [ "orxCamera_GetZoom", "orx_camera_8h.html#gac8d9820499ba6883db51a6b2154c01d9", null ],
+    [ "orxCamera_Init", "orx_camera_8h.html#ga1bd3cc33cb5847a85b84f87c5f8773b9", null ],
+    [ "orxCamera_SetFrustum", "orx_camera_8h.html#ga9fecc3918027aebd2e2812470df8104e", null ],
+    [ "orxCamera_SetParent", "orx_camera_8h.html#ga56aeb4f2d9c5f73b6695e455d46b5b00", null ],
+    [ "orxCamera_SetPosition", "orx_camera_8h.html#gae0211ecc4d6230f17f6a489a7cebcf05", null ],
+    [ "orxCamera_SetRotation", "orx_camera_8h.html#ga35eabb51244d0f6eb39079d91fb39457", null ],
+    [ "orxCamera_Setup", "orx_camera_8h.html#gab97f47ec6d51aaf9cc3f6dbc2c2cf6e4", null ],
+    [ "orxCamera_SetZoom", "orx_camera_8h.html#ga6bce51066ff3cb3109ed01961d4c8a5e", null ]
+];

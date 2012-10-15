@@ -1,0 +1,26 @@
+var group__orx_anim_pointer =
+[
+    [ "orxANIMPOINTER", "group__orx_anim_pointer.html#ga5a51fa9e5426ebc4f09884a58d477f2c", null ],
+    [ "orxAnimPointer_Create", "group__orx_anim_pointer.html#ga45e4c7555b915bca87eef72c0dababf9", null ],
+    [ "orxAnimPointer_CreateFromConfig", "group__orx_anim_pointer.html#ga7c04d919d692ea7cf9c06caf120dea27", null ],
+    [ "orxAnimPointer_Delete", "group__orx_anim_pointer.html#ga73ce77ce72cff853f189bf0d6043e278", null ],
+    [ "orxAnimPointer_Exit", "group__orx_anim_pointer.html#gac065855483719cefe764c95013332d05", null ],
+    [ "orxAnimPointer_GetAnimSet", "group__orx_anim_pointer.html#ga54b1214fae52d987035121263a2770cf", null ],
+    [ "orxAnimPointer_GetCurrentAnim", "group__orx_anim_pointer.html#ga7b6879ae5db8914d3888580be25ad1ad", null ],
+    [ "orxAnimPointer_GetCurrentAnimData", "group__orx_anim_pointer.html#ga7965fe0764fb13ff27fabe6d4874b7a1", null ],
+    [ "orxAnimPointer_GetCurrentAnimName", "group__orx_anim_pointer.html#ga62d89fd8b1a08c195b38a96c149189bd", null ],
+    [ "orxAnimPointer_GetCurrentTime", "group__orx_anim_pointer.html#ga868f22044d8b81da14664bc17fbefa28", null ],
+    [ "orxAnimPointer_GetFrequency", "group__orx_anim_pointer.html#gaf4e404790f2d69606fcfd4c6567fa30b", null ],
+    [ "orxAnimPointer_GetOwner", "group__orx_anim_pointer.html#gaf52ba545e5fff83984c762ac092bac3a", null ],
+    [ "orxAnimPointer_GetTargetAnim", "group__orx_anim_pointer.html#gac9b1c46ee579d0bd3805de4ea56e203f", null ],
+    [ "orxAnimPointer_GetTargetAnimName", "group__orx_anim_pointer.html#ga77829f740ec1b0302b31b9c4f96d0c70", null ],
+    [ "orxAnimPointer_Init", "group__orx_anim_pointer.html#ga33b716910ae0b6ede4745038c64e35e1", null ],
+    [ "orxAnimPointer_Pause", "group__orx_anim_pointer.html#ga7c5c2dcb63581a6cedcce6d287beea33", null ],
+    [ "orxAnimPointer_SetCurrentAnim", "group__orx_anim_pointer.html#ga0e305021a918f74a86fdb7c873fedfd1", null ],
+    [ "orxAnimPointer_SetCurrentAnimFromName", "group__orx_anim_pointer.html#gad85667cdebc0757cbeadd9d4559040f2", null ],
+    [ "orxAnimPointer_SetFrequency", "group__orx_anim_pointer.html#ga6e3eb827f50f53c28b61d54ea071e0a8", null ],
+    [ "orxAnimPointer_SetTargetAnim", "group__orx_anim_pointer.html#gab08f17dcec0191cc149995a4b443ac79", null ],
+    [ "orxAnimPointer_SetTargetAnimFromName", "group__orx_anim_pointer.html#ga97485fa131312a3b5a178ba4d858752e", null ],
+    [ "orxAnimPointer_SetTime", "group__orx_anim_pointer.html#gac7449f109af198d2c18f22ac06e9cd0e", null ],
+    [ "orxAnimPointer_Setup", "group__orx_anim_pointer.html#gac5617f75f3775469c4334e1a75106115", null ]
+];

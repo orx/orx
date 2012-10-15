@@ -1,0 +1,27 @@
+var group__orx_font =
+[
+    [ "orxFONT", "group__orx_font.html#gab691adc491d2136ac68d160d1f14bc1d", null ],
+    [ "orxFont_Create", "group__orx_font.html#ga8e56191650ac7c5a713a01d5081243a9", null ],
+    [ "orxFont_CreateFromConfig", "group__orx_font.html#ga2c0b05a012c9b10e55524432c2d1ad1e", null ],
+    [ "orxFont_Delete", "group__orx_font.html#ga21228632b8122c4a83cf0d3ffabfd2b5", null ],
+    [ "orxFont_Exit", "group__orx_font.html#ga44605b14708588c0ab44d61a060f8887", null ],
+    [ "orxFont_GetCharacterHeight", "group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739", null ],
+    [ "orxFont_GetCharacterList", "group__orx_font.html#ga017c9101872e0b814e510ae0ad7c4b0a", null ],
+    [ "orxFont_GetCharacterSpacing", "group__orx_font.html#gaf626752956cbfedf00e0da2613e700a6", null ],
+    [ "orxFont_GetCharacterWidth", "group__orx_font.html#ga6eaf162b26fb22952530260f4861f5f0", null ],
+    [ "orxFont_GetDefaultFont", "group__orx_font.html#gaf1446182084028517a65da805684338b", null ],
+    [ "orxFont_GetMap", "group__orx_font.html#ga28aae34a771c95b6f0429360666bfc51", null ],
+    [ "orxFont_GetName", "group__orx_font.html#gaf89821ec121bb699a74c164cc873eed8", null ],
+    [ "orxFont_GetOrigin", "group__orx_font.html#ga3687283c3e2898d75be8bbf1b5e57b31", null ],
+    [ "orxFont_GetSize", "group__orx_font.html#gaa7fe16b2b6016e5f3aaed55489d6c73e", null ],
+    [ "orxFont_GetTexture", "group__orx_font.html#ga1ba89979fcb1047295effd392c4fa8e9", null ],
+    [ "orxFont_Init", "group__orx_font.html#gac3f1cf184136cd0ffd837143e79bfe31", null ],
+    [ "orxFont_SetCharacterHeight", "group__orx_font.html#ga0b952471e7b1c225b1eddcfd139cd2f3", null ],
+    [ "orxFont_SetCharacterList", "group__orx_font.html#gae5665dd0101cf568132b829c58082309", null ],
+    [ "orxFont_SetCharacterSpacing", "group__orx_font.html#ga02b3674e5ca2faf4208f4dff86b59f56", null ],
+    [ "orxFont_SetCharacterWidthList", "group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e", null ],
+    [ "orxFont_SetOrigin", "group__orx_font.html#ga1fd622d700599de60f4ec16b0ec524ed", null ],
+    [ "orxFont_SetSize", "group__orx_font.html#ga031179787e10cc2b416cd4737eef85e2", null ],
+    [ "orxFont_SetTexture", "group__orx_font.html#ga2dc09f19c7be6991d175289efd858f24", null ],
+    [ "orxFont_Setup", "group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352", null ]
+];
