@@ -630,8 +630,8 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
         sstDisplay.pstScreen->fWidth = orxS2F(sstDisplay.width);
         sstDisplay.pstScreen->fHeight = orxS2F(sstDisplay.height);
-        sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-        sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
+        sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
+        sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
@@ -1662,8 +1662,8 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     pstBitmap->bSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
     pstBitmap->fWidth = orxU2F(_u32Width);
     pstBitmap->fHeight = orxU2F(_u32Height);
-    pstBitmap->u32RealWidth = orxMath_GetNextPowerOfTwo(_u32Width);
-    pstBitmap->u32RealHeight = orxMath_GetNextPowerOfTwo(_u32Height);
+    pstBitmap->u32RealWidth = _u32Width;
+    pstBitmap->u32RealHeight = _u32Height;
     pstBitmap->fRecRealWidth = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
@@ -3037,8 +3037,8 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
           orxU8  *pu8ImageBuffer;
 
           /* Gets its real size */
-          uiRealWidth   = orxMath_GetNextPowerOfTwo(uiWidth);
-          uiRealHeight  = orxMath_GetNextPowerOfTwo(uiHeight);
+          uiRealWidth   = uiWidth;
+          uiRealHeight  = uiHeight;
 
           /* Pushes display section */
           orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -3384,8 +3384,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
         sstDisplay.pstScreen->fWidth = orxS2F(sstDisplay.width);
         sstDisplay.pstScreen->fHeight = orxS2F(sstDisplay.height);
-        sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-        sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
+        sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
+        sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);

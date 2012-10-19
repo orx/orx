@@ -323,8 +323,8 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
       sstDisplay.pstScreen->fWidth = orxS2F(s_winWidth);
       sstDisplay.pstScreen->fHeight = orxS2F(s_winHeight);
-      sstDisplay.pstScreen->u32RealWidth = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-      sstDisplay.pstScreen->u32RealHeight = orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
+      sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
+      sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
       sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
       sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
       orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
