@@ -33,6 +33,7 @@
 #include "display/orxScreenshot.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "display/orxDisplay.h"
 #include "io/orxFile.h"
@@ -87,6 +88,20 @@ static orxSCREENSHOT_STATIC sstScreenshot;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: Capture
+ */
+void orxFASTCALL orxScreenshot_CommandCapture(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Captures it */
+  orxScreenshot_Capture();
+
+  /* Updates result */
+  _pstResult->zValue = sstScreenshot.acScreenshotBuffer;
+
+  /* Done! */
+  return;
+}
 
 /** Computes next screenshot index
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -183,6 +198,22 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
   return eResult;
 }
 
+/** Registers all the screenshot commands
+ */
+static orxINLINE void orxScreenshot_RegisterCommands()
+{
+  /* Command: Capture */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Screenshot, Capture, "File", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+}
+
+/** Unregisters all the screenshot commands
+ */
+static orxINLINE void orxScreenshot_UnregisterCommands()
+{
+  /* Command: Capture */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Screenshot, Capture);
+}
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
@@ -194,6 +225,7 @@ void orxFASTCALL orxScreenshot_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_DISPLAY);
 
@@ -212,6 +244,9 @@ orxSTATUS orxFASTCALL orxScreenshot_Init()
   {
     /* Cleans control structure */
     orxMemory_Zero(&sstScreenshot, sizeof(orxSCREENSHOT_STATIC));
+
+    /* Registers commands */
+    orxScreenshot_RegisterCommands();
 
     /* Inits flags */
     sstScreenshot.u32Flags = orxSCREENSHOT_KU32_STATIC_FLAG_READY;
@@ -233,6 +268,9 @@ void orxFASTCALL orxScreenshot_Exit()
   /* Initialized? */
   if(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters commands */
+    orxScreenshot_UnregisterCommands();
+
     /* Updates flags */
     sstScreenshot.u32Flags &= ~orxSCREENSHOT_KU32_STATIC_FLAG_READY;
   }
