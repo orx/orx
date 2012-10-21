@@ -1521,7 +1521,7 @@ orxSTATUS orxFASTCALL orxBody_SetJointMotorSpeed(orxBODY_JOINT *_pstBodyJoint, o
 
 /** Sets a (revolute) body joint maximum motor torque
  * @param[in]   _pstBodyJoint   Concerned body joint
- * @param[in]   _fMaxMotorTorque  Maximum motor torque
+ * @param[in]   _fMaxTorque     Maximum motor torque
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
