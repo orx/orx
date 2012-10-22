@@ -25,7 +25,7 @@
 /**
  * @file orx.h
  * @date 02/09/2005
- * @author
+ * @author iarwain@orx-project.org
  *
  * @todo
  */
@@ -33,7 +33,7 @@
 /**
  * @addtogroup Orx
  *
- * Main orx include
+ * Main orx include, execution convenience helpers, freely modifiable by users
  *
  * @{
  */
@@ -114,14 +114,15 @@ static void orxFASTCALL orx_MainSetup()
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PROFILER);
 
+  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONSOLE);
+  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PROFILER);
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
   return;
 }
 
-#ifdef __orxIPHONE__
+#ifdef __orxIOS__
 
   #ifdef __orxOBJC__
 
@@ -131,12 +132,12 @@ static void orxFASTCALL orx_MainSetup()
  */
 @interface orxAppDelegate : NSObject <UIAccelerometerDelegate>
 {
-  UIWindow *poWindow;
-  orxView  *poView;
+  UIWindow           *poWindow;
+  orxViewController  *poViewController;
 }
 
-@property (nonatomic, retain) UIWindow *poWindow;
-@property (nonatomic, retain) UIView   *poView;
+@property (nonatomic, retain) UIWindow         *poWindow;
+@property (nonatomic, retain) UIViewController *poViewController;
 
 - (void)  MainLoop;
 
@@ -194,7 +195,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
   #endif /* __orxOBJC__ */
 
-#else /* __orxIPHONE__ */
+#else /* __orxIOS__ */
 
   #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
@@ -254,7 +255,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         {
           /* Sends frame start event */
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
-
 
           /* Runs the engine */
           eMainStatus = _pfnRun();
@@ -336,7 +336,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 
   #endif /* __orxANDROID_NATIVE__ */
 
-#endif /* __orxIPHONE__ */
+#endif /* __orxIOS__ */
 
 #endif /* __orxPLUGIN__ */
 

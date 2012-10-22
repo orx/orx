@@ -49,6 +49,7 @@
 
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
+#include "render/orxViewport.h"
 
 
 /** Misc defines
@@ -114,6 +115,14 @@ extern orxDLLAPI void orxFASTCALL             orxRender_Exit();
  * @return      orxVECTOR if found, orxNULL otherwise
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
+
+/** Get a screen position given a world one and a viewport (rendering position)
+ * @param[in]   _pvWorldPosition                      Concerned world position
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then the first viewport will be used
+ * @param[out]  _pvScreenPosition                     Corresponding screen position
+ * @return      orxVECTOR if found (can be off-screen), orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxRender_GetScreenPosition(const orxVECTOR *_pvWorldPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvScreenPosition);
 
 #endif /* _orxRENDER_H_ */
 

@@ -290,17 +290,17 @@ static orxINLINE orxBOOL                      orxOBox_ZAlignedTestIntersection(c
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
   orxASSERT(_pstBox2 != orxNULL);
-  orxASSERT((_pstBox1->vZ.fX == orxFLOAT_0) && (_pstBox1->vZ.fX == orxFLOAT_0));
-  orxASSERT((_pstBox1->vZ.fY == orxFLOAT_0) && (_pstBox1->vZ.fY == orxFLOAT_0));
-  orxASSERT((_pstBox1->vZ.fZ >= orxFLOAT_0) && (_pstBox1->vZ.fZ >= orxFLOAT_0));
+  orxASSERT(_pstBox1->vZ.fX == orxFLOAT_0);
+  orxASSERT(_pstBox1->vZ.fY == orxFLOAT_0);
+  orxASSERT(_pstBox1->vZ.fZ >= orxFLOAT_0);
 
   /* Z intersected? */
   if((_pstBox2->vPosition.fZ + _pstBox2->vZ.fZ >= _pstBox1->vPosition.fZ)
   && (_pstBox2->vPosition.fZ <= _pstBox1->vPosition.fZ + _pstBox1->vZ.fZ))
   {
-    orxU32            i;
-    orxVECTOR         vOrigin1, vOrigin2, *pvOrigin1 = &vOrigin1, *pvOrigin2 = &vOrigin2, *pvTemp;
-    const orxOBOX *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;
+    orxU32          i;
+    orxVECTOR       vOrigin1, vOrigin2, *pvOrigin1 = &vOrigin1, *pvOrigin2 = &vOrigin2, *pvTemp;
+    const orxOBOX  *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;
 
     /* Computes boxes origins */
     vOrigin1.fX = _pstBox1->vPosition.fX - pstBox1->vPivot.fX;

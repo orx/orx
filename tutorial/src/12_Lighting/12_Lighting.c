@@ -162,7 +162,7 @@ void ComputeNormalMap(const orxU8 *_pu8SrcBuffer, orxU8 *_pu8DstBuffer, orxS32 _
       orxS32          s32Index, s32Left, s32Right, s32Up, s32Down;
       orxFLOAT        fLeft, fRight, fUp, fDown;
       orxCOLOR        stNormal;
-      orxU32          u32Pixel;
+      orxRGBA         stPixel;
       const orxVECTOR vHalf = {orx2F(0.5f), orx2F(0.5f), orx2F(0.5f)};
 
       /* Gets pixel's index */
@@ -185,13 +185,13 @@ void ComputeNormalMap(const orxU8 *_pu8SrcBuffer, orxU8 *_pu8DstBuffer, orxS32 _
       stNormal.fAlpha = orxFLOAT_1;
 
       /* Gets pixel value */
-      u32Pixel = orxColor_ToRGBA(&stNormal);
+      stPixel = orxColor_ToRGBA(&stNormal);
 
       /* Stores it */
-      _pu8DstBuffer[s32Index]     = orxRGBA_R(u32Pixel);
-      _pu8DstBuffer[s32Index + 1] = orxRGBA_G(u32Pixel);
-      _pu8DstBuffer[s32Index + 2] = orxRGBA_B(u32Pixel);
-      _pu8DstBuffer[s32Index + 3] = orxRGBA_A(u32Pixel);
+      _pu8DstBuffer[s32Index]     = stPixel.u8R;
+      _pu8DstBuffer[s32Index + 1] = stPixel.u8G;
+      _pu8DstBuffer[s32Index + 2] = stPixel.u8B;
+      _pu8DstBuffer[s32Index + 3] = stPixel.u8A;
     }
   }
 }

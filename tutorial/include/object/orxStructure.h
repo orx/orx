@@ -34,8 +34,8 @@
  * @addtogroup orxStructure
  *
  * Structure module
- * Allows to creates and handle structures.
- * Structures can be referenced by other structures (or objects).
+ * Allows to create and handle structures.
+ * Structures can be referenced by other structures.
  *
  * @{
  */
@@ -47,7 +47,6 @@
 #include "orxInclude.h"
 
 #include "core/orxClock.h"
-#include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
 
@@ -55,7 +54,7 @@
  */
 #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE) ((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))
 
-#define orxSTRUCTURE(STRUCTURE)     (((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL)
+#define orxSTRUCTURE(STRUCTURE)     (((STRUCTURE != orxNULL) && (((((orxSTRUCTURE *)STRUCTURE)->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL)
 
 #define orxANIM(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)
 #define orxANIMPOINTER(STRUCTURE)   orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMPOINTER)
@@ -76,6 +75,7 @@
 #define orxSPAWNER(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, SPAWNER)
 #define orxTEXT(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXT)
 #define orxTEXTURE(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)
+#define orxTIMELINE(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, TIMELINE)
 #define orxVIEWPORT(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, VIEWPORT)
 
 /** Structure register macro
@@ -86,18 +86,25 @@
 /** Structure assert
  */
 #define orxSTRUCTURE_ASSERT(STRUCTURE)                          \
-  orxASSERT((STRUCTURE) != orxNULL);                            \
-  orxASSERT((((orxSTRUCTURE *)(STRUCTURE))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((STRUCTURE != orxNULL) && (((((orxSTRUCTURE *)(STRUCTURE))->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) < orxSTRUCTURE_ID_NUMBER));
 
 /** Structure magic number
  */
-#ifdef __orxDEBUG__
-  #define orxSTRUCTURE_MAGIC_TAG_ACTIVE   0xDEFACED0
-#else
-  #define orxSTRUCTURE_MAGIC_TAG_ACTIVE   0x00000000
-#endif
+#define orxSTRUCTURE_GUID_MAGIC_TAG_DELETED   0xDEFACED0DEADC0DEULL
 
-#define orxSTRUCTURE_MAGIC_TAG_DELETED    0xDEADC0DE
+/** Structure GUID masks/shifts
+ */
+#define orxSTRUCTURE_GUID_MASK_STRUCTURE_ID   0x000000000000001FULL
+#define orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID  0
+
+#define orxSTRUCTURE_GUID_MASK_ITEM_ID        0x0000FFFF00000000ULL
+#define orxSTRUCTURE_GUID_SHIFT_ITEM_ID       32
+
+#define orxSTRUCTURE_GUID_MASK_REF_COUNTER    0xFFFF000000000000ULL
+#define orxSTRUCTURE_GUID_SHIFT_REF_COUNTER   48
+
+#define orxSTRUCTURE_GUID_MASK_INSTANCE_ID    0x00000000FFFFFFE0ULL
+#define orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID   5
 
 
 /** Structure IDs
@@ -115,6 +122,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_SHADERPOINTER,
   orxSTRUCTURE_ID_SOUNDPOINTER,
   orxSTRUCTURE_ID_SPAWNER,
+  orxSTRUCTURE_ID_TIMELINE,
 
   orxSTRUCTURE_ID_LINKABLE_NUMBER,
 
@@ -155,16 +163,15 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
  */
 typedef struct __orxSTRUCTURE_t
 {
-  orxSTRUCTURE_ID eID;            /**< Structure ID : 4 */
-  orxU32          u32Flags;       /**< Flags : 8 */
-  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12 */
-  orxU32          u32RefCounter;  /**< Reference counter : 16 */
+  orxU64          u64GUID;          /**< Structure GUID : 8 */
+  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12/16 */
+  orxU32          u32Flags;       /**< Flags : 16/20 */
 
-#ifdef __orxX86_64__
+#if defined(__orxX86_64__) || defined(__orxPPC64__)
 
   orxU8           au8Padding[12]; /**< Extra padding to be 16-bit aligned on 64bit architectures */
 
-#endif /* __orxX86_64__ */
+#endif /* __orxX86_64__ || __orxPPC64__ */
 
 } orxSTRUCTURE;
 
@@ -184,7 +191,7 @@ static orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(const void *_pStructure,
   orxSTRUCTURE *pstResult;
 
   /* Updates result */
-  pstResult = ((_pStructure != orxNULL) && (((orxSTRUCTURE *)_pStructure)->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) == _eStructureID) ? (orxSTRUCTURE *)_pStructure : (orxSTRUCTURE *)orxNULL;
+  pstResult = ((_pStructure != orxNULL) && ((((orxSTRUCTURE *)_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID) == _eStructureID) ? (orxSTRUCTURE *)_pStructure : (orxSTRUCTURE *)orxNULL;
 
   /* Done! */
   return pstResult;
@@ -259,6 +266,12 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(void
 /** *** Structure storage accessors *** */
 
 
+/** Gets structure given its GUID
+ * @param[in]   _u64GUID        Structure's GUID
+ * @return      orxSTRUCTURE / orxNULL if not found/alive
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_Get(orxU64 _u64GUID);
+
 /** Gets first stored structure (first list cell or tree root depending on storage type)
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxSTRUCTURE
@@ -317,12 +330,24 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_SetParent(v
  */
 static orxINLINE void                                   orxStructure_IncreaseCounter(void *_pStructure)
 {
+  orxU64 u64Counter;
+
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
 
-  /* Increases it */
-  (orxSTRUCTURE(_pStructure))->u32RefCounter++;
+  /* Gets current counter */
+  u64Counter = (orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNTER) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER;
 
+  /* Updates it */
+  u64Counter++;
+
+  /* Checks */
+  orxASSERT(u64Counter <= (orxSTRUCTURE_GUID_MASK_REF_COUNTER >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER));
+
+  /* Stores it */
+  orxSTRUCTURE(_pStructure)->u64GUID = (orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER) | (u64Counter << orxSTRUCTURE_GUID_SHIFT_REF_COUNTER);
+
+  /* Done! */
   return;
 }
 
@@ -331,27 +356,51 @@ static orxINLINE void                                   orxStructure_IncreaseCou
  */
 static orxINLINE void                                   orxStructure_DecreaseCounter(void *_pStructure)
 {
+  orxU64 u64Counter;
+
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
-  orxASSERT(orxSTRUCTURE(_pStructure)->u32RefCounter > 0);
 
-  /* Decreases it */
-  orxSTRUCTURE(_pStructure)->u32RefCounter--;
+  /* Gets current counter */
+  u64Counter = (orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNTER) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER;
 
+  /* Checks */
+  orxASSERT(u64Counter > 0);
+
+  /* Updates it */
+  u64Counter--;
+
+  /* Stores it */
+  orxSTRUCTURE(_pStructure)->u64GUID = (orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER) | (u64Counter << orxSTRUCTURE_GUID_SHIFT_REF_COUNTER);
+
+  /* Done! */
   return;
 }
 
 /** Gets structure reference counter
  * @param[in]   _pStructure    Concerned structure
- * @return      orxS32
+ * @return      orxU32
  */
-static orxINLINE orxS32                                 orxStructure_GetRefCounter(const void *_pStructure)
+static orxINLINE orxU32                                 orxStructure_GetRefCounter(const void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
 
-  /* Returns it */
-  return(orxSTRUCTURE(_pStructure)->u32RefCounter);
+  /* Done! */
+  return((orxU32)((orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNTER) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER));
+}
+
+/** Gets structure GUID
+ * @param[in]   _pStructure    Concerned structure
+ * @return      orxU64
+ */
+static orxINLINE orxU64                                 orxStructure_GetGUID(const void *_pStructure)
+{
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pStructure);
+
+  /* Done! */
+  return orxSTRUCTURE(_pStructure)->u64GUID;
 }
 
 /** Gets structure ID
@@ -363,8 +412,8 @@ static orxINLINE orxSTRUCTURE_ID                        orxStructure_GetID(const
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
 
-  /* Returns it */
-  return((orxSTRUCTURE_ID)(orxSTRUCTURE(_pStructure)->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE));
+  /* Done! */
+  return((orxSTRUCTURE_ID)((orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
 }
 
 /** Tests flags against structure ones
@@ -421,6 +470,7 @@ static orxINLINE void                                   orxStructure_SetFlags(vo
 
   orxFLAG_SET(orxSTRUCTURE(_pStructure)->u32Flags, _u32AddFlags, _u32RemoveFlags);
 
+  /* Done! */
   return;
 }
 

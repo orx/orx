@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxBody
- * 
+ *
  * Body Module
  * Allows to creates and handle physical bodies
  * They are used as container with associated properties
@@ -278,7 +278,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orx
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetMass(const orxBODY *_pstBody);
 
-/** Gets a body center of mass
+/** Gets a body center of mass (object space)
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
@@ -323,7 +323,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyTorque(orxBODY *_pstB
 /** Applies a force
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);
@@ -375,6 +375,28 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+
+/** Enables a (revolute) body joint motor
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _bEnable        Enable / Disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_EnableMotor(orxBODY_JOINT *_pstBodyJoint, orxBOOL _bEnable);
+
+/** Sets a (revolute) body joint motor speed
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fSpeed         Speed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMotorSpeed(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed);
+
+/** Sets a (revolute) body joint maximum motor torque
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fMaxTorque     Maximum motor torque
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
 /** Issues a raycast to test for potential bodies in the way

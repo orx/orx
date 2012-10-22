@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPhysics
- * 
+ *
  * Physics plugin module
  * Module that handles physics interactions
  *
@@ -200,7 +200,7 @@ typedef struct __orxBODY_JOINT_DEF_t
     struct
     {
       orxFLOAT  fLength;                    /**< Length : 56 */
-      
+
     } stRope;                               /**< Rope : 56 */
 
     struct
@@ -296,7 +296,7 @@ typedef struct __orxPHYSICS_BODY_JOINT_t  orxPHYSICS_BODY_JOINT;
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
 #define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
-#define orxPHYSICS_KZ_CONFIG_FIXED_DT     "FixedDT"
+#define orxPHYSICS_KZ_CONFIG_SHOW_DEBUG   "ShowDebug"
 
 
 /***************************************************************************
@@ -450,7 +450,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravit
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetMass(const orxPHYSICS_BODY *_pstBody);
 
-/** Gets the center of mass of a physical body
+/** Gets the center of mass of a physical body (object space but scale isn't accounted for)
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvMassCenter                         Center of mass to get
  * @return Center of mass of the physical body
@@ -495,7 +495,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyTorque(orx
 /** Applies a force to a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[in]   _pvForce                              Force to apply
- * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
+ * @param[in]   _pvPoint                              Point of application (world coordinates) (if null, center of mass will be used)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);
@@ -503,7 +503,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyForce(orxP
 /** Applies an impulse to a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[in]   _pvImpulse                            Impulse to apply
- * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
+ * @param[in]   _pvPoint                              Point of application (world coordinates) (if null, center of mass will be used)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
@@ -547,6 +547,28 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(con
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+
+/** Enables a (revolute) body joint motor
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _bEnable        Enable / Disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable);
+
+/** Sets a (revolute) body joint motor speed
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fSpeed         Speed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed);
+
+/** Sets a (revolute) body joint maximum motor torque
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[in]   _fMaxTorque     Maximum motor torque
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
 /** Issues a raycast to test for potential physics bodies in the way

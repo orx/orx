@@ -175,7 +175,7 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(const orxVIE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_AddShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID);
 
-/** Removes a shader using using its config ID
+/** Removes a shader using its config ID
  * @param[in]   _pstViewport      Concerned viewport
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

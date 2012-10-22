@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxType
- * 
+ *
  * Base types
  *
  * @{
@@ -98,6 +98,12 @@
     typedef signed    long long   orxS64;
 
   #endif /* __orxGCC__ */
+  #ifdef __orxLLVM__
+
+    typedef unsigned  long long   orxU64;
+    typedef signed    long long   orxS64;
+
+  #endif /* __orxLLVM__ */
   #ifdef __orxMSVC__
 
     typedef unsigned  __int64     orxU64;
@@ -107,12 +113,12 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / iPhone / Android / Wii */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxWII__) || defined(__orxIPHONE__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  /* Linux / Mac / iOS / Android */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     typedef void *                orxHANDLE;
 
-    #ifdef __orxX86_64__
+    #if defined(__orxX86_64__) || defined(__orxPPC64__)
 
     typedef unsigned  long long   orxU64;
     typedef unsigned  int         orxU32;
@@ -126,7 +132,7 @@
 
     typedef unsigned  int         orxBOOL;
 
-    #else /* __orxX86_64__ */
+    #else /* __orxX86_64__ || __orxPPC64__ */
 
     typedef unsigned  long long   orxU64;
     typedef unsigned  long        orxU32;
@@ -140,7 +146,7 @@
 
     typedef unsigned  long        orxBOOL;
 
-    #endif /* __orxX86_64__ */
+    #endif /* __orxX86_64__ || __orxPPC64__ */
 
     typedef float                 orxFLOAT;
     typedef double                orxDOUBLE;
@@ -155,7 +161,7 @@
 
     #define orxENUM_NONE          0xFFFFFFFFL
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxWII__ || __orxIPHONE__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -169,6 +175,7 @@
 /* *** Float constants *** */
 static const orxFLOAT             orxFLOAT_0            = orx2F(0.0f);
 static const orxFLOAT             orxFLOAT_1            = orx2F(1.0f);
+static const orxFLOAT             orxFLOAT_MAX          = orx2F(1e37);
 
 
 /* *** Undefined constants *** */

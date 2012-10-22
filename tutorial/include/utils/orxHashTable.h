@@ -81,7 +81,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Clear(orxHASHTABLE 
  * @param[in] _pstHashTable         Concerned hash table
  * @return    Item number
  */
-extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable);
 
 /** @name HashTable key manipulation.
  * @{ */
@@ -119,38 +119,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
 
 
 /** @name HashTable iteration.
- * Used to pass over all elements of the hashtable.
+ * Used to iterate on all elements of the hashtable.
  * @{ */
-/** Find a the first item of the hashtable and return the iterator corresponding to the search.
- * @param[in] _pstHashTable Address of the HashTable.
- * @param[in] _pu32Key Address where store the key, NULL to not store it.
- * @param[in] _ppData Address where store the data, NULL to not store it.
- * @return iterator of HashTable traversing. orxHANDLE_UNDEFINED if no element.
+/** Gets the next item in the hashtable and returns an iterator for next search
+ * @param[in]   _pstHashTable   Concerned HashTable
+ * @param[in]   _hIterator      Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
+ * @param[out]  _pu32Key        Current element key
+ * @param[out]  _ppData         Current element data
+ * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData);
-
-/** Find a the next item of the hashtable and return the iterator corresponding to the search.
- * @param[in] _pstHashTable Address of the HashTable.
- * @param[in] _pu32Key Address where store the key, NULL to not store it.
- * @param[in] _ppData Address where store the data, NULL to not store it.
- * @param[in] _hIterator Iterator to continue the search.
- * @return iterator of HashTable traversing. orxHANDLE_UNDEFINED if no element.
- */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
 /** @} */
 
-/*******************************************************************************
- * DEBUG FUNCTION
- ******************************************************************************/
-
-#ifdef __orxDEBUG__
-
-/** Print the content of a Hash table
- * @param[in] _pstHashTable  Hash table to display
+/** Optimizes a hashtable for read accesses (minimizes number of cache misses upon collisions)
+ * @param[in] _pstHashTable HashTable to optimize
+ * @return orxSTATUS_SUCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL               orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Optimize(orxHASHTABLE *_pstHashTable);
 
-#endif /* __orxDEBUG__ */
 
 #endif /* _orxHASHTABLE_H_ */
 

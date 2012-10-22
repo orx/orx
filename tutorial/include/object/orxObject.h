@@ -79,6 +79,8 @@ typedef enum __orxOBJECT_EVENT_t
 typedef struct __orxOBJECT_t                orxOBJECT;
 
 
+/** @name Internal module function
+ * @{ */
 /** Object module setup
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_Setup();
@@ -91,7 +93,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Init();
 /** Exits from the object module
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_Exit();
+/** @} */
 
+/** @name Basic handling
+ * @{ */
 /** Creates an empty object
  * @return orxOBJECT / orxNULL
  */
@@ -132,8 +137,11 @@ extern orxDLLAPI void orxFASTCALL           orxObject_Pause(orxOBJECT *_pstObjec
  * @return      orxTRUE if paused, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsPaused(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name User data
+ * @{ */
 /** Sets user data for an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pUserData    User data to store / orxNULL
@@ -145,7 +153,10 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetUserData(orxOBJECT *_ps
  * @return      Stored user data / orxNULL
  */
 extern orxDLLAPI void *orxFASTCALL          orxObject_GetUserData(const orxOBJECT *_pstObject);
+/** @} */
 
+/** @name Ownership
+ * @{ */
 /** Sets owner for an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pOwner       Owner to set / orxNULL, if owner is an orxOBJECT, the owned object will be added to it as a children
@@ -158,20 +169,22 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
 
-
-/** Gets object's first child (only if created with a config ChildList)
+/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
  * @param[in]   _pstObject    Concerned object
- * @return      First child object / orxNULL
+ * @return      First owned child object / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedChild(const orxOBJECT *_pstObject);
 
-/** Gets object's next sibling (only if created with a config ChildList)
+/** Gets object's next owned sibling (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
  * @param[in]   _pstObject    Concerned object
  * @return      Next sibling object / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name Clock
+ * @{ */
 /** Sets associated clock for an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pstClock     Clock to associate / orxNULL
@@ -184,8 +197,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstOb
  * @return      Associated clock / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name Linked structures
+ * @{ */
 /** Links a structure to an object
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstStructure   Structure to link
@@ -200,17 +216,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_LinkStructure(orxOBJECT *_
 extern orxDLLAPI void orxFASTCALL           orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
-/* *** Object accessors *** */
-
-
 /** Structure used by an object get accessor, given its structure ID. Structure must then be cast correctly (see helper macro)
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eStructureID   ID of the structure to get
  * @return orxSTRUCTURE / orxNULL
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(const orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
+/** @} */
 
 
+/** @name Flip
+ * @{ */
 /** Sets object flipping
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _bFlipX         Flip it on X axis
@@ -226,8 +242,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFlip(orxOBJECT *_pstObj
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
+/** @} */
 
 
+/** @name Graphic
+ * @{ */
 /** Sets object pivot
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvPivot        Object pivot
@@ -235,26 +254,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot);
 
-/** Sets object position
+/** Sets object origin
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pvPosition     Object position
+ * @param[in]   _pvOrigin       Object origin
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR *_pvOrigin);
 
-/** Sets object rotation
+/** Sets object size
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fRotation      Object rotation (radians)
+ * @param[in]   _pvSize       	Object size
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
-
-/** Sets object scale
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pvScale        Object scale vector
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *_pvSize);
 
 /** Get object pivot
  * @param[in]   _pstObject      Concerned object
@@ -269,6 +281,59 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPivot(const orxOBJECT *
  * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetOrigin(const orxOBJECT *_pstObject, orxVECTOR *_pvOrigin);
+
+/** Gets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize);
+/** @} */
+
+
+/** @name Frame
+ * @{ */
+/** Sets object position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPosition     Object position
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition);
+
+/** Sets object world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPosition     Object world position
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition);
+
+/** Sets object rotation
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRotation      Object rotation (radians)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
+
+/** Sets object world rotation
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRotation      Object world rotation (radians)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
+
+/** Sets object scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvScale        Object scale vector
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale);
+
+/** Sets object world scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvScale        Object world scale vector
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale);
 
 /** Get object position
  * @param[in]   _pstObject      Concerned object
@@ -309,24 +374,22 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetScale(const orxOBJECT *
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale);
+/** @} */
 
 
-/** Sets an object parent
+/** @name Parent
+ * @{ */
+/** Sets an object parent (in the frame hierarchy)
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
+/** @} */
 
 
-/** Gets object size
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pvSize         Object's size
- * @return      orxVECTOR / orxNULL
- */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize);
-
-
+/** @name Animation
+ * @{ */
 /** Sets an object animset
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstAnimSet     Animation set to set / orxNULL
@@ -369,16 +432,11 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsCurrentAnim(const orxOBJ
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+/** @} */
 
 
-/** Gets object's bounding box (OBB)
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstBoundingBox Bounding box result
- * @return      Bounding box / orxNULL
- */
-extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox);
-
-
+/** @name Physics / dynamics
+ * @{ */
 /** Sets an object speed
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvSpeed        Speed to set
@@ -440,20 +498,12 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetCustomGravity(const orx
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetMass(const orxOBJECT *_pstObject);
 
-/** Gets an object center of mass
+/** Gets an object center of mass (object space)
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvMassCenter   Mass center to get
  * @return      Mass center / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetMassCenter(const orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter);
-
-
-/** Sets object text string, if object is associated to a text
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zString        String to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_pstObject, const orxSTRING _zString);
 
 
 /** Applies a torque
@@ -466,7 +516,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyTorque(orxOBJECT *_ps
 /** Applies a force
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);
@@ -491,8 +541,39 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
  * @return Colliding orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+/** @} */
 
 
+/** @name Text
+ * @{ */
+/** Sets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zString        String to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_pstObject, const orxSTRING _zString);
+
+/** Gets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject);
+/** @} */
+
+
+/** @name Bounding box
+ * @{ */
+/** Gets object's bounding box (OBB)
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstBoundingBox Bounding box result
+ * @return      Bounding box / orxNULL
+ */
+extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox);
+/** @} */
+
+
+/** @name Color
+ * @{ */
 /** Sets object color
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
@@ -518,8 +599,11 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(const orxOBJECT *
  * @return      orxCOLOR / orxNULL
  */
 extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor);
+/** @} */
 
 
+/** @name FX
+ * @{ */
 /** Adds an FX using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
@@ -550,7 +634,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
-/** Removes an FX using using its config ID
+/** Removes an FX using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -563,8 +647,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstOb
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SynchronizeFX(orxOBJECT *_pstObject, const orxOBJECT *_pstModel);
+/** @} */
 
 
+/** @name Sound
+ * @{ */
 /** Adds a sound using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zSoundConfigID Config ID of the sound to add
@@ -572,7 +659,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SynchronizeFX(orxOBJECT *_
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID);
 
-/** Removes a sound using using its config ID
+/** Removes a sound using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zSoundConfigID Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -594,12 +681,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstO
 
 /** Sets pitch for all sounds of an object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
+ * @param[in]   _fPitch         Desired pitch (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);
+/** @} */
 
 
+/** @name Shader
+ * @{ */
 /** Adds a shader to an object using its config ID
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zShaderConfigID  Config ID of the shader to add
@@ -607,7 +697,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
-/** Removes a shader using using its config ID
+/** Removes a shader using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -625,15 +715,51 @@ extern orxDLLAPI void orxFASTCALL           orxObject_EnableShader(orxOBJECT *_p
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name TimeLine
+ * @{ */
+/** Adds a timeline track to an object using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Removes a timeline track using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zTrackConfigID Config ID of the timeline track to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Enables an object's timeline
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _bEnable          Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_EnableTimeLine(orxOBJECT *_pstObject, orxBOOL _bEnable);
+
+/** Is an object's timeline enabled?
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTimeLineEnabled(const orxOBJECT *_pstObject);
+/** @} */
+
+
+/** @name Name
+ * @{ */
 /** Gets object config name
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name Neighboring
+ * @{ */
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL
@@ -644,8 +770,11 @@ extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const o
  * @param[in]   _pstObjectList  Concerned object list
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_DeleteNeighborList(orxBANK *_pstObjectList);
+/** @} */
 
 
+/** @name Smoothing
+ * @{ */
 /** Sets object smoothing
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
@@ -658,8 +787,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
  * @return Smoothing type (enabled, default or none)
  */
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name Graphic / texture
+ * @{ */
 /** Gets object working texture
  * @param[in]   _pstObject     Concerned object
  * @return orxTEXTURE / orxNULL
@@ -696,8 +828,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_p
  * @return Blend mode (alpha, multiply, add or none)
  */
 extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const orxOBJECT *_pstObject);
+/** @} */
 
 
+/** @name Life time / active time
+ * @{ */
 /** Sets object lifetime
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
@@ -711,7 +846,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_ps
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJECT *_pstObject);
 
+/** Gets object active time
+ * @param[in]   _pstObject      Concerned object
+ * @return      Active time
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
+/** @} */
 
+
+/** @name Picking
+ * @{ */
 /** Picks the first active object with graphic "under" the given position
  * @param[in]   _pvPosition     Position to pick from
  * @return      orxOBJECT / orxNULL
@@ -723,6 +867,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvP
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox);
+/** @} */
 
 #endif /* _orxOBJECT_H_ */
 

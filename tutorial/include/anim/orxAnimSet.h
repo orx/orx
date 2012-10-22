@@ -28,7 +28,6 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Add multi-channel support (events, custom, ...)
  */
 
 /**

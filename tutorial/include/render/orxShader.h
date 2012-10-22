@@ -58,6 +58,7 @@ typedef enum __orxSHADER_PARAM_TYPE_t
   orxSHADER_PARAM_TYPE_FLOAT = 0,
   orxSHADER_PARAM_TYPE_TEXTURE,
   orxSHADER_PARAM_TYPE_VECTOR,
+  orxSHADER_PARAM_TYPE_TIME,
 
   orxSHADER_PARAM_TYPE_NUMBER,
 
@@ -186,6 +187,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTextureParam(orxSHA
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList);
+
+/** Adds a time parameter definition to a shader (parameters need to be set before compiling the shader code)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName);
 
 /** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
