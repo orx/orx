@@ -2679,7 +2679,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             if(orxString_NCompare(pcLineStart, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load config file [%s]: invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't load config file, invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
 
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
@@ -2835,7 +2835,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 }
 
                 /* Logs */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config entry [%s.%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, sstConfig.pstCurrentSection->zName, pstEntry->zKey, pcValueStart, pstEntry->stValue.zValue);
 
                 /* Deletes entry */
                 orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
@@ -2897,7 +2897,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
                 {
                   /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete file name <%*s>, closing character '%c' not found", _zFileName, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                   /* Updates new line start */
                   pcLineStart = pc + 1;
@@ -2921,13 +2921,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 *pc = orxCHAR_NULL;
 
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                 /* Loads file */
                 orxConfig_Load(pcLineStart + 1);
 
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                 /* Restores current section */
                 sstConfig.pstCurrentSection = pstCurrentSection;
@@ -2965,7 +2965,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 {
                   /* Logs message */
                   *pc = orxCHAR_NULL;
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Section name <%s> incomplete, closing character '%c' not found.", pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete section name <%s>, closing character '%c' not found", _zFileName, pcLineStart + 1, orxCONFIG_KC_SECTION_END);
 
                   /* Updates new line start */
                   pcLineStart = pc + 1;
@@ -3094,7 +3094,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 {
                   /* Logs message */
                   *pc = orxCHAR_NULL;
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: No value for key <%s>, assign character '%c' not found", _zFileName, pcLineStart, orxCONFIG_KC_ASSIGN);
                 }
               }
             }
@@ -3130,7 +3130,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   else
   {
     /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load config file [%s]: can't find/open file.", _zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't load file: invalid / file not found", _zFileName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -3183,7 +3183,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     eResult = orxConfig_Load(sstConfig.zBaseFile);
 
     /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Config file has been reloaded", sstConfig.zBaseFile);
 
     /* For all entries in history */
     for(pzHistoryEntry = (orxSTRING *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
@@ -3194,7 +3194,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
       eResult = orxConfig_Load(*pzHistoryEntry);
 
       /* Logs */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config file [%s] has been reloaded.", *pzHistoryEntry);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Config file has been reloaded", *pzHistoryEntry);
     }
 
     /* Restores history flag */
@@ -3206,7 +3206,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config history isn't stored. Please check your config file under the [Config] section.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Config history isn't stored. Please check your config file under the [Config] section");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -3410,13 +3410,13 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't save config file <%s>: can't open file!", _zFileName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file, can't open file on disk!", _zFileName);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file with encryption, no valid encryption key provided!", _zFileName);
   }
 
   /* Profiles */
