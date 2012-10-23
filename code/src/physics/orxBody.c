@@ -921,6 +921,43 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
   return pstResult;
 }
 
+/** Removes a part using its config ID
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _zConfigID      Config ID of the part to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID)
+{
+  orxU32        u32ID;
+  orxBODY_PART *pstPart;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Gets part ID */
+  u32ID = orxString_ToCRC(_zConfigID);
+
+  /* For all parts */
+  for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
+      pstPart != orxNULL;
+      pstPart = orxBody_GetNextPart(_pstBody, pstPart))
+  {
+    /* Found? */
+    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == u32ID)
+    {
+      /* Removes it */
+      eResult = orxBody_RemovePart(pstPart);
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets next body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pstBodyPart    Current body part (orxNULL to get the first one)

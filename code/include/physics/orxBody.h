@@ -141,6 +141,13 @@ extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_AddPart(orxBODY *_pstBody,
  */
 extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_AddPartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID);
 
+/** Removes a part using its config ID
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _zConfigID      Config ID of the part to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID);
+
 /** Gets next body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pstBodyPart    Current body part (orxNULL to get the first one)
