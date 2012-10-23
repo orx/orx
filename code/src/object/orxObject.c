@@ -2598,6 +2598,24 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
       }
 
+      /* Has a position? */
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+      {
+        /* Has valid parent and uses its position? */
+        if((bHasParent != orxFALSE)
+        && (bUseParentPosition != orxFALSE))
+        {
+          /* Gets world space values */
+          orxVector_Mul(&vValue, &vValue, &vParentSize);
+        }
+
+        /* Updates object position */
+        orxObject_SetPosition(pstResult, &vValue);
+      }
+
+      /* Updates object rotation */
+      orxObject_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
+
       /* *** Children *** */
 
       /* Has child list? */
@@ -2675,24 +2693,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       }
 
       /* *** Misc *** */
-
-      /* Has a position? */
-      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
-      {
-        /* Has valid parent and uses its position? */
-        if((bHasParent != orxFALSE)
-        && (bUseParentPosition != orxFALSE))
-        {
-          /* Gets world space values */
-          orxVector_Mul(&vValue, &vValue, &vParentSize);
-        }
-
-        /* Updates object position */
-        orxObject_SetPosition(pstResult, &vValue);
-      }
-
-      /* Updates object rotation */
-      orxObject_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
 
       /* Has speed? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SPEED, &vValue) != orxNULL)
