@@ -581,6 +581,32 @@ void orxFASTCALL _orxDebug_EnableLevel(orxDEBUG_LEVEL _eLevel, orxBOOL _bEnable)
   return;
 }
 
+/** Is a given log level enabled?
+ * @param[in]   _eLevel                       Concerned debug level
+*/
+orxBOOL orxFASTCALL _orxDebug_IsLevelEnabled(orxDEBUG_LEVEL _eLevel)
+{
+  orxBOOL bResult;
+
+  /* All levels? */
+  if(_eLevel == orxDEBUG_LEVEL_ALL)
+  {
+    /* Updates result */
+    bResult = orxFLAG_TEST_ALL(sstDebug.u32LevelFlags, 0xFFFFFFFF) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    /* Checks */
+    orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+
+    /* Updates result */
+    bResult = orxFLAG_TEST(sstDebug.u32LevelFlags, 1 << _eLevel) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Sets debug file name
  * @param[in]   _zFileName                    Debug file name
  */

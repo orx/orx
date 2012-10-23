@@ -204,6 +204,7 @@
   /* End platform specific */
 
   #define orxDEBUG_ENABLE_LEVEL(LEVEL, ENABLE)_orxDebug_EnableLevel(LEVEL, ENABLE)
+  #define orxDEBUG_IS_LEVEL_ENABLED(LEVEL)    _orxDebug_IsLevelEnabled(LEVEL)
 
   #define orxDEBUG_SET_FLAGS(SET, UNSET)      _orxDebug_SetFlags(SET, UNSET)
   #define orxDEBUG_GET_FLAGS()                _orxDebug_GetFlags()
@@ -252,6 +253,7 @@
   #define orxBREAK()
 
   #define orxDEBUG_ENABLE_LEVEL(LEVEL, ENABLE)_orxDebug_EnableLevel(LEVEL, ENABLE)
+  #define orxDEBUG_IS_LEVEL_ENABLED(LEVEL)    _orxDebug_IsLevelEnabled(LEVEL)
 
   #define orxDEBUG_SETDEBUGFILE(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
@@ -352,6 +354,11 @@ extern orxDLLAPI void orxCDECL                _orxDebug_Log(orxDEBUG_LEVEL _eLev
  * @param[in]   _bEnable                      Enable / disable
 */
 extern orxDLLAPI void orxFASTCALL             _orxDebug_EnableLevel(orxDEBUG_LEVEL _eLevel, orxBOOL _bEnable);
+
+/** Is a given log level enabled?
+ * @param[in]   _eLevel                       Concerned debug level
+*/
+extern orxDLLAPI orxBOOL orxFASTCALL          _orxDebug_IsLevelEnabled(orxDEBUG_LEVEL _eLevel);
 
 /** Sets current debug flags
  * @param[in]   _u32Add                       Flags to add

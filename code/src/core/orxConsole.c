@@ -949,7 +949,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          orxS32 i, s32Counter;
+          orxS32  i, s32Counter;
+          orxBOOL bDebugLevelBackup;
 
           /* Inits log end index */
           sstConsole.u32LogEndIndex = orxU32_UNDEFINED;
@@ -1008,8 +1009,15 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           /* Sets default font */
           orxConsole_SetFont(orxFont_GetDefaultFont());
 
+          /* Disables config logs */
+          bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
           /* Loads input history */
           orxConsole_LoadHistory();
+
+          /* Reenables config logs */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bDebugLevelBackup);
         }
         else
         {
