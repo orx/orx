@@ -125,6 +125,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFrame_Delete(orxFRAME *_pstFram
  */
 extern orxDLLAPI void orxFASTCALL             orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME * _pstParent);
 
+/** Get a frame parent
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxFRAME / orxNULL
+ */
+extern orxDLLAPI orxFRAME *orxFASTCALL        orxFrame_GetParent(const orxFRAME *_pstFrame);
+
 /** Is a root child?
  * @param[in]   _pstFrame       Concerned frame
  * @return orxTRUE if its parent is root, orxFALSE otherwise

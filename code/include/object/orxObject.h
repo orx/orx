@@ -385,6 +385,19 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
+
+/** Attaches an object to a parent while maintaining the object's world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pParent        Parent structure to attach to (object, spawner, camera or frame)
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Attach(orxOBJECT *_pstObject, void *_pParent);
+
+/** Detaches an object from a parent while maintaining the object's world position
+ * @param[in]   _pstObject      Concerned object
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Detach(orxOBJECT *_pstObject);
 /** @} */
 
 

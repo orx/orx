@@ -1065,6 +1065,80 @@ void orxFASTCALL orxObject_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: Attach
+ */
+void orxFASTCALL orxObject_CommandAttach(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Has parent? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].u64Value != 0))
+    {
+      orxSTRUCTURE *pstParent;
+
+      /* Gets parent */
+      pstParent = orxStructure_Get(_astArgList[1].u64Value);
+
+      /* Valid? */
+      if(pstParent != orxNULL)
+      {
+        /* Attaches it */
+        orxObject_Attach(pstObject, pstParent);
+      }
+    }
+    else
+    {
+      /* Detaches it */
+      orxObject_Detach(pstObject);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Detach
+ */
+void orxFASTCALL orxObject_CommandDetach(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Detaches it */
+    orxObject_Detach(pstObject);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetOwner
  */
 void orxFASTCALL orxObject_CommandSetOwner(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1612,6 +1686,10 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetParent, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: Attach */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Attach, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: Detach */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Detach, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetOwner */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner = <void>", orxCOMMAND_VAR_TYPE_U64});
@@ -1719,6 +1797,10 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: SetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetParent);
+  /* Command: Attach */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Attach);
+  /* Command: Detach */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Detach);
 
   /* Command: SetOwner */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOwner);
@@ -4721,6 +4803,70 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
       }
     }
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Attaches an object to a parent while maintaining the object's world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pParent        Parent structure to attach to (object, spawner, camera or frame)
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_Attach(orxOBJECT *_pstObject, void *_pParent)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    orxVECTOR vPosition, vScale;
+    orxFLOAT  fRotation;
+
+    /* Gets object's world position, rotation and scale */
+    orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+    fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
+    orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+
+    /* Updates its parent */
+    eResult = orxObject_SetParent(_pstObject, _pParent);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Restores object's world position, rotation and scale */
+      orxFrame_SetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+      orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_GLOBAL, fRotation);
+      orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Detaches an object from a parent while maintaining the object's world position
+ * @param[in]   _pstObject      Concerned object
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_Detach(orxOBJECT *_pstObject)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Detaches it */
+  eResult = orxObject_Attach(_pstObject, orxNULL);
 
   /* Done! */
   return eResult;

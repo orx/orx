@@ -713,6 +713,25 @@ void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
   return;
 }
 
+/** Get a frame parent
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxFRAME / orxNULL
+ */
+orxFRAME *orxFASTCALL orxFrame_GetParent(const orxFRAME *_pstFrame)
+{
+  orxFRAME *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFrame);
+
+  /* Updates result*/
+  pstResult = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Is a root child?
  * @param[in]   _pstFrame       Concerned frame
  * @return orxTRUE if its parent is root, orxFALSE otherwise
