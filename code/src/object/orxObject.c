@@ -53,13 +53,13 @@
 
 /** Module flags
  */
-#define orxOBJECT_KU32_STATIC_FLAG_NONE         0x00000000
+#define orxOBJECT_KU32_STATIC_FLAG_NONE         0x00000000  /**< No static flag */
 
-#define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001
-#define orxOBJECT_KU32_STATIC_FLAG_CLOCK        0x00000002
-#define orxOBJECT_KU32_STATIC_FLAG_INTERNAL     0x00000004  /**< Internal flag */
+#define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001  /**< Ready static flag */
+#define orxOBJECT_KU32_STATIC_FLAG_CLOCK        0x00000002  /**< Clock static flag */
+#define orxOBJECT_KU32_STATIC_FLAG_INTERNAL     0x00000004  /**< Internal static flag */
 
-#define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF
+#define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF  /**< Internal static mask */
 
 
 /** Flags
@@ -71,9 +71,10 @@
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
 #define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag  */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
-#define orxOBJECT_KU32_FLAG_HAS_CHILDREN        0x04000000  /**< Has children flag */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x80000000  /**< Smoothing on flag  */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x01000000  /**< Smoothing off flag  */
+#define orxOBJECT_KU32_FLAG_HAS_CHILDREN        0x02000000  /**< Has children flag */
+#define orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN  0x04000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_IS_JOINT_CHILD      0x08000000  /**< Is joint child flag */
 
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
@@ -2774,6 +2775,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
                 /* Marks it as a joint child */
                 orxStructure_SetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD, orxOBJECT_KU32_FLAG_NONE);
+
+                /* Updates flags */
+                u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
               }
             }
 
@@ -3748,36 +3752,19 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
     {
       orxVECTOR vPos;
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
           {
-            orxFRAME *pstChildFrame;
-            orxVECTOR vPosition;
-
-            /* Gets its frame */
-            pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
-            orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Re-adds its parent */
-            orxObject_SetParent(pstChild, _pstObject);
-
-            /* Enforces its global position */
-            orxFrame_SetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+            /* Attaches it back */
+            orxObject_Attach(pstChild, _pstObject);
           }
         }
       }
@@ -3788,15 +3775,13 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
       /* Updates body position */
       orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
@@ -3806,9 +3791,6 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
 
             /* Gets its frame */
             pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
 
             /* Gets its world position */
             orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
@@ -3870,36 +3852,19 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
           {
-            orxFRAME *pstChildFrame;
-            orxVECTOR vPosition;
-
-            /* Gets its frame */
-            pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
-            orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Re-adds its parent */
-            orxObject_SetParent(pstChild, _pstObject);
-
-            /* Enforces its global position */
-            orxFrame_SetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+            /* Attaches it back */
+            orxObject_Attach(pstChild, _pstObject);
           }
         }
       }
@@ -3910,15 +3875,13 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
       /* Updates body position */
       orxBody_SetPosition(pstBody, _pvPosition);
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
@@ -3928,9 +3891,6 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
 
             /* Gets its frame */
             pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
 
             /* Gets its world position */
             orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
@@ -3991,43 +3951,19 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
           {
-            orxFRAME *pstChildFrame;
-            orxVECTOR vPosition;
-            orxFLOAT  fRotation;
-
-            /* Gets its frame */
-            pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
-            orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world rotation */
-            fRotation = orxFrame_GetRotation(pstChildFrame, orxFRAME_SPACE_GLOBAL);
-
-            /* Re-adds its parent */
-            orxObject_SetParent(pstChild, _pstObject);
-
-            /* Enforces its global position */
-            orxFrame_SetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Enforces its global rotation */
-            orxFrame_SetRotation(pstChildFrame, orxFRAME_SPACE_GLOBAL, fRotation);
+            /* Attaches it back */
+            orxObject_Attach(pstChild, _pstObject);
           }
         }
       }
@@ -4038,15 +3974,13 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
       /* Updates body rotation */
       orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
@@ -4058,22 +3992,15 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
             /* Gets its frame */
             pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
 
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
+            /* Gets its world position & rotation */
             orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world rotation */
             fRotation = orxFrame_GetRotation(pstChildFrame, orxFRAME_SPACE_GLOBAL);
 
             /* Removes its parent */
             orxObject_SetParent(pstChild, orxNULL);
 
-            /* Updates its position (including body and eventual joint children) */
+            /* Updates its position & rotation (including body and eventual joint children) */
             orxObject_SetPosition(pstChild, &vPosition);
-
-            /* Updates its rotation (including body and eventual joint children) */
             orxObject_SetRotation(pstChild, fRotation);
           }
         }
@@ -4126,43 +4053,19 @@ orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
           {
-            orxFRAME *pstChildFrame;
-            orxVECTOR vPosition;
-            orxFLOAT  fRotation;
-
-            /* Gets its frame */
-            pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
-            orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world rotation */
-            fRotation = orxFrame_GetRotation(pstChildFrame, orxFRAME_SPACE_GLOBAL);
-
-            /* Re-adds its parent */
-            orxObject_SetParent(pstChild, _pstObject);
-
-            /* Enforces its global position */
-            orxFrame_SetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Enforces its global rotation */
-            orxFrame_SetRotation(pstChildFrame, orxFRAME_SPACE_GLOBAL, fRotation);
+            /* Attaches it back */
+            orxObject_Attach(pstChild, _pstObject);
           }
         }
       }
@@ -4173,15 +4076,13 @@ orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT
       /* Updates body rotation */
       orxBody_SetRotation(pstBody, _fRotation);
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
@@ -4193,22 +4094,15 @@ orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT
             /* Gets its frame */
             pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
 
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
+            /* Gets its world position & rotation */
             orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world rotation */
             fRotation = orxFrame_GetRotation(pstChildFrame, orxFRAME_SPACE_GLOBAL);
 
             /* Removes its parent */
             orxObject_SetParent(pstChild, orxNULL);
 
-            /* Updates its position (including body and eventual joint children) */
+            /* Updates its position & rotation (including body and eventual joint children) */
             orxObject_SetPosition(pstChild, &vPosition);
-
-            /* Updates its rotation (including body and eventual joint children) */
             orxObject_SetRotation(pstChild, fRotation);
           }
         }
@@ -4264,42 +4158,19 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
     {
       orxVECTOR vScale;
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
           {
-            orxFRAME *pstChildFrame;
-            orxVECTOR vPosition, vScale;
-
-            /* Gets its frame */
-            pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
-            orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world scale */
-            orxFrame_GetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-
-            /* Re-adds its parent */
-            orxObject_SetParent(pstChild, _pstObject);
-
-            /* Enforces its global position */
-            orxFrame_SetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Enforces its global scale */
-            orxFrame_SetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+            /* Attaches it back */
+            orxObject_Attach(pstChild, _pstObject);
           }
         }
       }
@@ -4310,15 +4181,13 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
       /* Updates body scale */
       orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale));
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
@@ -4329,22 +4198,15 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
             /* Gets its frame */
             pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
 
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
+            /* Gets its world position & scale */
             orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world scale */
             orxFrame_GetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
 
             /* Removes its parent */
             orxObject_SetParent(pstChild, orxNULL);
 
-            /* Updates its position (including body and eventual joint children) */
+            /* Updates its position & scale (including body and eventual joint children) */
             orxObject_SetPosition(pstChild, &vPosition);
-
-            /* Updates its scale (including body and eventual joint children) */
             orxObject_SetScale(pstChild, &vScale);
           }
         }
@@ -4398,42 +4260,19 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
           {
-            orxFRAME *pstChildFrame;
-            orxVECTOR vPosition, vScale;
-
-            /* Gets its frame */
-            pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
-
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
-            orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world scale */
-            orxFrame_GetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-
-            /* Re-adds its parent */
-            orxObject_SetParent(pstChild, _pstObject);
-
-            /* Enforces its global position */
-            orxFrame_SetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Enforces its global scale */
-            orxFrame_SetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+            /* Attaches it back */
+            orxObject_Attach(pstChild, _pstObject);
           }
         }
       }
@@ -4444,15 +4283,13 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
       /* Updates body scale */
       orxBody_SetScale(pstBody, _pvScale);
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      /* Has joint children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
       {
         orxOBJECT *pstChild;
 
         /* For all direct children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = pstChild->pstSibling)
+        for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
           if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
@@ -4463,22 +4300,15 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
             /* Gets its frame */
             pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
 
-            /* Checks */
-            orxSTRUCTURE_ASSERT(pstChildFrame);
-
-            /* Gets its world position */
+            /* Gets its world position & scale */
             orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-            /* Gets its world scale */
             orxFrame_GetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
 
             /* Removes its parent */
             orxObject_SetParent(pstChild, orxNULL);
 
-            /* Updates its position (including body and eventual joint children) */
+            /* Updates its position & scale (including body and eventual joint children) */
             orxObject_SetPosition(pstChild, &vPosition);
-
-            /* Updates its scale (including body and eventual joint children) */
             orxObject_SetScale(pstChild, &vScale);
           }
         }
