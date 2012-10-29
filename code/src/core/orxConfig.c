@@ -109,15 +109,19 @@
 #define orxCONFIG_KZ_UTF8_BOM                     "\xEF\xBB\xBF" /**< UTF-8 BOM */
 #define orxCONFIG_KU32_UTF8_BOM_LENGTH            3           /**< UTF-8 BOM length */
 
-#ifdef __orxDEBUG__
+#if defined(__orxDEBUG__)
 
   #define orxCONFIG_KZ_DEFAULT_FILE               "orxd.ini"  /**< Default config file name */
 
-#else /* __orxDEBUG__ */
+#elif defined(__orxPROFILER__)
+
+  #define orxCONFIG_KZ_DEFAULT_FILE               "orxp.ini"  /**< Default config file name */
+
+#else
 
   #define orxCONFIG_KZ_DEFAULT_FILE               "orx.ini"   /**< Default config file name */
 
-#endif /* __orxDEBUG__ */
+#endif
 
 
 /***************************************************************************
