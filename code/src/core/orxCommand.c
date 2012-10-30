@@ -705,8 +705,26 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Valid? */
         if(*pcSrc != orxCHAR_NULL)
         {
+          orxBOOL bInString = orxFALSE;
+
           /* Gets arg's beginning */
           zArg = pcSrc;
+
+          /* Is a string marker? */
+          if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
+          {
+            /* Updates arg pointer */
+            zArg++;
+            pcSrc++;
+
+            /* Is not a block delimiter or triple block delimiter? */
+            if((*pcSrc != orxCOMMAND_KC_STRING_MARKER)
+            || (*(pcSrc + 1) == orxCOMMAND_KC_STRING_MARKER))
+            {
+              /* Updates string status */
+              bInString = orxTRUE;
+            }
+          }
 
           /* Stores its type */
           astArgList[u32ArgNumber].eType = pstCommand->astParamList[u32ArgNumber].eType;
@@ -717,24 +735,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             default:
             case orxCOMMAND_VAR_TYPE_STRING:
             {
-              orxBOOL bInString = orxFALSE;
-
-              /* Is a string marker? */
-              if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
-              {
-                /* Updates arg pointer */
-                zArg++;
-                pcSrc++;
-
-                /* Is not a block delimiter or triple block delimiter? */
-                if((*pcSrc != orxCOMMAND_KC_STRING_MARKER)
-                || (*(pcSrc + 1) == orxCOMMAND_KC_STRING_MARKER))
-                {
-                  /* Updates string status */
-                  bInString = orxTRUE;
-                }
-              }
-
               /* Finds end of argument */
               for(; *pcSrc != orxCHAR_NULL; pcSrc++)
               {
