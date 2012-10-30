@@ -3339,14 +3339,39 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               /* Not in block mode? */
               if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
               {
-                /* Restores string */
-                orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
-
                 /* Writes it */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue);
 
-                /* Computes working value */
-                orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+                /* Is a list? */
+                if(pstEntry->stValue.u16ListCounter > 1)
+                {
+                  orxCHAR  *pcSrc;
+                  orxU32    i;
+
+                  /* For all remaining items */
+                  for(i = (orxU32)(pstEntry->stValue.u16ListCounter - 1), pcSrc = pstEntry->stValue.zValue + orxString_GetLength(pstEntry->stValue.zValue);
+                      i > 0;
+                      i--)
+                  {
+                    orxCHAR *pcDst;
+
+                    /* Skips all 'hidden separators' */
+                    for(; *pcSrc == orxCHAR_NULL; pcSrc++);
+
+                    /* Writes separator */
+                    u32BufferSize += (orxU32)orxString_NPrint(acBuffer + u32BufferSize, orxCONFIG_KU32_BUFFER_SIZE - 1 - u32BufferSize, " %c ", orxCONFIG_KC_LIST_SEPARATOR);
+
+                    /* For all characters */
+                    for(pcDst = acBuffer + u32BufferSize; (*pcSrc != orxCHAR_NULL) && (pcDst < acBuffer + orxCONFIG_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++, u32BufferSize++)
+                    {
+                      /* Copies it */
+                      *pcDst = *pcSrc;
+                    }
+                  }
+                }
+
+                /* Writes EOL */
+                u32BufferSize += (orxU32)orxString_NPrint(acBuffer + u32BufferSize, orxCONFIG_KU32_BUFFER_SIZE - 1 - u32BufferSize, "%s", orxSTRING_EOL);
               }
               else
               {
