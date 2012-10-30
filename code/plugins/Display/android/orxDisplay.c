@@ -1286,15 +1286,88 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawOBox(const orxOBOX *_pstBox, orxRGB
 
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  const orxBITMAP  *pstBitmap;
+  GLfloat           fWidth, fHeight, fXCoef, fYCoef, fXBorder, fYBorder;
+  orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_u32VertexNumber > 2);
   orxASSERT(_astVertexList != orxNULL);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+  /* Gets bitmap to use */
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.pstLastBitmap;
+
+  /* Prepares bitmap for drawing */
+  orxDisplay_Android_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
+
+  /* Gets bitmap working size */
+  fWidth  = (GLfloat)(pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX);
+  fHeight = (GLfloat)(pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY);
+
+  fXCoef = fYCoef = orxFLOAT_1;
+
+  /* Gets X & Y border fixes */
+  fXBorder = pstBitmap->fRecRealWidth * orxDISPLAY_KF_BORDER_FIX;
+  fYBorder = pstBitmap->fRecRealHeight * orxDISPLAY_KF_BORDER_FIX;
+
+  /* End of buffer? */
+  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  {
+    /* Draw arrays */
+    orxDisplay_Android_DrawArrays();
+
+    /* Too many vertices? */
+    if(_u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2)
+    {
+      /* Updates vertex number */
+      u32VertexNumber = orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2;
+
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", u32VertexNumber, _u32VertexNumber);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+
+  /* For all vertices */
+  for(i = 0, iIndex = 0; i < u32VertexNumber; i++, iIndex++)
+  {
+    /* Copies position */
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fX = _astVertexList[i].fX;
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
+
+    /* Updates UV */
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
+
+    /* Copies color */
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
+
+    /* Quad extremity? */
+    if((i != 1) && ((i & 1) == 1))
+    {
+      /* Copies last two vertices */
+      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 1]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
+      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 2]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), sizeof(orxDISPLAY_VERTEX));
+
+      /* Updates index */
+      iIndex += 2;
+    }
+  }
+
+  /* Odd number of vertices in the triangle strip? */
+  if(iIndex & 1)
+  {
+    /* Completes the quad */
+    orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
+    iIndex++;
+  }
+
+  /* Updates index */
+  sstDisplay.s32BufferIndex += iIndex;
 
   /* Done! */
   return eResult;
