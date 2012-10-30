@@ -75,6 +75,81 @@ TARGET_PLATFORM = android-9
 include $(BUILD_STATIC_LIBRARY)
 
 
+#  ======== orxp ==========
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE = orxp
+LOCAL_SRC_FILES = \
+	base/orxType.c            \
+	base/orxModule.c          \
+	io/orxFile.c              \
+	io/orxInput.c             \
+	io/orxKeyboard.c          \
+	io/orxJoystick.c          \
+	io/orxMouse.c             \
+	utils/orxHashTable.c      \
+	utils/orxTree.c           \
+	utils/orxLinkList.c       \
+	utils/orxString.c         \
+	anim/orxAnimPointer.c     \
+	anim/orxAnimSet.c         \
+	anim/orxAnim.c            \
+	display/orxScreenshot.c   \
+	display/orxGraphic.c      \
+	display/orxDisplay.c      \
+	display/orxFont.c         \
+	display/orxText.c         \
+	display/orxTexture.c      \
+	render/orxCamera.c        \
+	render/orxViewport.c      \
+	render/orxShaderPointer.c \
+	render/orxRender.c        \
+	render/orxShader.c        \
+	math/orxMath.c            \
+	math/orxVector.c          \
+	core/orxCommand.c         \
+	core/orxConfig.c          \
+	core/orxConsole.c         \
+	core/orxEvent.c           \
+	core/orxSystem.c          \
+	core/orxClock.c           \
+	core/orxLocale.c          \
+	main/orxParam.c           \
+	main/orxAndroidNativeSupport.c  \
+	physics/orxPhysics.c      \
+	physics/orxBody.c         \
+	object/orxStructure.c     \
+	object/orxTimeLine.c      \
+	object/orxFrame.c         \
+	object/orxFX.c            \
+	object/orxFXPointer.c     \
+	object/orxObject.c        \
+	object/orxSpawner.c       \
+	plugin/orxPlugin.c        \
+	sound/orxSoundPointer.c   \
+	sound/orxSoundSystem.c    \
+	sound/orxSound.c          \
+	memory/orxBank.c          \
+	memory/orxMemory.c        \
+	debug/orxFPS.c            \
+	debug/orxDebug.c          \
+	debug/orxProfiler.c       \
+        plugin/orxPlugin_EmbeddedList.cpp
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
+LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__ -D__orxBANK_ALIGN__ -D__orxPROFILER__
+LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxPROFILER__
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
+LOCAL_EXPORT_LDLIBS := -llog -landroid -ldl -lEGL -lGLESv2 -lOpenSLES
+
+LOCAL_ARM_MODE := arm
+TARGET_PLATFORM = android-9
+
+include $(BUILD_STATIC_LIBRARY)
+
+
 #  ======== orxd =========
 
 include $(CLEAR_VARS)
