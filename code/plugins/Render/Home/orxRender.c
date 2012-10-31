@@ -298,12 +298,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
   orxU32                  u32CurrentDepth, u32MaxDepth;
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
-  orxDOUBLE               dStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
+  orxDOUBLE               dFrameStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
   orxBOOL                 bLandscape;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   orxCHAR                 acLabel[64];
+  orxDOUBLE              *adDepthBlockEndTime;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderProfiler");
@@ -356,6 +357,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       s32UniqueCounter++;
     }
   }
+
+  /* Allocates & inits array for storing block ends at each depth */
+  adDepthBlockEndTime = (orxDOUBLE *)alloca(u32MaxDepth * sizeof(orxDOUBLE));
+  orxMemory_Zero(adDepthBlockEndTime, u32MaxDepth * sizeof(orxDOUBLE));
 
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
@@ -487,36 +492,45 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     /* Is unique and has been pushed? */
     if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
     {
-      orxDOUBLE dTime;
+      orxDOUBLE dTime, dStartTime;
       orxCOLOR  stBarColor;
       orxU32    u32Depth;
-
-      /* Gets its time */
-      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
-
-      /* First one? */
-      if(dStartTime == orx2D(0.0))
-      {
-        /* Updates start time */
-        dStartTime = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
-      }
-
-      /* Updates its horizontal scale */
-      stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
       /* Gets its depth */
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID) - 1;
 
+      /* Updates start time */
+      dStartTime = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
+
+      /* First one? */
+      if(dFrameStartTime == orx2D(0.0))
+      {
+        /* Updates start time */
+        dFrameStartTime = dStartTime;
+      }
+
+      /* Adjusts start time to prevent block overlap at this level */
+      dStartTime = orxMAX(dStartTime, adDepthBlockEndTime[u32Depth]);
+
+      /* Gets its time */
+      dTime = orxProfiler_GetMarkerTime(s32MarkerID);
+
+      /* Updates block end time for this level */
+      adDepthBlockEndTime[u32Depth] = dStartTime + dTime;
+
+      /* Updates its horizontal scale */
+      stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
+
       /* Updates its position */
       if(bLandscape != orxFALSE)
       {
-        stTransform.fDstX   = fBorder + (orxFLOAT)((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - dStartTime) * dRecTotalTime) * fWidth;
+        stTransform.fDstX   = fBorder + (orxFLOAT)((dStartTime - dFrameStartTime) * dRecTotalTime) * fWidth;
         stTransform.fDstY  += fHeight * orxS2F((orxS32)u32Depth - (orxS32)u32CurrentDepth);
       }
       else
       {
         stTransform.fDstX  += fHeight * orxS2F((orxS32)u32Depth - (orxS32)u32CurrentDepth);
-        stTransform.fDstY   = fScreenHeight - (fBorder + (orxFLOAT)((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - dStartTime) * dRecTotalTime) * fWidth);
+        stTransform.fDstY   = fScreenHeight - (fBorder + (orxFLOAT)((dStartTime - dFrameStartTime) * dRecTotalTime) * fWidth);
       }
 
       /* Updates current depth */

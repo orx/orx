@@ -242,6 +242,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
 #ifdef __orxWINDOWS__
 
+    /* Sets thread CPU affinity to remain on the same core */
+    SetThreadAffinityMask(GetCurrentThread(), 1);
+
     /* Asks for small time slices */
     timeBeginPeriod(1);
 
