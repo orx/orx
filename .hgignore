@@ -48,3 +48,4 @@ code/build/codelite/orxMouse_SFML/*
 code/build/codelite/orxPhysics_Box2D/*
 code/build/codelite/orxRender_Home/*
 code/build/codelite/orxSoundSystem_SFML/*
+code/bin/*.tga

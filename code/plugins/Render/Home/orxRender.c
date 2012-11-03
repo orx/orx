@@ -31,6 +31,12 @@
  *
  */
 
+#if defined(__orxGCC__) && defined(__orxWINDOWS__)
+
+  #define alloca __builtin_alloca
+  
+#endif /* __orxGCC__ && __orxWINDOWS__ */
+
 
 #include "orxPluginAPI.h"
 
@@ -150,16 +156,35 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* New video mode? */
-  if((_pstEvent->eType == orxEVENT_TYPE_DISPLAY) && (_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE))
+  /* Depending on type */
+  switch(_pstEvent->eType)
   {
-    orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+    case orxEVENT_TYPE_DISPLAY:
+    {
+      /* New video mode? */
+      if(_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE)
+      {
+        orxDISPLAY_EVENT_PAYLOAD *pstPayload;
 
-    /* Gets payload */
-    pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+        /* Gets payload */
+        pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* Inits console */
-    orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
+        /* Inits console */
+        orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
+      }
+
+      break;
+    }
+
+    case orxEVENT_TYPE_OBJECT:
+    {
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
   }
 
   /* Done! */
@@ -2237,27 +2262,46 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
         /* Valid? */
         if(sstRender.pstFrame != orxNULL)
         {
-          orxFLOAT fScreenWidth, fScreenHeight;
-
-          /* Inits it */
-          orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);
-          orxFrame_SetRotation(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, orxFLOAT_0);
-          orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
-
-          /* Adds blinking timer */
-          orxClock_AddGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, -1, orxNULL);
-
-          /* Adds event handler */
-          orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
-
-          /* Gets screen size */
-          orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
-
-          /* Inits console */
-          orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
-
           /* Registers rendering function */
           eResult = orxClock_Register(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            orxFLOAT fScreenWidth, fScreenHeight;
+
+            /* Inits it */
+            orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);
+            orxFrame_SetRotation(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, orxFLOAT_0);
+            orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
+
+            /* Adds blinking timer */
+            orxClock_AddGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, -1, orxNULL);
+
+            /* Adds event handlers */
+            orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
+            orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxRender_Home_EventHandler);
+
+            /* Gets screen size */
+            orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+
+            /* Inits console */
+            orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
+
+            /* Inits Flags */
+            sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY;
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't register render clock callback.");
+
+            /* Deletes frame */
+            orxFrame_Delete(sstRender.pstFrame);
+
+            /* Deletes bank */
+            orxBank_Delete(sstRender.pstRenderBank);
+          }
         }
         else
         {
@@ -2292,18 +2336,6 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Initialized? */
-  if(eResult != orxSTATUS_FAILURE)
-  {
-    /* Inits Flags */
-    sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register Render module.");
-  }
-
   /* Done! */
   return eResult;
 }
@@ -2315,8 +2347,9 @@ void orxFASTCALL orxRender_Home_Exit()
   /* Initialized? */
   if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxRender_Home_EventHandler);
 
     /* Removes blinking timer */
     orxClock_RemoveGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, orxNULL);

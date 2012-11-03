@@ -218,7 +218,7 @@ static void orxFASTCALL orxConsole_SaveHistory()
 
     /* Stores list */
     orxConfig_SetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, azHistoryList, u32Counter);
-  
+
     /* Pops config section */
     orxConfig_PopSection();
 
@@ -291,63 +291,63 @@ static orxINLINE orxU32 orxConsole_PrintLastResult(orxCHAR *_acBuffer, orxU32 _u
     {
       /* Updates pointer */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%s", sstConsole.stLastResult.zValue);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_FLOAT:
     {
       /* Stores it */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%g", sstConsole.stLastResult.fValue);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_S32:
     {
       /* Stores it */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%d", sstConsole.stLastResult.s32Value);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_U32:
     {
       /* Stores it */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%u", sstConsole.stLastResult.u32Value);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_S64:
     {
       /* Stores it */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%lld", sstConsole.stLastResult.s64Value);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_U64:
     {
       /* Stores it */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "0x%016llX", sstConsole.stLastResult.u64Value);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_BOOL:
     {
       /* Stores it */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%s", (sstConsole.stLastResult.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
-    
+
       break;
     }
-    
+
     case orxCOMMAND_VAR_TYPE_VECTOR:
     {
       /* Gets literal value */
       u32Result = orxString_NPrint(_acBuffer, _u32Size, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, sstConsole.stLastResult.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fZ, orxSTRING_KC_VECTOR_END);
-    
+
       break;
     }
 
@@ -680,7 +680,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         {
           orxCHAR acValue[256];
 
-          /* Inits value */        
+          /* Inits value */
           acValue[0]  = ':';
           acValue[1]  = ' ';
           acValue[63] = orxCHAR_NULL;
