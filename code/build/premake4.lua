@@ -366,7 +366,7 @@ solution "orx"
 				"../../extern/libsndfile-1.0.22/lib/vc2010",
 				"../../extern/Box2D_2.1.3/lib/msvs2010" }
 
-	configuration { "codelite", "windows*" }
+	configuration { "codelite or gmake", "windows*" }
 		libdirs { "../../extern/glfw-2.7/lib/mingw",
 			"../../extern/SDL-1.2.14/lib/mingw",
 			"../../extern/SOIL/lib/mingw",
@@ -465,7 +465,7 @@ project "orxLIB"
 			"SDL",
 			"winmm"}
 			
-	configuration {"codelite" , "windows*dynamic*"}
+	configuration {"codelite or gmake" , "windows*dynamic*"}
 		links { "sndfile" }
 
 	configuration {"vs*" , "windows*dynamic*"}
@@ -555,7 +555,7 @@ project "orx"
 			"SDL",
 			"winmm"}
 
-	configuration {"codelite", "windows*static*"}
+	configuration {"codelite or gmake", "windows*static*"}
 		links { "sndfile" }
 
 	configuration {"vs*" , "windows*static*"}
@@ -604,10 +604,10 @@ project "Bounce"
 	configuration "linux*"
 		linkoptions {"-Wl,-rpath ./"," -Wl,--export-dynamic"}
 
-	configuration {"codelite", "windows*"}
+	configuration {"codelite or gmake", "windows*"}
 		linkoptions "-fPIC"
 
-	configuration {"codelite", "windows*static*"}
+	configuration {"codelite or gmake", "windows*static*"}
 		linkoptions "-Wl,--enable-auto-import"
 
 --
@@ -632,10 +632,10 @@ project "Scroll"
 	configuration "linux*"
 		linkoptions {"-Wl,-rpath ./"," -Wl,--export-dynamic"}
 
-	configuration {"codelite", "windows*"}
+	configuration {"codelite or gmake", "windows*"}
 		linkoptions "-fPIC"
 
-	configuration {"codelite", "windows*static*"}
+	configuration {"codelite or gmake", "windows*static*"}
 		linkoptions "-Wl,--enable-auto-import"
 
 --
