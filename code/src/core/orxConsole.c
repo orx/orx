@@ -700,6 +700,10 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Updates input index */
         sstConsole.u32InputIndex = (sstConsole.u32InputIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32InputIndex + 1;
 
+        /* Clears it */
+        orxMemory_Zero(sstConsole.astInputEntryList[sstConsole.u32InputIndex].acBuffer, orxCONSOLE_KU32_INPUT_ENTRY_SIZE * sizeof(orxCHAR));
+        sstConsole.astInputEntryList[sstConsole.u32InputIndex].u32CursorIndex = 0;
+
         /* Updates history index */
         sstConsole.u32HistoryIndex = sstConsole.u32InputIndex;
       }
