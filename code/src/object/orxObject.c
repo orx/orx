@@ -949,21 +949,6 @@ void orxFASTCALL orxObject_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_
     /* Updates it */
     orxObject_Enable(pstObject, _astArgList[1].bValue);
 
-    /* Recursive? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
-    {
-      orxOBJECT *pstChild;
-
-      /* For all children */
-      for(pstChild = pstObject->pstChild;
-          pstChild != orxNULL;
-          pstChild = pstChild->pstSibling)
-      {
-        /* Updates it */
-        orxObject_Enable(pstChild, _astArgList[1].bValue);
-      }
-    }
-
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
   }
@@ -991,21 +976,6 @@ void orxFASTCALL orxObject_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_V
   {
     /* Updates it */
     orxObject_Pause(pstObject, _astArgList[1].bValue);
-
-    /* Recursive? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
-    {
-      orxOBJECT *pstChild;
-
-      /* For all children */
-      for(pstChild = pstObject->pstChild;
-          pstChild != orxNULL;
-          pstChild = pstChild->pstSibling)
-      {
-        /* Updates it */
-        orxObject_Pause(pstChild, _astArgList[1].bValue);
-      }
-    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -1681,9 +1651,9 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAlpha, "Alpha", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: Enable */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: Pause */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetParent, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
