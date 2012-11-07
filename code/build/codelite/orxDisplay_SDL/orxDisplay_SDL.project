@@ -41,7 +41,7 @@
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2 -fPIC">
+      <Compiler Required="yes" Options="-O3 -fPIC">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC  -s">
@@ -99,7 +99,7 @@
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2 -fPIC">
+      <Compiler Required="yes" Options="-O3 -fPIC">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -157,7 +157,7 @@
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDL.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O3">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC  -s">
@@ -215,7 +215,7 @@
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxDisplay_SDL.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
+      <Compiler Required="yes" Options="-O3">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">

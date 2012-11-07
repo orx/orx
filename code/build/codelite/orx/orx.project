@@ -74,7 +74,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -m32" C_Options="-g -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -116,7 +116,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -m32" C_Options="-O2 -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
@@ -157,7 +157,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -m32" C_Options="-g -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -197,7 +197,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -m32" C_Options="-O2 -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
@@ -237,7 +237,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -m32" C_Options="-O2 -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-m32 -s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
@@ -276,7 +276,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -Wno-write-strings -m32" C_Options="-g -msse -mfpmath=sse -Wno-write-strings -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -333,7 +333,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -Wno-write-strings -m32" C_Options="-O2 -msse -mfpmath=sse -Wno-write-strings -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
@@ -389,7 +389,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -m32" C_Options="-g -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -431,7 +431,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -m32" C_Options="-O2 -msse -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
@@ -472,7 +472,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -m64" C_Options="-g -msse -mfpmath=sse -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -m64" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -512,7 +512,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -m64" C_Options="-O2 -msse -mfpmath=sse -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m64" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
@@ -552,7 +552,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -m64" C_Options="-O2 -msse -mfpmath=sse -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m64" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic -Wl,-rpath ./" Required="yes">
@@ -591,7 +591,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -Wno-write-strings -m64" C_Options="-g -msse -mfpmath=sse -Wno-write-strings -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m64" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -647,7 +647,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -Wno-write-strings -m64" C_Options="-O2 -msse -mfpmath=sse -Wno-write-strings -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m64" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
@@ -702,7 +702,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -741,7 +741,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s -Wl,--export-dynamic ../../../lib/dynamic/liborx.a -Wl,--export-all-symbols" Required="yes">
@@ -779,7 +779,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -819,7 +819,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
@@ -859,7 +859,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-s" Required="yes">
@@ -898,7 +898,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -953,7 +953,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="AL_LIBTYPE_STATIC"/>
@@ -1007,7 +1007,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -1047,7 +1047,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>

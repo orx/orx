@@ -229,7 +229,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -fPIC -m32" C_Options="-g -msse -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -269,7 +269,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -fPIC -m32" C_Options="-O2 -msse -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
@@ -308,7 +308,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -374,7 +374,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -440,7 +440,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -505,7 +505,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -552,7 +552,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -598,7 +598,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -fPIC -m32" C_Options="-g -msse -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -636,7 +636,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse -fPIC -m32" C_Options="-O2 -msse -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
@@ -673,7 +673,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -738,7 +738,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -803,7 +803,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -867,7 +867,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-g -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-g -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -914,7 +914,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -960,7 +960,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -1000,7 +1000,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
@@ -1039,7 +1039,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1102,7 +1102,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse" C_Options="-O3 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1165,7 +1165,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse" C_Options="-O3 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1227,7 +1227,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1274,7 +1274,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse" C_Options="-O3 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1320,7 +1320,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -msse -mfpmath=sse" C_Options="-g -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-g -msse2 -mssseregparam -mfpmath=sse" C_Options="-g -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -1358,7 +1358,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -msse -mfpmath=sse" C_Options="-O2 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse2 -mssseregparam -mfpmath=sse" C_Options="-O3 -msse2 -mssseregparam -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
       </Compiler>
