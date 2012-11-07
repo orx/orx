@@ -8,7 +8,7 @@ function linux_is_64_bit()
 	local contents =  pipe:read('*a')
 	pipe:close()
 
-	local t64 = 
+	local t64 =
 	{
 		'x86_64'
 		,'ia64'
@@ -93,7 +93,7 @@ function gen_linux_configs()
 		arch_order = { "x86", "amd64" }
 	end
 
-	config_table = 
+	config_table =
 		{
 			{ "linux" },
 			arch_order,
@@ -109,7 +109,7 @@ end
 
 function gen_windows_configs()
 
-	config_table = 
+	config_table =
 		{
 			{ "windows" },
 			{ "x86" },
@@ -125,7 +125,7 @@ end
 
 function gen_osx_dynamic_configs()
 
-	config_table = 
+	config_table =
 		{
 			{ "macosx" },
 			{ "dynamic" },
@@ -140,7 +140,7 @@ end
 
 function gen_osx_static_configs()
 
-	config_table = 
+	config_table =
 		{
 			{ "macosx" },
 			{ "static" },
@@ -155,7 +155,7 @@ end
 
 function gen_ios_configs()
 
-	config_table = 
+	config_table =
 		{
 			{ "ios" },
 			{ "static" },
@@ -165,11 +165,11 @@ function gen_ios_configs()
 
 	return permute_concat("_",config_table)
 
-end 
+end
 
 function gen_android_configs()
 
-	config_table = 
+	config_table =
 		{
 			{ "android" },
 			{ "static" },
@@ -186,7 +186,7 @@ function initconfig()
 	if not _OPTIONS["build-type"] then
 		_OPTIONS["build-type"] = "dynamic"
 	end
-	
+
 	if _OPTIONS["build-type"] == "ios" then
 		return gen_ios_configs()
 	end
@@ -278,7 +278,7 @@ solution "orx"
 
 
 	configuration "*static*"
-		targetdir ("../lib/static") 
+		targetdir ("../lib/static")
 		kind "StaticLib"
 		defines "__orxSTATIC__"
 
@@ -293,7 +293,7 @@ solution "orx"
 		linkoptions "-m32"
 		buildoptions "-m32"
 
-	configuration "linux*amd64*" 
+	configuration "linux*amd64*"
 		linkoptions "-m64"
 		buildoptions "-m64"
 
@@ -343,25 +343,25 @@ solution "orx"
 			"../../extern/Box2D_2.1.3/lib/linux64" }
 
 	configuration { "vs2005" }
-		libdirs { "../../extern/glfw-2.7/lib/vc2005", 
-				"../../extern/SDL-1.2.14/lib/vc2005", 
-				"../../extern/SOIL/lib/msvs2005", 
+		libdirs { "../../extern/glfw-2.7/lib/vc2005",
+				"../../extern/SDL-1.2.14/lib/vc2005",
+				"../../extern/SOIL/lib/msvs2005",
 				"../../extern/openal-soft/lib/vc2005",
 				"../../extern/libsndfile-1.0.22/lib/vc2005",
 				"../../extern/Box2D_2.1.3/lib/msvs2005" }
 
 	configuration { "vs2008" }
-		libdirs { "../../extern/glfw-2.7/lib/vc2008", 
-				"../../extern/SDL-1.2.14/lib/vc2008", 
-				"../../extern/SOIL/lib/msvs2008", 
+		libdirs { "../../extern/glfw-2.7/lib/vc2008",
+				"../../extern/SDL-1.2.14/lib/vc2008",
+				"../../extern/SOIL/lib/msvs2008",
 				"../../extern/openal-soft/lib/vc2008",
 				"../../extern/libsndfile-1.0.22/lib/vc2008",
 				"../../extern/Box2D_2.1.3/lib/msvs2008" }
 
 	configuration { "vs2010" }
-		libdirs { "../../extern/glfw-2.7/lib/vc2010", 
-				"../../extern/SDL-1.2.14/lib/vc2010", 
-				"../../extern/SOIL/lib/msvs2010", 
+		libdirs { "../../extern/glfw-2.7/lib/vc2010",
+				"../../extern/SDL-1.2.14/lib/vc2010",
+				"../../extern/SOIL/lib/msvs2010",
 				"../../extern/openal-soft/lib/vc2010",
 				"../../extern/libsndfile-1.0.22/lib/vc2010",
 				"../../extern/Box2D_2.1.3/lib/msvs2010" }
@@ -376,7 +376,7 @@ solution "orx"
 
 	--
 	-- On post build, if we built a shared lib, copy it to ./bin
-	-- I can't find an easy way to proceduraly get the build name, so 
+	-- I can't find an easy way to proceduraly get the build name, so
 	-- hardcoding it for now.
 	--
 	configuration "linux*dynamic*debug"
@@ -416,12 +416,12 @@ project "orxLIB"
 	language "C++"
 	files {"../src/**.cpp", "../src/**.c", "../include/**.h" }
 	excludes "../src/main/orxMain.c"
-	
+
 	--
 	--	Platform specifics
 	--
-	configuration "linux*"  
-		buildoptions "-Wno-write-strings"  
+	configuration "linux*"
+		buildoptions "-Wno-write-strings"
 		buildoptions "-fPIC"
 
 	configuration "*debug*"
@@ -430,15 +430,15 @@ project "orxLIB"
 	configuration "*profile*"
 		targetsuffix ("p")
 
-	configuration "*static*" 
+	configuration "*static*"
 		kind "StaticLib"
-	
+
 	--
 	--	Linking
 	--
 
-	configuration "*dynamic*" 
-		kind "SharedLib" 
+	configuration "*dynamic*"
+		kind "SharedLib"
 		links {
 			"glfw",
 			"SOIL"}
@@ -449,7 +449,7 @@ project "orxLIB"
 		links "Box2D"
 
 	configuration { "linux*dynamic*" }
-		links { 
+		links {
 			"sndfile",
 			"openal",
 			"GL",
@@ -460,22 +460,22 @@ project "orxLIB"
 			"rt" }
 
 	configuration {"windows*dynamic*"}
-		links { 
+		links {
 			"openal32",
 			"SDL",
 			"winmm"}
-			
+
 	configuration {"codelite or gmake" , "windows*dynamic*"}
 		links { "sndfile" }
 
 	configuration {"vs*" , "windows*dynamic*"}
-		links { 
+		links {
 			"OpenGL32",
 			"libsndfile" }
 
 
 	-- configuration {"vs*" , "windows*dynamic*"}
-	-- 	links { 
+	-- 	links {
 	-- 		"SDL",
 	-- 		"GLFW",
 	-- 		"OpenAL32",
@@ -510,7 +510,7 @@ project "orx"
 	--
 	--	Setup compiler flags, etc...
 	--
-	
+
 	configuration "linux*"
 		buildoptions "-fPIC"
 		linkoptions {"-Wl,-rpath ./"," -Wl,--export-dynamic"}
@@ -534,7 +534,7 @@ project "orx"
 		links "Box2D"
 
 	configuration { "linux*static*" }
-		links { 
+		links {
 			"sndfile",
 			"openal",
 			"GL",
@@ -545,12 +545,12 @@ project "orx"
 		linkoptions "-Wl,--no-whole-archive"
 
 	configuration "linux*amd64*static*"
-		links { 
+		links {
 			"pthread",
 			"rt" }
 
 	configuration {"windows*static*"}
-		links { 
+		links {
 			"openal32",
 			"SDL",
 			"winmm"}
@@ -564,7 +564,7 @@ project "orx"
 			"OpenGL32"}
 
 	-- configuration {"vs*" , "windows*static*"}
-	-- 	links { 
+	-- 	links {
 	-- 		"SDL",
 	-- 		"GLFW",
 	-- 		"OpenAL32",

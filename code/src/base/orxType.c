@@ -33,49 +33,30 @@
 #include "orxInclude.h"
 
 
-/* *** Misc constants *** */
-const orxSTRING    orxSTRING_EMPTY     = "";
-const orxSTRING    orxSTRING_TRUE      = "true";
-const orxSTRING    orxSTRING_FALSE     = "false";
+/* *** String & character constants *** */
+const orxSTRING    orxSTRING_EMPTY    = "";
+const orxSTRING    orxSTRING_TRUE     = "true";
+const orxSTRING    orxSTRING_FALSE    = "false";
 
 #ifdef __orxWINDOWS__
 
-  const orxCHAR    orxCHAR_EOL         = '\n';
-  const orxSTRING  orxSTRING_EOL       = "\r\n";
+const orxSTRING    orxSTRING_EOL      = "\r\n";
 
-#elif defined(__orxLINUX__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-  const orxCHAR    orxCHAR_EOL         = '\n';
-  const orxSTRING  orxSTRING_EOL       = "\n";
-
-#elif defined(__orxMAC__)
-
-  const orxCHAR    orxCHAR_EOL         = '\n';
-  const orxSTRING  orxSTRING_EOL       = "\n";
+const orxSTRING    orxSTRING_EOL      = "\n";
 
 #endif
 
 
 /* *** Directory separators *** */
 
-const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_WINDOWS    = '\\';
-const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_LINUX      = '/';
-const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_WINDOWS  = "\\";
-const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
+#if defined(__orxWINDOWS__)
 
-#ifdef __orxWINDOWS__
+const orxSTRING    orxSTRING_DIRECTORY_SEPARATOR          = "\\";
 
-  const orxCHAR      orxCHAR_DIRECTORY_SEPARATOR         = '\\';
-  const orxSTRING    orxSTRING_DIRECTORY_SEPARATOR       = "\\";
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-#else /* __orxWINDOWS__ */
+const orxSTRING    orxSTRING_DIRECTORY_SEPARATOR          = "/";
 
-  /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-    const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR         = '/';
-    const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR       = "/";
-
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-#endif /* __orxWINDOWS__ */
+#endif

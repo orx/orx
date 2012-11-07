@@ -190,24 +190,31 @@ static const orxHANDLE            orxHANDLE_UNDEFINED   = (orxHANDLE)(-1);
 extern orxDLLAPI const orxSTRING  orxSTRING_EMPTY;
 extern orxDLLAPI const orxSTRING  orxSTRING_TRUE;
 extern orxDLLAPI const orxSTRING  orxSTRING_FALSE;
+extern orxDLLAPI const orxSTRING  orxSTRING_EOL;
+
 #define orxCHAR_NULL              '\0'
 #define orxCHAR_CR                '\r'
 #define orxCHAR_LF                '\n'
+#define orxCHAR_EOL               '\n'
 #define orxCHAR_ASCII_NUMBER      128
-
-extern orxDLLAPI const orxCHAR    orxCHAR_EOL;
-extern orxDLLAPI const orxSTRING  orxSTRING_EOL;
 
 
 /* *** Directory separators *** */
 
-extern orxDLLAPI const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR_WINDOWS;
-extern orxDLLAPI const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR_LINUX;
-extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR_WINDOWS;
-extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR_LINUX;
-
-extern orxDLLAPI const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR;
 extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
+
+#define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS   '\\'
+#define orxCHAR_DIRECTORY_SEPARATOR_LINUX     '/'
+
+#if defined(__orxWINDOWS__)
+
+#define orxCHAR_DIRECTORY_SEPARATOR           '\\'
+
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+
+#define orxCHAR_DIRECTORY_SEPARATOR           '/'
+
+#endif
 
 
 /* *** Status defines *** */
