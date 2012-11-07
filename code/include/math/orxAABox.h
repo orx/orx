@@ -52,8 +52,8 @@
  */
 typedef struct __orxAABOX_t
 {
-  orxVECTOR vTL; /**< Top left corner vector : 12 */
-  orxVECTOR vBR; /**< Bottom right corner vector : 24 */
+  orxVECTOR vTL; /**< Top left corner vector : 16 */
+  orxVECTOR vBR; /**< Bottom right corner vector : 32 */
 
 } orxAABOX;
 

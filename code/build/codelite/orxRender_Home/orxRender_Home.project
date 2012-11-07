@@ -42,7 +42,7 @@
   </Dependencies>
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -fPIC" Required="yes">
+      <Compiler Options="-g -msse -mfpmath=sse -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -75,7 +75,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -fPIC" Required="yes">
+      <Compiler Options="-O2 -msse -mfpmath=sse -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
@@ -107,7 +107,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g -fPIC" Required="yes">
+      <Compiler Options="-g -msse -mfpmath=sse -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -140,7 +140,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2 -fPIC" Required="yes">
+      <Compiler Options="-O2 -msse -mfpmath=sse -fPIC" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
@@ -172,7 +172,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Not compiled" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="no">
+      <Compiler Options="-g -msse -mfpmath=sse" Required="no">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="-O0" Required="no">
@@ -204,7 +204,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -msse -mfpmath=sse" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -237,7 +237,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -msse -mfpmath=sse" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">
@@ -269,7 +269,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" Required="yes">
+      <Compiler Options="-g -msse -mfpmath=sse" Required="yes">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -302,7 +302,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2" Required="yes">
+      <Compiler Options="-O2 -msse -mfpmath=sse" Required="yes">
         <IncludePath Value="../../../include"/>
       </Compiler>
       <Linker Options="-fPIC -s" Required="yes">

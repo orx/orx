@@ -50,6 +50,8 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
+#include <xmmintrin.h>
+
   typedef void *                  orxHANDLE;
 
   #ifdef __orxX86_64__
@@ -80,6 +82,8 @@
 
   typedef float                   orxFLOAT;
   typedef double                  orxDOUBLE;
+
+  typedef __m128                  orxF128;
 
   typedef char                    orxCHAR;
   #define orxSTRING               orxCHAR *

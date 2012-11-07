@@ -54,30 +54,44 @@
  */
 typedef struct __orxVECTOR_t
 {
-  /** Coordinates : 12 */
   union
   {
-    orxFLOAT fX;              /**< First coordinate in the cartesian space */
-    orxFLOAT fRho;            /**< First coordinate in the spherical space */
-    orxFLOAT fR;              /**< First coordinate in the RGB color space */
-    orxFLOAT fH;              /**< First coordinate in the HSL/HSV color spaces */
-  };
+    orxF128      f128SIMD;        /** SIMD intrinsics : 16 */
 
-  union
-  {
-    orxFLOAT fY;              /**< Second coordinate in the cartesian space */
-    orxFLOAT fTheta;          /**< Second coordinate in the spherical space */
-    orxFLOAT fG;              /**< Second coordinate in the RGB color space */
-    orxFLOAT fS;              /**< Second coordinate in the HSL/HSV color spaces */
-  };
+    struct
+    {
+      /** Coordinates : 16 */
+      union
+      {
+        orxFLOAT fX;              /**< First coordinate in the cartesian space */
+        orxFLOAT fRho;            /**< First coordinate in the spherical space */
+        orxFLOAT fR;              /**< First coordinate in the RGB color space */
+        orxFLOAT fH;              /**< First coordinate in the HSL/HSV color spaces */
+      };
 
-  union
-  {
-    orxFLOAT fZ;              /**< Third coordinate in the cartesian space */
-    orxFLOAT fPhi;            /**< Third coordinate in the spherical space */
-    orxFLOAT fB;              /**< Third coordinate in the RGB color space */
-    orxFLOAT fL;              /**< Third coordinate in the HSL color space */
-    orxFLOAT fV;              /**< Third coordinate in the HSV color space */
+      union
+      {
+        orxFLOAT fY;              /**< Second coordinate in the cartesian space */
+        orxFLOAT fTheta;          /**< Second coordinate in the spherical space */
+        orxFLOAT fG;              /**< Second coordinate in the RGB color space */
+        orxFLOAT fS;              /**< Second coordinate in the HSL/HSV color spaces */
+      };
+
+      union
+      {
+        orxFLOAT fZ;              /**< Third coordinate in the cartesian space */
+        orxFLOAT fPhi;            /**< Third coordinate in the spherical space */
+        orxFLOAT fB;              /**< Third coordinate in the RGB color space */
+        orxFLOAT fL;              /**< Third coordinate in the HSL color space */
+        orxFLOAT fV;              /**< Third coordinate in the HSV color space */
+      };
+
+      union
+      {
+        orxFLOAT fA;              /**< Forth coordinate in color spaces */
+        orxFLOAT fW;              /**< Forth coordinate in world spaces */
+      };
+    };
   };
 
 } orxVECTOR;
@@ -107,7 +121,30 @@ static orxINLINE orxVECTOR *                  orxVector_Set(orxVECTOR *_pvVec, o
   return _pvVec;
 }
 
-/** Sets all the vector coordinates with the given value
+/** Sets vector XYZW values (also work for other coordinate system)
+ * @param[in]   _pvVec                        Concerned vector
+ * @param[in]   _fX                           First coordinate value
+ * @param[in]   _fY                           Second coordinate value
+ * @param[in]   _fZ                           Third coordinate value
+ * @param[in]   _fW                           Forth coordinate value
+ * @return      Vector
+ */
+static orxINLINE orxVECTOR *                  orxVector_Set4(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ, orxFLOAT _fW)
+{
+  /* Checks */
+  orxASSERT(_pvVec != orxNULL);
+
+  /* Stores values */
+  _pvVec->fX = _fX;
+  _pvVec->fY = _fY;
+  _pvVec->fZ = _fZ;
+  _pvVec->fW = _fW;
+
+  /* Done ! */
+  return _pvVec;
+}
+
+/** Sets all the vector coordinates but the last one with the given value
  * @param[in]   _pvVec                        Concerned vector
  * @param[in]   _fValue                       Value to set
  * @return      Vector
@@ -118,12 +155,41 @@ static orxINLINE orxVECTOR *                  orxVector_SetAll(orxVECTOR *_pvVec
   return(orxVector_Set(_pvVec, _fValue, _fValue, _fValue));
 }
 
+/** Sets all the vector coordinates with the given value
+ * @param[in]   _pvVec                        Concerned vector
+ * @param[in]   _fValue                       Value to set
+ * @return      Vector
+ */
+static orxINLINE orxVECTOR *                  orxVector_SetAll4(orxVECTOR *_pvVec, orxFLOAT _fValue)
+{
+  /* Done ! */
+  return(orxVector_Set4(_pvVec, _fValue, _fValue, _fValue, _fValue));
+}
+
 /** Copies a vector onto another one
  * @param[in]   _pvDst                        Vector to copy to (destination)
  * @param[in]   _pvSrc                        Vector to copy from (source)
  * @return      Destination vector
  */
 static orxINLINE orxVECTOR *                  orxVector_Copy(orxVECTOR *_pvDst, const orxVECTOR *_pvSrc)
+{
+  /* Checks */
+  orxASSERT(_pvDst != orxNULL);
+  orxASSERT(_pvSrc != orxNULL);
+
+  /* Copies it */
+  orxMemory_Copy(_pvDst, _pvSrc, 3 * sizeof(orxFLOAT));
+
+  /* Done! */
+  return _pvDst;
+}
+
+/** Copies a vector onto another one
+ * @param[in]   _pvDst                        Vector to copy to (destination)
+ * @param[in]   _pvSrc                        Vector to copy from (source)
+ * @return      Destination vector
+ */
+static orxINLINE orxVECTOR *                  orxVector_Copy4(orxVECTOR *_pvDst, const orxVECTOR *_pvSrc)
 {
   /* Checks */
   orxASSERT(_pvDst != orxNULL);
@@ -196,6 +262,28 @@ static orxINLINE orxVECTOR *                  orxVector_Mulf(orxVECTOR *_pvRes, 
   _pvRes->fX = _pvOp1->fX * _fOp2;
   _pvRes->fY = _pvOp1->fY * _fOp2;
   _pvRes->fZ = _pvOp1->fZ * _fOp2;
+
+  /* Done! */
+  return _pvRes;
+}
+
+/** Multiplies a vector by an orxFLOAT and stores result in another one
+ * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _fOp2                         Second operand
+ * @return      Resulting vector
+ */
+static orxINLINE orxVECTOR *                  orxVector_Mulf4(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+
+  /* Muls all */
+  _pvRes->fX = _pvOp1->fX * _fOp2;
+  _pvRes->fY = _pvOp1->fY * _fOp2;
+  _pvRes->fZ = _pvOp1->fZ * _fOp2;
+  _pvRes->fW = _pvOp1->fW * _fOp2;
 
   /* Done! */
   return _pvRes;
@@ -362,6 +450,31 @@ static orxINLINE orxVECTOR *                  orxVector_Clamp(orxVECTOR *_pvRes,
   _pvRes->fX = orxCLAMP(_pvOp->fX, _pvMin->fX, _pvMax->fX);
   _pvRes->fY = orxCLAMP(_pvOp->fY, _pvMin->fY, _pvMax->fY);
   _pvRes->fZ = orxCLAMP(_pvOp->fZ, _pvMin->fZ, _pvMax->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
+/** Clamps a vector between two others
+ * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to clamp
+ * @param[in]   _pvMin                        Minimum boundary
+ * @param[in]   _pvMax                        Maximum boundary
+ * @return      Resulting vector CLAMP(Op, MIN, MAX)
+ */
+static orxINLINE orxVECTOR *                  orxVector_Clamp4(orxVECTOR *_pvRes, const orxVECTOR *_pvOp, const orxVECTOR *_pvMin, const orxVECTOR *_pvMax)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp != orxNULL);
+  orxASSERT(_pvMin != orxNULL);
+  orxASSERT(_pvMax != orxNULL);
+
+  /* Gets all clamped values */
+  _pvRes->fX = orxCLAMP(_pvOp->fX, _pvMin->fX, _pvMax->fX);
+  _pvRes->fY = orxCLAMP(_pvOp->fY, _pvMin->fY, _pvMax->fY);
+  _pvRes->fZ = orxCLAMP(_pvOp->fZ, _pvMin->fZ, _pvMax->fZ);
+  _pvRes->fW = orxCLAMP(_pvOp->fW, _pvMin->fW, _pvMax->fW);
 
   /* Done! */
   return _pvRes;
@@ -799,12 +912,32 @@ static orxINLINE orxFLOAT                   orxVector_Dot(const orxVECTOR *_pvOp
   return fResult;
 }
 
+/** Gets dot product of two vectors
+ * @param[in]   _pvOp1                      First operand
+ * @param[in]   _pvOp2                      Second operand
+ * @return      Dot product
+ */
+static orxINLINE orxFLOAT                   orxVector_Dot4(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2  != orxNULL);
+
+  /* Updates result */
+  fResult = (_pvOp1->fX * _pvOp2->fX) + (_pvOp1->fY * _pvOp2->fY) + (_pvOp1->fZ * _pvOp2->fZ) + (_pvOp1->fW * _pvOp2->fW);
+
+  /* Done! */
+  return fResult;
+}
+
 /** Gets 2D dot product of two vectors
  * @param[in]   _pvOp1                      First operand
  * @param[in]   _pvOp2                      Second operand
  * @return      2D dot product
  */
-static orxINLINE orxFLOAT                   orxVector_2DDot(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
+static orxINLINE orxFLOAT                   orxVector_Dot2(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxFLOAT fResult;
 

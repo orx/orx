@@ -79,7 +79,7 @@ typedef struct __orxCOMMAND_VAR_t
 {
   union
   {
-    orxVECTOR           vValue;                       /**< Vector value : 12 */
+    orxVECTOR           vValue;                       /**< Vector value : 16 */
     const orxSTRING     zValue;                       /**< String value : 4 */
     orxU32              u32Value;                     /**< U32 value : 4 */
     orxS32              s32Value;                     /**< S32 value : 4 */
@@ -89,7 +89,7 @@ typedef struct __orxCOMMAND_VAR_t
     orxBOOL             bValue;                       /**< Bool value : 4 */
   };
 
-  orxCOMMAND_VAR_TYPE   eType;                        /**< Type : 16 */
+  orxCOMMAND_VAR_TYPE   eType;                        /**< Type : 20 */
 
 } orxCOMMAND_VAR;
 

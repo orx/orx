@@ -379,8 +379,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
     }
 
     /* Sets color */
-    orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-    stColor.fAlpha = orxFLOAT_1;
+    orxVector_Set4(&(stColor.vRGBA), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b), orxFLOAT_1);
 
     /* Draws polygon */
     orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxFALSE);
@@ -446,14 +445,14 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
     }
 
     /* Sets color */
-    orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+    orxVector_Set(&(stColor.vRGBA), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
 
     /* Draws polygon inside */
-    stColor.fAlpha = orx2F(0.5f);
+    stColor.vRGBA.fA = orx2F(0.5f);
     orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxTRUE);
 
     /* Draws polygon outside */
-    stColor.fAlpha = orxFLOAT_1;
+    stColor.vRGBA.fA = orxFLOAT_1;
     orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxFALSE);
   }
 
@@ -504,8 +503,7 @@ void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, 
     orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
 
     /* Sets color */
-    orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-    stColor.fAlpha = orxFLOAT_1;
+    orxVector_Set4(&(stColor.vRGBA), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b), orxFLOAT_1);
 
     /* Draws circle */
     orxDisplay_DrawCircle(&vCenter, vTemp.fX - vCenter.fX, orxColor_ToRGBA(&stColor), orxFALSE);
@@ -558,14 +556,14 @@ void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRad
     orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
 
     /* Sets color */
-    orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
+    orxVector_Set(&(stColor.vRGBA), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
 
     /* Draws circle inside */
-    stColor.fAlpha = orx2F(0.5f);
+    stColor.vRGBA.fA = orx2F(0.5f);
     orxDisplay_DrawCircle(&vCenter, vTemp.fX - vCenter.fX, orxColor_ToRGBA(&stColor), orxTRUE);
 
     /* Draws circle outside */
-    stColor.fAlpha = orxFLOAT_1;
+    stColor.vRGBA.fA = orxFLOAT_1;
     orxDisplay_DrawCircle(&vCenter, vTemp.fX - vCenter.fX, orxColor_ToRGBA(&stColor), orxFALSE);
   }
 
@@ -615,8 +613,7 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
     orxRender_GetScreenPosition(&vEnd, pstViewport, &vEnd);
 
     /* Sets color */
-    orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-    stColor.fAlpha = orxFLOAT_1;
+    orxVector_Set4(&(stColor.vRGBA), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b), orxFLOAT_1);
 
     /* Draws segment */
     orxDisplay_DrawLine(&vStart, &vEnd, orxColor_ToRGBA(&stColor));

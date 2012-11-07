@@ -111,8 +111,8 @@ typedef struct __orxSHADER_EVENT_PAYLOAD_t
   {
     orxFLOAT            fValue;                 /**< Float value : 24 */
     const orxTEXTURE   *pstValue;               /**< Texture value : 24 */
-    orxVECTOR           vValue;                 /**< Vector value : 24 */
-  };                                            /**< Union value : 32 */
+    orxVECTOR           vValue;                 /**< Vector value : 48 */
+  };                                            /**< Union value : 48 */
 
 } orxSHADER_EVENT_PAYLOAD;
 

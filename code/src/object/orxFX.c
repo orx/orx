@@ -640,7 +640,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     else
     {
       /* Clears color */
-      orxColor_Set(&stObjectColor, &orxVECTOR_WHITE, orxFLOAT_1);
+      orxVector_Copy4(&(stObjectColor.vRGBA), &orxVECTOR_WHITE);
     }
 
     /* For all slots */
@@ -1254,18 +1254,18 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
         if(abLockList[orxFX_TYPE_ALPHA] == orxFALSE)
         {
           /* Updates alpha with previous one */
-          stColor.fAlpha = astValueList[orxFX_TYPE_ALPHA].fValue + stObjectColor.fAlpha;
+          stColor.vRGBA.fA = astValueList[orxFX_TYPE_ALPHA].fValue + stObjectColor.vRGBA.fA;
         }
         else
         {
           /* Updates color */
-          stColor.fAlpha = astValueList[orxFX_TYPE_ALPHA].fValue;
+          stColor.vRGBA.fA = astValueList[orxFX_TYPE_ALPHA].fValue;
         }
       }
       else
       {
         /* Resets alpha */
-        stColor.fAlpha = stObjectColor.fAlpha;
+        stColor.vRGBA.fA = stObjectColor.vRGBA.fA;
       }
 
       /* Update color blend? */
@@ -1281,10 +1281,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
             orxColor_FromRGBToHSL(&stObjectColor, &stObjectColor);
 
             /* Updates color with previous one */
-            orxVector_Add(&(stColor.vHSL), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSL));
+            orxVector_Add(&(stColor.vHSLA), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSLA));
 
             /* Applies circular clamp on [0, 1[ */
-            stColor.vHSL.fH -= orxS2F(orxF2S(stColor.vHSL.fH) - (orxS32)(stColor.vHSL.fH < orxFLOAT_0));
+            stColor.vHSLA.fH -= orxS2F(orxF2S(stColor.vHSLA.fH) - (orxS32)(stColor.vHSLA.fH < orxFLOAT_0));
 
             /* Gets RGB color */
             orxColor_FromHSLToRGB(&stColor, &stColor);
@@ -1296,10 +1296,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
             orxColor_FromRGBToHSV(&stObjectColor, &stObjectColor);
 
             /* Updates color with previous one */
-            orxVector_Add(&(stColor.vHSV), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSV));
+            orxVector_Add(&(stColor.vHSVA), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSVA));
 
             /* Applies circular clamp on [0, 1[ */
-            stColor.vHSV.fH -= orxS2F(orxF2S(stColor.vHSV.fH) - (orxS32)(stColor.vHSV.fH < orxFLOAT_0));
+            stColor.vHSVA.fH -= orxS2F(orxF2S(stColor.vHSVA.fH) - (orxS32)(stColor.vHSVA.fH < orxFLOAT_0));
 
             /* Gets RGB color */
             orxColor_FromHSVToRGB(&stColor, &stColor);
@@ -1308,13 +1308,13 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
           else
           {
             /* Updates color with previous one */
-            orxVector_Add(&(stColor.vRGB), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vRGB));
+            orxVector_Add(&(stColor.vRGBA), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vRGBA));
           }
         }
         else
         {
           /* Copies value */
-          orxVector_Copy(&(stColor.vRGB), &(astValueList[orxFX_TYPE_RGB].vValue));
+          orxVector_Copy(&(stColor.vRGBA), &(astValueList[orxFX_TYPE_RGB].vValue));
 
           /* HSL? */
           if(eColorBlendUpdate == orxFX_TYPE_HSL)
@@ -1333,7 +1333,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       else
       {
         /* Resets color */
-        orxVector_Copy(&(stColor.vRGB), &(stObjectColor.vRGB));
+        orxVector_Copy(&(stColor.vRGBA), &(stObjectColor.vRGBA));
       }
 
       /* Applies it */

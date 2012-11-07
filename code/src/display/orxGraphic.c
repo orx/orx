@@ -583,7 +583,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor);
 
           /* Normalizes and applies it */
-          orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+          orxVector_Mulf(&(pstResult->stColor.vRGBA), &vColor, orxCOLOR_NORMALIZER);
 
           /* Updates status */
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
@@ -592,7 +592,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_RGB) != orxFALSE)
         {
           /* Gets its value */
-          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
+          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_RGB, &(pstResult->stColor.vRGBA));
 
           /* Updates status */
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
@@ -601,7 +601,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
         {
           /* Gets its value */
-          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
+          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSL, &(pstResult->stColor.vHSLA));
 
           /* Stores its RGB equivalent */
           orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
@@ -613,7 +613,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSV) != orxFALSE)
         {
           /* Gets its value */
-          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSV, &(pstResult->stColor.vHSV));
+          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSV, &(pstResult->stColor.vHSVA));
 
           /* Stores its RGB equivalent */
           orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
@@ -626,7 +626,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_ALPHA) != orxFALSE)
         {
           /* Applies it */
-          orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxGRAPHIC_KZ_CONFIG_ALPHA));
+          pstResult->stColor.vRGBA.fA = orxConfig_GetFloat(orxGRAPHIC_KZ_CONFIG_ALPHA);
 
           /* Updates status */
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
@@ -1209,8 +1209,7 @@ orxSTATUS orxFASTCALL orxGraphic_ClearColor(orxGRAPHIC *_pstGraphic)
   orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
 
   /* Restores default color */
-  _pstGraphic->stColor.fAlpha = orxFLOAT_1;
-  orxVector_Copy(&(_pstGraphic->stColor.vRGB), &orxVECTOR_WHITE);
+  orxVector_Copy4(&(_pstGraphic->stColor.vRGBA), &orxVECTOR_WHITE);
 
   /* Done! */
   return eResult;

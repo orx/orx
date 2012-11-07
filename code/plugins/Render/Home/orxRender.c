@@ -562,7 +562,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel's color */
-      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSLA.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -614,7 +614,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
       /* Sets font's color */
-      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSLA.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
       /* Adds depth markers */
@@ -732,7 +732,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
         /* Updates display color */
-        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+        stColor.vHSLA.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
         orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
         orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 

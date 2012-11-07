@@ -796,15 +796,15 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
   {
     orxCOLOR stColor;
 
+    /* Sets its color */
+    orxVector_Mulf(&(stColor.vRGBA), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
+
     /* Gets its current color */
     if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
     {
       /* Sets its alpha to opaque */
-      stColor.fAlpha = orxFLOAT_1;
+      stColor.vRGBA.fA = orxFLOAT_1;
     }
-
-    /* Sets its color */
-    orxVector_Mulf(&(stColor.vRGB), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
 
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
@@ -845,7 +845,7 @@ void orxFASTCALL orxObject_CommandGetColor(orxU32 _u32ArgNumber, const orxCOMMAN
     else
     {
       /* Updates result */
-      orxVector_Mulf(&(_pstResult->vValue), &(stColor.vRGB), orxCOLOR_DENORMALIZER);
+      orxVector_Mulf(&(_pstResult->vValue), &(stColor.vRGBA), orxCOLOR_DENORMALIZER);
     }
   }
   else
@@ -876,11 +876,11 @@ void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
     if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
     {
       /* Sets its color to white */
-      orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+      orxVector_Copy(&(stColor.vRGBA), &orxVECTOR_WHITE);
     }
 
     /* Sets its alpha */
-    stColor.fAlpha = _astArgList[1].fValue;
+    stColor.vRGBA.fA = _astArgList[1].fValue;
 
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
@@ -921,7 +921,7 @@ void orxFASTCALL orxObject_CommandGetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
     else
     {
       /* Updates result */
-      _pstResult->fValue = stColor.fAlpha;
+      _pstResult->fValue = stColor.vRGBA.fA;
     }
   }
   else
@@ -2522,7 +2522,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
       {
         /* Normalizes and applies it */
-        orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+        orxVector_Mulf(&(pstResult->stColor.vRGBA), &vColor, orxCOLOR_NORMALIZER);
 
         /* Updates status flags */
         u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
@@ -2531,7 +2531,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
       {
         /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_RGB, &(pstResult->stColor.vRGBA));
 
         /* Updates status */
         u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
@@ -2540,7 +2540,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSL) != orxFALSE)
       {
         /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSL, &(pstResult->stColor.vHSLA));
 
         /* Stores its RGB equivalent */
         orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
@@ -2552,7 +2552,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSV) != orxFALSE)
       {
         /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSV, &(pstResult->stColor.vHSV));
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSV, &(pstResult->stColor.vHSVA));
 
         /* Stores its RGB equivalent */
         orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
@@ -2565,7 +2565,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
       {
         /* Applies it */
-        orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
+        pstResult->stColor.vRGBA.fA =orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA);
 
         /* Updates status */
         u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
@@ -5815,8 +5815,7 @@ orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
   orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
 
   /* Restores default color */
-  _pstObject->stColor.fAlpha = orxFLOAT_1;
-  orxVector_Copy(&(_pstObject->stColor.vRGB), &orxVECTOR_WHITE);
+  orxVector_Copy4(&(_pstObject->stColor.vRGBA), &orxVECTOR_WHITE);
 
   /* Done! */
   return eResult;

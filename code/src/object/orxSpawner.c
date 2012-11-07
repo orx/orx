@@ -207,7 +207,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             orxOBJECT  *pstObject;
 
             /* Inits color */
-            orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
+            orxVector_Copy4(&(stColor.vRGBA), &orxVECTOR_WHITE);
 
             /* Gets spawned object */
             pstObject = orxOBJECT(_pstEvent->hRecipient);
@@ -239,7 +239,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
               if(orxObject_HasColor(pstOwner) != orxFALSE)
               {
                 /* Stores it */
-                stColor.fAlpha = orxObject_GetColor(pstOwner, &stTemp)->fAlpha;
+                stColor.vRGBA.fA = orxObject_GetColor(pstOwner, &stTemp)->vRGBA.fA;
               }
             }
             else
@@ -248,7 +248,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
               if(orxObject_HasColor(pstObject) != orxFALSE)
               {
                 /* Uses object's alpha */
-                stColor.fAlpha = orxObject_GetColor(pstObject, &stTemp)->fAlpha;
+                stColor.vRGBA.fA = orxObject_GetColor(pstObject, &stTemp)->vRGBA.fA;
               }
             }
 

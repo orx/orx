@@ -164,11 +164,10 @@ typedef struct __orxCOLOR_t
 {
   union
   {
-    orxVECTOR vRGB;                     /**< RGB components: 12 */
-    orxVECTOR vHSL;                     /**< HSL components: 12 */
-    orxVECTOR vHSV;                     /**< HSV components: 12 */
+    orxVECTOR vRGBA;                    /**< RGB components: 16 */
+    orxVECTOR vHSLA;                    /**< HSL components: 16 */
+    orxVECTOR vHSVA;                    /**< HSV components: 16 */
   };
-  orxFLOAT  fAlpha;                     /**< Alpha component: 16 */
 
 } orxCOLOR;
 
@@ -301,7 +300,6 @@ static orxINLINE orxRGBA          orxRGBA_Set(orxU8 _u8R, orxU8 _u8G, orxU8 _u8B
   return stResult;
 }
 
-
 /** Sets all components from an orxRGBA
  * @param[in]   _pstColor       Concerned color
  * @param[in]   _stRGBA         RGBA values to set
@@ -314,11 +312,8 @@ static orxINLINE orxCOLOR *       orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA 
   /* Checks */
   orxASSERT(_pstColor != orxNULL);
 
-  /* Stores RGB */
-  orxVector_Set(&(_pstColor->vRGB), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stRGBA)));
-
-  /* Stores alpha */
-  _pstColor->fAlpha = orxCOLOR_NORMALIZER * orxRGBA_A(_stRGBA);
+  /* Stores RGBA */
+  orxVector_Set4(&(_pstColor->vRGBA), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stRGBA)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stRGBA)));
 
   /* Done! */
   return pstResult;
@@ -338,49 +333,10 @@ static orxINLINE orxCOLOR *       orxColor_Set(orxCOLOR *_pstColor, const orxVEC
   orxASSERT(_pstColor != orxNULL);
 
   /* Stores RGB */
-  orxVector_Copy(&(_pstColor->vRGB), _pvRGB);
+  orxVector_Copy(&(_pstColor->vRGBA), _pvRGB);
 
   /* Stores alpha */
-  _pstColor->fAlpha = _fAlpha;
-
-  /* Done! */
-  return pstResult;
-}
-
-/** Sets RGB components
- * @param[in]   _pstColor       Concerned color
- * @param[in]   _pvRGB          RGB components
- * @return      orxCOLOR
- */
-static orxINLINE orxCOLOR *       orxColor_SetRGB(orxCOLOR *_pstColor, const orxVECTOR *_pvRGB)
-{
-  orxCOLOR *pstResult = _pstColor;
-
-  /* Checks */
-  orxASSERT(_pstColor != orxNULL);
-  orxASSERT(_pvRGB != orxNULL);
-
-  /* Stores components */
-  orxVector_Copy(&(_pstColor->vRGB), _pvRGB);
-
-  /* Done! */
-  return pstResult;
-}
-
-/** Sets alpha component
- * @param[in]   _pstColor       Concerned color
- * @param[in]   _fAlpha         Normalized alpha component
- * @return      orxCOLOR / orxNULL
- */
-static orxINLINE orxCOLOR *       orxColor_SetAlpha(orxCOLOR *_pstColor, orxFLOAT _fAlpha)
-{
-  orxCOLOR *pstResult = _pstColor;
-
-  /* Checks */
-  orxASSERT(_pstColor != orxNULL);
-
-  /* Stores it */
-  _pstColor->fAlpha = _fAlpha;
+  _pstColor->vRGBA.fA = _fAlpha;
 
   /* Done! */
   return pstResult;
@@ -394,22 +350,18 @@ static orxINLINE orxRGBA          orxColor_ToRGBA(const orxCOLOR *_pstColor)
 {
   orxRGBA   stResult;
   orxVECTOR vColor;
-  orxFLOAT  fAlpha;
 
   /* Checks */
   orxASSERT(_pstColor != orxNULL);
 
   /* Clamps RGB components */
-  orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_0, &orxVECTOR_WHITE);
+  orxVector_Clamp4(&vColor, &(_pstColor->vRGBA), &orxVECTOR_0, &orxVECTOR_1);
 
   /* De-normalizes vector */
-  orxVector_Mulf(&vColor, &vColor, orxCOLOR_DENORMALIZER);
-
-  /* Clamps alpha */
-  fAlpha = orxCLAMP(_pstColor->fAlpha, orxFLOAT_0, orxFLOAT_1);
+  orxVector_Mulf4(&vColor, &vColor, orxCOLOR_DENORMALIZER);
 
   /* Updates result */
-  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(orxCOLOR_DENORMALIZER * fAlpha));
+  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(vColor.fA));
 
   /* Done! */
   return stResult;
@@ -448,9 +400,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSL(orxCOLOR *_pstDst, const
   orxASSERT(_pstSrc != orxNULL);
 
   /* Gets source red, blue and green components */
-  fR = _pstSrc->vRGB.fR;
-  fG = _pstSrc->vRGB.fG;
-  fB = _pstSrc->vRGB.fB;
+  fR = _pstSrc->vRGBA.fR;
+  fG = _pstSrc->vRGBA.fG;
+  fB = _pstSrc->vRGBA.fB;
 
   /* Gets min, max & delta values */
   fMin    = orxMIN(fR, orxMIN(fG, fB));
@@ -458,18 +410,18 @@ static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSL(orxCOLOR *_pstDst, const
   fDelta  = fMax - fMin;
 
   /* Stores lightness */
-  pstResult->vHSL.fL = orx2F(0.5f) * (fMax + fMin);
+  pstResult->vHSLA.fL = orx2F(0.5f) * (fMax + fMin);
 
   /* Gray? */
   if(fDelta == orxFLOAT_0)
   {
     /* Gets hue & saturation */
-    pstResult->vHSL.fH = pstResult->vHSL.fS = orxFLOAT_0;
+    pstResult->vHSLA.fH = pstResult->vHSLA.fS = orxFLOAT_0;
   }
   else
   {
     /* Updates saturation */
-    pstResult->vHSL.fS = (pstResult->vHSL.fL < orx2F(0.5f))
+    pstResult->vHSLA.fS = (pstResult->vHSLA.fL < orx2F(0.5f))
                        ? fDelta / (fMax + fMin)
                        : fDelta / (orx2F(2.0f) - fMax - fMin);
 
@@ -477,34 +429,34 @@ static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSL(orxCOLOR *_pstDst, const
     if(fR == fMax)
     {
       /* Updates hue */
-      pstResult->vHSL.fH = orx2F(1.0f / 6.0f) * (fG - fB) / fDelta;
+      pstResult->vHSLA.fH = orx2F(1.0f / 6.0f) * (fG - fB) / fDelta;
     }
     /* Green tone? */
     else if(fG == fMax)
     {
       /* Updates hue */
-      pstResult->vHSL.fH = orx2F(1.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fB - fR) / fDelta);
+      pstResult->vHSLA.fH = orx2F(1.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fB - fR) / fDelta);
     }
     /* Blue tone */
     else
     {
       /* Updates hue */
-      pstResult->vHSL.fH = orx2F(2.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fR - fG) / fDelta);
+      pstResult->vHSLA.fH = orx2F(2.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fR - fG) / fDelta);
     }
 
     /* Clamps hue */
-    if(pstResult->vHSL.fH < orxFLOAT_0)
+    if(pstResult->vHSLA.fH < orxFLOAT_0)
     {
-      pstResult->vHSL.fH += orxFLOAT_1;
+      pstResult->vHSLA.fH += orxFLOAT_1;
     }
-    else if(pstResult->vHSL.fH > orxFLOAT_1)
+    else if(pstResult->vHSLA.fH > orxFLOAT_1)
     {
-      pstResult->vHSL.fH -= orxFLOAT_1;
+      pstResult->vHSLA.fH -= orxFLOAT_1;
     }
   }
 
   /* Updates alpha */
-  pstResult->fAlpha = _pstSrc->fAlpha;
+  pstResult->vHSLA.fA = _pstSrc->vRGBA.fA;
 
   /* Done! */
   return pstResult;
@@ -555,15 +507,15 @@ while(orxFALSE)
   orxASSERT(_pstSrc != orxNULL);
 
   /* Gets source hue, saturation and lightness components */
-  fH = _pstSrc->vRGB.fH;
-  fS = _pstSrc->vRGB.fS;
-  fL = _pstSrc->vRGB.fL;
+  fH = _pstSrc->vRGBA.fH;
+  fS = _pstSrc->vRGBA.fS;
+  fL = _pstSrc->vRGBA.fL;
 
   /* Gray? */
   if(fS == orxFLOAT_0)
   {
     /* Updates result */
-    orxVector_SetAll(&(pstResult->vRGB), fL);
+    orxVector_SetAll(&(pstResult->vRGBA), fL);
   }
   else
   {
@@ -580,25 +532,25 @@ while(orxFALSE)
     /* Gets RGB components */
     if(fH > orx2F(2.0f / 3.0f))
     {
-      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fR, fIntermediate, fChroma, (fH - orx2F(2.0f / 3.0f)));
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGBA.fR, fIntermediate, fChroma, (fH - orx2F(2.0f / 3.0f)));
     }
     else
     {
-      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fR, fIntermediate, fChroma, (fH + orx2F(1.0f / 3.0f)));
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGBA.fR, fIntermediate, fChroma, (fH + orx2F(1.0f / 3.0f)));
     }
-    orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fG, fIntermediate, fChroma, fH);
+    orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGBA.fG, fIntermediate, fChroma, fH);
     if(fH < orx2F(1.0f / 3.0f))
     {
-      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fB, fIntermediate, fChroma, (fH + orx2F(2.0f / 3.0f)));
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGBA.fB, fIntermediate, fChroma, (fH + orx2F(2.0f / 3.0f)));
     }
     else
     {
-      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGB.fB, fIntermediate, fChroma, (fH - orx2F(1.0f / 3.0f)));
+      orxCOLOR_GET_RGB_COMPONENT(pstResult->vRGBA.fB, fIntermediate, fChroma, (fH - orx2F(1.0f / 3.0f)));
     }
   }
 
   /* Updates alpha */
-  pstResult->fAlpha = _pstSrc->fAlpha;
+  pstResult->vRGBA.fA = _pstSrc->vHSLA.fA;
 
   /* Done! */
   return pstResult;
@@ -619,9 +571,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSV(orxCOLOR *_pstDst, const
   orxASSERT(_pstSrc != orxNULL);
 
   /* Gets source red, blue and green components */
-  fR = _pstSrc->vRGB.fR;
-  fG = _pstSrc->vRGB.fG;
-  fB = _pstSrc->vRGB.fB;
+  fR = _pstSrc->vRGBA.fR;
+  fG = _pstSrc->vRGBA.fG;
+  fB = _pstSrc->vRGBA.fB;
 
   /* Gets min, max & delta values */
   fMin    = orxMIN(fR, orxMIN(fG, fB));
@@ -629,51 +581,51 @@ static orxCOLOR *orxFASTCALL      orxColor_FromRGBToHSV(orxCOLOR *_pstDst, const
   fDelta  = fMax - fMin;
 
   /* Stores value */
-  pstResult->vHSL.fV = fMax;
+  pstResult->vHSLA.fV = fMax;
 
   /* Gray? */
   if(fDelta == orxFLOAT_0)
   {
     /* Gets hue & saturation */
-    pstResult->vHSL.fH = pstResult->vHSL.fS = orxFLOAT_0;
+    pstResult->vHSLA.fH = pstResult->vHSLA.fS = orxFLOAT_0;
   }
   else
   {
     /* Updates saturation */
-    pstResult->vHSL.fS = fDelta / fMax;
+    pstResult->vHSLA.fS = fDelta / fMax;
 
     /* Red tone? */
     if(fR == fMax)
     {
       /* Updates hue */
-      pstResult->vHSL.fH = orx2F(1.0f / 6.0f) * (fG - fB) / fDelta;
+      pstResult->vHSLA.fH = orx2F(1.0f / 6.0f) * (fG - fB) / fDelta;
     }
     /* Green tone? */
     else if(fG == fMax)
     {
       /* Updates hue */
-      pstResult->vHSL.fH = orx2F(1.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fB - fR) / fDelta);
+      pstResult->vHSLA.fH = orx2F(1.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fB - fR) / fDelta);
     }
     /* Blue tone */
     else
     {
       /* Updates hue */
-      pstResult->vHSL.fH = orx2F(2.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fR - fG) / fDelta);
+      pstResult->vHSLA.fH = orx2F(2.0f / 3.0f) + (orx2F(1.0f / 6.0f) * (fR - fG) / fDelta);
     }
 
     /* Clamps hue */
-    if(pstResult->vHSL.fH < orxFLOAT_0)
+    if(pstResult->vHSLA.fH < orxFLOAT_0)
     {
-      pstResult->vHSL.fH += orxFLOAT_1;
+      pstResult->vHSLA.fH += orxFLOAT_1;
     }
-    else if(pstResult->vHSL.fH > orxFLOAT_1)
+    else if(pstResult->vHSLA.fH > orxFLOAT_1)
     {
-      pstResult->vHSL.fH -= orxFLOAT_1;
+      pstResult->vHSLA.fH -= orxFLOAT_1;
     }
   }
 
   /* Updates alpha */
-  pstResult->fAlpha = _pstSrc->fAlpha;
+  pstResult->vHSLA.fA = _pstSrc->vRGBA.fA;
 
   /* Done! */
   return pstResult;
@@ -694,15 +646,15 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
   orxASSERT(_pstSrc != orxNULL);
 
   /* Gets source hue, saturation and value components */
-  fH = _pstSrc->vRGB.fH;
-  fS = _pstSrc->vRGB.fS;
-  fV = _pstSrc->vRGB.fV;
+  fH = _pstSrc->vRGBA.fH;
+  fS = _pstSrc->vRGBA.fS;
+  fV = _pstSrc->vRGBA.fV;
 
   /* Gray? */
   if(fS == orxFLOAT_0)
   {
     /* Updates result */
-    orxVector_SetAll(&(pstResult->vRGB), fV);
+    orxVector_SetAll(&(pstResult->vRGBA), fV);
   }
   else
   {
@@ -722,9 +674,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
       case 0:
       {
         /* Updates RGB components */
-        pstResult->vRGB.fR = fV;
-        pstResult->vRGB.fG = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
-        pstResult->vRGB.fB = fV - fIntermediate;
+        pstResult->vRGBA.fR = fV;
+        pstResult->vRGBA.fG = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
+        pstResult->vRGBA.fB = fV - fIntermediate;
 
         break;
       }
@@ -732,9 +684,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
       case 1:
       {
         /* Updates RGB components */
-        pstResult->vRGB.fR = fV - (fIntermediate * (fFullHue - fSector));
-        pstResult->vRGB.fG = fV;
-        pstResult->vRGB.fB = fV - fIntermediate;
+        pstResult->vRGBA.fR = fV - (fIntermediate * (fFullHue - fSector));
+        pstResult->vRGBA.fG = fV;
+        pstResult->vRGBA.fB = fV - fIntermediate;
 
         break;
       }
@@ -742,9 +694,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
       case 2:
       {
         /* Updates RGB components */
-        pstResult->vRGB.fR = fV - fIntermediate;
-        pstResult->vRGB.fG = fV;
-        pstResult->vRGB.fB = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
+        pstResult->vRGBA.fR = fV - fIntermediate;
+        pstResult->vRGBA.fG = fV;
+        pstResult->vRGBA.fB = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
 
         break;
       }
@@ -752,9 +704,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
       case 3:
       {
         /* Updates RGB components */
-        pstResult->vRGB.fR = fV - fIntermediate;
-        pstResult->vRGB.fG = fV - (fIntermediate * (fFullHue - fSector));
-        pstResult->vRGB.fB = fV;
+        pstResult->vRGBA.fR = fV - fIntermediate;
+        pstResult->vRGBA.fG = fV - (fIntermediate * (fFullHue - fSector));
+        pstResult->vRGBA.fB = fV;
 
         break;
       }
@@ -762,9 +714,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
       case 4:
       {
         /* Updates RGB components */
-        pstResult->vRGB.fR = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
-        pstResult->vRGB.fG = fV - fIntermediate;
-        pstResult->vRGB.fB = fV;
+        pstResult->vRGBA.fR = fV - (fIntermediate - (fIntermediate * (fFullHue - fSector)));
+        pstResult->vRGBA.fG = fV - fIntermediate;
+        pstResult->vRGBA.fB = fV;
 
         break;
       }
@@ -772,9 +724,9 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
       case 5:
       {
         /* Updates RGB components */
-        pstResult->vRGB.fR = fV;
-        pstResult->vRGB.fG = fV - fIntermediate;
-        pstResult->vRGB.fB = fV - (fIntermediate * (fFullHue - fSector));
+        pstResult->vRGBA.fR = fV;
+        pstResult->vRGBA.fG = fV - fIntermediate;
+        pstResult->vRGBA.fB = fV - (fIntermediate * (fFullHue - fSector));
 
         break;
       }
@@ -782,7 +734,7 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
   }
 
   /* Updates alpha */
-  pstResult->fAlpha = _pstSrc->fAlpha;
+  pstResult->vRGBA.fA = _pstSrc->vHSVA.fA;
 
   /* Done! */
   return pstResult;

@@ -52,11 +52,11 @@
 */
 typedef struct __orxOBOX_t
 {
-    orxVECTOR vPosition;/**< Position vector  : 12 */
-    orxVECTOR vPivot;   /**< Pivot vector     : 24 */
-    orxVECTOR vX;       /**< X axis vector    : 36 */
-    orxVECTOR vY;       /**< Y axis vector    : 48 */
-    orxVECTOR vZ;       /**< Z axis vector    : 60 */
+    orxVECTOR vPosition;/**< Position vector  : 16 */
+    orxVECTOR vPivot;   /**< Pivot vector     : 32 */
+    orxVECTOR vX;       /**< X axis vector    : 48 */
+    orxVECTOR vY;       /**< Y axis vector    : 64 */
+    orxVECTOR vZ;       /**< Z axis vector    : 80 */
 
 } orxOBOX;
 
@@ -336,13 +336,13 @@ static orxINLINE orxBOOL                      orxOBox_ZAlignedTestIntersection(c
         orxU32    k;
 
         /* Gets initial projected values */
-        fMin = fMax = fProj = orxVector_2DDot(&vToCorner[0], pvAxis);
+        fMin = fMax = fProj = orxVector_Dot2(&vToCorner[0], pvAxis);
 
         /* For all remaining corners */
         for(k = 1; k < 4; k++)
         {
           /* Gets projected value */
-          fProj = orxVector_2DDot(&vToCorner[k], pvAxis);
+          fProj = orxVector_Dot2(&vToCorner[k], pvAxis);
 
           /* Updates extrema */
           if(fProj > fMax)
