@@ -2,7 +2,7 @@
 <CodeLite_Project Name="orxLIB">
   <Plugins>
     <Plugin Name="qmake">
-      <![CDATA[00120001N0028Linux Embedded Dynamic Debug0000000000000001N0030Linux Embedded Dynamic Release0000000000000001N0027Linux Embedded Static Debug0000000000000001N0029Linux Embedded Static Release0000000000000001N0019Win32 Dynamic Debug0000000000000001N0021Win32 Dynamic Release0000000000000001N0028Win32 Embedded Dynamic Debug0000000000000001N0030Win32 Embedded Dynamic Profile0000000000000001N0030Win32 Embedded Dynamic Release0000000000000001N0027Win32 Embedded Static Debug0000000000000001N0029Win32 Embedded Static Release0000000000000001N0018Win32 Static Debug000000000000]]>
+      <![CDATA[00160001N0028Linux Embedded Dynamic Debug0000000000000001N0030Linux Embedded Dynamic Profile0000000000000001N0030Linux Embedded Dynamic Release0000000000000001N0027Linux Embedded Static Debug0000000000000001N0029Linux Embedded Static Release0000000000000001N0032Linux64 Embedded Dynamic Profile0000000000000001N0032Linux64 Embedded Dynamic Release0000000000000001N0031Linux64 Embedded Static Release0000000000000001N0019Win32 Dynamic Debug0000000000000001N0021Win32 Dynamic Release0000000000000001N0028Win32 Embedded Dynamic Debug0000000000000001N0030Win32 Embedded Dynamic Profile0000000000000001N0030Win32 Embedded Dynamic Release0000000000000001N0027Win32 Embedded Static Debug0000000000000001N0029Win32 Embedded Static Release0000000000000001N0018Win32 Static Debug000000000000]]>
     </Plugin>
   </Plugins>
   <Description/>
@@ -218,7 +218,7 @@
   <Dependencies Name="Linux Static Release"/>
   <Dependencies Name="Linux Static Debug"/>
   <Dependencies Name="Linux Embedded Dynamic Debug"/>
-  <Settings Type="Static Library">
+  <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-Wmissing-braces -Wparentheses -Wsign-compare -Wswitch -Wunused-variable" C_Options="-Wmissing-braces -Wparentheses -Wsign-compare -Wswitch -Wunused-variable">
         <IncludePath Value="."/>
@@ -374,7 +374,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -440,7 +440,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -Wno-write-strings -fPIC -m32" C_Options="-O3 -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -552,7 +552,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -Wno-write-strings -fPIC -m32" C_Options="-O3 -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m32" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -738,7 +738,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -Wno-write-strings -fPIC -m64" C_Options="-O3 -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -803,7 +803,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -Wno-write-strings -fPIC -m64" C_Options="-O3 -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -914,7 +914,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Linux64 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3 -Wno-write-strings -fPIC -m64" C_Options="-O3 -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" C_Options="-O3 -msse -mfpmath=sse -Wno-write-strings -fPIC -m64" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1102,7 +1102,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Profile" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse" C_Options="-O3 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1165,7 +1165,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse" C_Options="-O3 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
@@ -1274,7 +1274,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Win32 Embedded Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+      <Compiler Options="-O3 -msse -mfpmath=sse" C_Options="-O3 -msse -mfpmath=sse" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/dlmalloc"/>
         <IncludePath Value="../../../../extern/glfw-2.7/include"/>
