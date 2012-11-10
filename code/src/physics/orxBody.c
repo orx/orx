@@ -1809,7 +1809,7 @@ orxSTATUS orxFASTCALL orxBody_SetSpeed(orxBODY *_pstBody, const orxVECTOR *_pvSp
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Strcuture does not have data.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Structure does not have data.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2257,8 +2257,18 @@ orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Applies force */
+    /* Enforces body speed */
+    orxPhysics_SetSpeed(_pstBody->pstData, &(_pstBody->vSpeed));
+
+    /* Applies impulse */
     eResult = orxPhysics_ApplyImpulse(_pstBody->pstData, _pvImpulse, _pvPoint);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Updates body speed (so as to not override the effect of impulse during the physics update) */
+      orxPhysics_GetSpeed(_pstBody->pstData, &(_pstBody->vSpeed));
+    }
   }
   else
   {
