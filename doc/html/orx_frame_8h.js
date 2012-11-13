@@ -19,6 +19,7 @@ var orx_frame_8h =
     [ "orxFrame_Create", "orx_frame_8h.html#ga93be0b12fdc5db08d8ec9e3050bdcae3", null ],
     [ "orxFrame_Delete", "orx_frame_8h.html#ga2da19cebead5fb95d7c1d0bfb4f97a34", null ],
     [ "orxFrame_Exit", "orx_frame_8h.html#gaf0e806d876d6bb7506429850ce567f08", null ],
+    [ "orxFrame_GetParent", "orx_frame_8h.html#gaaee7f5ca1f2e80e445e859b0968c6512", null ],
     [ "orxFrame_GetPosition", "orx_frame_8h.html#ga7ed8f5fee4724dfbfa779856ba778752", null ],
     [ "orxFrame_GetRotation", "orx_frame_8h.html#gad2b6e40258a6a518a7390429cb31e5ad", null ],
     [ "orxFrame_GetScale", "orx_frame_8h.html#ga70e670a1cacd89ea1f78f5dbe1fecedb", null ],

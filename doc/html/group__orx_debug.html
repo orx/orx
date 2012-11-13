@@ -118,6 +118,8 @@ Macros</h2></td></tr>
 <tr class="separator:ga0448e683659f64b760f059a2ee9a4f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadb24945ce6ef84f98566d5fa37e35ef6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#gadb24945ce6ef84f98566d5fa37e35ef6">orxDEBUG_INIT</a>()&#160;&#160;&#160;<a class="el" href="group__orx_debug.html#ga336fbc278493d7b286f6c4990a525165">_orxDebug_Init</a>()</td></tr>
 <tr class="separator:gadb24945ce6ef84f98566d5fa37e35ef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae0dbd70f5f6a5c00f20a280c9cfe8340"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#gae0dbd70f5f6a5c00f20a280c9cfe8340">orxDEBUG_IS_LEVEL_ENABLED</a>(LEVEL)&#160;&#160;&#160;<a class="el" href="group__orx_debug.html#ga51c373a4539b936be9419e17ce6b58b8">_orxDebug_IsLevelEnabled</a>(LEVEL)</td></tr>
+<tr class="separator:gae0dbd70f5f6a5c00f20a280c9cfe8340"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa926078fe1ff0af68e746861de4f5992"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#gaa926078fe1ff0af68e746861de4f5992">orxDEBUG_KS32_BUFFER_OUTPUT_SIZE</a>&#160;&#160;&#160;2048</td></tr>
 <tr class="separator:gaa926078fe1ff0af68e746861de4f5992"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaab3cd7862497cad837a89b74049d9fe8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#gaab3cd7862497cad837a89b74049d9fe8">orxDEBUG_KU32_STATIC_FLAG_CONSOLE</a>&#160;&#160;&#160;0x00000040</td></tr>
@@ -217,6 +219,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga443bd0cd35cd0d35d9f34d117ab7f84d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga336fbc278493d7b286f6c4990a525165"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#ga336fbc278493d7b286f6c4990a525165">_orxDebug_Init</a> ()</td></tr>
 <tr class="separator:ga336fbc278493d7b286f6c4990a525165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga51c373a4539b936be9419e17ce6b58b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#ga51c373a4539b936be9419e17ce6b58b8">_orxDebug_IsLevelEnabled</a> (<a class="el" href="group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb">orxDEBUG_LEVEL</a> _eLevel)</td></tr>
+<tr class="separator:ga51c373a4539b936be9419e17ce6b58b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga629ee22b4d60797e9756cd2a2b71fba1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxCDECL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#ga629ee22b4d60797e9756cd2a2b71fba1">_orxDebug_Log</a> (<a class="el" href="group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb">orxDEBUG_LEVEL</a> _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat,...)</td></tr>
 <tr class="separator:ga629ee22b4d60797e9756cd2a2b71fba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4185e57bfe9a71085ccbeadc034b0d5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#ga4185e57bfe9a71085ccbeadc034b0d5d">_orxDebug_SetDebugFile</a> (const orxSTRING _zFileName)</td></tr>
@@ -253,7 +257,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00267">267</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00269">269</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +274,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00252">252</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00253">253</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -298,7 +302,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00254">254</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00255">255</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -332,7 +336,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00270">270</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00272">272</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -353,6 +357,24 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gae0dbd70f5f6a5c00f20a280c9cfe8340"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDEBUG_IS_LEVEL_ENABLED</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">LEVEL</td><td>)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="group__orx_debug.html#ga51c373a4539b936be9419e17ce6b58b8">_orxDebug_IsLevelEnabled</a>(LEVEL)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00256">256</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="gaa926078fe1ff0af68e746861de4f5992"></a>
 <div class="memitem">
 <div class="memproto">
@@ -363,7 +385,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00280">280</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00282">282</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -531,7 +553,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00282">282</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00284">284</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -545,7 +567,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00283">283</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00285">285</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -635,7 +657,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00250">250</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00251">251</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -663,7 +685,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00269">269</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00271">271</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -688,7 +710,7 @@ Functions</h2></td></tr>
 <div class="line">      _orxDebug_SetLogFile(zBuffer);                          \</div>
 <div class="line">    } <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment -->
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00258">258</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00260">260</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -706,7 +728,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00256">256</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00258">258</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -724,7 +746,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00257">257</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00259">259</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -821,7 +843,7 @@ Functions</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00289">289</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_debug_8h_source.html#l00291">291</a> of file <a class="el" href="orx_debug_8h_source.html">orxDebug.h</a>.</p>
 
 </div>
 </div>
@@ -923,6 +945,29 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Inits the debug module </p>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga51c373a4539b936be9419e17ce6b58b8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL _orxDebug_IsLevelEnabled </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb">orxDEBUG_LEVEL</a>&#160;</td>
+          <td class="paramname"><em>_eLevel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is a given log level enabled? </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eLevel</td><td>Concerned debug level </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

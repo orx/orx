@@ -38,6 +38,7 @@ var group__orx_body =
     [ "orxBody_Raycast", "group__orx_body.html#ga60bb6bd3200d8fd5f97ab238703bf180", null ],
     [ "orxBody_RemoveJoint", "group__orx_body.html#ga6bcab53b65ae5bf60ffe3c0bc4d924ec", null ],
     [ "orxBody_RemovePart", "group__orx_body.html#gad0bc02565cf5ba05eb743c928c076eb7", null ],
+    [ "orxBody_RemovePartFromConfig", "group__orx_body.html#gacc5bb9e9fae5eac3bde16037cca9b6c7", null ],
     [ "orxBody_SetAngularDamping", "group__orx_body.html#ga83cd91ef853c0ab57c34bc1417445196", null ],
     [ "orxBody_SetAngularVelocity", "group__orx_body.html#ga22f88b5bfb6ae234c68f6dad79da20df", null ],
     [ "orxBody_SetCustomGravity", "group__orx_body.html#ga81b54ce47fe89e5a55735924bea22491", null ],

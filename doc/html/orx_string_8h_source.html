@@ -255,12 +255,12 @@ $(document).ready(function(){initNavTree('orx_string_8h_source.html','');});
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keywordflow">for</span>(pc = _zString; *pc != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; pc++)</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    {</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      <span class="comment">/* Is a directory separator? */</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      <span class="keywordflow">if</span>((*pc == <a class="code" href="group__orx_type.html#gab9132a1cc1b4925f5dfeb46d05e580d9">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) || (*pc == <a class="code" href="group__orx_type.html#ga18c1971c82b619b1f51d9886dda687e2">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      <span class="keywordflow">if</span>((*pc == <a class="code" href="group__orx_type.html#gae411f0589bfd492bd54d2dd1547fe508">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) || (*pc == <a class="code" href="group__orx_type.html#ga353da1d4489596d58d3ceb2020576dee">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;      {</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        orxCHAR cNextChar = *(pc + 1);</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="comment">/* Non terminal and not a directory separator? */</span></div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keywordflow">if</span>((cNextChar != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#gab9132a1cc1b4925f5dfeb46d05e580d9">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#ga18c1971c82b619b1f51d9886dda687e2">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keywordflow">if</span>((cNextChar != <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#gae411f0589bfd492bd54d2dd1547fe508">orxCHAR_DIRECTORY_SEPARATOR_LINUX</a>) &amp;&amp; (cNextChar != <a class="code" href="group__orx_type.html#ga353da1d4489596d58d3ceb2020576dee">orxCHAR_DIRECTORY_SEPARATOR_WINDOWS</a>))</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        {</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;          <span class="comment">/* Updates result */</span></div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;          zResult = pc + 1;</div>
@@ -766,25 +766,25 @@ $(document).ready(function(){initNavTree('orx_string_8h_source.html','');});
 <div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);</div>
 <div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;</div>
 <div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;  <span class="comment">/* Hexadecimal? */</span></div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;  &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;  &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))</div>
 <div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;  {</div>
 <div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;    <span class="comment">/* Gets hexa value */</span></div>
 <div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;    eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 2, 16, _ps32OutValue, _pzRemaining);</div>
 <div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;  }</div>
 <div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;  <span class="comment">/* Binary? */</span></div>
-<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;       &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;       &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))</div>
 <div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;  {</div>
 <div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;    <span class="comment">/* Gets binary value */</span></div>
 <div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;    eResult = <a class="code" href="group__orx_string.html#ga551cf153e98d90b806dd6bf29d5e826f">orxString_ToS32Base</a>(_zString + 2, 2, _ps32OutValue, _pzRemaining);</div>
 <div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;  }</div>
 <div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;  <span class="comment">/* Octal? */</span></div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;       &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;       &amp;&amp; ((_zString[1]) &gt;= <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;       &amp;&amp; ((_zString[1]) &lt;= <span class="charliteral">&#39;9&#39;</span>))</div>
@@ -847,25 +847,25 @@ $(document).ready(function(){initNavTree('orx_string_8h_source.html','');});
 <div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);</div>
 <div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;</div>
 <div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;  <span class="comment">/* Hexadecimal? */</span></div>
-<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;  &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;  &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))</div>
 <div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;  {</div>
 <div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;    <span class="comment">/* Gets hexa value */</span></div>
 <div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;    eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 2, 16, _pu32OutValue, _pzRemaining);</div>
 <div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;  }</div>
 <div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;  <span class="comment">/* Binary? */</span></div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;       &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;       &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))</div>
 <div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;  {</div>
 <div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;    <span class="comment">/* Gets binary value */</span></div>
 <div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    eResult = <a class="code" href="group__orx_string.html#ga8f3628b7c1c5bfd17883ff38218c2bac">orxString_ToU32Base</a>(_zString + 2, 2, _pu32OutValue, _pzRemaining);</div>
 <div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;  }</div>
 <div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;  <span class="comment">/* Octal? */</span></div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;       &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;       &amp;&amp; ((_zString[1]) &gt;= <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;       &amp;&amp; ((_zString[1]) &lt;= <span class="charliteral">&#39;9&#39;</span>))</div>
@@ -928,25 +928,25 @@ $(document).ready(function(){initNavTree('orx_string_8h_source.html','');});
 <div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);</div>
 <div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;</div>
 <div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;  <span class="comment">/* Hexadecimal? */</span></div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;  &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;  &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))</div>
 <div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;  {</div>
 <div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;    <span class="comment">/* Gets hexa value */</span></div>
 <div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;    eResult = <a class="code" href="group__orx_string.html#ga0f7be70fb076f60f44d052fa8cf1384d">orxString_ToS64Base</a>(_zString + 2, 16, _ps64OutValue, _pzRemaining);</div>
 <div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;  }</div>
 <div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;  <span class="comment">/* Binary? */</span></div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;       &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;       &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))</div>
 <div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;  {</div>
 <div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;    <span class="comment">/* Gets binary value */</span></div>
 <div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;    eResult = <a class="code" href="group__orx_string.html#ga0f7be70fb076f60f44d052fa8cf1384d">orxString_ToS64Base</a>(_zString + 2, 2, _ps64OutValue, _pzRemaining);</div>
 <div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;  }</div>
 <div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;  <span class="comment">/* Octal? */</span></div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;       &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;       &amp;&amp; ((_zString[1]) &gt;= <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;       &amp;&amp; ((_zString[1]) &lt;= <span class="charliteral">&#39;9&#39;</span>))</div>
@@ -1009,25 +1009,25 @@ $(document).ready(function(){initNavTree('orx_string_8h_source.html','');});
 <div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_zString != orxNULL);</div>
 <div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;</div>
 <div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;  <span class="comment">/* Hexadecimal? */</span></div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;  <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;  &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;  &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;  &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;x&#39;</span>))</div>
 <div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;  {</div>
 <div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;    <span class="comment">/* Gets hexa value */</span></div>
 <div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;    eResult = <a class="code" href="group__orx_string.html#gafcac98c42809ed7842a831f48a086089">orxString_ToU64Base</a>(_zString + 2, 16, _pu64OutValue, _pzRemaining);</div>
 <div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;  }</div>
 <div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;  <span class="comment">/* Binary? */</span></div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;       &amp;&amp; (_zString[0] == <span class="charliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;       &amp;&amp; (_zString[1] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;       &amp;&amp; ((_zString[1] | 0x20) == <span class="charliteral">&#39;b&#39;</span>))</div>
 <div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;  {</div>
 <div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    <span class="comment">/* Gets binary value */</span></div>
 <div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;    eResult = <a class="code" href="group__orx_string.html#gafcac98c42809ed7842a831f48a086089">orxString_ToU64Base</a>(_zString + 2, 2, _pu64OutValue, _pzRemaining);</div>
 <div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;  }</div>
 <div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;  <span class="comment">/* Octal? */</span></div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#gaf17893177b747ed9c1b72a2b24f4f009">orxCHAR_EOL</a>)</div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;  <span class="keywordflow">else</span> <span class="keywordflow">if</span>((_zString[0] != <a class="code" href="group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a">orxCHAR_EOL</a>)</div>
 <div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;       &amp;&amp; ((_zString[0] | 0x20) == <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;       &amp;&amp; ((_zString[1]) &gt;= <span class="charliteral">&#39;0&#39;</span>)</div>
 <div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;       &amp;&amp; ((_zString[1]) &lt;= <span class="charliteral">&#39;9&#39;</span>))</div>

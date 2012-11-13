@@ -1,5 +1,11 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa268890ff9b340aef9ec4970b01b20240":[1,38,36,7],
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa2f787dcf36c7946cedec49c3835c6e12":[1,38,36,5],
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3aba8832f5d8e591b618f342d03ba646":[1,38,36,18],
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3b20b6b9312440f2d77e19eccd39354b":[1,38,36,37],
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3c4b5fa73db60d80e7711cc503fbf4b2":[1,38,36,30],
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa45f55d771edef59966f5d5421a017552":[1,38,36,33],
 "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa500767375cba78f76af4b04db1680e6c":[1,38,36,17],
 "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa53b6b736664d8a2f0c4ea8acb7fbc2bc":[1,38,36,2],
 "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa54aed1c0ca9abd112e63eed88d8b6277":[1,38,36,28],
@@ -243,11 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_sound_system.html#gae87bf80bc9de267624a5493c09293762":[1,46,31],
 "group__orx_sound_system.html#gaee7f1d34bd9eabf90fcd9c52a4e284b7":[1,46,33],
 "group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f":[1,46,36],
-"group__orx_sound_system.html#gaf3c36a83f830377130999a73013fe4fb":[1,46,41],
-"group__orx_sound_system.html#gaf6b6e0bfe5a675f04f99e006258bd3ae":[1,46,21],
-"group__orx_sound_system.html#gafcfcb27e9d2a521cca4c2ec1d97b41fc":[1,46,28],
-"group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aa3683d8ba5639d419dff81365e6311ff3":[1,46,6,1],
-"group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aa437b01323858c78c378414111651657d":[1,46,6,2],
-"group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aaa1be2be897b47eda12a2a0cddb438263":[1,46,6,0],
-"group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aadec474cdc54c1936077541fb4cdefb58":[1,46,6,4]
+"group__orx_sound_system.html#gaf3c36a83f830377130999a73013fe4fb":[1,46,41]
 };

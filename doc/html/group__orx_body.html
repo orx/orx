@@ -189,6 +189,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga6bcab53b65ae5bf60ffe3c0bc4d924ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad0bc02565cf5ba05eb743c928c076eb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gad0bc02565cf5ba05eb743c928c076eb7">orxBody_RemovePart</a> (<a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
 <tr class="separator:gad0bc02565cf5ba05eb743c928c076eb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacc5bb9e9fae5eac3bde16037cca9b6c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gacc5bb9e9fae5eac3bde16037cca9b6c7">orxBody_RemovePartFromConfig</a> (<a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, const orxSTRING _zConfigID)</td></tr>
+<tr class="separator:gacc5bb9e9fae5eac3bde16037cca9b6c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga83cd91ef853c0ab57c34bc1417445196"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga83cd91ef853c0ab57c34bc1417445196">orxBody_SetAngularDamping</a> (<a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxFLOAT _fDamping)</td></tr>
 <tr class="separator:ga83cd91ef853c0ab57c34bc1417445196"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga22f88b5bfb6ae234c68f6dad79da20df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga22f88b5bfb6ae234c68f6dad79da20df">orxBody_SetAngularVelocity</a> (<a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxFLOAT _fVelocity)</td></tr>
@@ -459,7 +461,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvForce</td><td>Force to apply </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint</td><td>Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint</td><td>Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used </td></tr>
   </table>
   </dd>
 </dl>
@@ -1349,6 +1351,41 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBodyPart</td><td>Concerned body part </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gacc5bb9e9fae5eac3bde16037cca9b6c7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxBody_RemovePartFromConfig </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&#160;</td>
+          <td class="paramname"><em>_pstBody</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zConfigID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a part using its config ID </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zConfigID</td><td>Config ID of the part to remove </td></tr>
   </table>
   </dd>
 </dl>
