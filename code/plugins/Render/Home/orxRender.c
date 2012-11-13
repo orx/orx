@@ -995,9 +995,10 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
       /* Sends start event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
-        orxVECTOR vPosition, vScale;
-        orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
-        orxFLOAT  fRepeatX, fRepeatY, fRotation;
+        orxVECTOR             vPosition, vScale;
+        orxDISPLAY_TRANSFORM  stTransform;
+        orxBOOL               bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
+        orxFLOAT              fRepeatX, fRepeatY, fRotation;
 
         /* Gets rendering frame's position, rotation & scale */
         fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
@@ -1070,48 +1071,19 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
           orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
         }
 
-        /* No scale nor rotation nor repeat? */
-        if((bFlipX == orxFALSE) && (bFlipY == orxFALSE)
-        && (fRotation == orxFLOAT_0)
-        && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1)
-        && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
-        {
-          /* Updates position with pivot */
-          orxVector_Sub(&vPosition, &vPosition, &vPivot);
+        /* Sets transformation values */
+        stTransform.fSrcX     = vPivot.fX;
+        stTransform.fSrcY     = vPivot.fY;
+        stTransform.fDstX     = vPosition.fX;
+        stTransform.fDstY     = vPosition.fY;
+        stTransform.fRepeatX  = fRepeatX;
+        stTransform.fRepeatY  = fRepeatY;
+        stTransform.fScaleX   = vScale.fX;
+        stTransform.fScaleY   = vScale.fY;
+        stTransform.fRotation = fRotation;
 
-          /* Blits bitmap */
-          eResult = orxDisplay_BlitBitmap(pstBitmap, vPosition.fX, vPosition.fY, _eSmoothing, _eBlendMode);
-        }
-        else
-        {
-          /* Valid scale? */
-          if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
-          {
-            orxDISPLAY_TRANSFORM stTransform;
-
-            /* Sets transformation values */
-            stTransform.fSrcX     = vPivot.fX;
-            stTransform.fSrcY     = vPivot.fY;
-            stTransform.fDstX     = vPosition.fX;
-            stTransform.fDstY     = vPosition.fY;
-            stTransform.fRepeatX  = fRepeatX;
-            stTransform.fRepeatY  = fRepeatY;
-            stTransform.fScaleX   = vScale.fX;
-            stTransform.fScaleY   = vScale.fY;
-            stTransform.fRotation = fRotation;
-
-            /* Transforms bitmap */
-            eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, _eSmoothing, _eBlendMode);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not be equal to 0. Got (%g, %g).", vScale.fX, vScale.fY);
-
-            /* Updates result */
-            eResult = orxSTATUS_SUCCESS;
-          }
-        }
+        /* Transforms bitmap */
+        eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, _eSmoothing, _eBlendMode);
       }
       else
       {

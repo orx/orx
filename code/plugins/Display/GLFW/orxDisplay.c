@@ -1944,24 +1944,19 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxU32 orxFASTCALL orxDisplay_GLFW_GetBitmapID(const orxBITMAP *_pstBitmap)
 {
-  orxDISPLAY_MATRIX mTransform;
-  orxSTATUS         eResult = orxSTATUS_SUCCESS;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
 
-  /* Inits matrix */
-  orxVector_Set(&(mTransform.vX), orxFLOAT_1, orxFLOAT_0, _fPosX);
-  orxVector_Set(&(mTransform.vY), orxFLOAT_0, orxFLOAT_1, _fPosY);
-
-  /* Draws it */
-  orxDisplay_GLFW_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
+  /* Updates result */
+  u32Result = (orxU32)_pstBitmap->uiTexture;
 
   /* Done! */
-  return eResult;
+  return u32Result;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
@@ -3819,7 +3814,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapData, DISPLAY, GET_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawLine, DISPLAY, DRAW_LINE);

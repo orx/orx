@@ -1138,19 +1138,19 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP *_pstDst)
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxU32 orxFASTCALL orxDisplay_SDL_GetBitmapID(const orxBITMAP *_pstBitmap)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
 
-  /* Draws it */
-  orxDisplay_SDL_DrawBitmap(_pstSrc, _fPosX, _fPosY, _eSmoothing, _eBlendMode);
+  /* Updates result */
+  u32Result = (orxU32)_pstBitmap->uiTexture;
 
   /* Done! */
-  return eResult;
+  return u32Result;
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
@@ -3155,7 +3155,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCRE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);

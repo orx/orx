@@ -90,7 +90,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITM
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_BlitBitmap, orxSTATUS, const orxBITMAP *, orxFLOAT, orxFLOAT, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapID, orxU32, const orxBITMAP *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, const orxBITMAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformText, orxSTATUS, const orxSTRING, const orxBITMAP *, const orxCHARACTER_MAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
@@ -152,8 +152,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_DATA, orxDisplay_GetBitmap
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR, orxDisplay_SetBitmapColor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_COLOR, orxDisplay_GetBitmapColor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_SIZE, orxDisplay_GetBitmapSize)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_ID, orxDisplay_GetBitmapID)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, BLIT_BITMAP, orxDisplay_BlitBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_BITMAP, orxDisplay_TransformBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_TEXT, orxDisplay_TransformText)
 
@@ -295,9 +295,9 @@ orxSTATUS orxFASTCALL orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBitmapClipping)(_pstBitmap, _u32TLX, _u32TLY, _u32BRX, _u32BRY);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxU32 orxFASTCALL orxDisplay_GetBitmapID(const orxBITMAP *_pstBitmap)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_BlitBitmap)(_pstSrc, _fPosX, _fPosY, _eSmoothing, _eBlendMode);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapID)(_pstBitmap);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)
