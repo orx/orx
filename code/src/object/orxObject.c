@@ -1652,6 +1652,59 @@ void orxFASTCALL orxObject_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: SetSize
+ */
+void orxFASTCALL orxObject_CommandSetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its size */
+    orxObject_SetSize(pstObject, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetSize
+ */
+void orxFASTCALL orxObject_CommandGetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    orxObject_GetSize(pstObject, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetPivot
  */
 void orxFASTCALL orxObject_CommandSetPivot(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1819,6 +1872,10 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOrigin, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Origin", orxCOMMAND_VAR_TYPE_VECTOR});
   /* Command: GetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetSize, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Size", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetPivot */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPivot, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pivot", orxCOMMAND_VAR_TYPE_VECTOR});
   /* Command: GetPivot */
@@ -1939,6 +1996,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOrigin);
   /* Command: GetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOrigin);
+  /* Command: SetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetSize);
+  /* Command: GetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetSize);
   /* Command: SetPivot */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPivot);
   /* Command: GetPivot */
