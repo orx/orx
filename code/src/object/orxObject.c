@@ -1599,6 +1599,165 @@ void orxFASTCALL orxObject_CommandSetAnim(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/** Command: SetOrigin
+ */
+void orxFASTCALL orxObject_CommandSetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its origin */
+    orxObject_SetOrigin(pstObject, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetOrigin
+ */
+void orxFASTCALL orxObject_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    orxObject_GetOrigin(pstObject, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetSize
+ */
+void orxFASTCALL orxObject_CommandSetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its size */
+    orxObject_SetSize(pstObject, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetSize
+ */
+void orxFASTCALL orxObject_CommandGetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    orxObject_GetSize(pstObject, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetPivot
+ */
+void orxFASTCALL orxObject_CommandSetPivot(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its pivot */
+    orxObject_SetPivot(pstObject, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetPivot
+ */
+void orxFASTCALL orxObject_CommandGetPivot(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    orxObject_GetPivot(pstObject, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the object commands
  */
 static orxINLINE void orxObject_RegisterCommands()
@@ -1708,6 +1867,19 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: SetAnim */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL});
+
+  /* Command: SetOrigin */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOrigin, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Origin", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetOrigin */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetSize, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Size", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetPivot */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPivot, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pivot", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetPivot */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPivot, "Pivot", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 }
 
 /** Unregisters all the object commands
@@ -1819,6 +1991,19 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: SetAnim */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnim);
+
+  /* Command: SetOrigin */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOrigin);
+  /* Command: GetOrigin */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOrigin);
+  /* Command: SetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetSize);
+  /* Command: GetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetSize);
+  /* Command: SetPivot */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPivot);
+  /* Command: GetPivot */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
 }
 
 /** Deletes all the objects
@@ -5449,7 +5634,7 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
 /** Applies a force
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)

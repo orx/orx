@@ -1,5 +1,13 @@
 var NAVTREEINDEX13 =
 {
+"orx_include_8h_source.html":[3,0,0,16],
+"orx_input_8h.html":[3,0,0,5,1],
+"orx_input_8h.html#ga1095ad88059cd0d841a28ad60efc0a22":[3,0,0,5,1,24],
+"orx_input_8h.html#ga11e483a6951d7c96b51db668cc148e04":[3,0,0,5,1,22],
+"orx_input_8h.html#ga13d8a7334d0c18530536658991628659":[3,0,0,5,1,2],
+"orx_input_8h.html#ga1d785a408be82ed78e4a2defb0c0acdc":[3,0,0,5,1,10],
+"orx_input_8h.html#ga2a34aa6090226956398b7b1753760f71":[3,0,0,5,1,19],
+"orx_input_8h.html#ga41dac9027f2f429d21026c0a2994e7ae":[3,0,0,5,1,26],
 "orx_input_8h.html#ga42393f5dfe8922974e5ecf198abde788":[3,0,0,5,1,23],
 "orx_input_8h.html#ga494bcae3fb2c30b26d44069ce7a844a1":[3,0,0,5,1,4],
 "orx_input_8h.html#ga4ee461925448ad4a31a3e82749bd0d92":[3,0,0,5,1,16],
@@ -241,13 +249,5 @@ var NAVTREEINDEX13 =
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feaae2cda1137017c0acc1047994bf2e950":[3,0,0,5,3,0,101],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab1d572d6a3f5c70885ba5fb13d35032f":[3,0,0,5,3,0,102],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab25fe032f7bc7a51f780679ea5edc364":[3,0,0,5,3,0,87],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab2d16b508f36e2617e4c6e5fc05f6667":[3,0,0,5,3,0,103],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab4a1211e5971f4ad7bf2db7597be93af":[3,0,0,5,3,0,49],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab9322a438970815213facd92924703d6":[3,0,0,5,3,0,50],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feabe00d0048a677fb71bbd76e7f94eecb2":[3,0,0,5,3,0,17],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feac11d524a2fc8d9aa4cd17312bda7d8b6":[3,0,0,5,3,0,14],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feac19e736d85185f4182cf7b3012b24586":[3,0,0,5,3,0,52],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feac28af41a1df9020715ba4b3ed949c0c3":[3,0,0,5,3,0,41],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feac30902f68d9d9454da7763f20c3f765e":[3,0,0,5,3,0,75],
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feac6708722775455a3a3a65096dcd187ff":[3,0,0,5,3,0,98]
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab2d16b508f36e2617e4c6e5fc05f6667":[3,0,0,5,3,0,103]
 };

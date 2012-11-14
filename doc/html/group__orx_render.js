@@ -4,6 +4,7 @@ var group__orx_render =
       [ "pstRenderBitmap", "structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a09bc8e5c015fc924439c34d9bf1f9f9a", null ],
       [ "pstRenderFrame", "structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a9581e959503204d4ce5dde0ed9c05783", null ]
     ] ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "group__orx_render.html#ga701dd688299d04234d916a551f8e651e", null ],
     [ "orxRENDER_KZ_CONFIG_MIN_FREQUENCY", "group__orx_render.html#ga7e6aff9a8d4890a31645cb96540f62c3", null ],
     [ "orxRENDER_KZ_CONFIG_SECTION", "group__orx_render.html#gac18069a6467cbcee0503abdaa6aaa5f6", null ],
     [ "orxRENDER_KZ_CONFIG_SHOW_FPS", "group__orx_render.html#gadd4ac9e534660a0c1798f4577950f791", null ],

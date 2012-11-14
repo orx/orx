@@ -19,7 +19,7 @@ var orx_plugin___display_8h =
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_COLOR", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7ab22f7dfca21b165612ce5baa68e10a1a", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_COLOR", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a34a10c531f7db8072accc75fd2fae522", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_SIZE", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7ac9e48cd4fa3e1f1a96d2b83f805ac83e", null ],
-      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_BLIT_BITMAP", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a3e3b57850b3eb93a64ff9f6b0a028a66", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_ID", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a8b553d005bbdd0215c70ee12ed06b2eb", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_TRANSFORM_BITMAP", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7ab67834af209d612ae0a15a76b4d39c2d", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_TRANSFORM_TEXT", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a54c5160bfb1b69af7f974cd27541842e", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DRAW_LINE", "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a3182bb338d18c85c7dafaa9b13d69dfb", null ],

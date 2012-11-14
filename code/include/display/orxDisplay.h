@@ -863,22 +863,18 @@ extern orxDLLAPI orxRGBA orxFASTCALL                  orxDisplay_GetBitmapColor(
 
 /** Gets a bitmap size
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[out]   _pfWidth                             Bitmap width
- * @param[out]   _pfHeight                            Bitmap height
+ * @param[out]  _pfWidth                              Bitmap width
+ * @param[out]  _pfHeight                             Bitmap height
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 
-/** Blits a bitmap (no transformation)
- * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
- * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
- * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
- * @param[in]   _eSmoothing                           Bitmap smoothing type
- * @param[in]   _eBlendMode                           Blend mode
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Gets a bitmap (internal) ID
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @return orxU32
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetBitmapID(const orxBITMAP *_pstBitmap);
 
 /** Transforms (and blits onto another) a bitmap
  * @param[in]   _pstSrc                               Bitmap to transform and draw

@@ -2049,7 +2049,6 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_p
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
   orxASSERT(_pvForce != orxNULL);
-  orxASSERT(_pvPoint != orxNULL);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
@@ -2060,8 +2059,17 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_p
   /* Sets force */
   vForce.Set(_pvForce->fX, _pvForce->fY);
 
-  /* Sets point */
-  vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
+  /* Has point? */
+  if(_pvPoint != orxNULL)
+  {
+    /* Sets point */
+    vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
+  }
+  else
+  {
+    /* Gets world mass center */
+    vPoint = poBody->GetWorldCenter();
+  }
 
   /* Applies force */
   poBody->ApplyForce(vForce, vPoint);
@@ -2080,7 +2088,6 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
   orxASSERT(_pvImpulse != orxNULL);
-  orxASSERT(_pvPoint != orxNULL);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
@@ -2088,11 +2095,20 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
   /* Wakes up */
   poBody->SetAwake(true);
 
+  /* Has point? */
+  if(_pvPoint != orxNULL)
+  {
+    /* Sets point */
+    vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
+  }
+  else
+  {
+    /* Gets world mass center */
+    vPoint = poBody->GetWorldCenter();
+  }
+
   /* Sets impulse */
   vImpulse.Set(sstPhysics.fDimensionRatio * _pvImpulse->fX, sstPhysics.fDimensionRatio * _pvImpulse->fY);
-
-  /* Sets point */
-  vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
 
   /* Applies force */
   poBody->ApplyLinearImpulse(vImpulse, vPoint);

@@ -148,6 +148,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga2da19cebead5fb95d7c1d0bfb4f97a34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf0e806d876d6bb7506429850ce567f08"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gaf0e806d876d6bb7506429850ce567f08">orxFrame_Exit</a> ()</td></tr>
 <tr class="separator:gaf0e806d876d6bb7506429850ce567f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaee7f5ca1f2e80e445e859b0968c6512"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gaaee7f5ca1f2e80e445e859b0968c6512">orxFrame_GetParent</a> (const <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
+<tr class="separator:gaaee7f5ca1f2e80e445e859b0968c6512"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7ed8f5fee4724dfbfa779856ba778752"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga7ed8f5fee4724dfbfa779856ba778752">orxFrame_GetPosition</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPos)</td></tr>
 <tr class="separator:ga7ed8f5fee4724dfbfa779856ba778752"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad2b6e40258a6a518a7390429cb31e5ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gad2b6e40258a6a518a7390429cb31e5ad">orxFrame_GetRotation</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace)</td></tr>
@@ -413,6 +415,30 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Exits from the frame module </p>
+
+</div>
+</div>
+<a class="anchor" id="gaaee7f5ca1f2e80e445e859b0968c6512"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a>* orxFASTCALL orxFrame_GetParent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *&#160;</td>
+          <td class="paramname"><em>_pstFrame</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get a frame parent </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFrame</td><td>Concerned frame </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxFRAME / orxNULL </dd></dl>
 
 </div>
 </div>

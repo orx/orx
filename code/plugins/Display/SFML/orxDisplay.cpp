@@ -538,6 +538,19 @@ extern "C" orxRGBA orxFASTCALL orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_
   return stResult;
 }
 
+extern "C" orxU32 orxFASTCALL orxDisplay_SFML_GetBitmapID(const orxBITMAP *_pstBitmap)
+{
+    /* Checks */
+    orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+    orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != orxDisplay::spoScreen));
+
+    /* Not available */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+    /* Done! */
+    return orxU32_UNDEFINED;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite   *poSprite;
@@ -2046,7 +2059,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreenSize, DISPLAY, GET_SCR
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_BlitBitmap, DISPLAY, BLIT_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
