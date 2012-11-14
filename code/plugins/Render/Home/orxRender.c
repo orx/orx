@@ -832,13 +832,13 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
   /* Gets color */
-  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(stColor.vRGB)) != orxNULL)
+  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(stColor.vRGBA)) != orxNULL)
   {
-    /* Normalizes it */
-    orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-
     /* Updates its alpha */
-    stColor.fAlpha = orxCOLOR_NORMALIZER * orxRGBA_A(orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+    stColor.vRGBA.fA = orxRGBA_A(orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+
+    /* Normalizes it */
+    orxVector_Mulf4(&(stColor.vRGBA), &(stColor.vRGBA), orxCOLOR_NORMALIZER);
 
     /* Updates background color */
     orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(&stColor));
