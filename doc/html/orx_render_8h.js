@@ -1,5 +1,6 @@
 var orx_render_8h =
 [
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "orx_render_8h.html#ga701dd688299d04234d916a551f8e651e", null ],
     [ "orxRENDER_KZ_CONFIG_MIN_FREQUENCY", "orx_render_8h.html#ga7e6aff9a8d4890a31645cb96540f62c3", null ],
     [ "orxRENDER_KZ_CONFIG_SECTION", "orx_render_8h.html#gac18069a6467cbcee0503abdaa6aaa5f6", null ],
     [ "orxRENDER_KZ_CONFIG_SHOW_FPS", "orx_render_8h.html#gadd4ac9e534660a0c1798f4577950f791", null ],

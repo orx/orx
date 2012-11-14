@@ -788,6 +788,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxU32                  u32CursorIndex, i;
   orxCHAR                 cBackup;
   orxFLOAT                fCharacterHeight;
+  orxCOLOR                stColor;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   const orxSTRING         zText;
@@ -827,12 +828,35 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* Selects black color */
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x33));
 
+  /* Pushes config section */
+  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+  /* Gets color */
+  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(stColor.vRGB)) != orxNULL)
+  {
+    /* Normalizes it */
+    orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+
+    /* Updates its alpha */
+    stColor.fAlpha = orxCOLOR_NORMALIZER * orxRGBA_A(orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+
+    /* Updates background color */
+    orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(&stColor));
+  }
+  else
+  {
+    /* Updates background color */
+    orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
   /* Draws background */
   stTransform.fDstX   = orxMath_Floor(fScreenWidth * orxRENDER_KF_CONSOLE_MARGIN_WIDTH) - orxFLOAT_1;
   stTransform.fDstY   = sstRender.fConsoleOffset;
   stTransform.fScaleX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) + orx2F(2.0f);
   stTransform.fScaleY = orxMath_Floor(fScreenHeight * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT)) + orxFLOAT_1;
-  orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Draws separators */

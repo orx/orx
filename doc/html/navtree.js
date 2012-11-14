@@ -36,19 +36,19 @@ var NAVTREEINDEX =
 "group__orx_module.html#ga6a492298081fa56cf9c382491c456998",
 "group__orx_physics.html#ga676426e72f41b100a085905cc7aec564",
 "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa268890ff9b340aef9ec4970b01b20240",
-"group__orx_sound_system.html#gaf6b6e0bfe5a675f04f99e006258bd3ae",
-"group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c",
-"orx_anim_set_8h.html#ga34ac80b498b31780cb66239ece236354",
-"orx_config_8h.html#ga7e6115a8a97bcce5c51485a75445d52a",
-"orx_event_8h.html#ga4e1a076d113d180ee77b23e7769e30e5",
-"orx_input_8h.html",
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab9322a438970815213facd92924703d6",
-"orx_object_8h.html#ga18cda5b99a03836e4d9b8452434630b9",
-"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a4ea3ac690e0c605a16068b749ffce8d2",
-"orx_screenshot_8h.html#ga013c8e1fbdc40b29097cadd8ece218d5",
-"orx_string_8h.html#ga27ae7f7f06d5e7d7710f65754966da28",
-"orx_type_8h.html#gab6ea2000756d61485e55aa1031d8cf73",
-"structorx_f_i_l_e___i_n_f_o.html#aa77264223f3348edc8c235bf46db22f8"
+"group__orx_sound_system.html#gaf3c36a83f830377130999a73013fe4fb",
+"group__orx_texture.html#ga78eb3dd271806f3dedc5f606fc8e231b",
+"orx_anim_set_8h.html#ga32b752f1b93158af56f7c026f2718de4",
+"orx_config_8h.html#ga7526b75f27415d1eff396fbaea6a3f97",
+"orx_event_8h.html#ga4576598772ee9b827a80ca5b6c9a6cd8",
+"orx_include_8h_source.html",
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab4a1211e5971f4ad7bf2db7597be93af",
+"orx_object_8h.html#ga17bc2e347ba3b8f90a5d619678118986",
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a35dbbafc980b35f2dbbe36fa43e17e4c",
+"orx_render_8h_source.html",
+"orx_string_8h.html#ga0f7be70fb076f60f44d052fa8cf1384d",
+"orx_type_8h.html#ga80e4595b5e266cac8ff88a26ccfd48d0",
+"structorx_f_i_l_e___i_n_f_o.html#a57d4f6f0b89259e57065481e0458e717"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
