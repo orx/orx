@@ -34,6 +34,9 @@
 #include "orxKernel.h"
 #include "orxUtils.h"
 
+#ifdef __orxMSVC__
+  #pragma warning(disable : 4276)
+#endif /* __orxMSVC__ */
 
 /** Module registration macro
  */
