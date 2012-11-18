@@ -717,13 +717,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             zArg++;
             pcSrc++;
 
-            /* Is not a block delimiter or triple block delimiter? */
-            if((*pcSrc != orxCOMMAND_KC_STRING_MARKER)
-            || (*(pcSrc + 1) == orxCOMMAND_KC_STRING_MARKER))
-            {
-              /* Updates string status */
-              bInString = orxTRUE;
-            }
+            /* Updates string status */
+            bInString = orxTRUE;
           }
 
           /* Stores its type */
@@ -738,31 +733,50 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* Finds end of argument */
               for(; *pcSrc != orxCHAR_NULL; pcSrc++)
               {
-                /* In string? */
-                if(bInString != orxFALSE)
+                /* Is a string marker? */
+                if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
                 {
-                  /* Is a string marker? */
+                  orxCHAR *pcTemp;
+
+                  /* Erases it */
+                  for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxNULL; pcTemp++)
+                  {
+                    *pcTemp = *(pcTemp + 1);
+                  }
+
+                  /* Updates string status */
+                  bInString = !bInString;
+
+                  /* Double marker? */
                   if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
                   {
-                    /* Isn't next one also a string marker? */
-                    if(*(pcSrc + 1) != orxCOMMAND_KC_STRING_MARKER)
+                    /* Updates string status */
+                    bInString = !bInString;
+                  }
+                  else
+                  {
+                    /* Not in block? */
+                    if(bInString == orxFALSE)
                     {
-                      /* Stops */
-                      break;
-                    }
-                    else
-                    {
-                      orxCHAR *pcTemp;
-
-                      /* Erases it */
-                      for(pcTemp = (orxCHAR *)pcSrc + 1; *pcTemp != orxNULL; pcTemp++)
+                      /* Space? */
+                      if((*pcSrc == ' ') || (*pcSrc == '\t'))
                       {
-                        *pcTemp = *(pcTemp + 1);
+                        /* Erases it */
+                        for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxNULL; pcTemp++)
+                        {
+                          *pcTemp = *(pcTemp + 1);
+                        }
                       }
                     }
+
+                    /* Handles current character in new mode */
+                    pcSrc--;
                   }
+                  continue;
                 }
-                else
+
+                /* Not in string? */
+                if(bInString == orxFALSE)
                 {
                   /* End of string? */
                   if((*pcSrc == ' ') || (*pcSrc == '\t'))
