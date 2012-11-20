@@ -42,6 +42,7 @@
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
 #include "object/orxStructure.h"
+#include "render/orxRender.h"
 #include "utils/orxString.h"
 
 
@@ -838,6 +839,118 @@ static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Command: Enable
+ */
+void orxFASTCALL orxConsole_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Enable? */
+  if((_u32ArgNumber == 0) || (_astArgList[0].bValue != orxFALSE))
+  {
+    /* Enables console */
+    orxConsole_Enable(orxTRUE);
+
+    /* Updates result */
+    _pstResult->bValue = orxTRUE;
+  }
+  else
+  {
+    /* Disables console */
+    orxConsole_Enable(orxFALSE);
+
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Log
+ */
+void orxFASTCALL orxConsole_CommandLog(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* To system? */
+  if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+  {
+    /* Logs to system */
+    orxLOG("%s", _astArgList[0].zValue);
+  }
+  else
+  {
+    /* Logs to console */
+    orxConsole_Log(_astArgList[0].zValue);
+  }
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetColor
+ */
+void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes render section */
+  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+  /* Default? */
+  if(_u32ArgNumber == 0)
+  {
+    /* Clears color */
+    orxConfig_ClearValue(orxRENDER_KZ_CONFIG_CONSOLE_COLOR);
+
+    /* Updates result */
+    orxVector_SetAll(&(_pstResult->vValue), -orxFLOAT_1);
+  }
+  else
+  {
+    /* Stores color */
+    orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(_astArgList[0].vValue));
+
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &(_astArgList[0].vValue));
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the console commands
+ */
+static orxINLINE void orxConsole_RegisterCommands()
+{
+  /* Command: Enable */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Console, Enable, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+
+  /* Command: Log */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Console, Log, "Log", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Text", orxCOMMAND_VAR_TYPE_STRING}, {"ToSystem = false", orxCOMMAND_VAR_TYPE_BOOL});
+
+  /* Command: SetColor */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Console, SetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 0, 1, {"Color = <default>", orxCOMMAND_VAR_TYPE_VECTOR});
+
+  /* Alias: Log */
+  orxCommand_AddAlias("Log", "Console.Log", orxNULL);
+}
+
+/** Unregisters all the console commands
+ */
+static orxINLINE void orxConsole_UnregisterCommands()
+{
+  /* Alias: Log */
+  orxCommand_RemoveAlias("Log");
+
+  /* Command: Enable */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Console, Enable);
+
+  /* Command: Log */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Console, Log);
+
+  /* Command: SetColor */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Console, SetColor);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -1010,6 +1123,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           /* Inits Flags */
           sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
 
+          /* Registers commands */
+          orxConsole_RegisterCommands();
+
           /* Sets default font */
           orxConsole_SetFont(orxFont_GetDefaultFont());
 
@@ -1067,6 +1183,9 @@ void orxFASTCALL orxConsole_Exit()
   /* Initialized? */
   if(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters commands */
+    orxConsole_UnregisterCommands();
+
     /* Stops console */
     orxConsole_Stop();
 
