@@ -62,7 +62,7 @@
 
 /** Misc
  */
-#define orxCOMMAND_KC_STRING_MARKER                   '"'                             /**< String marker character */
+#define orxCOMMAND_KC_BLOCK_MARKER                    '"'                             /**< Block marker character */
 #define orxCOMMAND_KC_PUSH_MARKER                     '>'                             /**< Push marker character */
 #define orxCOMMAND_KC_POP_MARKER                      '<'                             /**< Pop marker character */
 #define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
@@ -275,7 +275,7 @@ static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _
         (pstChild != orxNULL) && (pstChild->u32CharacterCodePoint < u32CharacterCodePoint);
         pstPrevious = pstChild, pstChild = (orxCOMMAND_TRIE_NODE *)orxTree_GetSibling(&(pstChild->stNode)));
 
-    /* Not found and not read only? */
+    /* Not found? */
     if((pstChild == orxNULL)
     || (pstChild->u32CharacterCodePoint != u32CharacterCodePoint))
     {
@@ -470,6 +470,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 #define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
       orxS32                s32GUIDLength, s32BufferCounter = 0, i;
+      orxBOOL               bInBlock = orxFALSE;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
       orxCHAR              *pcDst;
@@ -563,23 +564,27 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     /* Updates pointer */
                     zValue = pstEntry->stValue.zValue;
 
-                    /* For all characters */
-                    for(pc = zValue; *pc != orxCHAR_NULL; pc++)
+                    /* Is not in block? */
+                    if(bInBlock == orxFALSE)
                     {
-                      /* Is a white space? */
-                      if((*pc == ' ') || (*pc == '\t'))
+                      /* For all characters */
+                      for(pc = zValue; *pc != orxCHAR_NULL; pc++)
                       {
-                        /* Has room? */
-                        if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                        /* Is a white space? */
+                        if((*pc == ' ') || (*pc == '\t'))
                         {
-                          /* Adds string marker */
-                          *pcDst++ = orxCOMMAND_KC_STRING_MARKER;
+                          /* Has room? */
+                          if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                          {
+                            /* Adds block marker */
+                            *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
 
-                          /* Updates string marker status */
-                          bUseStringMarker = orxTRUE;
+                            /* Updates string marker status */
+                            bUseStringMarker = orxTRUE;
+                          }
+
+                          break;
                         }
-
-                        break;
                       }
                     }
 
@@ -655,7 +660,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   /* Has room? */
                   if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
                   {
-                    *pcDst++ = orxCOMMAND_KC_STRING_MARKER;
+                    *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
                   }
 
                   /* Deletes it */
@@ -678,6 +683,14 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               }
 
               break;
+            }
+
+            case orxCOMMAND_KC_BLOCK_MARKER:
+            {
+              /* Toggles block status */
+              bInBlock = !bInBlock;
+
+              /* Falls through */
             }
 
             default:
@@ -705,20 +718,20 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Valid? */
         if(*pcSrc != orxCHAR_NULL)
         {
-          orxBOOL bInString = orxFALSE;
+          orxBOOL bInBlock = orxFALSE;
 
           /* Gets arg's beginning */
           zArg = pcSrc;
 
-          /* Is a string marker? */
-          if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
+          /* Is a block marker? */
+          if(*pcSrc == orxCOMMAND_KC_BLOCK_MARKER)
           {
             /* Updates arg pointer */
             zArg++;
             pcSrc++;
 
-            /* Updates string status */
-            bInString = orxTRUE;
+            /* Updates block status */
+            bInBlock = orxTRUE;
           }
 
           /* Stores its type */
@@ -733,8 +746,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* Finds end of argument */
               for(; *pcSrc != orxCHAR_NULL; pcSrc++)
               {
-                /* Is a string marker? */
-                if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
+                /* Is a block marker? */
+                if(*pcSrc == orxCOMMAND_KC_BLOCK_MARKER)
                 {
                   orxCHAR *pcTemp;
 
@@ -744,19 +757,19 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     *pcTemp = *(pcTemp + 1);
                   }
 
-                  /* Updates string status */
-                  bInString = !bInString;
+                  /* Updates block status */
+                  bInBlock = !bInBlock;
 
                   /* Double marker? */
-                  if(*pcSrc == orxCOMMAND_KC_STRING_MARKER)
+                  if(*pcSrc == orxCOMMAND_KC_BLOCK_MARKER)
                   {
-                    /* Updates string status */
-                    bInString = !bInString;
+                    /* Updates block status */
+                    bInBlock = !bInBlock;
                   }
                   else
                   {
                     /* Not in block? */
-                    if(bInString == orxFALSE)
+                    if(bInBlock == orxFALSE)
                     {
                       /* Space? */
                       if((*pcSrc == ' ') || (*pcSrc == '\t'))
@@ -775,8 +788,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   continue;
                 }
 
-                /* Not in string? */
-                if(bInString == orxFALSE)
+                /* Not in block? */
+                if(bInBlock == orxFALSE)
                 {
                   /* End of string? */
                   if((*pcSrc == ' ') || (*pcSrc == '\t'))
