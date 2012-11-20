@@ -56,7 +56,6 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-
     if os.is ("windows") then
         return
         {
@@ -109,8 +108,8 @@ newoption
 solution "orx"
 
     language ("C++")
-    PATH = _OPTIONS["to"] or "./" .. _ACTION
-    location (PATH)
+
+    location (_OPTIONS["to"] or "./" .. _ACTION)
 
     configurations
     {
@@ -167,6 +166,9 @@ solution "orx"
     configuration {"*Release*"}
         flags {"Optimize", "NoRTTI"}
 
+
+-- Linux
+
     configuration {"linux", "x32"}
         libdirs
         {
@@ -185,6 +187,9 @@ solution "orx"
             "../../extern/Box2D_2.1.3/lib/linux64"
         }
 
+
+-- Mac OS X
+
     configuration {"macosx"}
         libdirs
         {
@@ -193,6 +198,9 @@ solution "orx"
             "../../extern/libsndfile-1.0.22/lib/mac",
             "../../extern/Box2D_2.1.3/lib/mac"
         }
+
+
+-- Windows
 
     configuration {"vs2008"}
         libdirs
@@ -230,27 +238,29 @@ solution "orx"
 --
 
 project "orx"
+
     files {"../src/main/orxMain.c"}
-    links {"orxLIB"}
+
     targetdir ("../bin/")
+
     kind ("ConsoleApp")
+
+    links {"orxLIB"}
 
     configuration {"*Static*"}
         defines {"__orxSTATIC__"}
-
-    configuration {"windows", "*Static*"}
-        implibdir ("../lib/static")
-        implibname ("imporx")
-        implibextension (".lib")
-
-    configuration {"linux"}
-        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
 
     configuration {"*Static*", "*Debug*"}
         links {"Box2Dd"}
 
     configuration {"*Static*", "not *Debug*"}
         links {"Box2D"}
+
+
+-- Linux
+
+    configuration {"linux"}
+        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
 
     configuration {"linux", "*Static*"}
         linkoptions {"-Wl,--no-whole-archive"}
@@ -268,7 +278,29 @@ project "orx"
             "rt"
         }
 
+
+-- Mac OS X
+
+    configuration {"macosx", "*Static*"}
+        links
+        {
+            "Foundation.framework",
+            "IOKit.framework",
+            "AppKit.framework",
+            "glfw",
+            "SOIL",
+            "sndfile",
+            "OpenAL.framework",
+            "OpenGL.framework"
+        }
+
+
+-- Windows
+
     configuration {"windows", "*Static*"}
+        implibdir ("../lib/static")
+        implibname ("imporx")
+        implibextension (".lib")
         links
         {
             "glfw",
@@ -293,13 +325,16 @@ project "orx"
 --
 
 project "orxLIB"
+
     files
     {
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h"
     }
+
     excludes {"../src/main/orxMain.c"}
+
     targetname ("orx")
 
     configuration {"*Embedded*"}
@@ -309,6 +344,7 @@ project "orxLIB"
             "AL_LIBTYPE_STATIC"
         }
 
+    -- Work around for codelite "default" configuration
     configuration {"codelite"}
         kind ("StaticLib")
 
@@ -320,14 +356,14 @@ project "orxLIB"
         targetdir ("../lib/dynamic")
         kind ("SharedLib")
 
-    configuration {"linux", "*Static*"}
-        buildoptions {"-fPIC"}
-
     configuration {"*Debug*"}
         links {"Box2Dd"}
 
     configuration {"not *Debug*"}
         links {"Box2D"}
+
+
+-- Linux
 
     configuration {"linux"}
         links
@@ -344,6 +380,15 @@ project "orxLIB"
             "rt"
         }
 
+    configuration {"linux", "*Static*"}
+        buildoptions {"-fPIC"}
+
+    configuration {"linux", "*Dynamic*"}
+        postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
+
+
+-- Mac OS X
+
     configuration {"macosx"}
         links
         {
@@ -356,6 +401,12 @@ project "orxLIB"
             "OpenAL.framework",
             "OpenGL.framework"
         }
+
+    configuration {"macosx", "*Dynamic*"}
+        postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
+
+
+-- Windows
 
     configuration {"windows"}
         links
@@ -376,15 +427,8 @@ project "orxLIB"
             "OpenGL32",
         }
 
-
-    configuration {"linux", "*Dynamic*"}
-        postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
-
     configuration {"windows", "*Dynamic*"}
         postbuildcommands {"cmd /c copy /Y ..\\..\\lib\\dynamic\\orx*.dll ..\\..\\bin"}
-
-    configuration {"macosx", "*Dynamic*"}
-        postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
 
 
 --
@@ -392,15 +436,32 @@ project "orxLIB"
 --
 
 project "Bounce"
+
     files {"../plugins/Demo/orxBounce.c"}
+
+    targetdir ("../bin/plugins/demo/")
+
+    targetprefix ("")
+
+    kind ("SharedLib")
+
     links
     {
         "orxLIB",
         "orx"
     }
-    kind ("SharedLib")
-    targetdir ("../bin/plugins/demo/")
-    targetprefix ("")
+
+
+-- Linux
+
+
+-- Mac OS X
+
+
+-- Windows
+
+    configuration {"windows", "*Static*"}
+        libdirs {"../lib/static"}
 
     configuration {"windows", "*Static*", "*Debug*"}
         links {"imporxd"}
@@ -408,12 +469,3 @@ project "Bounce"
         links {"imporxp"}
     configuration {"windows", "*Static*", "*Release*"}
         links {"imporx"}
-
-    configuration {"windows", "codelite or gmake"}
-        linkoptions {"-fPIC"}
-
-    configuration {"*Static*"}
-        libdirs {"../lib/static"}
-
-    configuration {"windows", "codelite or gmake", "*Static*"}
-        linkoptions "-Wl,--enable-auto-import"
