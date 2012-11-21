@@ -1,11 +1,15 @@
+-- This premake script should be used with orx-customized version of premake4.
+-- Its Hg repository can be found at https://bitbucket.org/orx/premake-stable.
+-- A copy, including binaries, can also be found in the extern/premake folder.
+
 --
 -- Globals
 --
 
 function islinux64 ()
-    local pipe    = io.popen("uname -m")
-    local content = pipe:read('*a')
-    pipe:close()
+    local pipe    = io.popen ("uname -m")
+    local content = pipe:read ('*a')
+    pipe:close ()
 
     local t64 =
     {
@@ -16,8 +20,8 @@ function islinux64 ()
         'sparc64'
     }
 
-    for _,v in ipairs(t64) do
-        if content:find(v) then
+    for i, v in ipairs (t64) do
+        if content:find (v) then
             return true
         end
     end
@@ -26,16 +30,35 @@ function islinux64 ()
 end
 
 function initconfigurations ()
-    if os.is ("macosx") then
-        return
-        {
-            "Embedded Dynamic Debug",
-            "Embedded Dynamic Profile",
-            "Embedded Dynamic Release",
-            "Dynamic Debug",
-            "Dynamic Profile",
-            "Dynamic Release"
-        }
+    if os.is ("macosx") and _ACTION ~= "gmake" then
+        if _OPTIONS["xcode-build"] == "iOS" then
+            return
+            {
+                "iOS Static Debug",
+                "iOS Static Profile",
+                "iOS Static Release"
+            }
+        elseif _OPTIONS["xcode-build"] == "static" then
+            return
+            {
+                "Embedded Static Debug",
+                "Embedded Static Profile",
+                "Embedded Static Release",
+                "Static Debug",
+                "Static Profile",
+                "Static Release"
+            }
+        else
+            return
+            {
+                "Embedded Dynamic Debug",
+                "Embedded Dynamic Profile",
+                "Embedded Dynamic Release",
+                "Dynamic Debug",
+                "Dynamic Profile",
+                "Dynamic Release"
+            }
+        end
     else
         return
         {
@@ -98,6 +121,19 @@ newoption
     trigger = "to",
     value   = "path",
     description = "Set the output location for the generated files"
+}
+
+newoption
+{
+    trigger     = "xcode-build",
+    value       = "dynamic",
+    description = "Select the XCode project type to be generated",
+    allowed     =
+    {
+        {"dynamic", "Dynamic embedded library [Default]"},
+        {"static",  "Static embedded library"},
+        {"iOS",     "iOS project (static embedded)"}
+    }
 }
 
 
@@ -306,18 +342,12 @@ project "orx"
             "glfw",
             "openal32",
             "SOIL",
-            "winmm"
+            "winmm",
+            "sndfile"
         }
-
-    configuration {"windows", "codelite or gmake", "*Static*"}
-        links {"sndfile"}
 
     configuration {"windows", "vs*", "*Static*"}
-        links
-        {
-            "libsndfile",
-            "OpenGL32"
-        }
+        links {"OpenGL32"}
 
 
 --
@@ -414,18 +444,12 @@ project "orxLIB"
             "glfw",
             "openal32",
             "SOIL",
-            "winmm"
+            "winmm",
+            "sndfile"
         }
-
-    configuration {"windows", "codelite or gmake"}
-        links {"sndfile"}
 
     configuration {"windows", "vs*"}
-        links
-        {
-            "libsndfile",
-            "OpenGL32",
-        }
+        links {"OpenGL32"}
 
     configuration {"windows", "*Dynamic*"}
         postbuildcommands {"cmd /c copy /Y ..\\..\\lib\\dynamic\\orx*.dll ..\\..\\bin"}
