@@ -1,6 +1,4 @@
-LOCAL_PATH := $(call my-dir)/../../src
-
-#  ======== orx ==========
+LOCAL_PATH := $(call my-dir)/../../../src
 
 include $(CLEAR_VARS)
 
@@ -41,7 +39,6 @@ LOCAL_SRC_FILES = \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
-	main/orxAndroidNativeSupport.c  \
 	physics/orxPhysics.c      \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
@@ -60,22 +57,23 @@ LOCAL_SRC_FILES = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp
+        plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__ -D__orxBANK_ALIGN__
-LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
-LOCAL_EXPORT_LDLIBS := -llog -landroid -ldl -lEGL -lGLESv2 -lOpenSLES
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
+                    $(LOCAL_PATH)/../../extern/dlmalloc \
+                    $(LOCAL_PATH)/../../extern/stb_vorbis \
+                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include
+
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxBANK_ALIGN__
 
 LOCAL_ARM_MODE := arm
-TARGET_PLATFORM = android-9
+TARGET_PLATFORM = android-8
 
 include $(BUILD_STATIC_LIBRARY)
-
-
-#  ======== orxp ==========
 
 include $(CLEAR_VARS)
 
@@ -116,7 +114,6 @@ LOCAL_SRC_FILES = \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
-	main/orxAndroidNativeSupport.c  \
 	physics/orxPhysics.c      \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
@@ -135,22 +132,23 @@ LOCAL_SRC_FILES = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp
+        plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__ -D__orxBANK_ALIGN__ -D__orxPROFILER__
-LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxPROFILER__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
-LOCAL_EXPORT_LDLIBS := -llog -landroid -ldl -lEGL -lGLESv2 -lOpenSLES
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
+                    $(LOCAL_PATH)/../../extern/dlmalloc \
+                    $(LOCAL_PATH)/../../extern/stb_vorbis \
+                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include
+
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__ -D__orxBANK_ALIGN__
 
 LOCAL_ARM_MODE := arm
-TARGET_PLATFORM = android-9
+TARGET_PLATFORM = android-8
 
 include $(BUILD_STATIC_LIBRARY)
-
-
-#  ======== orxd =========
 
 include $(CLEAR_VARS)
 
@@ -191,7 +189,6 @@ LOCAL_SRC_FILES = \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
-	main/orxAndroidNativeSupport.c  \
 	physics/orxPhysics.c      \
 	physics/orxBody.c         \
 	object/orxStructure.c     \
@@ -210,22 +207,21 @@ LOCAL_SRC_FILES = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp
+        plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include $(LOCAL_PATH)/../../extern/dlmalloc $(LOCAL_PATH)/../../extern/stb_vorbis
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__ -D__orxDEBUG__ -D__orxBANK_ALIGN__
-LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxDEBUG__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
-LOCAL_EXPORT_LDLIBS := -llog -landroid -ldl -lEGL -lGLESv2 -lOpenSLES
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
+                    $(LOCAL_PATH)/../../extern/dlmalloc \
+                    $(LOCAL_PATH)/../../extern/stb_vorbis \
+                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include
+
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -D__orxBANK_ALIGN__
 
 LOCAL_ARM_MODE := arm
-TARGET_PLATFORM = android-9
+TARGET_PLATFORM = android-8
 
 include $(BUILD_STATIC_LIBRARY)
-
-$(call import-module,orx/extern/nv_and_util)
-$(call import-module,orx/extern/SOIL/lib/android-native)
-$(call import-module,orx/extern/Box2D_2.1.3/lib/android-native)
-
 

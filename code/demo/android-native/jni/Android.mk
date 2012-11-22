@@ -11,5 +11,5 @@ LOCAL_ARM_MODE := arm
 
 include $(BUILD_SHARED_LIBRARY)
 
-$(call import-module,orx/code/build/android-native)
+$(call import-module,orx/code/lib/android-native)
 
