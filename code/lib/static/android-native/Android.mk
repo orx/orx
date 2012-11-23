@@ -7,7 +7,7 @@ LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
 TARGET_PLATFORM = android-9
 
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../include
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
 
 include $(PREBUILT_STATIC_LIBRARY)
@@ -19,7 +19,7 @@ LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
 TARGET_PLATFORM = android-9
 
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxDEBUG__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../include
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
 
 include $(PREBUILT_STATIC_LIBRARY)
@@ -31,7 +31,7 @@ LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt nv_and_util
 TARGET_PLATFORM = android-9
 
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxPROFILER__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../include
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
 
 include $(PREBUILT_STATIC_LIBRARY)
