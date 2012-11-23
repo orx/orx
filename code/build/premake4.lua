@@ -314,6 +314,9 @@ project "orx"
             "rt"
         }
 
+    configuration {"linux", "x64", "*Static*"}
+        links {"pthread"}
+
 
 -- Mac OS X
 
