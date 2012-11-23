@@ -30,35 +30,16 @@ function islinux64 ()
 end
 
 function initconfigurations ()
-    if os.is ("macosx") and _ACTION ~= "gmake" then
-        if _OPTIONS["xcode-build"] == "iOS" then
-            return
-            {
-                "iOS Static Debug",
-                "iOS Static Profile",
-                "iOS Static Release"
-            }
-        elseif _OPTIONS["xcode-build"] == "static" then
-            return
-            {
-                "Embedded Static Debug",
-                "Embedded Static Profile",
-                "Embedded Static Release",
-                "Static Debug",
-                "Static Profile",
-                "Static Release"
-            }
-        else
-            return
-            {
-                "Embedded Dynamic Debug",
-                "Embedded Dynamic Profile",
-                "Embedded Dynamic Release",
-                "Dynamic Debug",
-                "Dynamic Profile",
-                "Dynamic Release"
-            }
-        end
+    if os.is ("macosx") then
+        return
+        {
+            "Embedded Dynamic Debug",
+            "Embedded Dynamic Profile",
+            "Embedded Dynamic Release",
+            "Dynamic Debug",
+            "Dynamic Profile",
+            "Dynamic Release"
+        }
     else
         return
         {
@@ -101,7 +82,8 @@ function initplatforms ()
     elseif os.is ("macosx") then
         return
         {
-            "Universal"
+            "x64",
+            "x32"
         }
     end
 end
@@ -121,19 +103,6 @@ newoption
     trigger = "to",
     value   = "path",
     description = "Set the output location for the generated files"
-}
-
-newoption
-{
-    trigger     = "xcode-build",
-    value       = "dynamic",
-    description = "Select the XCode project type to be generated",
-    allowed     =
-    {
-        {"dynamic", "Dynamic embedded library [Default]"},
-        {"static",  "Static embedded library"},
-        {"iOS",     "iOS project (static embedded)"}
-    }
 }
 
 
@@ -233,6 +202,18 @@ solution "orx"
             "../../extern/SOIL/lib/mac",
             "../../extern/libsndfile-1.0.22/lib/mac",
             "../../extern/Box2D_2.1.3/lib/mac"
+        }
+        buildoptions
+        {
+            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
+            "-mmacosx-version-min=10.6",
+            "-gdwarf-2"
+        }
+        linkoptions
+        {
+            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
+            "-mmacosx-version-min=10.6",
+            "-dead_strip"
         }
 
 
@@ -435,6 +416,15 @@ project "orxLIB"
             "OpenGL.framework"
         }
 
+    configuration {"macosx", "*Debug*"}
+        linkoptions {"-install_name @executable_path/liborxd.dylib"}
+
+    configuration {"macosx", "*Profile*"}
+        linkoptions {"-install_name @executable_path/liborxp.dylib"}
+
+    configuration {"macosx", "*Release*"}
+        linkoptions {"-install_name @executable_path/liborx.dylib"}
+
     configuration {"macosx", "*Dynamic*"}
         postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
 
@@ -483,6 +473,10 @@ project "Bounce"
 
 
 -- Mac OS X
+
+    configuration {"macosx"}
+        targetextension (".so")
+        linkoptions {"-single_module"}
 
 
 -- Windows
