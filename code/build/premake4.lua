@@ -298,8 +298,8 @@ project "orx"
     configuration {"linux", "x64", "*Static*"}
         links {"pthread"}
 
-    -- This prevents an optimization bug from happening with some versions of gcc on linux32
-    configuration {"linux", "x32"}
+    -- This prevents an optimization bug from happening with some versions of gcc on linux
+    configuration {"linux", "not *Debug*"}
         buildoptions {"-fschedule-insns"}
 
 
