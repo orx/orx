@@ -2,15 +2,12 @@ How to install BuildBot
 =======================
 
 0. Install prerequisites (after http://trac.buildbot.net/wiki/RunningBuildbotOnWindows)
-  - Python 2.x: http://www.python.org
-  - Windows only, PyWin32: http://sourceforge.net/projects/pywin32/files/
+  - Python 2.x: http://www.python.org (prefer the 32bit version on windows unless you have a 64bit compiler handy)
   - setuptools: http://pypi.python.org/pypi/setuptools/
+  - Windows only, PyWin32: easy_install PyWin32 (or http://sourceforge.net/projects/pywin32/files/)
   - Mercurial: easy_install Mercurial
-  - Twisted: easy_install Twisted
-  - Zope interface: easy_install zope.interface
-  - Master only, Jinja2: easy_install Jinja2
   - Master only, PyOpenSSL: easy_install PyOpenSSL
-  - Buildbot: Master: easy_install buildbot / Slave: easy_install buildbot-slave
+  - Buildbot: Master, easy_install buildbot / Slave, easy_install buildbot-slave
 
 More info at http://buildbot.net/buildbot/docs/current/index.html
 
@@ -26,7 +23,7 @@ Master
 
 4. Modify master.cfg l.37 with the path to hg binary (full path needed on windows)
 
-5. Modify buildbot.*.egg/buildbot/changes/hgpoller.py to enforce UTF-8 comments
+5. Modify <Python>/Lib/site-packages/buildbot.*.egg/buildbot/changes/hgpoller.py to enforce UTF-8 comments
    (otherwise it'll choke when non ASCII-characters have been used in the svn history)
    line 86, in _getRevDetails, args = ['log', '--encoding', self.encoding, '-r', rev, os.linesep.join((
 
