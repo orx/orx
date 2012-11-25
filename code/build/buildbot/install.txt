@@ -1,20 +1,43 @@
 How to install BuildBot
 =======================
 
-1. Windows: follow instructions at http://trac.buildbot.net/wiki/RunningBuildbotOnWindows
-   Other OSes: similar steps should be followed
+0. Install prerequisites (after http://trac.buildbot.net/wiki/RunningBuildbotOnWindows)
+  - Python 2.x: http://www.python.org
+  - Windows only, PyWin32: http://sourceforge.net/projects/pywin32/files/
+  - setuptools: http://pypi.python.org/pypi/setuptools/
+  - Mercurial: easy_install Mercurial
+  - Twisted: easy_install Twisted
+  - Zope interface: easy_install zope.interface
+  - Master only, Jinja2: easy_install Jinja2
+  - Master only, PyOpenSSL: easy_install PyOpenSSL
+  - Buildbot: Master: easy_install buildbot / Slave: easy_install buildbot-slave
 
-2. Master only: update the list of authorized users in authz_cfg
+More info at http://buildbot.net/buildbot/docs/current/index.html
 
-3. Master only: modify master.cfg l.37 with the path to hg binary
 
-4. Use code/build/buildbot/master.cfg to generate a local buildbot slave
-   instructions at http://buildbot.net/buildbot/docs/current/tutorial/firstrun.html (buildslave create-slave)
+Master
+======
+
+1. Create a master with: buildbot create-master <master-folder>
+
+2. Copy orx/code/build/buildbot/master.cfg to <master-folder>
+
+3. Update the list of authorized users in master.cfg (authz_cfg)
+
+4. Modify master.cfg l.37 with the path to hg binary (full path needed on windows)
 
 5. Modify buildbot.*.egg/buildbot/changes/hgpoller.py to enforce UTF-8 comments
    (otherwise it'll choke when non ASCII-characters have been used in the svn history)
    line 86, in _getRevDetails, args = ['log', '--encoding', self.encoding, '-r', rev, os.linesep.join((
 
-6. Windows: add DevEnv (or VCExpress) to the PATH environment variable
+6. Start BuildBot master: buildbot start <master-folder>
 
-7. Starts BuildBot with buildbot start <master> or buildslave start <slave>
+
+Slave
+=====
+
+1. Create a slave with: buildslave create-slave <slave-folder> buildbot.orx-project.org:9989 <slave-name> <slave-pass>
+
+2. Windows only: add DevEnv (or VCExpress) to the PATH environment variable
+
+3. Starts BuildBot slave: buildslave start <slave-folder>
