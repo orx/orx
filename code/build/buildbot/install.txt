@@ -7,7 +7,8 @@ How to install BuildBot
   - Windows only, PyWin32: easy_install PyWin32 (or http://sourceforge.net/projects/pywin32/files/)
   - Mercurial: easy_install Mercurial
   - Master only, PyOpenSSL: easy_install PyOpenSSL
-  - Buildbot: Master, easy_install buildbot / Slave, easy_install buildbot-slave
+  - Master only, BuildBot: easy_install buildbot
+  - Slave only, BuildBot-Slave: easy_install buildbot-slave
 
 More info at http://buildbot.net/buildbot/docs/current/index.html
 
@@ -37,4 +38,6 @@ Slave
 
 2. Windows only: add DevEnv (or VCExpress) to the PATH environment variable
 
-3. Starts BuildBot slave: buildslave start <slave-folder>
+3. Edit <slave-folder>/info/host and <slave-folder>/info/admin
+
+4. Starts BuildBot slave: buildslave start <slave-folder>
