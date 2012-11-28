@@ -31,6 +31,8 @@
  *
  */
 
+#if defined(__orxANDROID_NATIVE__)
+
 #include <android/log.h>
 #include <nv_native_app_glue.h>
 #include <android/sensor.h>
@@ -592,3 +594,4 @@ void android_main(struct android_app *_pstApp)
   orxAndroid_DetachThread();
 }
 
+#endif
