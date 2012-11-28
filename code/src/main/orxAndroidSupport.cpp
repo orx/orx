@@ -31,6 +31,7 @@
  *
  */
 
+#if defined(__orxANDROID__)
 
 #include <jni.h>
 #include <android/log.h>
@@ -487,3 +488,4 @@ static void canonicalToScreen(const float *canVec, float *screenVec)
   orxModule_ExitAll();
 }
 
+#endif
