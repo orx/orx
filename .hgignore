@@ -60,3 +60,5 @@ code/bin/*.tga
 code/lib/*
 **.idb
 **.manifest
+extern/android/bin/*
+extern/android/gen/*
