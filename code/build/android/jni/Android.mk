@@ -65,7 +65,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/stb_vorbis \
                     $(LOCAL_PATH)/../../extern/NvEvent/jni \
                     $(LOCAL_PATH)/../../extern/SOIL/include \
-                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/android/jni \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxBANK_ALIGN__
@@ -140,7 +140,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/stb_vorbis \
                     $(LOCAL_PATH)/../../extern/NvEvent/jni \
                     $(LOCAL_PATH)/../../extern/SOIL/include \
-                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/android/jni \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__ -D__orxBANK_ALIGN__
@@ -215,7 +215,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/stb_vorbis \
                     $(LOCAL_PATH)/../../extern/NvEvent/jni \
                     $(LOCAL_PATH)/../../extern/SOIL/include \
-                    $(LOCAL_PATH)/../../extern/NvEvent/jni \
+                    $(LOCAL_PATH)/../../extern/android/jni \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -D__orxBANK_ALIGN__

@@ -48,16 +48,12 @@
 
 extern orxMODULE_RUN_FUNCTION  pfnRun;
 
-void MainLoop();
-
 static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Inits the Debug System */
   orxDEBUG_INIT();
 
   /* Checks */
-//  orxASSERT(_u32NbParams > 0);
-//  orxASSERT(_azParams != orxNULL);
   orxASSERT(_pfnRun != orxNULL);
 
   /* register run function */
@@ -75,12 +71,13 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Sends the command line arguments to orxParam module */
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
-    MainLoop();
+    /* Inits the engine */
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+    }
   }
-
-  /* Exits from the Debug system */
-
-  orxDEBUG_EXIT();
 }
 
 #elif defined (__orxANDROID_NATIVE__)

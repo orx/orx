@@ -42,22 +42,11 @@
 #include "orxInclude.h"
 #include "orxKernel.h"
 
-#include <nv_event/nv_event.h>
-#include <nv_thread/nv_thread.h>
-#include <nv_file/nv_file.h>
+#include "thread.h"
+#include "file.h"
 
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
-int s_displayRotation = -1;
-orxDOUBLE s_dOffsetTimeFromBoot = 0;
-
-static bool s_glesLoaded = true;
-
-jobject oActivity;
-
-#ifdef __orxDEBUG__
-static unsigned int s_swapCount = 0;
-#endif
 
 /* Main function pointer */
 orxMODULE_RUN_FUNCTION  pfnRun;
@@ -65,122 +54,10 @@ orxMODULE_RUN_FUNCTION  pfnRun;
 static orxSTATUS               seClockStatus, seMainStatus;
 static orxSYSTEM_EVENT_PAYLOAD sstPayload;
 
-int32_t NVEventAppInit(int32_t argc, char** argv)
+static void renderFrame()
 {
-  NvFInit();
-
-  return 0;
-}
-
-/* Main function to call */
-extern int main(int argc, char *argv[]);
-
-orxDOUBLE GetBootTime()
-{
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
-  jclass clsSystemClock = poJEnv->FindClass("android/os/SystemClock");
-  orxASSERT(clsSystemClock != orxNULL);
-  jmethodID uptimeMillis = poJEnv->GetStaticMethodID(clsSystemClock, "uptimeMillis", "()J");
-  jlong lTime = poJEnv->CallStaticLongMethod(clsSystemClock,uptimeMillis);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Boot time (in second) %f", (double) (lTime / 1000.0f));
-  return (lTime/1000.0f);
-}
-
-int GetRotation()
-{
-  jint rotation;
-
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
-
-  jclass clsContext = poJEnv->FindClass("android/content/Context");
-  orxASSERT(clsContext != orxNULL);
-  jmethodID getSystemService = poJEnv->GetMethodID(clsContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
-  orxASSERT(getSystemService != orxNULL);
-  jfieldID WINDOW_SERVICE_ID = poJEnv->GetStaticFieldID(clsContext, "WINDOW_SERVICE", "Ljava/lang/String;");
-  orxASSERT(WINDOW_SERVICE_ID != orxNULL);
-  jstring WINDOW_SERVICE = (jstring) poJEnv->GetStaticObjectField(clsContext, WINDOW_SERVICE_ID);
-  orxASSERT(WINDOW_SERVICE != orxNULL);
-  jobject windowManager = poJEnv->CallObjectMethod(oActivity, getSystemService, WINDOW_SERVICE);
-  orxASSERT(windowManager != orxNULL);
-  jclass clsWindowManager = poJEnv->FindClass("android/view/WindowManager");
-  orxASSERT(clsWindowManager != orxNULL);
-  jmethodID getDefaultDisplay = poJEnv->GetMethodID(clsWindowManager, "getDefaultDisplay", "()Landroid/view/Display;");
-  orxASSERT(getDefaultDisplay != orxNULL);
-  jobject defaultDisplay = poJEnv->CallObjectMethod(windowManager, getDefaultDisplay);
-  orxASSERT(defaultDisplay != orxNULL);
-  jclass clsDisplay = poJEnv->FindClass("android/view/Display");
-  orxASSERT(clsDisplay != orxNULL);
-  jmethodID getRotation = poJEnv->GetMethodID(clsDisplay, "getRotation", "()I");
-  if(getRotation != orxNULL)
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "getRotation() found");
-    rotation =  poJEnv->CallIntMethod(defaultDisplay, getRotation);
-  }
-  else
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "getRotation() not found");
-    jmethodID getOrientation = poJEnv->GetMethodID(clsDisplay, "getOrientation", "()I");
-    orxASSERT(getOrientation != orxNULL);
-    rotation =  poJEnv->CallIntMethod(defaultDisplay, getOrientation);
-  }
-
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "rotation = %d", (int) rotation);
-
-  return (int) rotation;
-}
-
-int32_t NVEventAppMain(int32_t argc, char** argv)
-{
-#ifdef __orxDEBUG__
-  s_swapCount = 0;
-#endif
-
-  s_winWidth = 1;
-  s_winHeight = 1;
-  oActivity = (jobject) NVEventGetPlatformAppHandle();
-
-  /* loop until EGL is ready */
-
-  while (NVEventStatusIsRunning() && !NVEventReadyToRenderEGL(true))
-  {
-    const NVEvent* ev = NULL;
-    while (NVEventStatusIsRunning() && (ev = NVEventGetNextEvent(NVEventStatusIsFocused() ? 1 : 100)))
-    {
-      if(ev->m_type == NV_EVENT_SURFACE_SIZE)
-      {
-        DEBUG( "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
-
-        s_winWidth = ev->m_data.m_size.m_w;
-        s_winHeight = ev->m_data.m_size.m_h;
-      }
-      NVEventDoneWithEvent(true);
-    }
-  }
-
-  DEBUG("EGL ready !!!");
-
-  /* Call main function */
-  main(argc, argv);
-
-  DEBUG("cleanup!!!");
-
-  NVEventCleanupEGL();
-
-  return 0;
-}
-
-static bool renderFrame(bool allocateIfNeeded)
-{
-  if (!NVEventReadyToRenderEGL(allocateIfNeeded))
-      return false;
-
-  if (!s_glesLoaded)
-  {
-    if (!allocateIfNeeded)
-      return false;
-
-    s_glesLoaded = true;
-  }
+  /* Clears payload */
+  orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
   /* Sends frame start event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
@@ -196,296 +73,86 @@ static bool renderFrame(bool allocateIfNeeded)
 
   /* Updates frame counter */
   sstPayload.u32FrameCounter++;
-
-#ifdef __orxDEBUG__
-  // A debug printout every 256 frames so we can see when we're
-  // actively rendering and swapping
-  if (!(s_swapCount++ & 0x00ff))
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Swap count is %d", s_swapCount);
-  }
-#endif
-
-  return true;
 }
 
 /** Should stop execution by default event handling?
  */
 static orxBOOL sbStopByEvent = orxFALSE;
 
-/** Orx default basic event handler
- * @param[in]   _pstEvent                     Sent event
- * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
- */
-static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+jobject oActivity;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+/* Main function to call */
+extern int main(int argc, char *argv[]);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Close event */
-    case orxSYSTEM_EVENT_CLOSE:
+extern "C" {
+
+    jint JNI_OnLoad(JavaVM *vm, void *reserved)
     {
-      /* Updates status */
-      sbStopByEvent = orxTRUE;
-
-      break;
+        ThreadInit(vm);
+        FInit();
+        return JNI_VERSION_1_4;
     }
 
-    default:
-    {
-      break;
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-static void canonicalToScreen(const float *canVec, float *screenVec)
-{
-  struct AxisSwap
-  {
-    signed char negateX;
-    signed char negateY;
-    signed char xSrc;
-    signed char ySrc;
-  };
-
-  static const AxisSwap axisSwap[] = {
-    {-1, -1, 0, 1 },   // ROTATION_0
-    { 1, -1, 1, 0 },   // ROTATION_90
-    { 1,  1, 0, 1 },   // ROTATION_180
-    {-1,  1, 1, 0 } }; // ROTATION_270
-
-  const AxisSwap& as = axisSwap[s_displayRotation];
-
-  screenVec[0] = (float)as.negateX * canVec[ as.xSrc ];
-  screenVec[1] = (float)as.negateY * canVec[ as.ySrc ];
-  screenVec[2] = canVec[2];
-}
-
-  extern "C" void orxFASTCALL MainLoop()
-{
-  s_displayRotation = GetRotation();
-  s_glesLoaded = true;
-
-  /* Inits the engine */
-  if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-  {
-    /* Registers default event handler */
-    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Displays help */
-    if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
-    {
-      orxBOOL                 bStop;
-      /* Clears payload */
-      orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-      /* Get offset time from boot */
-      orxDOUBLE dSystTime = orxSystem_GetTime();
-      s_dOffsetTimeFromBoot = GetBootTime() - dSystTime;
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Orx boot time (in second) %f", dSystTime);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Offset boot time (in second) %f", s_dOffsetTimeFromBoot);
-
-      /* Main loop */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "App entering main loop");
-
-      for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
-          bStop == orxFALSE;
-          bStop = ((NVEventStatusIsRunning() != true) || (sbStopByEvent != orxFALSE) || (seMainStatus == orxSTATUS_FAILURE) || (seClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
-      {
-        const NVEvent* ev = NULL;
-        while (NVEventStatusIsRunning() && (ev = NVEventGetNextEvent(NVEventStatusIsFocused() ? 1 : 100)))
-        {
-          switch (ev->m_type)
-          {
-          case NV_EVENT_KEY:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Key event: 0x%02x %s",
-            ev->m_data.m_key.m_code,
-            (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
-
-            /* Send reserved event, used bu the keyboard plugin, to store the keyboard event */
-            orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY, NV_EVENT_KEY, orxNULL, orxNULL, &ev->m_data.m_key);
-            break;
-
-          case NV_EVENT_CHAR:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Char event: 0x%02x", ev->m_data.m_char.m_unichar);
-            ev = NULL;
-            NVEventDoneWithEvent(false);
-            break;
-
-          case NV_EVENT_TOUCH:
-            orxSYSTEM_EVENT_PAYLOAD stTouchPayload;
-            orxMemory_Zero(&stTouchPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-            stTouchPayload.stTouch.u32ID = 0;
-            stTouchPayload.stTouch.fX = orx2F(ev->m_data.m_touch.m_x);
-            stTouchPayload.stTouch.fY = orx2F(ev->m_data.m_touch.m_y);
-            stTouchPayload.stTouch.fPressure = orxFLOAT_0;
-            stTouchPayload.stTouch.dTime = orxFLOAT_0;
-            switch (ev->m_data.m_touch.m_action)
-            {
-            case NV_TOUCHACTION_DOWN:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayload);
-              break;
-
-            case NV_TOUCHACTION_UP:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayload);
-              break;
-
-            case NV_TOUCHACTION_MOVE:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayload);
-              break;
-            }
-            break;
-
-          case NV_EVENT_MULTITOUCH:
-            orxSYSTEM_EVENT_PAYLOAD stTouchPayloadMulti;
-            orxMemory_Zero(&stTouchPayloadMulti, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-            stTouchPayloadMulti.stTouch.u32ID     = ev->m_data.m_multi.m_id;
-            stTouchPayloadMulti.stTouch.fX        = orx2F(ev->m_data.m_multi.m_x);
-            stTouchPayloadMulti.stTouch.fY        = orx2F(ev->m_data.m_multi.m_y);
-            stTouchPayloadMulti.stTouch.fPressure = orx2F(ev->m_data.m_multi.m_pressure);
-            stTouchPayloadMulti.stTouch.dTime     = (orxDOUBLE)((ev->m_data.m_multi.m_eventtime / 1000.0f) - s_dOffsetTimeFromBoot);
-            switch (ev->m_data.m_multi.m_action)
-            {
-            case NV_MULTITOUCH_DOWN:
-            case NV_MULTITOUCH_POINTER_DOWN:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stTouchPayloadMulti);
-              break;
-            case NV_MULTITOUCH_CANCEL:
-            case NV_MULTITOUCH_UP:
-            case NV_MULTITOUCH_POINTER_UP:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stTouchPayloadMulti);
-              break;
-
-            case NV_MULTITOUCH_MOVE:
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stTouchPayloadMulti);
-              break;
-            }
-            break;
-
-          case NV_EVENT_SURFACE_CREATED:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface create event: %d x %d", s_winWidth, s_winHeight);
-            s_winWidth = ev->m_data.m_size.m_w;
-            s_winHeight = ev->m_data.m_size.m_h;
-            break;
-
-          case NV_EVENT_SURFACE_SIZE:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface resize event: %d x %d", s_winWidth, s_winHeight);
-            s_winWidth = ev->m_data.m_size.m_w;
-            s_winHeight = ev->m_data.m_size.m_h;
-            orxEvent_SendShort((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_SURFACE_SIZE), NV_EVENT_SURFACE_SIZE);
-            break;
-
-          case NV_EVENT_SURFACE_DESTROYED:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Surface destroyed event");
-            s_glesLoaded = false;
-            NVEventDestroySurfaceEGL();
-            break;
-
-          case NV_EVENT_FOCUS_LOST:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus lost event");
-            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
-            break;
-
-          case NV_EVENT_FOCUS_GAINED:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Focus gained event");
-            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
-            break;
-
-          case NV_EVENT_PAUSE:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Pause event");
-            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
-            break;
-
-          case NV_EVENT_RESUME:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Resume event");
-            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
-            break;
-
-          case NV_EVENT_START:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Start event");
-            break;
-
-          case NV_EVENT_STOP:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "Stop event");
-            break;
-
-          case NV_EVENT_ACCEL:
-            orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
-            orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-            float canVec[3];
-            float screenVec[3];
-
-            canVec[0] = orx2F(ev->m_data.m_accel.m_x);
-            canVec[1] = orx2F(ev->m_data.m_accel.m_y);
-            canVec[2] = orx2F(ev->m_data.m_accel.m_z);
-
-            canonicalToScreen(canVec, screenVec);
-
-            /* Set real time */
-            stAccelPayload.stAccelerometer.dTime = orxFLOAT_0;
-
-            /* Set acceleration vector */
-            orxVector_Set(&stAccelPayload.stAccelerometer.vAcceleration,orx2F(screenVec[0]),orx2F(screenVec[1]),orx2F(screenVec[2]));
-
-            /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
-            break;
-
-          /* Events we simply default: */
-          case NV_EVENT_RESTART:
-          case NV_EVENT_QUIT:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "%s event: no specific app action", NVEventGetEventStr(ev->m_type));
-            break;
-
-          default:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_LOG, "UNKNOWN event");
-            break;
-          };
-
-          /* if we do not NULL out the event, then we return that we handled it by default */
-          if (ev)
-            NVEventDoneWithEvent(true);
-        }
-
-        // Do not bother to initialize _any_ of EGL, much less go ahead
-        // and render to the screen unless we have all we need to go
-        // ahead and do our thing.  In many cases,
-        // devices will bring us part-way up and then take us down.
-        // So, before we bother to init EGL (much less the rendering
-        // surface, check that:
-        // - we are focused
-        // - we have a rendering surface
-        // - the surface size is not 0x0
-        // - we are resumed, not paused
-        if (NVEventStatusIsInteractable())
-        {
-          // This will try to set up EGL if it isn't set up
-          // When we first set up EGL completely, we also load our GLES resources
-          // If these are already set up or we succeed at setting them all up now, then
-          // we go ahead and render.
-          renderFrame(true);
-        }
-      }
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, jobject thiz) {
+      oActivity = env->NewGlobalRef(thiz);
     }
 
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeInit(JNIEnv* env, jobject thiz, jint width, jint height) {
+        s_winWidth = width;
+        s_winHeight = height;
 
-    /* Exits from engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
-  }
+        /* Call main function */
+        main(0, orxNULL);
+    }
 
-  /* Exits from all modules */
-  orxModule_ExitAll();
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeRender(JNIEnv* env, jobject thiz) {
+        renderFrame();
+    }
+
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnPause(JNIEnv* env, jobject thiz) {
+    }
+
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnResume(JNIEnv* env, jobject thiz) {
+    }
+
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesBegin(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
+    }
+
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesEnd(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
+    }
+
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesMove(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
+        int size = env->GetArrayLength(ids);
+        jint id[size];
+        jfloat x[size];
+        jfloat y[size];
+
+        env->GetIntArrayRegion(ids, 0, size, id);
+        env->GetFloatArrayRegion(xs, 0, size, x);
+        env->GetFloatArrayRegion(ys, 0, size, y);
+    }
+
+    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesCancel(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
+        int size = env->GetArrayLength(ids);
+        jint id[size];
+        jfloat x[size];
+        jfloat y[size];
+
+        env->GetIntArrayRegion(ids, 0, size, id);
+        env->GetFloatArrayRegion(xs, 0, size, x);
+        env->GetFloatArrayRegion(ys, 0, size, y);
+    }
+
+    #define KEYCODE_BACK 0x04
+    #define KEYCODE_MENU 0x52
+
+    JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode) {
+        return JNI_FALSE;
+    }
+
+    JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyUp(JNIEnv * env, jobject thiz, jint keyCode) {
+        return JNI_FALSE;
+    }
 }
 
 #endif
