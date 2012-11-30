@@ -45,40 +45,117 @@
 #if defined(__orxANDROID__)
 
 #include <jni.h>
+#include <pthread.h>
+#include <stdlib.h>
 
-extern orxMODULE_RUN_FUNCTION  pfnRun;
-
-static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+#if defined(__cplusplus)
+extern "C"
 {
-  /* Inits the Debug System */
-  orxDEBUG_INIT();
+#endif
 
-  /* Checks */
-  orxASSERT(_pfnRun != orxNULL);
+/** @file thread.h
+  The Thread library makes it easy to create native threads that can acess
+  JNI objects.  By default, pthreads created in the Android NDK are NOT connected
+  to the JVM and JNI calls will fail.  This library wraps thread creation in
+  such a way that pthreads created using it will connect to and disconnect from
+  the JVM as appropriate.  Applications creating all of their threads with these
+  interfaces can use the provided ThreadGetCurrentJNIEnv() function to
+  get the current thread's JNI context at any time.
 
-  /* register run function */
-  pfnRun = _pfnRun;
+  Note that native-created threads still have JNI limitations over threads
+  that are calls down to native from Java.  The JNI function FindClass will
+  NOT find application-specific classes when called from native threads.
+  Native code that needs to call FindClass and record the indices of Java
+  class members for later access must call FindClass and Get*FieldID/Get*MethodID
+  in threads calling from Java, such as JNI_OnLoad
+ */
 
-  /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+/**
+  Initializes the thread system by connecting it to the JVM.  This
+  function must be called as early as possible in the native code's
+  JNI_OnLoad function, so that the thread system is prepared for any
+  JNI-dependent library initialization calls.  
+  @param vm The VM pointer - should be the JavaVM pointer sent to JNI_OnLoad.
+  */
+void orxAndroid_ThreadInit(JavaVM* vm);
 
-  /* Registers all other modules */
-  orxModule_RegisterAll();
+/**
+  Retrieves the JNIEnv object associated with the current thread, allowing
+  any thread that was creating with ThreadSpawnJNIThread() to access the
+  JNI at will.  This JNIEnv is NOT usable across multiple calls or threads
+  The function should be called in each function that requires a JNIEnv
+  @return The current thread's JNIEnv, or NULL if the thread was not created
+  by ThreadSpawnJNIThread
+  @see ThreadSpawnJNIThread
+  */
+JNIEnv* orxAndroid_ThreadGetCurrentJNIEnv();
 
-  /* Calls all modules setup */
-  orxModule_SetupAll();
+/**
+  Spwans a new native thread that is registered for use with JNI.  Threads
+  created with this function will have access to JNI data via the JNIEnv
+  available from ThreadGetCurrentJNIEnv().
+  @param thread is the same as in pthread_create
+  @param attr is the same as in pthread_create
+  @param start_routine is the same as in pthread_create
+  @param arg is the same as in pthread_create
+  @return 0 on success, -1 on failure
+  @see ThreadGetCurrentJNIEnv
+*/
+int orxAndroid_ThreadSpawnJNIThread(pthread_t *thread, pthread_attr_t const * attr,
+    void *(*start_routine)(void *), void * arg);
 
-  /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
-  {
-    /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-    {
-      /* Registers default event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-    }
-  }
+/**
+  Sleeps the current thread for the specified number of milliseconds
+  @param millisec Sleep time in ms
+  @return 0 on success, -1 on failure
+*/
+int orxAndroid_ThreadSleep(unsigned long millisec);
+
+#if defined(__cplusplus)
 }
+#endif
+
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
+/** @file apk_file.h
+  <b>APK is now considered internal - File in file.h should be used
+  by applications.</b>
+
+  This library supports FILE*-like access to assets in the APK file.  These
+  APIs should not be used directly.  Use the File APIs in file.h, which
+  include all of this library's functionalities and support files from APK
+  and from /data.
+  @see file.h
+*/
+
+typedef void APKFile;
+
+
+
+/**
+  Initializes the library.  This function MUST be called from the application's
+  JNI_OnLoad, from a function known to be called by JNI_OnLoad, or from a function
+  in a Java-called thread.  thread-created native threads cannot call this
+  initialization function.
+  */
+void        orxAndroid_APKInit();
+
+APKFile*    orxAndroid_APKOpen(char const* path);
+void        orxAndroid_APKClose(APKFile* file);
+int         orxAndroid_APKGetc(APKFile *stream);
+char*       orxAndroid_APKGets(char* s, int size, APKFile* stream);
+size_t      orxAndroid_APKSize(APKFile* stream);
+long        orxAndroid_APKSeek(APKFile* stream, long offset, int type);
+long        orxAndroid_APKTell(APKFile* stream);
+size_t      orxAndroid_APKRead(void* ptr, size_t size, size_t nmemb, APKFile* stream);
+int         orxAndroid_APKEOF(APKFile *stream);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #elif defined (__orxANDROID_NATIVE__)
 

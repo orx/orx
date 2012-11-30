@@ -66,8 +66,7 @@
   #ifdef __orxANDROID__
 
     #include <jni.h>
-    #include "file.h"
-    #include "thread.h"
+    #include "main/orxAndroid.h"
 
     extern jobject              oActivity;
 
@@ -297,7 +296,7 @@ orxSTATUS orxFASTCALL orxFile_Init()
     // sstFile.zExternalDataPath = orxNULL;
 
     /* Retrieves the zInternalDataPath from Java */
-    JNIEnv *poJEnv = (JNIEnv*) ThreadGetCurrentJNIEnv();
+    JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
 
     jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
     orxASSERT(objClass != orxNULL);
@@ -815,7 +814,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
 
   #else /* __orxANDROID_NATIVE__ */
 
-  File *poAsset = FOpen(_zFileName);
+  APKFile *poAsset = orxAndroid_APKOpen(_zFileName);
 
   #endif /* __orxANDROID_NATIVE__ */
 
@@ -870,7 +869,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
 
       #else /* __orxANDROID_NATIVE__ */
 
-      u32Ret = (orxU32)FRead(_pReadData, _u32ElemSize, _u32NbElem, (File*)_pstFile->pHandle);
+      u32Ret = (orxU32)orxAndroid_APKRead(_pReadData, _u32ElemSize, _u32NbElem, (APKFile*)_pstFile->pHandle);
 
       #endif /* __orxANDROID_NATIVE__ */
     }
@@ -962,7 +961,7 @@ orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
 
       #else /* __orxANDROID_NATIVE__ */
 
-      eResult = (FSeek((File*)_pstFile->pHandle, _s32Position,  SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (orxAndroid_APKSeek((APKFile*)_pstFile->pHandle, _s32Position,  SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
       #endif /* __orxANDROID_NATIVE__ */
     }
@@ -1014,7 +1013,7 @@ orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
 
       #else /* __orxANDROID_NATIVE__ */
 
-      s32Result = FTell((File*)_pstFile->pHandle);
+      s32Result = orxAndroid_APKTell((APKFile*)_pstFile->pHandle);
 
       #endif /* __orxANDROID_NATIVE__ */
     }
@@ -1066,7 +1065,7 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 
       #else /* __orxANDROID_NATIVE__ */
 
-      s32Result = FSize((File*)_pstFile->pHandle);
+      s32Result = orxAndroid_APKSize((APKFile*)_pstFile->pHandle);
 
       #endif /* __orxANDROID_NATIVE__ */
     }
@@ -1186,7 +1185,7 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
 
       #else /* __orxANDROID_NATIVE__ */
 
-      FClose((File*)_pstFile->pHandle);
+      orxAndroid_APKClose((APKFile*)_pstFile->pHandle);
 
       #endif /* __orxANDROID_NATIVE__ */
 

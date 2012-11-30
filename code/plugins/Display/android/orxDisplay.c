@@ -38,7 +38,7 @@
 #include "SOIL.h"
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-#include <file.h>
+#include "main/orxAndroid.h"
 
 /** Module flags
  */
@@ -1899,7 +1899,7 @@ static orxBITMAP *orxDisplay_Android_LoadETC1Bitmap(const orxSTRING _zFilename)
   orxASSERT(_zFilename != orxNULL);
 
   orxBITMAP *pstResult = orxNULL;
-  File* apkFile;
+  APKFile* apkFile;
   etc1_byte* fileData;
   orxCHAR zPKMFileName[255];
 
@@ -1907,18 +1907,18 @@ static orxBITMAP *orxDisplay_Android_LoadETC1Bitmap(const orxSTRING _zFilename)
   orxString_Copy(zPKMFileName + orxString_GetLength(_zFilename), ".pkm");
 
   /* open the asset file and save them into memory */
-  apkFile = FOpen(zPKMFileName);
+  apkFile = orxAndroid_APKOpen(zPKMFileName);
   if(apkFile != orxNULL)
   {
     size_t apkFileSize;
 
-    apkFileSize = FSize(apkFile);
+    apkFileSize = orxAndroid_APKSize(apkFile);
     fileData = (etc1_byte *)orxMemory_Allocate(sizeof(unsigned char)*apkFileSize, orxMEMORY_TYPE_MAIN);
     /* read file */
-    FRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
+    orxAndroid_APKRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
 
     /* close it */
-    FClose(apkFile);
+    orxAndroid_APKClose(apkFile);
 
     /* check if file is a valid pkm */
     if(etc1_pkm_is_valid(fileData))
@@ -1995,7 +1995,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
   unsigned char *pu8ImageData;
   GLuint uiWidth, uiHeight, uiBytesPerPixel;
   orxBITMAP *pstResult = orxNULL;
-  File* apkFile;
+  APKFile* apkFile;
   unsigned char* fileData;
 
   /* Checks */
@@ -2012,15 +2012,15 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
 
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "valid pkm file not found loading uncompressed file");
     /* open the asset file and save them into memory */
-    apkFile = FOpen(_zFilename);
-    apkFileSize = FSize(apkFile);
+    apkFile = orxAndroid_APKOpen(_zFilename);
+    apkFileSize = orxAndroid_APKSize(apkFile);
     fileData = (orxU8 *)orxMemory_Allocate(sizeof(unsigned char)*apkFileSize, orxMEMORY_TYPE_MAIN);
 
     /* read file */
-    FRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
+    orxAndroid_APKRead(fileData, apkFileSize, sizeof(unsigned char), apkFile);
 
     /* close it */
-    FClose(apkFile);
+    orxAndroid_APKClose(apkFile);
 
     /* Loads image */
     pu8ImageData = SOIL_load_image_from_memory(fileData, apkFileSize,(int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
