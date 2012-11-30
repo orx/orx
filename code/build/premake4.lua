@@ -96,7 +96,7 @@ end
 
 defaultaction ("windows", "vs2010")
 defaultaction ("linux", "gmake")
-defaultaction ("macosx", "xcode3")
+defaultaction ("macosx", "gmake")
 
 newoption
 {
@@ -205,15 +205,24 @@ solution "orx"
         }
         buildoptions
         {
+            "-x c++",
             "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
-            "-gdwarf-2"
+            "-gdwarf-2",
+            "-Wno-write-strings",
+            "-fvisibility-inlines-hidden"
         }
         linkoptions
         {
             "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
             "-dead_strip"
+        }
+
+    configuration {"macosx", "x32"}
+        buildoptions
+        {
+            "-mfix-and-continue"
         }
 
 
