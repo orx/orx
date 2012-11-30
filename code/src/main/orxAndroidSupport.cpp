@@ -76,9 +76,6 @@ static void renderFrame()
 
 static void nativeExit()
 {
-  /* Removes event handler */
-  orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
   /* Exits from engine */
   orxModule_Exit(orxMODULE_ID_MAIN);
 
@@ -89,10 +86,6 @@ static void nativeExit()
 
   orxDEBUG_EXIT();
 }
-
-/** Should stop execution by default event handling?
- */
-static orxBOOL sbStopByEvent = orxFALSE;
 
 jobject oActivity;
 
@@ -141,9 +134,27 @@ extern "C" {
     }
 
     JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesBegin(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+      /* Inits event's payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      stPayload.stTouch.fX = (orxFLOAT)x;
+      stPayload.stTouch.fY = (orxFLOAT)y;
+      stPayload.stTouch.fPressure = orxFLOAT_0;
+
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
     }
 
     JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesEnd(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+      /* Inits event's payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+      stPayload.stTouch.fX = (orxFLOAT)x;
+      stPayload.stTouch.fY = (orxFLOAT)y;
+      stPayload.stTouch.fPressure = orxFLOAT_0;
+
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
     }
 
     JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesMove(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
@@ -155,6 +166,19 @@ extern "C" {
         env->GetIntArrayRegion(ids, 0, size, id);
         env->GetFloatArrayRegion(xs, 0, size, x);
         env->GetFloatArrayRegion(ys, 0, size, y);
+
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+        /* Inits event's payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+        stPayload.stTouch.fPressure = orxFLOAT_0;
+
+        for(int i = 0; i < size; i++)
+        {
+          stPayload.stTouch.fX = (orxFLOAT)x[i];
+          stPayload.stTouch.fY = (orxFLOAT)y[i];
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
+        }
     }
 
     JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesCancel(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
@@ -166,6 +190,19 @@ extern "C" {
         env->GetIntArrayRegion(ids, 0, size, id);
         env->GetFloatArrayRegion(xs, 0, size, x);
         env->GetFloatArrayRegion(ys, 0, size, y);
+
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+        /* Inits event's payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+        stPayload.stTouch.fPressure = orxFLOAT_0;
+
+        for(int i = 0; i < size; i++)
+        {
+          stPayload.stTouch.fX = (orxFLOAT)x[i];
+          stPayload.stTouch.fY = (orxFLOAT)y[i];
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+        }
     }
 
     #define KEYCODE_BACK 0x04

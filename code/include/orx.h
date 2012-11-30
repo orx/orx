@@ -201,6 +201,8 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #include "main/orxAndroid.h"
 
+    #ifdef __orxANDROID__
+
 extern orxMODULE_RUN_FUNCTION  pfnRun;
 
 static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
@@ -227,13 +229,11 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
     /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
-    {
-      /* Registers default event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-    }
+    orxModule_Init(orxMODULE_ID_MAIN);
   }
 }
+
+    #endif
 
   #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
