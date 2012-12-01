@@ -157,6 +157,13 @@ int         orxAndroid_APKEOF(APKFile *stream);
 }
 #endif
 
+#define orxANDROID_EVENT_KEYBOARD       0
+#define orxANDROID_EVENT_KEYBOARD_DOWN  0
+#define orxANDROID_EVENT_KEYBOARD_UP    1
+#define KEYCODE_BACK 0x04
+#define KEYCODE_MENU 0x52
+
+
 #elif defined (__orxANDROID_NATIVE__)
 
   #include <android/log.h>

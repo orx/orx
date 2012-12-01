@@ -208,15 +208,30 @@ extern "C" {
         }
     }
 
-    #define KEYCODE_BACK 0x04
-    #define KEYCODE_MENU 0x52
-
     JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode) {
-        return JNI_FALSE;
+        jboolean result = JNI_TRUE;
+        orxEVENT stEvent;
+        orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_DOWN, orxNULL, orxNULL, &keyCode);
+
+        if(orxEvent_Send(&stEvent) != orxSTATUS_SUCCESS)
+        {
+          result = JNI_FALSE;
+        }
+
+        return result;
     }
 
     JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyUp(JNIEnv * env, jobject thiz, jint keyCode) {
-        return JNI_FALSE;
+        jboolean result = JNI_TRUE;
+        orxEVENT stEvent;
+        orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_UP, orxNULL, orxNULL, &keyCode);
+
+        if(orxEvent_Send(&stEvent) != orxSTATUS_SUCCESS)
+        {
+          result = JNI_FALSE;
+        }
+
+        return result;
     }
 
 static JavaVM* s_vm = NULL;
