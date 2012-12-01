@@ -53,23 +53,23 @@ vsfileinfolist = devfileinfolist + [
 mingwfileinfolist = devfileinfolist + [
     {'src': 'bin/orx*.exe',             'dst': None},
     {'src': 'bin/orx*.dll',             'dst': None},
-    {'src': 'lib/dynamic/orx*.a',       'dst': 'lib'}
+    {'src': 'lib/dynamic/liborx*.a',    'dst': 'lib'}
 ]
 
 macfileinfolist = devfileinfolist + [
     {'src': 'bin/orx',                  'dst': None},
     {'src': 'bin/orxp',                 'dst': None},
     {'src': 'bin/orxd',                 'dst': None},
-    {'src': 'bin/orx*.dylib',           'dst': None},
-    {'src': 'lib/dynamic/orx*.dylib',   'dst': 'lib'}
+    {'src': 'bin/liborx*.dylib',        'dst': None},
+    {'src': 'lib/dynamic/liborx*.dylib','dst': 'lib'}
 ]
 
 linuxfileinfolist = devfileinfolist + [
     {'src': 'bin/orx',                  'dst': None},
     {'src': 'bin/orxp',                 'dst': None},
     {'src': 'bin/orxd',                 'dst': None},
-    {'src': 'bin/orx*.so',              'dst': None},
-    {'src': 'lib/dynamic/orx*.so',      'dst': 'lib'}
+    {'src': 'bin/liborx*.so',           'dst': None},
+    {'src': 'lib/dynamic/liborx*.so',   'dst': 'lib'}
 ]
 
 # List of folders
