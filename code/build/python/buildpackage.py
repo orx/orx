@@ -11,14 +11,17 @@ platformlist    = ['vs2008', 'vs2010', 'mingw', 'mac', 'linux32', 'linux64', 'do
 # Base source path
 basesrc         = '../..'
 
+# Work directory
+workdir         = 'workdir'
+
 
 ### Processes command line
 
 # Gets parameters from command line arguments
 if __name__ == '__main__':
     parser      = argparse.ArgumentParser()
-    parser.add_argument('-v', '--version', default = 'version')
-    parser.add_argument('-p', '--platform', default = 'platform', choices = platformlist)
+    parser.add_argument('-v', '--version', default = 'latest')
+    parser.add_argument('-p', '--platform', default = 'none', choices = platformlist)
     args        = parser.parse_args()
     version     = args.version
     platform    = args.platform
@@ -140,14 +143,14 @@ platforminfolist = {
 ### Cleans
 
 # Deletes packing folder if present
-if os.path.exists('package'):
-    shutil.rmtree('package')
+if os.path.exists(workdir):
+    shutil.rmtree(workdir)
 
 
 ### Copies files
 
 # Gets base destination path
-basedst = os.path.join('package/orx-' + version, platforminfolist[platform]['name'])
+basedst = os.path.join(workdir, os.path.join('orx-' + version, platforminfolist[platform]['name']))
 
 # Should copy files?
 if platforminfolist[platform]['fileinfolist']:
@@ -200,7 +203,7 @@ for folder in platforminfolist[platform]['folderlist']:
 ### Exports archive
 
 # Creates archive from folder
-archive = shutil.make_archive('orx-' + platforminfolist[platform]['name'] + '-' + version, platforminfolist[platform]['format'], 'package', '.')
+archive = shutil.make_archive(os.path.join('packages', 'orx-' + platforminfolist[platform]['name'] + '-' + version), platforminfolist[platform]['format'], workdir, '.')
 
 # Logs
 print 'Created archive:', os.path.basename(archive)
