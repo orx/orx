@@ -34,8 +34,7 @@
 #include "orxPluginAPI.h"
 
 #include <jni.h>
-#include <nv_event/nv_event.h>
-#include <nv_thread/nv_thread.h>
+#include "main/orxAndroid.h"
 
 /** Module flags
  */
@@ -101,16 +100,16 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t {
   /* MediaPlayer jni stuff */
   jclass          clsMediaPlayer;
   jmethodID       mIDMediaPlayer_init;
-	jmethodID       mIDMediaPlayer_setDataSource;
-	jmethodID       mIDMediaPlayer_prepare;
-	jmethodID       mIDMediaPlayer_start;
-	jmethodID       mIDMediaPlayer_stop;
-	jmethodID       mIDMediaPlayer_pause;
-	jmethodID       mIDMediaPlayer_release;
-	jmethodID       mIDMediaPlayer_setLooping;
-	jmethodID       mIDMediaPlayer_getDuration;
-	jmethodID       mIDMediaPlayer_isPlaying;
-	jmethodID       mIDMediaPlayer_setVolume;
+  jmethodID       mIDMediaPlayer_setDataSource;
+  jmethodID       mIDMediaPlayer_prepare;
+  jmethodID       mIDMediaPlayer_start;
+  jmethodID       mIDMediaPlayer_stop;
+  jmethodID       mIDMediaPlayer_pause;
+  jmethodID       mIDMediaPlayer_release;
+  jmethodID       mIDMediaPlayer_setLooping;
+  jmethodID       mIDMediaPlayer_getDuration;
+  jmethodID       mIDMediaPlayer_isPlaying;
+  jmethodID       mIDMediaPlayer_setVolume;
 
 } orxSOUNDSYSTEM_STATIC;
 
@@ -175,85 +174,85 @@ static orxSTATUS orxFASTCALL orxSoundSystem_Android_EventHandler(const orxEVENT 
 }  
 
 extern "C"  orxSTATUS orxFASTCALL orxSoundSystem_Android_Init() {
-	orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-	/* Was already initialized? */
-	if (!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)) {
-		orxFLOAT fRatio;
+  /* Was already initialized? */
+  if (!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)) {
+    orxFLOAT fRatio;
 
-		/* Cleans static controller */
-		orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
+    /* Cleans static controller */
+    orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
-		/* Gets dimension ratio */
-		orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+    /* Gets dimension ratio */
+    orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
 
-		/* Updates status */
-		orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
 
-		/* Pops config section */
-		orxConfig_PopSection();
+    /* Pops config section */
+    orxConfig_PopSection();
 		
-		JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
-		/* Init global volume */
-		sstSoundSystem.mfGlobalVolume = orxFLOAT_1;
+    JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
+    /* Init global volume */
+    sstSoundSystem.mfGlobalVolume = orxFLOAT_1;
 		
-		/* retrieve the AssetManager */
-		jclass clsActivity = poJEnv->FindClass("android/app/Activity");
-		orxASSERT(clsActivity != orxNULL);
-		jmethodID mIDgetAssets = poJEnv->GetMethodID(clsActivity, "getAssets", "()Landroid/content/res/AssetManager;");
-		orxASSERT(mIDgetAssets != orxNULL);
-		jobject oAssetManager = poJEnv->CallObjectMethod(oActivity, mIDgetAssets);
-		orxASSERT(oAssetManager != orxNULL);
-		sstSoundSystem.oAssetManager = poJEnv->NewGlobalRef(oAssetManager);
-		jclass clsAssetManager = poJEnv->GetObjectClass(sstSoundSystem.oAssetManager);
-		orxASSERT(clsAssetManager != orxNULL);
-		sstSoundSystem.mIDAssetManager_openFd = poJEnv->GetMethodID(clsAssetManager, "openFd", "(Ljava/lang/String;)Landroid/content/res/AssetFileDescriptor;");
-		orxASSERT(sstSoundSystem.mIDAssetManager_openFd != orxNULL);
+    /* retrieve the AssetManager */
+    jclass clsActivity = poJEnv->FindClass("android/app/Activity");
+    orxASSERT(clsActivity != orxNULL);
+    jmethodID mIDgetAssets = poJEnv->GetMethodID(clsActivity, "getAssets", "()Landroid/content/res/AssetManager;");
+    orxASSERT(mIDgetAssets != orxNULL);
+    jobject oAssetManager = poJEnv->CallObjectMethod(oActivity, mIDgetAssets);
+    orxASSERT(oAssetManager != orxNULL);
+    sstSoundSystem.oAssetManager = poJEnv->NewGlobalRef(oAssetManager);
+    jclass clsAssetManager = poJEnv->GetObjectClass(sstSoundSystem.oAssetManager);
+    orxASSERT(clsAssetManager != orxNULL);
+    sstSoundSystem.mIDAssetManager_openFd = poJEnv->GetMethodID(clsAssetManager, "openFd", "(Ljava/lang/String;)Landroid/content/res/AssetFileDescriptor;");
+    orxASSERT(sstSoundSystem.mIDAssetManager_openFd != orxNULL);
 		
-		/* retrieve the AssetFileDescriptor */
-		jclass clsAssetFileDescriptor = poJEnv->FindClass("android/content/res/AssetFileDescriptor");
-		orxASSERT(clsAssetFileDescriptor != orxNULL);
-		sstSoundSystem.mIDAssetFileDescriptor_getFileDescriptor = poJEnv->GetMethodID(clsAssetFileDescriptor, "getFileDescriptor", "()Ljava/io/FileDescriptor;");
-		orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_getFileDescriptor != orxNULL);
-		sstSoundSystem.mIDAssetFileDescriptor_close = poJEnv->GetMethodID(clsAssetFileDescriptor, "close", "()V");
-		orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_close != orxNULL);
-		sstSoundSystem.mIDAssetFileDescriptor_getStartOffset = poJEnv->GetMethodID(clsAssetFileDescriptor, "getStartOffset", "()J");
-		orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_getStartOffset != orxNULL);
-		sstSoundSystem.mIDAssetFileDescriptor_getLength = poJEnv->GetMethodID(clsAssetFileDescriptor, "getLength", "()J");
-		orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_getLength != orxNULL);
+    /* retrieve the AssetFileDescriptor */
+    jclass clsAssetFileDescriptor = poJEnv->FindClass("android/content/res/AssetFileDescriptor");
+    orxASSERT(clsAssetFileDescriptor != orxNULL);
+    sstSoundSystem.mIDAssetFileDescriptor_getFileDescriptor = poJEnv->GetMethodID(clsAssetFileDescriptor, "getFileDescriptor", "()Ljava/io/FileDescriptor;");
+    orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_getFileDescriptor != orxNULL);
+    sstSoundSystem.mIDAssetFileDescriptor_close = poJEnv->GetMethodID(clsAssetFileDescriptor, "close", "()V");
+    orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_close != orxNULL);
+    sstSoundSystem.mIDAssetFileDescriptor_getStartOffset = poJEnv->GetMethodID(clsAssetFileDescriptor, "getStartOffset", "()J");
+    orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_getStartOffset != orxNULL);
+    sstSoundSystem.mIDAssetFileDescriptor_getLength = poJEnv->GetMethodID(clsAssetFileDescriptor, "getLength", "()J");
+    orxASSERT(sstSoundSystem.mIDAssetFileDescriptor_getLength != orxNULL);
 
     /* instanciate the SoundPool */
-		jclass clsSoundPool = poJEnv->FindClass("android/media/SoundPool");
-		orxASSERT(clsSoundPool != orxNULL);
-		jmethodID mIDSoundPool_init = poJEnv->GetMethodID(clsSoundPool, "<init>", "(III)V");
-		orxASSERT(mIDSoundPool_init != orxNULL);
-		jobject oSoundPool = poJEnv->NewObject(clsSoundPool, mIDSoundPool_init, 16, 3, 0);
+    jclass clsSoundPool = poJEnv->FindClass("android/media/SoundPool");
+    orxASSERT(clsSoundPool != orxNULL);
+    jmethodID mIDSoundPool_init = poJEnv->GetMethodID(clsSoundPool, "<init>", "(III)V");
+    orxASSERT(mIDSoundPool_init != orxNULL);
+    jobject oSoundPool = poJEnv->NewObject(clsSoundPool, mIDSoundPool_init, 16, 3, 0);
     orxASSERT(oSoundPool != orxNULL);
     sstSoundSystem.oSoundPool = poJEnv->NewGlobalRef(oSoundPool);
     /* retrieve methodID */
-		sstSoundSystem.mIDSoundPool_load = poJEnv->GetMethodID(clsSoundPool, "load", "(Landroid/content/res/AssetFileDescriptor;I)I");
-		orxASSERT(sstSoundSystem.mIDSoundPool_load != orxNULL);
-		sstSoundSystem.mIDSoundPool_unload = poJEnv->GetMethodID(clsSoundPool, "unload", "(I)Z");
-		orxASSERT(sstSoundSystem.mIDSoundPool_unload != orxNULL);
-		sstSoundSystem.mIDSoundPool_play = poJEnv->GetMethodID(clsSoundPool, "play", "(IFFIIF)I");
-		orxASSERT(sstSoundSystem.mIDSoundPool_play != orxNULL);
-		sstSoundSystem.mIDSoundPool_pause = poJEnv->GetMethodID(clsSoundPool, "pause", "(I)V");
-		orxASSERT(sstSoundSystem.mIDSoundPool_pause != orxNULL);
-		sstSoundSystem.mIDSoundPool_stop = poJEnv->GetMethodID(clsSoundPool, "stop", "(I)V");
-		orxASSERT(sstSoundSystem.mIDSoundPool_stop != orxNULL);
-		sstSoundSystem.mIDSoundPool_setVolume = poJEnv->GetMethodID(clsSoundPool, "setVolume", "(IFF)V");
-		orxASSERT(sstSoundSystem.mIDSoundPool_setVolume != orxNULL);
-		sstSoundSystem.mIDSoundPool_setRate = poJEnv->GetMethodID(clsSoundPool, "setRate", "(IF)V");
-		orxASSERT(sstSoundSystem.mIDSoundPool_setRate != orxNULL);
-		sstSoundSystem.mIDSoundPool_setLoop = poJEnv->GetMethodID(clsSoundPool, "setLoop", "(II)V");
-		orxASSERT(sstSoundSystem.mIDSoundPool_setLoop != orxNULL);
+    sstSoundSystem.mIDSoundPool_load = poJEnv->GetMethodID(clsSoundPool, "load", "(Landroid/content/res/AssetFileDescriptor;I)I");
+    orxASSERT(sstSoundSystem.mIDSoundPool_load != orxNULL);
+    sstSoundSystem.mIDSoundPool_unload = poJEnv->GetMethodID(clsSoundPool, "unload", "(I)Z");
+    orxASSERT(sstSoundSystem.mIDSoundPool_unload != orxNULL);
+    sstSoundSystem.mIDSoundPool_play = poJEnv->GetMethodID(clsSoundPool, "play", "(IFFIIF)I");
+    orxASSERT(sstSoundSystem.mIDSoundPool_play != orxNULL);
+    sstSoundSystem.mIDSoundPool_pause = poJEnv->GetMethodID(clsSoundPool, "pause", "(I)V");
+    orxASSERT(sstSoundSystem.mIDSoundPool_pause != orxNULL);
+    sstSoundSystem.mIDSoundPool_stop = poJEnv->GetMethodID(clsSoundPool, "stop", "(I)V");
+    orxASSERT(sstSoundSystem.mIDSoundPool_stop != orxNULL);
+    sstSoundSystem.mIDSoundPool_setVolume = poJEnv->GetMethodID(clsSoundPool, "setVolume", "(IFF)V");
+    orxASSERT(sstSoundSystem.mIDSoundPool_setVolume != orxNULL);
+    sstSoundSystem.mIDSoundPool_setRate = poJEnv->GetMethodID(clsSoundPool, "setRate", "(IF)V");
+    orxASSERT(sstSoundSystem.mIDSoundPool_setRate != orxNULL);
+    sstSoundSystem.mIDSoundPool_setLoop = poJEnv->GetMethodID(clsSoundPool, "setLoop", "(II)V");
+    orxASSERT(sstSoundSystem.mIDSoundPool_setLoop != orxNULL);
 		
-		/* retrieve MediaPlayer class and methodID */
-		sstSoundSystem.clsMediaPlayer = poJEnv->FindClass("android/media/MediaPlayer");
-		orxASSERT(sstSoundSystem.clsMediaPlayer != orxNULL);
-		sstSoundSystem.mIDMediaPlayer_init = poJEnv->GetMethodID(sstSoundSystem.clsMediaPlayer, "<init>", "()V");
-		orxASSERT(sstSoundSystem.mIDMediaPlayer_init != orxNULL);
-		sstSoundSystem.mIDMediaPlayer_setDataSource = poJEnv->GetMethodID(sstSoundSystem.clsMediaPlayer, "setDataSource", "(Ljava/io/FileDescriptor;JJ)V");
+    /* retrieve MediaPlayer class and methodID */
+    sstSoundSystem.clsMediaPlayer = poJEnv->FindClass("android/media/MediaPlayer");
+    orxASSERT(sstSoundSystem.clsMediaPlayer != orxNULL);
+    sstSoundSystem.mIDMediaPlayer_init = poJEnv->GetMethodID(sstSoundSystem.clsMediaPlayer, "<init>", "()V");
+    orxASSERT(sstSoundSystem.mIDMediaPlayer_init != orxNULL);
+    sstSoundSystem.mIDMediaPlayer_setDataSource = poJEnv->GetMethodID(sstSoundSystem.clsMediaPlayer, "setDataSource", "(Ljava/io/FileDescriptor;JJ)V");
     orxASSERT(sstSoundSystem.mIDMediaPlayer_setDataSource != orxNULL);
     sstSoundSystem.mIDMediaPlayer_prepare = poJEnv->GetMethodID(sstSoundSystem.clsMediaPlayer, "prepare", "()V");
     orxASSERT(sstSoundSystem.mIDMediaPlayer_prepare != orxNULL);
@@ -276,36 +275,36 @@ extern "C"  orxSTATUS orxFASTCALL orxSoundSystem_Android_Init() {
 
     /* set the systemfocus event handler */
     eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
-	}
+  }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 extern "C"  void orxFASTCALL orxSoundSystem_Android_Exit() {
-	/* Was initialized? */
-	if (sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) {
+  /* Was initialized? */
+  if (sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) {
 
     /* set the systemfocus event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
 
-    JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 	  
-	  /* release SoundPool resources */
-		jclass clsSoundPool = poJEnv->FindClass("android/media/SoundPool");
-		orxASSERT(clsSoundPool != orxNULL);
-		jmethodID mIDSoundPool_release = poJEnv->GetMethodID(clsSoundPool, "release", "()V");
-		orxASSERT(mIDSoundPool_release != orxNULL);
-		poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, mIDSoundPool_release);
+    /* release SoundPool resources */
+    jclass clsSoundPool = poJEnv->FindClass("android/media/SoundPool");
+    orxASSERT(clsSoundPool != orxNULL);
+    jmethodID mIDSoundPool_release = poJEnv->GetMethodID(clsSoundPool, "release", "()V");
+    orxASSERT(mIDSoundPool_release != orxNULL);
+    poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, mIDSoundPool_release);
 
-	  /* release global references */
-	  poJEnv->DeleteGlobalRef(sstSoundSystem.oAssetManager);
-	  poJEnv->DeleteGlobalRef(sstSoundSystem.oSoundPool);
+    /* release global references */
+    poJEnv->DeleteGlobalRef(sstSoundSystem.oAssetManager);
+    poJEnv->DeleteGlobalRef(sstSoundSystem.oSoundPool);
 
-		/* Cleans static controller */
-		orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
-	}
+    /* Cleans static controller */
+    orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
+  }
 
-	return;
+  return;
 }
 
 extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
@@ -323,50 +322,50 @@ extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_CreateSampl
 
 extern "C" orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_LoadSample(const orxSTRING _zFilename) 
 {
-	orxSOUNDSYSTEM_SAMPLE *pstResult;
+  orxSOUNDSYSTEM_SAMPLE *pstResult;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_zFilename != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFilename != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
-	jstring filenameString = poJEnv->NewStringUTF(_zFilename);
+  jstring filenameString = poJEnv->NewStringUTF(_zFilename);
   orxASSERT(filenameString != orxNULL);
-	jobject assetFd = poJEnv->CallObjectMethod(sstSoundSystem.oAssetManager, sstSoundSystem.mIDAssetManager_openFd, filenameString);
+  jobject assetFd = poJEnv->CallObjectMethod(sstSoundSystem.oAssetManager, sstSoundSystem.mIDAssetManager_openFd, filenameString);
   orxASSERT(assetFd != orxNULL);
-	jint soundId = poJEnv->CallIntMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_load,	assetFd);
+  jint soundId = poJEnv->CallIntMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_load,	assetFd);
 	
-	if (soundId == 0) 
-	{
-		orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "can not load the file %s", _zFilename);
-		pstResult = (orxSOUNDSYSTEM_SAMPLE *) orxNULL;
-		return pstResult;
-	}
+  if (soundId == 0) 
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "can not load the file %s", _zFilename);
+    pstResult = (orxSOUNDSYSTEM_SAMPLE *) orxNULL;
+    return pstResult;
+  }
 
-	pstResult = (orxSOUNDSYSTEM_SAMPLE *) orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SAMPLE),	orxMEMORY_TYPE_MAIN);
-	pstResult->soundId = soundId;
+  pstResult = (orxSOUNDSYSTEM_SAMPLE *) orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SAMPLE),	orxMEMORY_TYPE_MAIN);
+  pstResult->soundId = soundId;
 
-	/* Done! */
-	return pstResult;
+  /* Done! */
+  return pstResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSample != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSample != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
   /* unload */
   poJEnv->CallBooleanMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_unload, _pstSample->soundId);
 
-	/* Deletes it */
+  /* Deletes it */
   orxMemory_Free(_pstSample);
 
-	/* Done! */
-	return orxSTATUS_SUCCESS;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
@@ -397,22 +396,22 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetSampleData(orxSOUNDSY
 
 extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-	orxSOUNDSYSTEM_SOUND *pstResult;
+  orxSOUNDSYSTEM_SOUND *pstResult;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSample != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);orxASSERT(_pstSample != orxNULL);
 
-	pstResult = (orxSOUNDSYSTEM_SOUND *) orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SOUND), orxMEMORY_TYPE_MAIN);
-	pstResult->sampleBuffer = (orxSOUNDSYSTEM_SAMPLE *)_pstSample;
-	pstResult->pitch = 1.0f;
-	pstResult->volumn = 1.0f;
-	pstResult->bLoop = orxFALSE;
-	pstResult->bPaused = orxFALSE;
-	pstResult->streamID = -1;
-	pstResult->bIsUsingMediaPlayer = orxFALSE;
+  pstResult = (orxSOUNDSYSTEM_SOUND *) orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SOUND), orxMEMORY_TYPE_MAIN);
+  pstResult->sampleBuffer = (orxSOUNDSYSTEM_SAMPLE *)_pstSample;
+  pstResult->pitch = 1.0f;
+  pstResult->volumn = 1.0f;
+  pstResult->bLoop = orxFALSE;
+  pstResult->bPaused = orxFALSE;
+  pstResult->streamID = -1;
+  pstResult->bIsUsingMediaPlayer = orxFALSE;
 
-	/* Done! */
-	return pstResult;
+  /* Done! */
+  return pstResult;
 }
 
 extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
@@ -430,19 +429,19 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream
 
 extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
 {
-	orxSOUNDSYSTEM_SOUND *pstResult;
+  orxSOUNDSYSTEM_SOUND *pstResult;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_zFilename != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFilename != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 	
-	pstResult = (orxSOUNDSYSTEM_SOUND *) orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SOUND), orxMEMORY_TYPE_MAIN);
+  pstResult = (orxSOUNDSYSTEM_SOUND *) orxMemory_Allocate(sizeof(orxSOUNDSYSTEM_SOUND), orxMEMORY_TYPE_MAIN);
 
-	jstring filenameString = poJEnv->NewStringUTF(_zFilename);
+  jstring filenameString = poJEnv->NewStringUTF(_zFilename);
   orxASSERT(filenameString != orxNULL);
-	jobject assetFd = poJEnv->CallObjectMethod(sstSoundSystem.oAssetManager, sstSoundSystem.mIDAssetManager_openFd, filenameString);
+  jobject assetFd = poJEnv->CallObjectMethod(sstSoundSystem.oAssetManager, sstSoundSystem.mIDAssetManager_openFd, filenameString);
   orxASSERT(assetFd != orxNULL);
   pstResult->oAssetFileDescriptor = poJEnv->NewGlobalRef(assetFd);
   jobject fd = poJEnv->CallObjectMethod(assetFd, sstSoundSystem.mIDAssetFileDescriptor_getFileDescriptor);
@@ -456,25 +455,25 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream
   poJEnv->CallVoidMethod(pstResult->oMediaPlayer, sstSoundSystem.mIDMediaPlayer_setDataSource, fd, offset, length);
   poJEnv->CallVoidMethod(pstResult->oMediaPlayer, sstSoundSystem.mIDMediaPlayer_prepare);
 	
-	pstResult->sampleBuffer = orxNULL;
-	pstResult->pitch = 1.0f;
-	pstResult->volumn = 1.0f;
-	pstResult->bLoop = orxFALSE;
-	pstResult->bPaused = orxFALSE;
-	pstResult->streamID = -1;
-	pstResult->bIsUsingMediaPlayer = orxTRUE;
+  pstResult->sampleBuffer = orxNULL;
+  pstResult->pitch = 1.0f;
+  pstResult->volumn = 1.0f;
+  pstResult->bLoop = orxFALSE;
+  pstResult->bPaused = orxFALSE;
+  pstResult->streamID = -1;
+  pstResult->bIsUsingMediaPlayer = orxTRUE;
 
-	/* Done! */
-	return pstResult;
+  /* Done! */
+  return pstResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
   /* stop */
   if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
@@ -489,22 +488,22 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Delete(orxSOUNDSYSTEM_SO
     poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_stop, _pstSound->streamID);
   }
   
-	/* Deletes it */
-	orxMemory_Free(_pstSound);
+  /* Deletes it */
+  orxMemory_Free(_pstSound);
 
-	/* Done! */
-	return orxSTATUS_SUCCESS;
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
   /* play */
   if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
@@ -518,7 +517,7 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Play(orxSOUNDSYSTEM_SOUN
     orxASSERT(_pstSound->sampleBuffer != orxNULL);
     /* Prepare real volume using the global volume */
     orxFLOAT fFinalVolume = sstSoundSystem.mfGlobalVolume * _pstSound->volumn;	
-	jint streamID = poJEnv->CallIntMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_play, _pstSound->sampleBuffer->soundId, fFinalVolume, fFinalVolume, 1, (_pstSound->bLoop ? -1 : 0), _pstSound->pitch);
+    jint streamID = poJEnv->CallIntMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_play, _pstSound->sampleBuffer->soundId, fFinalVolume, fFinalVolume, 1, (_pstSound->bLoop ? -1 : 0), _pstSound->pitch);
     if(streamID != 0)
     {
       _pstSound->streamID = streamID;
@@ -528,21 +527,21 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Play(orxSOUNDSYSTEM_SOUN
   
   _pstSound->bPaused = orxFALSE;
   
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 	
-	_pstSound->bPaused = orxTRUE;
+  _pstSound->bPaused = orxTRUE;
 
   /* pause */
   if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
@@ -554,19 +553,19 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Pause(orxSOUNDSYSTEM_SOU
     poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_pause, _pstSound->streamID);
   }
   
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
   /* stop */
   if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
@@ -578,21 +577,21 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Stop(orxSOUNDSYSTEM_SOUN
     poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_stop, _pstSound->streamID);
   }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
-	orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
-	_pstSound->volumn = _fVolume;
+  _pstSound->volumn = _fVolume;
 
   /* Prepare real volume using the global volume */
   orxFLOAT fFinalVolume = sstSoundSystem.mfGlobalVolume * _fVolume;	
@@ -606,19 +605,19 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetVolume(orxSOUNDSYSTEM
     poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_setVolume, _pstSound->streamID, fFinalVolume, fFinalVolume);
   }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
 {
-	orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
   /* setRate */
   if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
@@ -631,8 +630,8 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_
     poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_setRate, _pstSound->streamID, _fPitch);
   }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
@@ -680,13 +679,13 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetReferenceDistance(orx
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
 {
-	orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
   _pstSound->bLoop = _bLoop;
   
@@ -700,32 +699,32 @@ extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_Loop(orxSOUNDSYSTEM_SOUN
     poJEnv->CallVoidMethod(sstSoundSystem.oSoundPool, sstSoundSystem.mIDSoundPool_setLoop, _pstSound->streamID, (_bLoop ? -1 : 0));
   }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxFLOAT orxFASTCALL orxSoundSystem_Android_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-	/* Done! */
-	return _pstSound->volumn;
+  /* Done! */
+  return _pstSound->volumn;
 }
 
 extern "C" orxFLOAT orxFASTCALL orxSoundSystem_Android_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxFLOAT fResult;
+  orxFLOAT fResult;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-	fResult = _pstSound->pitch;
+  fResult = _pstSound->pitch;
 
-	/* Done! */
-	return fResult;
+  /* Done! */
+  return fResult;
 }
 
 extern "C" orxVECTOR *orxFASTCALL orxSoundSystem_Android_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
@@ -774,74 +773,74 @@ extern "C" orxFLOAT orxFASTCALL orxSoundSystem_Android_GetReferenceDistance(cons
 
 extern "C" orxBOOL orxFASTCALL orxSoundSystem_Android_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
   bResult = _pstSound->bLoop;
 
-	/* Done! */
-	return bResult;
+  /* Done! */
+  return bResult;
 }
 
 extern "C" orxFLOAT orxFASTCALL orxSoundSystem_Android_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult = orxFLOAT_0;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 	
   if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
   {
     fResult = poJEnv->CallFloatMethod(_pstSound->oMediaPlayer, sstSoundSystem.mIDMediaPlayer_getDuration);
   }
 
-	/* Done! */
-	return fResult;
+  /* Done! */
+  return fResult;
 }
 
 extern "C" orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_Android_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-	orxSOUNDSYSTEM_STATUS eResult = orxSOUNDSYSTEM_STATUS_NONE;
+  orxSOUNDSYSTEM_STATUS eResult = orxSOUNDSYSTEM_STATUS_NONE;
 
-	/* Checks */
-	orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-	orxASSERT(_pstSound != orxNULL);
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
 	
-  JNIEnv *poJEnv = NVThreadGetCurrentJNIEnv();
+  JNIEnv *poJEnv = orxAndroid_ThreadGetCurrentJNIEnv();
 
-	if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
-	{
-	  jboolean playing = poJEnv->CallBooleanMethod(_pstSound->oMediaPlayer, sstSoundSystem.mIDMediaPlayer_isPlaying);
+  if(_pstSound->bIsUsingMediaPlayer == orxTRUE)
+  {
+    jboolean playing = poJEnv->CallBooleanMethod(_pstSound->oMediaPlayer, sstSoundSystem.mIDMediaPlayer_isPlaying);
 	  
-	  if(playing == JNI_TRUE)
-	  {
-	  	eResult = orxSOUNDSYSTEM_STATUS_PLAY;
-	  }
-	  else
-	  {
+    if(playing == JNI_TRUE)
+    {
+      eResult = orxSOUNDSYSTEM_STATUS_PLAY;
+    }
+    else
+    {
       if(_pstSound->bPaused == orxTRUE)
       {
         eResult = orxSOUNDSYSTEM_STATUS_PAUSE;
       }
-	  	else
-	  	{
+      else
+      {
         eResult = orxSOUNDSYSTEM_STATUS_STOP;
-	  	}
-	  }
-	}
-	else
-	{
-	  eResult = orxSOUNDSYSTEM_STATUS_PLAY;
-	}
+      }
+    }
+  }
+  else
+  {
+    eResult = orxSOUNDSYSTEM_STATUS_PLAY;
+  }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxSoundSystem_Android_SetGlobalVolume(orxFLOAT _fVolume)

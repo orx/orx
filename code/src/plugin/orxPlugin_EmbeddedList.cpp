@@ -56,7 +56,7 @@
 #include "../plugins/Mouse/android/orxMouse.c"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/Dummy/orxSoundSystem.c"
+#include "../plugins/Sound/android/orxSoundSystem.cpp"
 
 /* Native Android? */
 #elif defined(__orxANDROID_NATIVE__)
