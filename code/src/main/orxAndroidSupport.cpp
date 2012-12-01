@@ -50,28 +50,28 @@ int32_t s_winHeight = 1;
 /* Main function pointer */
 orxMODULE_RUN_FUNCTION  pfnRun;
 
-static orxSTATUS               seClockStatus, seMainStatus;
 static orxSYSTEM_EVENT_PAYLOAD sstPayload;
 
-static void renderFrame()
+static orxBOOL renderFrame()
 {
-  /* Clears payload */
-  orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+  orxSTATUS eClockStatus, eMainStatus;
 
   /* Sends frame start event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
 
   /* Runs the engine */
-  seMainStatus = pfnRun();
+  eMainStatus = pfnRun();
 
   /* Updates clock system */
-  seClockStatus = orxClock_Update();
+  eClockStatus = orxClock_Update();
 
   /* Sends frame stop event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &sstPayload);
 
   /* Updates frame counter */
   sstPayload.u32FrameCounter++;
+
+  return ((eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE;
 }
 
 static void nativeExit()
@@ -118,13 +118,16 @@ extern "C" {
         {
           running = 1;
 
+          /* Clears payload */
+          orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
           /* Call main function */
           main(0, orxNULL);
         }
     }
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeRender(JNIEnv* env, jobject thiz) {
-        renderFrame();
+    JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeRender(JNIEnv* env, jobject thiz) {
+        return (renderFrame() == orxTRUE) ? JNI_TRUE : JNI_FALSE;
     }
 
     JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnPause(JNIEnv* env, jobject thiz) {
