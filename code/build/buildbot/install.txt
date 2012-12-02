@@ -38,7 +38,7 @@ Slave
 
 1. Create a slave with: buildslave create-slave <slave-folder> buildbot.orx-project.org:9989 <slave-name> <slave-pass>
 
-2. Make sure the tools needed by the slave is in the PATH (such as gcc, DevEnv/VCExpress, doxygen, etc...)
+2. Make sure the tools needed by the slave are in the PATH (such as gcc, DevEnv/VCExpress, doxygen, etc...)
 
 3. Edit <slave-folder>/info/host with info on the platform/tool version and <slave-folder>/info/admin with your contact info
 
