@@ -280,6 +280,23 @@ JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyUp(JNIEnv * env
   return result;
 }
 
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxAccelerometer_onSensorChanged(JNIEnv*  env, jobject thiz, jfloat x, jfloat y, jfloat z, jlong timeStamp) {
+  orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
+
+  if(isRunning == 1)
+  {
+    orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+    stAccelPayload.stAccelerometer.dTime = orxFLOAT_0;
+  
+    /* Set acceleration vector */
+    orxVector_Set(&stAccelPayload.stAccelerometer.vAcceleration,orx2F(x),orx2F(y),orx2F(z));
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
+  }
+}
+
 static JavaVM* s_vm = NULL;
 static pthread_key_t s_jniEnvKey = 0;
 
