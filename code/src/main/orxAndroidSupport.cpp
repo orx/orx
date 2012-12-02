@@ -92,237 +92,252 @@ jobject oActivity;
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
+static int isRunning;
+
 extern "C" {
 
-    jint JNI_OnLoad(JavaVM *vm, void *reserved)
-    {
-        orxAndroid_ThreadInit(vm);
-        orxAndroid_APKInit();
-        return JNI_VERSION_1_4;
-    }
+jint JNI_OnLoad(JavaVM *vm, void *reserved)
+{
+  orxAndroid_ThreadInit(vm);
+  orxAndroid_APKInit();
+  return JNI_VERSION_1_4;
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, jobject thiz) {
-      oActivity = env->NewGlobalRef(thiz);
-    }
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, jobject thiz)
+{
+  isRunning = 0;
+  oActivity = env->NewGlobalRef(thiz);
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeExit(JNIEnv * env, jobject thiz) {
-      nativeExit();
-    }
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeExit(JNIEnv * env, jobject thiz)
+{
+  nativeExit();
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeInit(JNIEnv* env, jobject thiz, jint width, jint height) {
-        static int running = 0;
-        s_winWidth = width;
-        s_winHeight = height;
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeInit(JNIEnv* env, jobject thiz, jint width, jint height)
+{
+  s_winWidth = width;
+  s_winHeight = height;
 
-        if(running == 0)
-        {
-          running = 1;
+  if(isRunning == 0)
+  {
+    isRunning = 1;
 
-          /* Clears payload */
-          orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+    /* Clears payload */
+    orxMemory_Zero(&sstPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
 
-          /* Call main function */
-          main(0, orxNULL);
-        }
-    }
+    /* Call main function */
+    main(0, orxNULL);
+  }
+}
 
-    JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeRender(JNIEnv* env, jobject thiz) {
-        return (renderFrame() == orxTRUE) ? JNI_TRUE : JNI_FALSE;
-    }
+JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeRender(JNIEnv* env, jobject thiz)
+{
+  return (renderFrame() == orxTRUE) ? JNI_TRUE : JNI_FALSE;
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnPause(JNIEnv* env, jobject thiz) {
-    }
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnPause(JNIEnv* env, jobject thiz)
+{
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnResume(JNIEnv* env, jobject thiz) {
-    }
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnResume(JNIEnv* env, jobject thiz)
+{
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesBegin(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
-      orxSYSTEM_EVENT_PAYLOAD stPayload;
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesBegin(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y)
+{
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
-      /* Inits event's payload */
-      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-      stPayload.stTouch.fX = (orxFLOAT)x;
-      stPayload.stTouch.fY = (orxFLOAT)y;
-      stPayload.stTouch.fPressure = orxFLOAT_0;
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+  stPayload.stTouch.fX = (orxFLOAT)x;
+  stPayload.stTouch.fY = (orxFLOAT)y;
+  stPayload.stTouch.fPressure = orxFLOAT_0;
 
-      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
-    }
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesEnd(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y) {
-      orxSYSTEM_EVENT_PAYLOAD stPayload;
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesEnd(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y)
+{
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
-      /* Inits event's payload */
-      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-      stPayload.stTouch.fX = (orxFLOAT)x;
-      stPayload.stTouch.fY = (orxFLOAT)y;
-      stPayload.stTouch.fPressure = orxFLOAT_0;
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+  stPayload.stTouch.fX = (orxFLOAT)x;
+  stPayload.stTouch.fY = (orxFLOAT)y;
+  stPayload.stTouch.fPressure = orxFLOAT_0;
 
-      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-    }
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesMove(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
-        int size = env->GetArrayLength(ids);
-        jint id[size];
-        jfloat x[size];
-        jfloat y[size];
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesMove(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys)
+{
+  int size = env->GetArrayLength(ids);
+  jint id[size];
+  jfloat x[size];
+  jfloat y[size];
 
-        env->GetIntArrayRegion(ids, 0, size, id);
-        env->GetFloatArrayRegion(xs, 0, size, x);
-        env->GetFloatArrayRegion(ys, 0, size, y);
+  env->GetIntArrayRegion(ids, 0, size, id);
+  env->GetFloatArrayRegion(xs, 0, size, x);
+  env->GetFloatArrayRegion(ys, 0, size, y);
 
-        orxSYSTEM_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
-        /* Inits event's payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-        stPayload.stTouch.fPressure = orxFLOAT_0;
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+  stPayload.stTouch.fPressure = orxFLOAT_0;
 
-        for(int i = 0; i < size; i++)
-        {
-          stPayload.stTouch.fX = (orxFLOAT)x[i];
-          stPayload.stTouch.fY = (orxFLOAT)y[i];
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
-        }
-    }
+  for(int i = 0; i < size; i++)
+  {
+    stPayload.stTouch.fX = (orxFLOAT)x[i];
+    stPayload.stTouch.fY = (orxFLOAT)y[i];
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
+  }
+}
 
-    JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesCancel(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys) {
-        int size = env->GetArrayLength(ids);
-        jint id[size];
-        jfloat x[size];
-        jfloat y[size];
+JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesCancel(JNIEnv * env, jobject thiz, jintArray ids, jfloatArray xs, jfloatArray ys)
+{
+  int size = env->GetArrayLength(ids);
+  jint id[size];
+  jfloat x[size];
+  jfloat y[size];
 
-        env->GetIntArrayRegion(ids, 0, size, id);
-        env->GetFloatArrayRegion(xs, 0, size, x);
-        env->GetFloatArrayRegion(ys, 0, size, y);
+  env->GetIntArrayRegion(ids, 0, size, id);
+  env->GetFloatArrayRegion(xs, 0, size, x);
+  env->GetFloatArrayRegion(ys, 0, size, y);
 
-        orxSYSTEM_EVENT_PAYLOAD stPayload;
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
 
-        /* Inits event's payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-        stPayload.stTouch.fPressure = orxFLOAT_0;
+  /* Inits event's payload */
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+  stPayload.stTouch.fPressure = orxFLOAT_0;
 
-        for(int i = 0; i < size; i++)
-        {
-          stPayload.stTouch.fX = (orxFLOAT)x[i];
-          stPayload.stTouch.fY = (orxFLOAT)y[i];
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-        }
-    }
+  for(int i = 0; i < size; i++)
+  {
+    stPayload.stTouch.fX = (orxFLOAT)x[i];
+    stPayload.stTouch.fY = (orxFLOAT)y[i];
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+  }
+}
 
-    JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode) {
-        jboolean result = JNI_TRUE;
-        orxEVENT stEvent;
-        orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_DOWN, orxNULL, orxNULL, &keyCode);
+JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode)
+{
+  jboolean result = JNI_TRUE;
+  orxEVENT stEvent;
 
-        if(orxEvent_Send(&stEvent) != orxSTATUS_SUCCESS)
-        {
-          result = JNI_FALSE;
-        }
+  orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_DOWN, orxNULL, orxNULL, &keyCode);
 
-        return result;
-    }
+  if(orxEvent_Send(&stEvent) != orxSTATUS_SUCCESS)
+  {
+    result = JNI_FALSE;
+  }
 
-    JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyUp(JNIEnv * env, jobject thiz, jint keyCode) {
-        jboolean result = JNI_TRUE;
-        orxEVENT stEvent;
-        orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_UP, orxNULL, orxNULL, &keyCode);
+  return result;
+}
 
-        if(orxEvent_Send(&stEvent) != orxSTATUS_SUCCESS)
-        {
-          result = JNI_FALSE;
-        }
+JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeKeyUp(JNIEnv * env, jobject thiz, jint keyCode)
+{
+  jboolean result = JNI_TRUE;
+  orxEVENT stEvent;
 
-        return result;
-    }
+  orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_UP, orxNULL, orxNULL, &keyCode);
+
+  if(orxEvent_Send(&stEvent) != orxSTATUS_SUCCESS)
+  {
+    result = JNI_FALSE;
+  }
+
+  return result;
+}
 
 static JavaVM* s_vm = NULL;
 static pthread_key_t s_jniEnvKey = 0;
 
 void orxAndroid_ThreadInit(JavaVM* vm)
 {
-	s_vm = vm;
+  s_vm = vm;
 }
 
 JNIEnv* orxAndroid_ThreadGetCurrentJNIEnv()
 {
-	JNIEnv* env = NULL;
-    if (s_jniEnvKey)
-	{
-		env = (JNIEnv*)pthread_getspecific(s_jniEnvKey);
-	}
-	else
-	{
-		pthread_key_create(&s_jniEnvKey, NULL);
-	}
+  JNIEnv* env = NULL;
+  if (s_jniEnvKey)
+  {
+    env = (JNIEnv*)pthread_getspecific(s_jniEnvKey);
+  }
+  else
+  {
+    pthread_key_create(&s_jniEnvKey, NULL);
+  }
 
-	if (!env)
-	{
-		// do we have a VM cached?
-		if (!s_vm)
-		{
-			__android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error - could not find JVM!");
-			return NULL;
-		}
+  if (!env)
+  {
+    // do we have a VM cached?
+    if (!s_vm)
+    {
+      __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error - could not find JVM!");
+      return NULL;
+    }
 
-		// Hmm - no env for this thread cached yet
-		int error = s_vm->AttachCurrentThread(&env, NULL);
-		__android_log_print(ANDROID_LOG_DEBUG, MODULE,  "AttachCurrentThread: %d, 0x%p", error, env);
-		if (error || !env)
-		{
-			__android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error - could not attach thread to JVM!");
-			return NULL;
-		}
+    // Hmm - no env for this thread cached yet
+    int error = s_vm->AttachCurrentThread(&env, NULL);
+    __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "AttachCurrentThread: %d, 0x%p", error, env);
+    if (error || !env)
+    {
+      __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error - could not attach thread to JVM!");
+      return NULL;
+    }
 
-		pthread_setspecific(s_jniEnvKey, env);
-	}
+    pthread_setspecific(s_jniEnvKey, env);
+  }
 
-	return env;
+  return env;
 }
 
 typedef struct ThreadInitStruct
 {
-	void* m_arg;
-	void *(*m_startRoutine)(void *);
+  void* m_arg;
+  void *(*m_startRoutine)(void *);
 } ThreadInitStruct;
 
 static void* orxAndroid_ThreadSpawnProc(void* arg)
 {
-	ThreadInitStruct* init = (ThreadInitStruct*)arg;
-	void *(*start_routine)(void *) = init->m_startRoutine;
-	void* data = init->m_arg;
-	void* ret;
+  ThreadInitStruct* init = (ThreadInitStruct*)arg;
+  void *(*start_routine)(void *) = init->m_startRoutine;
+  void* data = init->m_arg;
+  void* ret;
 
-	free(arg);
+  free(arg);
 
-	orxAndroid_ThreadGetCurrentJNIEnv();
+  orxAndroid_ThreadGetCurrentJNIEnv();
 
-	ret = start_routine(data);
+  ret = start_routine(data);
 
-	if (s_vm)
-		s_vm->DetachCurrentThread();
+  if (s_vm)
+    s_vm->DetachCurrentThread();
 
-	return ret;
+  return ret;
 }
 
-int orxAndroid_ThreadSpawnJNIThread(pthread_t *thread, pthread_attr_t const * attr,
-    void *(*start_routine)(void *), void * arg)
+int orxAndroid_ThreadSpawnJNIThread(pthread_t *thread, pthread_attr_t const * attr, void *(*start_routine)(void *), void * arg)
 {
-	if (!start_routine)
-		return -1;
+  if (!start_routine)
+    return -1;
 
-	ThreadInitStruct* initData = (ThreadInitStruct*) malloc(sizeof(ThreadInitStruct));
+  ThreadInitStruct* initData = (ThreadInitStruct*) malloc(sizeof(ThreadInitStruct));
 
-	initData->m_startRoutine = start_routine;
-	initData->m_arg = arg;
+  initData->m_startRoutine = start_routine;
+  initData->m_arg = arg;
 
-	int err = pthread_create(thread, attr, orxAndroid_ThreadSpawnProc, initData);
+  int err = pthread_create(thread, attr, orxAndroid_ThreadSpawnProc, initData);
 
-	// If the thread was not started, then we need to delete the init data ourselves
-	if (err)
-	{
-		free(initData);
-	}
+  // If the thread was not started, then we need to delete the init data ourselves
+  if (err)
+  {
+    free(initData);
+  }
 
-	return err;
+  return err;
 }
 
 // on linuces, signals can interrupt sleep functions, so you might need to 
@@ -331,37 +346,38 @@ int orxAndroid_ThreadSpawnJNIThread(pthread_t *thread, pthread_attr_t const * at
 // nonzero
 inline int __sleep(const struct timespec *req, struct timespec *rem)
 {
-	int ret = 1;
-	int i;
-	static const int sleepTries = 2;
+  int ret = 1;
+  int i;
+  static const int sleepTries = 2;
 
-	struct timespec req_tmp={0}, rem_tmp={0};
+  struct timespec req_tmp={0}, rem_tmp={0};
 
-	rem_tmp = *req;
-	for(i = 0; i < sleepTries; ++i)
-	{
-		req_tmp = rem_tmp;
-		int ret = nanosleep(&req_tmp, &rem_tmp);
-		if(ret == 0)
-		{
-			ret = 0;
-			break;
-		}
-	}
-	if(rem)
-		*rem = rem_tmp;
-	return ret;
+  rem_tmp = *req;
+  for(i = 0; i < sleepTries; ++i)
+  {
+    req_tmp = rem_tmp;
+    int ret = nanosleep(&req_tmp, &rem_tmp);
+    if(ret == 0)
+    {
+      ret = 0;
+      break;
+    }
+  }
+  if(rem)
+    *rem = rem_tmp;
+
+  return ret;
 }
 
 int orxAndroid_ThreadSleep(unsigned long millisec)
 {
-    struct timespec req={0},rem={0};
-    time_t sec  =(int)(millisec/1000);
+  struct timespec req={0},rem={0};
+  time_t sec  =(int)(millisec/1000);
 
-    millisec     = millisec-(sec*1000);
-    req.tv_sec  = sec;
-    req.tv_nsec = millisec*1000000L;
-    return __sleep(&req,&rem);
+  millisec     = millisec-(sec*1000);
+  req.tv_sec  = sec;
+  req.tv_nsec = millisec*1000000L;
+  return __sleep(&req,&rem);
 }
 
 static jobject s_globalThiz;
@@ -510,7 +526,5 @@ int orxAndroid_APKEOF(APKFile *stream)
 
 
 }
-
-
 
 #endif
