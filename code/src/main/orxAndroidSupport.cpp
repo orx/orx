@@ -136,12 +136,38 @@ JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxRenderer_nativeRender(JNIEnv* env
   return (renderFrame() == orxTRUE) ? JNI_TRUE : JNI_FALSE;
 }
 
+/** Render inhibiter
+ */
+static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnPause(JNIEnv* env, jobject thiz)
 {
+  if(isRunning == 1)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "nativeOnPause");
+    if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
+    {
+      /* Adds render inhibiter */
+      orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+    }
+  }
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeOnResume(JNIEnv* env, jobject thiz)
 {
+  if(isRunning == 1)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "nativeOnResume");
+    if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
+    {
+      /* Removes render inhibiter */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+    }
+  }
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesBegin(JNIEnv * env, jobject thiz, jint id, jfloat x, jfloat y)
@@ -153,6 +179,7 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesBegin(JNIEnv * 
   stPayload.stTouch.fX = (orxFLOAT)x;
   stPayload.stTouch.fY = (orxFLOAT)y;
   stPayload.stTouch.fPressure = orxFLOAT_0;
+  stPayload.stTouch.u32ID = id;
 
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
 }
@@ -166,6 +193,7 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesEnd(JNIEnv * en
   stPayload.stTouch.fX = (orxFLOAT)x;
   stPayload.stTouch.fY = (orxFLOAT)y;
   stPayload.stTouch.fPressure = orxFLOAT_0;
+  stPayload.stTouch.u32ID = id;
 
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
 }
@@ -191,6 +219,7 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesMove(JNIEnv * e
   {
     stPayload.stTouch.fX = (orxFLOAT)x[i];
     stPayload.stTouch.fY = (orxFLOAT)y[i];
+    stPayload.stTouch.u32ID = id[i];
     orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
   }
 }
@@ -216,6 +245,7 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeTouchesCancel(JNIEnv *
   {
     stPayload.stTouch.fX = (orxFLOAT)x[i];
     stPayload.stTouch.fY = (orxFLOAT)y[i];
+    stPayload.stTouch.u32ID = id[i];
     orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
   }
 }
