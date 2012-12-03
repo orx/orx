@@ -21,14 +21,14 @@ workdir         = 'workdir'
 if __name__ == '__main__':
     parser      = argparse.ArgumentParser()
     parser.add_argument('-v', '--version', default = 'latest')
-    parser.add_argument('-p', '--platform', default = 'none', choices = platformlist)
+    parser.add_argument('-p', '--platform', default = 'doxygen', choices = platformlist)
     args        = parser.parse_args()
     version     = args.version
     platform    = args.platform
 
     # Logs
-    print 'Version:', version
-    print 'Platform:', platform
+    print('Version: ' + version)
+    print('Platform: ' + platform)
 
 
 ### Variables
@@ -172,7 +172,7 @@ if platforminfolist[platform]['fileinfolist']:
                 destination = os.path.join(basedst, os.path.dirname(os.path.relpath(file, basesrc)))
 
             # Logs
-            print 'Copying file:', os.path.basename(file)
+            print('Copying file: ' + os.path.basename(file))
 
             # Creates path if needed
             if not os.path.exists(destination):
@@ -194,7 +194,7 @@ for folder in platforminfolist[platform]['folderlist']:
         shutil.rmtree(os.path.join(basedst, folder))
 
     # Logs
-    print 'Copying folder:', folder
+    print('Copying folder: ' + folder)
 
     # Copies folder
     shutil.copytree(os.path.join(basesrc, folder), os.path.join(basedst, folder))
@@ -206,4 +206,4 @@ for folder in platforminfolist[platform]['folderlist']:
 archive = shutil.make_archive(os.path.join('packages', 'orx-' + platforminfolist[platform]['name'] + '-' + version), platforminfolist[platform]['format'], workdir, '.')
 
 # Logs
-print 'Created archive:', os.path.basename(archive)
+print('Created archive: ' + os.path.basename(archive))
