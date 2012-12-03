@@ -201,6 +201,40 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #include "main/orxAndroid.h"
 
+    #ifdef __orxANDROID__
+
+extern orxMODULE_RUN_FUNCTION  pfnRun;
+
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
+
+  /* Checks */
+  orxASSERT(_pfnRun != orxNULL);
+
+  /* register run function */
+  pfnRun = _pfnRun;
+
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+
+  /* Registers all other modules */
+  orxModule_RegisterAll();
+
+  /* Calls all modules setup */
+  orxModule_SetupAll();
+
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    /* Inits the engine */
+    orxModule_Init(orxMODULE_ID_MAIN);
+  }
+}
+
+    #endif
+
   #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 /** Orx main execution function

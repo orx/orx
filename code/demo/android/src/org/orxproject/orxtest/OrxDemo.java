@@ -1,33 +1,34 @@
 package org.orxproject.orxtest;
 
+import org.orx.lib.OrxActivity;
+
 import android.os.Bundle;
 
-import com.nvidia.devtech.NvEventQueueActivity;
-
-public class OrxDemo extends NvEventQueueActivity {
-    /** Called when the activity is first created. */
+public class OrxDemo extends OrxActivity {
+	
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	wantsAccelerometer = true;
-      /** The number of bits requested for the red component */
-      redSize     = 5;
-      /** The number of bits requested for the green component */
-      greenSize   = 6;
-      /** The number of bits requested for the blue component */
-      blueSize    = 5;
-      /** The number of bits requested for the alpha component */
-      alphaSize   = 0;
-      /** The number of bits requested for the stencil component */
-      stencilSize = 0;
-      /** The number of bits requested for the depth component */
-      depthSize   = 0;
+	protected void onCreate(Bundle savedInstanceState) {
     	
-        super.onCreate(savedInstanceState);
-    }
+    	/* if you want to use orx in a custom layout,
+    	 * call setContentView with your layout, retrieve the OrxGLSurfaceView
+    	 * and call setOrxGLSurfaceView() before super.onCreate().
+    	 */
+    	
+		super.onCreate(savedInstanceState);
 
-    static
+		// call this if you need accelerometer for orx joystick input
+		enableAccelerometer();
+	}
+
+	static
     {
+		// load your native module here.
         System.loadLibrary("orxTest");
     }
 
+	@Override
+	protected boolean requireDepthBuffer() {
+		// return true if you need OpenGL depth buffer
+		return false;
+	}
 }

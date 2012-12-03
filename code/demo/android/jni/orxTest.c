@@ -104,14 +104,14 @@ static orxSTATUS orxFASTCALL Run()
   }
 
   /* Gets gravity vector from input */
-  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
+  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), -orxInput_GetValue("GravityY"), orxFLOAT_0);
 
   /* Significant enough? */
   if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
   {
     static orxVECTOR svSmoothedGravity =
     {
-      0.0,1.0f,0.0
+      orx2F(0.0f), orx2F(-1.0f), orx2F(0.0f)
     };
 
     /* Gets smoothed gravity from new value (low-pass filter) */
