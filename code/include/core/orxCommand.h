@@ -45,7 +45,7 @@
 #include "math/orxVector.h"
 
 
-/** Variable type enum
+/** Command variable type enum
  */
 typedef enum __orxCOMMAND_VAR_TYPE_t
 {
@@ -65,7 +65,7 @@ typedef enum __orxCOMMAND_VAR_TYPE_t
 } orxCOMMAND_VAR_TYPE;
 
 
-/** Variable definition structure
+/** Command variable definition structure
  */
 typedef struct __orxCOMMAND_VAR_DEF_t
 {
@@ -74,7 +74,7 @@ typedef struct __orxCOMMAND_VAR_DEF_t
 
 } orxCOMMAND_VAR_DEF;
 
-/** Variable structure */
+/** Command variable structure */
 typedef struct __orxCOMMAND_VAR_t
 {
   union
