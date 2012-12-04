@@ -28,7 +28,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.4 dev</span>
    </div>
   </td>
  </tr>
@@ -233,15 +233,15 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                          \</div>
-<div class="line">{                                                                                                                                                           <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
-<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  stResult;                                                                                                                             <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
-<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">\</a></div>
-<div class="line"><a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">  orxSTATUS</a>           eStatus;                                                                                                                              \</div>
-<div class="line">  stResult.<a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">eType</a>    = RESULT_TYPE;                                                                                                                          \</div>
-<div class="line">  stResult.zName    = RESULT_NAME;                                                                                                                          \</div>
-<div class="line">  eStatus           = <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &amp;stResult); \</div>
-<div class="line">  orxASSERT(eStatus != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>);                                                                                                                  \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                              \</div>
+<div class="line">{                                                                                                                                                               <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
+<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  stResult;                                                                                                                                 <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
+<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{<span class="stringliteral">&quot;Dummy&quot;</span>, <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">orxCOMMAND_VAR_TYPE_NONE</a>}, __VA_ARGS__};                               <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">\</a></div>
+<div class="line"><a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">  orxSTATUS</a>           eStatus;                                                                                                                                  \</div>
+<div class="line">  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
+<div class="line">  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
+<div class="line">  eStatus           = <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult); \</div>
+<div class="line">  orxASSERT(eStatus != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>);                                                                                                                      \</div>
 <div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment --><p>Command registration helpers </p>
 
@@ -272,9 +272,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                          \</div>
-<div class="line">{                                                                                                                                                           \</div>
-<div class="line">  orxCommand_Unregister(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND);                                                                                                                \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                              \</div>
+<div class="line">{                                                                                                                                                               \</div>
+<div class="line">  orxCommand_Unregister(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND);                                                                                                                    \</div>
 <div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_command_8h_source.html#l00114">114</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
