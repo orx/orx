@@ -105,6 +105,12 @@ newoption
     description = "Set the output location for the generated files"
 }
 
+newoption
+{
+    trigger = "split-platforms",
+    description = "Split target folders based on platforms"
+}
+
 
 --
 -- Solution: orx
@@ -258,7 +264,6 @@ solution "orx"
             "../../extern/Box2D_2.1.3/lib/mingw"
         }
 
-
 --
 -- Project: orx
 --
@@ -267,7 +272,16 @@ project "orx"
 
     files {"../src/main/orxMain.c"}
 
-    targetdir ("../bin/")
+    targetdir ("../bin")
+    if _OPTIONS["split-platforms"] then
+        configuration {"x32"}
+            targetdir ("../bin/x32")
+
+        configuration {"x64"}
+            targetdir ("../bin/x64")
+
+        configuration {}
+    end
 
     kind ("ConsoleApp")
 
@@ -383,6 +397,22 @@ project "orxLIB"
         targetdir ("../lib/dynamic")
         kind ("SharedLib")
 
+    if _OPTIONS["split-platforms"] then
+        configuration {"*Static*", "x32"}
+            targetdir ("../lib/static/x32")
+
+        configuration {"*Dynamic*", "x32"}
+            targetdir ("../lib/dynamic/x32")
+
+        configuration {"*Static*", "x64"}
+            targetdir ("../lib/static/x64")
+
+        configuration {"*Dynamic*", "x64"}
+            targetdir ("../lib/dynamic/x64")
+
+        configuration {}
+    end
+
     configuration {"*Debug*"}
         links {"Box2Dd"}
 
@@ -410,8 +440,21 @@ project "orxLIB"
     configuration {"linux", "*Static*"}
         buildoptions {"-fPIC"}
 
-    configuration {"linux", "*Dynamic*"}
-        postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
+    if _OPTIONS["split-platforms"] then
+        configuration {"linux", "*Dynamic*", "x32"}
+            postbuildcommands {"mkdir ../../bin/x32 ; cp -f ../../lib/dynamic/x32/liborx*.so ../../bin/x32"}
+
+        configuration {"linux", "*Dynamic*", "x64"}
+            postbuildcommands {"mkdir ../../bin/x64 ; cp -f ../../lib/dynamic/x64/liborx*.so ../../bin/x64"}
+
+        configuration {"linux", "*Dynamic*", "not x32", "not x64"}
+            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
+
+        configuration {}
+    else
+        configuration {"linux", "*Dynamic*"}
+            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
+    end
 
 
 -- Mac OS X
@@ -438,8 +481,21 @@ project "orxLIB"
     configuration {"macosx", "*Release*"}
         linkoptions {"-install_name @executable_path/liborx.dylib"}
 
-    configuration {"macosx", "*Dynamic*"}
-        postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
+    if _OPTIONS["split-platforms"] then
+        configuration {"macosx", "*Dynamic*", "x32"}
+            postbuildcommands {"mkdir ../../bin/x32 ; cp -f ../../lib/dynamic/x32/liborx*.dylib ../../bin/x32"}
+
+        configuration {"macosx", "*Dynamic*", "x64"}
+            postbuildcommands {"mkdir ../../bin/x64 ; cp -f ../../lib/dynamic/x64/liborx*.dylib ../../bin/x64"}
+
+        configuration {"macosx", "*Dynamic*", "not x32", "not x64"}
+            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
+
+        configuration {}
+    else
+        configuration {"macosx", "*Dynamic*"}
+            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
+    end
 
 
 -- Windows
@@ -469,7 +525,17 @@ project "Bounce"
 
     files {"../plugins/Demo/orxBounce.c"}
 
-    targetdir ("../bin/plugins/demo/")
+    targetdir ("../bin/plugins/demo")
+
+    if _OPTIONS["split-platforms"] then
+        configuration {"x32"}
+            targetdir ("../bin/plugins/demo/x32")
+
+        configuration {"x64"}
+            targetdir ("../bin/plugins/demo/x64")
+
+        configuration {}
+    end
 
     targetprefix ("")
 
