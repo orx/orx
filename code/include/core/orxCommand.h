@@ -65,7 +65,7 @@ typedef enum __orxCOMMAND_VAR_TYPE_t
 } orxCOMMAND_VAR_TYPE;
 
 
-/** Command variable definition structure
+/** Variable definition structure
  */
 typedef struct __orxCOMMAND_VAR_DEF_t
 {
