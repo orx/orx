@@ -111,6 +111,15 @@ newoption
     description = "Split target folders based on platforms"
 }
 
+if os.is ("macosx") then
+    osname = "mac"
+else
+    osname = os.get()
+end
+
+destination = _OPTIONS["to"] or "./" .. osname .. "/" .. _ACTION
+copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
+
 
 --
 -- Solution: orx
@@ -120,7 +129,7 @@ solution "orx"
 
     language ("C++")
 
-    location (_OPTIONS["to"] or "./" .. _ACTION)
+    location (destination)
 
     configurations
     {
@@ -442,18 +451,18 @@ project "orxLIB"
 
     if _OPTIONS["split-platforms"] then
         configuration {"linux", "*Dynamic*", "x32"}
-            postbuildcommands {"mkdir ../../bin/x32 ; cp -f ../../lib/dynamic/x32/liborx*.so ../../bin/x32"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.so " .. copybase .. "/bin/x32"}
 
         configuration {"linux", "*Dynamic*", "x64"}
-            postbuildcommands {"mkdir ../../bin/x64 ; cp -f ../../lib/dynamic/x64/liborx*.so ../../bin/x64"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.so " .. copybase .. "/bin/x64"}
 
         configuration {"linux", "*Dynamic*", "not x32", "not x64"}
-            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
         configuration {}
     else
         configuration {"linux", "*Dynamic*"}
-            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.so ../../bin"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
     end
 
 
@@ -483,18 +492,18 @@ project "orxLIB"
 
     if _OPTIONS["split-platforms"] then
         configuration {"macosx", "*Dynamic*", "x32"}
-            postbuildcommands {"mkdir ../../bin/x32 ; cp -f ../../lib/dynamic/x32/liborx*.dylib ../../bin/x32"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.dylib " .. copybase .. "/bin/x32"}
 
         configuration {"macosx", "*Dynamic*", "x64"}
-            postbuildcommands {"mkdir ../../bin/x64 ; cp -f ../../lib/dynamic/x64/liborx*.dylib ../../bin/x64"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.dylib " .. copybase .. "/bin/x64"}
 
         configuration {"macosx", "*Dynamic*", "not x32", "not x64"}
-            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
         configuration {}
     else
         configuration {"macosx", "*Dynamic*"}
-            postbuildcommands {"cp -f ../../lib/dynamic/liborx*.dylib ../../bin"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
     end
 
 
@@ -514,7 +523,7 @@ project "orxLIB"
         links {"OpenGL32"}
 
     configuration {"windows", "*Dynamic*"}
-        postbuildcommands {"cmd /c copy /Y ..\\..\\lib\\dynamic\\orx*.dll ..\\..\\bin"}
+        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 
 --

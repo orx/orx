@@ -6,7 +6,7 @@ import glob, shutil, os, sys, argparse
 ### Constants
 
 # List of available platforms
-platformlist    = ['vs2008', 'vs2010', 'mingw', 'mac', 'linux32', 'linux64', 'doxygen']
+platformlist    = ['vs2008', 'vs2010', 'mingw', 'mac', 'linux32', 'linux64', 'doxygen', 'src']
 
 # Base source path
 basesrc         = '../..'
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 ### Variables
 
 # List of file info
-docfileinfolist = [
+basefileinfolist = [
     {'src': '../AUTHORS',               'dst': None},
     {'src': '../CHANGELOG',             'dst': None},
     {'src': '../COPYRIGHT',             'dst': None},
@@ -42,7 +42,11 @@ docfileinfolist = [
     {'src': '../README',                'dst': None}
 ]
 
-devfileinfolist = docfileinfolist + [
+codefileinfolist = basefileinfolist + [
+    {'src': 'build/premake4.lua',       'dst': None},
+]
+
+devfileinfolist = basefileinfolist + [
     {'src': 'bin/*Template.ini',        'dst': '.'},
 ]
 
@@ -74,6 +78,21 @@ devfolderinfolist = [
     {'src': 'include',                  'dst': None}
 ]
 
+codefolderinfolist = [
+    {'src': 'bin',                      'dst': None},
+    {'src': 'build/android',            'dst': None},
+    {'src': 'build/android-native',     'dst': None},
+    {'src': 'build/ios',                'dst': None},
+    {'src': 'build/linux',              'dst': None},
+    {'src': 'build/mac',                'dst': None},
+    {'src': 'build/windows',            'dst': None},
+    {'src': 'demo',                     'dst': None},
+    {'src': 'include',                  'dst': None},
+    {'src': 'lib',                      'dst': None},
+    {'src': 'plugins',                  'dst': None},
+    {'src': 'src',                      'dst': None},
+]
+
 
 ### Platform info
 
@@ -81,6 +100,7 @@ platforminfolist = {
 
     'vs2008': {
         'name':             'dev-vs2008',
+        'filename':         'dev-vs2008',
         'format':           'zip',
         'fileinfolist':     vsfileinfolist,
         'folderinfolist':   devfolderinfolist
@@ -88,6 +108,7 @@ platforminfolist = {
 
     'vs2010': {
         'name':             'dev-vs2010',
+        'filename':         'dev-vs2010',
         'format':           'zip',
         'fileinfolist':     vsfileinfolist,
         'folderinfolist':   devfolderinfolist
@@ -95,6 +116,7 @@ platforminfolist = {
 
     'mingw': {
         'name':             'dev-mingw',
+        'filename':         'dev-mingw',
         'format':           'zip',
         'fileinfolist':     mingwfileinfolist,
         'folderinfolist':   devfolderinfolist
@@ -102,6 +124,7 @@ platforminfolist = {
 
     'mac': {
         'name':             'dev-mac',
+        'filename':         'dev-mac',
         'format':           'zip',
         'fileinfolist':     macfileinfolist,
         'folderinfolist':   devfolderinfolist
@@ -109,6 +132,7 @@ platforminfolist = {
 
     'linux32': {
         'name':             'dev-linux32',
+        'filename':         'dev-linux32',
         'format':           'bztar',
         'fileinfolist':     linuxfileinfolist,
         'folderinfolist':   devfolderinfolist
@@ -116,6 +140,7 @@ platforminfolist = {
 
     'linux64': {
         'name':             'dev-linux64',
+        'filename':         'dev-linux64',
         'format':           'bztar',
         'fileinfolist':     linuxfileinfolist,
         'folderinfolist':   devfolderinfolist
@@ -123,9 +148,18 @@ platforminfolist = {
 
     'doxygen': {
         'name':             'doc',
+        'filename':         'doc',
         'format':           'zip',
-        'fileinfolist':     docfileinfolist,
+        'fileinfolist':     basefileinfolist,
         'folderinfolist':   docfolderinfolist
+    },
+
+    'src': {
+        'name':             'code',
+        'filename':         'src',
+        'format':           'zip',
+        'fileinfolist':     codefileinfolist,
+        'folderinfolist':   codefolderinfolist
     }
 }
 
@@ -206,7 +240,7 @@ if platforminfolist[platform]['fileinfolist']:
 ### Exports archive
 
 # Creates archive from folder
-archive = shutil.make_archive(os.path.join('packages', 'orx-' + platforminfolist[platform]['name'] + '-' + version), platforminfolist[platform]['format'], workdir, '.')
+archive = shutil.make_archive(os.path.join('packages', 'orx-' + platforminfolist[platform]['filename'] + '-' + version), platforminfolist[platform]['format'], workdir, '.')
 
 # Logs
 print('Created archive: ' + os.path.basename(archive))
