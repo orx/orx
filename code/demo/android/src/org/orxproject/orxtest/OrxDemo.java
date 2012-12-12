@@ -5,30 +5,43 @@ import org.orx.lib.OrxActivity;
 import android.os.Bundle;
 
 public class OrxDemo extends OrxActivity {
-	
-    @Override
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-    	
-    	/* if you want to use orx in a custom layout,
-    	 * call setContentView with your layout, retrieve the OrxGLSurfaceView
-    	 * and call setOrxGLSurfaceView() before super.onCreate().
-    	 */
-    	
+
 		super.onCreate(savedInstanceState);
 
 		// call this if you need accelerometer for orx joystick input
 		enableAccelerometer();
 	}
 
-	static
-    {
+	static {
 		// load your native module here.
-        System.loadLibrary("orxTest");
-    }
+		System.loadLibrary("orxTest");
+	}
 
 	@Override
 	protected boolean requireDepthBuffer() {
 		// return true if you need OpenGL depth buffer
 		return false;
 	}
+
+	@Override
+	protected int getLayoutId() {
+		/*
+		 * Override this if you want to use a custom layout
+		 * return the layout id
+		 */
+		return 0;
+	}
+
+	@Override
+	protected int getOrxGLSurfaceViewId() {
+		/*
+		 * Override this if you want to use a custom layout
+		 * return the OrxGLSurfaceView id
+		 */
+		return 0;
+	}
 }
+
