@@ -79,8 +79,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/01_Object/01_Object.c">
-			<Option virtualFolder="src/01_Object" />
+		<Unit filename="../../../src/01_Object.c">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="09_Scrolling"
-	ProjectGUID="{994E9151-881D-0944-B497-244B72957F51}"
+	ProjectGUID="{ADB6F541-F786-BB41-9A98-5F71A761F9D6}"
 	RootNamespace="09_Scrolling"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="09_Scrolling"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\09_Scrolling.c"
 				>
-				<File
-					RelativePath="..\..\..\src\09_Scrolling\09_Scrolling.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

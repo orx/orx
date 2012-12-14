@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{6E002BA6-0590-DB42-8EA5-AE858D58371F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\07_FX">
-      <UniqueIdentifier>{3CC67DB2-392A-1643-A162-F85395DD6225}</UniqueIdentifier>
+      <UniqueIdentifier>{93EDD888-1E2D-BA4E-962A-6F04632E25D9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\07_FX\07_FX.c">
-      <Filter>src\07_FX</Filter>
+    <ClCompile Include="..\..\..\src\07_FX.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

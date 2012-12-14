@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="06_Sound">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="06_Sound">
-      <File Name="../../../src/06_Sound/06_Sound.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/06_Sound.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

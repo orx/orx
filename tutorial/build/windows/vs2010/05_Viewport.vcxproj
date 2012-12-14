@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BDD2F965-F618-154D-B9D4-3C9B681AD67A}</ProjectGuid>
+    <ProjectGuid>{7D6EAFDD-C9C2-EA46-A95D-88E3A0E1957D}</ProjectGuid>
     <RootNamespace>05_Viewport</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\05_Viewport\05_Viewport.c">
+    <ClCompile Include="..\..\..\src\05_Viewport.c">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

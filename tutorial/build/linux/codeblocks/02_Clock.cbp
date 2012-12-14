@@ -185,8 +185,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/02_Clock/02_Clock.c">
-			<Option virtualFolder="src/02_Clock" />
+		<Unit filename="../../../src/02_Clock.c">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

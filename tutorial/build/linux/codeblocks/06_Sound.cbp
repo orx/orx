@@ -185,8 +185,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/06_Sound/06_Sound.c">
-			<Option virtualFolder="src/06_Sound" />
+		<Unit filename="../../../src/06_Sound.c">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

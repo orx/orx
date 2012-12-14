@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="08_Physics"
-	ProjectGUID="{8C3B2998-6494-CC4D-A9DC-9382B1F324B0}"
+	ProjectGUID="{7D5965C4-EC18-0A46-818C-C38920C12935}"
 	RootNamespace="08_Physics"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="08_Physics"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\08_Physics.c"
 				>
-				<File
-					RelativePath="..\..\..\src\08_Physics\08_Physics.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

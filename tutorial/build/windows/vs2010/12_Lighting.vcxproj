@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{EEAC1E65-5210-7247-8CA4-B04F5D93263A}</ProjectGuid>
+    <ProjectGuid>{EC2D73F0-C3F2-7247-970B-4CB3C0639BE5}</ProjectGuid>
     <RootNamespace>12_Lighting</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\12_Lighting\12_Lighting.c">
+    <ClCompile Include="..\..\..\src\12_Lighting.c">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="10_Locale"
-	ProjectGUID="{A27795A5-397A-B741-9E97-8AB602B3CBAA}"
+	ProjectGUID="{11C88DFE-030F-824E-8AD1-C94CF52881B2}"
 	RootNamespace="10_Locale"
 	Keyword="Win32Proj"
 	>
@@ -295,15 +295,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="10_Locale"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\10_Locale.cpp"
 				>
-				<File
-					RelativePath="..\..\..\src\10_Locale\10_Locale.cpp"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

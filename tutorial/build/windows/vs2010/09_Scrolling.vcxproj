@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{946389E5-39EA-574E-A582-E49B48691A0C}</ProjectGuid>
+    <ProjectGuid>{B922D73B-9F1F-2942-BF13-F1718A62A6FF}</ProjectGuid>
     <RootNamespace>09_Scrolling</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\09_Scrolling\09_Scrolling.c">
+    <ClCompile Include="..\..\..\src\09_Scrolling.c">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

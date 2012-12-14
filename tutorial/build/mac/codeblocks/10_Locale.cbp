@@ -226,8 +226,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/10_Locale/10_Locale.cpp">
-			<Option virtualFolder="src/10_Locale" />
+		<Unit filename="../../../src/10_Locale.cpp">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

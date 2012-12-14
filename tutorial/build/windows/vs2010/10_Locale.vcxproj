@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5BF39414-6036-3642-AE9F-0E0B2F2CC9C1}</ProjectGuid>
+    <ProjectGuid>{E426A30C-A163-864B-990C-88FC2CDAAD99}</ProjectGuid>
     <RootNamespace>10_Locale</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -178,7 +178,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\10_Locale\10_Locale.cpp">
+    <ClCompile Include="..\..\..\src\10_Locale.cpp">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

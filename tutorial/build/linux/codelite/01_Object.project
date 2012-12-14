@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="01_Object">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="01_Object">
-      <File Name="../../../src/01_Object/01_Object.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/01_Object.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

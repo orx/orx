@@ -157,7 +157,7 @@ endif
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.gch=%.d) -c "$<"
 endif
 
-$(OBJDIR)/07_FX.o: ../../../src/07_FX/07_FX.c
+$(OBJDIR)/07_FX.o: ../../../src/07_FX.c
 	@echo $(notdir $<)
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 

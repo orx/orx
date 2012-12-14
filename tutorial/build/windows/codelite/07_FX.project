@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="07_FX">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="07_FX">
-      <File Name="../../../src/07_FX/07_FX.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/07_FX.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

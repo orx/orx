@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="10_Locale">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="10_Locale">
-      <File Name="../../../src/10_Locale/10_Locale.cpp"/>
-    </VirtualDirectory>
+    <File Name="../../../src/10_Locale.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">

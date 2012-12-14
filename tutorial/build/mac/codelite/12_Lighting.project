@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="12_Lighting">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="12_Lighting">
-      <File Name="../../../src/12_Lighting/12_Lighting.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/12_Lighting.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

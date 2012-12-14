@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{34AD2D17-D42D-8145-A2D9-2ED09B5FE82E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\06_Sound">
-      <UniqueIdentifier>{81E7E72A-28E5-8244-A7B4-76EB84F568A8}</UniqueIdentifier>
+      <UniqueIdentifier>{9F2BA4DE-039D-F34A-B857-F839B046901B}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\06_Sound\06_Sound.c">
-      <Filter>src\06_Sound</Filter>
+    <ClCompile Include="..\..\..\src\06_Sound.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

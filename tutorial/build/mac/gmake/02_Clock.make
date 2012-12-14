@@ -229,7 +229,7 @@ endif
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.gch=%.d) -c "$<"
 endif
 
-$(OBJDIR)/02_Clock.o: ../../../src/02_Clock/02_Clock.c
+$(OBJDIR)/02_Clock.o: ../../../src/02_Clock.c
 	@echo $(notdir $<)
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 

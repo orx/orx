@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="06_Sound"
-	ProjectGUID="{DB483C6E-8704-E345-A339-7ABBC90F1350}"
+	ProjectGUID="{15AE8B0D-DE48-8D4C-9D25-B323C6F549C6}"
 	RootNamespace="06_Sound"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="06_Sound"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\06_Sound.c"
 				>
-				<File
-					RelativePath="..\..\..\src\06_Sound\06_Sound.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

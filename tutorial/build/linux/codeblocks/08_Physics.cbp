@@ -185,8 +185,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/08_Physics/08_Physics.c">
-			<Option virtualFolder="src/08_Physics" />
+		<Unit filename="../../../src/08_Physics.c">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

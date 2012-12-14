@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{3442B542-0E4B-7D46-A7F2-93B7F4B0D6D2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\02_Clock">
-      <UniqueIdentifier>{F96005DE-BE15-5848-89D5-461F8BE603A3}</UniqueIdentifier>
+      <UniqueIdentifier>{E5BC3AD1-0F54-1A49-AA9B-0C998D832ED8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\02_Clock\02_Clock.c">
-      <Filter>src\02_Clock</Filter>
+    <ClCompile Include="..\..\..\src\02_Clock.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

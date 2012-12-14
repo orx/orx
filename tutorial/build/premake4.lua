@@ -215,7 +215,7 @@ solution "Tutorials"
 
 project "01_Object"
 
-    files {"../src/01_Object/01_Object.c"}
+    files {"../src/01_Object.c"}
 
 
 --
@@ -224,7 +224,7 @@ project "01_Object"
 
 project "02_Clock"
 
-    files {"../src/02_Clock/02_Clock.c"}
+    files {"../src/02_Clock.c"}
 
 
 --
@@ -233,7 +233,7 @@ project "02_Clock"
 
 project "03_Frame"
 
-    files {"../src/03_Frame/03_Frame.c"}
+    files {"../src/03_Frame.c"}
 
 
 --
@@ -242,7 +242,7 @@ project "03_Frame"
 
 project "04_Anim"
 
-    files {"../src/04_Anim/04_Anim.c"}
+    files {"../src/04_Anim.c"}
 
 
 --
@@ -251,7 +251,7 @@ project "04_Anim"
 
 project "05_Viewport"
 
-    files {"../src/05_Viewport/05_Viewport.c"}
+    files {"../src/05_Viewport.c"}
 
 
 --
@@ -260,7 +260,7 @@ project "05_Viewport"
 
 project "06_Sound"
 
-    files {"../src/06_Sound/06_Sound.c"}
+    files {"../src/06_Sound.c"}
 
 
 --
@@ -269,7 +269,7 @@ project "06_Sound"
 
 project "07_FX"
 
-    files {"../src/07_FX/07_FX.c"}
+    files {"../src/07_FX.c"}
 
 
 --
@@ -278,7 +278,7 @@ project "07_FX"
 
 project "08_Physics"
 
-    files {"../src/08_Physics/08_Physics.c"}
+    files {"../src/08_Physics.c"}
 
 
 --
@@ -287,7 +287,7 @@ project "08_Physics"
 
 project "09_Scrolling"
 
-    files {"../src/09_Scrolling/09_Scrolling.c"}
+    files {"../src/09_Scrolling.c"}
 
 
 --
@@ -298,7 +298,7 @@ project "10_Locale"
 
     language ("C++")
 
-    files {"../src/10_Locale/10_Locale.cpp"}
+    files {"../src/10_Locale.cpp"}
 
 
 --
@@ -307,7 +307,7 @@ project "10_Locale"
 
 project "11_Spawner"
 
-    files {"../src/11_Spawner/11_Spawner.c"}
+    files {"../src/11_Spawner.c"}
 
 
 --
@@ -316,4 +316,4 @@ project "11_Spawner"
 
 project "12_Lighting"
 
-    files {"../src/12_Lighting/12_Lighting.c"}
+    files {"../src/12_Lighting.c"}

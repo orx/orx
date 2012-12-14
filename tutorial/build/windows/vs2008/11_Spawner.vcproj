@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="11_Spawner"
-	ProjectGUID="{B2026369-8DFD-814C-BDFC-EA52C108CE39}"
+	ProjectGUID="{8821B2C1-7288-6945-8B8F-7E604CCBFD81}"
 	RootNamespace="11_Spawner"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="11_Spawner"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\11_Spawner.c"
 				>
-				<File
-					RelativePath="..\..\..\src\11_Spawner\11_Spawner.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{BB0B9399-B8FD-B046-897E-180237B61016}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\09_Scrolling">
-      <UniqueIdentifier>{CA254801-003E-A747-929A-6905722BCF64}</UniqueIdentifier>
+      <UniqueIdentifier>{6C40A5FF-CBF7-9643-8349-9CBD065EEDC6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\09_Scrolling\09_Scrolling.c">
-      <Filter>src\09_Scrolling</Filter>
+    <ClCompile Include="..\..\..\src\09_Scrolling.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

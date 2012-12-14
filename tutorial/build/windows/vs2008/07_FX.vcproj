@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="07_FX"
-	ProjectGUID="{BEDA794A-5D56-954C-B675-6CAFCAD27A7E}"
+	ProjectGUID="{5737EBD4-7B11-F64C-9F7C-C79488F0991F}"
 	RootNamespace="07_FX"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="07_FX"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\07_FX.c"
 				>
-				<File
-					RelativePath="..\..\..\src\07_FX\07_FX.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

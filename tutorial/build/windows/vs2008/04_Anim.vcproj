@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="04_Anim"
-	ProjectGUID="{8C8CFD62-36A2-FF46-BC36-3DBADEE70F0F}"
+	ProjectGUID="{E2B67699-2C51-8640-99AD-0D07EEC6C0D0}"
 	RootNamespace="04_Anim"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="04_Anim"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\04_Anim.c"
 				>
-				<File
-					RelativePath="..\..\..\src\04_Anim\04_Anim.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

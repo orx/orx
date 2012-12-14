@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="12_Lighting"
-	ProjectGUID="{779B6185-17E2-BF49-8B4F-B3252015FCF7}"
+	ProjectGUID="{5D343530-3393-3745-8F36-0E6279CA6A2F}"
 	RootNamespace="12_Lighting"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="12_Lighting"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\12_Lighting.c"
 				>
-				<File
-					RelativePath="..\..\..\src\12_Lighting\12_Lighting.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

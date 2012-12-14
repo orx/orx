@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="02_Clock"
-	ProjectGUID="{99097ECA-4DA7-384B-8768-C5657A9B5944}"
+	ProjectGUID="{A973A5B2-7F61-3F40-BDC6-B02054588110}"
 	RootNamespace="02_Clock"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="02_Clock"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\02_Clock.c"
 				>
-				<File
-					RelativePath="..\..\..\src\02_Clock\02_Clock.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

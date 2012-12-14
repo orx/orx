@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="11_Spawner">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="11_Spawner">
-      <File Name="../../../src/11_Spawner/11_Spawner.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/11_Spawner.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

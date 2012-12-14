@@ -226,8 +226,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/12_Lighting/12_Lighting.c">
-			<Option virtualFolder="src/12_Lighting" />
+		<Unit filename="../../../src/12_Lighting.c">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

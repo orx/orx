@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{157DDE33-9D7A-D44A-8EF4-F18748ED2055}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\10_Locale">
-      <UniqueIdentifier>{84CCF540-404E-FE41-94F8-C0465D13E2CC}</UniqueIdentifier>
+      <UniqueIdentifier>{0D24B29C-B28A-9E4F-A30D-A4A33B2B5E7F}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\10_Locale\10_Locale.cpp">
-      <Filter>src\10_Locale</Filter>
+    <ClCompile Include="..\..\..\src\10_Locale.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

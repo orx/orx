@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="03_Frame">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="03_Frame">
-      <File Name="../../../src/03_Frame/03_Frame.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/03_Frame.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

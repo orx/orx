@@ -157,7 +157,7 @@ endif
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.gch=%.d) -c "$<"
 endif
 
-$(OBJDIR)/10_Locale.o: ../../../src/10_Locale/10_Locale.cpp
+$(OBJDIR)/10_Locale.o: ../../../src/10_Locale.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 

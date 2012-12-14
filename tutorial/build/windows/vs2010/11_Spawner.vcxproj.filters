@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{B15A31A9-1906-B847-9DC2-A0A867935AD5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\11_Spawner">
-      <UniqueIdentifier>{305CD396-D4C7-7744-BE8F-A857EA8B9231}</UniqueIdentifier>
+      <UniqueIdentifier>{0C2C5A95-7684-1D49-959E-EA6E1258084A}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\11_Spawner\11_Spawner.c">
-      <Filter>src\11_Spawner</Filter>
+    <ClCompile Include="..\..\..\src\11_Spawner.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="09_Scrolling">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="09_Scrolling">
-      <File Name="../../../src/09_Scrolling/09_Scrolling.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/09_Scrolling.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

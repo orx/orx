@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B6BB5D69-1E0F-814A-B9D3-C14EF1AABB03}</ProjectGuid>
+    <ProjectGuid>{9897C60F-25F0-2D4E-BDB3-38F4749D787B}</ProjectGuid>
     <RootNamespace>07_FX</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\07_FX\07_FX.c">
+    <ClCompile Include="..\..\..\src\07_FX.c">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

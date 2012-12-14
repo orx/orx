@@ -226,8 +226,8 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../../src/11_Spawner/11_Spawner.c">
-			<Option virtualFolder="src/11_Spawner" />
+		<Unit filename="../../../src/11_Spawner.c">
+			<Option virtualFolder="src" />
 		</Unit>
 		<Extensions>
 		</Extensions>

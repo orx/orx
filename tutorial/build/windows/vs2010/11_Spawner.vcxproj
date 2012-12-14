@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D91F663C-B81B-E14C-946B-BDBDE4F9B467}</ProjectGuid>
+    <ProjectGuid>{BA12BE5C-9A55-5744-A19C-B30ED52FFA9A}</ProjectGuid>
     <RootNamespace>11_Spawner</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\11_Spawner\11_Spawner.c">
+    <ClCompile Include="..\..\..\src\11_Spawner.c">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

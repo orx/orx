@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="03_Frame"
-	ProjectGUID="{B59466DF-589B-7D48-8F0D-C9252FC274C2}"
+	ProjectGUID="{D1A3A84D-2DE5-CD4F-BC40-A3CFB154B55D}"
 	RootNamespace="03_Frame"
 	Keyword="Win32Proj"
 	>
@@ -298,15 +298,10 @@
 			Name="src"
 			Filter=""
 			>
-			<Filter
-				Name="03_Frame"
-				Filter=""
+			<File
+				RelativePath="..\..\..\src\03_Frame.c"
 				>
-				<File
-					RelativePath="..\..\..\src\03_Frame\03_Frame.c"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

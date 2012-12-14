@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="02_Clock">
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="02_Clock">
-      <File Name="../../../src/02_Clock/02_Clock.c"/>
-    </VirtualDirectory>
+    <File Name="../../../src/02_Clock.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">

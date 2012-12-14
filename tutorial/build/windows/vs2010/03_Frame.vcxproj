@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5A6ED524-7F04-6B4A-8CA2-FC45CDB4AF29}</ProjectGuid>
+    <ProjectGuid>{29302890-4F2A-D84A-8FFA-3E616C39A937}</ProjectGuid>
     <RootNamespace>03_Frame</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\03_Frame\03_Frame.c">
+    <ClCompile Include="..\..\..\src\03_Frame.c">
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
