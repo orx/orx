@@ -62,3 +62,8 @@ code/lib/*
 **.manifest
 extern/android/bin/*
 extern/android/gen/*
+tutorial/lib/**
+tutorial/bin/**.dll
+tutorial/bin/**.exe
+tutorial/bin/**.dylib
+tutorial/bin/**.so
