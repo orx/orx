@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{EB133FEC-3356-4545-8EDE-FCFB8D7E1EE9}</ProjectGuid>
+    <ProjectGuid>{946389E5-39EA-574E-A582-E49B48691A0C}</ProjectGuid>
     <RootNamespace>09_Scrolling</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

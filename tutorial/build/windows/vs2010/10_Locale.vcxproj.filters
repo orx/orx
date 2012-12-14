@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{F35023DF-992C-464A-9E7F-52A676A9B58D}</UniqueIdentifier>
+      <UniqueIdentifier>{157DDE33-9D7A-D44A-8EF4-F18748ED2055}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\10_Locale">
-      <UniqueIdentifier>{48141814-195B-4740-95AD-6FFEDDD00514}</UniqueIdentifier>
+      <UniqueIdentifier>{84CCF540-404E-FE41-94F8-C0465D13E2CC}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AD3BF2D8-A421-8F4A-AC67-9B42D107EF39}</ProjectGuid>
+    <ProjectGuid>{4787E778-B78C-214B-80FD-9018A4BF490D}</ProjectGuid>
     <RootNamespace>04_Anim</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

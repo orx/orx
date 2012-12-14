@@ -81,7 +81,6 @@
 		</Build>
 		<Unit filename="../../../src/11_Spawner/11_Spawner.c">
 			<Option virtualFolder="src/11_Spawner" />
-			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
 		</Extensions>

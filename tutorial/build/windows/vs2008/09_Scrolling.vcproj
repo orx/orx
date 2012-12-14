@@ -3,10 +3,9 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="09_Scrolling"
-	ProjectGUID="{3AC555C3-2C2B-3249-850D-2885C8760A0B}"
+	ProjectGUID="{994E9151-881D-0944-B497-244B72957F51}"
 	RootNamespace="09_Scrolling"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -52,8 +51,8 @@
 				FloatingPointModel="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -76,6 +75,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -97,6 +97,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -130,17 +133,17 @@
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxPROFILER__"
-				StringPooling="true"
 				ExceptionHandling="0"
+				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
-				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="false"
+				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -163,6 +166,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -186,6 +190,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -218,17 +225,17 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
-				StringPooling="true"
 				ExceptionHandling="0"
+				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
-				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="false"
+				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				WarningLevel="3"
+				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -250,6 +257,7 @@
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
+				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -275,6 +283,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
 			/>
@@ -285,9 +296,11 @@
 	<Files>
 		<Filter
 			Name="src"
+			Filter=""
 			>
 			<Filter
 				Name="09_Scrolling"
+				Filter=""
 				>
 				<File
 					RelativePath="..\..\..\src\09_Scrolling\09_Scrolling.c"

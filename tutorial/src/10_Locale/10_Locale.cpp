@@ -27,29 +27,16 @@
  * @date 30/08/2008
  * @author iarwain@orx-project.org
  *
- * Stand alone tutorial
+ * Locale / C++ tutorial
  */
 
 
-/* This is a basic C++ tutorial showing how to write a stand alone executable using orx.
- * As we are *NOT* using the default executable anymore for this tutorial, the tutorial
- * code will be directly in the executable and not in an external library.
- *
- * This implies that we will *NOT* have the default hardcoded behavior:
- * - F11 will not affect vertical sync toggler
- * - Escape won't automagically exit
- * - F12 won't capture a screenshot
- * - Backspace won't reload configuration files
- * - the [Main] section in the config file won't be used to load a plugin ("GameFile" key)
- *
- * Our program, by default, will also *NOT* exit if it receives the orxSYSTEM_EVENT_CLOSE event.
- * To do so, we will either have to use the helper orx_Execute() function (see below)
- * or handle it ourselves.
+/* This is a basic C++ tutorial showing how to write a program in C++ using orx.
  *
  * See previous tutorials for more info about the basic object creation, clock, animation,
  * viewport, sound, FX, physics/collision and parallax scrolling handling.
  *
- * This tutorial shows how to create your stand alone game using orx as a library.
+ * This tutorial shows how to create your game using C++ and orx as a library.
  *
  * As we're on our own here, we need to write the main function and initialize orx manually.
  * The good thing is that we can then specify which modules we want to use, and deactivates display
@@ -70,7 +57,7 @@
  * This tutorial could have been architectured in a better way (cutting it into pieces with headers files, for example)
  * but we wanted to keep a single file per *basic* tutorial.
  *
- * This stand alone executable also creates a console (as does the default orx executable),
+ * This program also creates a console (as does the default orx executable),
  * but you can have you own console-less program if you wish. In order to achieve that, you only need to provide
  * an argc/argv style parameter list that contains the executable name, otherwise the default loaded config file will be
  * orx.ini instead of being based on our executable name (ie. 10_Locale.ini).
@@ -148,13 +135,13 @@ Logo::~Logo()
 }
 
 
-// !!! Stand alone class that contains our core callbacks !!!
+// !!! Game class that contains our core callbacks !!!
 
 
-// Stand alone class
+// Game class
 // NB: The callbacks could have been defined out of any class
 // This is just to show how to do it if you need it
-class StandAlone
+class Game
 {
 public:
   static orxSTATUS orxFASTCALL  EventHandler(const orxEVENT *_pstEvent);
@@ -164,8 +151,8 @@ public:
 
   void SelectNextLanguage();
 
-  StandAlone() : m_poLogo(NULL), s32LanguageIndex(0) {};
-  ~StandAlone() {};
+  Game() : m_poLogo(NULL), s32LanguageIndex(0) {};
+  ~Game() {};
 
 private:
   orxSTATUS                     InitGame();
@@ -176,10 +163,10 @@ private:
 
 
 // Local instance
-StandAlone soMyStandAloneGame;
+Game soMyGame;
 
 // Select next language
-void StandAlone::SelectNextLanguage()
+void Game::SelectNextLanguage()
 {
   // Updates language index
   s32LanguageIndex = (s32LanguageIndex == orxLocale_GetLanguageCounter() - 1) ? 0 : s32LanguageIndex + 1;
@@ -189,7 +176,7 @@ void StandAlone::SelectNextLanguage()
 }
 
 // Init game function
-orxSTATUS StandAlone::InitGame()
+orxSTATUS Game::InitGame()
 {
   orxSTATUS eResult;
 
@@ -218,7 +205,7 @@ orxSTATUS StandAlone::InitGame()
 }
 
 // Event handler
-orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL Game::EventHandler(const orxEVENT *_pstEvent)
 {
   // Depending on event ID
   switch(_pstEvent->eID)
@@ -247,7 +234,7 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
 }
 
 // Init function
-orxSTATUS StandAlone::Init()
+orxSTATUS Game::Init()
 {
   orxSTATUS       eResult;
   orxINPUT_TYPE   eType;
@@ -266,28 +253,28 @@ orxSTATUS StandAlone::Init()
          "\n- '%s' will cycle through all the available languages"
          "\n* The legend under the logo is always displayed in the current language", zInputQuit, zInputCycle);
 
-  orxLOG("10_StandAlone Init() called!");
+  orxLOG("10_Locale Init() called!");
 
-  // Inits our stand alone game
-  eResult = soMyStandAloneGame.InitGame();
+  // Inits our game
+  eResult = soMyGame.InitGame();
 
   // Done!
   return eResult;
 }
 
 // Exit function
-void StandAlone::Exit()
+void Game::Exit()
 {
   // Deletes our logo
-  delete soMyStandAloneGame.m_poLogo;
-  soMyStandAloneGame.m_poLogo = NULL;
+  delete soMyGame.m_poLogo;
+  soMyGame.m_poLogo = NULL;
 
   // Logs
-  orxLOG("10_StandAlone Exit() called!");
+  orxLOG("10_Locale Exit() called!");
 }
 
 // Run function
-orxSTATUS StandAlone::Run()
+orxSTATUS Game::Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -295,7 +282,7 @@ orxSTATUS StandAlone::Run()
   if(orxInput_IsActive("CycleLanguage") && orxInput_HasNewStatus("CycleLanguage"))
   {
     // Selects next language
-    soMyStandAloneGame.SelectNextLanguage();
+    soMyGame.SelectNextLanguage();
   }
 
   // Is quit action active?
@@ -320,7 +307,7 @@ orxSTATUS StandAlone::Run()
 int main(int argc, char **argv)
 {
   // Inits and runs orx using our self-defined functions
-  orx_Execute(argc, argv, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
+  orx_Execute(argc, argv, Game::Init, Game::Run, Game::Exit);
 
   // Done!
   return EXIT_SUCCESS;
@@ -333,7 +320,7 @@ int main(int argc, char **argv)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
   // Inits and executes orx
-  orx_WinExecute(StandAlone::Init, StandAlone::Run, StandAlone::Exit);
+  orx_WinExecute(Game::Init, Game::Run, Game::Exit);
 
   // Done!
   return EXIT_SUCCESS;

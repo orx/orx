@@ -296,6 +296,8 @@ project "09_Scrolling"
 
 project "10_Locale"
 
+    language ("C++")
+
     files {"../src/10_Locale/10_Locale.cpp"}
 
 
@@ -304,8 +306,6 @@ project "10_Locale"
 --
 
 project "11_Spawner"
-
-    language ("C++")
 
     files {"../src/11_Spawner/11_Spawner.c"}
 
