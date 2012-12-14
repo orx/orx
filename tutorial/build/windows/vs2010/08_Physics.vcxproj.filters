@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{6EA5A9CF-C3D9-8B4E-ADD1-6952D7B5E622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\08_Physics">
+      <UniqueIdentifier>{F42E9EC0-82F9-3F42-B3DD-4874A491A521}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\08_Physics\08_Physics.c">
+      <Filter>src\08_Physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

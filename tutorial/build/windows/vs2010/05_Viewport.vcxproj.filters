@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{6FB899A2-DBF4-7043-B921-7B6CE1F0F663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\05_Viewport">
+      <UniqueIdentifier>{36726B22-F628-CB4F-9612-3F79F15774F3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\05_Viewport\05_Viewport.c">
+      <Filter>src\05_Viewport</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

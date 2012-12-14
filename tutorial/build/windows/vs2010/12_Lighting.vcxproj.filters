@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{22FE53B8-FAB5-0840-A277-988917ACCA7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\12_Lighting">
+      <UniqueIdentifier>{F4FF1374-6B2B-C74A-A85C-7559413C7350}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\12_Lighting\12_Lighting.c">
+      <Filter>src\12_Lighting</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

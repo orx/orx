@@ -263,7 +263,7 @@ solution "orx"
             "../../extern/Box2D_2.1.3/lib/msvs2010"
         }
 
-    configuration {"windows", "codelite or gmake"}
+    configuration {"windows", "codeblocks or codelite or gmake"}
         libdirs
         {
             "../../extern/glfw-2.7/lib/mingw",

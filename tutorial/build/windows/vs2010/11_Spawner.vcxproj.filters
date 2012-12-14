@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{741D396B-B842-0144-A065-354CEDDAA8EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\11_Spawner">
+      <UniqueIdentifier>{C0685D33-9E5A-3E49-A64F-689B1626A74C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\11_Spawner\11_Spawner.c">
+      <Filter>src\11_Spawner</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

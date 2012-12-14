@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{9770ACDD-DBDA-EB4C-A7FE-F5B8242CA323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\09_Scrolling">
+      <UniqueIdentifier>{3C4514EB-C955-1D4D-B70B-D32C19118703}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\09_Scrolling\09_Scrolling.c">
+      <Filter>src\09_Scrolling</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

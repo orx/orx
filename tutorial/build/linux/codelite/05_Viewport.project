@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="05_Viewport">
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="05_Viewport">
+      <File Name="../../../src/05_Viewport/05_Viewport.c"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <Configuration Name="debug32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux32/05_Viewport" IntermediateDirectory="$(ConfigurationName)" Command="./05_Viewport" CommandArguments="" WorkingDirectory="../../../bin/linux32" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib/linux32" />
+        <Library Value="orxd" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="profile32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux32/05_Viewport" IntermediateDirectory="$(ConfigurationName)" Command="./05_Viewport" CommandArguments="" WorkingDirectory="../../../bin/linux32" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib/linux32" />
+        <Library Value="orxp" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="release32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux32/05_Viewport" IntermediateDirectory="$(ConfigurationName)" Command="./05_Viewport" CommandArguments="" WorkingDirectory="../../../bin/linux32" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
+        <IncludePath Value="../../../include"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib/linux32" />
+        <Library Value="orx" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux64/05_Viewport" IntermediateDirectory="$(ConfigurationName)" Command="./05_Viewport" CommandArguments="" WorkingDirectory="../../../bin/linux64" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib/linux64" />
+        <Library Value="orxd" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="profile64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux64/05_Viewport" IntermediateDirectory="$(ConfigurationName)" Command="./05_Viewport" CommandArguments="" WorkingDirectory="../../../bin/linux64" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-fschedule-insns">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib/linux64" />
+        <Library Value="orxp" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="release64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/linux64/05_Viewport" IntermediateDirectory="$(ConfigurationName)" Command="./05_Viewport" CommandArguments="" WorkingDirectory="../../../bin/linux64" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-fschedule-insns">
+        <IncludePath Value="../../../include"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib/linux64" />
+        <Library Value="orx" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Debug|x32">
+  </Dependencies>
+  <Dependencies name="Profile|x32">
+  </Dependencies>
+  <Dependencies name="Release|x32">
+  </Dependencies>
+  <Dependencies name="Debug|x64">
+  </Dependencies>
+  <Dependencies name="Profile|x64">
+  </Dependencies>
+  <Dependencies name="Release|x64">
+  </Dependencies>
+</CodeLite_Project>

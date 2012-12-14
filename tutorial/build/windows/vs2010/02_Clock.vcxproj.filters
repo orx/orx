@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{88D39592-8564-8347-84DE-018C054410F6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\02_Clock">
+      <UniqueIdentifier>{1874BEB7-C8C0-CB48-B012-A1B7AE3E1743}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\02_Clock\02_Clock.c">
+      <Filter>src\02_Clock</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
