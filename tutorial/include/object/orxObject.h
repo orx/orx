@@ -385,6 +385,19 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
+
+/** Attaches an object to a parent while maintaining the object's world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pParent        Parent structure to attach to (object, spawner, camera or frame)
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Attach(orxOBJECT *_pstObject, void *_pParent);
+
+/** Detaches an object from a parent while maintaining the object's world position
+ * @param[in]   _pstObject      Concerned object
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Detach(orxOBJECT *_pstObject);
 /** @} */
 
 
@@ -516,7 +529,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyTorque(orxOBJECT *_ps
 /** Applies a force
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvForce        Force to apply
- * @param[in]   _pvPoint        Point (object coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);

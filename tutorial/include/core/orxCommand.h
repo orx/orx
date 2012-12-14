@@ -99,22 +99,22 @@ typedef void (orxFASTCALL *orxCOMMAND_FUNCTION)(orxU32 _u32ArgNumber, const orxC
 
 /** Command registration helpers
  */
-#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                \
-do                                                                                                                                                          \
-{                                                                                                                                                           \
-  orxCOMMAND_VAR_DEF  stResult;                                                                                                                             \
-  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                \
-  orxSTATUS           eStatus;                                                                                                                              \
-  stResult.eType    = RESULT_TYPE;                                                                                                                          \
-  stResult.zName    = RESULT_NAME;                                                                                                                          \
-  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &stResult); \
-  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                  \
+#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                    \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \
+  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{"Dummy", orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \
+  orxSTATUS           eStatus;                                                                                                                                  \
+  stResult.eType    = RESULT_TYPE;                                                                                                                              \
+  stResult.zName    = RESULT_NAME;                                                                                                                              \
+  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult); \
+  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \
 } while(orxFALSE)
 
-#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                 \
-do                                                                                                                                                          \
-{                                                                                                                                                           \
-  orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                                                \
+#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                     \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                                                    \
 } while(orxFALSE)
 
 
