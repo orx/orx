@@ -67,3 +67,9 @@ tutorial/bin/**.dll
 tutorial/bin/**.exe
 tutorial/bin/**.dylib
 tutorial/bin/**.so
+tutorial/bin/**.lib
+tutorial/bin/**.exp
+tutorial/bin/**.ilk
+tutorial/build/**.user
+tutorial/build/**.htm
+tutorial/build/**.ncb
