@@ -103,12 +103,14 @@ externfolderinfolist = [
 ]
 
 androidfolderinfolist = devfolderinfolist + [
+    {'src': 'lib/static/android',                                       'dst': None},
     {'src': '../extern/android',                                        'dst': None},
     {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
     {'src': '../extern/SOIL/lib/android',                               'dst': None}
 ]
 
 androidnativefolderinfolist = devfolderinfolist + [
+    {'src': 'lib/static/android-native',                                'dst': None},
     {'src': '../extern/nv_and_util',                                    'dst': None},
     {'src': '../extern/Box2D_2.1.3/lib/android-native',                 'dst': None},
     {'src': '../extern/SOIL/lib/android-native',                        'dst': None}
