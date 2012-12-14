@@ -31,27 +31,13 @@
  */
 
 
-#include "orxPluginAPI.h"
+#include "orx.h"
 
 
 /* This is a basic C tutorial creating a viewport and an object.
- * As we are using the default executable for this tutorial, this code
- * will be loaded and executed as a runtime plugin.
- *
- * In addition, some basics are handled for us by the main executable.
- * First of all, it will load all available plugins and modules. If you
- * require only some of those, then it's better to write your own executable
- * instead of a plugin. This will be covered in a later tutorial.
- *
- * The main executable also handles some keys:
- * - F11 as vertical sync toggler
- * - Escape as exit key
- * - F12 to capture a screenshot
- * - Backspace to reload all configuration files (provided that config history is turned on)
- * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *
  * As orx is data driven, here we just write 2 lines of code to create a viewport
- * and an object. All their properties can be defined in the config file (01_Object.ini).
+ * and an object. All their properties are defined in the config file (01_Object.ini).
  * As a matter of fact, the viewport is associated with a camera implicitly created from the
  * info given in the config file. You can also set their sizes, positions, the object colors,
  * scales, rotations, animations, physical properties, and so on. You can even request
@@ -66,18 +52,12 @@
 
 /** Inits the tutorial
  */
-orxSTATUS Init()
+orxSTATUS orxFASTCALL Init()
 {
   /* Displays a small hint in console */
   orxLOG("\n* This tutorial creates a viewport/camera couple and an object"
          "\n* You can play with the config parameters in ../01_Object.ini"
          "\n* After changing them, relaunch the tutorial to see their effects");
-
-  /* Loads config file */
-  orxConfig_Load("../01_Object.ini");
-
-  /* Reloads inputs */
-  orxInput_Load(orxSTRING_EMPTY);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
@@ -89,5 +69,51 @@ orxSTATUS Init()
   return orxSTATUS_SUCCESS;
 }
 
-/* Registers plugin entry */
-orxPLUGIN_DECLARE_ENTRY_POINT(Init);
+/** Run function
+ */
+orxSTATUS orxFASTCALL Run()
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Should quit? */
+  if(orxInput_IsActive("Quit"))
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Exit function
+ */
+void orxFASTCALL Exit()
+{
+  /* We're a bit lazy here so we let orx clean all our mess! :) */
+}
+
+/** Main function
+ */
+int main(int argc, char **argv)
+{
+  /* Executes a new instance of tutorial */
+  orx_Execute(argc, argv, Init, Run, Exit);
+
+  return EXIT_SUCCESS;
+}
+
+
+#ifdef __orxMSVC__
+
+// Here's an example for a console-less program under windows with visual studio
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+  // Inits and executes orx
+  orx_WinExecute(Init, Run, Exit);
+
+  // Done!
+  return EXIT_SUCCESS;
+}
+
+#endif // __orxMSVC__

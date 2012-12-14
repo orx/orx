@@ -37,21 +37,6 @@
  * viewport, sound, FX, physics/collision and parallax scrolling handling.
  *
  * This tutorial shows how to create your game using C++ and orx as a library.
- *
- * As we're on our own here, we need to write the main function and initialize orx manually.
- * The good thing is that we can then specify which modules we want to use, and deactivates display
- * or any other module at will, if needed.
- *
- * If we still want a semi-automated initialization of orx, we can use the orx_Execute() function.
- * This tutorial will cover the use of orx with this helper function, but you can decide not to use
- * it if its behavior doesn't suit your needs.
- *
- * This helper function will take care of initializing everything correctly and exiting properly.
- * It will also make sure the clock module is constantly ticked (as it's part of orx's core) and that
- * we exit if the orxSYSTEM_EVENT_CLOSE event is sent.
- * This event is sent when closing the windows, for example, but it can also be sent under
- * your own criteria (escape key pressed, for example).
- *
  * This code is a basic C++ example to show how to use orx without having to write C code.
  *
  * This tutorial could have been architectured in a better way (cutting it into pieces with headers files, for example)

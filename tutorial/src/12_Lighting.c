@@ -32,8 +32,6 @@
 
 
 /* This is a basic C tutorial showing how to use shaders to do some lighting.
- * As we are *NOT* using the default executable anymore for this tutorial, the tutorial
- * code will be directly built into the executable and not into an external library.
  *
  * See previous tutorials for more info about the basic object creation, clock, animation,
  * viewport, sound, FX, physics/collision, differentiel scrolling handling, stand alone creation,
@@ -466,6 +464,8 @@ orxSTATUS orxFASTCALL Run()
  */
 void orxFASTCALL Exit()
 {
+  /* This time we decided not to be lazy and we deleted what we created: much cleaner! :) */
+
   /* Deletes scene */
   orxObject_Delete(pstScene);
 

@@ -32,8 +32,6 @@
 
 
 /* This is a basic C tutorial showing how to use spawners.
- * As we are *NOT* using the default executable anymore for this tutorial, the tutorial
- * code will be directly built into the executable and not into an external library.
  *
  * See previous tutorials for more info about the basic object creation, clock, animation,
  * viewport, sound, FX, physics/collision, differentiel scrolling handling and stand alone creation.
@@ -187,6 +185,7 @@ orxSTATUS orxFASTCALL Run()
  */
 void orxFASTCALL Exit()
 {
+  /* We're a bit lazy here so we let orx clean all our mess! :) */
 }
 
 /** Main function

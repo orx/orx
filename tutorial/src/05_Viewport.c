@@ -31,24 +31,10 @@
  */
 
 
-#include "orxPluginAPI.h"
+#include "orx.h"
 
 
 /* This is a basic C tutorial creating viewports and cameras.
- * As we are using the default executable for this tutorial, this code
- * will be loaded and executed as a runtime plugin.
- *
- * In addition, some basics are handled for us by the main executable.
- * First of all, it will load all available plugins and modules. If you
- * require only some of those, then it's better to write your own executable
- * instead of a plugin. This will be covered in a later tutorial.
- *
- * The main executable also handles some keys:
- * - F11 as vertical sync toggler
- * - Escape as exit key
- * - F12 to capture a screenshot
- * - Backspace to reload all configuration files (provided that config history is turned on)
- * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *
  * See previous tutorials for more info about the basic object creation, clock and animation handling.
  *
@@ -234,7 +220,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 
 /** Inits the tutorial
  */
-orxSTATUS Init()
+orxSTATUS orxFASTCALL Init()
 {
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
@@ -253,12 +239,6 @@ orxSTATUS Init()
   const orxSTRING zInputViewportDown;
   const orxSTRING zInputViewportScaleUp;
   const orxSTRING zInputViewportScaleDown;
-
-  /* Loads config file */
-  orxConfig_Load("../05_Viewport.ini");
-
-  /* Reloads inputs */
-  orxInput_Load(orxSTRING_EMPTY);
 
   /* Gets input binding names */
   orxInput_GetBinding("CameraLeft", 0, &eType, &eID);
@@ -304,7 +284,7 @@ orxSTATUS Init()
   zInputViewportScaleDown = orxInput_GetBindingName(eType, eID);
 
   /* Displays a small hint in console */
-  orxLOG("\n* Worskpaces 1 & 3 display camera 1 content"
+  orxLOG("\n* Worskpaces 1 & 4 display camera 1 content"
          "\n* Workspace 2 displays camera 2 (by default it's twice as close as the other cameras)"
          "\n* Workspace 3 displays camera 3"
          "\n- Soldier will be positioned (in the world) so as to be always displayed under the mouse"
@@ -339,5 +319,51 @@ orxSTATUS Init()
   return orxSTATUS_SUCCESS;
 }
 
-/* Registers plugin entry */
-orxPLUGIN_DECLARE_ENTRY_POINT(Init);
+/** Run function
+ */
+orxSTATUS orxFASTCALL Run()
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Should quit? */
+  if(orxInput_IsActive("Quit"))
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Exit function
+ */
+void orxFASTCALL Exit()
+{
+  /* We're a bit lazy here so we let orx clean all our mess! :) */
+}
+
+/** Main function
+ */
+int main(int argc, char **argv)
+{
+  /* Executes a new instance of tutorial */
+  orx_Execute(argc, argv, Init, Run, Exit);
+
+  return EXIT_SUCCESS;
+}
+
+
+#ifdef __orxMSVC__
+
+// Here's an example for a console-less program under windows with visual studio
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+  // Inits and executes orx
+  orx_WinExecute(Init, Run, Exit);
+
+  // Done!
+  return EXIT_SUCCESS;
+}
+
+#endif // __orxMSVC__
