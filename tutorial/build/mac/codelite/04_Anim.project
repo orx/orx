@@ -7,16 +7,21 @@
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mac/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin/mac" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-x c++;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-fvisibility-inlines-hidden">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib/mac" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -31,16 +36,21 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="profile64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mac/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin/mac" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-x c++;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-fvisibility-inlines-hidden">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib/mac" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -55,15 +65,20 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="release64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mac/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin/mac" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-x c++;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-fvisibility-inlines-hidden">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib/mac" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -78,16 +93,21 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="debug32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mac/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin/mac" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions;-x c++;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-fvisibility-inlines-hidden;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib/mac" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -102,16 +122,21 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="profile32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mac/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin/mac" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-x c++;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-fvisibility-inlines-hidden;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib/mac" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -126,15 +151,20 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="release32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mac/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin/mac" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/04_Anim" IntermediateDirectory="$(ConfigurationName)" Command="./04_Anim" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-x c++;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-fvisibility-inlines-hidden;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib/mac" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>

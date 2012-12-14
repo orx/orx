@@ -124,8 +124,17 @@ solution "Tutorials"
 
     includedirs
     {
-        "../include"
+        "../include",
+        "../../code/include"
     }
+
+    libdirs
+    {
+        "../lib",
+        "../../code/lib/dynamic"
+    }
+
+    targetdir ("../bin")
 
     flags
     {
@@ -160,34 +169,16 @@ solution "Tutorials"
 
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
+        postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
         buildoptions {"-fschedule-insns"}
 
-    configuration {"linux", "x32"}
-        libdirs
-        {
-            "../lib/linux32"
-        }
-        targetdir ("../bin/linux32")
-
-    configuration {"linux", "x64"}
-        libdirs
-        {
-            "../lib/linux64"
-        }
-        targetdir ("../bin/linux64")
-
 
 -- Mac OS X
 
     configuration {"macosx"}
-        libdirs
-        {
-            "../lib/mac"
-        }
-        targetdir ("../bin/mac")
         buildoptions
         {
             "-x c++",
@@ -203,6 +194,7 @@ solution "Tutorials"
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
+        postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -213,26 +205,8 @@ solution "Tutorials"
 
 -- Windows
 
-    configuration {"vs2008"}
-        libdirs
-        {
-            "../lib/vs2008"
-        }
-        targetdir ("../bin/vs2008")
-
-    configuration {"vs2010"}
-        libdirs
-        {
-            "../lib/vs2010"
-        }
-        targetdir ("../bin/vs2010")
-
-    configuration {"windows", "codeblocks or codelite or gmake"}
-        libdirs
-        {
-            "../lib/mingw"
-        }
-        targetdir ("../bin/mingw")
+    configuration {"windows"}
+        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 
 --

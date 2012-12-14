@@ -21,14 +21,14 @@ endif
 
 ifeq ($(config),debug)
   OBJDIR     = obj/Debug/07_FX
-  TARGETDIR  = ../../../bin/mingw
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/07_FX.exe
   DEFINES   += -D__orxDEBUG__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib/mingw
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd
   LDDEPS    += 
@@ -38,19 +38,21 @@ ifeq ($(config),debug)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
   endef
 endif
 
 ifeq ($(config),profile)
   OBJDIR     = obj/Profile/07_FX
-  TARGETDIR  = ../../../bin/mingw
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/07_FX.exe
   DEFINES   += -D__orxPROFILER__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/mingw
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp
   LDDEPS    += 
@@ -60,19 +62,21 @@ ifeq ($(config),profile)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
   endef
 endif
 
 ifeq ($(config),release)
   OBJDIR     = obj/Release/07_FX
-  TARGETDIR  = ../../../bin/mingw
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/07_FX.exe
   DEFINES   += 
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/mingw
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx
   LDDEPS    += 
@@ -82,6 +86,8 @@ ifeq ($(config),release)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
   endef
 endif
 

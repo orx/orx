@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
-      <UniqueIdentifier>{22FE53B8-FAB5-0840-A277-988917ACCA7E}</UniqueIdentifier>
+      <UniqueIdentifier>{07C98B92-9A8A-A043-9255-33D92033E6CA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\12_Lighting">
-      <UniqueIdentifier>{F4FF1374-6B2B-C74A-A85C-7559413C7350}</UniqueIdentifier>
+      <UniqueIdentifier>{4BB7CC79-C7BA-824B-9C5F-3DD02AF81594}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug|x64">
-				<Option output="../../../bin/mac/04_Anim" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/04_Anim" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Debug/04_Anim" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -25,6 +25,7 @@
 					<Add option="-Wno-write-strings" />
 					<Add option="-fvisibility-inlines-hidden" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
@@ -32,12 +33,16 @@
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib/mac" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x64">
-				<Option output="../../../bin/mac/04_Anim" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/04_Anim" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Profile/04_Anim" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -57,6 +62,7 @@
 					<Add option="-Wno-write-strings" />
 					<Add option="-fvisibility-inlines-hidden" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
@@ -64,12 +70,16 @@
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib/mac" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release|x64">
-				<Option output="../../../bin/mac/04_Anim" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/04_Anim" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Release/04_Anim" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -88,6 +98,7 @@
 					<Add option="-Wno-write-strings" />
 					<Add option="-fvisibility-inlines-hidden" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
@@ -95,12 +106,16 @@
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib/mac" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Debug|x32">
-				<Option output="../../../bin/mac/04_Anim" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/04_Anim" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x32/Debug/04_Anim" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -119,6 +134,7 @@
 					<Add option="-fvisibility-inlines-hidden" />
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
@@ -126,12 +142,16 @@
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib/mac" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x32">
-				<Option output="../../../bin/mac/04_Anim" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/04_Anim" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x32/Profile/04_Anim" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -152,6 +172,7 @@
 					<Add option="-fvisibility-inlines-hidden" />
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
@@ -159,12 +180,16 @@
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib/mac" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release|x32">
-				<Option output="../../../bin/mac/04_Anim" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/04_Anim" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x32/Release/04_Anim" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -184,6 +209,7 @@
 					<Add option="-fvisibility-inlines-hidden" />
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
@@ -191,9 +217,13 @@
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib/mac" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Unit filename="../../../src/04_Anim/04_Anim.c">

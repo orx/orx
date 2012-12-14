@@ -21,14 +21,14 @@ endif
 
 ifeq ($(config),debug32)
   OBJDIR     = obj/x32/Debug/10_Locale
-  TARGETDIR  = ../../../bin/linux32
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/10_Locale
   DEFINES   += -D__orxDEBUG__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib/linux32 -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd
   LDDEPS    += 
@@ -38,19 +38,21 @@ ifeq ($(config),debug32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin
   endef
 endif
 
 ifeq ($(config),profile32)
   OBJDIR     = obj/x32/Profile/10_Locale
-  TARGETDIR  = ../../../bin/linux32
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/10_Locale
   DEFINES   += -D__orxPROFILER__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/linux32 -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp
   LDDEPS    += 
@@ -60,19 +62,21 @@ ifeq ($(config),profile32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin
   endef
 endif
 
 ifeq ($(config),release32)
   OBJDIR     = obj/x32/Release/10_Locale
-  TARGETDIR  = ../../../bin/linux32
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/10_Locale
   DEFINES   += 
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/linux32 -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx
   LDDEPS    += 
@@ -82,19 +86,21 @@ ifeq ($(config),release32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin
   endef
 endif
 
 ifeq ($(config),debug64)
   OBJDIR     = obj/x64/Debug/10_Locale
-  TARGETDIR  = ../../../bin/linux64
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/10_Locale
   DEFINES   += -D__orxDEBUG__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib/linux64 -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd
   LDDEPS    += 
@@ -104,19 +110,21 @@ ifeq ($(config),debug64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin
   endef
 endif
 
 ifeq ($(config),profile64)
   OBJDIR     = obj/x64/Profile/10_Locale
-  TARGETDIR  = ../../../bin/linux64
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/10_Locale
   DEFINES   += -D__orxPROFILER__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/linux64 -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp
   LDDEPS    += 
@@ -126,19 +134,21 @@ ifeq ($(config),profile64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin
   endef
 endif
 
 ifeq ($(config),release64)
   OBJDIR     = obj/x64/Release/10_Locale
-  TARGETDIR  = ../../../bin/linux64
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/10_Locale
   DEFINES   += 
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/linux64 -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx
   LDDEPS    += 
@@ -148,6 +158,8 @@ ifeq ($(config),release64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin
   endef
 endif
 

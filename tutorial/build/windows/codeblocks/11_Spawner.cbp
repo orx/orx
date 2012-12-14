@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../../bin/mingw/11_Spawner.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/11_Spawner.exe" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Debug/11_Spawner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -18,14 +18,19 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
-					<Add directory="../../../lib/mingw" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Profile">
-				<Option output="../../../bin/mingw/11_Spawner.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/11_Spawner.exe" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Profile/11_Spawner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -38,14 +43,19 @@
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
-					<Add directory="../../../lib/mingw" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release">
-				<Option output="../../../bin/mingw/11_Spawner.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/11_Spawner.exe" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Release/11_Spawner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -57,11 +67,16 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
-					<Add directory="../../../lib/mingw" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Unit filename="../../../src/11_Spawner/11_Spawner.c">

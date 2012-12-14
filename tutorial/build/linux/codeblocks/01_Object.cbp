@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug|x32">
-				<Option output="../../../bin/linux32/01_Object" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/01_Object" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x32/Debug/01_Object" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -19,18 +19,23 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
 					<Add option="-Wl,-rpath ./" />
 					<Add option="-Wl,--export-dynamic" />
-					<Add directory="../../../lib/linux32" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x32">
-				<Option output="../../../bin/linux32/01_Object" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/01_Object" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x32/Profile/01_Object" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -45,18 +50,23 @@
 					<Add option="-D__orxPROFILER__" />
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
 					<Add option="-Wl,-rpath ./" />
 					<Add option="-Wl,--export-dynamic" />
-					<Add directory="../../../lib/linux32" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release|x32">
-				<Option output="../../../bin/linux32/01_Object" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/01_Object" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x32/Release/01_Object" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -70,18 +80,23 @@
 					<Add option="-fno-rtti" />
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
 					<Add option="-Wl,-rpath ./" />
 					<Add option="-Wl,--export-dynamic" />
-					<Add directory="../../../lib/linux32" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Debug|x64">
-				<Option output="../../../bin/linux64/01_Object" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/01_Object" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Debug/01_Object" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -93,18 +108,23 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
 					<Add option="-Wl,-rpath ./" />
 					<Add option="-Wl,--export-dynamic" />
-					<Add directory="../../../lib/linux64" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x64">
-				<Option output="../../../bin/linux64/01_Object" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/01_Object" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Profile/01_Object" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -119,18 +139,23 @@
 					<Add option="-D__orxPROFILER__" />
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
 					<Add option="-Wl,-rpath ./" />
 					<Add option="-Wl,--export-dynamic" />
-					<Add directory="../../../lib/linux64" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Release|x64">
-				<Option output="../../../bin/linux64/01_Object" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../bin/01_Object" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Release/01_Object" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -144,15 +169,20 @@
 					<Add option="-fno-rtti" />
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
+					<Add directory="../../../../code/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
 					<Add option="-Wl,-rpath ./" />
 					<Add option="-Wl,--export-dynamic" />
-					<Add directory="../../../lib/linux64" />
+					<Add directory="../../../lib" />
+					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Unit filename="../../../src/01_Object/01_Object.c">

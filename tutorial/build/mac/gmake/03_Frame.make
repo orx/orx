@@ -21,14 +21,14 @@ endif
 
 ifeq ($(config),debug64)
   OBJDIR     = obj/x64/Debug/03_Frame
-  TARGETDIR  = ../../../bin/mac
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/03_Frame
   DEFINES   += -D__orxDEBUG__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd
   LDDEPS    += 
@@ -38,19 +38,21 @@ ifeq ($(config),debug64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin
   endef
 endif
 
 ifeq ($(config),profile64)
   OBJDIR     = obj/x64/Profile/03_Frame
-  TARGETDIR  = ../../../bin/mac
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/03_Frame
   DEFINES   += -D__orxPROFILER__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp
   LDDEPS    += 
@@ -60,19 +62,21 @@ ifeq ($(config),profile64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin
   endef
 endif
 
 ifeq ($(config),release64)
   OBJDIR     = obj/x64/Release/03_Frame
-  TARGETDIR  = ../../../bin/mac
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/03_Frame
   DEFINES   += 
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx
   LDDEPS    += 
@@ -82,19 +86,21 @@ ifeq ($(config),release64)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin
   endef
 endif
 
 ifeq ($(config),debug32)
   OBJDIR     = obj/x32/Debug/03_Frame
-  TARGETDIR  = ../../../bin/mac
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/03_Frame
   DEFINES   += -D__orxDEBUG__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd
   LDDEPS    += 
@@ -104,19 +110,21 @@ ifeq ($(config),debug32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin
   endef
 endif
 
 ifeq ($(config),profile32)
   OBJDIR     = obj/x32/Profile/03_Frame
-  TARGETDIR  = ../../../bin/mac
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/03_Frame
   DEFINES   += -D__orxPROFILER__
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp
   LDDEPS    += 
@@ -126,19 +134,21 @@ ifeq ($(config),profile32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin
   endef
 endif
 
 ifeq ($(config),release32)
   OBJDIR     = obj/x32/Release/03_Frame
-  TARGETDIR  = ../../../bin/mac
+  TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/03_Frame
   DEFINES   += 
-  INCLUDES  += -I../../../include
+  INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx
   LDDEPS    += 
@@ -148,6 +158,8 @@ ifeq ($(config),release32)
   define PRELINKCMDS
   endef
   define POSTBUILDCMDS
+	@echo Running post-build commands
+	cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin
   endef
 endif
 

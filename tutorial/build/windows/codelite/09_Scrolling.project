@@ -7,16 +7,21 @@
   </VirtualDirectory>
   <Settings Type="Executable">
     <Configuration Name="debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mingw/09_Scrolling.exe" IntermediateDirectory="$(ConfigurationName)" Command="./09_Scrolling.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/09_Scrolling.exe" IntermediateDirectory="$(ConfigurationName)" Command="./09_Scrolling.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-fno-exceptions">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="">
-        <LibraryPath Value="../../../lib/mingw" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -31,16 +36,21 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mingw/09_Scrolling.exe" IntermediateDirectory="$(ConfigurationName)" Command="./09_Scrolling.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/09_Scrolling.exe" IntermediateDirectory="$(ConfigurationName)" Command="./09_Scrolling.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-fno-exceptions;-fno-rtti">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
         <Preprocessor Value="__orxPROFILER__"/>
       </Compiler>
       <Linker Required="yes" Options="">
-        <LibraryPath Value="../../../lib/mingw" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -55,15 +65,20 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/mingw/09_Scrolling.exe" IntermediateDirectory="$(ConfigurationName)" Command="./09_Scrolling.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/09_Scrolling.exe" IntermediateDirectory="$(ConfigurationName)" Command="./09_Scrolling.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-fno-exceptions;-fno-rtti">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
       </Compiler>
       <Linker Required="yes" Options="">
-        <LibraryPath Value="../../../lib/mingw" />
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
