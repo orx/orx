@@ -227,7 +227,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
               else
               {
                 // Adds it
-                orxHashTable_Add(sstFontGen.pstCharacterTable, u32CharacterCodePoint, (void *)u32CharacterCodePoint);
+                orxHashTable_Add(sstFontGen.pstCharacterTable, u32CharacterCodePoint, (void *)sstFontGen.pstCharacterTable);
 
                 // Logs message
                 orxLOG("[LOAD]    Character '0x%X': glyph not found in font, skipping.", u32CharacterCodePoint);
