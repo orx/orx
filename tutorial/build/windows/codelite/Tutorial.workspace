@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Workspace Name="Tutorials" Database="./Tutorials.tags">
+<CodeLite_Workspace Name="Tutorial" Database="./Tutorial.tags">
   <Project Name="01_Object" Path="01_Object.project" Active="Yes" />
   <Project Name="02_Clock" Path="02_Clock.project" Active="No" />
   <Project Name="03_Frame" Path="03_Frame.project" Active="No" />

@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{57817B85-CD59-A94A-A0FA-D422B1E62760}</ProjectGuid>
+    <ProjectGuid>{914494E9-BD13-9A40-8753-E17843549B34}</ProjectGuid>
     <RootNamespace>02_Clock</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

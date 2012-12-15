@@ -3,8 +3,8 @@ Orx - Portable Game Engine (Version 1.4 rc0)
 
 =============================================================================
 
-Email iarwain [at] orx-project.org to contact the author; or better, check
-orx's homepage at http://orx-project.org for the most up-to-date contact information.
+Email iarwain [at] orx-project.org to contact the author; or, better,
+check orx's homepage at http://orx-project.org for the most up-to-date contact information.
 
 This engine is licensed under the zlib license, see the LICENSE file for details.
 
@@ -24,10 +24,11 @@ The current features of orx engine are:
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
 - powerful config system that makes orx data-driven and provides an easy to use load/save system
 - timelines and commands modules allow for config-driven scripting-like features
+- interactive console can execute commands at runtime (very useful for tweaking/debug purposes)
 - animation engine (including a chaining graph & custom animation events for synchronization)
 - fragment (pixel) shader support
 - visual FXs based on curve combinations
-- integrated runtim profiler to easily spot which parts of your game needs to be optimized
+- integrated runtime profiler (with graphical display) to easily spot which parts of your game needs to be optimized
 - collision handling and rigid body physics
 - camera/viewport scheme allowing multiple views displayed with camera translation, zoom and rotation
 - generic input system that abstracts keyboard, mouse, joystick, touch and accelerometer inputs
@@ -45,20 +46,21 @@ The current features of orx engine are:
 
 See doc/html directory for the doxygen documentation of orx's API.
 
-You can find details about the tutorials (as well as community-made ones) and the data-driven side of orx
+You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
 (ie. how to use the config system) on orx's wiki at: http://wiki.orx-project.org
 
-The English version is the most complete one, Chinese and Spanish translations are being written and maintained by community members.
+The English version is the most complete one.
+Chinese and Spanish translations are entirely written and maintained by community members, and they might be less accurate/somewhat outdated.
 
 
 Supported Platforms
 -------------------
 
 The engine compiles and is tested for:
-- Linux (x86/x86-64 with codelite and makefile)
-- Windows (x86 with vs2008, vs2010 and mingw32 with codelite or makefile)
-- MacOS X (x86/x86_64/ppc/ppc64 with xcode or makefile), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
-- iOS (iPhone/iPod Touch/iPad, simulator & device with xcode and makefile)
+- Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
+- Windows (x86 with vs2008, vs2010 and mingw32 with codelite, codeblocks and GNU makefile)
+- MacOS X (x86/x86_64/ppc/ppc64 with xcode or x86/x86_64 with codelite, codeblocks and GNU makefile), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
+- iOS (iPhone/iPod Touch/iPad, simulator & device with xcode, codelite, codeblocks and makefile)
 - Android (NDK build files, no simulator support)
 
 
@@ -97,6 +99,12 @@ The embedded versions currently use:
 - Touch/MultiTouch-based plugin for mouse on iOS and Android
 - Accelerometer-based plugin for joystick on iOS and Android
 
+All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
+
+Some tools (precompiled only) are also shipped with the dev packages:
+  . orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
+  . orxFontGen: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
+
 
 Packages
 --------
@@ -107,7 +115,9 @@ Here is a list with a small description for each package.
 - orx-doc-1.4rc0.zip: orx's API doxygen documentation + PDF version of the English wiki (detailed tutorials and config system)
 
 - orx-src-1.4rc0.zip: orx's source code including build projects for
-  . codelite (Windows and Linux, all versions)
+  . codelite (Windows and Linux, all versions, Mac OS X, non-static versions)
+  . codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)
+  . GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)
   . vs2008 & vs2010 (Windows Visual Studio, all versions)
   . xcode (3.2+, for MacOS X, non-static versions; 4.2 for iOS, static embedded versions)
   . ndk build files for Android (static embedded versions)
@@ -118,40 +128,36 @@ use orx-src-1.4rx0.zip and you plan on compiling orx yourself. They are not need
 The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
 
-- orx-tools-1.4rc0.zip: orx's additional set of tools (Windows, Linux and MacOS X) containing:
-  . orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
-  . orxFontGen: command line tool based on FreeType2 for generating custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
+- orx-dev-linux32-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86), release/profile/debug + tutorials + tools.
+- orx-dev-linux64-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86_64), release/profile/debug + tutorials + tools.
+- orx-dev-mac-1.4rc0.zip              : dynamic embedded binaries for MacOS X (x86/x86_64), release/profile/debug + tutorials + tools.
+- orx-dev-mingw-1.4rc0.zip            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tutorials + tools.
+- orx-dev-vs2008-1.4rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2008), release/profile/debug + tutorials + tools.
+- orx-dev-vs2010-1.4rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2010), release/profile/debug + tutorials + tools.
 
-- orx-dev-linux32-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86), release, profile and debug.
-- orx-dev-linux64-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86_64), release, profile and debug.
-- orx-dev-mac-1.4rc0.zip              : dynamic embedded binaries for MacOS X (x86/x86_64), release, profile and debug.
-- orx-dev-mingw-1.4rc0.zip            : dynamic embedded binaries for Windows (mingw), release, profile and debug.
-- orx-dev-vs2008-1.4rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2008), release, profile and debug.
-- orx-dev-vs2010-1.4rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2010), release, profile and debug.
+- orx-full-ios-1.4rc0.zip             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- orx-full-android-1.4rc0.zip         : static embedded binaries for Android, release/profile/debug + doc + source + NDK files.
+- orx-full-android-native-1.4rc0.zip  : static embedded binaries for Android Native (2.3+), release/profile/debug + doc + source + NDK files.
 
-- orx-full-ios-1.4rc0.zip             : static embedded binaries for iOS, release/debug, simulator/device + doc + source + XCode project file.
-- orx-full-android-1.4rc0.zip         : static embedded binaries for Android, release/debug + doc + source + NDK files.
-- orx-full-android-native-1.4rc0.zip  : static embedded binaries for Android Native (2.3+), release/debug + doc + source + NDK files.
-
-- orx-tutorial-linux32-1.4rc0.tar.bz2 : precompiled tutorial for Linux (x86), release only.
-- orx-tutorial-linux64-1.4rc0.tar.bz2 : precompiled tutorial for Linux (x86_64), release only.
-- orx-tutorial-mac-1.4rc0.zip         : precompiled tutorial for MacOS X (x86/x86_64), release only.
-- orx-tutorial-mingw-1.4rc0.zip       : precompiled tutorial for Windows (mingw), release only.
-- orx-tutorial-vs2008-1.4rc0.zip      : precompiled tutorial for Windows (Visual Studio 2008), release only.
-- orx-tutorial-vs2010-1.4rc0.zip      : precompiled tutorial for Windows (Visual Studio 2010), release only.
+- orx-tutorial-linux32-1.4rc0.tar.bz2 : precompiled tutorial for Linux (x86)
+- orx-tutorial-linux64-1.4rc0.tar.bz2 : precompiled tutorial for Linux (x86_64)
+- orx-tutorial-mac-1.4rc0.zip         : precompiled tutorial for MacOS X (x86/x86_64)
+- orx-tutorial-mingw-1.4rc0.zip       : precompiled tutorial for Windows (mingw)
+- orx-tutorial-vs2008-1.4rc0.zip      : precompiled tutorial for Windows (Visual Studio 2008)
+- orx-tutorial-vs2010-1.4rc0.zip      : precompiled tutorial for Windows (Visual Studio 2010)
 
 All the *-dev-* packages above include:
  . orx release/profile/debug libraries used for linking
- . runtime release/profile/debug orx libraries and launchers
+ . runtime release/profile/debug orx libraries
  . headers to include at compile time
  . template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
 
 All the *-tutorial-* packages above include:
  . heavily commented source code for 11 basic and advanced tutorials
- . precompiled binaries (orx link library, orx runtime library and launcher)
+ . precompiled binaries (orx link library, orx runtime library)
  . headers to include at compile time
  . template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
- . project files (xcode (MacOS X), codelite (Windows mingw & Linux x86), vs2008 & vs2010)
+ . build/project files
 
 
 Compiling
@@ -160,7 +166,7 @@ Compiling
 The easiest way to learn how to compile your project using orx for a given platform
 is to look at the tutorial build project files. If you want to use another version
 (tutorials use the dynamic embedded versions of orx), please look at
-orx's launcher (main executable) build project file.
+orx's launcher (main executable) build project file from the src package.
 
 The debug version is far slower than the release one, but will output all the warning
 and error messages useful for debugging.
@@ -201,6 +207,7 @@ for which you're compiling. Here's a quick list of these flags:
 - __orxBIG_ENDIAN     : orx is being compiled for a big endian architecture
 - __orxGCC__          : orx is being compiled with gcc
 - __orxMSVC__         : orx is being compiled with visual studio C/C++
+- __orxLLVM__         : orx is being compiled with llvm/clang
 - __orxWINDOWS__      : orx is being compiled for Windows (x86)
 - __orxMAC__          : orx is being compiled for MacOS X (ppc/x86/x86_64)
 - __orxLINUX__        : orx is being compiled for Linux (x86/x86_64)

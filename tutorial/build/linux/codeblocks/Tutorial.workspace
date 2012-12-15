@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="Tutorials">
+	<Workspace title="Tutorial">
 		<Project filename="01_Object.cbp" active="1">
 		</Project>
 		<Project filename="02_Clock.cbp">

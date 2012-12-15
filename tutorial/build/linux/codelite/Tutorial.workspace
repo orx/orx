@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Workspace Name="Tutorials" Database="./Tutorials.tags">
+<CodeLite_Workspace Name="Tutorial" Database="./Tutorial.tags">
   <Project Name="01_Object" Path="01_Object.project" Active="Yes" />
   <Project Name="02_Clock" Path="02_Clock.project" Active="No" />
   <Project Name="03_Frame" Path="03_Frame.project" Active="No" />
@@ -13,48 +13,6 @@
   <Project Name="11_Spawner" Path="11_Spawner.project" Active="No" />
   <Project Name="12_Lighting" Path="12_Lighting.project" Active="No" />
   <BuildMatrix>
-    <WorkspaceConfiguration Name="debug64" Selected="yes">
-      <Project Name="01_Object" ConfigName="debug64"/>
-      <Project Name="02_Clock" ConfigName="debug64"/>
-      <Project Name="03_Frame" ConfigName="debug64"/>
-      <Project Name="04_Anim" ConfigName="debug64"/>
-      <Project Name="05_Viewport" ConfigName="debug64"/>
-      <Project Name="06_Sound" ConfigName="debug64"/>
-      <Project Name="07_FX" ConfigName="debug64"/>
-      <Project Name="08_Physics" ConfigName="debug64"/>
-      <Project Name="09_Scrolling" ConfigName="debug64"/>
-      <Project Name="10_Locale" ConfigName="debug64"/>
-      <Project Name="11_Spawner" ConfigName="debug64"/>
-      <Project Name="12_Lighting" ConfigName="debug64"/>
-    </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile64" Selected="yes">
-      <Project Name="01_Object" ConfigName="profile64"/>
-      <Project Name="02_Clock" ConfigName="profile64"/>
-      <Project Name="03_Frame" ConfigName="profile64"/>
-      <Project Name="04_Anim" ConfigName="profile64"/>
-      <Project Name="05_Viewport" ConfigName="profile64"/>
-      <Project Name="06_Sound" ConfigName="profile64"/>
-      <Project Name="07_FX" ConfigName="profile64"/>
-      <Project Name="08_Physics" ConfigName="profile64"/>
-      <Project Name="09_Scrolling" ConfigName="profile64"/>
-      <Project Name="10_Locale" ConfigName="profile64"/>
-      <Project Name="11_Spawner" ConfigName="profile64"/>
-      <Project Name="12_Lighting" ConfigName="profile64"/>
-    </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release64" Selected="yes">
-      <Project Name="01_Object" ConfigName="release64"/>
-      <Project Name="02_Clock" ConfigName="release64"/>
-      <Project Name="03_Frame" ConfigName="release64"/>
-      <Project Name="04_Anim" ConfigName="release64"/>
-      <Project Name="05_Viewport" ConfigName="release64"/>
-      <Project Name="06_Sound" ConfigName="release64"/>
-      <Project Name="07_FX" ConfigName="release64"/>
-      <Project Name="08_Physics" ConfigName="release64"/>
-      <Project Name="09_Scrolling" ConfigName="release64"/>
-      <Project Name="10_Locale" ConfigName="release64"/>
-      <Project Name="11_Spawner" ConfigName="release64"/>
-      <Project Name="12_Lighting" ConfigName="release64"/>
-    </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="debug32" Selected="yes">
       <Project Name="01_Object" ConfigName="debug32"/>
       <Project Name="02_Clock" ConfigName="debug32"/>
@@ -96,6 +54,48 @@
       <Project Name="10_Locale" ConfigName="release32"/>
       <Project Name="11_Spawner" ConfigName="release32"/>
       <Project Name="12_Lighting" ConfigName="release32"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="debug64" Selected="yes">
+      <Project Name="01_Object" ConfigName="debug64"/>
+      <Project Name="02_Clock" ConfigName="debug64"/>
+      <Project Name="03_Frame" ConfigName="debug64"/>
+      <Project Name="04_Anim" ConfigName="debug64"/>
+      <Project Name="05_Viewport" ConfigName="debug64"/>
+      <Project Name="06_Sound" ConfigName="debug64"/>
+      <Project Name="07_FX" ConfigName="debug64"/>
+      <Project Name="08_Physics" ConfigName="debug64"/>
+      <Project Name="09_Scrolling" ConfigName="debug64"/>
+      <Project Name="10_Locale" ConfigName="debug64"/>
+      <Project Name="11_Spawner" ConfigName="debug64"/>
+      <Project Name="12_Lighting" ConfigName="debug64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="profile64" Selected="yes">
+      <Project Name="01_Object" ConfigName="profile64"/>
+      <Project Name="02_Clock" ConfigName="profile64"/>
+      <Project Name="03_Frame" ConfigName="profile64"/>
+      <Project Name="04_Anim" ConfigName="profile64"/>
+      <Project Name="05_Viewport" ConfigName="profile64"/>
+      <Project Name="06_Sound" ConfigName="profile64"/>
+      <Project Name="07_FX" ConfigName="profile64"/>
+      <Project Name="08_Physics" ConfigName="profile64"/>
+      <Project Name="09_Scrolling" ConfigName="profile64"/>
+      <Project Name="10_Locale" ConfigName="profile64"/>
+      <Project Name="11_Spawner" ConfigName="profile64"/>
+      <Project Name="12_Lighting" ConfigName="profile64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="release64" Selected="yes">
+      <Project Name="01_Object" ConfigName="release64"/>
+      <Project Name="02_Clock" ConfigName="release64"/>
+      <Project Name="03_Frame" ConfigName="release64"/>
+      <Project Name="04_Anim" ConfigName="release64"/>
+      <Project Name="05_Viewport" ConfigName="release64"/>
+      <Project Name="06_Sound" ConfigName="release64"/>
+      <Project Name="07_FX" ConfigName="release64"/>
+      <Project Name="08_Physics" ConfigName="release64"/>
+      <Project Name="09_Scrolling" ConfigName="release64"/>
+      <Project Name="10_Locale" ConfigName="release64"/>
+      <Project Name="11_Spawner" ConfigName="release64"/>
+      <Project Name="12_Lighting" ConfigName="release64"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

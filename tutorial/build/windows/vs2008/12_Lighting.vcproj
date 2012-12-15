@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="12_Lighting"
-	ProjectGUID="{403BCD6B-F87A-7C44-AE8D-12D752385599}"
+	ProjectGUID="{20D8ECF0-EA4C-F346-AE5E-2C284C095B3B}"
 	RootNamespace="12_Lighting"
 	Keyword="Win32Proj"
 	>

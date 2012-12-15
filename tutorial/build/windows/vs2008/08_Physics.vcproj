@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="08_Physics"
-	ProjectGUID="{2613B5E1-D0CD-BA49-96ED-6FCC0DB2D4D6}"
+	ProjectGUID="{9E07DA72-EC3C-6E4F-9B32-46E1AD0E4A6B}"
 	RootNamespace="08_Physics"
 	Keyword="Win32Proj"
 	>

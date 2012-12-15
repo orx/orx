@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="10_Locale"
-	ProjectGUID="{D907EB4D-8CD0-8A49-A49F-0876C82904FB}"
+	ProjectGUID="{CCDA7661-1CB9-A94E-B626-893FF570EA43}"
 	RootNamespace="10_Locale"
 	Keyword="Win32Proj"
 	>

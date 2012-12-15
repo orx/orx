@@ -98,7 +98,7 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 -- Solution: orx
 --
 
-solution "Tutorials"
+solution "Tutorial"
 
     language ("C")
 
