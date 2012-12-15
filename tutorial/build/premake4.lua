@@ -169,7 +169,6 @@ solution "Tutorial"
 
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
-
         if not _OPTIONS["package"] then
             postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
         end

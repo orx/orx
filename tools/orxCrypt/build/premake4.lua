@@ -213,12 +213,6 @@ solution "orxCrypt"
 
 -- Windows
 
-    configuration {"windows"}
-        links
-        {
-            "winmm"
-        }
-
 
 --
 -- Project: orxCrypt
@@ -228,3 +222,33 @@ project "orxCrypt"
 
     files {"../src/orxCrypt.c"}
     targetname ("orxcrypt")
+
+
+-- Linux
+
+    configuration {"linux"}
+        links
+        {
+            "dl",
+            "m",
+            "rt"
+        }
+
+
+-- Mac OS X
+
+    configuration {"macosx"}
+        links
+        {
+            "Foundation.framework",
+            "AppKit.framework"
+        }
+
+
+-- Windows
+
+    configuration {"windows"}
+        links
+        {
+            "winmm"
+        }

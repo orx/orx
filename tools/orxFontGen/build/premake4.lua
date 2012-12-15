@@ -273,12 +273,22 @@ project "orxFontGen"
 
 -- Linux
 
+    configuration {"linux"}
+        links
+        {
+            "dl",
+            "m",
+            "rt"
+        }
+
 
 -- Mac OS X
 
     configuration {"macosx"}
         links
         {
+            "Foundation.framework",
+            "AppKit.framework",
             "OpenGL.framework"
         }
 
