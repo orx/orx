@@ -169,6 +169,12 @@ solution "Tutorial"
 
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
+        links
+        {
+            "dl",
+            "m",
+            "rt"
+        }
         if not _OPTIONS["package"] then
             postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
         end
@@ -189,6 +195,11 @@ solution "Tutorial"
             "-gdwarf-2",
             "-Wno-write-strings",
             "-fvisibility-inlines-hidden"
+        }
+        links
+        {
+            "Foundation.framework",
+            "AppKit.framework"
         }
         linkoptions
         {
