@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -13,18 +13,18 @@
 			buildPhases = (
 			);
 			dependencies = (
-				E0FF28EF0F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28ED0F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28EB0F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28E90F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28E70F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28E50F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28E30F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28E10F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF28DF0F2BF0F8003D47DF /* PBXTargetDependency */,
-				E0FF29020F2BF328003D47DF /* PBXTargetDependency */,
-				E089B1EF0F89D75000311E1E /* PBXTargetDependency */,
-				E09F74DA12E442360059A373 /* PBXTargetDependency */,
+				E0935882167C732D00A52E73 /* PBXTargetDependency */,
+				E0935880167C732D00A52E73 /* PBXTargetDependency */,
+				E093587E167C732D00A52E73 /* PBXTargetDependency */,
+				E093587C167C732D00A52E73 /* PBXTargetDependency */,
+				E093587A167C732D00A52E73 /* PBXTargetDependency */,
+				E0935878167C732D00A52E73 /* PBXTargetDependency */,
+				E0935876167C732D00A52E73 /* PBXTargetDependency */,
+				E0935874167C732D00A52E73 /* PBXTargetDependency */,
+				E0935872167C732D00A52E73 /* PBXTargetDependency */,
+				E0935870167C732D00A52E73 /* PBXTargetDependency */,
+				E093586E167C732D00A52E73 /* PBXTargetDependency */,
+				E093586C167C732D00A52E73 /* PBXTargetDependency */,
 			);
 			name = All;
 			productName = All;
@@ -32,145 +32,133 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		E07C5A5512E444E600861E3C /* 12_Lighting.c in Sources */ = {isa = PBXBuildFile; fileRef = E09F74CF12E441F20059A373 /* 12_Lighting.c */; };
-		E089B1DE0F89D6B000311E1E /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E089B1E50F89D70C00311E1E /* 11_Spawner.c in Sources */ = {isa = PBXBuildFile; fileRef = E089B1E40F89D6F900311E1E /* 11_Spawner.c */; };
-		E09F74D412E442050059A373 /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28500F2BED77003D47DF /* 01_Object.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF283D0F2BED63003D47DF /* 01_Object.c */; };
-		E0FF28520F2BED97003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28930F2BF053003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28970F2BF06C003D47DF /* 02_Clock.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF283F0F2BED63003D47DF /* 02_Clock.c */; };
-		E0FF28A20F2BF08F003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28AA0F2BF093003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28B20F2BF096003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28BA0F2BF099003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28C20F2BF09C003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28CA0F2BF09F003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28D20F2BF0A2003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
-		E0FF28F00F2BF128003D47DF /* 03_Frame.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28410F2BED63003D47DF /* 03_Frame.c */; };
-		E0FF28F10F2BF12F003D47DF /* 04_Anim.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28430F2BED63003D47DF /* 04_Anim.c */; };
-		E0FF28F20F2BF136003D47DF /* 05_Viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28450F2BED63003D47DF /* 05_Viewport.c */; };
-		E0FF28F30F2BF13C003D47DF /* 06_Sound.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28470F2BED63003D47DF /* 06_Sound.c */; };
-		E0FF28F40F2BF143003D47DF /* 07_FX.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28490F2BED63003D47DF /* 07_FX.c */; };
-		E0FF28F50F2BF14A003D47DF /* 08_Physics.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF284B0F2BED63003D47DF /* 08_Physics.c */; };
-		E0FF28F60F2BF151003D47DF /* 09_Scrolling.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF284D0F2BED63003D47DF /* 09_Scrolling.c */; };
-		E0FF28F70F2BF15B003D47DF /* 10_StandAlone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0FF284F0F2BED63003D47DF /* 10_StandAlone.cpp */; };
-		E0FF29040F2BF347003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E09357AD167C6BA900A52E73 /* 01_Object.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A85D167C643E00CE81FE /* 01_Object.c */; };
+		E09357B5167C6D4E00A52E73 /* 10_Locale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A866167C643E00CE81FE /* 10_Locale.cpp */; };
+		E0935810167C70F100A52E73 /* 02_Clock.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A85E167C643E00CE81FE /* 02_Clock.c */; };
+		E0935822167C716600A52E73 /* 03_Frame.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A85F167C643E00CE81FE /* 03_Frame.c */; };
+		E093582B167C71A900A52E73 /* 04_Anim.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A860167C643E00CE81FE /* 04_Anim.c */; };
+		E0935834167C71D700A52E73 /* 05_Viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A861167C643E00CE81FE /* 05_Viewport.c */; };
+		E093583D167C720400A52E73 /* 06_Sound.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A862167C643E00CE81FE /* 06_Sound.c */; };
+		E0935846167C723000A52E73 /* 07_FX.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A863167C643E00CE81FE /* 07_FX.c */; };
+		E093584F167C726800A52E73 /* 08_Physics.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A864167C643E00CE81FE /* 08_Physics.c */; };
+		E0935858167C729C00A52E73 /* 09_Scrolling.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A865167C643E00CE81FE /* 09_Scrolling.c */; };
+		E0935861167C72DC00A52E73 /* 11_Spawner.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A867167C643E00CE81FE /* 11_Spawner.c */; };
+		E093586A167C730700A52E73 /* 12_Lighting.c in Sources */ = {isa = PBXBuildFile; fileRef = E0F1A868167C643E00CE81FE /* 12_Lighting.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E089B1EE0F89D75000311E1E /* PBXContainerItemProxy */ = {
+		E093586B167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E089B1DA0F89D6B000311E1E;
-			remoteInfo = 11_Spawner;
-		};
-		E09F74D912E442360059A373 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E09F74D012E442050059A373;
+			remoteGlobalIDString = E0935864167C730000A52E73 /* 12_Lighting */;
 			remoteInfo = 12_Lighting;
 		};
-		E0FF28DE0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E093586D167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28CE0F2BF0A2003D47DF;
+			remoteGlobalIDString = E093585B167C72D700A52E73 /* 11_Spawner */;
+			remoteInfo = 11_Spawner;
+		};
+		E093586F167C732D00A52E73 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E059AAE20F22ECCA00900DF0 /* 10_Locale */;
+			remoteInfo = 10_Locale;
+		};
+		E0935871167C732D00A52E73 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0935852167C729200A52E73 /* 09_Scrolling */;
 			remoteInfo = 09_Scrolling;
 		};
-		E0FF28E00F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E0935873167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28C60F2BF09F003D47DF;
+			remoteGlobalIDString = E0935849167C725E00A52E73 /* 08_Physics */;
 			remoteInfo = 08_Physics;
 		};
-		E0FF28E20F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E0935875167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28BE0F2BF09C003D47DF;
-			remoteInfo = 07_Fx;
+			remoteGlobalIDString = E0935840167C722800A52E73 /* 07_FX */;
+			remoteInfo = 07_FX;
 		};
-		E0FF28E40F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E0935877167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28B60F2BF099003D47DF;
+			remoteGlobalIDString = E0935837167C71FD00A52E73 /* 06_Sound */;
 			remoteInfo = 06_Sound;
 		};
-		E0FF28E60F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E0935879167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28AE0F2BF096003D47DF;
+			remoteGlobalIDString = E093582E167C71D100A52E73 /* 05_Viewport */;
 			remoteInfo = 05_Viewport;
 		};
-		E0FF28E80F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E093587B167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28A60F2BF093003D47DF;
+			remoteGlobalIDString = E0935825167C719F00A52E73 /* 04_Anim */;
 			remoteInfo = 04_Anim;
 		};
-		E0FF28EA0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E093587D167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF289E0F2BF08F003D47DF;
+			remoteGlobalIDString = E093581C167C715000A52E73 /* 03_Frame */;
 			remoteInfo = 03_Frame;
 		};
-		E0FF28EC0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E093587F167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF288F0F2BF053003D47DF;
+			remoteGlobalIDString = E093580A167C70CD00A52E73 /* 02_Clock */;
 			remoteInfo = 02_Clock;
 		};
-		E0FF28EE0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+		E0935881167C732D00A52E73 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E059AC3A0F2300F600900DF0;
+			remoteGlobalIDString = E09357A5167C6B5600A52E73 /* 01_Object */;
 			remoteInfo = 01_Object;
-		};
-		E0FF29010F2BF328003D47DF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E059AAE20F22ECCA00900DF0;
-			remoteInfo = 10_StandAlone;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E059AAE30F22ECCA00900DF0 /* 10_StandAlone */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 10_StandAlone; sourceTree = BUILT_PRODUCTS_DIR; };
-		E059AC460F2300F600900DF0 /* 01_Object.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 01_Object.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E089B1E10F89D6B000311E1E /* 11_Spawner */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 11_Spawner; sourceTree = BUILT_PRODUCTS_DIR; };
-		E089B1E40F89D6F900311E1E /* 11_Spawner.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 11_Spawner.c; sourceTree = "<group>"; };
-		E09F74CF12E441F20059A373 /* 12_Lighting.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 12_Lighting.c; sourceTree = "<group>"; };
-		E09F74D712E442050059A373 /* 12_Lighting */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 12_Lighting; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF283D0F2BED63003D47DF /* 01_Object.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 01_Object.c; sourceTree = "<group>"; };
-		E0FF283F0F2BED63003D47DF /* 02_Clock.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 02_Clock.c; sourceTree = "<group>"; };
-		E0FF28410F2BED63003D47DF /* 03_Frame.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 03_Frame.c; sourceTree = "<group>"; };
-		E0FF28430F2BED63003D47DF /* 04_Anim.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 04_Anim.c; sourceTree = "<group>"; };
-		E0FF28450F2BED63003D47DF /* 05_Viewport.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 05_Viewport.c; sourceTree = "<group>"; };
-		E0FF28470F2BED63003D47DF /* 06_Sound.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 06_Sound.c; sourceTree = "<group>"; };
-		E0FF28490F2BED63003D47DF /* 07_FX.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 07_FX.c; sourceTree = "<group>"; };
-		E0FF284B0F2BED63003D47DF /* 08_Physics.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 08_Physics.c; sourceTree = "<group>"; };
-		E0FF284D0F2BED63003D47DF /* 09_Scrolling.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 09_Scrolling.c; sourceTree = "<group>"; };
-		E0FF284F0F2BED63003D47DF /* 10_StandAlone.cpp */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.cpp.cpp; path = 10_StandAlone.cpp; sourceTree = "<group>"; };
-		E0FF28510F2BED8B003D47DF /* liborx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liborx.dylib; path = ../../../lib/mac/liborx.dylib; sourceTree = SOURCE_ROOT; };
-		E0FF28960F2BF053003D47DF /* 02_Clock.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 02_Clock.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28A50F2BF08F003D47DF /* 03_Frame.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 03_Frame.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28AD0F2BF093003D47DF /* 04_Anim.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 04_Anim.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28B50F2BF096003D47DF /* 05_Viewport.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 05_Viewport.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28BD0F2BF099003D47DF /* 06_Sound.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 06_Sound.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28C50F2BF09C003D47DF /* 07_Fx.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 07_Fx.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28CD0F2BF09F003D47DF /* 08_Physics.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 08_Physics.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0FF28D50F2BF0A2003D47DF /* 09_Scrolling.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 09_Scrolling.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E059AAE30F22ECCA00900DF0 /* 10_Locale */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 10_Locale; sourceTree = BUILT_PRODUCTS_DIR; };
+		E093579E167C6B3B00A52E73 /* 01_Object-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "01_Object-Info.plist"; sourceTree = "<group>"; };
+		E09357A6167C6B5600A52E73 /* 01_Object */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 01_Object; sourceTree = BUILT_PRODUCTS_DIR; };
+		E093580B167C70CD00A52E73 /* 02_Clock */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 02_Clock; sourceTree = BUILT_PRODUCTS_DIR; };
+		E093581D167C715000A52E73 /* 03_Frame */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 03_Frame; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0935826167C719F00A52E73 /* 04_Anim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 04_Anim; sourceTree = BUILT_PRODUCTS_DIR; };
+		E093582F167C71D100A52E73 /* 05_Viewport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 05_Viewport; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0935838167C71FD00A52E73 /* 06_Sound */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 06_Sound; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0935841167C722800A52E73 /* 07_FX */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 07_FX; sourceTree = BUILT_PRODUCTS_DIR; };
+		E093584A167C725E00A52E73 /* 08_Physics */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 08_Physics; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0935853167C729200A52E73 /* 09_Scrolling */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 09_Scrolling; sourceTree = BUILT_PRODUCTS_DIR; };
+		E093585C167C72D700A52E73 /* 11_Spawner */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 11_Spawner; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0935865167C730000A52E73 /* 12_Lighting */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 12_Lighting; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0F1A85D167C643E00CE81FE /* 01_Object.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 01_Object.c; path = ../../../../../../workspace/orx/tutorial/src/01_Object.c; sourceTree = SOURCE_ROOT; };
+		E0F1A85E167C643E00CE81FE /* 02_Clock.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 02_Clock.c; path = ../../../../../../workspace/orx/tutorial/src/02_Clock.c; sourceTree = SOURCE_ROOT; };
+		E0F1A85F167C643E00CE81FE /* 03_Frame.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 03_Frame.c; path = ../../../../../../workspace/orx/tutorial/src/03_Frame.c; sourceTree = SOURCE_ROOT; };
+		E0F1A860167C643E00CE81FE /* 04_Anim.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 04_Anim.c; path = ../../../../../../workspace/orx/tutorial/src/04_Anim.c; sourceTree = SOURCE_ROOT; };
+		E0F1A861167C643E00CE81FE /* 05_Viewport.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 05_Viewport.c; path = ../../../../../../workspace/orx/tutorial/src/05_Viewport.c; sourceTree = SOURCE_ROOT; };
+		E0F1A862167C643E00CE81FE /* 06_Sound.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 06_Sound.c; path = ../../../../../../workspace/orx/tutorial/src/06_Sound.c; sourceTree = SOURCE_ROOT; };
+		E0F1A863167C643E00CE81FE /* 07_FX.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 07_FX.c; path = ../../../../../../workspace/orx/tutorial/src/07_FX.c; sourceTree = SOURCE_ROOT; };
+		E0F1A864167C643E00CE81FE /* 08_Physics.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 08_Physics.c; path = ../../../../../../workspace/orx/tutorial/src/08_Physics.c; sourceTree = SOURCE_ROOT; };
+		E0F1A865167C643E00CE81FE /* 09_Scrolling.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 09_Scrolling.c; path = ../../../../../../workspace/orx/tutorial/src/09_Scrolling.c; sourceTree = SOURCE_ROOT; };
+		E0F1A866167C643E00CE81FE /* 10_Locale.cpp */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.cpp.cpp; name = 10_Locale.cpp; path = ../../../../../../workspace/orx/tutorial/src/10_Locale.cpp; sourceTree = SOURCE_ROOT; };
+		E0F1A867167C643E00CE81FE /* 11_Spawner.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 11_Spawner.c; path = ../../../../../../workspace/orx/tutorial/src/11_Spawner.c; sourceTree = SOURCE_ROOT; };
+		E0F1A868167C643E00CE81FE /* 12_Lighting.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; name = 12_Lighting.c; path = ../../../../../../workspace/orx/tutorial/src/12_Lighting.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,95 +166,83 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF29040F2BF347003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E059AC410F2300F600900DF0 /* Frameworks */ = {
+		E09357A4167C6B5600A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28520F2BED97003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E089B1DD0F89D6B000311E1E /* Frameworks */ = {
+		E0935809167C70CD00A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E089B1DE0F89D6B000311E1E /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E09F74D312E442050059A373 /* Frameworks */ = {
+		E093581B167C715000A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E09F74D412E442050059A373 /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28920F2BF053003D47DF /* Frameworks */ = {
+		E0935824167C719F00A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28930F2BF053003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28A10F2BF08F003D47DF /* Frameworks */ = {
+		E093582D167C71D100A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28A20F2BF08F003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28A90F2BF093003D47DF /* Frameworks */ = {
+		E0935836167C71FD00A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28AA0F2BF093003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28B10F2BF096003D47DF /* Frameworks */ = {
+		E093583F167C722800A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28B20F2BF096003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28B90F2BF099003D47DF /* Frameworks */ = {
+		E0935848167C725E00A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28BA0F2BF099003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28C10F2BF09C003D47DF /* Frameworks */ = {
+		E0935851167C729200A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28C20F2BF09C003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28C90F2BF09F003D47DF /* Frameworks */ = {
+		E093585A167C72D700A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28CA0F2BF09F003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28D10F2BF0A2003D47DF /* Frameworks */ = {
+		E0935863167C730000A52E73 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28D20F2BF0A2003D47DF /* liborx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,18 +252,18 @@
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E059AC460F2300F600900DF0 /* 01_Object.so */,
-				E0FF28960F2BF053003D47DF /* 02_Clock.so */,
-				E0FF28A50F2BF08F003D47DF /* 03_Frame.so */,
-				E0FF28AD0F2BF093003D47DF /* 04_Anim.so */,
-				E0FF28B50F2BF096003D47DF /* 05_Viewport.so */,
-				E0FF28BD0F2BF099003D47DF /* 06_Sound.so */,
-				E0FF28C50F2BF09C003D47DF /* 07_Fx.so */,
-				E0FF28CD0F2BF09F003D47DF /* 08_Physics.so */,
-				E0FF28D50F2BF0A2003D47DF /* 09_Scrolling.so */,
-				E059AAE30F22ECCA00900DF0 /* 10_StandAlone */,
-				E089B1E10F89D6B000311E1E /* 11_Spawner */,
-				E09F74D712E442050059A373 /* 12_Lighting */,
+				E059AAE30F22ECCA00900DF0 /* 10_Locale */,
+				E09357A6167C6B5600A52E73 /* 01_Object */,
+				E093580B167C70CD00A52E73 /* 02_Clock */,
+				E093581D167C715000A52E73 /* 03_Frame */,
+				E0935826167C719F00A52E73 /* 04_Anim */,
+				E093582F167C71D100A52E73 /* 05_Viewport */,
+				E0935838167C71FD00A52E73 /* 06_Sound */,
+				E0935841167C722800A52E73 /* 07_FX */,
+				E093584A167C725E00A52E73 /* 08_Physics */,
+				E0935853167C729200A52E73 /* 09_Scrolling */,
+				E093585C167C72D700A52E73 /* 11_Spawner */,
+				E0935865167C730000A52E73 /* 12_Lighting */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -296,153 +272,37 @@
 			isa = PBXGroup;
 			children = (
 				08FB77ACFE841707C02AAC07 /* Source */,
-				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DDFF38A45A11DB9C8B /* Products */,
+				E093579E167C6B3B00A52E73 /* 01_Object-Info.plist */,
 			);
 			name = orx;
-			sourceTree = "<group>";
-		};
-		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF28510F2BED8B003D47DF /* liborx.dylib */,
-			);
-			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
 		};
 		08FB77ACFE841707C02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E0FF283C0F2BED63003D47DF /* 01_Object */,
-				E0FF283E0F2BED63003D47DF /* 02_Clock */,
-				E0FF28400F2BED63003D47DF /* 03_Frame */,
-				E0FF28420F2BED63003D47DF /* 04_Anim */,
-				E0FF28440F2BED63003D47DF /* 05_Viewport */,
-				E0FF28460F2BED63003D47DF /* 06_Sound */,
-				E0FF28480F2BED63003D47DF /* 07_FX */,
-				E0FF284A0F2BED63003D47DF /* 08_Physics */,
-				E0FF284C0F2BED63003D47DF /* 09_Scrolling */,
-				E0FF284E0F2BED63003D47DF /* 10_StandAlone */,
-				E089B1E30F89D6F900311E1E /* 11_Spawner */,
-				E09F74CE12E441F20059A373 /* 12_Lighting */,
+				E0F1A85D167C643E00CE81FE /* 01_Object.c */,
+				E0F1A85E167C643E00CE81FE /* 02_Clock.c */,
+				E0F1A85F167C643E00CE81FE /* 03_Frame.c */,
+				E0F1A860167C643E00CE81FE /* 04_Anim.c */,
+				E0F1A861167C643E00CE81FE /* 05_Viewport.c */,
+				E0F1A862167C643E00CE81FE /* 06_Sound.c */,
+				E0F1A863167C643E00CE81FE /* 07_FX.c */,
+				E0F1A864167C643E00CE81FE /* 08_Physics.c */,
+				E0F1A865167C643E00CE81FE /* 09_Scrolling.c */,
+				E0F1A866167C643E00CE81FE /* 10_Locale.cpp */,
+				E0F1A867167C643E00CE81FE /* 11_Spawner.c */,
+				E0F1A868167C643E00CE81FE /* 12_Lighting.c */,
 			);
 			name = Source;
-			sourceTree = "<group>";
-		};
-		E089B1E30F89D6F900311E1E /* 11_Spawner */ = {
-			isa = PBXGroup;
-			children = (
-				E089B1E40F89D6F900311E1E /* 11_Spawner.c */,
-			);
-			name = 11_Spawner;
-			path = ../../../src/11_Spawner;
-			sourceTree = SOURCE_ROOT;
-		};
-		E09F74CE12E441F20059A373 /* 12_Lighting */ = {
-			isa = PBXGroup;
-			children = (
-				E09F74CF12E441F20059A373 /* 12_Lighting.c */,
-			);
-			name = 12_Lighting;
-			path = ../../../src/12_Lighting;
-			sourceTree = SOURCE_ROOT;
-		};
-		E0FF283C0F2BED63003D47DF /* 01_Object */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF283D0F2BED63003D47DF /* 01_Object.c */,
-			);
-			name = 01_Object;
-			path = ../../../src/01_Object;
-			sourceTree = "<group>";
-		};
-		E0FF283E0F2BED63003D47DF /* 02_Clock */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF283F0F2BED63003D47DF /* 02_Clock.c */,
-			);
-			name = 02_Clock;
-			path = ../../../src/02_Clock;
-			sourceTree = "<group>";
-		};
-		E0FF28400F2BED63003D47DF /* 03_Frame */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF28410F2BED63003D47DF /* 03_Frame.c */,
-			);
-			name = 03_Frame;
-			path = ../../../src/03_Frame;
-			sourceTree = "<group>";
-		};
-		E0FF28420F2BED63003D47DF /* 04_Anim */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF28430F2BED63003D47DF /* 04_Anim.c */,
-			);
-			name = 04_Anim;
-			path = ../../../src/04_Anim;
-			sourceTree = "<group>";
-		};
-		E0FF28440F2BED63003D47DF /* 05_Viewport */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF28450F2BED63003D47DF /* 05_Viewport.c */,
-			);
-			name = 05_Viewport;
-			path = ../../../src/05_Viewport;
-			sourceTree = "<group>";
-		};
-		E0FF28460F2BED63003D47DF /* 06_Sound */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF28470F2BED63003D47DF /* 06_Sound.c */,
-			);
-			name = 06_Sound;
-			path = ../../../src/06_Sound;
-			sourceTree = "<group>";
-		};
-		E0FF28480F2BED63003D47DF /* 07_FX */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF28490F2BED63003D47DF /* 07_FX.c */,
-			);
-			name = 07_FX;
-			path = ../../../src/07_FX;
-			sourceTree = "<group>";
-		};
-		E0FF284A0F2BED63003D47DF /* 08_Physics */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF284B0F2BED63003D47DF /* 08_Physics.c */,
-			);
-			name = 08_Physics;
-			path = ../../../src/08_Physics;
-			sourceTree = "<group>";
-		};
-		E0FF284C0F2BED63003D47DF /* 09_Scrolling */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF284D0F2BED63003D47DF /* 09_Scrolling.c */,
-			);
-			name = 09_Scrolling;
-			path = ../../../src/09_Scrolling;
-			sourceTree = "<group>";
-		};
-		E0FF284E0F2BED63003D47DF /* 10_StandAlone */ = {
-			isa = PBXGroup;
-			children = (
-				E0FF284F0F2BED63003D47DF /* 10_StandAlone.cpp */,
-			);
-			name = 10_StandAlone;
-			path = ../../../src/10_StandAlone;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E059AAE20F22ECCA00900DF0 /* 10_StandAlone */ = {
+		E059AAE20F22ECCA00900DF0 /* 10_Locale */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "10_StandAlone" */;
+			buildConfigurationList = E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "10_Locale" */;
 			buildPhases = (
 				E059AAE00F22ECCA00900DF0 /* Sources */,
 				E059AAE10F22ECCA00900DF0 /* Frameworks */,
@@ -451,186 +311,186 @@
 			);
 			dependencies = (
 			);
-			name = 10_StandAlone;
+			name = 10_Locale;
 			productName = orx;
-			productReference = E059AAE30F22ECCA00900DF0 /* 10_StandAlone */;
+			productReference = E059AAE30F22ECCA00900DF0 /* 10_Locale */;
 			productType = "com.apple.product-type.tool";
 		};
-		E059AC3A0F2300F600900DF0 /* 01_Object */ = {
+		E09357A5167C6B5600A52E73 /* 01_Object */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E059AC430F2300F600900DF0 /* Build configuration list for PBXNativeTarget "01_Object" */;
+			buildConfigurationList = E09357B0167C6BC700A52E73 /* Build configuration list for PBXNativeTarget "01_Object" */;
 			buildPhases = (
-				E059AC3F0F2300F600900DF0 /* Sources */,
-				E059AC410F2300F600900DF0 /* Frameworks */,
+				E09357A3167C6B5600A52E73 /* Sources */,
+				E09357A4167C6B5600A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 01_Object;
-			productName = orxRender_Home;
-			productReference = E059AC460F2300F600900DF0 /* 01_Object.so */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
-		E089B1DA0F89D6B000311E1E /* 11_Spawner */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E089B1DF0F89D6B000311E1E /* Build configuration list for PBXNativeTarget "11_Spawner" */;
-			buildPhases = (
-				E089B1DB0F89D6B000311E1E /* Sources */,
-				E089B1DD0F89D6B000311E1E /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = 11_Spawner;
-			productName = orx;
-			productReference = E089B1E10F89D6B000311E1E /* 11_Spawner */;
+			productName = 01_Object;
+			productReference = E09357A6167C6B5600A52E73 /* 01_Object */;
 			productType = "com.apple.product-type.tool";
 		};
-		E09F74D012E442050059A373 /* 12_Lighting */ = {
+		E093580A167C70CD00A52E73 /* 02_Clock */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E09F74D512E442050059A373 /* Build configuration list for PBXNativeTarget "12_Lighting" */;
+			buildConfigurationList = E0935811167C710F00A52E73 /* Build configuration list for PBXNativeTarget "02_Clock" */;
 			buildPhases = (
-				E09F74D112E442050059A373 /* Sources */,
-				E09F74D312E442050059A373 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = 12_Lighting;
-			productName = orx;
-			productReference = E09F74D712E442050059A373 /* 12_Lighting */;
-			productType = "com.apple.product-type.tool";
-		};
-		E0FF288F0F2BF053003D47DF /* 02_Clock */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28940F2BF053003D47DF /* Build configuration list for PBXNativeTarget "02_Clock" */;
-			buildPhases = (
-				E0FF28900F2BF053003D47DF /* Sources */,
-				E0FF28920F2BF053003D47DF /* Frameworks */,
+				E0935808167C70CD00A52E73 /* Sources */,
+				E0935809167C70CD00A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 02_Clock;
-			productName = orxRender_Home;
-			productReference = E0FF28960F2BF053003D47DF /* 02_Clock.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 02_Clock;
+			productReference = E093580B167C70CD00A52E73 /* 02_Clock */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF289E0F2BF08F003D47DF /* 03_Frame */ = {
+		E093581C167C715000A52E73 /* 03_Frame */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28A30F2BF08F003D47DF /* Build configuration list for PBXNativeTarget "03_Frame" */;
+			buildConfigurationList = E0935887167C735300A52E73 /* Build configuration list for PBXNativeTarget "03_Frame" */;
 			buildPhases = (
-				E0FF289F0F2BF08F003D47DF /* Sources */,
-				E0FF28A10F2BF08F003D47DF /* Frameworks */,
+				E093581A167C715000A52E73 /* Sources */,
+				E093581B167C715000A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 03_Frame;
-			productName = orxRender_Home;
-			productReference = E0FF28A50F2BF08F003D47DF /* 03_Frame.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 03_Frame;
+			productReference = E093581D167C715000A52E73 /* 03_Frame */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF28A60F2BF093003D47DF /* 04_Anim */ = {
+		E0935825167C719F00A52E73 /* 04_Anim */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28AB0F2BF093003D47DF /* Build configuration list for PBXNativeTarget "04_Anim" */;
+			buildConfigurationList = E0935888167C735300A52E73 /* Build configuration list for PBXNativeTarget "04_Anim" */;
 			buildPhases = (
-				E0FF28A70F2BF093003D47DF /* Sources */,
-				E0FF28A90F2BF093003D47DF /* Frameworks */,
+				E0935823167C719F00A52E73 /* Sources */,
+				E0935824167C719F00A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 04_Anim;
-			productName = orxRender_Home;
-			productReference = E0FF28AD0F2BF093003D47DF /* 04_Anim.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 04_Anim;
+			productReference = E0935826167C719F00A52E73 /* 04_Anim */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF28AE0F2BF096003D47DF /* 05_Viewport */ = {
+		E093582E167C71D100A52E73 /* 05_Viewport */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28B30F2BF096003D47DF /* Build configuration list for PBXNativeTarget "05_Viewport" */;
+			buildConfigurationList = E0935889167C735300A52E73 /* Build configuration list for PBXNativeTarget "05_Viewport" */;
 			buildPhases = (
-				E0FF28AF0F2BF096003D47DF /* Sources */,
-				E0FF28B10F2BF096003D47DF /* Frameworks */,
+				E093582C167C71D100A52E73 /* Sources */,
+				E093582D167C71D100A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 05_Viewport;
-			productName = orxRender_Home;
-			productReference = E0FF28B50F2BF096003D47DF /* 05_Viewport.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 05_Viewport;
+			productReference = E093582F167C71D100A52E73 /* 05_Viewport */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF28B60F2BF099003D47DF /* 06_Sound */ = {
+		E0935837167C71FD00A52E73 /* 06_Sound */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28BB0F2BF099003D47DF /* Build configuration list for PBXNativeTarget "06_Sound" */;
+			buildConfigurationList = E093588A167C735300A52E73 /* Build configuration list for PBXNativeTarget "06_Sound" */;
 			buildPhases = (
-				E0FF28B70F2BF099003D47DF /* Sources */,
-				E0FF28B90F2BF099003D47DF /* Frameworks */,
+				E0935835167C71FD00A52E73 /* Sources */,
+				E0935836167C71FD00A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 06_Sound;
-			productName = orxRender_Home;
-			productReference = E0FF28BD0F2BF099003D47DF /* 06_Sound.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 06_Sound;
+			productReference = E0935838167C71FD00A52E73 /* 06_Sound */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF28BE0F2BF09C003D47DF /* 07_Fx */ = {
+		E0935840167C722800A52E73 /* 07_FX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28C30F2BF09C003D47DF /* Build configuration list for PBXNativeTarget "07_Fx" */;
+			buildConfigurationList = E093588B167C735300A52E73 /* Build configuration list for PBXNativeTarget "07_FX" */;
 			buildPhases = (
-				E0FF28BF0F2BF09C003D47DF /* Sources */,
-				E0FF28C10F2BF09C003D47DF /* Frameworks */,
+				E093583E167C722800A52E73 /* Sources */,
+				E093583F167C722800A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = 07_Fx;
-			productName = orxRender_Home;
-			productReference = E0FF28C50F2BF09C003D47DF /* 07_Fx.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			name = 07_FX;
+			productName = 07_FX;
+			productReference = E0935841167C722800A52E73 /* 07_FX */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF28C60F2BF09F003D47DF /* 08_Physics */ = {
+		E0935849167C725E00A52E73 /* 08_Physics */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28CB0F2BF09F003D47DF /* Build configuration list for PBXNativeTarget "08_Physics" */;
+			buildConfigurationList = E093588C167C735300A52E73 /* Build configuration list for PBXNativeTarget "08_Physics" */;
 			buildPhases = (
-				E0FF28C70F2BF09F003D47DF /* Sources */,
-				E0FF28C90F2BF09F003D47DF /* Frameworks */,
+				E0935847167C725E00A52E73 /* Sources */,
+				E0935848167C725E00A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 08_Physics;
-			productName = orxRender_Home;
-			productReference = E0FF28CD0F2BF09F003D47DF /* 08_Physics.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 08_Physics;
+			productReference = E093584A167C725E00A52E73 /* 08_Physics */;
+			productType = "com.apple.product-type.tool";
 		};
-		E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */ = {
+		E0935852167C729200A52E73 /* 09_Scrolling */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E0FF28D30F2BF0A2003D47DF /* Build configuration list for PBXNativeTarget "09_Scrolling" */;
+			buildConfigurationList = E093588D167C735300A52E73 /* Build configuration list for PBXNativeTarget "09_Scrolling" */;
 			buildPhases = (
-				E0FF28CF0F2BF0A2003D47DF /* Sources */,
-				E0FF28D10F2BF0A2003D47DF /* Frameworks */,
+				E0935850167C729200A52E73 /* Sources */,
+				E0935851167C729200A52E73 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 09_Scrolling;
-			productName = orxRender_Home;
-			productReference = E0FF28D50F2BF0A2003D47DF /* 09_Scrolling.so */;
-			productType = "com.apple.product-type.library.dynamic";
+			productName = 09_Scrolling;
+			productReference = E0935853167C729200A52E73 /* 09_Scrolling */;
+			productType = "com.apple.product-type.tool";
+		};
+		E093585B167C72D700A52E73 /* 11_Spawner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E093588E167C735300A52E73 /* Build configuration list for PBXNativeTarget "11_Spawner" */;
+			buildPhases = (
+				E0935859167C72D700A52E73 /* Sources */,
+				E093585A167C72D700A52E73 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 11_Spawner;
+			productName = 11_Spawner;
+			productReference = E093585C167C72D700A52E73 /* 11_Spawner */;
+			productType = "com.apple.product-type.tool";
+		};
+		E0935864167C730000A52E73 /* 12_Lighting */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E093588F167C735300A52E73 /* Build configuration list for PBXNativeTarget "12_Lighting" */;
+			buildPhases = (
+				E0935862167C730000A52E73 /* Sources */,
+				E0935863167C730000A52E73 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 12_Lighting;
+			productName = 12_Lighting;
+			productReference = E0935865167C730000A52E73 /* 12_Lighting */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -638,7 +498,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "Tutorial" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -653,18 +513,18 @@
 			projectRoot = "";
 			targets = (
 				E059AC040F22FEE800900DF0 /* All */,
-				E059AC3A0F2300F600900DF0 /* 01_Object */,
-				E0FF288F0F2BF053003D47DF /* 02_Clock */,
-				E0FF289E0F2BF08F003D47DF /* 03_Frame */,
-				E0FF28A60F2BF093003D47DF /* 04_Anim */,
-				E0FF28AE0F2BF096003D47DF /* 05_Viewport */,
-				E0FF28B60F2BF099003D47DF /* 06_Sound */,
-				E0FF28BE0F2BF09C003D47DF /* 07_Fx */,
-				E0FF28C60F2BF09F003D47DF /* 08_Physics */,
-				E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */,
-				E059AAE20F22ECCA00900DF0 /* 10_StandAlone */,
-				E089B1DA0F89D6B000311E1E /* 11_Spawner */,
-				E09F74D012E442050059A373 /* 12_Lighting */,
+				E09357A5167C6B5600A52E73 /* 01_Object */,
+				E093580A167C70CD00A52E73 /* 02_Clock */,
+				E093581C167C715000A52E73 /* 03_Frame */,
+				E0935825167C719F00A52E73 /* 04_Anim */,
+				E093582E167C71D100A52E73 /* 05_Viewport */,
+				E0935837167C71FD00A52E73 /* 06_Sound */,
+				E0935840167C722800A52E73 /* 07_FX */,
+				E0935849167C725E00A52E73 /* 08_Physics */,
+				E0935852167C729200A52E73 /* 09_Scrolling */,
+				E059AAE20F22ECCA00900DF0 /* 10_Locale */,
+				E093585B167C72D700A52E73 /* 11_Spawner */,
+				E0935864167C730000A52E73 /* 12_Lighting */,
 			);
 		};
 /* End PBXProject section */
@@ -674,160 +534,160 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F70F2BF15B003D47DF /* 10_StandAlone.cpp in Sources */,
+				E09357B5167C6D4E00A52E73 /* 10_Locale.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E059AC3F0F2300F600900DF0 /* Sources */ = {
+		E09357A3167C6B5600A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28500F2BED77003D47DF /* 01_Object.c in Sources */,
+				E09357AD167C6BA900A52E73 /* 01_Object.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E089B1DB0F89D6B000311E1E /* Sources */ = {
+		E0935808167C70CD00A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E089B1E50F89D70C00311E1E /* 11_Spawner.c in Sources */,
+				E0935810167C70F100A52E73 /* 02_Clock.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E09F74D112E442050059A373 /* Sources */ = {
+		E093581A167C715000A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E07C5A5512E444E600861E3C /* 12_Lighting.c in Sources */,
+				E0935822167C716600A52E73 /* 03_Frame.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28900F2BF053003D47DF /* Sources */ = {
+		E0935823167C719F00A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28970F2BF06C003D47DF /* 02_Clock.c in Sources */,
+				E093582B167C71A900A52E73 /* 04_Anim.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF289F0F2BF08F003D47DF /* Sources */ = {
+		E093582C167C71D100A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F00F2BF128003D47DF /* 03_Frame.c in Sources */,
+				E0935834167C71D700A52E73 /* 05_Viewport.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28A70F2BF093003D47DF /* Sources */ = {
+		E0935835167C71FD00A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F10F2BF12F003D47DF /* 04_Anim.c in Sources */,
+				E093583D167C720400A52E73 /* 06_Sound.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28AF0F2BF096003D47DF /* Sources */ = {
+		E093583E167C722800A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F20F2BF136003D47DF /* 05_Viewport.c in Sources */,
+				E0935846167C723000A52E73 /* 07_FX.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28B70F2BF099003D47DF /* Sources */ = {
+		E0935847167C725E00A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F30F2BF13C003D47DF /* 06_Sound.c in Sources */,
+				E093584F167C726800A52E73 /* 08_Physics.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28BF0F2BF09C003D47DF /* Sources */ = {
+		E0935850167C729200A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F40F2BF143003D47DF /* 07_FX.c in Sources */,
+				E0935858167C729C00A52E73 /* 09_Scrolling.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28C70F2BF09F003D47DF /* Sources */ = {
+		E0935859167C72D700A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F50F2BF14A003D47DF /* 08_Physics.c in Sources */,
+				E0935861167C72DC00A52E73 /* 11_Spawner.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0FF28CF0F2BF0A2003D47DF /* Sources */ = {
+		E0935862167C730000A52E73 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FF28F60F2BF151003D47DF /* 09_Scrolling.c in Sources */,
+				E093586A167C730700A52E73 /* 12_Lighting.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E089B1EF0F89D75000311E1E /* PBXTargetDependency */ = {
+		E093586C167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E089B1DA0F89D6B000311E1E /* 11_Spawner */;
-			targetProxy = E089B1EE0F89D75000311E1E /* PBXContainerItemProxy */;
+			target = E0935864167C730000A52E73 /* 12_Lighting */;
+			targetProxy = E093586B167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E09F74DA12E442360059A373 /* PBXTargetDependency */ = {
+		E093586E167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E09F74D012E442050059A373 /* 12_Lighting */;
-			targetProxy = E09F74D912E442360059A373 /* PBXContainerItemProxy */;
+			target = E093585B167C72D700A52E73 /* 11_Spawner */;
+			targetProxy = E093586D167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28DF0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E0935870167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */;
-			targetProxy = E0FF28DE0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E059AAE20F22ECCA00900DF0 /* 10_Locale */;
+			targetProxy = E093586F167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28E10F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E0935872167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF28C60F2BF09F003D47DF /* 08_Physics */;
-			targetProxy = E0FF28E00F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E0935852167C729200A52E73 /* 09_Scrolling */;
+			targetProxy = E0935871167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28E30F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E0935874167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF28BE0F2BF09C003D47DF /* 07_Fx */;
-			targetProxy = E0FF28E20F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E0935849167C725E00A52E73 /* 08_Physics */;
+			targetProxy = E0935873167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28E50F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E0935876167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF28B60F2BF099003D47DF /* 06_Sound */;
-			targetProxy = E0FF28E40F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E0935840167C722800A52E73 /* 07_FX */;
+			targetProxy = E0935875167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28E70F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E0935878167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF28AE0F2BF096003D47DF /* 05_Viewport */;
-			targetProxy = E0FF28E60F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E0935837167C71FD00A52E73 /* 06_Sound */;
+			targetProxy = E0935877167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28E90F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E093587A167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF28A60F2BF093003D47DF /* 04_Anim */;
-			targetProxy = E0FF28E80F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E093582E167C71D100A52E73 /* 05_Viewport */;
+			targetProxy = E0935879167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28EB0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E093587C167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF289E0F2BF08F003D47DF /* 03_Frame */;
-			targetProxy = E0FF28EA0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E0935825167C719F00A52E73 /* 04_Anim */;
+			targetProxy = E093587B167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28ED0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E093587E167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E0FF288F0F2BF053003D47DF /* 02_Clock */;
-			targetProxy = E0FF28EC0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E093581C167C715000A52E73 /* 03_Frame */;
+			targetProxy = E093587D167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF28EF0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+		E0935880167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E059AC3A0F2300F600900DF0 /* 01_Object */;
-			targetProxy = E0FF28EE0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+			target = E093580A167C70CD00A52E73 /* 02_Clock */;
+			targetProxy = E093587F167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
-		E0FF29020F2BF328003D47DF /* PBXTargetDependency */ = {
+		E0935882167C732D00A52E73 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E059AAE20F22ECCA00900DF0 /* 10_StandAlone */;
-			targetProxy = E0FF29010F2BF328003D47DF /* PBXContainerItemProxy */;
+			target = E09357A5167C6B5600A52E73 /* 01_Object */;
+			targetProxy = E0935881167C732D00A52E73 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -836,9 +696,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -862,18 +722,21 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INSTALL_PATH = "@executable_path";
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_bundle;
+				LIBRARY_SEARCH_PATHS = ../../../lib;
+				MACH_O_TYPE = mh_execute;
 				OBJROOT = build;
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-lorx";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SYMROOT = ../../../bin/mac;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
-				VALID_ARCHS = "i386 ppc";
+				VALID_ARCHS = "x86_64 i386 ppc_64 ppc";
 			};
 			name = Release;
 		};
@@ -881,7 +744,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -893,11 +757,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INSTALL_PATH = "@executable_path";
 				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../lib/mac\"";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
 				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -905,13 +766,15 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = 10_StandAlone;
-				STRIP_INSTALLED_PRODUCT = YES;
+				PRODUCT_NAME = 10_Locale;
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
+				SYMROOT = ../../../bin;
+				VALID_ARCHS = "x86_64 i386 ppc_64 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -927,398 +790,965 @@
 			};
 			name = Release;
 		};
-		E059AC450F2300F600900DF0 /* Release */ = {
+		E093578E167C6ACA00A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_ENABLE_PASCAL_STRINGS = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_FAST_OBJC_DISPATCH = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __orxPROFILER__;
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = NO;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
+				LIBRARY_SEARCH_PATHS = ../../../lib;
+				MACH_O_TYPE = mh_execute;
+				OBJROOT = build;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-lorxp";
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = ../../../bin;
+				USER_HEADER_SEARCH_PATHS = ../../../include;
+				VALID_ARCHS = "x86_64 i386 ppc_64 ppc";
+			};
+			name = Profile;
+		};
+		E093578F167C6ACA00A52E73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = Profile;
+		};
+		E0935790167C6ACA00A52E73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __orxPROFILER__;
 				INSTALL_PATH = "@executable_path";
 				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
+				MACH_O_TYPE = mh_execute;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 10_Locale;
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = NO;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin;
+				VALID_ARCHS = "x86_64 i386 ppc_64 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Profile;
+		};
+		E0935793167C6AD000A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_ENABLE_PASCAL_STRINGS = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_FAST_OBJC_DISPATCH = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __orxDEBUG__;
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = NO;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
+				LIBRARY_SEARCH_PATHS = ../../../lib;
+				MACH_O_TYPE = mh_execute;
+				OBJROOT = build;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-lorxd";
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = ../../../bin;
+				USER_HEADER_SEARCH_PATHS = ../../../include;
+				VALID_ARCHS = "x86_64 i386 ppc_64 ppc";
+			};
+			name = Debug;
+		};
+		E0935794167C6AD000A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		E0935795167C6AD000A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __orxDEBUG__;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
+				MACH_O_TYPE = mh_execute;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 10_Locale;
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = NO;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin;
+				VALID_ARCHS = "x86_64 i386 ppc_64 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		E09357A8167C6B5600A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_SYMBOL_SEPARATION = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 01_Object;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E089B1E00F89D6B000311E1E /* Release */ = {
+		E09357A9167C6B5600A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_AUTO_VECTORIZATION = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_SYMBOL_SEPARATION = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../lib/mac\"";
-				MACH_O_TYPE = mh_execute;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = 11_Spawner;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
-				ZERO_LINK = NO;
+				PRODUCT_NAME = 01_Object;
 			};
-			name = Release;
+			name = Profile;
 		};
-		E09F74D612E442050059A373 /* Release */ = {
+		E09357AA167C6B5600A52E73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_AUTO_VECTORIZATION = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_SYMBOL_SEPARATION = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../lib/mac\"";
-				MACH_O_TYPE = mh_execute;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxd",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = 12_Lighting;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
-				ZERO_LINK = NO;
+				PRODUCT_NAME = 01_Object;
 			};
-			name = Release;
+			name = Debug;
 		};
-		E0FF28950F2BF053003D47DF /* Release */ = {
+		E093580D167C70CE00A52E73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 02_Clock;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E0FF28A40F2BF08F003D47DF /* Release */ = {
+		E093580E167C70CE00A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 02_Clock;
+			};
+			name = Profile;
+		};
+		E093580F167C70CE00A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 02_Clock;
+			};
+			name = Debug;
+		};
+		E093581F167C715000A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 03_Frame;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E0FF28AC0F2BF093003D47DF /* Release */ = {
+		E0935820167C715000A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 03_Frame;
+			};
+			name = Profile;
+		};
+		E0935821167C715000A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 03_Frame;
+			};
+			name = Debug;
+		};
+		E0935828167C719F00A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 04_Anim;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E0FF28B40F2BF096003D47DF /* Release */ = {
+		E0935829167C719F00A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 04_Anim;
+			};
+			name = Profile;
+		};
+		E093582A167C719F00A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 04_Anim;
+			};
+			name = Debug;
+		};
+		E0935831167C71D100A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 05_Viewport;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E0FF28BC0F2BF099003D47DF /* Release */ = {
+		E0935832167C71D100A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 05_Viewport;
+			};
+			name = Profile;
+		};
+		E0935833167C71D100A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 05_Viewport;
+			};
+			name = Debug;
+		};
+		E093583A167C71FE00A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 06_Sound;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E0FF28C40F2BF09C003D47DF /* Release */ = {
+		E093583B167C71FE00A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = 07_Fx;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
-				ZERO_LINK = NO;
+				PRODUCT_NAME = 06_Sound;
 			};
-			name = Release;
+			name = Profile;
 		};
-		E0FF28CC0F2BF09F003D47DF /* Release */ = {
+		E093583C167C71FE00A52E73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 06_Sound;
+			};
+			name = Debug;
+		};
+		E0935843167C722900A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 07_FX;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0935844167C722900A52E73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 07_FX;
+			};
+			name = Profile;
+		};
+		E0935845167C722900A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 07_FX;
+			};
+			name = Debug;
+		};
+		E093584C167C725F00A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 08_Physics;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
-		E0FF28D40F2BF0A2003D47DF /* Release */ = {
+		E093584D167C725F00A52E73 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = "@executable_path";
-				LD_DYLIB_INSTALL_NAME = "";
-				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
-				MACH_O_TYPE = mh_dylib;
-				ONLY_ACTIVE_ARCH = NO;
+				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 08_Physics;
+			};
+			name = Profile;
+		};
+		E093584E167C725F00A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 08_Physics;
+			};
+			name = Debug;
+		};
+		E0935855167C729300A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = 09_Scrolling;
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = all;
-				SYMROOT = ../../../bin/mac;
-				VALID_ARCHS = "i386 ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;
+		};
+		E0935856167C729300A52E73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 09_Scrolling;
+			};
+			name = Profile;
+		};
+		E0935857167C729300A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 09_Scrolling;
+			};
+			name = Debug;
+		};
+		E093585E167C72D700A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 11_Spawner;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E093585F167C72D700A52E73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 11_Spawner;
+			};
+			name = Profile;
+		};
+		E0935860167C72D700A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 11_Spawner;
+			};
+			name = Debug;
+		};
+		E0935867167C730100A52E73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorx",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 12_Lighting;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0935868167C730100A52E73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxp",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 12_Lighting;
+			};
+			name = Profile;
+		};
+		E0935869167C730100A52E73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lorxd",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 12_Lighting;
+			};
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -1327,14 +1757,18 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB916608733D950010E9CD /* Release */,
+				E093578E167C6ACA00A52E73 /* Profile */,
+				E0935793167C6AD000A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "10_StandAlone" */ = {
+		E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "10_Locale" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E059AAE60F22ECCB00900DF0 /* Release */,
+				E0935790167C6ACA00A52E73 /* Profile */,
+				E0935795167C6AD000A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1343,94 +1777,118 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E059AC060F22FEE800900DF0 /* Release */,
+				E093578F167C6ACA00A52E73 /* Profile */,
+				E0935794167C6AD000A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E059AC430F2300F600900DF0 /* Build configuration list for PBXNativeTarget "01_Object" */ = {
+		E09357B0167C6BC700A52E73 /* Build configuration list for PBXNativeTarget "01_Object" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E059AC450F2300F600900DF0 /* Release */,
+				E09357A8167C6B5600A52E73 /* Release */,
+				E09357A9167C6B5600A52E73 /* Profile */,
+				E09357AA167C6B5600A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E089B1DF0F89D6B000311E1E /* Build configuration list for PBXNativeTarget "11_Spawner" */ = {
+		E0935811167C710F00A52E73 /* Build configuration list for PBXNativeTarget "02_Clock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E089B1E00F89D6B000311E1E /* Release */,
+				E093580D167C70CE00A52E73 /* Release */,
+				E093580E167C70CE00A52E73 /* Profile */,
+				E093580F167C70CE00A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E09F74D512E442050059A373 /* Build configuration list for PBXNativeTarget "12_Lighting" */ = {
+		E0935887167C735300A52E73 /* Build configuration list for PBXNativeTarget "03_Frame" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E09F74D612E442050059A373 /* Release */,
+				E093581F167C715000A52E73 /* Release */,
+				E0935820167C715000A52E73 /* Profile */,
+				E0935821167C715000A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28940F2BF053003D47DF /* Build configuration list for PBXNativeTarget "02_Clock" */ = {
+		E0935888167C735300A52E73 /* Build configuration list for PBXNativeTarget "04_Anim" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28950F2BF053003D47DF /* Release */,
+				E0935828167C719F00A52E73 /* Release */,
+				E0935829167C719F00A52E73 /* Profile */,
+				E093582A167C719F00A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28A30F2BF08F003D47DF /* Build configuration list for PBXNativeTarget "03_Frame" */ = {
+		E0935889167C735300A52E73 /* Build configuration list for PBXNativeTarget "05_Viewport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28A40F2BF08F003D47DF /* Release */,
+				E0935831167C71D100A52E73 /* Release */,
+				E0935832167C71D100A52E73 /* Profile */,
+				E0935833167C71D100A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28AB0F2BF093003D47DF /* Build configuration list for PBXNativeTarget "04_Anim" */ = {
+		E093588A167C735300A52E73 /* Build configuration list for PBXNativeTarget "06_Sound" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28AC0F2BF093003D47DF /* Release */,
+				E093583A167C71FE00A52E73 /* Release */,
+				E093583B167C71FE00A52E73 /* Profile */,
+				E093583C167C71FE00A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28B30F2BF096003D47DF /* Build configuration list for PBXNativeTarget "05_Viewport" */ = {
+		E093588B167C735300A52E73 /* Build configuration list for PBXNativeTarget "07_FX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28B40F2BF096003D47DF /* Release */,
+				E0935843167C722900A52E73 /* Release */,
+				E0935844167C722900A52E73 /* Profile */,
+				E0935845167C722900A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28BB0F2BF099003D47DF /* Build configuration list for PBXNativeTarget "06_Sound" */ = {
+		E093588C167C735300A52E73 /* Build configuration list for PBXNativeTarget "08_Physics" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28BC0F2BF099003D47DF /* Release */,
+				E093584C167C725F00A52E73 /* Release */,
+				E093584D167C725F00A52E73 /* Profile */,
+				E093584E167C725F00A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28C30F2BF09C003D47DF /* Build configuration list for PBXNativeTarget "07_Fx" */ = {
+		E093588D167C735300A52E73 /* Build configuration list for PBXNativeTarget "09_Scrolling" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28C40F2BF09C003D47DF /* Release */,
+				E0935855167C729300A52E73 /* Release */,
+				E0935856167C729300A52E73 /* Profile */,
+				E0935857167C729300A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28CB0F2BF09F003D47DF /* Build configuration list for PBXNativeTarget "08_Physics" */ = {
+		E093588E167C735300A52E73 /* Build configuration list for PBXNativeTarget "11_Spawner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28CC0F2BF09F003D47DF /* Release */,
+				E093585E167C72D700A52E73 /* Release */,
+				E093585F167C72D700A52E73 /* Profile */,
+				E0935860167C72D700A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0FF28D30F2BF0A2003D47DF /* Build configuration list for PBXNativeTarget "09_Scrolling" */ = {
+		E093588F167C735300A52E73 /* Build configuration list for PBXNativeTarget "12_Lighting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E0FF28D40F2BF0A2003D47DF /* Release */,
+				E0935867167C730100A52E73 /* Release */,
+				E0935868167C730100A52E73 /* Profile */,
+				E0935869167C730100A52E73 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
