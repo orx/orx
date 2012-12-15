@@ -278,6 +278,7 @@ project "orxFontGen"
         {
             "dl",
             "m",
+            "lz",
             "rt"
         }
 
