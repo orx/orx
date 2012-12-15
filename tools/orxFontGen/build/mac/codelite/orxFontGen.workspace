@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Workspace Name="orxFontGen" Database="./orxFontGen.tags">
+  <Project Name="orxFontGen" Path="orxFontGen.project" Active="Yes" />
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="debug64" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="debug64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="profile64" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="profile64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="release64" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="release64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="debug32" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="debug32"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="profile32" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="profile32"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="release32" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="release32"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

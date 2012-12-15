@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxFontGen", "orxFontGen.vcproj", "{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Profile|Win32 = Profile|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}.Debug|Win32.Build.0 = Debug|Win32
+		{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}.Profile|Win32.ActiveCfg = Profile|Win32
+		{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}.Profile|Win32.Build.0 = Profile|Win32
+		{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}.Release|Win32.ActiveCfg = Release|Win32
+		{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

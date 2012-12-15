@@ -98,7 +98,7 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 -- Solution: orx
 --
 
-solution "orxCrypt"
+solution "orxFontGen"
 
     language ("C")
 
@@ -119,7 +119,9 @@ solution "orxCrypt"
     includedirs
     {
         "../include",
-        "../../../code/include"
+        "../../../code/include",
+        "../../../extern/SOIL/include",
+        "../../../extern/freetype-2.4.1/include"
     }
 
     libdirs
@@ -171,6 +173,20 @@ solution "orxCrypt"
 
 -- Linux
 
+    configuration {"linux", "x32"}
+        libdirs
+        {
+            "../../../extern/SOIL/lib/linux",
+            "../../../extern/freetype-2.4.1/lib/linux",
+        }
+
+    configuration {"linux", "x64"}
+        libdirs
+        {
+            "../../../extern/SOIL/lib/linux64",
+            "../../../extern/freetype-2.4.1/lib/linux64"
+        }
+
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
         buildoptions {"-fschedule-insns"}
@@ -179,6 +195,11 @@ solution "orxCrypt"
 -- Mac OS X
 
     configuration {"macosx"}
+        libdirs
+        {
+            "../../../extern/SOIL/lib/mac",
+            "../../../extern/freetype-2.4.1/lib/mac"
+        }
         buildoptions
         {
             "-x c++",
@@ -205,18 +226,60 @@ solution "orxCrypt"
 
 -- Windows
 
-    configuration {"windows"}
-        links
+    configuration {"vs2008"}
+        libdirs
         {
-            "winmm"
+            "../../../extern/SOIL/lib/msvs2008",
+            "../../../extern/freetype-2.4.1/lib/vc2008"
+        }
+
+    configuration {"vs2010"}
+        libdirs
+        {
+            "../../../extern/SOIL/lib/msvs2010",
+            "../../../extern/freetype-2.4.1/lib/vc2010"
+        }
+
+    configuration {"windows", "codeblocks or codelite or gmake"}
+        libdirs
+        {
+            "../../../extern/SOIL/lib/mingw",
+            "../../../extern/freetype-2.4.1/lib/mingw"
         }
 
 
 --
--- Project: orxCrypt
+-- Project: orxFontGen
 --
 
-project "orxCrypt"
+project "orxFontGen"
 
-    files {"../src/orxCrypt.c"}
-    targetname ("orxcrypt")
+    files {"../src/orxFontGen.c"}
+    targetname ("orxfontgen")
+    links
+    {
+        "SOIL",
+        "freetype"
+    }
+
+
+-- Linux
+
+
+-- Mac OS X
+
+    configuration {"macosx"}
+        links
+        {
+            "OpenGL.framework"
+        }
+
+
+-- Windows
+
+    configuration {"windows"}
+        links
+        {
+            "winmm",
+            "OpenGL32"
+        }
