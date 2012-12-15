@@ -84,6 +84,12 @@ newoption
     description = "Set the output location for the generated files"
 }
 
+newoption
+{
+    trigger = "package",
+    description = "Only used when generating build files for packaging purposes"
+}
+
 if os.is ("macosx") then
     osname = "mac"
 else
@@ -163,7 +169,10 @@ solution "Tutorial"
 
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
-        postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
+
+        if not _OPTIONS["package"] then
+            postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
+        end
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -188,7 +197,9 @@ solution "Tutorial"
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
-        postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+        if not _OPTIONS["package"] then
+            postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+        end
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -200,8 +211,9 @@ solution "Tutorial"
 -- Windows
 
     configuration {"windows"}
-        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
-
+        if not _OPTIONS["package"] then
+            postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+        end
 
 --
 -- Project: 01_Object

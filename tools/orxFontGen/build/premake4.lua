@@ -84,6 +84,12 @@ newoption
     description = "Set the output location for the generated files"
 }
 
+newoption
+{
+    trigger = "package",
+    description = "Only used when generating build files for packaging purposes"
+}
+
 if os.is ("macosx") then
     osname = "mac"
 else
@@ -215,7 +221,9 @@ solution "orxFontGen"
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
-        postbuildcommands {"cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+        if not _OPTIONS["package"] then
+            postbuildcommands {"cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+        end
 
     configuration {"macosx", "x32"}
         buildoptions
