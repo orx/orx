@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="07_FX"
-	ProjectGUID="{5737EBD4-7B11-F64C-9F7C-C79488F0991F}"
+	ProjectGUID="{61A80209-0E39-A54A-9C7F-279569C6D8DF}"
 	RootNamespace="07_FX"
 	Keyword="Win32Proj"
 	>

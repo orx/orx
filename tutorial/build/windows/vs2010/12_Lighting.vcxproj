@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{EC2D73F0-C3F2-7247-970B-4CB3C0639BE5}</ProjectGuid>
+    <ProjectGuid>{27FBABA1-A287-4B4F-AF4F-7B761CEBDB5A}</ProjectGuid>
     <RootNamespace>12_Lighting</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

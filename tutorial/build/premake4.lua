@@ -84,12 +84,6 @@ newoption
     description = "Set the output location for the generated files"
 }
 
-newoption
-{
-    trigger = "split-platforms",
-    description = "Split target folders based on platforms"
-}
-
 if os.is ("macosx") then
     osname = "mac"
 else

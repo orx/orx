@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BA12BE5C-9A55-5744-A19C-B30ED52FFA9A}</ProjectGuid>
+    <ProjectGuid>{8D72348C-FEEB-AD46-A5D9-8B228D05628B}</ProjectGuid>
     <RootNamespace>11_Spawner</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

@@ -74,3 +74,5 @@ tutorial/build/**.user
 tutorial/build/**.htm
 tutorial/build/**.ncb
 **.cih
+tools/**.user
+tools/**/bin

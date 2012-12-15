@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="04_Anim"
-	ProjectGUID="{E2B67699-2C51-8640-99AD-0D07EEC6C0D0}"
+	ProjectGUID="{46771B2E-AAAD-1446-83A2-9969DE739990}"
 	RootNamespace="04_Anim"
 	Keyword="Win32Proj"
 	>

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="09_Scrolling"
-	ProjectGUID="{ADB6F541-F786-BB41-9A98-5F71A761F9D6}"
+	ProjectGUID="{DDC7BF00-8435-BF4C-91F9-6B667F8581F6}"
 	RootNamespace="09_Scrolling"
 	Keyword="Win32Proj"
 	>

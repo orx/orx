@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2061F6A3-0B1B-864E-A3C4-D3814E424900}</ProjectGuid>
+    <ProjectGuid>{DC76D5DC-C556-C348-8A66-716F21CBCAE3}</ProjectGuid>
     <RootNamespace>06_Sound</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

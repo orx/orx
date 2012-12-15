@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="06_Sound"
-	ProjectGUID="{15AE8B0D-DE48-8D4C-9D25-B323C6F549C6}"
+	ProjectGUID="{6C09C605-FDFC-474D-A9DB-1C1492380AB5}"
 	RootNamespace="06_Sound"
 	Keyword="Win32Proj"
 	>

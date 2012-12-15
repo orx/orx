@@ -523,8 +523,12 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Console Display? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
     {
-      /* Logs it */
-      orxConsole_Log(zBuffer);
+      /* Is console initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CONSOLE) != orxFALSE)
+      {
+        /* Logs it */
+        orxConsole_Log(zBuffer);
+      }
     }
   }
 

@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B7028687-9D12-284C-AD08-ACE5C1503423}</ProjectGuid>
+    <ProjectGuid>{67398E3B-5103-F24E-9C33-DCBF82F24777}</ProjectGuid>
     <RootNamespace>08_Physics</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

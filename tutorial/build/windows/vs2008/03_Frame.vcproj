@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="03_Frame"
-	ProjectGUID="{D1A3A84D-2DE5-CD4F-BC40-A3CFB154B55D}"
+	ProjectGUID="{59DEA6B2-99EA-6944-A6EE-B0C922673A77}"
 	RootNamespace="03_Frame"
 	Keyword="Win32Proj"
 	>
