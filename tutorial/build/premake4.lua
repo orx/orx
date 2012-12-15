@@ -222,7 +222,7 @@ solution "Tutorial"
 
     configuration {"windows"}
         if not _OPTIONS["package"] then
-            postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+            postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
         end
 
 --
