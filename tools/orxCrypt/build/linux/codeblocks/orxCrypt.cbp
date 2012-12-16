@@ -28,6 +28,9 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
 					<Add library="orxd" />
+					<Add library="dl" />
+					<Add library="m" />
+					<Add library="rt" />
 				</Linker>
 			</Target>
 			<Target title="Profile|x32">
@@ -55,6 +58,9 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
 					<Add library="orxp" />
+					<Add library="dl" />
+					<Add library="m" />
+					<Add library="rt" />
 				</Linker>
 			</Target>
 			<Target title="Release|x32">
@@ -81,6 +87,9 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
 					<Add library="orx" />
+					<Add library="dl" />
+					<Add library="m" />
+					<Add library="rt" />
 				</Linker>
 			</Target>
 			<Target title="Debug|x64">
@@ -105,6 +114,9 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
 					<Add library="orxd" />
+					<Add library="dl" />
+					<Add library="m" />
+					<Add library="rt" />
 				</Linker>
 			</Target>
 			<Target title="Profile|x64">
@@ -132,6 +144,9 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
 					<Add library="orxp" />
+					<Add library="dl" />
+					<Add library="m" />
+					<Add library="rt" />
 				</Linker>
 			</Target>
 			<Target title="Release|x64">
@@ -158,6 +173,9 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
 					<Add library="orx" />
+					<Add library="dl" />
+					<Add library="m" />
+					<Add library="rt" />
 				</Linker>
 			</Target>
 		</Build>

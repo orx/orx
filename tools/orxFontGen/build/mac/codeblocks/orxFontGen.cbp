@@ -43,10 +43,12 @@
 					<Add library="orxd" />
 					<Add library="SOIL" />
 					<Add library="freetype" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 					<Add library="OpenGL.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x64">
@@ -88,10 +90,12 @@
 					<Add library="orxp" />
 					<Add library="SOIL" />
 					<Add library="freetype" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 					<Add library="OpenGL.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release|x64">
@@ -132,10 +136,12 @@
 					<Add library="orx" />
 					<Add library="SOIL" />
 					<Add library="freetype" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 					<Add library="OpenGL.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Debug|x32">
@@ -176,10 +182,12 @@
 					<Add library="orxd" />
 					<Add library="SOIL" />
 					<Add library="freetype" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 					<Add library="OpenGL.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x32">
@@ -222,10 +230,12 @@
 					<Add library="orxp" />
 					<Add library="SOIL" />
 					<Add library="freetype" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 					<Add library="OpenGL.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release|x32">
@@ -267,10 +277,12 @@
 					<Add library="orx" />
 					<Add library="SOIL" />
 					<Add library="freetype" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 					<Add library="OpenGL.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 		</Build>

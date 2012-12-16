@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="orxCrypt"
-	ProjectGUID="{F2C78780-0223-394C-8289-217FB3C1171D}"
+	ProjectGUID="{D15ABB9E-FCBA-AB4A-A0DA-5BB6A6A9324B}"
 	RootNamespace="orxCrypt"
 	Keyword="Win32Proj"
 	>

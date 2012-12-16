@@ -37,9 +37,11 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add library="orxd" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x64">
@@ -75,9 +77,11 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add library="orxp" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release|x64">
@@ -112,9 +116,11 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add library="orx" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Debug|x32">
@@ -149,9 +155,11 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add library="orxd" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Profile|x32">
@@ -188,9 +196,11 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add library="orxp" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release|x32">
@@ -226,9 +236,11 @@
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add library="orx" />
+					<Add library="Foundation.framework" />
+					<Add library="AppKit.framework" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin" />
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
 				</ExtraCommands>
 			</Target>
 		</Build>

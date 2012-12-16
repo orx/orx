@@ -16,6 +16,9 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
         <Library Value="orxd" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -43,6 +46,9 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
         <Library Value="orxp" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -69,6 +75,9 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
         <Library Value="orx" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -96,6 +105,9 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
         <Library Value="orxd" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -123,6 +135,9 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
         <Library Value="orxp" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -149,6 +164,9 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
         <Library Value="orx" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">

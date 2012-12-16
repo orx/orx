@@ -22,6 +22,10 @@
         <Library Value="orxd" />
         <Library Value="SOIL" />
         <Library Value="freetype" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="z" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -55,6 +59,10 @@
         <Library Value="orxp" />
         <Library Value="SOIL" />
         <Library Value="freetype" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="z" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -87,6 +95,10 @@
         <Library Value="orx" />
         <Library Value="SOIL" />
         <Library Value="freetype" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="z" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -120,6 +132,10 @@
         <Library Value="orxd" />
         <Library Value="SOIL" />
         <Library Value="freetype" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="z" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -153,6 +169,10 @@
         <Library Value="orxp" />
         <Library Value="SOIL" />
         <Library Value="freetype" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="z" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">
@@ -185,6 +205,10 @@
         <Library Value="orx" />
         <Library Value="SOIL" />
         <Library Value="freetype" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="z" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <CustomBuild Enabled="no">

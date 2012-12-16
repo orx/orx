@@ -30,7 +30,7 @@ ifeq ($(config),debug32)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/SOIL/lib/linux -L../../../../../extern/freetype-2.4.1/lib/linux -m32 -L/usr/lib32
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd -lSOIL -lfreetype
+  LIBS      += -lorxd -lSOIL -lfreetype -ldl -lm -lz -lrt
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -52,7 +52,7 @@ ifeq ($(config),profile32)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/SOIL/lib/linux -L../../../../../extern/freetype-2.4.1/lib/linux -m32 -L/usr/lib32
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp -lSOIL -lfreetype
+  LIBS      += -lorxp -lSOIL -lfreetype -ldl -lm -lz -lrt
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -74,7 +74,7 @@ ifeq ($(config),release32)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/SOIL/lib/linux -L../../../../../extern/freetype-2.4.1/lib/linux -m32 -L/usr/lib32
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx -lSOIL -lfreetype
+  LIBS      += -lorx -lSOIL -lfreetype -ldl -lm -lz -lrt
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -96,7 +96,7 @@ ifeq ($(config),debug64)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/SOIL/lib/linux64 -L../../../../../extern/freetype-2.4.1/lib/linux64 -m64 -L/usr/lib64
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd -lSOIL -lfreetype
+  LIBS      += -lorxd -lSOIL -lfreetype -ldl -lm -lz -lrt
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -118,7 +118,7 @@ ifeq ($(config),profile64)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/SOIL/lib/linux64 -L../../../../../extern/freetype-2.4.1/lib/linux64 -m64 -L/usr/lib64
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp -lSOIL -lfreetype
+  LIBS      += -lorxp -lSOIL -lfreetype -ldl -lm -lz -lrt
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -140,7 +140,7 @@ ifeq ($(config),release64)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/SOIL/lib/linux64 -L../../../../../extern/freetype-2.4.1/lib/linux64 -m64 -L/usr/lib64
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx -lSOIL -lfreetype
+  LIBS      += -lorx -lSOIL -lfreetype -ldl -lm -lz -lrt
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS

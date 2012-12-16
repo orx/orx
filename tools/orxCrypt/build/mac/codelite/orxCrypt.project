@@ -16,10 +16,12 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <Library Value="orxd" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -46,10 +48,12 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <Library Value="orxp" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -75,10 +79,12 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <Library Value="orx" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -105,10 +111,12 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <Library Value="orxd" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -135,10 +143,12 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <Library Value="orxp" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -164,10 +174,12 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <Library Value="orx" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>

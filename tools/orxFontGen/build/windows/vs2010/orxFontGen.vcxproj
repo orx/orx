@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9734CBDB-3CAA-284A-B619-E52250D4790B}</ProjectGuid>
+    <ProjectGuid>{067FC73C-A5BE-344C-B446-5A3F7BE2DDDA}</ProjectGuid>
     <RootNamespace>orxFontGen</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

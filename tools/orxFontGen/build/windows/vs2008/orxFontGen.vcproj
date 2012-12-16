@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="orxFontGen"
-	ProjectGUID="{CD6A5D02-6817-354C-BA41-5E6C2AD9AAFC}"
+	ProjectGUID="{F62DB1CA-4E2D-2A43-8AD9-4FDA4AAB2271}"
 	RootNamespace="orxFontGen"
 	Keyword="Win32Proj"
 	>

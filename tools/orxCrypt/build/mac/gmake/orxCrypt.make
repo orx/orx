@@ -30,7 +30,7 @@ ifeq ($(config),debug64)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd
+  LIBS      += -lorxd -framework Foundation -framework AppKit
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -39,7 +39,7 @@ ifeq ($(config),debug64)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin
+	$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)
   endef
 endif
 
@@ -54,7 +54,7 @@ ifeq ($(config),profile64)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp
+  LIBS      += -lorxp -framework Foundation -framework AppKit
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -63,7 +63,7 @@ ifeq ($(config),profile64)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin
+	$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)
   endef
 endif
 
@@ -78,7 +78,7 @@ ifeq ($(config),release64)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx
+  LIBS      += -lorx -framework Foundation -framework AppKit
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -87,7 +87,7 @@ ifeq ($(config),release64)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin
+	$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)
   endef
 endif
 
@@ -102,7 +102,7 @@ ifeq ($(config),debug32)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd
+  LIBS      += -lorxd -framework Foundation -framework AppKit
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -111,7 +111,7 @@ ifeq ($(config),debug32)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin
+	$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)
   endef
 endif
 
@@ -126,7 +126,7 @@ ifeq ($(config),profile32)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp
+  LIBS      += -lorxp -framework Foundation -framework AppKit
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -135,7 +135,7 @@ ifeq ($(config),profile32)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin
+	$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)
   endef
 endif
 
@@ -150,7 +150,7 @@ ifeq ($(config),release32)
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx
+  LIBS      += -lorx -framework Foundation -framework AppKit
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -159,7 +159,7 @@ ifeq ($(config),release32)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin
+	$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)
   endef
 endif
 
