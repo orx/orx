@@ -26,7 +26,7 @@
 					<Add library="orxd" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Profile">
@@ -51,7 +51,7 @@
 					<Add library="orxp" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release">
@@ -75,7 +75,7 @@
 					<Add library="orx" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
 				</ExtraCommands>
 			</Target>
 		</Build>

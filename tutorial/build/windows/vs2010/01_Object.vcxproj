@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CE28FCD6-0C26-284A-9A2E-083982A344BC}</ProjectGuid>
+    <ProjectGuid>{1E36AA1E-203E-8693-4432-68AADE3E1B43}</ProjectGuid>
     <RootNamespace>01_Object</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -97,7 +97,7 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
+      <Command>cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -134,7 +134,7 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
+      <Command>cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -171,7 +171,7 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
+      <Command>cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

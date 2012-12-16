@@ -39,7 +39,7 @@ ifeq ($(config),debug)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
+	cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
   endef
 endif
 
@@ -63,7 +63,7 @@ ifeq ($(config),profile)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
+	cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
   endef
 endif
 
@@ -87,7 +87,7 @@ ifeq ($(config),release)
   endef
   define POSTBUILDCMDS
 	@echo Running post-build commands
-	cmd /c copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
+	cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin
   endef
 endif
 

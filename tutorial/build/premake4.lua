@@ -84,12 +84,6 @@ newoption
     description = "Set the output location for the generated files"
 }
 
-newoption
-{
-    trigger = "package",
-    description = "Only used when generating build files for packaging purposes"
-}
-
 if os.is ("macosx") then
     osname = "mac"
 else
@@ -175,9 +169,7 @@ solution "Tutorial"
             "m",
             "rt"
         }
-        if not _OPTIONS["package"] then
-            postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
-        end
+        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.so ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -207,9 +199,7 @@ solution "Tutorial"
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
-        if not _OPTIONS["package"] then
-            postbuildcommands {"cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
-        end
+        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -221,9 +211,7 @@ solution "Tutorial"
 -- Windows
 
     configuration {"windows"}
-        if not _OPTIONS["package"] then
-            postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
-        end
+        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 --
 -- Project: 01_Object

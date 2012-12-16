@@ -4,92 +4,6 @@
     <File Name="../../../src/10_Locale.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
-    <Configuration Name="debug32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions">
-        <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../code/include"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
-        <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../../code/lib/dynamic" />
-        <Library Value="orxd" />
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin</Command>
-      </PostBuild>
-      <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="profile32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
-        <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../code/include"/>
-        <Preprocessor Value="__orxPROFILER__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
-        <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../../code/lib/dynamic" />
-        <Library Value="orxp" />
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin</Command>
-      </PostBuild>
-      <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="release32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
-        <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../code/include"/>
-      </Compiler>
-      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
-        <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../../code/lib/dynamic" />
-        <Library Value="orx" />
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin</Command>
-      </PostBuild>
-      <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
-      </AdditionalRules>
-    </Configuration>
     <Configuration Name="debug64" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions">
@@ -101,10 +15,13 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.so ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -130,10 +47,13 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.so ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -158,10 +78,108 @@
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
-        <Command Enabled="yes">cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin</Command>
+        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.so ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="debug32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
+        <Library Value="orxd" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.so ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="profile32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
+        <Library Value="orxp" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.so ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="release32" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/10_Locale" IntermediateDirectory="$(ConfigurationName)" Command="./10_Locale" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../code/include"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../code/lib/dynamic" />
+        <Library Value="orx" />
+        <Library Value="dl" />
+        <Library Value="m" />
+        <Library Value="rt" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.so ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.so ../../../bin)</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -177,16 +195,16 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies name="Debug|x32">
-  </Dependencies>
-  <Dependencies name="Profile|x32">
-  </Dependencies>
-  <Dependencies name="Release|x32">
-  </Dependencies>
   <Dependencies name="Debug|x64">
   </Dependencies>
   <Dependencies name="Profile|x64">
   </Dependencies>
   <Dependencies name="Release|x64">
+  </Dependencies>
+  <Dependencies name="Debug|x32">
+  </Dependencies>
+  <Dependencies name="Profile|x32">
+  </Dependencies>
+  <Dependencies name="Release|x32">
   </Dependencies>
 </CodeLite_Project>
