@@ -93,9 +93,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_TIMELINE, orxTimeLine);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
 
-  /* Computes all dependencies */
-  orxModule_UpdateDependencies();
-
+  /* Done! */
   return;
 }
 
@@ -136,9 +134,8 @@ typedef struct __orxMODULE_INFO_t
  */
 typedef struct __orxMODULE_STATIC_t
 {
-  orxMODULE_INFO astModuleInfo[orxMODULE_ID_NUMBER];
-  orxU32 u32InitLoopCounter;
-  orxU32 u32Flags;
+  orxMODULE_INFO  astModuleInfo[orxMODULE_ID_NUMBER];
+  orxU32          u32InitLoopCounter;
 
 } orxMODULE_STATIC;
 
@@ -168,13 +165,16 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SET
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
+  /* Clears module info */
+  orxMemory_Zero(&(sstModule.astModuleInfo[_eModuleID]), sizeof(orxMODULE_INFO));
+
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;
   sstModule.astModuleInfo[_eModuleID].pfnInit   = _pfnInit;
   sstModule.astModuleInfo[_eModuleID].pfnExit   = _pfnExit;
 
   /* Updates module status flags */
-  sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_REGISTERED;
+  sstModule.astModuleInfo[_eModuleID].u32StatusFlags = orxMODULE_KU32_STATUS_FLAG_REGISTERED;
 
   /* Done! */
   return;
@@ -210,18 +210,9 @@ void orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMOD
   return;
 }
 
-/** Updates dependencies for all modules
- */
-void orxFASTCALL orxModule_UpdateDependencies()
-{
-  /* !!! TODO !!! */
-
-  return;
-}
-
 /** Calls a module setup
  */
-void orxFASTCALL    orxModule_Setup(orxMODULE_ID _eModuleID)
+void orxFASTCALL orxModule_Setup(orxMODULE_ID _eModuleID)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -246,6 +237,9 @@ void orxFASTCALL    orxModule_Setup(orxMODULE_ID _eModuleID)
 void orxFASTCALL orxModule_SetupAll()
 {
   orxU32 eID;
+
+  /* Clears static variable */
+  sstModule.u32InitLoopCounter = 0;
 
   /* For all modules */
   for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)

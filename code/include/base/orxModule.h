@@ -138,9 +138,6 @@ extern orxDLLAPI void orxFASTCALL         orxModule_AddDependency(orxMODULE_ID _
  */
 extern orxDLLAPI void orxFASTCALL         orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
-/** Updates dependencies for all modules */
-extern orxDLLAPI void orxFASTCALL         orxModule_UpdateDependencies();
-
 /** Calls a module setup callback
  * @param[in]   _eModuleID                Concerned module ID
  */
