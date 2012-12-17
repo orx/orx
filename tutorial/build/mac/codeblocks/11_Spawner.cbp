@@ -18,12 +18,10 @@
 					<Add option="-m64" />
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
-					<Add option="-x c++" />
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
-					<Add option="-fvisibility-inlines-hidden" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../code/include" />
 				</Compiler>
@@ -57,12 +55,10 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
-					<Add option="-x c++" />
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
-					<Add option="-fvisibility-inlines-hidden" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../code/include" />
 				</Compiler>
@@ -95,12 +91,10 @@
 					<Add option="-m64" />
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
-					<Add option="-x c++" />
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
-					<Add option="-fvisibility-inlines-hidden" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../code/include" />
 				</Compiler>
@@ -132,12 +126,10 @@
 					<Add option="-m32" />
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
-					<Add option="-x c++" />
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
-					<Add option="-fvisibility-inlines-hidden" />
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../code/include" />
@@ -172,12 +164,10 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
-					<Add option="-x c++" />
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
-					<Add option="-fvisibility-inlines-hidden" />
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../code/include" />
@@ -211,12 +201,10 @@
 					<Add option="-m32" />
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
-					<Add option="-x c++" />
 					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
-					<Add option="-fvisibility-inlines-hidden" />
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../code/include" />

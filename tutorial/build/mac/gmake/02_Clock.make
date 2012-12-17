@@ -26,7 +26,7 @@ ifeq ($(config),debug64)
   DEFINES   += -D__orxDEBUG__
   INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
@@ -50,7 +50,7 @@ ifeq ($(config),profile64)
   DEFINES   += -D__orxPROFILER__
   INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
@@ -74,7 +74,7 @@ ifeq ($(config),release64)
   DEFINES   += 
   INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
@@ -98,7 +98,7 @@ ifeq ($(config),debug32)
   DEFINES   += -D__orxDEBUG__
   INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
@@ -122,7 +122,7 @@ ifeq ($(config),profile32)
   DEFINES   += -D__orxPROFILER__
   INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
@@ -146,7 +146,7 @@ ifeq ($(config),release32)
   DEFINES   += 
   INCLUDES  += -I../../../include -I../../../../code/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
