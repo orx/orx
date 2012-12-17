@@ -202,12 +202,10 @@ solution "orxFontGen"
         }
         buildoptions
         {
-            "-x c++",
             "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
             "-gdwarf-2",
-            "-Wno-write-strings",
-            "-fvisibility-inlines-hidden"
+            "-Wno-write-strings"
         }
         linkoptions
         {
@@ -282,7 +280,8 @@ project "orxFontGen"
         {
             "Foundation.framework",
             "AppKit.framework",
-            "OpenGL.framework"
+            "OpenGL.framework",
+            "z"
         }
 
 

@@ -26,11 +26,11 @@ ifeq ($(config),debug64)
   DEFINES   += -D__orxDEBUG__ -D__orxSTATIC__
   INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL
+  LIBS      += -lorxd -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -50,11 +50,11 @@ ifeq ($(config),profile64)
   DEFINES   += -D__orxPROFILER__ -D__orxSTATIC__
   INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL
+  LIBS      += -lorxp -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -74,11 +74,11 @@ ifeq ($(config),release64)
   DEFINES   += -D__orxSTATIC__
   INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL
+  LIBS      += -lorx -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -98,11 +98,11 @@ ifeq ($(config),debug32)
   DEFINES   += -D__orxDEBUG__ -D__orxSTATIC__
   INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL
+  LIBS      += -lorxd -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -122,11 +122,11 @@ ifeq ($(config),profile32)
   DEFINES   += -D__orxPROFILER__ -D__orxSTATIC__
   INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL
+  LIBS      += -lorxp -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS
@@ -146,11 +146,11 @@ ifeq ($(config),release32)
   DEFINES   += -D__orxSTATIC__
   INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -x c++ -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -fvisibility-inlines-hidden -mfix-and-continue
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
   LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL
+  LIBS      += -lorx -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
   LDDEPS    += 
   LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
   define PREBUILDCMDS

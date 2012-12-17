@@ -2,23 +2,23 @@
 <CodeLite_Workspace Name="orxFontGen" Database="./orxFontGen.tags">
   <Project Name="orxFontGen" Path="orxFontGen.project" Active="Yes" />
   <BuildMatrix>
-    <WorkspaceConfiguration Name="debug64" Selected="yes">
-      <Project Name="orxFontGen" ConfigName="debug64"/>
+    <WorkspaceConfiguration Name="Debug|x64" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Debug|x64"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile64" Selected="yes">
-      <Project Name="orxFontGen" ConfigName="profile64"/>
+    <WorkspaceConfiguration Name="Profile|x64" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Profile|x64"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release64" Selected="yes">
-      <Project Name="orxFontGen" ConfigName="release64"/>
+    <WorkspaceConfiguration Name="Release|x64" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Release|x64"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="debug32" Selected="yes">
-      <Project Name="orxFontGen" ConfigName="debug32"/>
+    <WorkspaceConfiguration Name="Debug|x32" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Debug|x32"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile32" Selected="yes">
-      <Project Name="orxFontGen" ConfigName="profile32"/>
+    <WorkspaceConfiguration Name="Profile|x32" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Profile|x32"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release32" Selected="yes">
-      <Project Name="orxFontGen" ConfigName="release32"/>
+    <WorkspaceConfiguration Name="Release|x32" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Release|x32"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

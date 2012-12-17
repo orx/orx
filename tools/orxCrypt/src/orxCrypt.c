@@ -465,8 +465,8 @@ static void Run()
   // Has loaded input?
   if(orxFLAG_TEST(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_INPUT_LOADED))
   {
-    orxSTRING zOutputFile;
-    orxBOOL   bEncrypt;
+    const orxSTRING zOutputFile;
+    orxBOOL         bEncrypt;
 
     // Gets encryption status
     bEncrypt = orxFLAG_TEST(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_USE_ENCRYPTION);
