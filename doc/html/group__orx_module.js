@@ -61,7 +61,6 @@ var group__orx_module =
     [ "orxModule_RegisterAll", "group__orx_module.html#ga7a0361e51ff409dc42025c1019758d02", null ],
     [ "orxModule_Setup", "group__orx_module.html#ga91a59b4a84dcf9c880bbca8056828b99", null ],
     [ "orxModule_SetupAll", "group__orx_module.html#ga10bf7e12da32a1f3ad58beee77900609", null ],
-    [ "orxModule_UpdateDependencies", "group__orx_module.html#ga008e1262481bde971669f93c9e0afbda", null ],
     [ "orxSTATUS", "group__orx_module.html#gaf44141f0bc45f319187952b4629b862c", null ],
     [ "void", "group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86", null ]
 ];

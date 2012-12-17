@@ -588,7 +588,6 @@ var searchData=
   ['orxmodule_5fregisterall',['orxModule_RegisterAll',['../group__orx_module.html#ga7a0361e51ff409dc42025c1019758d02',1,'orxModule.h']]],
   ['orxmodule_5fsetup',['orxModule_Setup',['../group__orx_module.html#ga91a59b4a84dcf9c880bbca8056828b99',1,'orxModule.h']]],
   ['orxmodule_5fsetupall',['orxModule_SetupAll',['../group__orx_module.html#ga10bf7e12da32a1f3ad58beee77900609',1,'orxModule.h']]],
-  ['orxmodule_5fupdatedependencies',['orxModule_UpdateDependencies',['../group__orx_module.html#ga008e1262481bde971669f93c9e0afbda',1,'orxModule.h']]],
   ['orxmouse_5fexit',['orxMouse_Exit',['../group__orx_mouse.html#gae5e3d2a70f56bf6cf913738a2dc8e843',1,'orxMouse.h']]],
   ['orxmouse_5fgetaxisname',['orxMouse_GetAxisName',['../group__orx_mouse.html#gad6eb69bc822eb4d9001ae85c052d62cb',1,'orxMouse.h']]],
   ['orxmouse_5fgetbuttonname',['orxMouse_GetButtonName',['../group__orx_mouse.html#ga0bb5b51feb069120d3b59e1f1cedd41d',1,'orxMouse.h']]],

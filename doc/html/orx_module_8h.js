@@ -61,7 +61,6 @@ var orx_module_8h =
     [ "orxModule_RegisterAll", "orx_module_8h.html#ga7a0361e51ff409dc42025c1019758d02", null ],
     [ "orxModule_Setup", "orx_module_8h.html#ga91a59b4a84dcf9c880bbca8056828b99", null ],
     [ "orxModule_SetupAll", "orx_module_8h.html#ga10bf7e12da32a1f3ad58beee77900609", null ],
-    [ "orxModule_UpdateDependencies", "orx_module_8h.html#ga008e1262481bde971669f93c9e0afbda", null ],
     [ "orxSTATUS", "orx_module_8h.html#gaf44141f0bc45f319187952b4629b862c", null ],
     [ "void", "orx_module_8h.html#ga83fece8538c577b8a4a0801ee4573a86", null ]
 ];
