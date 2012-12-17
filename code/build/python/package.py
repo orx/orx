@@ -68,6 +68,7 @@ tutorialvsfileinfolist = [
 ]
 
 mingwfileinfolist = devfileinfolist + [
+    {'src': 'lib/dynamic/orx*.dll',                                     'dst': 'lib'},
     {'src': 'lib/dynamic/liborx*.a',                                    'dst': 'lib'}
 ]
 
