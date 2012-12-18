@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="03_Frame"
-	ProjectGUID="{783951B2-D966-9462-751E-4AFA1B720E7D}"
+	ProjectGUID="{74936864-A856-CE4A-83C9-66E1255608E9}"
 	RootNamespace="03_Frame"
 	Keyword="Win32Proj"
 	>
@@ -103,7 +103,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
 			/>
 		</Configuration>
 		<Configuration
@@ -196,7 +195,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
 			/>
 		</Configuration>
 		<Configuration
@@ -287,7 +285,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
 			/>
 		</Configuration>
 	</Configurations>

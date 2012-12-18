@@ -17,9 +17,6 @@
         <Library Value="orxd" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -46,9 +43,6 @@
         <Library Value="orxp" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -74,9 +68,6 @@
         <Library Value="orx" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>

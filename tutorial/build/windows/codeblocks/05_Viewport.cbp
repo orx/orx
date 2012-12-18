@@ -25,9 +25,6 @@
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
-				</ExtraCommands>
 			</Target>
 			<Target title="Profile">
 				<Option output="../../../bin/05_Viewport.exe" prefix_auto="0" extension_auto="0" />
@@ -50,9 +47,6 @@
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
-				</ExtraCommands>
 			</Target>
 			<Target title="Release">
 				<Option output="../../../bin/05_Viewport.exe" prefix_auto="0" extension_auto="0" />
@@ -74,9 +68,6 @@
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
-				</ExtraCommands>
 			</Target>
 		</Build>
 		<Unit filename="../../../src/05_Viewport.c">

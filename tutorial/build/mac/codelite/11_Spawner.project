@@ -4,7 +4,7 @@
     <File Name="../../../src/11_Spawner.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">
-    <Configuration Name="Debug|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="./11_Spawner" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
@@ -19,9 +19,6 @@
         <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -35,7 +32,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Profile|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="profile64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="./11_Spawner" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
@@ -50,9 +47,6 @@
         <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -66,7 +60,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Release|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="release64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="./11_Spawner" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
@@ -80,9 +74,6 @@
         <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -96,7 +87,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Debug|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="debug32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="./11_Spawner" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
@@ -111,9 +102,6 @@
         <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -127,7 +115,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Profile|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="profile32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="./11_Spawner" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
@@ -142,9 +130,6 @@
         <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
@@ -158,7 +143,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Release|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="release32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/11_Spawner" IntermediateDirectory="$(ConfigurationName)" Command="./11_Spawner" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
@@ -172,9 +157,6 @@
         <Library Value="AppKit.framework" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
-      <PostBuild>
-        <Command Enabled="yes">$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
-      </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>

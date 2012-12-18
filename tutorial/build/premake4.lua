@@ -169,7 +169,6 @@ solution "Tutorial"
             "m",
             "rt"
         }
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.so ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -197,7 +196,6 @@ solution "Tutorial"
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -208,8 +206,6 @@ solution "Tutorial"
 
 -- Windows
 
-    configuration {"windows"}
-        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 --
 -- Project: 01_Object
@@ -218,6 +214,23 @@ solution "Tutorial"
 project "01_Object"
 
     files {"../src/01_Object.c"}
+
+-- Linux
+
+    configuration {"linux"}
+        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.so ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+
+
+-- Mac OS X
+
+    configuration {"macosx"}
+        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+
+
+-- Windows
+
+    configuration {"windows"}
+        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 
 --
