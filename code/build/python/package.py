@@ -291,7 +291,7 @@ platforminfolist = {
     'tutolinux32': {
         'foldername':       'tutorial-linux32',
         'filename':         'tutorial-linux32',
-        'format':           'zip',
+        'format':           'bztar',
         'fileinfolist':     tutoriallinuxfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
     },
@@ -307,7 +307,7 @@ platforminfolist = {
     'tutolinux64': {
         'foldername':       'tutorial-linux64',
         'filename':         'tutorial-linux64',
-        'format':           'zip',
+        'format':           'bztar',
         'fileinfolist':     tutoriallinuxfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
     },
