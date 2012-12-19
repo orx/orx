@@ -32,7 +32,6 @@
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
-					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 					<Add library="Foundation.framework" />
@@ -67,7 +66,6 @@
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
-					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 					<Add library="Foundation.framework" />
@@ -101,7 +99,6 @@
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
-					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 					<Add library="Foundation.framework" />
@@ -135,7 +132,6 @@
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
-					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 					<Add library="Foundation.framework" />
@@ -171,7 +167,6 @@
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
-					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 					<Add library="Foundation.framework" />
@@ -206,7 +201,6 @@
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
-					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 					<Add library="Foundation.framework" />

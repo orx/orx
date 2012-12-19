@@ -28,7 +28,7 @@ ifeq ($(config),debug)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd
   LDDEPS    += 
@@ -50,7 +50,7 @@ ifeq ($(config),profile)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp
   LDDEPS    += 
@@ -72,7 +72,7 @@ ifeq ($(config),release)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx
   LDDEPS    += 

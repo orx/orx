@@ -136,7 +136,6 @@ tutorialfolderinfolist = [
     {'src': 'include',                                                  'dst': None},
     {'src': '../tutorial/bin',                                          'dst': 'bin'},
     {'src': '../tutorial/data',                                         'dst': 'data'},
-    {'src': '../tutorial/lib',                                          'dst': 'lib'},
     {'src': '../tutorial/src',                                          'dst': 'src'}
 ]
 

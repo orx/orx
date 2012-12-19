@@ -13,7 +13,6 @@
       </Compiler>
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
       </Linker>
@@ -40,7 +39,6 @@
       </Compiler>
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
       </Linker>
@@ -66,7 +64,6 @@
       </Compiler>
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
       </Linker>

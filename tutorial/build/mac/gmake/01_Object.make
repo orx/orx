@@ -28,7 +28,7 @@ ifeq ($(config),debug64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd -framework Foundation -framework AppKit
   LDDEPS    += 
@@ -52,7 +52,7 @@ ifeq ($(config),profile64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp -framework Foundation -framework AppKit
   LDDEPS    += 
@@ -76,7 +76,7 @@ ifeq ($(config),release64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx -framework Foundation -framework AppKit
   LDDEPS    += 
@@ -100,7 +100,7 @@ ifeq ($(config),debug32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd -framework Foundation -framework AppKit
   LDDEPS    += 
@@ -124,7 +124,7 @@ ifeq ($(config),profile32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp -framework Foundation -framework AppKit
   LDDEPS    += 
@@ -148,7 +148,7 @@ ifeq ($(config),release32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx -framework Foundation -framework AppKit
   LDDEPS    += 

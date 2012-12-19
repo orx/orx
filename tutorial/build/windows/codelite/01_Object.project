@@ -13,15 +13,12 @@
       </Compiler>
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
         <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib</Command>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -45,15 +42,12 @@
       </Compiler>
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
         <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib</Command>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
@@ -76,15 +70,12 @@
       </Compiler>
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
-        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
         <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin</Command>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib</Command>
-        <Command Enabled="yes">cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>

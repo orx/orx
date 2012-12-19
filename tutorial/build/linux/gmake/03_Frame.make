@@ -28,7 +28,7 @@ ifeq ($(config),debug32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd -ldl -lm -lrt
   LDDEPS    += 
@@ -50,7 +50,7 @@ ifeq ($(config),profile32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp -ldl -lm -lrt
   LDDEPS    += 
@@ -72,7 +72,7 @@ ifeq ($(config),release32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx -ldl -lm -lrt
   LDDEPS    += 
@@ -94,7 +94,7 @@ ifeq ($(config),debug64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64
   CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxd -ldl -lm -lrt
   LDDEPS    += 
@@ -116,7 +116,7 @@ ifeq ($(config),profile64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorxp -ldl -lm -lrt
   LDDEPS    += 
@@ -138,7 +138,7 @@ ifeq ($(config),release64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../bin -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
+  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LIBS      += -lorx -ldl -lm -lrt
   LDDEPS    += 

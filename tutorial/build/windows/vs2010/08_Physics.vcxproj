@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AD02195D-64B0-144F-8E95-F2E4C2474780}</ProjectGuid>
+    <ProjectGuid>{EF33C02E-111D-8447-8823-1E20ED964CF0}</ProjectGuid>
     <RootNamespace>08_Physics</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -93,7 +93,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>orxd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)08_Physics.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\code\lib\dynamic;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
@@ -127,7 +127,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>orxp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)08_Physics.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\code\lib\dynamic;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
@@ -161,7 +161,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>orx.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)08_Physics.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\code\lib\dynamic;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
