@@ -22,11 +22,14 @@
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
+					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Profile">
@@ -47,11 +50,14 @@
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
+					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release">
@@ -71,11 +77,14 @@
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
+					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib" />
+					<Add after="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib" />
 				</ExtraCommands>
 			</Target>
 		</Build>

@@ -22,6 +22,7 @@
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
+					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxd" />
 				</Linker>
@@ -44,6 +45,7 @@
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
+					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orxp" />
 				</Linker>
@@ -65,6 +67,7 @@
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
+					<Add directory="../../../bin" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add library="orx" />
 				</Linker>

@@ -13,6 +13,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
         <Library Value="dl" />
@@ -42,6 +43,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
         <Library Value="dl" />
@@ -70,6 +72,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-Wl,-rpath ./;-Wl,--export-dynamic">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
         <Library Value="dl" />
@@ -99,6 +102,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-Wl,-rpath ./;-Wl,--export-dynamic">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
         <Library Value="dl" />
@@ -128,6 +132,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-Wl,-rpath ./;-Wl,--export-dynamic">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
         <Library Value="dl" />
@@ -156,6 +161,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-Wl,-rpath ./;-Wl,--export-dynamic">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
         <Library Value="dl" />

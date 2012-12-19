@@ -3,9 +3,10 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="01_Object"
-	ProjectGUID="{5214FEBF-B13A-6F40-BCD3-4294908EE85B}"
+	ProjectGUID="{E2DCC7A4-ABBD-7849-B8DF-5A196CD930AA}"
 	RootNamespace="01_Object"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -51,8 +52,8 @@
 				FloatingPointModel="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\01_Object.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -72,10 +73,9 @@
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\01_Object.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
+				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\01_Object.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -99,11 +99,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
+				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin&#x0D;&#x0A;cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib&#x0D;&#x0A;cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -133,17 +130,17 @@
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxPROFILER__"
-				ExceptionHandling="0"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
-				RuntimeTypeInfo="false"
 				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\01_Object.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -163,10 +160,9 @@
 				AdditionalDependencies="orxp.lib"
 				OutputFile="$(OutDir)\01_Object.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
+				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\01_Object.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -192,11 +188,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
+				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin&#x0D;&#x0A;cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib&#x0D;&#x0A;cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -225,17 +218,17 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
-				ExceptionHandling="0"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
-				RuntimeTypeInfo="false"
 				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\01_Object.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -254,10 +247,9 @@
 				AdditionalDependencies="orx.lib"
 				OutputFile="$(OutDir)\01_Object.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
+				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\01_Object.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -283,11 +275,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin"
+				CommandLine="cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.dll copy /Y ..\..\..\..\code\lib\dynamic\orx*.dll ..\..\..\bin&#x0D;&#x0A;cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.lib copy /Y ..\..\..\..\code\lib\dynamic\orx*.lib ..\..\..\lib&#x0D;&#x0A;cmd /c if exist ..\..\..\..\code\lib\dynamic\orx.a copy /Y ..\..\..\..\code\lib\dynamic\orx*.a ..\..\..\lib&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -296,7 +285,6 @@
 	<Files>
 		<Filter
 			Name="src"
-			Filter=""
 			>
 			<File
 				RelativePath="..\..\..\src\01_Object.c"

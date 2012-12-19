@@ -127,13 +127,16 @@ docfolderinfolist = [
 ]
 
 devfolderinfolist = [
-    {'src': 'include',                                                  'dst': None}
+    {'src': 'include',                                                  'dst': None},
+    {'src': '../tools/orxCrypt/bin',                                    'dst': 'tools/orxCrypt/bin'},
+    {'src': '../tools/orxFontGen/bin',                                  'dst': 'tools/orxFontGen/bin'},
 ]
 
 tutorialfolderinfolist = [
     {'src': 'include',                                                  'dst': None},
     {'src': '../tutorial/bin',                                          'dst': 'bin'},
     {'src': '../tutorial/data',                                         'dst': 'data'},
+    {'src': '../tutorial/lib',                                          'dst': 'lib'},
     {'src': '../tutorial/src',                                          'dst': 'src'}
 ]
 
@@ -199,7 +202,6 @@ codefolderinfolist = [
     {'src': 'build/windows/codelite',                                   'dst': None},
     {'src': 'build/windows/gmake',                                      'dst': None},
     {'src': 'include',                                                  'dst': None},
-    {'src': 'lib',                                                      'dst': None},
     {'src': 'plugins/Demo',                                             'dst': None},
     {'src': 'plugins/Display/GLFW',                                     'dst': None},
     {'src': 'plugins/Joystick/GLFW',                                    'dst': None},

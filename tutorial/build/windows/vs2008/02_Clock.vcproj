@@ -3,9 +3,10 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="02_Clock"
-	ProjectGUID="{02BC8301-EDD4-B949-867D-DE4EBA11AA82}"
+	ProjectGUID="{8C626098-4DFA-2647-B7B7-0AE2462C8F19}"
 	RootNamespace="02_Clock"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -51,8 +52,8 @@
 				FloatingPointModel="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -72,10 +73,9 @@
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\02_Clock.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
+				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
 				SubSystem="1"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
@@ -97,9 +97,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -132,17 +129,17 @@
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxPROFILER__"
-				ExceptionHandling="0"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
-				RuntimeTypeInfo="false"
 				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -162,10 +159,9 @@
 				AdditionalDependencies="orxp.lib"
 				OutputFile="$(OutDir)\02_Clock.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
+				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -189,9 +185,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -223,17 +216,17 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
-				ExceptionHandling="0"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
-				RuntimeTypeInfo="false"
 				TreatWChar_tAsBuiltInType="false"
+				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -252,10 +245,9 @@
 				AdditionalDependencies="orx.lib"
 				OutputFile="$(OutDir)\02_Clock.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
+				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\bin;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -281,9 +273,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -293,7 +282,6 @@
 	<Files>
 		<Filter
 			Name="src"
-			Filter=""
 			>
 			<File
 				RelativePath="..\..\..\src\02_Clock.c"

@@ -125,6 +125,7 @@ solution "Tutorial"
     libdirs
     {
         "../lib",
+        "../bin",
         "../../code/lib/dynamic"
     }
 
@@ -214,6 +215,8 @@ solution "Tutorial"
 project "01_Object"
 
     files {"../src/01_Object.c"}
+    os.mkdir ("../lib")
+
 
 -- Linux
 
@@ -231,6 +234,8 @@ project "01_Object"
 
     configuration {"windows"}
         postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.lib copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.lib " .. path.translate(copybase, "\\") .. "\\lib"}
+        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.a copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.a " .. path.translate(copybase, "\\") .. "\\lib"}
 
 
 --

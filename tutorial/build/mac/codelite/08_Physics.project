@@ -13,6 +13,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
         <Library Value="Foundation.framework" />
@@ -41,6 +42,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
         <Library Value="Foundation.framework" />
@@ -68,6 +70,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
         <Library Value="Foundation.framework" />
@@ -96,6 +99,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxd" />
         <Library Value="Foundation.framework" />
@@ -124,6 +128,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orxp" />
         <Library Value="Foundation.framework" />
@@ -151,6 +156,7 @@
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../bin" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
         <Library Value="orx" />
         <Library Value="Foundation.framework" />
