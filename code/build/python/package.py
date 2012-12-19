@@ -112,11 +112,15 @@ tutoriallinuxfileinfolist = [
 ]
 
 androidfileinfolist = devfileinfolist + [
+    {'src': 'build/android/*.sh',                                       'dst': None},
+    {'src': 'build/android/*.properties',                               'dst': None},
     {'src': 'build/android/obj/local/armeabi/liborx*.a',                'dst': 'lib/static/android/armeabi'},
     {'src': 'build/android/obj/local/armeabi-v7a/liborx*.a',            'dst': 'lib/static/android/armeabi-v7a'}
 ]
 
 androidnativefileinfolist = devfileinfolist + [
+    {'src': 'build/android-native/*.sh',                                'dst': None},
+    {'src': 'build/android-native/*.properties',                        'dst': None},
     {'src': 'build/android-native/obj/local/armeabi/liborx*.a',         'dst': 'lib/static/android-native/armeabi'},
     {'src': 'build/android-native/obj/local/armeabi-v7a/liborx*.a',     'dst': 'lib/static/android-native/armeabi-v7a'}
 ]
@@ -152,7 +156,7 @@ externfolderinfolist = [
 ]
 
 androidfolderinfolist = docfolderinfolist + [
-    {'src': 'build/android',                                            'dst': None},
+    {'src': 'build/android/jni',                                        'dst': None},
     {'src': 'lib/static/android',                                       'dst': None},
     {'src': '../extern/android',                                        'dst': None},
     {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
@@ -170,7 +174,7 @@ androidfolderinfolist = docfolderinfolist + [
 ]
 
 androidnativefolderinfolist = docfolderinfolist + [
-    {'src': 'build/android-native',                                     'dst': None},
+    {'src': 'build/android-native/jni',                                 'dst': None},
     {'src': 'lib/static/android-native',                                'dst': None},
     {'src': '../extern/nv_and_util',                                    'dst': None},
     {'src': '../extern/Box2D_2.1.3/lib/android-native',                 'dst': None},
