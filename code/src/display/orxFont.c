@@ -72,8 +72,9 @@
 #define orxFONT_KZ_CONFIG_CHARACTER_HEIGHT      "CharacterHeight"
 #define orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST  "CharacterWidthList"
 #define orxFONT_KZ_CONFIG_CHARACTER_SPACING     "CharacterSpacing"
-#define orxFONT_KZ_CONFIG_TEXTURE_CORNER        "TextureCorner"
+#define orxFONT_KZ_CONFIG_TEXTURE_ORIGIN        "TextureOrigin"
 #define orxFONT_KZ_CONFIG_TEXTURE_SIZE          "TextureSize"
+#define orxFONT_KZ_CONFIG_TEXTURE_CORNER        "TextureCorner" /**< Kept for retro-compatibility reason */
 
 
 /***************************************************************************
@@ -685,9 +686,23 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
                 /* Gets character counter */
                 u32CharacterCounter = orxString_GetCharacterCounter(zCharacterList);
 
-                /* Has corners? */
-                if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
+                /* Has origin/size? */
+                if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN) != orxFALSE)
                 && (orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+                {
+                  orxVECTOR vTextureOrigin, vTextureSize;
+
+                  /* Gets both values */
+                  orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
+                  orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
+
+                  /* Updates them */
+                  orxFont_SetOrigin(pstResult, &vTextureOrigin);
+                  orxFont_SetSize(pstResult, &vTextureSize);
+                }
+                /* Has corner/size? */
+                else if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
+                     && (orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
                 {
                   orxVECTOR vTextureCorner, vTextureSize;
 
