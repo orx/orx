@@ -6,7 +6,7 @@ import glob, shutil, os, sys, argparse
 ### Constants
 
 # List of available platforms
-platformlist    = ['vs2008', 'tutovs2008', 'vs2010', 'tutovs2010', 'mingw', 'tutomingw', 'mac', 'tutomac', 'linux32', 'tutolinux32', 'linux64', 'tutolinux64', 'android', 'android-native', 'doxygen', 'src', 'extern']
+platformlist    = ['vs2008', 'tutovs2008', 'vs2010', 'tutovs2010', 'mingw', 'tutomingw', 'mac', 'tutomac', 'linux32', 'tutolinux32', 'linux64', 'tutolinux64', 'ios', 'android', 'android-native', 'doxygen', 'src', 'extern']
 
 # Base source path
 basesrc         = '../..'
@@ -111,6 +111,13 @@ tutoriallinuxfileinfolist = [
     {'src': '../tutorial/build/linux/gmake/Makefile',                   'dst': 'build/linux/gmake'}
 ]
 
+iosfileinfolist = devfileinfolist + [
+    {'src': '../extern/Box2D_2.1.3/License.txt',                        'dst': None},
+    {'src': '../liborx-fat-*',                                          'dst': None},
+    {'src': 'build/mac/xcode/Info.plist',                               'dst': None},
+    {'src': 'demo/iOS/ReadMe-iOS.txt',                                  'dst': '..'}
+]
+
 androidfileinfolist = devfileinfolist + [
     {'src': 'build/android/*.sh',                                       'dst': None},
     {'src': 'build/android/*.properties',                               'dst': None},
@@ -153,6 +160,25 @@ externfolderinfolist = [
     {'src': '../extern/premake',                                        'dst': None},
     {'src': '../extern/SOIL',                                           'dst': None},
     {'src': '../extern/stb_vorbis',                                     'dst': None}
+]
+
+iosfolderinfolist = docfolderinfolist + [
+    {'src': '../extern/Box2D_2.1.3/build/Xcode/Box2D-ios.xcodeproj',    'dst': None},
+    {'src': '../extern/Box2D_2.1.3/include',                            'dst': None},
+    {'src': '../extern/Box2D_2.1.3/lib/ios',                            'dst': None},
+    {'src': '../extern/Box2D_2.1.3/src',                                'dst': None},
+    {'src': '../extern/dlmalloc',                                       'dst': None},
+    {'src': 'build/mac/xcode/orx-ios.xcodeproj',                        'dst': None},
+    {'src': 'demo/iOS',                                                 'dst': None},
+    {'src': 'plugins/Display/iOS',                                      'dst': None},
+    {'src': 'plugins/Joystick/iOS',                                     'dst': None},
+    {'src': 'plugins/Keyboard/Dummy',                                   'dst': None},
+    {'src': 'plugins/Mouse/iOS',                                        'dst': None},
+    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
+    {'src': 'plugins/Render/Home',                                      'dst': None},
+    {'src': 'plugins/Sound/iOS',                                        'dst': None},
+    {'src': 'include',                                                  'dst': None},
+    {'src': 'src',                                                      'dst': None}
 ]
 
 androidfolderinfolist = docfolderinfolist + [
@@ -315,6 +341,14 @@ platforminfolist = {
         'format':           'bztar',
         'fileinfolist':     tutoriallinuxfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'ios': {
+        'foldername':       'dev-ios',
+        'filename':         'full-ios',
+        'format':           'zip',
+        'fileinfolist':     iosfileinfolist,
+        'folderinfolist':   iosfolderinfolist
     },
 
     'android': {
