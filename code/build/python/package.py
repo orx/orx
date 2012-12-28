@@ -6,13 +6,32 @@ import glob, shutil, os, sys, argparse
 ### Constants
 
 # List of available platforms
-platformlist    = ['vs2008', 'tutovs2008', 'vs2010', 'tutovs2010', 'mingw', 'tutomingw', 'mac', 'tutomac', 'linux32', 'tutolinux32', 'linux64', 'tutolinux64', 'ios', 'android', 'android-native', 'doxygen', 'src', 'extern']
+platformlist = [
+    'vs2008',
+    'tutovs2008',
+    'vs2010',
+    'tutovs2010',
+    'mingw',
+    'tutomingw',
+    'mac',
+    'tutomac',
+    'linux32',
+    'tutolinux32',
+    'linux64',
+    'tutolinux64',
+    'ios',
+    'android',
+    'android-native',
+    'doxygen',
+    'src',
+    'extern'
+]
 
 # Base source path
-basesrc         = '../..'
+basesrc = '../..'
 
 # Work directory
-workdir         = 'workdir'
+workdir = 'workdir'
 
 
 ### Processes command line
@@ -438,6 +457,7 @@ if platforminfolist[platform]['folderinfolist']:
 
             # Copies folder
             shutil.copytree(source, destination)
+
         else:
 
             # Logs
