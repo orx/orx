@@ -112,7 +112,7 @@ Packages
 You can download all the packages from sourceforge (http://orx.sf.net) or bitbucket (https://bitbucket.orx/orx/orx).
 Here is a list with a small description for each package.
 
-- orx-doc-1.4rc0.zip: orx's API doxygen documentation + PDF version of the English wiki (detailed tutorials and config system)
+- orx-doc-1.4rc0.zip: orx's API doxygen documentation
 
 - orx-src-1.4rc0.zip: orx's source code including build projects for
   . codelite (Windows and Linux, all versions, Mac OS X, non-static versions)
