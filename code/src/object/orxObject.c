@@ -2044,9 +2044,6 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
       pstObject != orxNULL;
       pstObject = pstNextObject)
   {
-    /* Gets next object */
-    pstNextObject = orxOBJECT(orxStructure_GetNext(pstObject));
-
     /* Is object enabled and not paused? */
     if((orxObject_IsEnabled(pstObject) != orxFALSE) && (orxObject_IsPaused(pstObject) == orxFALSE))
     {
@@ -2082,6 +2079,9 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
         /* Should die? */
         if(pstObject->fLifeTime <= orxFLOAT_0)
         {
+          /* Gets next object */
+          pstNextObject = orxOBJECT(orxStructure_GetNext(pstObject));
+
           /* Deletes it */
           orxObject_Delete(pstObject);
 
@@ -2145,6 +2145,9 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
         }
       }
     }
+
+    /* Gets next object */
+    pstNextObject = orxOBJECT(orxStructure_GetNext(pstObject));
   }
 
   /* Profiles */
