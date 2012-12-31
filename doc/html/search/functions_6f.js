@@ -731,6 +731,8 @@ var searchData=
   ['orxphysics_5fexit',['orxPhysics_Exit',['../group__orx_physics.html#gaba9662be35bea2d6a8077ef79cbe7d58',1,'orxPhysics.h']]],
   ['orxphysics_5fgetangulardamping',['orxPhysics_GetAngularDamping',['../group__orx_physics.html#gaab8fc68ac558a4cd1071ed8a973d5f70',1,'orxPhysics.h']]],
   ['orxphysics_5fgetangularvelocity',['orxPhysics_GetAngularVelocity',['../group__orx_physics.html#ga9b54114217d31d3488ce3724891bad1b',1,'orxPhysics.h']]],
+  ['orxphysics_5fgetcollisionflagname',['orxPhysics_GetCollisionFlagName',['../group__orx_physics.html#ga8ce7e4f2a2590fae1d458f003a4f6fe8',1,'orxPhysics.h']]],
+  ['orxphysics_5fgetcollisionflagvalue',['orxPhysics_GetCollisionFlagValue',['../group__orx_physics.html#ga79914d7697ad2fa005ac5cc28d4e7f82',1,'orxPhysics.h']]],
   ['orxphysics_5fgetcustomgravity',['orxPhysics_GetCustomGravity',['../group__orx_physics.html#ga7ae6c8d8d9ac108d9749e99131347bb5',1,'orxPhysics.h']]],
   ['orxphysics_5fgetgravity',['orxPhysics_GetGravity',['../group__orx_physics.html#ga4f5cef16bea9bfb5be65e31c96876d9a',1,'orxPhysics.h']]],
   ['orxphysics_5fgetlineardamping',['orxPhysics_GetLinearDamping',['../group__orx_physics.html#ga6fb24bdbb705cb8fc0f5cd79f7ab20dc',1,'orxPhysics.h']]],
