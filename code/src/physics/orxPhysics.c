@@ -34,6 +34,9 @@
 
 #include "plugin/orxPluginCore.h"
 
+#include "core/orxConfig.h"
+#include "utils/orxString.h"
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -49,9 +52,86 @@ void orxFASTCALL orxPhysics_Setup()
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_EVENT);
 
   return;
+}
+
+/** Gets collision flag literal name
+ * @param[in] _u32Flag      Concerned collision flag numerical value
+ * @return Flag's name
+ */
+const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(_u32Flag != 0);
+
+  /* Is a flag? */
+  if(orxMath_IsPowerOfTwo(_u32Flag) != orxFALSE)
+  {
+    orxU32 u32Index;
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Gets flag index */
+    u32Index = orxMath_GetTrailingZeroCount(_u32Flag);
+
+    /* Valid? */
+    if(u32Index < orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST))
+    {
+      /* Updates result */
+      zResult = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, u32Index);
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+  else
+  {
+    /* Logs */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: value needs to be a power of two!", _u32Flag);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets collision flag numerical value
+ * @param[in] _zFlag        Concerned collision flag literal name
+ * @return Flag's value
+ */
+orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
+{
+  orxU32 u32Result = 0, u32Counter, i;
+
+  /* Checks */
+  orxASSERT(_zFlag != orxNULL);
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+  /* For all elements */
+  for(i = 0, u32Counter = orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST); i < u32Counter; i++)
+  {
+    /* Found? */
+    if(!orxString_ICompare(_zFlag, orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, i)))
+    {
+      /* Updates result */
+      u32Result = 1 << i;
+
+      break;
+    }
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return u32Result;
 }
 
 

@@ -242,6 +242,36 @@ static orxINLINE void orxBody_DeleteAll()
   return;
 }
 
+static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
+{
+  orxU32  u32Value;
+  orxU16  u16Result = 0;
+
+  /* Gets its numerical value */
+  u32Value = orxConfig_GetListU32(_zConfigID, 0);
+
+  /* Is 0? */
+  if(u32Value == 0)
+  {
+    orxU32 u32Counter, i;
+
+    /* For all elements */
+    for(i = 0, u32Counter = orxConfig_GetListCounter(_zConfigID); i < u32Counter; i++)
+    {
+      /* Updates result with numerical value */
+      u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
+    }
+  }
+  else
+  {
+    /* Updates result */
+    u16Result = (orxU16)u32Value;
+  }
+
+  /* Done! */
+  return u16Result;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -772,8 +802,8 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
     stBodyPartDef.fRestitution  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_RESTITUTION);
     stBodyPartDef.fDensity      = (orxConfig_HasValue(orxBODY_KZ_CONFIG_DENSITY) != orxFALSE) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_DENSITY) : orxFLOAT_1;
-    stBodyPartDef.u16SelfFlags  = (orxU16)orxConfig_GetU32(orxBODY_KZ_CONFIG_SELF_FLAGS);
-    stBodyPartDef.u16CheckMask  = (orxU16)orxConfig_GetU32(orxBODY_KZ_CONFIG_CHECK_MASK);
+    stBodyPartDef.u16SelfFlags  = orxBody_GetCollisionFlag(orxBODY_KZ_CONFIG_SELF_FLAGS);
+    stBodyPartDef.u16CheckMask  = orxBody_GetCollisionFlag(orxBODY_KZ_CONFIG_CHECK_MASK);
     orxVector_Copy(&(stBodyPartDef.vScale), &(_pstBody->vScale));
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_SOLID) != orxFALSE)
     {

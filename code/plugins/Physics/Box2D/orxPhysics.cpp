@@ -795,21 +795,11 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   {
     orxFLOAT fDT;
 
-    /* Is DT capped? */
-    if((_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MAXED)
-    && (_pstClockInfo->fModValue <= orxPhysics::sfMaxDT))
+    /* For all passed cycles */
+    for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
     {
-      /* Uses clock's DT */
-      fDT = _pstClockInfo->fDT;
-    }
-    else
-    {
-      /* For all passed cycles */
-      for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
-      {
-        /* Updates world simulation */
-        sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations);
-      }
+      /* Updates world simulation */
+      sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations);
     }
 
     /* Updates last step of world simulation */
