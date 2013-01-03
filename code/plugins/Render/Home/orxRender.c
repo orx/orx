@@ -1494,18 +1494,25 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                         /* Is object in Z frustum? */
                         if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                         {
-                          orxFLOAT  fObjectBoundingRadius, fSqrDist, fDepthCoef;
-                          orxVECTOR vSize, vObjectScale, vDist;
+                          orxFLOAT  fObjectBoundingRadius, fSqrDist, fDepthCoef, fObjectRotation;
+                          orxVECTOR vSize, vOffset, vObjectScale, vDist;
 
                           /* Gets its size */
                           orxGraphic_GetSize(pstGraphic, &vSize);
 
-                          /* Gets object's scales */
+                          /* Gets object's scale & rotation */
                           orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
+                          fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
 
-                          /* Updates it with object scale */
-                          vSize.fX *= vObjectScale.fX;
-                          vSize.fY *= vObjectScale.fY;
+                          /* Updates its size with object scale */
+                          vSize.fX  *= vObjectScale.fX;
+                          vSize.fY  *= vObjectScale.fY;
+
+                          /* Gets offset based on pivot */
+                          orxGraphic_GetPivot(pstGraphic, &vOffset);
+                          vOffset.fX = orx2F(0.5f) * vSize.fX - vObjectScale.fX * vOffset.fX;
+                          vOffset.fY = orx2F(0.5f) * vSize.fY - vObjectScale.fY * vOffset.fY;
+                          orxVector_2DRotate(&vOffset, &vOffset, fObjectRotation);
 
                           /* Gets real 2D distance vector */
                           orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
@@ -1550,9 +1557,11 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             /* Depth scale? */
                             if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
                             {
-                              /* Updates size */
+                              /* Updates size & offset */
                               vSize.fX *= fDepthCoef;
                               vSize.fY *= fDepthCoef;
+                              vOffset.fX *= fDepthCoef;
+                              vOffset.fY *= fDepthCoef;
                             }
                           }
                           else
@@ -1562,7 +1571,10 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                           }
 
                           /* Gets object square bounding radius */
-                          fObjectBoundingRadius = orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
+                          fObjectBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
+
+                          /* Updates distance vector */
+                          orxVector_Add(&vDist, &vDist, &vOffset);
 
                           /* Gets 2D square distance to camera */
                           fSqrDist = orxVector_GetSquareSize(&vDist);

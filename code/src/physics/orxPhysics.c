@@ -81,7 +81,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
     u32Index = orxMath_GetTrailingZeroCount(_u32Flag);
 
     /* Valid? */
-    if(u32Index < orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST))
+    if(u32Index < (orxU32)orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST))
     {
       /* Updates result */
       zResult = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, u32Index);
