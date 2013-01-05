@@ -37,6 +37,12 @@
 #include "core/orxConfig.h"
 #include "utils/orxString.h"
 
+#ifdef __orxMSVC__
+
+  #include "malloc.h"
+
+#endif /* __orxMSVC__ */
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -86,13 +92,18 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
       /* Updates result */
       zResult = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, u32Index);
     }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: no flag has been defined with this value!", _u32Flag);
+    }
 
     /* Pops config section */
     orxConfig_PopSection();
   }
   else
   {
-    /* Logs */
+    /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: value needs to be a power of two!", _u32Flag);
   }
 
@@ -114,16 +125,60 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
   /* Pushes config section */
   orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
 
-  /* For all elements */
-  for(i = 0, u32Counter = orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST); i < u32Counter; i++)
-  {
-    /* Found? */
-    if(!orxString_ICompare(_zFlag, orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, i)))
-    {
-      /* Updates result */
-      u32Result = 1 << i;
+  /* Gets flag list counter */
+  u32Counter = orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST);
 
-      break;
+  {
+#ifdef __orxMSVC__
+
+    const orxSTRING *azFlagList = (const orxSTRING *)alloca((u32Counter + 1) * sizeof(orxSTRING *));
+
+#else /* __orxMSVC__ */
+
+    const orxSTRING azFlagList[u32Counter + 1];
+
+#endif /* __orxMSVC__ */
+
+    /* For all flags */
+    for(i = 0; i < u32Counter; i++)
+    {
+      /* Gets it */
+      azFlagList[i] = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, i);
+
+      /* Found? */
+      if(!orxString_ICompare(_zFlag, azFlagList[i]))
+      {
+        /* Updates result */
+        u32Result = 1 << i;
+
+        break;
+      }
+    }
+
+    /* Not found? */
+    if(u32Result == 0)
+    {
+      /* Is there room to add the new flag? */
+      if(u32Counter < 16)
+      {
+        /* Stores its name */
+        azFlagList[u32Counter] = _zFlag;
+
+        /* Updates flag list */
+        if(orxConfig_SetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, azFlagList, u32Counter + 1) != orxSTATUS_FAILURE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Adding collision flag <%s> with value <%d>.", _zFlag, 1 << u32Counter);
+
+          /* Updates result */
+          u32Result = 1 << u32Counter;
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't add collision flag <%s>: too many collision flags already defined!", _zFlag);
+      }
     }
   }
 
