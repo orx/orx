@@ -1183,6 +1183,148 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/* Command: Evaluate */
+void orxFASTCALL orxCommand_CommandEvaluate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Disables marker operations */
+  orxProfiler_EnableMarkerOperations(orxFALSE);
+
+  /* Evaluates command */
+  orxCommand_Evaluate(_astArgList[0].zValue, _pstResult);
+
+  /* Re-enables marker operations */
+  orxProfiler_EnableMarkerOperations(orxTRUE);
+
+  /* Done! */
+  return;
+}
+
+/* Command: EvaluateIf  */
+void orxFASTCALL orxCommand_CommandEvaluateIf(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxBOOL bTest;
+
+  /* Disables marker operations */
+  orxProfiler_EnableMarkerOperations(orxFALSE);
+
+  /* Is true? */
+  if((orxString_ToBool(_astArgList[0].zValue, &bTest, orxNULL) != orxSTATUS_FAILURE) && (bTest != orxFALSE))
+  {
+    /* Evaluates first command */
+    orxCommand_Evaluate(_astArgList[1].zValue, _pstResult);
+  }
+  else
+  {
+    /* Has an alternate command? */
+    if(_u32ArgNumber > 2)
+    {
+      /* Evaluates it */
+      orxCommand_Evaluate(_astArgList[2].zValue, _pstResult);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->zValue = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Re-enables marker operations */
+  orxProfiler_EnableMarkerOperations(orxTRUE);
+
+  /* Done! */
+  return;
+}
+
+/* Command: If */
+void orxFASTCALL orxCommand_CommandIf(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxBOOL bTest;
+
+  /* Is true? */
+  if((orxString_ToBool(_astArgList[0].zValue, &bTest, orxNULL) != orxSTATUS_FAILURE) && (bTest != orxFALSE))
+  {
+    /* Updates result */
+    _pstResult->zValue = _astArgList[1].zValue;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = (_u32ArgNumber > 2) ? _astArgList[2].zValue : orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Not */
+void orxFASTCALL orxCommand_CommandNot(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = !_astArgList[0].bValue;
+
+  /* Done! */
+  return;
+}
+
+/* Command: And */
+void orxFASTCALL orxCommand_CommandAnd(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue && _astArgList[1].bValue;
+
+  /* Done! */
+  return;
+}
+
+/* Command: Or */
+void orxFASTCALL orxCommand_CommandOr(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue || _astArgList[1].bValue;
+
+  /* Done! */
+  return;
+}
+
+/* Command: XOr */
+void orxFASTCALL orxCommand_CommandXOr(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (_astArgList[0].bValue || _astArgList[1].bValue) && !(_astArgList[0].bValue && _astArgList[1].bValue);
+
+  /* Done! */
+  return;
+}
+
+/* Command: AreEqual */
+void orxFASTCALL orxCommand_CommandAreEqual(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Not case sensitive? */
+  if((_u32ArgNumber <= 2) || (_astArgList[2].bValue == orxFALSE))
+  {
+    /* Updates result */
+    _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) == 0) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = (orxString_Compare(_astArgList[0].zValue, _astArgList[1].zValue) == 0) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: CRC */
+void orxFASTCALL orxCommand_CommandCRC(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = orxString_ToCRC(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the command commands
  */
 static orxINLINE void orxCommand_RegisterCommands()
@@ -1200,8 +1342,63 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: ListAliases */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = \"\"", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: Evaluate */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Evaluate, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: EvaluateIf */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, EvaluateIf, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Command", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Command = <void>", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: If */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, If, "Select?", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Result", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Result = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Not */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Not, "Not", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: And */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, And, "And", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_BOOL}, {"Operand2", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: Or */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Or, "Or", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_BOOL}, {"Operand2", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: XOr */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, XOr, "XOr", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_BOOL}, {"Operand2", orxCOMMAND_VAR_TYPE_BOOL});
+
+  /* Command: AreEqual */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, AreEqual, "Equal?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"String1", orxCOMMAND_VAR_TYPE_STRING}, {"String2", orxCOMMAND_VAR_TYPE_STRING}, {"CaseSensitive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: CRC */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, CRC, "CRC", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
+
+  /* Alias: Eval */
+  orxCommand_AddAlias("Eval", "Command.Evaluate", orxNULL);
+  /* Alias: EvalIf */
+  orxCommand_AddAlias("EvalIf", "Command.EvaluateIf", orxNULL);
+
+  /* Alias: Logic.If */
+  orxCommand_AddAlias("Logic.If", "Command.If", orxNULL);
+  /* Alias: Logic.Not */
+  orxCommand_AddAlias("Logic.Not", "Command.Not", orxNULL);
+  /* Alias: Logic.And */
+  orxCommand_AddAlias("Logic.And", "Command.And", orxNULL);
+  /* Alias: Logic.Or */
+  orxCommand_AddAlias("Logic.Or", "Command.Or", orxNULL);
+  /* Alias: Logic.XOr */
+  orxCommand_AddAlias("Logic.XOr", "Command.XOr", orxNULL);
+
+  /* Alias: If */
+  orxCommand_AddAlias("If", "Logic.If", orxNULL);
+  /* Alias: Not */
+  orxCommand_AddAlias("Not", "Logic.Not", orxNULL);
+  /* Alias: And */
+  orxCommand_AddAlias("And", "Logic.And", orxNULL);
+  /* Alias: Or */
+  orxCommand_AddAlias("Or", "Logic.Or", orxNULL);
+  /* Alias: XOr */
+  orxCommand_AddAlias("XOr", "Logic.XOr", orxNULL);
+
+  /* Alias: == */
+  orxCommand_AddAlias("==", "Command.AreEqual", orxNULL);
+  /* Alias: AreEqual */
+  orxCommand_AddAlias("AreEqual", "Command.AreEqual", orxNULL);
+  /* Alias: CRC */
+  orxCommand_AddAlias("CRC", "Command.CRC", orxNULL);
 }
 
 /** Unregisters all the command commands
@@ -1210,6 +1407,40 @@ static orxINLINE void orxCommand_UnregisterCommands()
 {
   /* Alias: Help */
   orxCommand_RemoveAlias("Help");
+
+  /* Alias: Eval */
+  orxCommand_RemoveAlias("Eval");
+  /* Alias: EvalIf */
+  orxCommand_RemoveAlias("EvalIf");
+
+  /* Alias: Logic.If */
+  orxCommand_RemoveAlias("Logic.If");
+  /* Alias: Logic.Not */
+  orxCommand_RemoveAlias("Logic.Not");
+  /* Alias: Logic.And */
+  orxCommand_RemoveAlias("Logic.And");
+  /* Alias: Logic.Or */
+  orxCommand_RemoveAlias("Logic.Or");
+  /* Alias: Logic.XOr */
+  orxCommand_RemoveAlias("Logic.XOr");
+
+  /* Alias: If */
+  orxCommand_RemoveAlias("If");
+  /* Alias: Not */
+  orxCommand_RemoveAlias("Not");
+  /* Alias: And */
+  orxCommand_RemoveAlias("And");
+  /* Alias: Or */
+  orxCommand_RemoveAlias("Or");
+  /* Alias: XOr */
+  orxCommand_RemoveAlias("XOr");
+
+  /* Alias: == */
+  orxCommand_RemoveAlias("==");
+  /* Alias: AreEqual */
+  orxCommand_RemoveAlias("AreEqual");
+  /* Alias: CRC */
+  orxCommand_RemoveAlias("CRC");
 
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
@@ -1223,6 +1454,27 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, RemoveAlias);
   /* Command: ListAliases */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ListAliases);
+
+  /* Command: Evaluate */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Evaluate);
+  /* Command: EvaluateIf */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, EvaluateIf);
+
+  /* Command: If */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, If);
+  /* Command: Not */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Not);
+  /* Command: And */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, And);
+  /* Command: Or */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Or);
+  /* Command: XOr */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, XOr);
+
+  /* Command: AreEqual */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, AreEqual);
+  /* Command: CRC */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, CRC);
 }
 
 /***************************************************************************
