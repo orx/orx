@@ -262,9 +262,6 @@ static orxINLINE orxVECTOR *                  orxVector_Div(orxVECTOR *_pvRes, c
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
   orxASSERT(_pvOp2 != orxNULL);
-  orxASSERT(_pvOp2->fX != orxFLOAT_0);
-  orxASSERT(_pvOp2->fY != orxFLOAT_0);
-  orxASSERT(_pvOp2->fZ != orxFLOAT_0);
 
   /* Divs all */
   _pvRes->fX = _pvOp1->fX / _pvOp2->fX;
