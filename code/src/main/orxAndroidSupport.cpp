@@ -99,7 +99,6 @@ extern "C" {
 jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
   orxAndroid_ThreadInit(vm);
-  orxAndroid_APKInit();
   return JNI_VERSION_1_4;
 }
 
@@ -112,6 +111,7 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, job
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeExit(JNIEnv * env, jobject thiz)
 {
   nativeExit();
+  env->DeleteGlobalRef(oActivity);
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeInit(JNIEnv* env, jobject thiz, jint width, jint height)
@@ -426,151 +426,6 @@ int orxAndroid_ThreadSleep(unsigned long millisec)
   req.tv_nsec = millisec*1000000L;
   return __sleep(&req,&rem);
 }
-
-static jobject s_globalThiz;
-static jclass APKFileClass;
-static jclass fileHelper;
-static jmethodID s_openFile;
-static jmethodID s_closeFile;
-static jfieldID s_lengthId;
-static jmethodID s_seekFile;
-static jfieldID s_positionId;
-static jmethodID s_readFile;
-static jfieldID s_dataId;
-
-void orxAndroid_APKInit()
-{
-  __android_log_print(ANDROID_LOG_DEBUG, "apk",  "apk init\n");
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  __android_log_print(ANDROID_LOG_DEBUG, "apk",  "env = %p\n", env);
-  fileHelper = env->FindClass("org/orx/lib/APKFileHelper");
-  __android_log_print(ANDROID_LOG_DEBUG, "apk",  "class = %d\n", fileHelper);
-  jmethodID getInstance = env->GetStaticMethodID(fileHelper, "getInstance", "()Lorg/orx/lib/APKFileHelper;");
-  __android_log_print(ANDROID_LOG_DEBUG, "apk",  "inst = %d\n", getInstance);
-  APKFileClass = env->FindClass("org/orx/lib/APKFileHelper$APKFile");
-	
-  s_openFile = env->GetMethodID(fileHelper, "openFileAndroid", "(Ljava/lang/String;)Lorg/orx/lib/APKFileHelper$APKFile;");
-  s_closeFile = env->GetMethodID(fileHelper, "closeFileAndroid", "(Lorg/orx/lib/APKFileHelper$APKFile;)V");
-  s_lengthId = env->GetFieldID(APKFileClass, "length", "I");
-  s_seekFile = env->GetMethodID(fileHelper, "seekFileAndroid", "(Lorg/orx/lib/APKFileHelper$APKFile;I)J");
-  s_positionId = env->GetFieldID(APKFileClass, "position", "I");
-  s_readFile = env->GetMethodID(fileHelper, "readFileAndroid", "(Lorg/orx/lib/APKFileHelper$APKFile;I)V");
-  s_dataId = env->GetFieldID(APKFileClass, "data", "[B");
-
-  jobject thiz = env->CallStaticObjectMethod(fileHelper, getInstance);
-  s_globalThiz = env->NewGlobalRef(thiz);
-}
-
-APKFile* orxAndroid_APKOpen(char const* path)
-{
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  jstring test = env->NewStringUTF(path);
-  jobject localfileHandle = env->CallObjectMethod(s_globalThiz, s_openFile, test);
-  jobject fileHandle = env->NewGlobalRef(localfileHandle);
-  env->DeleteLocalRef((jobject)test);
-  env->DeleteLocalRef((jobject)localfileHandle);
-    
-  return (APKFile *) fileHandle;
-}
-
-void orxAndroid_APKClose(APKFile* file)
-{
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  env->CallVoidMethod(s_globalThiz, s_closeFile, (jobject) file);
-  env->DeleteGlobalRef((jobject)file);
-}
-
-int orxAndroid_APKGetc(APKFile *stream)
-{
-  char buff;
-  orxAndroid_APKRead(&buff,1,1,stream);
-  return buff;
-}
-
-char* orxAndroid_APKGets(char* s, int size, APKFile* stream)
-{
-  int i;
-  char *d=s;
-  for(i = 0; (size > 1) && (!orxAndroid_APKEOF(stream)); i++, size--, d++)
-  {
-    orxAndroid_APKRead(d,1,1,stream);
-    if(*d==10)
-    {
-      size=1;
-    }
-  }
-  *d=0;
-
-  return s;
-}
-
-size_t orxAndroid_APKSize(APKFile* stream)
-{
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  jint len = env->GetIntField((jobject) stream, s_lengthId);
-
-  return len;
-}
-
-long orxAndroid_APKSeek(APKFile* stream, long offset, int type)
-{
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  switch (type)
-  {
-  case SEEK_CUR:
-    offset += orxAndroid_APKTell(stream);
-    break;
-  case SEEK_END:
-    offset += orxAndroid_APKSize(stream);
-    break;
-  case SEEK_SET:
-    // No need to change the offset..
-    break;
-  }
-
-  jlong ret = env->CallLongMethod(s_globalThiz, s_seekFile, (jobject) stream, (jint) offset);
-
-  return ret;
-}
-
-long orxAndroid_APKTell(APKFile* stream)
-{
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  jint pos = env->GetIntField((jobject) stream, s_positionId);
-
-  return pos;
-}
-
-size_t orxAndroid_APKRead(void* ptr, size_t size, size_t nmemb, APKFile* stream)
-{
-  JNIEnv *env = orxAndroid_ThreadGetCurrentJNIEnv();
-  jint readLength = size*nmemb;
-
-  int avail = orxAndroid_APKSize(stream)-orxAndroid_APKTell(stream);
-  if(readLength>avail)
-  {
-    readLength = avail;
-    nmemb = readLength/size;
-  }
-
-  env->CallVoidMethod(s_globalThiz, s_readFile, (jobject) stream, (jint) readLength);
-
-  jbyteArray data = (jbyteArray) env->GetObjectField((jobject) stream, s_dataId);
-  char *data2 = (char *) env->GetByteArrayElements(data, NULL);
-  memcpy(ptr,data2,readLength);
-  env->ReleaseByteArrayElements(data, (jbyte*) data2, 0);
-
-  env->DeleteLocalRef(data);
-
-  return nmemb;
-}
-
-int orxAndroid_APKEOF(APKFile *stream)
-{
-  int rv = (orxAndroid_APKTell(stream) >= orxAndroid_APKSize(stream)) ? 1 : 0;
-  return rv;
-}
-
 
 }
 

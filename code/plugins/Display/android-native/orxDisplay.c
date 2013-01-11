@@ -1946,6 +1946,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(orxBITMAP *_pstBitmap, or
   {
     GLuint uiFrameBuffer;
 
+    /* Draws remaining items */
+    orxDisplay_Android_DrawArrays();
+
     /* Generates frame buffer */
     glGenFramebuffers(1, &uiFrameBuffer);
     glASSERT();
