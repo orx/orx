@@ -66,6 +66,8 @@
   #ifdef __orxANDROID__
 
     #include <jni.h>
+    #include <android/asset_manager.h>
+    #include <android/asset_manager_jni.h>
     #include "main/orxAndroid.h"
 
     extern jobject              oActivity;
@@ -128,6 +130,11 @@ typedef struct __orxFILE_STATIC_t
 #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
 
   orxSTRING zInternalDataPath;
+
+#ifdef __orxANDROID__
+  jobject jAssetManager;
+  AAssetManager* poAssetManager;
+#endif /* __orxANDROID__ */
 
 #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
@@ -324,7 +331,15 @@ orxSTATUS orxFASTCALL orxFile_Init()
       orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", sstFile.zInternalDataPath);
     }
 
-#endif /* __orxANDROID_NATIVE__ */
+    /* retrieve AssetManager */
+    jmethodID getAssets = (*poJEnv)->GetMethodID(poJEnv, objClass, "getAssets", "()Landroid/content/res/AssetManager;");
+    orxASSERT(getAssets != orxNULL);
+    jobject jAssetManager = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getAssets);
+    orxASSERT(jAssetManager != orxNULL);
+    sstFile.jAssetManager = (*poJEnv)->NewGlobalRef(poJEnv, jAssetManager);
+    sstFile.poAssetManager = AAssetManager_fromJava(poJEnv, sstFile.jAssetManager);
+
+#endif /* __orxANDROID__ */
 
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
@@ -345,6 +360,13 @@ void orxFASTCALL orxFile_Exit()
 
     /* free zInternalDataPath memory */
     orxString_Delete(sstFile.zInternalDataPath);
+
+#ifdef __orxANDROID__
+
+    JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+    (*poJEnv)->DeleteGlobalRef(poJEnv, sstFile.jAssetManager);
+
+#endif /* __orxANDROID__ */
 
 #endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
@@ -367,7 +389,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-	return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+  return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
@@ -814,7 +836,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
 
   #else /* __orxANDROID_NATIVE__ */
 
-  APKFile *poAsset = orxAndroid_APKOpen(_zFileName);
+  AAsset *poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName, AASSET_MODE_RANDOM);
 
   #endif /* __orxANDROID_NATIVE__ */
 
@@ -863,15 +885,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
-      #ifdef __orxANDROID_NATIVE__
-
-      u32Ret = (orxU32)AAsset_read((AAsset *)_pstFile->pHandle, _pReadData, _u32ElemSize * _u32NbElem);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      u32Ret = (orxU32)orxAndroid_APKRead(_pReadData, _u32ElemSize, _u32NbElem, (APKFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
+      u32Ret = (orxU32)AAsset_read((AAsset *)_pstFile->pHandle, _pReadData, _u32ElemSize * _u32NbElem) / _u32ElemSize;
     }
     else
     {
@@ -955,15 +969,7 @@ orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
-      #ifdef __orxANDROID_NATIVE__
-
       eResult =  (AAsset_seek((AAsset *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      eResult = (orxAndroid_APKSeek((APKFile*)_pstFile->pHandle, _s32Position,  SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
@@ -1007,15 +1013,7 @@ orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
-      #ifdef __orxANDROID_NATIVE__
-
       s32Result = AAsset_getLength((AAsset *)_pstFile->pHandle) - AAsset_getRemainingLength((AAsset *)_pstFile->pHandle);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      s32Result = orxAndroid_APKTell((APKFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
@@ -1059,15 +1057,7 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
-      #ifdef __orxANDROID_NATIVE__
-
       s32Result = AAsset_getLength((AAsset *)_pstFile->pHandle);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      s32Result = orxAndroid_APKSize((APKFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
     }
     else
     {
@@ -1179,16 +1169,7 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
       /* Close file pointer */
-      #ifdef __orxANDROID_NATIVE__
-
       AAsset_close((AAsset *)_pstFile->pHandle);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      orxAndroid_APKClose((APKFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
-
       eRet = orxSTATUS_SUCCESS;
     }
     else
