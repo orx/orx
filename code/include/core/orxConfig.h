@@ -386,6 +386,20 @@ extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetListS32(const orxSTRI
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
+/** Reads a signed integer value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxS64 orxFASTCALL           orxConfig_GetListS64(const orxSTRING _zKey, orxS32 _s32ListIndex);
+
+/** Reads an unsigned integer value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxU64 orxFASTCALL           orxConfig_GetListU64(const orxSTRING _zKey, orxS32 _s32ListIndex);
+
 /** Reads a float value from config list
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
