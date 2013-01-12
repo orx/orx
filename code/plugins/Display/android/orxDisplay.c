@@ -2626,7 +2626,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
         au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSizeRounded, orxMEMORY_TYPE_VIDEO);
 
         /* Reads the image content (mimaps will be ignored) */
-        if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) > 0)
+        if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSizeRounded, pstFile) > 0)
         {
           /* Allocates bitmap */
           pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
