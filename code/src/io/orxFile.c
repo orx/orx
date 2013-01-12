@@ -885,7 +885,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
-      u32Ret = (orxU32)AAsset_read((AAsset *)_pstFile->pHandle, _pReadData, _u32ElemSize * _u32NbElem);
+      u32Ret = (orxU32)AAsset_read((AAsset *)_pstFile->pHandle, _pReadData, _u32ElemSize * _u32NbElem) / _u32ElemSize;
     }
     else
     {
