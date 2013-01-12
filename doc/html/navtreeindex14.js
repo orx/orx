@@ -1,5 +1,9 @@
 var NAVTREEINDEX14 =
 {
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feaacd3873a028c41bb9b5160251b46a1a6":[3,0,0,5,3,0,29],
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feaae2cda1137017c0acc1047994bf2e950":[3,0,0,5,3,0,101],
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab1d572d6a3f5c70885ba5fb13d35032f":[3,0,0,5,3,0,102],
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab25fe032f7bc7a51f780679ea5edc364":[3,0,0,5,3,0,87],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab2d16b508f36e2617e4c6e5fc05f6667":[3,0,0,5,3,0,103],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab4a1211e5971f4ad7bf2db7597be93af":[3,0,0,5,3,0,49],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233feab9322a438970815213facd92924703d6":[3,0,0,5,3,0,50],
@@ -245,9 +249,5 @@ var NAVTREEINDEX14 =
 "orx_object_8h.html#ga0d872e8896755f1b86ad5327d032c2c8":[3,0,0,9,3,44],
 "orx_object_8h.html#ga10d807123d929e60b41c2bfd06bab1d8":[3,0,0,9,3,78],
 "orx_object_8h.html#ga11619a4851d3c57e768301fce73da901":[3,0,0,9,3,59],
-"orx_object_8h.html#ga11cb5defe143721910db791c2432bb4d":[3,0,0,9,3,67],
-"orx_object_8h.html#ga129785899c1ff6f7f0686916f30849c1":[3,0,0,9,3,98],
-"orx_object_8h.html#ga14fd6946764c919597aeda13cd7429d5":[3,0,0,9,3,87],
-"orx_object_8h.html#ga15330f81b355cfe2bd4685c819c40baa":[3,0,0,9,3,28],
-"orx_object_8h.html#ga16b071f6b40931ce6617479ca3294b49":[3,0,0,9,3,3]
+"orx_object_8h.html#ga11cb5defe143721910db791c2432bb4d":[3,0,0,9,3,67]
 };
