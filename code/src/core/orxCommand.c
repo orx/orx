@@ -175,18 +175,50 @@ static orxINLINE orxSTATUS orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumb
       /* Updates its type */
       _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_VECTOR;
     }
-    /* Gets float operand */
-    else if(orxString_ToFloat(_astArgList[i].zValue, &(_astOperandList[i].fValue), orxNULL) != orxSTATUS_FAILURE)
-    {
-      /* Updates its type */
-      _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
-    }
     else
     {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      /* Hexadecimal, binary or octal?? */
+      if((_astArgList[i].zValue[0] != orxCHAR_EOL)
+      && (_astArgList[i].zValue[0] == '0')
+      && (_astArgList[i].zValue[1] != orxCHAR_EOL)
+      && (((_astArgList[i].zValue[1] | 0x20) == 'x')
+       || ((_astArgList[i].zValue[1] | 0x20) == 'b')
+       || ((_astArgList[i].zValue[1] >= '0')
+        && (_astArgList[i].zValue[1] <= '9'))))
+      {
+        /* Gets U64 operand */
+        if(orxString_ToU64(_astArgList[i].zValue, &(_astOperandList[i].u64Value), orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Gets its float value */
+          _astOperandList[i].fValue = orxU2F(_astOperandList[i].u64Value);
 
-      break;
+          /* Updates its type */
+          _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+
+          break;
+        }
+      }
+      else
+      {
+        /* Gets float operand */
+        if(orxString_ToFloat(_astArgList[i].zValue, &(_astOperandList[i].fValue), orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates its type */
+          _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+
+          break;
+        }
+      }
     }
   }
 
@@ -1336,42 +1368,46 @@ void orxFASTCALL orxCommand_CommandXOr(orxU32 _u32ArgNumber, const orxCOMMAND_VA
 /* Command: AreEqual */
 void orxFASTCALL orxCommand_CommandAreEqual(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxVECTOR vOperand1, vOperand2;
+  orxCOMMAND_VAR astOperandList[2];
 
-  /* Gets vector operands */
-  if((orxString_ToVector(_astArgList[0].zValue, &vOperand1, orxNULL) != orxSTATUS_FAILURE)
-  && (orxString_ToVector(_astArgList[1].zValue, &vOperand2, orxNULL) != orxSTATUS_FAILURE))
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
   {
-    /* Updates result */
-    _pstResult->bValue = orxVector_AreEqual(&vOperand1, &vOperand2);
-  }
-  else
-  {
-    orxFLOAT fOperand1, fOperand2;
-
-    /* Gets float operands */
-    if((orxString_ToFloat(_astArgList[0].zValue, &fOperand1, orxNULL) != orxSTATUS_FAILURE)
-    && (orxString_ToFloat(_astArgList[1].zValue, &fOperand2, orxNULL) != orxSTATUS_FAILURE))
+    /* Both floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Updates result */
-      _pstResult->bValue = (fOperand1 == fOperand2) ? orxTRUE : orxFALSE;
+      _pstResult->bValue = (astOperandList[0].fValue == astOperandList[1].fValue) ? orxTRUE : orxFALSE;
+    }
+    /* Both vectors? */
+    else if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_VECTOR)
+         && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_VECTOR))
+    {
+      /* Updates result */
+      _pstResult->bValue = orxVector_AreEqual(&(astOperandList[0].vValue), &(astOperandList[1].vValue));
     }
     else
     {
-      orxBOOL bOperand1, bOperand2;
+      /* Updates result */
+      _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) == 0) ? orxTRUE : orxFALSE;
+    }
+  }
+  else
+  {
+    orxBOOL bOperand1, bOperand2;
 
-      /* Gets bool operands */
-      if((orxString_ToBool(_astArgList[0].zValue, &bOperand1, orxNULL) != orxSTATUS_FAILURE)
-      && (orxString_ToBool(_astArgList[1].zValue, &bOperand2, orxNULL) != orxSTATUS_FAILURE))
-      {
-        /* Updates result */
-        _pstResult->bValue = (bOperand1 == bOperand2) ? orxTRUE : orxFALSE;
-      }
-      else
-      {
-        /* Updates result */
-        _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) == 0) ? orxTRUE : orxFALSE;
-      }
+    /* Gets bool operands */
+    if((orxString_ToBool(_astArgList[0].zValue, &bOperand1, orxNULL) != orxSTATUS_FAILURE)
+    && (orxString_ToBool(_astArgList[1].zValue, &bOperand2, orxNULL) != orxSTATUS_FAILURE))
+    {
+      /* Updates result */
+      _pstResult->bValue = (bOperand1 == bOperand2) ? orxTRUE : orxFALSE;
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) == 0) ? orxTRUE : orxFALSE;
     }
   }
 

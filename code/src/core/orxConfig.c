@@ -1169,7 +1169,7 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S32 random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S32 random from config value <%s>.", zStart);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1293,7 +1293,7 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 random from config value <%s>.", zStart);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1417,7 +1417,7 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S64 random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get S64 random from config value <%s>.", zStart);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1541,7 +1541,7 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U64 random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U64 random from config value <%s>.", zStart);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1665,7 +1665,7 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get FLOAT random from config value <%s>.", _pstValue->zValue);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get FLOAT random from config value <%s>.", zStart);
 
           /* Clears cache */
           _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
@@ -1725,17 +1725,8 @@ static orxINLINE orxSTATUS orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstVal
     }
   }
 
-  /* Is it cached and on the same index? */
-  if((_pstValue->u16Type == (orxU16)orxCONFIG_VALUE_TYPE_BOOL) && (_s32ListIndex == (orxS32)_pstValue->u16CacheIndex))
-  {
-    /* Updates result */
-    *_pzResult = _pstValue->zValue;
-  }
-  else
-  {
-    /* Gets wanted value */
-    *_pzResult = orxConfig_GetListValue(_pstValue, _s32ListIndex);
-  }
+  /* Gets wanted value */
+  *_pzResult = orxConfig_GetListValue(_pstValue, _s32ListIndex);
 
   /* Done! */
   return eResult;
@@ -2080,9 +2071,6 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
     /* Success? */
     if(pstValue != orxNULL)
     {
-      orxVECTOR vResult;
-      orxBOOL   bConfigLevelEnabled;
-
       /* Random? */
       if((s32Index == -1) && (orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST)))
       {
@@ -2090,43 +2078,60 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
         s32Index = (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCounter - 1);
       }
 
-      /* Gets config debug level state */
-      bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
-
-      /* Deactivates config debug level */
-      orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-
-      /* Gets vector value */
-      if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
+      /* Gets string value */
+      if(orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue)) != orxSTATUS_FAILURE)
       {
-        /* Prints it */
-        orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+        orxVECTOR vResult;
+        orxBOOL   bConfigLevelEnabled;
 
-        /* Updates result */
-        _pstResult->zValue = sstConfig.acCommandBuffer;
+        /* Gets config debug level state */
+        bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+
+        /* Deactivates config debug level */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
+        /* Not hexadecimal, binary or octal?? */
+        if((_pstResult->zValue[0] == orxCHAR_EOL)
+        || (_pstResult->zValue[0] != '0')
+        || (_pstResult->zValue[1] == orxCHAR_EOL)
+        || (((_pstResult->zValue[1] | 0x20) != 'x')
+         && ((_pstResult->zValue[1] | 0x20) != 'b')
+         && ((_pstResult->zValue[1] < '0')
+          || (_pstResult->zValue[1] > '9'))))
+        {
+          /* Gets vector value */
+          if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
+          {
+            /* Prints it */
+            orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+            /* Updates result */
+            _pstResult->zValue = sstConfig.acCommandBuffer;
+          }
+          else
+          {
+            orxFLOAT fResult;
+
+            /* Gets float value */
+            if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fResult) != orxSTATUS_FAILURE)
+            {
+              /* Prints it */
+              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%g", fResult);
+
+              /* Updates result */
+              _pstResult->zValue = sstConfig.acCommandBuffer;
+            }
+          }
+        }
+
+        /* Restores config debug level state */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
       }
       else
       {
-        orxFLOAT fResult;
-
-        /* Gets float value */
-        if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fResult) != orxSTATUS_FAILURE)
-        {
-          /* Prints it */
-          orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%g", fResult);
-
-          /* Updates result */
-          _pstResult->zValue = sstConfig.acCommandBuffer;
-        }
-        else
-        {
-          /* Updates result */
-          orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue));
-        }
+        /* Updates result */
+        _pstResult->zValue = orxSTRING_EMPTY;
       }
-
-      /* Restores config debug level state */
-      orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
     }
     else
     {

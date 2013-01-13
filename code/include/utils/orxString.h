@@ -802,7 +802,7 @@ static orxINLINE orxSTATUS              orxString_ToS32(const orxSTRING _zString
   }
   /* Octal? */
   else if((_zString[0] != orxCHAR_EOL)
-       && ((_zString[0] | 0x20) == '0')
+       && (_zString[0] == '0')
        && ((_zString[1]) >= '0')
        && ((_zString[1]) <= '9'))
   {
@@ -896,7 +896,7 @@ static orxINLINE orxSTATUS              orxString_ToU32(const orxSTRING _zString
   }
   /* Octal? */
   else if((_zString[0] != orxCHAR_EOL)
-       && ((_zString[0] | 0x20) == '0')
+       && (_zString[0] == '0')
        && ((_zString[1]) >= '0')
        && ((_zString[1]) <= '9'))
   {
@@ -990,7 +990,7 @@ static orxINLINE orxSTATUS              orxString_ToS64(const orxSTRING _zString
   }
   /* Octal? */
   else if((_zString[0] != orxCHAR_EOL)
-       && ((_zString[0] | 0x20) == '0')
+       && (_zString[0] == '0')
        && ((_zString[1]) >= '0')
        && ((_zString[1]) <= '9'))
   {
@@ -1084,7 +1084,7 @@ static orxINLINE orxSTATUS              orxString_ToU64(const orxSTRING _zString
   }
   /* Octal? */
   else if((_zString[0] != orxCHAR_EOL)
-       && ((_zString[0] | 0x20) == '0')
+       && (_zString[0] == '0')
        && ((_zString[1]) >= '0')
        && ((_zString[1]) <= '9'))
   {
