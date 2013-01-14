@@ -964,9 +964,20 @@ static void Run()
               orxS32  s32AdjustedX, s32AdjustedY, i;
               orxU8  *pu8Src, *pu8Dst;
 
-              // Gets adjusted position
-              s32AdjustedX  = s32X + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) + orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0);
-              s32AdjustedY  = s32Y + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) - orxMIN((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top, s32BaseLine);
+              // Is monospaced?
+              if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+              {
+                // Gets adjusted X position
+                s32AdjustedX = s32X + (s32CharacterWidth - (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width) / 2;
+              }
+              else
+              {
+                // Gets adjusted X position
+                s32AdjustedX = s32X + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) + orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0);
+              }
+
+              // Gets adjusted Y position
+              s32AdjustedY = s32Y + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) - orxMIN((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top, s32BaseLine);
 
               // For all rows
               for(i = 0, pu8Src = (orxU8 *)sstFontGen.pstFontFace->glyph->bitmap.buffer, pu8Dst = pu8ImageBuffer + sizeof(orxRGBA) * ((s32AdjustedY * s32Width) + s32AdjustedX);
