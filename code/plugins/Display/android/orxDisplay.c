@@ -1619,6 +1619,13 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(orxBITMAP *_pstBitmap, or
   /* Gets buffer size */
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
+  if(_pstBitmap == sstDisplay.pstBitmap)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GetBitmapData() from Display not implemented yet.");
+
+    return orxSTATUS_FAILURE;
+  }
+
   /* Is size matching? */
   if(_u32ByteNumber == u32BufferSize)
   {
@@ -1778,10 +1785,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       /* Screen? */
       if(_pstBitmap == sstDisplay.pstScreen)
       {
-        /* Unbinds frame buffer */
-        orxPROFILER_PUSH_MARKER("glBindFramebuffer screen");
+        /* Binds default frame buffer */
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        orxPROFILER_POP_MARKER();
         glASSERT();
 
         /* Updates result */
@@ -1791,12 +1796,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       else
       {
         /* Binds frame buffer */
-        orxPROFILER_PUSH_MARKER("glBindFramebuffer viewport");
         glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
-        orxPROFILER_POP_MARKER();
         glASSERT();
 
-        /* Links it to frame buffer */
+        /* Links texture to frame buffer */
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
         glASSERT();
 
@@ -3174,22 +3177,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Inits flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
-        /* Creates texture for screen backup */
-        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glASSERT();
-
         /* Creates default shaders */
         sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
         sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
@@ -3745,8 +3732,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
       glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       glASSERT();
 
-			/* Updates texture counter */
-			pstShader->iTextureCounter++;
+      /* Updates texture counter */
+      pstShader->iTextureCounter++;
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;

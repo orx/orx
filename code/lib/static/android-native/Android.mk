@@ -36,7 +36,7 @@ LOCAL_EXPORT_LDLIBS := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
 
 include $(PREBUILT_STATIC_LIBRARY)
 
-$(call import-module,orx/extern/nv_and_util)
-$(call import-module,orx/extern/SOIL/lib/android-native)
-$(call import-module,orx/extern/Box2D_2.1.3/lib/android-native)
+$(call import-module,extern/nv_and_util)
+$(call import-module,extern/SOIL/lib/android-native)
+$(call import-module,extern/Box2D_2.1.3/lib/android-native)
 
