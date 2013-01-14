@@ -1619,6 +1619,13 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(orxBITMAP *_pstBitmap, or
   /* Gets buffer size */
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
+  if(_pstBitmap == sstDisplay.pstBitmap)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GetBitmapData() from Display not implemented yet.");
+
+    return orxSTATUS_FAILURE;
+  }
+
   /* Is size matching? */
   if(_u32ByteNumber == u32BufferSize)
   {
