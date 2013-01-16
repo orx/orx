@@ -305,16 +305,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 #endif /* __orxMSVC__ */
 
-#ifdef __orxANDROID_NATIVE__
-
-void android_main(struct android_app *_pstApp)
-{
-  /* Executes orx */
-  orx_AndroidExecute(_pstApp, orxMain_Init, orxMain_Run, orxMain_Exit);
-
-  /* Done! */
-  return;
-}
-
-#endif /* __orxANDROID_NATIVE__ */
-

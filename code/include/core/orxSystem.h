@@ -52,15 +52,6 @@
 
 #endif /* __orxIOS__ && __orxOBJC__ */
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-  #include <jni.h>
-
-  // Max number touch available for the Android version
-  #define orxANDROID_TOUCH_NUMBER 4
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
 /** Event enum
  */
 typedef enum __orxSYSTEM_EVENT_t

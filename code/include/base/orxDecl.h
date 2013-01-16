@@ -130,7 +130,7 @@
 
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__) && !defined(__orxRASPBERRY_PI__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__) && !defined(__orxRASPBERRY_PI__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -145,15 +145,7 @@
   /* Android */
   #elif defined(TARGET_OS_ANDROID)
 
-    #if __ANDROID_API__ >= 9
-
-      #define __orxANDROID_NATIVE__
-
-    #else /* __ANDROID_API__ >= 9 */
-
-      #define __orxANDROID__
-
-    #endif /* __ANDROID_API__ >= 9 */
+    #define __orxANDROID__
 
   /* Raspberry Pi */
   #elif defined(__orxARM__)
@@ -172,11 +164,11 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxANDROID_NATIVE__/__orxRASPBERRY_PI__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxRASPBERRY_PI__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxANDROID_NATIVE__ && !__orxRASPBERRY_PI__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxRASPBERRY_PI__ */
 
 
 #ifdef __cplusplus
@@ -251,9 +243,9 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
-    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)
+    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxRASPBERRY_PI__)
 
       #define orxFASTCALL
 
@@ -261,7 +253,7 @@
 
       #define orxCDECL
 
-    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -277,7 +269,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
     /** The symbol will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -299,14 +291,14 @@
     /** The null address */
     #define orxNULL             (0)
 
-    #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)
+    #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxRASPBERRY_PI__)
 
       /* iOS versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
-    #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
 #endif /* __orxWINDOWS__ */
 
