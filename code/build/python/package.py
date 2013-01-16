@@ -21,7 +21,6 @@ platformlist = [
     'tutolinux64',
     'ios',
     'android',
-    'android-native',
     'doxygen',
     'src',
     'extern'
@@ -144,13 +143,6 @@ androidfileinfolist = devfileinfolist + [
     {'src': 'build/android/obj/local/armeabi-v7a/liborx*.a',            'dst': 'lib/static/android/armeabi-v7a'}
 ]
 
-androidnativefileinfolist = devfileinfolist + [
-    {'src': 'build/android-native/*.sh',                                'dst': None},
-    {'src': 'build/android-native/*.properties',                        'dst': None},
-    {'src': 'build/android-native/obj/local/armeabi/liborx*.a',         'dst': 'lib/static/android-native/armeabi'},
-    {'src': 'build/android-native/obj/local/armeabi-v7a/liborx*.a',     'dst': 'lib/static/android-native/armeabi-v7a'}
-]
-
 # List of folder info
 docfolderinfolist = [
     {'src': '../doc/html',                                              'dst': None}
@@ -214,24 +206,6 @@ androidfolderinfolist = docfolderinfolist + [
     {'src': 'plugins/Physics/Box2D',                                    'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
     {'src': 'plugins/Sound/android',                                    'dst': None},
-    {'src': 'include',                                                  'dst': None},
-    {'src': 'src',                                                      'dst': None}
-]
-
-androidnativefolderinfolist = docfolderinfolist + [
-    {'src': 'build/android-native/jni',                                 'dst': None},
-    {'src': 'lib/static/android-native',                                'dst': None},
-    {'src': '../extern/nv_and_util',                                    'dst': None},
-    {'src': '../extern/Box2D_2.1.3/lib/android-native',                 'dst': None},
-    {'src': '../extern/SOIL/lib/android-native',                        'dst': None},
-    {'src': 'demo/android-native',                                      'dst': None},
-    {'src': 'plugins/Display/android-native',                           'dst': None},
-    {'src': 'plugins/Joystick/android-native',                          'dst': None},
-    {'src': 'plugins/Keyboard/android-native',                          'dst': None},
-    {'src': 'plugins/Mouse/android-native',                             'dst': None},
-    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
-    {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android-native',                             'dst': None},
     {'src': 'include',                                                  'dst': None},
     {'src': 'src',                                                      'dst': None}
 ]
@@ -376,14 +350,6 @@ platforminfolist = {
         'format':           'zip',
         'fileinfolist':     androidfileinfolist,
         'folderinfolist':   androidfolderinfolist
-    },
-
-    'android-native': {
-        'foldername':       'dev-android-native',
-        'filename':         'full-android-native',
-        'format':           'zip',
-        'fileinfolist':     androidnativefileinfolist,
-        'folderinfolist':   androidnativefolderinfolist
     },
 
     'doxygen': {

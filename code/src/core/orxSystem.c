@@ -84,7 +84,7 @@ typedef struct __orxSYSTEM_STATIC_t
   orxDOUBLE dResolution;
 
   #else /* __orxMAC__ || __orxIOS__ */
-  
+
   orxBOOL bUseMonotonic;
 
   #endif /* __orxMAC__ || __orxIOS__ */
@@ -131,7 +131,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     /* Updates result */
     dResult = orx2D(GetTickCount()) * orx2D(0.001);
   }
-  
+
 #else /* __orxWINDOWS__ */
 
   #if defined(__orxMAC__) || defined(__orxIOS__)
