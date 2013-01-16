@@ -43,15 +43,15 @@
 
 #ifdef __orxBANK_ALIGN__
 
-  #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxIOS__) || defined(__orxANDROID__)
 
     #define orxBANK_KU32_CACHE_LINE_SIZE        32
 
-  #else /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #else /* __orxIOS__ || __orxANDROID__ */
 
     #define orxBANK_KU32_CACHE_LINE_SIZE        64
 
-  #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxIOS__ || __orxANDROID__ */
 
 #else /* __orxBANK_ALIGN__ */
 

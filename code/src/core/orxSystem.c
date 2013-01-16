@@ -159,7 +159,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
 
   {
 
-    #if !defined(__orxANDROID_NATIVE__) && !defined(__orxANDROID__)
+    #if !defined(__orxANDROID__)
 
     struct timeval stCurrentTime;
 
@@ -171,7 +171,7 @@ static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
     }
     else
 
-    #endif /* !__orxANDROID_NATIVE__ && !__orxANDROID__ */
+    #endif /* !__orxANDROID__ */
 
     {
       /* Logs message */

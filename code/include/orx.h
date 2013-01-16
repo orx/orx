@@ -197,11 +197,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIOS__ */
 
-  #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
+  #ifdef __orxANDROID__
 
 #include "main/orxAndroid.h"
-
-    #ifdef __orxANDROID__
 
 extern orxMODULE_RUN_FUNCTION  pfnRun;
 
@@ -233,9 +231,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   }
 }
 
-    #endif
-
-  #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
+  #else /* __orxANDROID__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -368,7 +364,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 
     #endif /* __orxMSVC__ */
 
-  #endif /* __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ */
 
 #endif /* __orxIOS__ */
 
