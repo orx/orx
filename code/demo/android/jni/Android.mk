@@ -11,5 +11,5 @@ LOCAL_ARM_MODE := arm
 
 include $(BUILD_SHARED_LIBRARY)
 
-$(call import-module,code/lib/static/android)
+$(call import-module,lib/static/android)
 
