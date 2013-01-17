@@ -6,11 +6,11 @@ Orx - Portable Game Engine (Version 1.4 rc0)
 Email iarwain [at] orx-project.org to contact the author; or, better,
 check orx's homepage at http://orx-project.org for the most up-to-date contact information.
 
-This engine is licensed under the zlib license, see the LICENSE file for details.
+This engine is licensed under the very permissive zlib license, see the LICENSE file for details.
 
 
-Intro
------
+Summary
+-------
 
 Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
@@ -59,7 +59,7 @@ Supported Platforms
 The engine compiles and is tested for:
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
 - Windows (x86 with vs2008, vs2010 and mingw32 with codelite, codeblocks and GNU makefile)
-- MacOS X (x86/x86_64/ppc/ppc64 with xcode or x86/x86_64 with codelite, codeblocks and GNU makefile), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
+- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, no simulator support)
 
@@ -81,7 +81,7 @@ The embedded version will store everything in orx's library, meaning you won't b
 to choose which plugin to use at runtime, but will also be more compact. This will
 also make orx run considerably faster.
 
-From the download page you'll find precompiled binaries for Windows (x86), Linux (x86/x86_64), MacOS X (ppc/x86/x86_64),
+From the download page you'll find precompiled binaries for Windows (x86), Linux (x86/x86-64), MacOS X (ppc/x86/x86-64),
 iOS and Android, using the dynamic embedded versions only.
 If you want to use the non-embedded versions (to use with your own plugins)
 or the static ones, you'll need to compile orx yourself from the source.
@@ -129,19 +129,18 @@ The external libraries are usually modified versions of the original ones.
 VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
 
 - orx-dev-linux32-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86), release/profile/debug + tutorials + tools.
-- orx-dev-linux64-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86_64), release/profile/debug + tutorials + tools.
-- orx-dev-mac-1.4rc0.zip              : dynamic embedded binaries for MacOS X (x86/x86_64), release/profile/debug + tutorials + tools.
+- orx-dev-linux64-1.4rc0.tar.bz2      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tutorials + tools.
+- orx-dev-mac-1.4rc0.zip              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tutorials + tools.
 - orx-dev-mingw-1.4rc0.zip            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tutorials + tools.
 - orx-dev-vs2008-1.4rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2008), release/profile/debug + tutorials + tools.
 - orx-dev-vs2010-1.4rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2010), release/profile/debug + tutorials + tools.
 
 - orx-full-ios-1.4rc0.zip             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
 - orx-full-android-1.4rc0.zip         : static embedded binaries for Android, release/profile/debug + doc + source + NDK files.
-- orx-full-android-native-1.4rc0.zip  : static embedded binaries for Android Native (2.3+), release/profile/debug + doc + source + NDK files.
 
 - orx-tutorial-linux32-1.4rc0.tar.bz2 : tutorials for Linux (x86)
-- orx-tutorial-linux64-1.4rc0.tar.bz2 : tutorials for Linux (x86_64)
-- orx-tutorial-mac-1.4rc0.zip         : tutorials for MacOS X (x86/x86_64)
+- orx-tutorial-linux64-1.4rc0.tar.bz2 : tutorials for Linux (x86-64)
+- orx-tutorial-mac-1.4rc0.zip         : tutorials for MacOS X (x86/x86-64)
 - orx-tutorial-mingw-1.4rc0.zip       : tutorials for Windows (mingw)
 - orx-tutorial-vs2008-1.4rc0.zip      : tutorials for Windows (Visual Studio 2008)
 - orx-tutorial-vs2010-1.4rc0.zip      : tutorials for Windows (Visual Studio 2010)
@@ -209,11 +208,10 @@ for which you're compiling. Here's a quick list of these flags:
 - __orxMSVC__         : orx is being compiled with visual studio C/C++
 - __orxLLVM__         : orx is being compiled with llvm/clang
 - __orxWINDOWS__      : orx is being compiled for Windows (x86)
-- __orxMAC__          : orx is being compiled for MacOS X (ppc/x86/x86_64)
-- __orxLINUX__        : orx is being compiled for Linux (x86/x86_64)
+- __orxMAC__          : orx is being compiled for MacOS X (ppc/x86/x86-64)
+- __orxLINUX__        : orx is being compiled for Linux (x86/x86-64)
 - __orxIOS__          : orx is being compiled for iOS
 - __orxANDROID__      : orx is being compiled for Android
-- __orxANDROID_NATIVE_: orx is being compiled for Android native (2.3+)
 - __orxRASPBERRY_PI_  : orx is being compiled for Raspberry Pi
 - __orxCPP__          : orx is being compiled with a C++ compiler
 - __orxOBJC__         : orx is being compiled with an Objective-C compiler

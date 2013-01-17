@@ -155,7 +155,6 @@ solution "orx"
 
     excludes
     {
-        "../src/main/orxAndroidNativeSupport.c",
         "../src/main/orxAndroidSupport.cpp"
     }
 
