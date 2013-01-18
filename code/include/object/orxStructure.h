@@ -400,7 +400,7 @@ static orxINLINE orxU64                                 orxStructure_GetGUID(con
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return orxSTRUCTURE(_pStructure)->u64GUID;
+  return orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER;
 }
 
 /** Gets structure ID
