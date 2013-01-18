@@ -31,14 +31,21 @@
  *
  */
 
+
+#include "orxPluginAPI.h"
+
+
+#ifdef __orxMSVC__
+
+  #include "malloc.h"
+
+#endif /* __orxMSVC__ */
+
 #if defined(__orxGCC__) && defined(__orxWINDOWS__)
 
   #define alloca __builtin_alloca
   
 #endif /* __orxGCC__ && __orxWINDOWS__ */
-
-
-#include "orxPluginAPI.h"
 
 
 /** Module flags
