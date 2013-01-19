@@ -44,6 +44,9 @@
 
 #include "main/orxAndroid.h"
 
+static JavaVM* s_vm = NULL;
+static pthread_key_t s_jniEnvKey = 0;
+
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
 
@@ -100,6 +103,68 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
   orxAndroid_ThreadInit(vm);
   return JNI_VERSION_1_4;
+}
+
+static void orxFASTCALL RequireDepthBuffer_Setup()
+{
+  // Adds module dependencies
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
+}
+
+static orxSTATUS orxFASTCALL RequireDepthBuffer_Init()
+{
+  s_jniEnvKey = 0;
+  return orxSTATUS_SUCCESS;
+}
+
+static void orxFASTCALL RequireDepthBuffer_Exit()
+{
+  s_jniEnvKey = 0;
+}
+
+static orxBOOL RequireDepthBuffer_Run()
+{
+  orxBOOL bResult;
+
+  orxConfig_PushSection("Display");
+  bResult = orxConfig_GetBool("DepthBuffer");
+  orxConfig_PopSection();
+
+  return bResult;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxActivity_requireDepthBuffer(JNIEnv * env, jobject thiz)
+{
+  jboolean jbResult = JNI_FALSE;
+
+  // Inits the Debug System
+  orxDEBUG_INIT();
+
+  // Registers main module
+  orxModule_Register(orxMODULE_ID_MAIN, RequireDepthBuffer_Setup, RequireDepthBuffer_Init, RequireDepthBuffer_Exit);
+
+  // Registers all other modules
+  orxModule_RegisterAll();
+
+  // Calls all modules setup
+  orxModule_SetupAll();
+
+  // Inits the engine
+  if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+  {
+    jbResult = RequireDepthBuffer_Run() == orxTRUE ? JNI_TRUE : JNI_FALSE;
+
+    // Exits from engine
+    orxModule_Exit(orxMODULE_ID_MAIN);
+
+    // Exits from all modules
+    orxModule_ExitAll();
+  }
+
+  // Exits from the Debug system
+  orxDEBUG_EXIT();
+
+  return jbResult;
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, jobject thiz)
@@ -296,9 +361,6 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxAccelerometer_onSensorChanged(JNIEnv*
     orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
   }
 }
-
-static JavaVM* s_vm = NULL;
-static pthread_key_t s_jniEnvKey = 0;
 
 void orxAndroid_ThreadInit(JavaVM* vm)
 {
