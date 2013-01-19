@@ -166,7 +166,7 @@ orxSTATUS orxFASTCALL orxProfiler_Init()
     sstProfiler.s32CurrentMarker = orxPROFILER_KS32_MARKER_ID_ROOT;
 
     /* Gets water stamp */
-    sstProfiler.s32WaterStamp = orxSystem_GetRealTime() << orxPROFILER_KU32_SHIFT_MARKER_ID;
+    sstProfiler.s32WaterStamp = (orxS32)(orxSystem_GetTime() * 1e12) << orxPROFILER_KU32_SHIFT_MARKER_ID;
 
     /* Updates flags */
     sstProfiler.u32Flags |= orxPROFILER_KU32_STATIC_FLAG_READY | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS;
