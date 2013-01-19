@@ -368,12 +368,33 @@ static orxINLINE orxBOOL initGLESConfig()
   glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
   glASSERT();
 
+  /* Has depth buffer? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+  {
+    /* Enables depth test */
+    glEnable(GL_DEPTH_TEST);
+    glASSERT();
+
+    /* Sets depth function */
+    glDepthFunc(GL_LEQUAL);
+    glASSERT();
+
+    /* Clears depth buffer */
+    glClearDepthf(1.0f);
+    glASSERT();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glASSERT();
+  }
+  else
+  {
+    glDisable(GL_DEPTH_TEST);
+    glASSERT();
+  }
+
   /* Common init */
   glEnable(GL_SCISSOR_TEST);
   glASSERT();
   glDisable(GL_CULL_FACE);
-  glASSERT();
-  glDisable(GL_DEPTH_TEST);
   glASSERT();
   glDisable(GL_STENCIL_TEST);
   glASSERT();
@@ -1495,6 +1516,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
     glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
+
+    /* Has depth buffer? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    {
+      /* Clears depth buffer */
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glASSERT();
+    }
   }
 
   /* Done! */
