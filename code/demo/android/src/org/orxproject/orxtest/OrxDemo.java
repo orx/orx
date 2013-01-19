@@ -21,12 +21,6 @@ public class OrxDemo extends OrxActivity {
 	}
 
 	@Override
-	protected boolean requireDepthBuffer() {
-		// return true if you need OpenGL depth buffer
-		return false;
-	}
-
-	@Override
 	protected int getLayoutId() {
 		/*
 		 * Override this if you want to use a custom layout
