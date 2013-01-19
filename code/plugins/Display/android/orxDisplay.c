@@ -360,7 +360,17 @@ static orxINLINE orxBOOL initGLESConfig()
   glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
   glASSERT();
 
+  /* Sets vextex attribute arrays */
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
   /* Common init */
+  glEnable(GL_SCISSOR_TEST);
+  glASSERT();
   glDisable(GL_CULL_FACE);
   glASSERT();
   glDisable(GL_DEPTH_TEST);
@@ -658,14 +668,6 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
 
-    /* Sets vextex attribute arrays */
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-    glASSERT();
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-    glASSERT();
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-    glASSERT();
-
     /* Has active shaders? */
     if(sstDisplay.s32ActiveShaderCounter > 0)
     {
@@ -909,12 +911,6 @@ static void orxFASTCALL orxDisplay_Android_DrawPrimitive(orxU32 _u32VertexNumber
 
     /* Inits it */
     orxDisplay_Android_InitShader(sstDisplay.pstNoTextureShader);
-
-    /* Selects arrays */
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-    glASSERT();
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-    glASSERT();
   }
 
   /* Has alpha? */
@@ -2935,14 +2931,19 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
 
-    /* Enables clipping */
-    glEnable(GL_SCISSOR_TEST);
-    glASSERT();
-
-    /* Stores screen clipping */
-    glScissor(_u32TLX, orxF2U(sstDisplay.pstScreen->fHeight) - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
-    glASSERT();
-
+    /* Is screen? */
+    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
+    else
+    {
+      /* Sets OpenGL clipping */
+      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glASSERT();
+    }
   }
   else
   {

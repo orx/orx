@@ -88,6 +88,8 @@ static void nativeExit()
   /* Exits from the Debug system */
 
   orxDEBUG_EXIT();
+
+  s_jniEnvKey = 0;
 }
 
 jobject oActivity;
