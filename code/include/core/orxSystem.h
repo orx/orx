@@ -46,12 +46,6 @@
 #include "orxInclude.h"
 #include "math/orxVector.h"
 
-#if defined(__orxIOS__) && defined(__orxOBJC__)
-
-  #import <UIKit/UIKit.h>
-
-#endif /* __orxIOS__ && __orxOBJC__ */
-
 /** Event enum
  */
 typedef enum __orxSYSTEM_EVENT_t

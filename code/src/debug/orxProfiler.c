@@ -143,7 +143,7 @@ void orxFASTCALL orxProfiler_Setup()
   return;
 }
 
-/** Inits the Profiler module 
+/** Inits the Profiler module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxProfiler_Init()
@@ -304,7 +304,7 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
   if(orxFLAG_TEST(sstProfiler.u32Flags, orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS))
   {
     orxS32 s32ID;
-  
+
     /* Gets ID */
     s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 

@@ -1586,6 +1586,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
     glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
+
+    /* Has depth buffer? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    {
+      /* Clears depth buffer */
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glASSERT();
+    }
   }
 
   /* Done! */
@@ -2586,6 +2594,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glClear(GL_COLOR_BUFFER_BIT);
       glASSERT();
 
+      /* Has depth buffer? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+      {
+        /* Clears depth buffer */
+        glClearDepth(1.0f);
+        glASSERT();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glASSERT();
+      }
+
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
       sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
@@ -2783,6 +2801,24 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         {
           /* Generates frame buffer */
           glGenFramebuffersEXT(1, &(sstDisplay.uiFrameBuffer));
+          glASSERT();
+        }
+
+        /* Has depth buffer? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+        {
+          /* Enables depth test */
+          glEnable(GL_DEPTH_TEST);
+          glASSERT();
+
+          /* Sets depth function */
+          glDepthFunc(GL_LEQUAL);
+          glASSERT();
+
+          /* Clears depth buffer */
+          glClearDepth(1.0f);
+          glASSERT();
+          glClear(GL_DEPTH_BUFFER_BIT);
           glASSERT();
         }
 

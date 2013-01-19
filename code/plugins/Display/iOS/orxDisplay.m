@@ -713,6 +713,20 @@ static orxView *spoInstance;
       /* Binds render buffer back */
       glBindRenderbufferOES(GL_RENDERBUFFER_OES, uiRenderBuffer);
       glASSERT();
+
+      /* Enables depth test */
+      glEnable(GL_DEPTH_TEST);
+      glASSERT();
+
+      /* Sets depth function */
+      glDepthFunc(GL_LEQUAL);
+      glASSERT();
+
+      /* Clears depth buffer */
+      glClearDepth(1.0f);
+      glASSERT();
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glASSERT();
     }
 
     /* Updates result */
@@ -2468,6 +2482,14 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
   {
     /* Makes sure we're working on screen */
     orxDisplay_SetDestinationBitmap(sstDisplay.pstScreen);
+
+    /* Has depth buffer? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    {
+      /* Clears depth buffer */
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glASSERT();
+    }
 
     /* Clears the color buffer with given color */
     glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
