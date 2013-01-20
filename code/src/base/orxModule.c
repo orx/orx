@@ -79,6 +79,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_PLUGIN, orxPlugin);
   orxMODULE_REGISTER(orxMODULE_ID_PROFILER, orxProfiler);
   orxMODULE_REGISTER(orxMODULE_ID_RENDER, orxRender);
+  orxMODULE_REGISTER(orxMODULE_ID_RESOURCE, orxResource);
   orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(orxMODULE_ID_SHADER, orxShader);
   orxMODULE_REGISTER(orxMODULE_ID_SHADERPOINTER, orxShaderPointer);

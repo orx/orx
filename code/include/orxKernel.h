@@ -56,6 +56,7 @@
 #include "core/orxConsole.h"
 #include "core/orxEvent.h"
 #include "core/orxLocale.h"
+#include "core/orxResource.h"
 #include "core/orxSystem.h"
 
 #include "debug/orxDebug.h"
