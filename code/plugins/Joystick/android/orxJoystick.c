@@ -34,6 +34,14 @@
 
 #include "orxPluginAPI.h"
 
+#include <jni.h>
+#include "main/orxAndroid.h"
+
+extern jobject              oActivity;
+
+#define KZ_CONFIG_ANDROID                        "Android"
+#define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
+
 /** Module flags
  */
 #define orxJOYSTICK_KU32_STATIC_FLAG_NONE     0x00000000 /**< No flags */
@@ -68,14 +76,14 @@ static orxJOYSTICK_STATIC sstJoystick;
 
 static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_pstEvent)
 {
-	orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-	/* Depending on ID */
-	switch (_pstEvent->eID)
-	{
-	  /* Accelerate? */
-	  case orxSYSTEM_EVENT_ACCELERATE:
-	  {
+  /* Depending on ID */
+  switch (_pstEvent->eID)
+  {
+    /* Accelerate? */
+    case orxSYSTEM_EVENT_ACCELERATE:
+    {
       orxSYSTEM_EVENT_PAYLOAD *pstPayload;
 
       /* Gets payload */
@@ -91,10 +99,10 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_p
     {
       break;
     }
-	}
+  }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 orxSTATUS orxFASTCALL orxJoystick_Android_Init()
@@ -113,10 +121,28 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
       /* Updates status */
       sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
     }
+
+    orxConfig_PushSection(KZ_CONFIG_ANDROID);
+    if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY) == orxTRUE)
+    {
+      orxU32 u32Frequency;
+      orxS32 s32Rate;
+
+      u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
+      JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+      jclass objClass = poJEnv->GetObjectClass(oActivity);
+      orxASSERT(objClass != orxNULL);
+      jmethodID enableAccelerometer = poJEnv->GetMethodID(objClass, "enableAccelerometer", "(I)V");
+      orxASSERT(enableAccelerometer != orxNULL);
+
+      s32Rate = 1000 / u32Frequency;
+      poJEnv->CallVoidMethod(oActivity, enableAccelerometer, s32Rate);
+    }
+    orxConfig_PopSection();
   }
 
-	/* Done! */
-	return eResult;
+  /* Done! */
+  return eResult;
 }
 
 void orxFASTCALL orxJoystick_Android_Exit()
@@ -131,7 +157,7 @@ void orxFASTCALL orxJoystick_Android_Exit()
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }
 
-	return;
+  return;
 }
 
 orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
