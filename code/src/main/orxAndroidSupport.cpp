@@ -115,13 +115,11 @@ static void orxFASTCALL RequireDepthBuffer_Setup()
 
 static orxSTATUS orxFASTCALL RequireDepthBuffer_Init()
 {
-  s_jniEnvKey = 0;
   return orxSTATUS_SUCCESS;
 }
 
 static void orxFASTCALL RequireDepthBuffer_Exit()
 {
-  s_jniEnvKey = 0;
 }
 
 static orxBOOL RequireDepthBuffer_Run()
@@ -138,6 +136,7 @@ static orxBOOL RequireDepthBuffer_Run()
 JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxActivity_requireDepthBuffer(JNIEnv * env, jobject thiz)
 {
   jboolean jbResult = JNI_FALSE;
+  s_jniEnvKey = 0;
 
   // Inits the Debug System
   orxDEBUG_INIT();
@@ -165,6 +164,8 @@ JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxActivity_requireDepthBuffer(JNIEn
 
   // Exits from the Debug system
   orxDEBUG_EXIT();
+
+  s_jniEnvKey = 0;
 
   return jbResult;
 }
