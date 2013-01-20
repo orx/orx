@@ -135,7 +135,7 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
       jmethodID enableAccelerometer = poJEnv->GetMethodID(objClass, "enableAccelerometer", "(I)V");
       orxASSERT(enableAccelerometer != orxNULL);
 
-      s32Rate = 1000 / u32Frequency;
+      s32Rate = 1000000 / u32Frequency;
       poJEnv->CallVoidMethod(oActivity, enableAccelerometer, s32Rate);
     }
     orxConfig_PopSection();
