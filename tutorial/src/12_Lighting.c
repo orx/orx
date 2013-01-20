@@ -384,7 +384,7 @@ orxSTATUS orxFASTCALL Init()
 
   /* Displays a small hint in console */
   orxLOG("\n- '%s' will create a new light under the cursor"
-         "\n- '%s' will clear all the lights from the scene"         
+         "\n- '%s' will clear all the lights from the scene"
          "\n- '%s' will increase the radius of the current light"
          "\n- '%s' will decrease the radius of the current light"
          "\n- '%s' will toggle alpha on light (ie. make holes in lit objects)",
