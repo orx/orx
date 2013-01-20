@@ -6,5 +6,6 @@ var dir_3d69f64eaf81436fe2b22361382717e5 =
     [ "orxConsole.h", "orx_console_8h.html", "orx_console_8h" ],
     [ "orxEvent.h", "orx_event_8h.html", "orx_event_8h" ],
     [ "orxLocale.h", "orx_locale_8h.html", "orx_locale_8h" ],
+    [ "orxResource.h", "orx_resource_8h.html", "orx_resource_8h" ],
     [ "orxSystem.h", "orx_system_8h.html", "orx_system_8h" ]
 ];

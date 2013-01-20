@@ -41,6 +41,7 @@ var modules =
     [ "OrxPlugin", "group__orx_plugin.html", "group__orx_plugin" ],
     [ "OrxProfiler", "group__orx_profiler.html", "group__orx_profiler" ],
     [ "OrxRender", "group__orx_render.html", "group__orx_render" ],
+    [ "OrxResource", "group__orx_resource.html", "group__orx_resource" ],
     [ "OrxScreenshot", "group__orx_screenshot.html", "group__orx_screenshot" ],
     [ "OrxShader", "group__orx_shader.html", "group__orx_shader" ],
     [ "OrxShaderPointer", "group__orx_shader_pointer.html", "group__orx_shader_pointer" ],
