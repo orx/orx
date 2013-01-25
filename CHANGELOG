@@ -3,6 +3,29 @@ Orx - Portable Game Engine  (Version 1.4)
 
 =============================================================================
 
+orx 1.4
+---
+* IMPORTANT: Android native version has been deprecated and removed in favor of the standard Android version
+* IMPORTANT: Android OS minimum version has been raised from 2.1 to 2.3
+* IMPORTANT: Android: NDK_MODULE_PATH should now point to orx/code (or orx/dev-android) folder instead of /orx
+* IMPORTANT: Audio plugin on Android is now based on libTremor & OpenAL which results in a big performance improvement
+* IMPORTANT: Literal names can be used for Body properties CheckMask and SelfFlags, instead of numerical values
+* IMPORTANT: Added conditional commands (If, EvalIf), logical ones (Not, And, Or, XOr) and numerical ones (AreEqual, Sub, Add, Div, Mul)
+* IMPORTANT: orxFontGen will now center glyphs when executed in monospace mode
+* orxFontGen tool now exports directly to .png format instead of .tga
+* Font config property TextureCorner has been renamed to TextureOrigin for more consistency
+* Command Config.GetValue can now resolve numerical randoms (~)
+* orxStructure_GetGUID() now masks out the reference counter value for easy GUID comparisons
+* Objects created via tracks get their first update during the current frame (wasn't always happening before)
+* iOS: Fixed optional depth buffer creation/handling
+* Fixed profiler not being initialized correctly if orx is started twice within the same program during the same second
+* Android: Config properties Display.DepthBuffer and Android.AccelerometerFrequency are now properly recognized
+* Added support for .ktx, .pvr and .dds texture format on Android
+* Version 2.7.7 of GLFW is now used in relevant plugins
+* Updated OpenAL-Soft to a newer version (10/01/2013)
+* Tighter sphere culling in the render plugin
+* Misc fixes and additions
+
 orx 1.4rc0
 ---
 * IMPORTANT: Using the default launcher is now deprecated and all tutorials are stand alones

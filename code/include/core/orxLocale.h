@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxLocale
- * 
+ *
  * Localization module
  * Module that handles localized strings
  *
