@@ -723,7 +723,7 @@ static orxView *spoInstance;
       glASSERT();
 
       /* Clears depth buffer */
-      glClearDepth(1.0f);
+      glClearDepthf(1.0f);
       glASSERT();
       glClear(GL_DEPTH_BUFFER_BIT);
       glASSERT();
