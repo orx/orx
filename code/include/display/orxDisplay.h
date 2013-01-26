@@ -80,6 +80,7 @@ typedef struct __orxRGBA_t
 #define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
 
 typedef struct __orxBITMAP_t        orxBITMAP;
+#define orxBITMAP_KZ_RESOURCE_GROUP "Bitmap"
 
 /** Vertex info structure
  */

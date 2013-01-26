@@ -886,11 +886,13 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in] _s32Position          Position (from start) where to set the indicator
+ * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
+ * @return Absolute cursor position
  */
-orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
+orxS32 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position, orxSEEK_OFFSET_WHENCE _eWhence)
 {
-  orxSTATUS eResult;
+  orxS32 s32Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -898,34 +900,35 @@ orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-    /* Updates result */
-
 #ifdef __orxANDROID__
 
     if(_pstFile->eType == orxFILE_TYPE_APK)
     {
-      eResult =  (AAsset_seek((AAsset *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      AAsset_seek((AAsset *)_pstFile->pHandle, _s32Position, _eWhence);
     }
     else
     {
-      eResult = (fseek((FILE *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      fseek((FILE *)_pstFile->pHandle, _s32Position, _eWhence);
     }
 
 #else /* __orxANDROID__ */
 
-    eResult = (fseek((FILE *)_pstFile, (size_t)_s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    fseek((FILE *)_pstFile, (size_t)_s32Position, _eWhence);
 
 #endif /* __orxANDROID__ */
+
+    /* Updates result */
+    s32Result = orxFile_Tell(_pstFile);
 
   }
   else
   {
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    s32Result = -1;
   }
 
   /* Done! */
-  return eResult;
+  return s32Result;
 }
 
 /** Tells the current position of the indicator in a file

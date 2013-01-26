@@ -167,6 +167,20 @@
 
 /* *** Misc constants *** */
 
+/* *** Seek offset constants *** */
+typedef enum __orxSEEK_OFFSET_WHENCE_t
+{
+  orxSEEK_OFFSET_WHENCE_START = 0,
+  orxSEEK_OFFSET_WHENCE_CURRENT,
+  orxSEEK_OFFSET_WHENCE_END,
+
+  orxSEEK_OFFSET_WHENCE_NUMBER,
+
+  orxSEEK_OFFSET_WHENCE_NONE = orxENUM_NONE
+
+} orxSEEK_OFFSET_WHENCE;
+
+
 /* *** Boolean constants *** */
 #define orxFALSE                  ((orxBOOL)(1 != 1))
 #define orxTRUE                   ((orxBOOL)(1 == 1))

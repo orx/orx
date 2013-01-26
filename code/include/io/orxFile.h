@@ -147,9 +147,10 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(void *_pDataToWrite, o
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
  * @param[in] _s32Position          Position (from start) where to set the indicator
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
+ * @return Absolute cursor position
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position);
+extern orxDLLAPI orxS32 orxFASTCALL         orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position, orxSEEK_OFFSET_WHENCE _eWhence);
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file

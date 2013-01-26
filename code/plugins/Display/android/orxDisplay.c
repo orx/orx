@@ -2614,7 +2614,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
       GLint  previousUnpackAlignment;
 
       /* skip key/value metadata */
-      orxFile_Seek(pstFile, sizeof(KTX_header) + stHeader.bytesOfKeyValueData);
+      orxFile_Seek(pstFile, sizeof(KTX_header) + stHeader.bytesOfKeyValueData, orxSEEK_OFFSET_WHENCE_START);
 
       /* Check glType and glFormat */
       if (stHeader.glType == 0 || stHeader.glFormat == 0)

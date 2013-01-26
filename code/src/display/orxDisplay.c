@@ -50,6 +50,7 @@ void orxFASTCALL orxDisplay_Setup()
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_RESOURCE);
 
   return;
 }

@@ -184,20 +184,7 @@ static size_t read_func(void* ptr, size_t size, size_t nmemb, void* datasource)
 
 static int seek_func(void* datasource, ogg_int64_t offset, int whence)
 {
-  if (whence == SEEK_SET)
-  {
-    orxFile_Seek((orxFILE*) datasource, (orxS32) offset);
-  }
-  else if (whence == SEEK_CUR)
-  {
-    orxS32 s32Pos = orxFile_Tell((const orxFILE *) datasource);
-    orxFile_Seek((orxFILE*) datasource, s32Pos + (orxS32) offset);
-  }
-  else if (whence == SEEK_END)
-  {
-    orxS32 s32Size = orxFile_GetSize((const orxFILE*) datasource);
-    orxFile_Seek((orxFILE*) datasource, s32Size);
-  }
+  orxFile_Seek((orxFILE*) datasource, (orxS32) offset, (orxSEEK_OFFSET_WHENCE)SEEK_SET);
 
   return 0;
 }
