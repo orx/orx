@@ -101,7 +101,7 @@ void orxFASTCALL orxResource_Setup()
  */
 orxSTATUS orxFASTCALL orxResource_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Not already Initialized? */
   if(!(sstResource.u32Flags & orxRESOURCE_KU32_STATIC_FLAG_READY))
