@@ -59,6 +59,7 @@ var group__orx_display =
       [ "u8R", "structorx_r_g_b_a.html#a572a6b83dbc3dd6007d48dd137797f3f", null ]
     ] ],
     [ "orx2RGBA", "group__orx_display.html#gaae5504c40f1e53363e9184cbcf0e76f2", null ],
+    [ "orxBITMAP_KZ_RESOURCE_GROUP", "group__orx_display.html#ga2743ae21bab9e423da62bca6a596127b", null ],
     [ "orxCOLOR_DENORMALIZER", "group__orx_display.html#ga4c6e0944dd96095ef654b764c93346f3", null ],
     [ "orxCOLOR_NORMALIZER", "group__orx_display.html#ga016ec946d3256a431fb1d267955670e8", null ],
     [ "orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE", "group__orx_display.html#gabaaa6113ef0c67d277f9da4b0d7e3bd3", null ],

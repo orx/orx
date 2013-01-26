@@ -9,6 +9,13 @@ var orx_type_8h =
     [ "orxCHAR_NULL", "orx_type_8h.html#gad58b3d9f4ca60582629662f36c5a7b6c", null ],
     [ "orxFALSE", "orx_type_8h.html#ga28f15ac5afeea074c02dbfc96a98ce14", null ],
     [ "orxTRUE", "orx_type_8h.html#ga459c42c8ca6b429bc45db95fef94ba7a", null ],
+    [ "orxSEEK_OFFSET_WHENCE", "orx_type_8h.html#ga08815b27cb2e29018e06e3d847116915", [
+      [ "orxSEEK_OFFSET_WHENCE_START", "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba", null ],
+      [ "orxSEEK_OFFSET_WHENCE_CURRENT", "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a1c0f897b0c87e29f069b2b3f42d32f29", null ],
+      [ "orxSEEK_OFFSET_WHENCE_END", "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915ac884d90cc7d4169b442cf667e54e702a", null ],
+      [ "orxSEEK_OFFSET_WHENCE_NUMBER", "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a4b89ac4dca34cc2521377d537821a2c1", null ],
+      [ "orxSEEK_OFFSET_WHENCE_NONE", "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a5e05ecf7aeecad1539fbb9fa4798e027", null ]
+    ] ],
     [ "orxSTATUS", "orx_type_8h.html#ga18b11c4d0ed79ac2f8542e3bcfac340d", [
       [ "orxSTATUS_FAILURE", "orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7", null ],
       [ "orxSTATUS_SUCCESS", "orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29", null ],

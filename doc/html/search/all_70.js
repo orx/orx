@@ -1,8 +1,15 @@
 var searchData=
 [
+  ['pfnclose',['pfnClose',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a05d5a7fb1e936d5b5409af368ae5a071',1,'orxRESOURCE_TYPE_INFO']]],
   ['pfndefaultfunction',['pfnDefaultFunction',['../structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html#a59c02b7101fa52392319ac8946079494',1,'orxPLUGIN_CORE_FUNCTION']]],
   ['pfnfunction',['pfnFunction',['../structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html#a161ea38cabc71ee957856e99e845526b',1,'orxPLUGIN_CORE_FUNCTION::pfnFunction()'],['../structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#aac0ab8ecb81273d2a43ebf180b11ee15',1,'orxPLUGIN_USER_FUNCTION_INFO::pfnFunction()']]],
+  ['pfngetsize',['pfnGetSize',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae2b0d0bbbfbb0772338857d5be454a11',1,'orxRESOURCE_TYPE_INFO']]],
+  ['pfnlocate',['pfnLocate',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a826168d1d30b8d34285ad1c16c35e2b4',1,'orxRESOURCE_TYPE_INFO']]],
+  ['pfnopen',['pfnOpen',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac86a5c3beb69681f5ae1d286a31a9695',1,'orxRESOURCE_TYPE_INFO']]],
   ['pfnparser',['pfnParser',['../structorx_p_a_r_a_m.html#aff9e775c9cc9f7387e62fb09fc4b3add',1,'orxPARAM']]],
+  ['pfnread',['pfnRead',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a124c1581a96127e9ec4f90065cc97a4a',1,'orxRESOURCE_TYPE_INFO']]],
+  ['pfnseek',['pfnSeek',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac1c9fb9344200a727f50c5ac3365eeba',1,'orxRESOURCE_TYPE_INFO']]],
+  ['pfntell',['pfnTell',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae5b87aec335d24b4314377aa79d3d9b0',1,'orxRESOURCE_TYPE_INFO']]],
   ['pstanim',['pstAnim',['../structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ab9257a59b2cb5e9100e7cd0183128288',1,'orxANIM_EVENT_PAYLOAD']]],
   ['pstcharacterbank',['pstCharacterBank',['../structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a5ecf7f15c5669478c86c22337e9f5564',1,'orxCHARACTER_MAP']]],
   ['pstcharactertable',['pstCharacterTable',['../structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#ac95b5d9d4cebc3508f28ec632645391a',1,'orxCHARACTER_MAP']]],

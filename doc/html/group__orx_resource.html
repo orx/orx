@@ -96,24 +96,276 @@ $(document).ready(function(){initNavTree('group__orx_resource.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OrxResource</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html">orxRESOURCE_TYPE_INFO</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga94e822a8f417dccd9de2b8a2c8999ed8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga94e822a8f417dccd9de2b8a2c8999ed8">orxRESOURCE_KC_LOCATION_SEPARATOR</a>&#160;&#160;&#160;':'</td></tr>
+<tr class="separator:ga94e822a8f417dccd9de2b8a2c8999ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga18128a057b971793cbabc173df5c8f6c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga18128a057b971793cbabc173df5c8f6c">orxRESOURCE_FUNCTION_CLOSE</a> )(orxHANDLE _hResource)</td></tr>
+<tr class="separator:ga18128a057b971793cbabc173df5c8f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4b2e5c75bcdaf56c9bcb7c7750843d49"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga4b2e5c75bcdaf56c9bcb7c7750843d49">orxRESOURCE_FUNCTION_GET_SIZE</a> )(orxHANDLE _hResource)</td></tr>
+<tr class="separator:ga4b2e5c75bcdaf56c9bcb7c7750843d49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga08a3800e0944d5f195a9efd8816e3cec"><td class="memItemLeft" align="right" valign="top">typedef const orxSTRING(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga08a3800e0944d5f195a9efd8816e3cec">orxRESOURCE_FUNCTION_LOCATE</a> )(const orxSTRING _zStorage, const orxSTRING _zName)</td></tr>
+<tr class="separator:ga08a3800e0944d5f195a9efd8816e3cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga90ff5bd2f4a8319e441ce158b12f15ad"><td class="memItemLeft" align="right" valign="top">typedef orxHANDLE(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga90ff5bd2f4a8319e441ce158b12f15ad">orxRESOURCE_FUNCTION_OPEN</a> )(const orxSTRING _zLocation)</td></tr>
+<tr class="separator:ga90ff5bd2f4a8319e441ce158b12f15ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga49a49d75887c48c31949445ccc9b48d8"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga49a49d75887c48c31949445ccc9b48d8">orxRESOURCE_FUNCTION_READ</a> )(orxHANDLE _hResource, orxS32 _s32Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
+<tr class="separator:ga49a49d75887c48c31949445ccc9b48d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1525bfe1ab523b96bbf6340b62623cb2"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga1525bfe1ab523b96bbf6340b62623cb2">orxRESOURCE_FUNCTION_SEEK</a> )(orxHANDLE _hResource, orxS32 _s32Offset, <a class="el" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a> _eWhence)</td></tr>
+<tr class="separator:ga1525bfe1ab523b96bbf6340b62623cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae1c2addda04b67c0a79b7c63223f46d8"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gae1c2addda04b67c0a79b7c63223f46d8">orxRESOURCE_FUNCTION_TELL</a> )(orxHANDLE _hResource)</td></tr>
+<tr class="separator:gae1c2addda04b67c0a79b7c63223f46d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gad7db0bf2609c93182603925b00e1a492"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gad7db0bf2609c93182603925b00e1a492">orxResource_AddStorage</a> (const orxSTRING _zGroup, const orxSTRING _zStorage)</td></tr>
+<tr class="separator:gad7db0bf2609c93182603925b00e1a492"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4ad6ff744b459f45afa53b6028781468"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga4ad6ff744b459f45afa53b6028781468">orxResource_ClearCache</a> ()</td></tr>
+<tr class="separator:ga4ad6ff744b459f45afa53b6028781468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga314ae42d4a128725cf58991548b36a5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga314ae42d4a128725cf58991548b36a5b">orxResource_Close</a> (orxHANDLE _hResource)</td></tr>
+<tr class="separator:ga314ae42d4a128725cf58991548b36a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf3389231bc1f977bbf51c943ee8f8cce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaf3389231bc1f977bbf51c943ee8f8cce">orxResource_Exit</a> ()</td></tr>
 <tr class="separator:gaf3389231bc1f977bbf51c943ee8f8cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga527ac1c0f75af84010c89f977223a0b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga527ac1c0f75af84010c89f977223a0b1">orxResource_GetName</a> (const orxSTRING _zLocation)</td></tr>
+<tr class="separator:ga527ac1c0f75af84010c89f977223a0b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad0cc67a2e0f644869dd256124ccd29c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gad0cc67a2e0f644869dd256124ccd29c6">orxResource_GetSize</a> (orxHANDLE _hResource)</td></tr>
+<tr class="separator:gad0cc67a2e0f644869dd256124ccd29c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga11407b72e4691c6dc51d1fcc16ea5f2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga11407b72e4691c6dc51d1fcc16ea5f2f">orxResource_GetStorage</a> (const orxSTRING _zGroup, orxS32 _s32Index)</td></tr>
+<tr class="separator:ga11407b72e4691c6dc51d1fcc16ea5f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf117b7fb6660754ee08c67f4ad670d70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaf117b7fb6660754ee08c67f4ad670d70">orxResource_GetStorageCounter</a> (const orxSTRING _zGroup)</td></tr>
+<tr class="separator:gaf117b7fb6660754ee08c67f4ad670d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8a058c9512ae7ebbc7cbb62956e95f34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga8a058c9512ae7ebbc7cbb62956e95f34">orxResource_Init</a> ()</td></tr>
 <tr class="separator:ga8a058c9512ae7ebbc7cbb62956e95f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0318f5abe598c70018a72aa0cb5952a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga0318f5abe598c70018a72aa0cb5952a5">orxResource_Locate</a> (const orxSTRING _zGroup, const orxSTRING _zName)</td></tr>
+<tr class="separator:ga0318f5abe598c70018a72aa0cb5952a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf09cc8992e2773da7f6a83ec20bd1962"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaf09cc8992e2773da7f6a83ec20bd1962">orxResource_Open</a> (const orxSTRING _zLocation)</td></tr>
+<tr class="separator:gaf09cc8992e2773da7f6a83ec20bd1962"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga144224dc81b0ddc8c2ce26d318087aa9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga144224dc81b0ddc8c2ce26d318087aa9">orxResource_Read</a> (orxHANDLE _hResource, orxS32 _s32Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
+<tr class="separator:ga144224dc81b0ddc8c2ce26d318087aa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9fd6dd2c287cdccda40e47f3ac7cc91a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga9fd6dd2c287cdccda40e47f3ac7cc91a">orxResource_RegisterType</a> (const <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html">orxRESOURCE_TYPE_INFO</a> *_pstInfo)</td></tr>
+<tr class="separator:ga9fd6dd2c287cdccda40e47f3ac7cc91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3347a87e9f0b798d12e42c3d7b397ee7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga3347a87e9f0b798d12e42c3d7b397ee7">orxResource_RemoveStorage</a> (const orxSTRING _zGroup, const orxSTRING _zStorage)</td></tr>
+<tr class="separator:ga3347a87e9f0b798d12e42c3d7b397ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga433173f60b7b6a1165d57ae7eac2cce2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga433173f60b7b6a1165d57ae7eac2cce2">orxResource_Seek</a> (orxHANDLE _hResource, orxS32 _s32Offset, <a class="el" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a> _eWhence)</td></tr>
+<tr class="separator:ga433173f60b7b6a1165d57ae7eac2cce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gabe07fd5cad2cda2a6c91b303d55cace3">orxResource_Setup</a> ()</td></tr>
 <tr class="separator:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga38ce752f889f3bd8f8f7b20b2b542b3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga38ce752f889f3bd8f8f7b20b2b542b3c">orxResource_Tell</a> (orxHANDLE _hResource)</td></tr>
+<tr class="separator:ga38ce752f889f3bd8f8f7b20b2b542b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Resource module Module that handles resource mapping </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga94e822a8f417dccd9de2b8a2c8999ed8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxRESOURCE_KC_LOCATION_SEPARATOR&#160;&#160;&#160;':'</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00047">47</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="ga18128a057b971793cbabc173df5c8f6c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>(orxFASTCALL * orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00054">54</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga4b2e5c75bcdaf56c9bcb7c7750843d49"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxS32(orxFASTCALL * orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _hResource)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00055">55</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga08a3800e0944d5f195a9efd8816e3cec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef const orxSTRING(orxFASTCALL * orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Resource handlers </p>
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00052">52</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga90ff5bd2f4a8319e441ce158b12f15ad"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxHANDLE(orxFASTCALL * orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00053">53</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga49a49d75887c48c31949445ccc9b48d8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxS32(orxFASTCALL * orxRESOURCE_FUNCTION_READ)(orxHANDLE _hResource, orxS32 _s32Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00058">58</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga1525bfe1ab523b96bbf6340b62623cb2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxS32(orxFASTCALL * orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS32 _s32Offset, <a class="el" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a> _eWhence)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00056">56</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gae1c2addda04b67c0a79b7c63223f46d8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxS32(orxFASTCALL * orxRESOURCE_FUNCTION_TELL)(orxHANDLE _hResource)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00057">57</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="gad7db0bf2609c93182603925b00e1a492"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxResource_AddStorage </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zStorage</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Adds a storage for a given resource group </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zStorage</td><td>Description of the storage, as understood by one of the resource type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga4ad6ff744b459f45afa53b6028781468"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxResource_ClearCache </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Clears cache </p>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga314ae42d4a128725cf58991548b36a5b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxResource_Close </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Closes a resource </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="gaf3389231bc1f977bbf51c943ee8f8cce"></a>
 <div class="memitem">
 <div class="memproto">
@@ -127,6 +379,113 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Exits from the resource module </p>
+
+</div>
+</div>
+<a class="anchor" id="ga527ac1c0f75af84010c89f977223a0b1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxResource_GetName </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zLocation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the resource name from a location </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zLocation</td><td>Location of the concerned resource </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Name string if valid, orxSTRING_EMPTY otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gad0cc67a2e0f644869dd256124ccd29c6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxResource_GetSize </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the size, in bytes, of a resource </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Size of the resource, in bytes </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga11407b72e4691c6dc51d1fcc16ea5f2f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxResource_GetStorage </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&#160;</td>
+          <td class="paramname"><em>_s32Index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets storage at given index for a given resource group </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_s32Index</td><td>Index of storage </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Storage if index is valid, orxNULL otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaf117b7fb6660754ee08c67f4ad670d70"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxResource_GetStorageCounter </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets number of storages for a given resource group </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of storages for this resource group </dd></dl>
 
 </div>
 </div>
@@ -147,6 +506,208 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga0318f5abe598c70018a72aa0cb5952a5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxResource_Locate </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the location of a resource for a given group </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Name of the resource to locate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Location string if found, orxNULL otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaf09cc8992e2773da7f6a83ec20bd1962"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL orxResource_Open </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zLocation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Opens the resource at the given location </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zLocation</td><td>Location of the resource to open </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Handle to the open location, orxHANDLE_UNDEFINED otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga144224dc81b0ddc8c2ce26d318087aa9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxResource_Read </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&#160;</td>
+          <td class="paramname"><em>_s32Size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pBuffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads data from a resource </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_s32Size</td><td>Size to read (in bytes) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pBuffer</td><td>Buffer that will be filled by the read data </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Size of the read data, in bytes </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga9fd6dd2c287cdccda40e47f3ac7cc91a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxResource_RegisterType </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html">orxRESOURCE_TYPE_INFO</a> *&#160;</td>
+          <td class="paramname"><em>_pstInfo</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Registers a new resource type </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstInfo</td><td>Info describing the new resource type and how to handle it </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga3347a87e9f0b798d12e42c3d7b397ee7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxResource_RemoveStorage </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zStorage</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a storage for a given resource group </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zStorage</td><td>Concerned storage </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga433173f60b7b6a1165d57ae7eac2cce2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxResource_Seek </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&#160;</td>
+          <td class="paramname"><em>_s32Offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a>&#160;</td>
+          <td class="paramname"><em>_eWhence</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Seeks a position in a given resource (moves cursor) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_s32Offset</td><td>Number of bytes to offset from 'origin' </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eWhence</td><td>Starting point for the offset computation (start, current position or end) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Absolute cursor position </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gabe07fd5cad2cda2a6c91b303d55cace3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -160,6 +721,30 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Resource module setup </p>
+
+</div>
+</div>
+<a class="anchor" id="ga38ce752f889f3bd8f8f7b20b2b542b3c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxResource_Tell </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Tells the position of the cursor in a given resource </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Position (offset), in bytes </dd></dl>
 
 </div>
 </div>

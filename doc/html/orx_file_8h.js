@@ -21,7 +21,7 @@ var orx_file_8h =
     [ "orxFile_Open", "orx_file_8h.html#ga69cb0d04489c13daba0ebd380a4ae19b", null ],
     [ "orxFile_Print", "orx_file_8h.html#gaa488b51b271b256b7b4515516cb08dde", null ],
     [ "orxFile_Read", "orx_file_8h.html#ga6b28e81a5fe57e673f79b20c3f6c641f", null ],
-    [ "orxFile_Seek", "orx_file_8h.html#gaad3788ccc8b930c0034b59039ab23344", null ],
+    [ "orxFile_Seek", "orx_file_8h.html#ga19bc558bba0b96d6f267a978683b42a9", null ],
     [ "orxFile_Setup", "orx_file_8h.html#ga3211b72acbc9ff98a67d97ee757acd7d", null ],
     [ "orxFile_Tell", "orx_file_8h.html#ga7e03dfe3355ee7eedf288737757389bf", null ],
     [ "orxFile_Write", "orx_file_8h.html#ga179d964e4e74c7266468f7f6c54dc1ad", null ]
