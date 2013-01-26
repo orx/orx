@@ -112,8 +112,6 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
   /* Wasn't already initialized? */
   if (!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
   {
-    orxU32 u32Frequency;
-
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
@@ -125,21 +123,37 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     }
 
     orxConfig_PushSection(KZ_CONFIG_ANDROID);
-    u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
 
-    if(u32Frequency > 0)
+    if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
     {
-      orxS32 s32Rate;
+      orxU32 u32Frequency;
 
+      u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
+
+      if(u32Frequency > 0)
+      {
+        orxS32 s32Rate;
+
+        JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+        jclass objClass = poJEnv->GetObjectClass(oActivity);
+        orxASSERT(objClass != orxNULL);
+        jmethodID enableAccelerometer = poJEnv->GetMethodID(objClass, "enableAccelerometer", "(I)V");
+        orxASSERT(enableAccelerometer != orxNULL);
+
+        s32Rate = 1000000 / u32Frequency;
+        poJEnv->CallVoidMethod(oActivity, enableAccelerometer, s32Rate);
+      }
+    }
+    else
+    { /* enable acceleromter with default GAME rate */
       JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
       jclass objClass = poJEnv->GetObjectClass(oActivity);
       orxASSERT(objClass != orxNULL);
       jmethodID enableAccelerometer = poJEnv->GetMethodID(objClass, "enableAccelerometer", "(I)V");
       orxASSERT(enableAccelerometer != orxNULL);
-
-      s32Rate = 1000000 / u32Frequency;
-      poJEnv->CallVoidMethod(oActivity, enableAccelerometer, s32Rate);
+      poJEnv->CallVoidMethod(oActivity, enableAccelerometer, 1);  // android.hardware.SensorManager.SENSOR_DELAY_GAME == 1
     }
+
     orxConfig_PopSection();
   }
 
