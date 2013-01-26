@@ -112,6 +112,8 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
   /* Wasn't already initialized? */
   if (!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
   {
+    orxU32 u32Frequency;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
@@ -123,12 +125,12 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     }
 
     orxConfig_PushSection(KZ_CONFIG_ANDROID);
-    if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY) == orxTRUE)
+    u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
+
+    if(u32Frequency > 0)
     {
-      orxU32 u32Frequency;
       orxS32 s32Rate;
 
-      u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
       JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
       jclass objClass = poJEnv->GetObjectClass(oActivity);
       orxASSERT(objClass != orxNULL);
