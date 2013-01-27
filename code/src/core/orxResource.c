@@ -136,13 +136,10 @@ const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, c
 {
   const orxSTRING zResult = orxNULL;
 
-  /* Absolute name with default storage? */
-  if((orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
-  && ((*_zName == orxCHAR_DIRECTORY_SEPARATOR_LINUX)
-   || ((*_zName != orxCHAR_NULL)
-    && (*(_zName + 1) == ':'))))
+  /* Default storage? */
+  if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   {
-    /* Uses absolute path */
+    /* Uses name as path */
     orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s", _zName);
   }
   else
