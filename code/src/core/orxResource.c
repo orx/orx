@@ -269,7 +269,7 @@ orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
       hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
   {
     /* Deletes its location */
-    orxString_Delete(pstResourceInfo->zLocation);
+    orxMemory_Free(pstResourceInfo->zLocation);
 
     /* Frees it */
     orxBank_Free(sstResource.pstResourceInfoBank, pstResourceInfo);
@@ -780,7 +780,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
 
         /* For all storages in group */
         for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, orxNULL);
-            pzStorage != orxNULL;
+            (zResult == orxNULL) && (pzStorage != orxNULL);
             pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, pzStorage))
         {
           orxRESOURCE_TYPE_INFO *pstTypeInfo;
