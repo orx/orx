@@ -1816,7 +1816,7 @@ var searchData=
   ['orxrender_5fsetup',['orxRender_Setup',['../group__orx_render.html#ga4b7ac65699376ae14f0ae79028d5c8b5',1,'orxRender.h']]],
   ['orxresource',['OrxResource',['../group__orx_resource.html',1,'']]],
   ['orxresource_2eh',['orxResource.h',['../orx_resource_8h.html',1,'']]],
-  ['orxresource_5faddstorage',['orxResource_AddStorage',['../group__orx_resource.html#gad7db0bf2609c93182603925b00e1a492',1,'orxResource.h']]],
+  ['orxresource_5faddstorage',['orxResource_AddStorage',['../group__orx_resource.html#gadbbf62141368ea35da893b69667fa289',1,'orxResource.h']]],
   ['orxresource_5fclearcache',['orxResource_ClearCache',['../group__orx_resource.html#ga4ad6ff744b459f45afa53b6028781468',1,'orxResource.h']]],
   ['orxresource_5fclose',['orxResource_Close',['../group__orx_resource.html#ga314ae42d4a128725cf58991548b36a5b',1,'orxResource.h']]],
   ['orxresource_5fexit',['orxResource_Exit',['../group__orx_resource.html#gaf3389231bc1f977bbf51c943ee8f8cce',1,'orxResource.h']]],

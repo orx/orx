@@ -8,7 +8,7 @@ var orx_resource_8h =
     [ "orxRESOURCE_FUNCTION_READ", "orx_resource_8h.html#ga49a49d75887c48c31949445ccc9b48d8", null ],
     [ "orxRESOURCE_FUNCTION_SEEK", "orx_resource_8h.html#ga1525bfe1ab523b96bbf6340b62623cb2", null ],
     [ "orxRESOURCE_FUNCTION_TELL", "orx_resource_8h.html#gae1c2addda04b67c0a79b7c63223f46d8", null ],
-    [ "orxResource_AddStorage", "orx_resource_8h.html#gad7db0bf2609c93182603925b00e1a492", null ],
+    [ "orxResource_AddStorage", "orx_resource_8h.html#gadbbf62141368ea35da893b69667fa289", null ],
     [ "orxResource_ClearCache", "orx_resource_8h.html#ga4ad6ff744b459f45afa53b6028781468", null ],
     [ "orxResource_Close", "orx_resource_8h.html#ga314ae42d4a128725cf58991548b36a5b", null ],
     [ "orxResource_Exit", "orx_resource_8h.html#gaf3389231bc1f977bbf51c943ee8f8cce", null ],

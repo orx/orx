@@ -134,8 +134,8 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gad7db0bf2609c93182603925b00e1a492"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gad7db0bf2609c93182603925b00e1a492">orxResource_AddStorage</a> (const orxSTRING _zGroup, const orxSTRING _zStorage)</td></tr>
-<tr class="separator:gad7db0bf2609c93182603925b00e1a492"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadbbf62141368ea35da893b69667fa289"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gadbbf62141368ea35da893b69667fa289">orxResource_AddStorage</a> (const orxSTRING _zGroup, const orxSTRING _zStorage, orxBOOL _bAddFirst)</td></tr>
+<tr class="separator:gadbbf62141368ea35da893b69667fa289"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4ad6ff744b459f45afa53b6028781468"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga4ad6ff744b459f45afa53b6028781468">orxResource_ClearCache</a> ()</td></tr>
 <tr class="separator:ga4ad6ff744b459f45afa53b6028781468"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga314ae42d4a128725cf58991548b36a5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga314ae42d4a128725cf58991548b36a5b">orxResource_Close</a> (orxHANDLE _hResource)</td></tr>
@@ -291,7 +291,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="gad7db0bf2609c93182603925b00e1a492"></a>
+<a class="anchor" id="gadbbf62141368ea35da893b69667fa289"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -305,7 +305,13 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zStorage</em>&#160;</td>
+          <td class="paramname"><em>_zStorage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bAddFirst</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -314,11 +320,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a storage for a given resource group, this storage will be used when looking for resources prior to any previously added storage </p>
+<p>Adds a storage for a given resource group </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zStorage</td><td>Description of the storage, as understood by one of the resource type </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bAddFirst</td><td>If true this storage will be used <em>before</em> any already added ones, otherwise it'll be used <em>after</em> all those </td></tr>
   </table>
   </dd>
 </dl>
