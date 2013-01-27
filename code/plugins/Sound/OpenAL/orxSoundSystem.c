@@ -302,60 +302,73 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_OpenRecordingFile()
 
 static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
 {
-  orxSTATUS eResult;
+  const orxSTRING zResourceLocation;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT(_zFilename != orxNULL);
   orxASSERT(_pstData != orxNULL);
 
-  /* Opens file with vorbis */
-  _pstData->vorbis.pstFile = stb_vorbis_open_filename((char *)_zFilename, NULL, NULL);
+  /* Locates resource */
+  zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Success? */
-  if(_pstData->vorbis.pstFile != NULL)
+  if(zResourceLocation != orxNULL)
   {
-    stb_vorbis_info stFileInfo;
-
-    /* Gets file info */
-    stFileInfo  = stb_vorbis_get_info(_pstData->vorbis.pstFile);
-
-    /* Stores info */
-    _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-    _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
-    _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
-
-    /* Updates status */
-    _pstData->bVorbis                 = orxTRUE;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    SF_INFO stFileInfo;
-
-    /* Opens file with sndfile */
-    _pstData->sndfile.pstFile = sf_open(_zFilename, SFM_READ, &stFileInfo);
+    /* Opens file with vorbis */
+    _pstData->vorbis.pstFile = stb_vorbis_open_filename((char *)orxResource_GetName(zResourceLocation), NULL, NULL);
 
     /* Success? */
-    if(_pstData->sndfile.pstFile != NULL)
+    if(_pstData->vorbis.pstFile != NULL)
     {
+      stb_vorbis_info stFileInfo;
+
+      /* Gets file info */
+      stFileInfo  = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+
       /* Stores info */
       _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-      _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
-      _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
+      _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
+      _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
 
       /* Updates status */
-      _pstData->bVorbis                 = orxFALSE;
+      _pstData->bVorbis                 = orxTRUE;
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
     }
     else
     {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      SF_INFO stFileInfo;
+
+      /* Opens file with sndfile */
+      _pstData->sndfile.pstFile = sf_open(orxResource_GetName(zResourceLocation), SFM_READ, &stFileInfo);
+
+      /* Success? */
+      if(_pstData->sndfile.pstFile != NULL)
+      {
+        /* Stores info */
+        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+        _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
+        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
+
+        /* Updates status */
+        _pstData->bVorbis                 = orxFALSE;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
