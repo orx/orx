@@ -35,6 +35,7 @@
 #include "core/orxConfig.h"
 #include "core/orxCommand.h"
 #include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
@@ -61,7 +62,6 @@
 
 #define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
 #define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
-#define orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH    0x00000004  /**< Ignore path flag */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
@@ -102,7 +102,8 @@
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_DEFAULT_PARENT        "DefaultParent" /**< Default parent for sections */
-#define orxCONFIG_KZ_CONFIG_IGNORE_PATH           "IgnorePath"/**< Ignore paths in config values */
+
+#define orxCONFIG_KZ_RESOURCE_GROUP               "Config"    /**< Config resource group */
 
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
@@ -355,13 +356,6 @@ static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orx
   {
     orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
     const orxCHAR  *pcInput;
-
-    /* Should ignore path? */
-    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH))
-    {
-      /* Updates value */
-      _zValue = orxString_SkipPath(_zValue);
-    }
 
     /* For all characters */
     for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
@@ -2286,6 +2280,7 @@ void orxFASTCALL orxConfig_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_COMMAND);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_RESOURCE);
 
   return;
 }
@@ -2348,8 +2343,6 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     /* Valid? */
     if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstOriginBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
-      orxBOOL bReload = orxFALSE;
-
       /* Inits values */
       sstConfig.zLoadFile = orxSTRING_EMPTY;
 
@@ -2368,28 +2361,8 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       /* Sets default parent */
       orxConfig_SetDefaultParent(orxConfig_GetString(orxCONFIG_KZ_CONFIG_DEFAULT_PARENT));
 
-      /* Should ignore path? */
-      if(orxConfig_GetBool(orxCONFIG_KZ_CONFIG_IGNORE_PATH) != orxFALSE)
-      {
-        /* Updates status */
-        orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_IGNORE_PATH, orxCONFIG_KU32_STATIC_FLAG_NONE);
-
-        /* Asks for reload */
-        bReload = orxTRUE;
-      }
-
       /* Pops section */
       orxConfig_PopSection();
-
-      /* Should reload? */
-      if(bReload != orxFALSE)
-      {
-        /* Clears config */
-        orxConfig_Clear();
-
-        /* Reloads default config file */
-        orxConfig_Load(sstConfig.zBaseFile);
-      }
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
@@ -2639,7 +2612,8 @@ const orxSTRING orxFASTCALL orxConfig_GetMainFileName()
 orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 {
   const orxSTRING zPreviousLoadFile;
-  orxFILE        *pstFile;
+  const orxSTRING zResourceLocation;
+  orxHANDLE       hResource;
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2679,7 +2653,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   sstConfig.zLoadFile = _zFileName;
 
   /* Valid file to open? */
-  if((_zFileName != orxSTRING_EMPTY) && ((pstFile = orxFile_Open(_zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL))
+  if((_zFileName != orxSTRING_EMPTY)
+  && ((zResourceLocation = orxResource_Locate(orxCONFIG_KZ_RESOURCE_GROUP, _zFileName)) != orxNULL)
+  && ((hResource = orxResource_Open(zResourceLocation)) != orxHANDLE_UNDEFINED))
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
@@ -2696,9 +2672,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
     /* While file isn't empty */
-    for(u32Size = orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0, bFirstTime = orxTRUE;
+    for(u32Size = orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE, acBuffer), u32Offset = 0, bFirstTime = orxTRUE;
         u32Size > 0;
-        u32Size = orxFile_Read(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset, bFirstTime = orxFALSE)
+        u32Size = orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE - u32Offset, acBuffer + u32Offset) + u32Offset, bFirstTime = orxFALSE)
     {
       orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
       orxBOOL   bBlockMode;
@@ -3190,7 +3166,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
 
     /* Closes file */
-    orxFile_Close(pstFile);
+    orxResource_Close(hResource);
   }
   else
   {
