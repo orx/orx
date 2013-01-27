@@ -87,12 +87,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Init();
 extern orxDLLAPI void orxFASTCALL                         orxResource_Exit();
 
 
-/** Adds a storage for a given resource group, this storage will be used when looking for resources prior to any previously added storage
+/** Adds a storage for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Description of the storage, as understood by one of the resource type
+ * @param[in] _bAddFirst        If true this storage will be used *before* any already added ones, otherwise it'll be used *after* all those
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage(const orxSTRING _zGroup, const orxSTRING _zStorage);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, orxBOOL _bAddFirst);
 
 /** Removes a storage for a given resource group
  * @param[in] _zGroup           Concerned resource group
