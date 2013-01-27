@@ -373,6 +373,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
     if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeInfoBank != orxNULL))
     {
       orxRESOURCE_TYPE_INFO stTypeInfo;
+      orxS32                i, s32SectionCounter;
 
       /* Inits Flags */
       sstResource.u32Flags = orxRESOURCE_KU32_STATIC_FLAG_READY;
@@ -389,6 +390,29 @@ orxSTATUS orxFASTCALL orxResource_Init()
 
       /* Registers it */
       eResult = orxResource_RegisterType(&stTypeInfo);
+
+      /* Pushes resource config section */
+      orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+      /* For all keys */
+      for(i = 0, s32SectionCounter = orxConfig_GetKeyCounter(); i < s32SectionCounter; i++)
+      {
+        const orxSTRING zGroup;
+        orxS32          j;
+
+        /* Gets group */
+        zGroup = orxConfig_GetKey(i);
+
+        /* For all storages in list */
+        for(j = orxConfig_GetListCounter(zGroup) - 1; j >= 0; j--)
+        {
+          /* Adds it to group */
+          orxResource_AddStorage(zGroup, orxConfig_GetListString(zGroup, j));
+        }
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
     }
 
     /* Failed? */
@@ -497,7 +521,7 @@ void orxFASTCALL orxResource_Exit()
   return;
 }
 
-/** Adds a storage for a given resource group
+/** Adds a storage for a given resource group, this storage will be used when looking for resources prior to any previously added storage
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Description of the storage, as understood by one of the resource type
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

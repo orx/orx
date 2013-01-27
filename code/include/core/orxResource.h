@@ -87,7 +87,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Init();
 extern orxDLLAPI void orxFASTCALL                         orxResource_Exit();
 
 
-/** Adds a storage for a given resource group
+/** Adds a storage for a given resource group, this storage will be used when looking for resources prior to any previously added storage
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Description of the storage, as understood by one of the resource type
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
