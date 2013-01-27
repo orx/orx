@@ -18,6 +18,7 @@ var group__orx_sound =
       [ "s32ID", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#acd885d48fd72357b40c0d19a48ef03f0", null ],
       [ "u32SampleNumber", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a5cce9ecad10aa6fa8390885373f43d8b", null ]
     ] ],
+    [ "orxSOUND_KZ_RESOURCE_GROUP", "group__orx_sound.html#gabe95e9dd9341847d9dbfc11c2fd09b60", null ],
     [ "orxSOUND", "group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87", null ],
     [ "orxSOUND_EVENT", "group__orx_sound.html#gae4874020c9c68ac319642a5eb6d49775", [
       [ "orxSOUND_EVENT_START", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aac1c77343d17aa3aefa55d46ecb041a5", null ],
