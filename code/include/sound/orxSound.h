@@ -49,6 +49,11 @@
 #include "math/orxVector.h"
 
 
+/** Misc defines
+ */
+#define orxSOUND_KZ_RESOURCE_GROUP            "Sound"
+
+
 /** Sound status enum
  */
 typedef enum __orxSOUND_STATUS_t
