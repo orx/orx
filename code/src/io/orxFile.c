@@ -326,6 +326,24 @@ void orxFASTCALL orxFile_Exit()
  */
 orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
 {
+#ifdef __orxANDROID__
+
+  orxFILE* pstFile = orxNULL;
+  orxBOOL bResult = orxFALSE;
+
+  /* on android we simply try to open the file */
+  pstFile = orxFile_Open(_zFileName, orxFILE_KU32_FLAG_OPEN_READ);
+
+  if(pstFile != orxNULL)
+  {
+    orxFile_Close(pstFile);
+    bResult = orxTRUE;
+  }
+
+  return bResult;
+
+#else
+
   orxFILE_INFO stInfo;
 
   /* Clears it */
@@ -333,6 +351,8 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
 
   /* Done! */
   return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+
+#endif
 }
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
@@ -773,7 +793,11 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     return orxNULL;
   }
 
-  AAsset *poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName, AASSET_MODE_RANDOM);
+  AAsset *poAsset = NULL;
+  if(_zFileName[0] == '.' && _zFileName[1] == '/')
+    poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName + 2, AASSET_MODE_RANDOM);
+  else
+    poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName, AASSET_MODE_RANDOM);
 
   if(poAsset != NULL)
   {
