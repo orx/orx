@@ -52,7 +52,7 @@
 
 /** Misc
  */
-#define orxRESOURCE_KU32_CACHE_TABLE_SIZE             32                              /**< Location cache table size */
+#define orxRESOURCE_KU32_CACHE_TABLE_SIZE             32                              /**< Resource info cache table size */
 
 #define orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE      128                             /**< Resource info bank size */
 
@@ -62,9 +62,13 @@
 
 #define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          8                               /**< Open resource info bank size */
 
+#define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
+
 #define orxRESOURCE_KZ_TYPE_TAG_FILE                  "file"                          /**< Resource type file tag */
 
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
+
+#define orxRESOURCE_KZ_CONFIG_SECTION                 "Resource"                      /**< Config section name */
 
 
 /***************************************************************************
@@ -76,7 +80,7 @@
 typedef struct __orxRESOURCE_GROUP_t
 {
   orxSTRING                 zName;                                                    /**< Group name */
-  orxBANK                  *pstBank;                                                  /**< Group location bank */
+  orxBANK                  *pstStorageBank;                                           /**< Group storage bank */
   orxHASHTABLE             *pstCacheTable;                                            /**< Group cache table */
 
 } orxRESOURCE_GROUP;
@@ -131,8 +135,20 @@ const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, c
 {
   const orxSTRING zResult = orxNULL;
 
-  /* Composes full name */
-  orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+  /* Absolute name with default storage? */
+  if((orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
+  && ((*_zName == orxCHAR_DIRECTORY_SEPARATOR_LINUX)
+   || ((*_zName != orxCHAR_NULL)
+    && (*(_zName + 1) == ':'))))
+  {
+    /* Uses absolute path */
+    orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s", _zName);
+  }
+  else
+  {
+    /* Composes full name */
+    orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+  }
 
   /* Exist? */
   if(orxFile_Exists(sstResource.acFileLocationBuffer) != orxFALSE)
@@ -231,6 +247,84 @@ orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s32Size, 
   return s32Result;
 }
 
+orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
+{
+  orxSTRING        *pzStorage;
+  orxRESOURCE_INFO *pstResourceInfo;
+  orxU32            u32Key;
+  orxHANDLE         hIterator;
+
+  /* For all of its storages */
+  for(pzStorage = (orxSTRING *)orxBank_GetNext(_pstGroup->pstStorageBank, orxNULL);
+      pzStorage != orxNULL;
+      pzStorage = (orxSTRING *)orxBank_GetNext(_pstGroup->pstStorageBank, pzStorage))
+  {
+    /* Deletes its content */
+    orxString_Delete(*pzStorage);
+  }
+
+  /* For all cached resources */
+  for(hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
+      hIterator != orxHANDLE_UNDEFINED;
+      hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+  {
+    /* Deletes its location */
+    orxString_Delete(pstResourceInfo->zLocation);
+
+    /* Frees it */
+    orxBank_Free(sstResource.pstResourceInfoBank, pstResourceInfo);
+  }
+
+  /* Deletes cache table */
+  orxHashTable_Delete(_pstGroup->pstCacheTable);
+
+  /* Deletes storage bank */
+  orxBank_Delete(_pstGroup->pstStorageBank);
+
+  /* Deletes its name */
+  orxString_Delete(_pstGroup->zName);
+}
+
+orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(const orxSTRING _zGroup)
+{
+  orxRESOURCE_GROUP *pstResult;
+
+  /* Creates group */
+  pstResult = (orxRESOURCE_GROUP *)orxBank_Allocate(sstResource.pstGroupBank);
+
+  /* Success? */
+  if(pstResult != orxNULL)
+  {
+    orxSTRING *pzStorage;
+
+    /* Inits it */
+    pstResult->zName          = orxString_Duplicate(_zGroup);
+    pstResult->pstStorageBank = orxBank_Create(orxRESOURCE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRING), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    pstResult->pstCacheTable  = orxHashTable_Create(orxRESOURCE_KU32_CACHE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Creates storage */
+    pzStorage = (orxSTRING *)orxBank_Allocate(pstResult->pstStorageBank);
+
+    /* Success? */
+    if(pzStorage != orxNULL)
+    {
+      /* Stores its content */
+      *pzStorage = orxString_Duplicate(orxRESOURCE_KZ_DEFAULT_STORAGE);
+    }
+    else
+    {
+      /* Deletes it */
+      orxResource_DeleteGroup(pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -306,7 +400,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
       /* Deletes info bank */
       if(sstResource.pstResourceInfoBank != orxNULL)
       {
-          orxBank_Delete(sstResource.pstResourceInfoBank);
+        orxBank_Delete(sstResource.pstResourceInfoBank);
       }
 
       /* Deletes open info bank */
@@ -360,37 +454,8 @@ void orxFASTCALL orxResource_Exit()
         pstGroup != orxNULL;
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
     {
-      orxSTRING        *pzStorage;
-      orxRESOURCE_INFO *pstResourceInfo;
-      orxU32            u32LocationKey;
-      orxHANDLE         hIterator;
-
-      /* For all its storage */
-      for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, orxNULL);
-          pzStorage != orxNULL;
-          pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, pzStorage))
-      {
-        /* Deletes its content */
-        orxString_Delete(*pzStorage);
-      }
-
-      /* For all cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32LocationKey, (void **)&pstResourceInfo);
-          hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32LocationKey, (void **)&pstResourceInfo))
-      {
-        /* Deletes its location */
-        orxString_Delete(pstResourceInfo->zLocation);
-      }
-
-      /* Deletes location table */
-      orxHashTable_Delete(pstGroup->pstCacheTable);
-
-      /* Deletes its bank */
-      orxBank_Delete(pstGroup->pstBank);
-
-      /* Deletes its name */
-      orxString_Delete(pstGroup->zName);
+      /* Deletes it */
+      orxResource_DeleteGroup(pstGroup);
     }
 
     /* Deletes group bank */
@@ -418,6 +483,9 @@ void orxFASTCALL orxResource_Exit()
     /* Deletes open info bank */
     orxBank_Delete(sstResource.pstOpenInfoBank);
 
+    /* Checks */
+    orxASSERT(orxBank_GetCounter(sstResource.pstResourceInfoBank) == 0);
+
     /* Deletes info bank */
     orxBank_Delete(sstResource.pstResourceInfoBank);
 
@@ -429,7 +497,7 @@ void orxFASTCALL orxResource_Exit()
   return;
 }
 
-/** Adds a location for a given resource group
+/** Adds a storage for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Description of the storage, as understood by one of the resource type
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -457,19 +525,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
     if(pstGroup == orxNULL)
     {
       /* Creates it */
-      pstGroup = (orxRESOURCE_GROUP *)orxBank_Allocate(sstResource.pstGroupBank);
-
-      /* Success? */
-      if(pstGroup != orxNULL)
-      {
-        /* Inits it */
-        pstGroup->zName         = orxString_Duplicate(_zGroup);
-        pstGroup->pstBank       = orxBank_Create(orxRESOURCE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRING), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-        pstGroup->pstCacheTable = orxHashTable_Create(orxRESOURCE_KU32_CACHE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-        /* Adds default storage */
-        orxResource_AddStorage(_zGroup, ".");
-      }
+      pstGroup = orxResource_CreateGroup(_zGroup);
     }
 
     /* Success? */
@@ -478,7 +534,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
       orxSTRING *pzStorage;
 
       /* Creates storage */
-      pzStorage = (orxSTRING *)orxBank_Allocate(pstGroup->pstBank);
+      pzStorage = (orxSTRING *)orxBank_Allocate(pstGroup->pstStorageBank);
 
       /* Success? */
       if(pzStorage != orxNULL)
@@ -506,7 +562,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
   return eResult;
 }
 
-/** Removes a location for a given resource group
+/** Removes a storage for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Concerned storage
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -536,15 +592,15 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
       orxSTRING *pzStorage;
 
       /* For all storages in group */
-      for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, orxNULL);
+      for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, orxNULL);
           pzStorage != orxNULL;
-          pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, pzStorage))
+          pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, pzStorage))
       {
         /* Matches? */
         if(orxString_Compare(_zStorage, *pzStorage) == 0)
         {
           /* Removes it from group */
-          orxBank_Free(pstGroup->pstBank, pzStorage);
+          orxBank_Free(pstGroup->pstStorageBank, pzStorage);
 
           /* Deletes it */
           orxString_Delete(*pzStorage);
@@ -588,7 +644,7 @@ orxS32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
     if(pstGroup != orxNULL)
     {
       /* Updates result */
-      s32Result = orxBank_GetCounter(pstGroup->pstBank);
+      s32Result = orxBank_GetCounter(pstGroup->pstStorageBank);
     }
   }
 
@@ -623,14 +679,14 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxS
     if(pstGroup != orxNULL)
     {
       /* Valid index? */
-      if(_s32Index < (orxS32)orxBank_GetCounter(pstGroup->pstBank))
+      if(_s32Index < (orxS32)orxBank_GetCounter(pstGroup->pstStorageBank))
       {
         orxSTRING *pzStorage;
 
         /* Finds requested storage */
-        for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, orxNULL);
+        for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, orxNULL);
             _s32Index > 0;
-            pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, pzStorage), _s32Index--);
+            pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, pzStorage), _s32Index--);
 
         /* Checks */
         orxASSERT(pzStorage != orxNULL);
@@ -673,19 +729,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     if(pstGroup == orxNULL)
     {
       /* Creates it */
-      pstGroup = (orxRESOURCE_GROUP *)orxBank_Allocate(sstResource.pstGroupBank);
-
-      /* Success? */
-      if(pstGroup != orxNULL)
-      {
-        /* Inits it */
-        pstGroup->zName         = orxString_Duplicate(_zGroup);
-        pstGroup->pstBank       = orxBank_Create(orxRESOURCE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRING), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-        pstGroup->pstCacheTable = orxHashTable_Create(orxRESOURCE_KU32_CACHE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-        /* Adds default storage */
-        orxResource_AddStorage(_zGroup, ".");
-      }
+      pstGroup = orxResource_CreateGroup(_zGroup);
     }
 
     /* Success? */
@@ -694,7 +738,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
       orxU32            u32Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
-      /* Gets location key */
+      /* Gets resource info key */
       u32Key = orxString_ToCRC(_zName);
 
       /* Gets resource info from cache */
@@ -711,9 +755,9 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
         orxSTRING *pzStorage;
 
         /* For all storages in group */
-        for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, orxNULL);
+        for(pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, orxNULL);
             pzStorage != orxNULL;
-            pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstBank, pzStorage))
+            pzStorage = (orxSTRING *)orxBank_GetNext(pstGroup->pstStorageBank, pzStorage))
         {
           orxRESOURCE_TYPE_INFO *pstTypeInfo;
 
@@ -1109,24 +1153,24 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
       pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
   {
     orxHANDLE         hIterator;
-    orxU32            u32LocationKey;
+    orxU32            u32Key;
     orxRESOURCE_INFO *pstResourceInfo;
 
     /* For all cached resources */
-    for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32LocationKey, (void **)&pstResourceInfo);
+    for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
         hIterator != orxHANDLE_UNDEFINED;
-        hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32LocationKey, (void **)&pstResourceInfo))
+        hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
     {
       /* Deletes its location */
       orxMemory_Free(pstResourceInfo->zLocation);
     }
 
-    /* Clears table */
+    /* Clears cache table */
     orxHashTable_Clear(pstGroup->pstCacheTable);
-
-    /* Clears info bank */
-    orxBank_Clear(sstResource.pstResourceInfoBank);
   }
+
+  /* Clears info bank */
+  orxBank_Clear(sstResource.pstResourceInfoBank);
 
   /* Done! */
   return eResult;

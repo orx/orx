@@ -2200,7 +2200,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Gets resource name */
-  zResourceName = orxResource_Locate(orxBITMAP_KZ_RESOURCE_GROUP, _zFilename);
+  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Opens it */
   hResource = orxResource_Open(zResourceName);
