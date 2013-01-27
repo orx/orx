@@ -498,7 +498,7 @@ void orxFASTCALL orxResource_Exit()
     orxBank_Delete(sstResource.pstTypeInfoBank);
 
     /* For all open resources */
-    while(pstOpenInfo = (orxRESOURCE_OPEN_INFO *)orxBank_GetNext(sstResource.pstOpenInfoBank, orxNULL))
+    while((pstOpenInfo = (orxRESOURCE_OPEN_INFO *)orxBank_GetNext(sstResource.pstOpenInfoBank, orxNULL)) != orxNULL)
     {
       /* Closes it */
       orxResource_Close((orxHANDLE)pstOpenInfo);
