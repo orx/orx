@@ -1,7 +1,6 @@
 var orx_display_8h =
 [
     [ "orx2RGBA", "orx_display_8h.html#gaae5504c40f1e53363e9184cbcf0e76f2", null ],
-    [ "orxBITMAP_KZ_RESOURCE_GROUP", "orx_display_8h.html#ga2743ae21bab9e423da62bca6a596127b", null ],
     [ "orxCOLOR_DENORMALIZER", "orx_display_8h.html#ga4c6e0944dd96095ef654b764c93346f3", null ],
     [ "orxCOLOR_GET_RGB_COMPONENT", "orx_display_8h.html#a39fb6fe2eb922c1b9f6d4434cd4f7d0a", null ],
     [ "orxCOLOR_NORMALIZER", "orx_display_8h.html#ga016ec946d3256a431fb1d267955670e8", null ],

@@ -1,6 +1,5 @@
 var NAVTREEINDEX18 =
 {
-"orx_sound_system_8h.html#gga0692dc88e102ae57833baa65f98af81aa437b01323858c78c378414111651657d":[3,0,0,13,2,6,2],
 "orx_sound_system_8h.html#gga0692dc88e102ae57833baa65f98af81aaa1be2be897b47eda12a2a0cddb438263":[3,0,0,13,2,6,0],
 "orx_sound_system_8h.html#gga0692dc88e102ae57833baa65f98af81aadec474cdc54c1936077541fb4cdefb58":[3,0,0,13,2,6,4],
 "orx_sound_system_8h.html#gga0692dc88e102ae57833baa65f98af81aafa35b7d509158f5ef6bdd363ffc3f27b":[3,0,0,13,2,6,3],
@@ -247,7 +246,8 @@ var NAVTREEINDEX18 =
 "orx_text_8h.html#gaf95fd8ed766cf9cd9ae3ba3f87881259":[3,0,0,4,4,3],
 "orx_text_8h_source.html":[3,0,0,4,4],
 "orx_texture_8h.html":[3,0,0,4,5],
-"orx_texture_8h.html#ga0234c4923d3a53bd299c36bc9a96c60b":[3,0,0,4,5,3],
-"orx_texture_8h.html#ga5d43b76a8d682b36f0331e281cb61788":[3,0,0,4,5,12],
-"orx_texture_8h.html#ga63311d2cc114a72436a2fbc6d3e15b0b":[3,0,0,4,5,4]
+"orx_texture_8h.html#ga0234c4923d3a53bd299c36bc9a96c60b":[3,0,0,4,5,4],
+"orx_texture_8h.html#ga5d43b76a8d682b36f0331e281cb61788":[3,0,0,4,5,13],
+"orx_texture_8h.html#ga63311d2cc114a72436a2fbc6d3e15b0b":[3,0,0,4,5,5],
+"orx_texture_8h.html#ga63e6164791a9156560a7880ee2fc4941":[3,0,0,4,5,15]
 };
