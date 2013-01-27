@@ -94,7 +94,7 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
 {
   orxSOUNDSYSTEM_INFO stInfo;
   OggVorbis_File      stVf;
-  orxFILE             *pstFile;
+  orxHANDLE           hResource;;
 
 } orxSOUNDSYSTEM_DATA;
 
@@ -177,61 +177,65 @@ static ov_callbacks sstOggVorbis_Callbacks;
 
 static size_t read_func(void* ptr, size_t size, size_t nmemb, void* datasource)
 {
-  orxU32 u32Read = orxFile_Read(ptr, size, nmemb, (orxFILE*) datasource);
+  orxU32 u32Read = orxResource_Read((orxHANDLE) datasource, size * nmemb, ptr);
 
-  return u32Read * size;
+  return u32Read;
 }
 
 static int seek_func(void* datasource, ogg_int64_t offset, int whence)
 {
-  orxFile_Seek((orxFILE*) datasource, (orxS32) offset, (orxSEEK_OFFSET_WHENCE)whence);
+  orxResource_Seek((orxHANDLE) datasource, (orxS32) offset, (orxSEEK_OFFSET_WHENCE)whence);
 
   return 0;
 }
 
 static int close_func(void* datasource)
 {
-  orxFile_Close((orxFILE *) datasource);
+  orxResource_Close((orxHANDLE) datasource);
 
   return 0;
 }
 
 static long tell_func(void* datasource)
 {
-  return orxFile_Tell((const orxFILE *) datasource);
+  return orxResource_Tell((orxHANDLE) datasource);
 }
 
 static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
+  const orxSTRING zResourceName;
 
   /* Checks */
   orxASSERT(_zFilename != orxNULL);
   orxASSERT(_pstData != orxNULL);
 
-  /* Opens file */
-  _pstData->pstFile = orxFile_Open(_zFilename, orxFILE_KU32_FLAG_OPEN_READ);
+  /* Gets resource name */
+  zResourceName = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Success? */
-  if(_pstData->pstFile != orxNULL)
+  if(zResourceName != orxNULL)
   {
-    if(ov_open_callbacks(_pstData->pstFile, &_pstData->stVf, NULL, 0, sstOggVorbis_Callbacks) == 0)
+    _pstData->hResource = orxResource_Open(zResourceName);
+
+    /* Success? */
+    if(_pstData->hResource != orxHANDLE_UNDEFINED)
     {
-      vorbis_info *info = ov_info(&_pstData->stVf, -1);
 
-      orxASSERT(info != NULL);
+      if(ov_open_callbacks(_pstData->hResource, &_pstData->stVf, NULL, 0, sstOggVorbis_Callbacks) == 0)
+      {
+        vorbis_info *info = ov_info(&_pstData->stVf, -1);
 
-      /* Stores info */
-      _pstData->stInfo.u32ChannelNumber = (orxU32)info->channels;
-      _pstData->stInfo.u32FrameNumber   = (orxU32)ov_pcm_total(&_pstData->stVf, -1);
-      _pstData->stInfo.u32SampleRate    = (orxU32)info->rate;
+        orxASSERT(info != NULL);
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file %s.", _zFilename);
+        /* Stores info */
+        _pstData->stInfo.u32ChannelNumber = (orxU32)info->channels;
+        _pstData->stInfo.u32FrameNumber   = (orxU32)ov_pcm_total(&_pstData->stVf, -1);
+        _pstData->stInfo.u32SampleRate    = (orxU32)info->rate;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
     }
   }
 
@@ -245,11 +249,11 @@ static orxINLINE void orxSoundSystem_OpenAL_CloseFile(orxSOUNDSYSTEM_DATA *_pstD
   orxASSERT(_pstData != orxNULL);
 
   /* Has valid file? */
-  if(_pstData->pstFile != orxNULL)
+  if(_pstData->hResource != orxNULL)
   {
     /* Closes file */
     ov_clear(&_pstData->stVf);
-    _pstData->pstFile = orxNULL;
+    _pstData->hResource = orxNULL;
   }
 
   /* Done! */
@@ -266,7 +270,7 @@ static orxINLINE orxU32 orxSoundSystem_OpenAL_Read(orxSOUNDSYSTEM_DATA *_pstData
   orxASSERT(_pstData != orxNULL);
 
   /* Has valid file? */
-  if(_pstData->pstFile != orxNULL)
+  if(_pstData->hResource != orxNULL)
   {
     pBuffer = (char*) _pBuffer;
     u32FrameSize = _pstData->stInfo.u32ChannelNumber * sizeof(orxS16);
@@ -301,7 +305,7 @@ static orxINLINE void orxSoundSystem_OpenAL_Rewind(orxSOUNDSYSTEM_DATA *_pstData
   orxASSERT(_pstData != orxNULL);
 
   /* Has valid file? */
-  if(_pstData->pstFile != orxNULL)
+  if(_pstData->hResource != orxNULL)
   {
     /* Seeks start */
     ov_raw_seek(&_pstData->stVf, 0);
