@@ -196,6 +196,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxS16                 *as16StreamBuffer;   /**< Stream buffer */
   orxS16                 *as16RecordingBuffer;/**< Recording buffer */
   ALuint                 *auiWorkBufferList;  /**< Buffer list */
+  SF_VIRTUAL_IO           stVirtualIO;        /**< Virtual IO interface for libsndfile */
 
 } orxSOUNDSYSTEM_STATIC;
 
@@ -212,6 +213,66 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+sf_count_t orxSoundSystem_OpenAL_Resource_GetSize(void *_pData)
+{
+  orxHANDLE   hResource;
+  sf_count_t  s64Result;
+
+  /* Gets resource */
+  hResource = (orxHANDLE)_pData;
+
+  /* Updates result */
+  s64Result = (sf_count_t)orxResource_GetSize(hResource);
+
+  /* Done! */
+  return s64Result;
+}
+
+sf_count_t orxSoundSystem_OpenAL_Resource_Seek(sf_count_t _s64Offset, int _iWhence, void *_pData)
+{
+  orxHANDLE   hResource;
+  sf_count_t  s64Result;
+
+  /* Gets resource */
+  hResource = (orxHANDLE)_pData;
+
+  /* Updates result */
+  s64Result = (sf_count_t)orxResource_Seek(hResource, (orxS32)_s64Offset, (orxSEEK_OFFSET_WHENCE)_iWhence);
+
+  /* Done! */
+  return s64Result;
+}
+
+sf_count_t orxSoundSystem_OpenAL_Resource_Tell(void *_pData)
+{
+  orxHANDLE   hResource;
+  sf_count_t  s64Result;
+
+  /* Gets resource */
+  hResource = (orxHANDLE)_pData;
+
+  /* Updates result */
+  s64Result = (sf_count_t)orxResource_Tell(hResource);
+
+  /* Done! */
+  return s64Result;
+}
+
+sf_count_t orxSoundSystem_OpenAL_Resource_Read(void *_pBuffer, sf_count_t _s64Size, void *_pData)
+{
+  orxHANDLE   hResource;
+  sf_count_t  s64Result;
+
+  /* Gets resource */
+  hResource = (orxHANDLE)_pData;
+
+  /* Updates result */
+  s64Result = (sf_count_t)orxResource_Read(hResource, (orxS32)_s64Size, _pBuffer);
+
+  /* Done! */
+  return s64Result;
+}
 
 static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_OpenRecordingFile()
 {
@@ -339,29 +400,38 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
     }
     else
     {
-      SF_INFO stFileInfo;
+      orxHANDLE hResource;
 
-      /* Opens file with sndfile */
-      _pstData->sndfile.pstFile = sf_open(orxResource_GetName(zResourceLocation), SFM_READ, &stFileInfo);
+      /* Opens resource */
+      hResource = orxResource_Open(zResourceLocation);
 
-      /* Success? */
-      if(_pstData->sndfile.pstFile != NULL)
+      /* Valid? */
+      if(hResource != orxHANDLE_UNDEFINED)
       {
-        /* Stores info */
-        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-        _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
-        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
+        SF_INFO stFileInfo;
 
-        /* Updates status */
-        _pstData->bVorbis                 = orxFALSE;
+        /* Opens file with sndfile */
+        _pstData->sndfile.pstFile = sf_open_virtual(&(sstSoundSystem.stVirtualIO), SFM_READ, &stFileInfo, (void *)hResource);
 
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
+        /* Success? */
+        if(_pstData->sndfile.pstFile != NULL)
+        {
+          /* Stores info */
+          _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+          _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
+          _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
+
+          /* Updates status */
+          _pstData->bVorbis                 = orxFALSE;
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
       }
     }
   }
@@ -790,6 +860,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
+
+    /* Sets virtual IO interface */
+    sstSoundSystem.stVirtualIO.get_filelen  = orxSoundSystem_OpenAL_Resource_GetSize;
+    sstSoundSystem.stVirtualIO.seek         = orxSoundSystem_OpenAL_Resource_Seek;
+    sstSoundSystem.stVirtualIO.read         = orxSoundSystem_OpenAL_Resource_Read;
+    sstSoundSystem.stVirtualIO.write        = NULL;
+    sstSoundSystem.stVirtualIO.tell         = orxSoundSystem_OpenAL_Resource_Tell;
 
     /* Pushes config section */
     orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
