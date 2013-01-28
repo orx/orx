@@ -793,11 +793,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     return orxNULL;
   }
 
-  AAsset *poAsset = NULL;
-  if(_zFileName[0] == '.' && _zFileName[1] == '/')
-    poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName + 2, AASSET_MODE_RANDOM);
-  else
-    poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName, AASSET_MODE_RANDOM);
+  AAsset *poAsset = AAssetManager_open(sstFile.poAssetManager, _zFileName, AASSET_MODE_RANDOM);
 
   if(poAsset != NULL)
   {

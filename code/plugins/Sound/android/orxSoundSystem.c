@@ -94,7 +94,7 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
 {
   orxSOUNDSYSTEM_INFO stInfo;
   OggVorbis_File      stVf;
-  orxHANDLE           hResource;;
+  orxHANDLE           hResource;
 
 } orxSOUNDSYSTEM_DATA;
 
