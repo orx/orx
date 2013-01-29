@@ -143,7 +143,7 @@ static orxRESOURCE_STATIC sstResource;
  * Private functions                                                       *
  ***************************************************************************/
 
-const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
+static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
 {
   const orxSTRING zResult = orxNULL;
 
@@ -170,7 +170,7 @@ const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, c
   return zResult;
 }
 
-orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation)
+static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation)
 {
   orxFILE  *pstFile;
   orxHANDLE hResult;
@@ -185,7 +185,7 @@ orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation)
   return hResult;
 }
 
-void orxFASTCALL orxResource_File_Close(orxHANDLE _hResource)
+static void orxFASTCALL orxResource_File_Close(orxHANDLE _hResource)
 {
   orxFILE *pstFile;
 
@@ -196,7 +196,7 @@ void orxFASTCALL orxResource_File_Close(orxHANDLE _hResource)
   orxFile_Close(pstFile);
 }
 
-orxS32 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
+static orxS32 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
 {
   orxFILE  *pstFile;
   orxS32    s32Result;
@@ -211,7 +211,7 @@ orxS32 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
   return s32Result;
 }
 
-orxS32 orxFASTCALL orxResource_File_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+static orxS32 orxFASTCALL orxResource_File_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
 {
   orxFILE  *pstFile;
   orxS32    s32Result;
@@ -226,7 +226,7 @@ orxS32 orxFASTCALL orxResource_File_Seek(orxHANDLE _hResource, orxS32 _s32Offset
   return s32Result;
 }
 
-orxS32 orxFASTCALL orxResource_File_Tell(orxHANDLE _hResource)
+static orxS32 orxFASTCALL orxResource_File_Tell(orxHANDLE _hResource)
 {
   orxFILE  *pstFile;
   orxS32    s32Result;
@@ -241,7 +241,7 @@ orxS32 orxFASTCALL orxResource_File_Tell(orxHANDLE _hResource)
   return s32Result;
 }
 
-orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+static orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
 {
   orxFILE  *pstFile;
   orxS32    s32Result;
@@ -256,7 +256,7 @@ orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s32Size, 
   return s32Result;
 }
 
-orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
+static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
 {
   orxRESOURCE_STORAGE  *pstStorage;
   orxRESOURCE_LOCATION *pstResourceInfo;
@@ -294,7 +294,7 @@ orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
   orxString_Delete(_pstGroup->zName);
 }
 
-orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(const orxSTRING _zGroup)
+static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(const orxSTRING _zGroup)
 {
   orxRESOURCE_GROUP *pstResult;
 
