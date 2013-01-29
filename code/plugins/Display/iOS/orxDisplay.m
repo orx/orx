@@ -1612,24 +1612,24 @@ static orxINLINE void orxDisplay_iOS_DrawBitmap(const orxBITMAP *_pstBitmap, con
 
 static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
 {
-  orxFILE    *pstFile;
+  orxHANDLE   hResource;
   orxBITMAP  *pstBitmap = orxNULL;
 
-  /* Opens file */
-  pstFile = orxFile_Open(_zFilename, orxFILE_KU32_FLAG_OPEN_READ);
+  /* Opens resource */
+  hResource = orxResource_Open(_zFilename);
 
   /* Success? */
-  if(pstFile != orxNULL)
+  if(hResource != orxHANDLE_UNDEFINED)
   {
     PVRTexHeader  stHeader;
     orxS32        s32FileSize;
 
     /* Gets file size */
-    s32FileSize = orxFile_GetSize(pstFile);
+    s32FileSize = orxResource_GetSize(hResource);
 
     /* Loads PVR header from file */
     if((s32FileSize >= (orxS32)sizeof(PVRTexHeader))
-    && (orxFile_Read(&stHeader, sizeof(PVRTexHeader), 1, pstFile) > 0))
+    && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader) > 0))
     {
       /* Swaps the header's bytes to host format */
       stHeader.headerLength = CFSwapInt32LittleToHost(stHeader.headerLength);
@@ -1767,7 +1767,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
           au8ImageBuffer = orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_VIDEO);
 
           /* Reads the image content (mimaps will be ignored) */
-          if(orxFile_Read(au8ImageBuffer, sizeof(orxU8), u32DataSize, pstFile) > 0)
+          if(orxResource_Read(hResource, u32DataSize * sizeof(orxU8), au8ImageBuffer) > 0)
           {
             /* Allocates bitmap */
             pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -1864,7 +1864,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
     }
 
     /* Closes file */
-    orxFile_Close(pstFile);
+    orxResource_Close(hResource);
   }
   else
   {
@@ -3094,178 +3094,187 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
 
 orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
 {
-  NSString   *poName;
-  orxBITMAP  *pstBitmap = orxNULL;
+  const orxSTRING zResourceName;
+  orxBITMAP      *pstBitmap = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Gets NSString */
-  poName = [NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding];
-
-  /* PVR texture? */
-  if([[poName pathExtension] isEqualToString:@"pvr"] != NO)
+  /* Locates resource */
+  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+  
+  /* Success? */
+  if(zResourceName != orxNULL)
   {
-    /* Has support? */
-    if([sstDisplay.poView bCompressedTextureSupport] != NO)
+    NSString *poName;
+
+    /* Gets NSString */
+    poName = [NSString stringWithCString:orxResource_GetName(zResourceName) encoding:NSASCIIStringEncoding];
+
+    /* PVR texture? */
+    if([[poName pathExtension] isEqualToString:@"pvr"] != NO)
     {
-      /* Loads texture */
-      pstBitmap = orxDisplay_iOS_LoadPVRBitmap(_zFilename);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: no PVR support on this device. Retrying with PNG extension instead.", _zFilename);
-
-      /* Defaults back to png */
-      poName = [[poName stringByDeletingPathExtension] stringByAppendingPathExtension:@".png"];
-    }
-  }
-
-  /* Not already loaded? */
-  if(pstBitmap == orxNULL)
-  {
-    NSData   *poData;
-    UIImage  *poSourceImage;
-
-    /* Loads the file content */
-    poData = [[NSData alloc] initWithContentsOfFile:poName];
-
-    /* Gets image from it */
-    poSourceImage = [[UIImage alloc] initWithData:poData];
-
-    /* Success? */
-    if(poSourceImage != nil)
-    {
-      GLuint      uiWidth, uiHeight, uiRealWidth, uiRealHeight;
-      GLubyte    *au8ImageBuffer;
-      CGImageRef  oImage;
-
-      /* Gets image reference */
-      oImage = poSourceImage.CGImage;
-
-      /* Gets its size */
-      uiWidth   = CGImageGetWidth(oImage);
-      uiHeight  = CGImageGetHeight(oImage);
-
-      /* Gets its real size */
-      uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : orxMath_GetNextPowerOfTwo(uiWidth);
-      uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : orxMath_GetNextPowerOfTwo(uiHeight);
-
-      /* Allocates image buffer */
-      au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_VIDEO);
-
-      /* Valid? */
-      if(au8ImageBuffer != orxNULL)
+      /* Has support? */
+      if([sstDisplay.poView bCompressedTextureSupport] != NO)
       {
-        /* Allocates bitmap */
-        pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+        /* Loads texture */
+        pstBitmap = orxDisplay_iOS_LoadPVRBitmap(zResourceName);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: no PVR support on this device. Retrying with PNG extension instead.", _zFilename);
+
+        /* Defaults back to png */
+        poName = [[poName stringByDeletingPathExtension] stringByAppendingPathExtension:@".png"];
+      }
+    }
+
+    /* Not already loaded? */
+    if(pstBitmap == orxNULL)
+    {
+      NSData   *poData;
+      UIImage  *poSourceImage;
+
+      /* Loads the file content */
+      poData = [[NSData alloc] initWithContentsOfFile:poName];
+
+      /* Gets image from it */
+      poSourceImage = [[UIImage alloc] initWithData:poData];
+
+      /* Success? */
+      if(poSourceImage != nil)
+      {
+        GLuint      uiWidth, uiHeight, uiRealWidth, uiRealHeight;
+        GLubyte    *au8ImageBuffer;
+        CGImageRef  oImage;
+
+        /* Gets image reference */
+        oImage = poSourceImage.CGImage;
+
+        /* Gets its size */
+        uiWidth   = CGImageGetWidth(oImage);
+        uiHeight  = CGImageGetHeight(oImage);
+
+        /* Gets its real size */
+        uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : orxMath_GetNextPowerOfTwo(uiWidth);
+        uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : orxMath_GetNextPowerOfTwo(uiHeight);
+
+        /* Allocates image buffer */
+        au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_VIDEO);
 
         /* Valid? */
-        if(pstBitmap != orxNULL)
+        if(au8ImageBuffer != orxNULL)
         {
-          CGColorSpaceRef   oColorSpace;
-          CGContextRef      oContext;
-          GLint             iTexture;
-          orxRGBA          *pstPixel, *pstImageEnd;
+          /* Allocates bitmap */
+          pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-          /* Creates a device color space */
-          oColorSpace = CGColorSpaceCreateDeviceRGB();
-
-          /* Creates graphic context */
-          oContext = CGBitmapContextCreate(au8ImageBuffer, uiRealWidth, uiRealHeight, 8, 4 * uiRealWidth, oColorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-
-          /* Clears it */
-          CGContextClearRect(oContext, CGRectMake(0, 0, uiRealWidth, uiRealHeight));
-
-          /* Inits it (flip vertically) */
-          CGContextTranslateCTM(oContext, 0.0f, uiHeight);
-          CGContextScaleCTM(oContext, 1.0f, -1.0f);
-
-          /* Copies image data */
-          CGContextDrawImage(oContext, CGRectMake(0, 0, uiWidth, uiHeight), oImage);
-
-          /* For all pixels */
-          for(pstPixel = (orxRGBA *)au8ImageBuffer, pstImageEnd =
-              pstPixel + (uiRealWidth * uiRealHeight);
-              pstPixel < pstImageEnd;
-              pstPixel++)
+          /* Valid? */
+          if(pstBitmap != orxNULL)
           {
-            orxCOLOR stColor;
+            CGColorSpaceRef   oColorSpace;
+            CGContextRef      oContext;
+            GLint             iTexture;
+            orxRGBA          *pstPixel, *pstImageEnd;
 
-            /* Gets its color */
-            orxColor_SetRGBA(&stColor, *pstPixel);
+            /* Creates a device color space */
+            oColorSpace = CGColorSpaceCreateDeviceRGB();
 
-            /* Has alpha? */
-            if(stColor.fAlpha > orxFLOAT_0)
+            /* Creates graphic context */
+            oContext = CGBitmapContextCreate(au8ImageBuffer, uiRealWidth, uiRealHeight, 8, 4 * uiRealWidth, oColorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+
+            /* Clears it */
+            CGContextClearRect(oContext, CGRectMake(0, 0, uiRealWidth, uiRealHeight));
+
+            /* Inits it (flip vertically) */
+            CGContextTranslateCTM(oContext, 0.0f, uiHeight);
+            CGContextScaleCTM(oContext, 1.0f, -1.0f);
+
+            /* Copies image data */
+            CGContextDrawImage(oContext, CGRectMake(0, 0, uiWidth, uiHeight), oImage);
+
+            /* For all pixels */
+            for(pstPixel = (orxRGBA *)au8ImageBuffer, pstImageEnd =
+                pstPixel + (uiRealWidth * uiRealHeight);
+                pstPixel < pstImageEnd;
+                pstPixel++)
             {
-              /* Updates color components */
-              orxVector_Divf(&(stColor.vRGB), &(stColor.vRGB), stColor.fAlpha);
+              orxCOLOR stColor;
+
+              /* Gets its color */
+              orxColor_SetRGBA(&stColor, *pstPixel);
+
+              /* Has alpha? */
+              if(stColor.fAlpha > orxFLOAT_0)
+              {
+                /* Updates color components */
+                orxVector_Divf(&(stColor.vRGB), &(stColor.vRGB), stColor.fAlpha);
+              }
+
+              /* Updates pixel */
+              *pstPixel = orxColor_ToRGBA(&stColor);
             }
 
-            /* Updates pixel */
-            *pstPixel = orxColor_ToRGBA(&stColor);
+            /* Pushes display section */
+            orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+            /* Inits it */
+            pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+            pstBitmap->fWidth         = orxU2F(uiWidth);
+            pstBitmap->fHeight        = orxU2F(uiHeight);
+            pstBitmap->u32RealWidth   = uiRealWidth;
+            pstBitmap->u32RealHeight  = uiRealHeight;
+            pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+            pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+            pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+            orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+            orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+            /* Backups current texture */
+            glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+            glASSERT();
+
+            /* Creates new texture */
+            glGenTextures(1, &pstBitmap->uiTexture);
+            glASSERT();
+            glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+            glASSERT();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+            glASSERT();
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, au8ImageBuffer);
+            glASSERT();
+
+            /* Restores previous texture */
+            glBindTexture(GL_TEXTURE_2D, iTexture);
+            glASSERT();
+
+            /* Pops config section */
+            orxConfig_PopSection();
+
+            /* Deletes context */
+            CGContextRelease(oContext);
+
+            /* Deletes color space */
+            CGColorSpaceRelease(oColorSpace);
           }
 
-          /* Pushes display section */
-          orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-          /* Inits it */
-          pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-          pstBitmap->fWidth         = orxU2F(uiWidth);
-          pstBitmap->fHeight        = orxU2F(uiHeight);
-          pstBitmap->u32RealWidth   = uiRealWidth;
-          pstBitmap->u32RealHeight  = uiRealHeight;
-          pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
-          pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-          pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-          orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
-          orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
-
-          /* Backups current texture */
-          glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-          glASSERT();
-
-          /* Creates new texture */
-          glGenTextures(1, &pstBitmap->uiTexture);
-          glASSERT();
-          glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-          glASSERT();
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pstBitmap->u32RealWidth, pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, au8ImageBuffer);
-          glASSERT();
-
-          /* Restores previous texture */
-          glBindTexture(GL_TEXTURE_2D, iTexture);
-          glASSERT();
-
-          /* Pops config section */
-          orxConfig_PopSection();
-
-          /* Deletes context */
-          CGContextRelease(oContext);
-
-          /* Deletes color space */
-          CGColorSpaceRelease(oColorSpace);
+          /* Frees image buffer */
+          orxMemory_Free(au8ImageBuffer);
         }
 
-        /* Frees image buffer */
-        orxMemory_Free(au8ImageBuffer);
+        /* Releases source image */
+        [poSourceImage release];
       }
 
-      /* Releases source image */
-      [poSourceImage release];
+      /* Releases texture data */
+      [poData release];
     }
-
-    /* Releases texture data */
-    [poData release];
   }
 
   /* Done! */
