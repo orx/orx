@@ -1177,8 +1177,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
   /* Valid? */
   if((_zName != orxNULL) && (_zName != orxSTRING_EMPTY))
   {
-    orxSHADER_PARAM       *pstParam;
-    orxSHADER_PARAM_VALUE *pstParamValue;
+    orxSHADER_PARAM *pstParam;
 
     /* Allocates param */
     pstParam = (orxSHADER_PARAM *)orxBank_Allocate(_pstShader->pstParamBank);
@@ -1186,6 +1185,8 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
     /* Valid? */
     if(pstParam != orxNULL)
     {
+      orxSHADER_PARAM_VALUE *pstParamValue;
+
       /* Clears it */
       orxMemory_Zero(pstParam, sizeof(orxSHADER_PARAM));
 

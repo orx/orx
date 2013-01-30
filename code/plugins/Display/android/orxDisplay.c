@@ -1302,7 +1302,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawOBox(const orxOBOX *_pstBox, orxRGB
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
   const orxBITMAP  *pstBitmap;
-  GLfloat           fWidth, fHeight, fXCoef, fYCoef, fXBorder, fYBorder;
+  GLfloat           fXBorder, fYBorder;
   orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
@@ -1316,12 +1316,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
 
   /* Prepares bitmap for drawing */
   orxDisplay_Android_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
-
-  /* Gets bitmap working size */
-  fWidth  = (GLfloat)(pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX);
-  fHeight = (GLfloat)(pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY);
-
-  fXCoef = fYCoef = orxFLOAT_1;
 
   /* Gets X & Y border fixes */
   fXBorder = pstBitmap->fRecRealWidth * orxDISPLAY_KF_BORDER_FIX;
@@ -1355,8 +1349,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
 
     /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(_astVertexList[i].fU + fXBorder);
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (_astVertexList[i].fV + fYBorder));
 
     /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
@@ -2608,7 +2602,6 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
         }
 
         orxU32  u32DataSize, u32DataSizeRounded;
-        orxU8  *au8ImageBuffer;
         GLenum  eInternalFormat, eTextureType = 0;
 
         if (bCompressed)
@@ -2622,6 +2615,8 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
 
         if(orxResource_Read(hResource, sizeof(orxU32), &u32DataSize) > 0)
         {
+          orxU8 *au8ImageBuffer;
+
           u32DataSizeRounded = (u32DataSize + 3) & ~(orxU32)3;
 
           au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSizeRounded, orxMEMORY_TYPE_VIDEO);
@@ -3300,9 +3295,8 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
       /* Successful? */
       if(pstShader != orxNULL)
       {
-        orxSHADER_PARAM  *pstParam;
-        orxCHAR          *pc;
-        orxS32            s32Free, s32Offset;
+        orxCHAR  *pc;
+        orxS32    s32Free, s32Offset;
 
         /* Inits shader code buffer */
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
@@ -3312,7 +3306,8 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
         /* Has parameters? */
         if(_pstParamList != orxNULL)
         {
-          orxCHAR *pcReplace;
+          orxCHAR          *pcReplace;
+          orxSHADER_PARAM  *pstParam;
 
           /* Adds wrapping code */
           s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\n");

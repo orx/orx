@@ -535,7 +535,6 @@ void orxFASTCALL orxParam_Exit()
  */
 orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
 {
-  orxPARAM_INFO *pstParamInfo;       /* Parameter stored in the bank */
   orxSTATUS eResult = orxSTATUS_FAILURE; /* Result of the operation */
 
   /* Module initialized ? */
@@ -582,6 +581,8 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
       /* Can we store the parameter ? */
       if(bStoreParam)
       {
+        orxPARAM_INFO *pstParamInfo;
+
         /* Allocate a new cell in the bank */
         pstParamInfo = (orxPARAM_INFO *)orxBank_Allocate(sstParam.pstBank);
 

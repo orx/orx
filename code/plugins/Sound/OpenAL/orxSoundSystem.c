@@ -364,7 +364,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_OpenRecordingFile()
 static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
 {
   const orxSTRING zResourceLocation;
-  orxSTATUS       eResult;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(_zFilename != orxNULL);
@@ -427,18 +427,8 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
         }
-        else
-        {
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
-        }
       }
     }
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

@@ -177,8 +177,7 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
  */
 orxSTATUS orxFASTCALL _orxDebug_Init()
 {
-  orxU32 i;
-  orxU8 *pu8;
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Init dependencies */
@@ -201,6 +200,8 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
   }
   else
   {
+    orxU8 *pu8;
+
     /* Cleans static controller */
     for(i = 0, pu8 = (orxU8 *)&sstDebug; i < sizeof(orxDEBUG_STATIC); i++)
     {
@@ -347,7 +348,6 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
   if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)))
   {
     orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
-    FILE   *pstFile;
     va_list stArgs;
 
     /* Empties current buffer */
@@ -442,6 +442,8 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Use file? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
     {
+      FILE *pstFile;
+
       if(_eLevel == orxDEBUG_LEVEL_LOG)
       {
 
@@ -486,6 +488,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Terminal Display? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
     {
+      FILE *pstFile;
 
 #if defined(__orxANDROID__)
 

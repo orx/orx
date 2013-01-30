@@ -1257,7 +1257,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
 
 orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
-  ALCenum   eALFormat;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */

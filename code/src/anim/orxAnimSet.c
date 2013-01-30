@@ -674,8 +674,7 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstIn
  */
 static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
 {
-  orxU32 u32BaseIndex, i;
-  orxANIMSET_LINK_TABLE *pstLinkTable;
+  orxU32  u32BaseIndex, i;
   orxBOOL bResult = orxFALSE;
 
   /* Checks */
@@ -685,6 +684,8 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDAT
   /* Are links not already computed/updated for this animations? */
   if(orxAnimSet_GetLinkInfo(_pstInfo, _u32Index, _u32Index) == orxFALSE)
   {
+    orxANIMSET_LINK_TABLE *pstLinkTable;
+
     /* Gets link table */
     pstLinkTable = _pstInfo->pstLinkTable;
 
@@ -1940,9 +1941,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
  */
 orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
 {
-  orxU32                  u32Size, u32Link, u32Index;
-  orxANIMSET_LINK_TABLE  *pstLinkTable;
-  orxU32                  u32Result = orxU32_UNDEFINED;
+  orxU32 u32Size, u32Link, u32Index;
+  orxU32 u32Result = orxU32_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
@@ -1958,6 +1958,8 @@ orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAni
   /* Not locked? */
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK) == orxFALSE)
   {
+    orxANIMSET_LINK_TABLE *pstLinkTable;
+
     /* Gets link table */
     pstLinkTable  = _pstAnimSet->pstLinkTable;
 
@@ -2017,9 +2019,8 @@ orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAni
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxU32 _u32LinkID)
 {
-  orxU32                  u32Size;
-  orxANIMSET_LINK_TABLE  *pstLinkTable;
-  orxSTATUS               eResult;
+  orxU32    u32Size;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
@@ -2028,6 +2029,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxU32 _u32
   /* Not locked? */
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK) == orxFALSE)
   {
+    orxANIMSET_LINK_TABLE *pstLinkTable;
+
     /* Gets link table */
     pstLinkTable = _pstAnimSet->pstLinkTable;
 

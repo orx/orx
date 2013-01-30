@@ -359,8 +359,7 @@ orxSTATUS orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 {
-  register orxSTRUCTURE_STORAGE_NODE *pstNode;
-  register orxSTRUCTURE *pstStructure = orxNULL;
+  orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxStructure_Create");
@@ -380,6 +379,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
     /* Valid? */
     if(pstStructure != orxNULL)
     {
+      orxSTRUCTURE_STORAGE_NODE *pstNode;
+
       /* Creates node */
       pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstNodeBank);
 

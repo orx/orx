@@ -2048,7 +2048,6 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
     if((orxObject_IsEnabled(pstObject) != orxFALSE) && (orxObject_IsPaused(pstObject) == orxFALSE))
     {
       orxU32                i;
-      orxFRAME             *pstFrame;
       orxCLOCK             *pstClock;
       const orxCLOCK_INFO  *pstClockInfo;
 
@@ -2114,6 +2113,8 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
         /* Has no body? */
         if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
         {
+          orxFRAME *pstFrame;
+
           /* Has frame? */
           if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
           {
@@ -6112,8 +6113,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRI
  */
 orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
-  orxFXPOINTER *pstFXPointer;
-  orxSTATUS     eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6124,6 +6124,8 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
+    orxFXPOINTER *pstFXPointer;
+
     /* Gets its FXPointer */
     pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
 
@@ -6169,8 +6171,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
  */
 orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
-  orxFXPOINTER *pstFXPointer;
-  orxSTATUS     eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6181,6 +6182,8 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
+    orxFXPOINTER *pstFXPointer;
+
     /* Gets its FXPointer */
     pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
 
@@ -6301,8 +6304,7 @@ orxSTATUS orxFASTCALL orxObject_SynchronizeFX(orxOBJECT *_pstObject, const orxOB
  */
 orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID)
 {
-  orxSOUNDPOINTER  *pstSoundPointer;
-  orxSTATUS         eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6312,6 +6314,8 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
+    orxSOUNDPOINTER *pstSoundPointer;
+
     /* Gets its SoundPointer */
     pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
 
@@ -6497,8 +6501,7 @@ orxSTATUS orxFASTCALL orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch
  */
 orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID)
 {
-  orxSHADERPOINTER *pstShaderPointer;
-  orxSTATUS         eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6508,6 +6511,8 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
+    orxSHADERPOINTER *pstShaderPointer;
+
     /* Gets its ShaderPointer */
     pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
 
@@ -6638,8 +6643,7 @@ orxBOOL orxFASTCALL orxObject_IsShaderEnabled(const orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID)
 {
-  orxTIMELINE  *pstTimeLine;
-  orxSTATUS     eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6649,6 +6653,8 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
+    orxTIMELINE *pstTimeLine;
+
     /* Gets its TimeLine */
     pstTimeLine = orxOBJECT_GET_STRUCTURE(_pstObject, TIMELINE);
 

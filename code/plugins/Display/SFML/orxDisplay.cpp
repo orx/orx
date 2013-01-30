@@ -283,8 +283,7 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_GetScreen()
 
 extern "C" void orxFASTCALL orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
-  sf::Sprite       *poSprite;
-  const sf::Image  *poImage;
+  sf::Sprite *poSprite;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -293,6 +292,8 @@ extern "C" void orxFASTCALL orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != orxDisplay::spoScreen)
   {
+    const sf::Image *poImage;
+
     /* Gets sprite */
     poSprite = (sf::Sprite *)_pstBitmap;
 

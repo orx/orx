@@ -1444,7 +1444,7 @@ orxU32 orxFASTCALL orxDisplay_SDL_GetVideoModeCounter()
 
 orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxDISPLAY_VIDEO_MODE *pstResult;
+  orxDISPLAY_VIDEO_MODE *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1469,11 +1469,6 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
       /* Updates result */
       pstResult = _pstVideoMode;
     }
-  }
-  else
-  {
-    /* Updates result */
-    pstResult = orxNULL;
   }
 
   /* Done! */

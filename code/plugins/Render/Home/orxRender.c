@@ -1028,7 +1028,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
       {
         orxVECTOR             vPosition, vScale;
         orxDISPLAY_TRANSFORM  stTransform;
-        orxBOOL               bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
+        orxBOOL               bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
         orxFLOAT              fRepeatX, fRepeatY, fRotation;
 
         /* Gets rendering frame's position, rotation & scale */
@@ -1043,21 +1043,11 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         /* Updates using combined flipping */
         if(bObjectFlipX ^ bGraphicFlipX)
         {
-          bFlipX = orxTRUE;
           vScale.fX = -vScale.fX;
-        }
-        else
-        {
-          bFlipX = orxFALSE;
         }
         if(bObjectFlipY ^ bGraphicFlipY)
         {
-          bFlipY = orxTRUE;
           vScale.fY = -vScale.fY;
-        }
-        else
-        {
-          bFlipY = orxFALSE;
         }
 
         /* Has object color? */
@@ -1162,7 +1152,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
             {
               orxVECTOR   vPosition, vScale, vPivot, vSize;
               orxFLOAT    fRotation;
-              orxBOOL     bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY, bFlipX, bFlipY;
+              orxBOOL     bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
               orxBITMAP  *pstBitmap;
 
               /* Gets its bitmap */
@@ -1184,21 +1174,11 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
               /* Updates using combined flipping */
               if(bObjectFlipX ^ bGraphicFlipX)
               {
-                bFlipX = orxTRUE;
                 vScale.fX = -vScale.fX;
-              }
-              else
-              {
-                bFlipX = orxFALSE;
               }
               if(bObjectFlipY ^ bGraphicFlipY)
               {
-                bFlipY = orxTRUE;
                 vScale.fY = -vScale.fY;
-              }
-              else
-              {
-                bFlipY = orxFALSE;
               }
 
               /* Has object color? */
@@ -1593,7 +1573,6 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             orxDISPLAY_SMOOTHING  eSmoothing;
                             const orxSHADER      *pstShader;
                             orxSHADERPOINTER     *pstShaderPointer;
-                            orxRENDER_NODE       *pstNode;
 
                             /* Gets shader pointer */
                             pstShaderPointer = orxOBJECT_GET_STRUCTURE(pstObject, SHADERPOINTER);
@@ -1657,6 +1636,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             }
                             else
                             {
+                              orxRENDER_NODE *pstNode;
+
                               /* Finds correct node position */
                               for(pstNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
                                   (pstNode != orxNULL)

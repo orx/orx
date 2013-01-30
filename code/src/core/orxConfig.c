@@ -3202,8 +3202,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
  */
 orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 {
-  orxSTRING  *pzHistoryEntry;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -3211,6 +3210,8 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   /* Has history? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
   {
+    orxSTRING *pzHistoryEntry;
+
     /* Sends event */
     orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_START);
 
@@ -3265,7 +3266,6 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
  */
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
-  orxFILE        *pstFile;
   const orxSTRING zFileName;
   orxSTATUS       eResult = orxSTATUS_FAILURE;
 
@@ -3278,6 +3278,8 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   /* No encryption requested or has a valid key? */
   if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
+    orxFILE *pstFile;
+
     /* Is given an invalid file name? */
     if((_zFileName == orxNULL) || (_zFileName == orxSTRING_EMPTY))
     {
@@ -4189,9 +4191,8 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
  */
 orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 {
-  orxCONFIG_SECTION  *pstSection;
-  orxU32              u32ID;
-  orxBOOL             bResult = orxFALSE;
+  orxU32  u32ID;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -4200,6 +4201,8 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   /* Valid? */
   if(_zSectionName != orxSTRING_EMPTY)
   {
+    orxCONFIG_SECTION *pstSection;
+
     /* Gets section name ID */
     u32ID = orxString_ToCRC(_zSectionName);
 
