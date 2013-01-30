@@ -58,6 +58,11 @@ extern "C"
   */
 jobject orxAndroid_GetActivity();
 
+/**
+  Register APK resources IO
+  */
+orxSTATUS orxAndroid_RegisterAPKResource();
+
 /** @file thread.h
   The Thread library makes it easy to create native threads that can acess
   JNI objects.  By default, pthreads created in the Android NDK are NOT connected

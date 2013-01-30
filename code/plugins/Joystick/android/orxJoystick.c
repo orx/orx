@@ -37,8 +37,6 @@
 #include <jni.h>
 #include "main/orxAndroid.h"
 
-extern jobject              oActivity;
-
 #define KZ_CONFIG_ANDROID                        "Android"
 #define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
 
@@ -135,6 +133,8 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
         orxS32 s32Rate;
 
         JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+        jobject oActivity = orxAndroid_GetActivity();
+
         jclass objClass = poJEnv->GetObjectClass(oActivity);
         orxASSERT(objClass != orxNULL);
         jmethodID enableAccelerometer = poJEnv->GetMethodID(objClass, "enableAccelerometer", "(I)V");
@@ -147,6 +147,8 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     else
     { /* enable acceleromter with default GAME rate */
       JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+      jobject oActivity = orxAndroid_GetActivity();
+
       jclass objClass = poJEnv->GetObjectClass(oActivity);
       orxASSERT(objClass != orxNULL);
       jmethodID enableAccelerometer = poJEnv->GetMethodID(objClass, "enableAccelerometer", "(I)V");

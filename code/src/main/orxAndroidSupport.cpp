@@ -35,18 +35,21 @@
 
 #include <jni.h>
 #include <android/log.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 
 #define MODULE "orxAndroidSupport"
 #define DEBUG(args...) __android_log_print(ANDROID_LOG_DEBUG, MODULE, ## args)
 
 #include "orxInclude.h"
 #include "orxKernel.h"
-
 #include "main/orxAndroid.h"
 
 static JavaVM* s_vm = NULL;
 static pthread_key_t s_jniEnvKey = 0;
 static jobject s_oActivity;
+static AAssetManager *s_poAssetManager;
+static jobject s_jAssetManager;
 
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
@@ -173,12 +176,23 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, job
 {
   isRunning = 0;
   s_oActivity = env->NewGlobalRef(thiz);
+
+  jclass objClass = env->GetObjectClass(thiz);
+  orxASSERT(objClass != orxNULL);
+  jmethodID getAssets = env->GetMethodID(objClass, "getAssets", "()Landroid/content/res/AssetManager;");
+  orxASSERT(getAssets != orxNULL);
+  jobject jAssetManager = env->CallObjectMethod(thiz, getAssets);
+  orxASSERT(jAssetManager != orxNULL);
+
+  s_jAssetManager = env->NewGlobalRef(jAssetManager);
+  s_poAssetManager = AAssetManager_fromJava(env, s_jAssetManager);
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeExit(JNIEnv * env, jobject thiz)
 {
   nativeExit();
   env->DeleteGlobalRef(s_oActivity);
+  env->DeleteGlobalRef(s_jAssetManager);
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeInit(JNIEnv* env, jobject thiz, jint width, jint height)
@@ -494,6 +508,148 @@ int orxAndroid_ThreadSleep(unsigned long millisec)
   req.tv_sec  = sec;
   req.tv_nsec = millisec*1000000L;
   return __sleep(&req,&rem);
+}
+
+static const orxSTRING orxRESOURCE_KZ_TYPE_TAG_APK = "apk";                           /**< Resource type apk tag */
+#define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
+#define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
+static orxCHAR s_acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];                  /**< File location buffer size */
+
+static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
+{
+  const orxSTRING zResult = orxNULL;
+  AAsset   *poAsset;
+
+  /* Default storage? */
+  if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
+  {
+    /* Uses name as path */
+    orxString_NPrint(s_acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s", _zName);
+  }
+  else
+  {
+    /* Composes full name */
+    orxString_NPrint(s_acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+  }
+
+  /* Exist? */
+  poAsset = AAssetManager_open(s_poAssetManager, s_acFileLocationBuffer, AASSET_MODE_RANDOM);
+  if(poAsset != NULL)
+  {
+    /* Updates result */
+    zResult = s_acFileLocationBuffer;
+    AAsset_close(poAsset);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+static orxHANDLE orxFASTCALL orxResource_APK_Open(const orxSTRING _zLocation)
+{
+  AAsset   *poAsset;
+  orxHANDLE hResult;
+
+  /* Opens Asset */
+  poAsset = AAssetManager_open(s_poAssetManager, _zLocation, AASSET_MODE_RANDOM);
+
+  /* Updates result */
+  hResult = (poAsset != orxNULL) ? (orxHANDLE)poAsset : orxHANDLE_UNDEFINED;
+
+  /* Done! */
+  return hResult;
+}
+
+static void orxFASTCALL orxResource_APK_Close(orxHANDLE _hResource)
+{
+  AAsset   *poAsset;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Closes it */
+  AAsset_close(poAsset);
+}
+
+static orxS32 orxFASTCALL orxResource_APK_GetSize(orxHANDLE _hResource)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_getLength(poAsset);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_APK_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_seek(poAsset, _s32Offset, _eWhence);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_APK_Tell(orxHANDLE _hResource)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_getLength(poAsset) - AAsset_getRemainingLength(poAsset);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_APK_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_read(poAsset, _pBuffer, sizeof(orxCHAR) * _s32Size) / sizeof(orxCHAR);
+
+  /* Done! */
+  return s32Result;
+}
+
+orxSTATUS orxAndroid_RegisterAPKResource()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxRESOURCE_TYPE_INFO stAPKTypeInfo;
+
+  /* Inits apk type */
+  stAPKTypeInfo.zTag       = (orxCHAR*) orxRESOURCE_KZ_TYPE_TAG_APK;
+  stAPKTypeInfo.pfnLocate  = orxResource_APK_Locate;
+  stAPKTypeInfo.pfnOpen    = orxResource_APK_Open;
+  stAPKTypeInfo.pfnClose   = orxResource_APK_Close;
+  stAPKTypeInfo.pfnGetSize = orxResource_APK_GetSize;
+  stAPKTypeInfo.pfnSeek    = orxResource_APK_Seek;
+  stAPKTypeInfo.pfnTell    = orxResource_APK_Tell;
+  stAPKTypeInfo.pfnRead    = orxResource_APK_Read;
+
+  /* Registers it */
+  eResult = orxResource_RegisterType(&stAPKTypeInfo);
+
+  return eResult;
 }
 
 }
