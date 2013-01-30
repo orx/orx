@@ -47,8 +47,7 @@
 #include <jni.h>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
-
-extern jobject oActivity;
+#include "main/orxAndroid.h"
 
 #endif /* __orxANDROID__ */
 
@@ -567,6 +566,8 @@ orxSTATUS orxFASTCALL orxResource_Init()
 
         /* Retrieves android AssetManager */
         JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+        jobject oActivity = orxAndroid_GetActivity();
+
         jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
         orxASSERT(objClass != orxNULL);
         jmethodID getAssets = (*poJEnv)->GetMethodID(poJEnv, objClass, "getAssets", "()Landroid/content/res/AssetManager;");

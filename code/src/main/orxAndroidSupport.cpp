@@ -46,12 +46,18 @@
 
 static JavaVM* s_vm = NULL;
 static pthread_key_t s_jniEnvKey = 0;
+static jobject s_oActivity;
 
 int32_t s_winWidth = 1;
 int32_t s_winHeight = 1;
 
 /* Main function pointer */
 orxMODULE_RUN_FUNCTION  pfnRun;
+
+/* Main function to call */
+extern int main(int argc, char *argv[]);
+
+static int isRunning;
 
 static orxSYSTEM_EVENT_PAYLOAD sstPayload;
 
@@ -91,13 +97,6 @@ static void nativeExit()
 
   s_jniEnvKey = 0;
 }
-
-jobject oActivity;
-
-/* Main function to call */
-extern int main(int argc, char *argv[]);
-
-static int isRunning;
 
 extern "C" {
 
@@ -173,13 +172,13 @@ JNIEXPORT jboolean JNICALL Java_org_orx_lib_OrxActivity_requireDepthBuffer(JNIEn
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv * env, jobject thiz)
 {
   isRunning = 0;
-  oActivity = env->NewGlobalRef(thiz);
+  s_oActivity = env->NewGlobalRef(thiz);
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeExit(JNIEnv * env, jobject thiz)
 {
   nativeExit();
-  env->DeleteGlobalRef(oActivity);
+  env->DeleteGlobalRef(s_oActivity);
 }
 
 JNIEXPORT void JNICALL Java_org_orx_lib_OrxRenderer_nativeInit(JNIEnv* env, jobject thiz, jint width, jint height)
@@ -368,6 +367,11 @@ JNIEXPORT void JNICALL Java_org_orx_lib_OrxAccelerometer_onSensorChanged(JNIEnv*
 void orxAndroid_ThreadInit(JavaVM* vm)
 {
   s_vm = vm;
+}
+
+jobject orxAndroid_GetActivity()
+{
+  return s_oActivity;
 }
 
 JNIEnv* orxAndroid_ThreadGetCurrentJNIEnv()

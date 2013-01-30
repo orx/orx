@@ -56,8 +56,6 @@
     #include <jni.h>
     #include "main/orxAndroid.h"
 
-    extern jobject              oActivity;
-
   #endif /* __orxANDROID__ */
 
   #include <dirent.h>
@@ -219,6 +217,7 @@ orxSTATUS orxFASTCALL orxFile_Init()
 
     /* Retrieves the zInternalDataPath from Java */
     JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+    jobject oActivity = orxAndroid_GetActivity();
 
     jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
     orxASSERT(objClass != orxNULL);
