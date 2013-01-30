@@ -42,6 +42,17 @@
 #include "utils/orxString.h"
 
 
+#ifdef __orxANDROID__
+
+#include <jni.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
+
+extern jobject oActivity;
+
+#endif /* __orxANDROID__ */
+
+
 /** Module flags
  */
 #define orxRESOURCE_KU32_STATIC_FLAG_NONE             0x00000000                      /**< No flags */
@@ -60,13 +71,19 @@
 
 #define orxRESOURCE_KU32_STORAGE_BANK_SIZE            16                              /**< Storage bank size */
 #define orxRESOURCE_KU32_GROUP_BANK_SIZE              8                               /**< Group bank size */
-#define orxRESOURCE_KU32_TYPE_INFO_BANK_SIZE          8                               /**< Type info bank size */
+#define orxRESOURCE_KU32_TYPE_BANK_SIZE               8                               /**< Type bank size */
 
 #define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          8                               /**< Open resource info bank size */
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
 
 #define orxRESOURCE_KZ_TYPE_TAG_FILE                  "file"                          /**< Resource type file tag */
+
+#ifdef __orxANDROID__
+
+#define orxRESOURCE_KZ_TYPE_TAG_APK                   "apk"                           /**< Resource type apk tag */
+
+#endif /* __orxANDROID__ */
 
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
 
@@ -76,6 +93,15 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Resource type
+ */
+typedef struct __orxRESOURCE_TYPE_t
+{
+  orxLINKLIST_NODE          stNode;                                                   /**< Linklist node */
+  orxRESOURCE_TYPE_INFO     stInfo;                                                   /**< Type info */
+
+} orxRESOURCE_TYPE;
 
 /** Resource group
  */
@@ -120,12 +146,19 @@ typedef struct __orxRESOURCE_OPEN_INFO_t
 typedef struct __orxRESOURCE_STATIC_t
 {
   orxBANK                  *pstGroupBank;                                             /**< Group bank */
-  orxBANK                  *pstTypeInfoBank;                                          /**< Type info bank */
+  orxBANK                  *pstTypeBank;                                              /**< Type info bank */
   orxBANK                  *pstResourceInfoBank;                                      /**< Resource info bank */
   orxBANK                  *pstOpenInfoBank;                                          /**< Open resource table size */
-  orxRESOURCE_TYPE_INFO     stNativeFileSystemTypeInfo;                               /**< Native file system type info */
+  orxLINKLIST               stTypeList;                                               /**< Type list */
   orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   orxU32                    u32Flags;                                                 /**< Control flags */
+
+#ifdef __orxANDROID__
+
+  jobject                   jAssetManager;
+  AAssetManager            *poAssetManager;
+
+#endif /* __orxANDROID__ */
 
 } orxRESOURCE_STATIC;
 
@@ -142,6 +175,126 @@ static orxRESOURCE_STATIC sstResource;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+#ifdef __orxANDROID__
+
+static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
+{
+  const orxSTRING zResult = orxNULL;
+  AAsset   *poAsset;
+
+  /* Default storage? */
+  if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
+  {
+    /* Uses name as path */
+    orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s", _zName);
+  }
+  else
+  {
+    /* Composes full name */
+    orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+  }
+
+  /* Exist? */
+  poAsset = AAssetManager_open(sstResource.poAssetManager, sstResource.acFileLocationBuffer, AASSET_MODE_RANDOM);
+  if(poAsset != NULL)
+  {
+    /* Updates result */
+    zResult = sstResource.acFileLocationBuffer;
+    AAsset_close(poAsset);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+static orxHANDLE orxFASTCALL orxResource_APK_Open(const orxSTRING _zLocation)
+{
+  AAsset   *poAsset;
+  orxHANDLE hResult;
+
+  /* Opens Asset */
+  poAsset = AAssetManager_open(sstResource.poAssetManager, _zLocation, AASSET_MODE_RANDOM);
+
+  /* Updates result */
+  hResult = (poAsset != orxNULL) ? (orxHANDLE)poAsset : orxHANDLE_UNDEFINED;
+
+  /* Done! */
+  return hResult;
+}
+
+static void orxFASTCALL orxResource_APK_Close(orxHANDLE _hResource)
+{
+  AAsset   *poAsset;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Closes it */
+  AAsset_close(poAsset);
+}
+
+static orxS32 orxFASTCALL orxResource_APK_GetSize(orxHANDLE _hResource)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_getLength(poAsset);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_APK_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_seek(poAsset, _s32Offset, _eWhence);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_APK_Tell(orxHANDLE _hResource)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_getLength(poAsset) - AAsset_getRemainingLength(poAsset);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_APK_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+{
+  AAsset   *poAsset;
+  orxS32    s32Result;
+
+  /* Gets asset */
+  poAsset = (AAsset *)_hResource;
+
+  /* Updates result */
+  s32Result = AAsset_read(poAsset, _pBuffer, sizeof(orxCHAR) * _s32Size) / sizeof(orxCHAR);
+
+  /* Done! */
+  return s32Result;
+}
+
+#endif /* __orxANDROID__ */
 
 static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
 {
@@ -382,10 +535,10 @@ orxSTATUS orxFASTCALL orxResource_Init()
     sstResource.pstGroupBank        = orxBank_Create(orxRESOURCE_KU32_GROUP_BANK_SIZE, sizeof(orxRESOURCE_GROUP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Creates type info bank */
-    sstResource.pstTypeInfoBank     = orxBank_Create(orxRESOURCE_KU32_TYPE_INFO_BANK_SIZE, sizeof(orxRESOURCE_TYPE_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstResource.pstTypeBank         = orxBank_Create(orxRESOURCE_KU32_TYPE_BANK_SIZE, sizeof(orxRESOURCE_TYPE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Success? */
-    if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeInfoBank != orxNULL))
+    if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeBank != orxNULL))
     {
       orxRESOURCE_TYPE_INFO stTypeInfo;
 
@@ -404,6 +557,40 @@ orxSTATUS orxFASTCALL orxResource_Init()
 
       /* Registers it */
       eResult = orxResource_RegisterType(&stTypeInfo);
+
+      #ifdef __orxANDROID__
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        orxRESOURCE_TYPE_INFO stAPKTypeInfo;
+
+        /* Retrieves android AssetManager */
+        JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+        jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
+        orxASSERT(objClass != orxNULL);
+        jmethodID getAssets = (*poJEnv)->GetMethodID(poJEnv, objClass, "getAssets", "()Landroid/content/res/AssetManager;");
+        orxASSERT(getAssets != orxNULL);
+        jobject jAssetManager = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getAssets);
+        orxASSERT(jAssetManager != orxNULL);
+        sstResource.jAssetManager = (*poJEnv)->NewGlobalRef(poJEnv, jAssetManager);
+        sstResource.poAssetManager = AAssetManager_fromJava(poJEnv, jAssetManager);
+
+        /* Inits apk type */
+        stAPKTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_APK;
+        stAPKTypeInfo.pfnLocate  = orxResource_APK_Locate;
+        stAPKTypeInfo.pfnOpen    = orxResource_APK_Open;
+        stAPKTypeInfo.pfnClose   = orxResource_APK_Close;
+        stAPKTypeInfo.pfnGetSize = orxResource_APK_GetSize;
+        stAPKTypeInfo.pfnSeek    = orxResource_APK_Seek;
+        stAPKTypeInfo.pfnTell    = orxResource_APK_Tell;
+        stAPKTypeInfo.pfnRead    = orxResource_APK_Read;
+
+        /* Registers it */
+        eResult = eResult & orxResource_RegisterType(&stAPKTypeInfo);
+      }
+
+      #endif /* __orxANDROID__ */
     }
 
     /* Failed? */
@@ -430,10 +617,10 @@ orxSTATUS orxFASTCALL orxResource_Init()
         orxBank_Delete(sstResource.pstGroupBank);
       }
 
-      /* Deletes type info bank */
-      if(sstResource.pstTypeInfoBank != orxNULL)
+      /* Deletes type bank */
+      if(sstResource.pstTypeBank != orxNULL)
       {
-        orxBank_Delete(sstResource.pstTypeInfoBank);
+        orxBank_Delete(sstResource.pstTypeBank);
       }
 
       /* Logs message */
@@ -461,7 +648,7 @@ void orxFASTCALL orxResource_Exit()
   if(sstResource.u32Flags & orxRESOURCE_KU32_STATIC_FLAG_READY)
   {
     orxRESOURCE_GROUP      *pstGroup;
-    orxRESOURCE_TYPE_INFO  *pstTypeInfo;
+    orxRESOURCE_TYPE       *pstType;
     orxRESOURCE_OPEN_INFO  *pstOpenInfo;
 
     /* For all groups */
@@ -476,17 +663,17 @@ void orxFASTCALL orxResource_Exit()
     /* Deletes group bank */
     orxBank_Delete(sstResource.pstGroupBank);
 
-    /* For all type Info */
-    for(pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, orxNULL);
-        pstTypeInfo != orxNULL;
-        pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, pstTypeInfo))
+    /* For all types */
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        pstType != orxNULL;
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
     {
       /* Deletes its tag */
-      orxString_Delete(pstTypeInfo->zTag);
+      orxString_Delete(pstType->stInfo.zTag);
     }
 
-    /* Deletes type info bank */
-    orxBank_Delete(sstResource.pstTypeInfoBank);
+    /* Deletes type bank */
+    orxBank_Delete(sstResource.pstTypeBank);
 
     /* For all open resources */
     while((pstOpenInfo = (orxRESOURCE_OPEN_INFO *)orxBank_GetNext(sstResource.pstOpenInfoBank, orxNULL)) != orxNULL)
@@ -503,6 +690,14 @@ void orxFASTCALL orxResource_Exit()
 
     /* Deletes info bank */
     orxBank_Delete(sstResource.pstResourceInfoBank);
+
+#ifdef __orxANDROID__
+
+    /* release AssetManager reference */
+    JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
+    (*poJEnv)->DeleteGlobalRef(poJEnv, sstResource.jAssetManager);
+
+#endif
 
     /* Updates flags */
     sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
@@ -825,17 +1020,17 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
             (zResult == orxNULL) && (pstStorage != orxNULL);
             pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
         {
-          orxRESOURCE_TYPE_INFO *pstTypeInfo;
+          orxRESOURCE_TYPE *pstType;
 
           /* For all registered types */
-          for(pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, orxNULL);
-              pstTypeInfo != orxNULL;
-              pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, pstTypeInfo))
+          for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+              pstType != orxNULL;
+              pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
           {
             const orxSTRING zLocation;
 
             /* Locates resource */
-            zLocation = pstTypeInfo->pfnLocate(pstStorage->zStorage, _zName);
+            zLocation = pstType->stInfo.pfnLocate(pstStorage->zStorage, _zName);
 
             /* Success? */
             if(zLocation != orxNULL)
@@ -849,10 +1044,10 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
               orxASSERT(pstResourceInfo != orxNULL);
 
               /* Inits it */
-              pstResourceInfo->pstTypeInfo  = pstTypeInfo;
-              pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstTypeInfo->zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_MAIN);
+              pstResourceInfo->pstTypeInfo  = &(pstType->stInfo);
+              pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_MAIN);
               orxASSERT(pstResourceInfo->zLocation != orxNULL);
-              orxString_Print(pstResourceInfo->zLocation, "%s%c%s", pstTypeInfo->zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
+              orxString_Print(pstResourceInfo->zLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
 
               /* Adds it to cache */
               orxHashTable_Add(pstGroup->pstCacheTable, u32Key, pstResourceInfo);
@@ -887,20 +1082,20 @@ const orxSTRING orxFASTCALL orxResource_GetName(const orxSTRING _zLocation)
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
   {
-    orxRESOURCE_TYPE_INFO *pstTypeInfo;
+    orxRESOURCE_TYPE *pstType;
 
     /* For all registered types */
-    for(pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, orxNULL);
-        pstTypeInfo != orxNULL;
-        pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, pstTypeInfo))
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        pstType != orxNULL;
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
     {
       orxS32 s32TagLength;
 
       /* Gets tag length */
-      s32TagLength = orxString_GetLength(pstTypeInfo->zTag);
+      s32TagLength = orxString_GetLength(pstType->stInfo.zTag);
 
       /* Match tag? */
-      if(orxString_NICompare(_zLocation, pstTypeInfo->zTag, s32TagLength) == 0)
+      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, s32TagLength) == 0)
       {
         /* Valid? */
         if(*(_zLocation + s32TagLength) == orxRESOURCE_KC_LOCATION_SEPARATOR)
@@ -933,19 +1128,19 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
   {
-    orxRESOURCE_TYPE_INFO  *pstTypeInfo;
-    orxS32                  s32TagLength;
+    orxRESOURCE_TYPE *pstType;
+    orxS32            s32TagLength;
 
     /* For all registered types */
-    for(pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, orxNULL);
-        pstTypeInfo != orxNULL;
-        pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, pstTypeInfo))
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        pstType != orxNULL;
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
     {
       /* Gets tag length */
-      s32TagLength = orxString_GetLength(pstTypeInfo->zTag);
+      s32TagLength = orxString_GetLength(pstType->stInfo.zTag);
 
       /* Match tag? */
-      if(orxString_NICompare(_zLocation, pstTypeInfo->zTag, s32TagLength) == 0)
+      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, s32TagLength) == 0)
       {
         /* Selects it */
         break;
@@ -953,7 +1148,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
     }
 
     /* Found? */
-    if(pstTypeInfo != orxNULL)
+    if(pstType != orxNULL)
     {
       orxRESOURCE_OPEN_INFO *pstOpenInfo;
 
@@ -964,10 +1159,10 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
       orxASSERT(pstOpenInfo != orxNULL);
 
       /* Inits it */
-      pstOpenInfo->pstTypeInfo = pstTypeInfo;
+      pstOpenInfo->pstTypeInfo = &(pstType->stInfo);
 
       /* Opens it */
-      pstOpenInfo->hResource = pstTypeInfo->pfnOpen(_zLocation + s32TagLength + 1);
+      pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + s32TagLength + 1);
 
       /* Valid? */
       if((pstOpenInfo->hResource != orxHANDLE_UNDEFINED) && (pstOpenInfo->hResource != orxNULL))
@@ -1160,28 +1355,32 @@ const orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO
   && (_pstInfo->pfnTell != orxNULL)
   && (_pstInfo->pfnRead != orxNULL))
   {
-    orxRESOURCE_TYPE_INFO *pstTypeInfo;
+    orxRESOURCE_TYPE *pstType;
 
     /* For all registered types */
-    for(pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, orxNULL);
-        (pstTypeInfo != orxNULL) && (orxString_ICompare(pstTypeInfo->zTag, _pstInfo->zTag) != 0);
-        pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_GetNext(sstResource.pstTypeInfoBank, pstTypeInfo));
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        (pstType != orxNULL) && (orxString_ICompare(pstType->stInfo.zTag, _pstInfo->zTag) != 0);
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)));
 
     /* Not already registered? */
-    if(pstTypeInfo == orxNULL)
+    if(pstType == orxNULL)
     {
-      /* Allocates info */
-      pstTypeInfo = (orxRESOURCE_TYPE_INFO *)orxBank_Allocate(sstResource.pstTypeInfoBank);
+      /* Allocates type */
+      pstType = (orxRESOURCE_TYPE *)orxBank_Allocate(sstResource.pstTypeBank);
 
       /* Checks */
-      orxASSERT(pstTypeInfo != orxNULL);
+      orxASSERT(pstType != orxNULL);
 
       /* Inits it */
-      orxMemory_Copy(pstTypeInfo, _pstInfo, sizeof(orxRESOURCE_TYPE_INFO));
-      pstTypeInfo->zTag = orxString_Duplicate(_pstInfo->zTag);
+      orxMemory_Zero(&(pstType->stNode), sizeof(orxLINKLIST_NODE));
+      orxMemory_Copy(&(pstType->stInfo), _pstInfo, sizeof(orxRESOURCE_TYPE_INFO));
+      pstType->stInfo.zTag = orxString_Duplicate(_pstInfo->zTag);
 
       /* Checks */
-      orxASSERT(pstTypeInfo->zTag != orxNULL);
+      orxASSERT(pstType->stInfo.zTag != orxNULL);
+
+      /* Adds it first */
+      orxLinkList_AddStart(&(sstResource.stTypeList), &(pstType->stNode));
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
