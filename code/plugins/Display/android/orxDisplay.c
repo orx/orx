@@ -1302,7 +1302,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawOBox(const orxOBOX *_pstBox, orxRGB
 orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
   const orxBITMAP  *pstBitmap;
-  GLfloat           fXBorder, fYBorder;
+  orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef, fXBorder, fYBorder;
   orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
@@ -1316,6 +1316,18 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
 
   /* Prepares bitmap for drawing */
   orxDisplay_Android_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
+
+  /* Gets bitmap working size */
+  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
+  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
+
+  /* Gets top-left corner  */
+  fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
+  fLeft = pstBitmap->fRecRealWidth * pstBitmap->stClip.vTL.fX;
+
+  /* Gets X & Y coefs */
+  fXCoef = pstBitmap->fWidth * fWidth;
+  fYCoef = pstBitmap->fHeight * fHeight;
 
   /* Gets X & Y border fixes */
   fXBorder = pstBitmap->fRecRealWidth * orxDISPLAY_KF_BORDER_FIX;
@@ -1349,8 +1361,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
 
     /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(_astVertexList[i].fU + fXBorder);
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (_astVertexList[i].fV + fYBorder));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU) + fXBorder);
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fTop + (fYCoef * _astVertexList[i].fV) - fYBorder));
 
     /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
