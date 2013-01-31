@@ -120,6 +120,16 @@ typedef struct __orxDISPLAY_MATRIX_t
 
 } orxDISPLAY_MATRIX;
 
+/** Internal vertex structure
+ */
+typedef struct __orxDISPLAY_GLFW_VERTEX_t
+{
+  GLfloat fX, fY;
+  GLfloat fU, fV;
+  orxRGBA stRGBA;
+
+} orxDISPLAY_GLFW_VERTEX;
+
 /** Internal bitmap structure
  */
 struct __orxBITMAP_t
@@ -191,7 +201,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DefaultHeight;
   orxU32                    u32DefaultDepth;
   orxU32                    u32DefaultRefreshRate;
-  orxDISPLAY_VERTEX         astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
+  orxDISPLAY_GLFW_VERTEX    astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
 
@@ -1328,7 +1338,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
   const orxBITMAP  *pstBitmap;
-  GLfloat           fXCoef, fYCoef, fXBorder, fYBorder;
+  orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef, fXBorder, fYBorder;
   orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
@@ -1343,23 +1353,24 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   /* Prepares bitmap for drawing */
   orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
 
+  /* Gets bitmap working size */
+  fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
+  fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+
+  /* Gets top-left corner  */
+  fTop  = pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY;
+  fLeft = pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX;
+
   /* Gets X & Y coefs */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-  {
-    fXCoef = fYCoef = orxFLOAT_1;
-  }
-  else
-  {
-    fXCoef = pstBitmap->fWidth * pstBitmap->fRecRealWidth;
-    fYCoef = pstBitmap->fHeight * pstBitmap->fRecRealHeight;
-  }
+  fXCoef = pstBitmap->fRecRealWidth * fWidth;
+  fYCoef = pstBitmap->fRecRealHeight * fHeight;
 
   /* Gets X & Y border fixes */
   fXBorder = pstBitmap->fRecRealWidth * orxDISPLAY_KF_BORDER_FIX;
   fYBorder = pstBitmap->fRecRealHeight * orxDISPLAY_KF_BORDER_FIX;
 
   /* End of buffer? */
-  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 3)
   {
     /* Draw arrays */
     orxDisplay_GLFW_DrawArrays();
@@ -1386,8 +1397,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
 
     /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU) + fXBorder);
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fTop + (fYCoef * _astVertexList[i].fV) - fYBorder));
 
     /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
@@ -1404,8 +1415,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
     }
   }
 
-  /* Odd number of vertices in the triangle strip? */
-  if(iIndex & 1)
+  /* Not enough vertices for a final quad in the triangle strip? */
+  while(iIndex & 3)
   {
     /* Completes the quad */
     orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
