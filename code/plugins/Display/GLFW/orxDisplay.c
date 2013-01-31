@@ -1354,12 +1354,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
 
   /* Gets bitmap working size */
-  fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
-  fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
+  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
 
   /* Gets top-left corner  */
-  fTop  = pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY;
-  fLeft = pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX;
+  fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
+  fLeft = pstBitmap->fRecRealWidth * pstBitmap->stClip.vTL.fX;
 
   /* Gets X & Y coefs */
   fXCoef = pstBitmap->fRecRealWidth * fWidth;
