@@ -2291,8 +2291,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_DrawMesh(const orxBITMAP *_pstBitmap, orxDI
   orxDisplay_iOS_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
 
   /* Gets bitmap working size */
-  fWidth  = (GLfloat)(pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX);
-  fHeight = (GLfloat)(pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY);
+  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
+  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
 
   /* Gets top-left corner  */
   fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
