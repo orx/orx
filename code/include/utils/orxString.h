@@ -33,7 +33,7 @@
 
 /**
  * @addtogroup orxString
- * 
+ *
  * String module
  * Module that handles strings
  *
@@ -640,8 +640,8 @@ static orxINLINE orxSTATUS              orxString_Delete(orxSTRING _zString)
   return orxSTATUS_SUCCESS;
 }
 
-/** Compare two strings, case sensitive. If the first one is smaller than the second, it returns -1,
- * If the second one is bigger than the first, and 0 if they are equals
+/** Compare two strings, case sensitive. If the first one is smaller than the second it returns -1,
+ * 1 if the second one is bigger than the first, and 0 if they are equals
  * @param[in] _zString1    First String to compare
  * @param[in] _zString2    Second string to compare
  * @return -1, 0 or 1 as indicated in the description.
@@ -657,7 +657,7 @@ static orxINLINE orxS32                 orxString_Compare(const orxSTRING _zStri
 }
 
 /** Compare N first character from two strings, case sensitive. If the first one is smaller
- * than the second, it returns -1, If the second one is bigger than the first,
+ * than the second it returns -1, 1 if the second one is bigger than the first
  * and 0 if they are equals.
  * @param[in] _zString1       First String to compare
  * @param[in] _zString2       Second string to compare
@@ -744,7 +744,7 @@ static orxINLINE orxSTATUS              orxString_ToS32Base(const orxSTRING _zSt
 
   /* Convert */
   *_ps32OutValue = strtol(_zString, &pcEnd, (size_t)_u32Base);
-  
+
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
@@ -838,7 +838,7 @@ static orxINLINE orxSTATUS              orxString_ToU32Base(const orxSTRING _zSt
 
   /* Convert */
   *_pu32OutValue = strtoul(_zString, &pcEnd, (size_t)_u32Base);
-  
+
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
@@ -932,7 +932,7 @@ static orxINLINE orxSTATUS              orxString_ToS64Base(const orxSTRING _zSt
 
   /* Convert */
   *_ps64OutValue = strtoll(_zString, &pcEnd, (size_t)_u32Base);
-  
+
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
@@ -1026,7 +1026,7 @@ static orxINLINE orxSTATUS              orxString_ToU64Base(const orxSTRING _zSt
 
   /* Convert */
   *_pu64OutValue = strtoull(_zString, &pcEnd, (size_t)_u32Base);
-  
+
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
