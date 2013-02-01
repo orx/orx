@@ -1379,8 +1379,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
     }
   }
 
-  /* Odd number of vertices in the triangle strip? */
-  if(iIndex & 1)
+  /* Not enough vertices for a final quad in the triangle strip? */
+  while(iIndex & 3)
   {
     /* Completes the quad */
     orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
