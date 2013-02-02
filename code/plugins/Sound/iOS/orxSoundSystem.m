@@ -1140,6 +1140,9 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iOS_LoadSample(const orxSTRING
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
 
+  /* Clears data */
+  orxMemory_Zero(&stData, sizeof(orxSOUNDSYSTEM_DATA));
+
   /* Opens file */
   if(orxSoundSystem_iOS_OpenFile(_zFilename, &stData) != orxSTATUS_FAILURE)
   {
