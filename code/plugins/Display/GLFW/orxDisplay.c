@@ -2200,7 +2200,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
 {
   const orxSTRING zResourceName;
-  orxHANDLE       hResource;
   orxBITMAP      *pstResult = orxNULL;
 
   /* Checks */
@@ -2212,6 +2211,8 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
   /* Success? */
   if(zResourceName != orxNULL)
   {
+    orxHANDLE hResource;
+
     /* Opens it */
     hResource = orxResource_Open(zResourceName);
 

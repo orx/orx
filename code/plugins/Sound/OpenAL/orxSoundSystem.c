@@ -111,6 +111,7 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
   orxBOOL             bVorbis;
 
   orxSOUNDSYSTEM_INFO stInfo;
+  orxHANDLE           hResource;
 
   union
   {
@@ -376,39 +377,45 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
   /* Success? */
   if(zResourceLocation != orxNULL)
   {
-    /* Opens file with vorbis */
-    _pstData->vorbis.pstFile = stb_vorbis_open_filename((char *)orxResource_GetName(zResourceLocation), NULL, NULL);
+    orxHANDLE hResource;
+
+    /* Opens it */
+    hResource = orxResource_Open(zResourceLocation);
 
     /* Success? */
-    if(_pstData->vorbis.pstFile != NULL)
+    if(hResource != orxHANDLE_UNDEFINED)
     {
-      stb_vorbis_info stFileInfo;
+      /* Opens file with vorbis */
+      _pstData->vorbis.pstFile = stb_vorbis_open_file(hResource, FALSE, NULL, NULL);
 
-      /* Gets file info */
-      stFileInfo  = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+      /* Success? */
+      if(_pstData->vorbis.pstFile != NULL)
+      {
+        stb_vorbis_info stFileInfo;
 
-      /* Stores info */
-      _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-      _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
-      _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
+        /* Gets file info */
+        stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
 
-      /* Updates status */
-      _pstData->bVorbis                 = orxTRUE;
+        /* Stores info */
+        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+        _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
+        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      orxHANDLE hResource;
+        /* Stores resource */
+        _pstData->hResource               = hResource;
 
-      /* Opens resource */
-      hResource = orxResource_Open(zResourceLocation);
+        /* Updates status */
+        _pstData->bVorbis                 = orxTRUE;
 
-      /* Valid? */
-      if(hResource != orxHANDLE_UNDEFINED)
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
       {
         SF_INFO stFileInfo;
+
+        /* Gets back at the beginning of resource */
+        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
 
         /* Opens file with sndfile */
         _pstData->sndfile.pstFile = sf_open_virtual(&(sstSoundSystem.stVirtualIO), SFM_READ, &stFileInfo, (void *)hResource);
@@ -421,11 +428,19 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
           _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
           _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
 
+          /* Stores resource */
+          _pstData->hResource               = hResource;
+
           /* Updates status */
           _pstData->bVorbis                 = orxFALSE;
 
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Closes resource */
+          orxResource_Close(hResource);
         }
       }
     }
@@ -461,6 +476,14 @@ static orxINLINE void orxSoundSystem_OpenAL_CloseFile(orxSOUNDSYSTEM_DATA *_pstD
       sf_close(_pstData->sndfile.pstFile);
       _pstData->sndfile.pstFile = orxNULL;
     }
+  }
+
+  /* Has resource? */
+  if(_pstData->hResource != orxNULL)
+  {
+    /* Closes it */
+    orxResource_Close(_pstData->hResource);
+    _pstData->hResource = orxNULL;
   }
 
   /* Done! */
@@ -1126,6 +1149,9 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
+
+  /* Clears data */
+  orxMemory_Zero(&stData, sizeof(orxSOUNDSYSTEM_DATA));
 
   /* Opens file */
   if(orxSoundSystem_OpenAL_OpenFile(_zFilename, &stData) != orxSTATUS_FAILURE)

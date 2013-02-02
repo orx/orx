@@ -476,7 +476,7 @@ orxBOOL orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
   /* Updates full name */
   orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
-  /* Read directory */
+  /* Reads directory */
 
   /* loop on entries until the pattern match */
   while((!bResult)
@@ -715,9 +715,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-
     u32Ret = (orxU32)fread(_pReadData, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
-
   }
 
   /* Returns the number of read elements */
@@ -745,9 +743,7 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-
     u32Ret = (orxU32)fwrite(_pDataToWrite, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
-
   }
 
   /* Returns the number of read elements */
@@ -770,7 +766,6 @@ orxS32 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position, orxSEEK_
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-
     fseek((FILE *)_pstFile, (size_t)_s32Position, _eWhence);
 
     /* Updates result */
@@ -802,9 +797,7 @@ orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
   if(_pstFile != orxNULL)
   {
     /* Updates result */
-
     s32Result = ftell((FILE *)_pstFile);
-
   }
   else
   {
@@ -831,7 +824,6 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-
 #ifdef __orxMSVC__
 
     /* Gets file stats */
@@ -846,7 +838,6 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 
     /* Updates result */
     s32Result = stStat.st_size;
-
   }
   else
   {
@@ -874,14 +865,12 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...)
   /* Valid input? */
   if(_pstFile != orxNULL)
   {
-
     va_list stArgs;
 
     /* Gets variable arguments & print the string */
     va_start(stArgs, _zString);
     s32Result = vfprintf((FILE *)_pstFile, _zString, stArgs);
     va_end(stArgs);
-
   }
 
   /* Done! */
@@ -906,14 +895,12 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
   /* valid ? */
   if(_pstFile != orxNULL)
   {
-
     /* Close file pointer */
     if(fclose((FILE *)_pstFile) == 0)
     {
       /* Success ! */
       eRet = orxSTATUS_SUCCESS;
     }
-
   }
 
   /* return success status */

@@ -149,9 +149,6 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
 
-  /* Valid parameters ? */
-  orxASSERT(_pMem != orxNULL);
-
   /* System call to free memory */
   dlfree(_pMem);
 
