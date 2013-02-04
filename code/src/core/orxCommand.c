@@ -837,20 +837,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   }
                   else
                   {
-                    /* Not in block? */
-                    if(bInBlock == orxFALSE)
-                    {
-                      /* Space? */
-                      if((*pcSrc == ' ') || (*pcSrc == '\t'))
-                      {
-                        /* Erases it */
-                        for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxNULL; pcTemp++)
-                        {
-                          *pcTemp = *(pcTemp + 1);
-                        }
-                      }
-                    }
-
                     /* Handles current character in new mode */
                     pcSrc--;
                   }
