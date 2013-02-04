@@ -3043,6 +3043,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
   sstDisplay.pstLastBitmap  = orxNULL;
 
+  /* Sets vextex attribute arrays */
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
+
   /* Done! */
   return eResult;
 }
