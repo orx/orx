@@ -6,7 +6,7 @@ Orx - Portable Game Engine  (Version iOS 1.4)
 Email iarwain [at] orx-project -dot- org to contact the author; or better, check
 orx's homepage at http://orx-project.org for the most up-to-date contact information.
 
-This engine is licensed under the zlib license, see the LICENSE file for details. 
+This engine is licensed under the zlib license, see the LICENSE file for details.
 
 Orx is a 2D-oriented, data-driven and portable game engine focused primarily on ease of use.
 

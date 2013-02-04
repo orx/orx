@@ -711,7 +711,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   case orxCOMMAND_VAR_TYPE_VECTOR:
                   {
                     /* Gets literal value */
-                    orxString_NPrint(acValue, 63, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, pstEntry->stValue.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fZ, orxSTRING_KC_VECTOR_END);
+                    orxString_NPrint(acValue, 63, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, pstEntry->stValue.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fZ, orxSTRING_KC_VECTOR_END);
 
                     break;
                   }

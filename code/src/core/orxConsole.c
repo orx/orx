@@ -347,7 +347,7 @@ static orxINLINE orxU32 orxConsole_PrintLastResult(orxCHAR *_acBuffer, orxU32 _u
     case orxCOMMAND_VAR_TYPE_VECTOR:
     {
       /* Gets literal value */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, sstConsole.stLastResult.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fZ, orxSTRING_KC_VECTOR_END);
+      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, sstConsole.stLastResult.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fZ, orxSTRING_KC_VECTOR_END);
 
       break;
     }
