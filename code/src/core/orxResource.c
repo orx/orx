@@ -507,7 +507,7 @@ void orxFASTCALL orxResource_Exit()
         pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
     {
       /* Deletes its tag */
-      orxString_Delete(pstType->stInfo.zTag);
+      orxString_Delete((orxSTRING)pstType->stInfo.zTag);
     }
 
     /* Deletes type bank */

@@ -61,7 +61,7 @@ typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_READ)(orxHANDLE _hRes
  */
 typedef struct __orxRESOURCE_TYPE_INFO_t
 {
-  orxSTRING                     zTag;
+  const orxSTRING               zTag;
   orxRESOURCE_FUNCTION_LOCATE   pfnLocate;
   orxRESOURCE_FUNCTION_OPEN     pfnOpen;
   orxRESOURCE_FUNCTION_CLOSE    pfnClose;
