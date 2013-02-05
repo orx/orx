@@ -26,7 +26,7 @@ var searchData=
   ['zsrcjointname',['zSrcJointName',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a566a2569bbf66986d655b00332ea41ca',1,'orxBODY_JOINT_DEF']]],
   ['zstringkey',['zStringKey',['../structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a147d12ee137623213e08e1a10ac2970e',1,'orxLOCALE_EVENT_PAYLOAD']]],
   ['zstringvalue',['zStringValue',['../structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html#abc96b923d05723c8468a346534f36b17',1,'orxLOCALE_EVENT_PAYLOAD']]],
-  ['ztag',['zTag',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a8b47d3bc70e6bbe1276082d83a1b8b15',1,'orxRESOURCE_TYPE_INFO']]],
+  ['ztag',['zTag',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a948054382e24c77ad514b54af3776ea3',1,'orxRESOURCE_TYPE_INFO']]],
   ['ztrackname',['zTrackName',['../structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a6a28752c37ee3c0e791dc440519701c8',1,'orxTIMELINE_EVENT_PAYLOAD']]],
   ['zvalue',['zValue',['../structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6',1,'orxCOMMAND_VAR']]]
 ];

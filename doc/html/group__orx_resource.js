@@ -8,7 +8,7 @@ var group__orx_resource =
       [ "pfnRead", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a124c1581a96127e9ec4f90065cc97a4a", null ],
       [ "pfnSeek", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac1c9fb9344200a727f50c5ac3365eeba", null ],
       [ "pfnTell", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae5b87aec335d24b4314377aa79d3d9b0", null ],
-      [ "zTag", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a8b47d3bc70e6bbe1276082d83a1b8b15", null ]
+      [ "zTag", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a948054382e24c77ad514b54af3776ea3", null ]
     ] ],
     [ "orxRESOURCE_KC_LOCATION_SEPARATOR", "group__orx_resource.html#ga94e822a8f417dccd9de2b8a2c8999ed8", null ],
     [ "orxRESOURCE_FUNCTION_CLOSE", "group__orx_resource.html#ga18128a057b971793cbabc173df5c8f6c", null ],
