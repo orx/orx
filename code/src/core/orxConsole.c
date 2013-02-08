@@ -254,7 +254,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
   if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != orxFALSE)
   {
     /* For all history entries */
-    for(i = 0, u32Counter = orxConfig_GetListCounter(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST); i < u32Counter; i++)
+    for(i = 0, u32Counter = orxMIN(orxConfig_GetListCounter(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Counter; i++)
     {
       orxCONSOLE_INPUT_ENTRY *pstEntry;
 
@@ -268,7 +268,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
     }
 
     /* Updates indices */
-    sstConsole.u32InputIndex = sstConsole.u32HistoryIndex = u32Counter;
+    sstConsole.u32InputIndex = sstConsole.u32HistoryIndex = u32Counter % orxCONSOLE_KU32_INPUT_ENTRY_NUMBER;
   }
 
   /* Pops config section */
