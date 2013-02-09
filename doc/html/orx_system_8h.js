@@ -19,6 +19,7 @@ var orx_system_8h =
     [ "orxSystem_Delay", "orx_system_8h.html#ga619076c8c23194cbdcb437fff14335bd", null ],
     [ "orxSystem_Exit", "orx_system_8h.html#ga74d43ae1172730cfce4c9ced3be48b8c", null ],
     [ "orxSystem_GetRealTime", "orx_system_8h.html#ga1442c7adb3923bc10fccb7fa2bd07bef", null ],
+    [ "orxSystem_GetSystemTime", "orx_system_8h.html#gae1ae3f9be6749dda433622a0060a4a55", null ],
     [ "orxSystem_GetTime", "orx_system_8h.html#gad0379fde6ecee8fba3a24a8e018debeb", null ],
     [ "orxSystem_Init", "orx_system_8h.html#ga8f8e70a14127981e4a4632b3442c9ee4", null ],
     [ "orxSystem_Setup", "orx_system_8h.html#ga70faf0fe659b66de0cd0249a14b462c6", null ]
