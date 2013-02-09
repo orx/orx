@@ -122,6 +122,11 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetTime();
  */
 extern orxDLLAPI orxS32 orxFASTCALL     orxSystem_GetRealTime();
 
+/** Gets current internal system time (in seconds)
+ * @return Current internal system time
+ */
+extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetSystemTime();
+
 /** Delay the program for given number of seconds
  * @param[in] _fSeconds             Number of seconds to wait
  */
