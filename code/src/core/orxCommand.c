@@ -2155,11 +2155,11 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
       for(i = 0; i < (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber; i++)
       {
         /* Deletes its name */
-        orxString_Delete(pstCommand->astParamList[i].zName);
+        orxString_Delete((orxSTRING)pstCommand->astParamList[i].zName);
       }
 
       /* Deletes its variables */
-      orxString_Delete(pstCommand->stResult.zName);
+      orxString_Delete((orxSTRING)pstCommand->stResult.zName);
       orxString_Delete(pstCommand->zName);
       orxMemory_Free(pstCommand->astParamList);
 

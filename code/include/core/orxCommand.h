@@ -69,7 +69,7 @@ typedef enum __orxCOMMAND_VAR_TYPE_t
  */
 typedef struct __orxCOMMAND_VAR_DEF_t
 {
-  orxSTRING             zName;                        /**< Name : 4 */
+  const orxSTRING       zName;                        /**< Name : 4 */
   orxCOMMAND_VAR_TYPE   eType;                        /**< Type : 8 */
 
 } orxCOMMAND_VAR_DEF;
