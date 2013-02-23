@@ -226,6 +226,9 @@ static orxINLINE void orxRender_Home_RenderFPS()
 {
   const orxFONT *pstFont;
 
+  /* Disables marker operations */
+  orxProfiler_EnableMarkerOperations(orxFALSE);
+
   /* Gets default font */
   pstFont = orxFont_GetDefaultFont();
 
@@ -315,6 +318,16 @@ static orxINLINE void orxRender_Home_RenderFPS()
     /* Displays it */
     orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
+
+  /* Restores screen bitmap clipping to force pushing the batch of vertices to the GPU */
+  {
+    orxFLOAT fWidth, fHeight;
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+  }
+
+  /* Re-enables marker operations */
+  orxProfiler_EnableMarkerOperations(orxTRUE);
 
   /* Done! */
   return;
@@ -774,6 +787,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
 
+  /* Restores screen bitmap clipping to force pushing the batch of vertices to the GPU */
+  {
+    orxFLOAT fWidth, fHeight;
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+  }
+
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
 
@@ -923,6 +943,13 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
+
+  /* Restores screen bitmap clipping to force pushing the batch of vertices to the GPU */
+  {
+    orxFLOAT fWidth, fHeight;
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+  }
 
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);

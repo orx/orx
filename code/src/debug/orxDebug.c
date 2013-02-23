@@ -488,8 +488,6 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Terminal Display? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
     {
-      FILE *pstFile;
-
 #if defined(__orxANDROID__)
 
       if(_eLevel == orxDEBUG_LEVEL_LOG)
@@ -503,6 +501,8 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #else /* __orxANDROID__ */
 
+      FILE *pstFile;
+      
       if(_eLevel == orxDEBUG_LEVEL_LOG)
       {
         pstFile = stdout;
