@@ -65,7 +65,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel, bClearMove, bButtonPressed;
+  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor;
   orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
@@ -132,6 +132,16 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
 
   /* Registers mouse wheel callback */
   glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
+
+  /* Restores cursor status */
+  if(sstMouse.bShowCursor != orxFALSE)
+  {
+    glfwEnable(GLFW_MOUSE_CURSOR);
+  }
+  else
+  {
+    glfwDisable(GLFW_MOUSE_CURSOR);
+  }
 
   /* Done! */
   return eResult;
@@ -249,6 +259,9 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Stores status */
+  sstMouse.bShowCursor = _bShow;
 
   /* Show cursor? */
   if(_bShow != orxFALSE)
