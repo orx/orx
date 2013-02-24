@@ -2446,8 +2446,27 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
   /* Gets video mode list */
   u32Counter = (orxU32)glfwGetVideoModes(astModeList, 256);
 
+  /* Request the default mode? */
+  if(_u32Index == orxU32_UNDEFINED)
+  {
+    /* Stores info */
+    _pstVideoMode->u32Width       = sstDisplay.u32DefaultWidth;
+    _pstVideoMode->u32Height      = sstDisplay.u32DefaultHeight;
+    _pstVideoMode->u32Depth       = sstDisplay.u32DefaultDepth;
+    _pstVideoMode->u32RefreshRate = sstDisplay.u32DefaultRefreshRate;
+
+    /* 24-bit? */
+    if(_pstVideoMode->u32Depth == 24)
+    {
+      /* Gets 32-bit instead */
+      _pstVideoMode->u32Depth = 32;
+    }
+
+    /* Updates result */
+    pstResult = _pstVideoMode;
+  }
   /* Is index valid? */
-  if(_u32Index < u32Counter)
+  else if(_u32Index < u32Counter)
   {
     /* Stores info */
     _pstVideoMode->u32Width       = astModeList[_u32Index].Width;

@@ -1091,7 +1091,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsFullScreen();
 extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCounter();
 
 /** Gets an available video mode
- * @param[in]   _u32Index                             Video mode index, must be lesser than orxDisplay_GetVideoModeCounter()
+ * @param[in]   _u32Index                             Video mode index, must be lesser than orxDisplay_GetVideoModeCounter(), pass orxU32_UNDEFINED to get the default (desktop) mode
  * @param[out]  _pstVideoMode                         Storage for the video mode
  * @return orxDISPLAY_VIDEO_MODE / orxNULL if invalid
  */
