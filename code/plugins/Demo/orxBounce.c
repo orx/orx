@@ -575,7 +575,7 @@ static orxSTATUS orxBounce_Init()
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
     /* Registers update trail timer */
-    orxClock_AddGlobalTimer(orxBounce_UpdateTrail, orx2F(0.016f), -1, orxNULL);
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
     /* Registers event handler */
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
