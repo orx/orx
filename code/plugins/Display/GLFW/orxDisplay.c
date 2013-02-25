@@ -3191,7 +3191,32 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         sstDisplay.u32DefaultWidth        = (orxU32)stDesktopMode.Width;
         sstDisplay.u32DefaultHeight       = (orxU32)stDesktopMode.Height;
         sstDisplay.u32DefaultDepth        = (orxU32)(stDesktopMode.RedBits + stDesktopMode.GreenBits +stDesktopMode.BlueBits);
-        sstDisplay.u32DefaultRefreshRate  = stDesktopMode.RefreshRate;
+
+        /* Hack: Corrects imprecise refresh rate reports for default mode */
+        switch(stDesktopMode.RefreshRate)
+        {
+          case 59:
+          case 60:
+          case 61:
+          {
+            sstDisplay.u32DefaultRefreshRate = 60;
+            break;
+          }
+
+          case 49:
+          case 50:
+          case 51:
+          {
+            sstDisplay.u32DefaultRefreshRate = 50;
+            break;
+          }
+
+          default:
+          {
+            sstDisplay.u32DefaultRefreshRate = stDesktopMode.RefreshRate;
+            break;
+          }
+        }
 
         /* Pushes display section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
