@@ -3,9 +3,6 @@ var group__orx_memory =
     [ "orxMEMORY_TYPE", "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0", [
       [ "orxMEMORY_TYPE_MAIN", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4", null ],
       [ "orxMEMORY_TYPE_VIDEO", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88", null ],
-      [ "orxMEMORY_TYPE_SPRITE", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1de93d7a1a0ebfa46bc6eacf137fd4c0", null ],
-      [ "orxMEMORY_TYPE_BACKGROUND", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a71bf2805bd1785ead6d883e8695f4fac", null ],
-      [ "orxMEMORY_TYPE_PALETTE", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4e669175f43af7fce7aba847fb607237", null ],
       [ "orxMEMORY_TYPE_CONFIG", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3", null ],
       [ "orxMEMORY_TYPE_TEXT", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72", null ],
       [ "orxMEMORY_TYPE_AUDIO", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59", null ],
