@@ -150,6 +150,16 @@ static orxPHYSICS_STATIC sstPhysics;
  * Private functions                                                       *
  ***************************************************************************/
 
+void *orxPhysics_Box2D_Allocate(int32 _iSize)
+{
+  return orxMemory_Allocate((orxU32)_iSize, orxMEMORY_TYPE_PHYSICS);
+}
+
+void orxPhysics_Box2D_Free(void *_pMem)
+{
+  orxMemory_Free(_pMem);
+}
+
 class RayCastCallback : public b2RayCastCallback
 {
 public:
@@ -2362,6 +2372,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
 
     /* Pushes config section */
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Sets custom memory alloc/free */
+    b2SetCustomAllocFree(orxPhysics_Box2D_Allocate, orxPhysics_Box2D_Free);
 
     /* Gets gravity & allow sleep from config */
     if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)
