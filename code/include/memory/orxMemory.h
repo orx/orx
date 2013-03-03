@@ -60,6 +60,8 @@ typedef enum __orxMEMORY_TYPE_t
 
   orxMEMORY_TYPE_AUDIO,                 /**< Audio memory type */
 
+  orxMEMORY_TYPE_PHYSICS,               /**< Physics memory type */
+
   orxMEMORY_TYPE_TEMP,                  /**< Temporary / scratch memory */
 
   orxMEMORY_TYPE_NUMBER,                /**< Number of memory type */
