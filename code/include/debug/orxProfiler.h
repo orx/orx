@@ -51,13 +51,6 @@
 //#define __orxPROFILER__
 
 
-#ifdef __orxDEBUG__
-
-  #define __orxPROFILER__
-
-#endif /* __orxDEBUG__ */
-
-
 /** Profiler macros
  */
 #ifdef __orxPROFILER__

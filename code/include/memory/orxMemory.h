@@ -34,7 +34,7 @@
 
 /**
  * @addtogroup orxMemory
- * 
+ *
  * Memory module
  * Module that handles all low level allocation/free requests
  *
@@ -54,9 +54,6 @@ typedef enum __orxMEMORY_TYPE_t
   orxMEMORY_TYPE_MAIN = 0,              /**< Main memory type */
 
   orxMEMORY_TYPE_VIDEO,                 /**< Video memory type */
-  orxMEMORY_TYPE_SPRITE,                /**< Sprite memory type */
-  orxMEMORY_TYPE_BACKGROUND,            /**< Background memory type */
-  orxMEMORY_TYPE_PALETTE,               /**< Palette memory type */
 
   orxMEMORY_TYPE_CONFIG,                /**< Config memory */
   orxMEMORY_TYPE_TEXT,                  /**< Text memory */
@@ -138,11 +135,26 @@ extern orxDLLAPI void *orxFASTCALL      orxMemory_Set(void *_pDest, orxU8 _u8Dat
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Zero(void *_pDest, orxU32 _u32Size);
 
 /** Reallocates a portion of memory if the already allocated memory is not suffisant.
- * @param[in] _pMem	   Memory to reallocate.
+ * @param[in] _pMem    Memory to reallocate.
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Reallocate(void *_pMem, orxU32 _u32Size);
+
+#ifdef __orxPROFILER__
+
+/** Gets memory usage for a given type
+ * @param[in] _eMemType               Concerned memory type
+ * @param[out] _pu32Counter           Current memory allocation counter
+ * @param[out] _pu32PeakCounter       Peak memory allocation counter
+ * @param[out] _pu32Size              Current memory allocation size
+ * @param[out] _pu32PeakSize          Peak memory allocation size
+ * @param[out] _pu32OperationCounter  Total number of memory operations (malloc/free)
+ * @return The pointer reallocated.
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Counter, orxU32 *_pu32PeakCounter, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCounter);
+
+#endif /* __orxPROFILER__  */
 
 #endif /* _orxMEMORY_H_ */
 

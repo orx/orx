@@ -42,6 +42,12 @@
 #ifndef _orxDECL_H_
 #define _orxDECL_H_
 
+#ifdef __orxDEBUG__
+
+  #define __orxPROFILER__
+
+#endif /* __orxDEBUG__ */
+
 #ifdef __APPLE__
 
   #include "TargetConditionals.h"
