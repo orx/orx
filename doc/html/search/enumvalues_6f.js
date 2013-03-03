@@ -355,6 +355,7 @@ var searchData=
   ['orxmemory_5ftype_5fmain',['orxMEMORY_TYPE_MAIN',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4',1,'orxMemory.h']]],
   ['orxmemory_5ftype_5fnone',['orxMEMORY_TYPE_NONE',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325',1,'orxMemory.h']]],
   ['orxmemory_5ftype_5fnumber',['orxMEMORY_TYPE_NUMBER',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5',1,'orxMemory.h']]],
+  ['orxmemory_5ftype_5fphysics',['orxMEMORY_TYPE_PHYSICS',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01',1,'orxMemory.h']]],
   ['orxmemory_5ftype_5ftemp',['orxMEMORY_TYPE_TEMP',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5',1,'orxMemory.h']]],
   ['orxmemory_5ftype_5ftext',['orxMEMORY_TYPE_TEXT',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72',1,'orxMemory.h']]],
   ['orxmemory_5ftype_5fvideo',['orxMEMORY_TYPE_VIDEO',['../group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88',1,'orxMemory.h']]],
