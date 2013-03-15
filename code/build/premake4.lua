@@ -196,6 +196,10 @@ solution "orx"
             "../../extern/libsndfile-1.0.22/lib/linux",
             "../../extern/Box2D_2.1.3/lib/linux"
         }
+        buildoptions
+        {
+            "-Wno-unused-function",
+        }
 
     configuration {"linux", "x64"}
         libdirs
@@ -204,6 +208,10 @@ solution "orx"
             "../../extern/SOIL/lib/linux64",
             "../../extern/libsndfile-1.0.22/lib/linux64",
             "../../extern/Box2D_2.1.3/lib/linux64"
+        }
+        buildoptions
+        {
+            "-Wno-unused-function",
         }
 
 
