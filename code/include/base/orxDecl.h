@@ -163,6 +163,8 @@
 
     #define __orxLINUX__
 
+    #pragma GCC diagnostic ignored "-Wunused-function"
+
   /* Mac? */
   #elif TARGET_OS_MAC
 

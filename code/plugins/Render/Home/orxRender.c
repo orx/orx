@@ -54,6 +54,7 @@
 
 #define orxRENDER_KU32_STATIC_FLAG_READY          0x00000001 /**< Ready flag */
 #define orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA   0x00000002 /**< Reset maxima flag */
+#define orxRENDER_KU32_STATIC_FLAG_REGISTERED     0x00000004 /**< Rendering function registered flag */
 
 #define orxRENDER_KU32_STATIC_MASK_ALL            0xFFFFFFFF /**< All mask */
 
@@ -155,47 +156,6 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
 
   /* Done! */
   return;
-}
-
-/** Event handler
- */
-static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Depending on type */
-  switch(_pstEvent->eType)
-  {
-    case orxEVENT_TYPE_DISPLAY:
-    {
-      /* New video mode? */
-      if(_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE)
-      {
-        orxDISPLAY_EVENT_PAYLOAD *pstPayload;
-
-        /* Gets payload */
-        pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-        /* Inits console */
-        orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
-      }
-
-      break;
-    }
-
-    case orxEVENT_TYPE_OBJECT:
-    {
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
-
-  /* Done! */
-  return eResult;
 }
 
 /** Blink timer
@@ -1978,6 +1938,57 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
   return;
 }
 
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Depending on type */
+  switch(_pstEvent->eType)
+  {
+    case orxEVENT_TYPE_DISPLAY:
+    {
+      /* New video mode? */
+      if(_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE)
+      {
+        orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+
+        /* Gets payload */
+        pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Inits console */
+        orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
+      }
+
+      break;
+    }
+
+    case orxEVENT_TYPE_SYSTEM:
+    {
+      /* Close event? */
+      if(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE)
+      {
+        /* Unregisters rendering function */
+        orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+
+        /* Updates flags */
+        sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_REGISTERED;
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -2303,7 +2314,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
 
             /* Adds event handlers */
             orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
-            orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxRender_Home_EventHandler);
+            orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxRender_Home_EventHandler);
 
             /* Gets screen size */
             orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
@@ -2312,7 +2323,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
 
             /* Inits Flags */
-            sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY;
+            sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY | orxRENDER_KU32_STATIC_FLAG_REGISTERED;
           }
           else
           {
@@ -2372,13 +2383,16 @@ void orxFASTCALL orxRender_Home_Exit()
   {
     /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
-    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxRender_Home_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxRender_Home_EventHandler);
 
     /* Removes blinking timer */
     orxClock_RemoveGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, orxNULL);
 
     /* Unregisters rendering function */
-    orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+    if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_REGISTERED))
+    {
+      orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+    }
 
     /* Deletes conversion frame */
     orxFrame_Delete(sstRender.pstFrame);
@@ -2387,7 +2401,7 @@ void orxFASTCALL orxRender_Home_Exit()
     orxBank_Delete(sstRender.pstRenderBank);
 
     /* Updates flags */
-    sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_READY;
+    sstRender.u32Flags &= ~(orxRENDER_KU32_STATIC_FLAG_READY | orxRENDER_KU32_STATIC_FLAG_REGISTERED);
   }
   else
   {
