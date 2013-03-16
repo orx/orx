@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxAndroid
- * 
+ *
  * Android support module
  *
  * @{
@@ -84,7 +84,7 @@ orxSTATUS orxAndroid_RegisterAPKResource();
   Initializes the thread system by connecting it to the JVM.  This
   function must be called as early as possible in the native code's
   JNI_OnLoad function, so that the thread system is prepared for any
-  JNI-dependent library initialization calls.  
+  JNI-dependent library initialization calls.
   @param vm The VM pointer - should be the JavaVM pointer sent to JNI_OnLoad.
   */
 void orxAndroid_ThreadInit(JavaVM* vm);
@@ -134,3 +134,5 @@ int orxAndroid_ThreadSleep(unsigned long millisec);
 #endif /* __orxANDROID__ */
 
 #endif /* _orxANDROID_H_ */
+
+/** @} */
