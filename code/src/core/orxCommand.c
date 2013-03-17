@@ -1621,6 +1621,178 @@ void orxFASTCALL orxCommand_CommandDivide(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/* Command: Minimum */
+void orxFASTCALL orxCommand_CommandMinimum(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[2];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* Both floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxMIN(astOperandList[0].fValue, astOperandList[1].fValue));
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Is operand1 a float? */
+      if(astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[0].vValue), astOperandList[0].fValue);
+      }
+      /* Is operand2 a float? */
+      else if(astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[1].vValue), astOperandList[1].fValue);
+      }
+
+      /* Updates intermediate result */
+      orxVector_Min(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Maximum */
+void orxFASTCALL orxCommand_CommandMaximum(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[2];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* Both floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxMAX(astOperandList[0].fValue, astOperandList[1].fValue));
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Is operand1 a float? */
+      if(astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[0].vValue), astOperandList[0].fValue);
+      }
+      /* Is operand2 a float? */
+      else if(astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[1].vValue), astOperandList[1].fValue);
+      }
+
+      /* Updates intermediate result */
+      orxVector_Max(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Clamp */
+void orxFASTCALL orxCommand_CommandClamp(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[3];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* All floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[2].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxCLAMP(astOperandList[0].fValue, astOperandList[1].fValue, astOperandList[2].fValue));
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Is operand1 a float? */
+      if(astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[0].vValue), astOperandList[0].fValue);
+      }
+      /* Is operand2 a float? */
+      if(astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[1].vValue), astOperandList[1].fValue);
+      }
+      /* Is operand3 a float? */
+      if(astOperandList[2].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[2].vValue), astOperandList[2].fValue);
+      }
+
+      /* Updates intermediate result */
+      orxVector_Clamp(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue), &(astOperandList[2].vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /* Command: Compare */
 void orxFASTCALL orxCommand_CommandCompare(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -1685,6 +1857,13 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Divide */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Divide, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_STRING}, {"Operand2", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: Minimum */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Minimum, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_STRING}, {"Operand2", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Maximum */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Maximum, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_STRING}, {"Operand2", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Clamp */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Clamp, "Result", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Value", orxCOMMAND_VAR_TYPE_STRING}, {"Minimum", orxCOMMAND_VAR_TYPE_STRING}, {"Maximum", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: Compare */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Compare, "Result", orxCOMMAND_VAR_TYPE_S32, 2, 1, {"String1", orxCOMMAND_VAR_TYPE_STRING}, {"String2", orxCOMMAND_VAR_TYPE_STRING}, {"CaseSensitive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: CRC */
@@ -1741,6 +1920,20 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("*", "Math.Mul", orxNULL);
   /* Alias: / */
   orxCommand_AddAlias("/", "Math.Div", orxNULL);
+
+  /* Alias: Math.Min */
+  orxCommand_AddAlias("Math.Min", "Command.Minimum", orxNULL);
+  /* Alias: Math.Max */
+  orxCommand_AddAlias("Math.Max", "Command.Maximum", orxNULL);
+  /* Alias: Math.Clamp */
+  orxCommand_AddAlias("Math.Clamp", "Command.Clamp", orxNULL);
+
+  /* Alias: Min */
+  orxCommand_AddAlias("Min", "Math.Min", orxNULL);
+  /* Alias: Max */
+  orxCommand_AddAlias("Max", "Math.Max", orxNULL);
+  /* Alias: Clamp */
+  orxCommand_AddAlias("Clamp", "Math.Clamp", orxNULL);
 
   /* Alias: String.Compare */
   orxCommand_AddAlias("String.Compare", "Command.Compare", orxNULL);
@@ -1804,6 +1997,20 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: / */
   orxCommand_RemoveAlias("/");
 
+  /* Alias: Math.Min */
+  orxCommand_RemoveAlias("Math.Min");
+  /* Alias: Math.Max */
+  orxCommand_RemoveAlias("Math.Max");
+  /* Alias: Math.Clamp */
+  orxCommand_RemoveAlias("Math.Clamp");
+
+  /* Alias: Min */
+  orxCommand_RemoveAlias("Min");
+  /* Alias: Max */
+  orxCommand_RemoveAlias("Max");
+  /* Alias: Clamp */
+  orxCommand_RemoveAlias("Clamp");
+
   /* Alias: Compare */
   orxCommand_RemoveAlias("String.Compare");
   /* Alias: CRC */
@@ -1846,6 +2053,13 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Multiply);
   /* Command: Divide */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Divide);
+
+  /* Command: Minimum */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Minimum);
+  /* Command: Maximum */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Maximum);
+  /* Command: Clamp */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Clamp);
 
   /* Command: Compare */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Compare);
