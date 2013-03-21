@@ -73,7 +73,7 @@
 #define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
 
 #define orxCONSOLE_KZ_INPUT_TOGGLE                    "-=ToggleConsole=-"             /**< Toggle console input */
-#define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_TILDE           /**< Default toggle key */
+#define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_BACKQUOTE       /**< Default toggle key */
 
 #define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
 #define orxCONSOLE_KZ_INPUT_DELETE                    "Delete"                        /**< Delete input */

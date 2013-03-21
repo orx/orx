@@ -133,7 +133,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_GetKey(GLFWKey _eKey)
     case '\'':                      {eResult = orxKEYBOARD_KEY_QUOTE; break;}
     case '/':                       {eResult = orxKEYBOARD_KEY_SLASH; break;}
     case '\\':                      {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
-    case '`':                       {eResult = orxKEYBOARD_KEY_TILDE; break;}
+    case '`':                       {eResult = orxKEYBOARD_KEY_BACKQUOTE; break;}
     case '=':                       {eResult = orxKEYBOARD_KEY_EQUAL; break;}
     case '-':                       {eResult = orxKEYBOARD_KEY_DASH; break;}
     case GLFW_KEY_F1:               {eResult = orxKEYBOARD_KEY_F1; break;}
@@ -253,7 +253,7 @@ static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_QUOTE:         {eResult = (GLFWKey)'\''; break;}
     case orxKEYBOARD_KEY_SLASH:         {eResult = (GLFWKey)'/'; break;}
     case orxKEYBOARD_KEY_BACKSLASH:     {eResult = (GLFWKey)'\\'; break;}
-    case orxKEYBOARD_KEY_TILDE:         {eResult = (GLFWKey)'`'; break;}
+    case orxKEYBOARD_KEY_BACKQUOTE:     {eResult = (GLFWKey)'`'; break;}
     case orxKEYBOARD_KEY_EQUAL:         {eResult = (GLFWKey)'='; break;}
     case orxKEYBOARD_KEY_DASH:          {eResult = (GLFWKey)'-'; break;}
     case orxKEYBOARD_KEY_F1:            {eResult = GLFW_KEY_F1; break;}

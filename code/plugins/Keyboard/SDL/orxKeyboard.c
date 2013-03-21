@@ -123,7 +123,7 @@ static SDLKey orxFASTCALL orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_QUOTE:         {eResult = SDLK_QUOTE; break;}
     case orxKEYBOARD_KEY_SLASH:         {eResult = SDLK_SLASH; break;}
     case orxKEYBOARD_KEY_BACKSLASH:     {eResult = SDLK_BACKSLASH; break;}
-    case orxKEYBOARD_KEY_TILDE:         {eResult = SDLK_BACKQUOTE; break;}
+    case orxKEYBOARD_KEY_BACKQUOTE:     {eResult = SDLK_BACKQUOTE; break;}
     case orxKEYBOARD_KEY_EQUAL:         {eResult = SDLK_EQUALS; break;}
     case orxKEYBOARD_KEY_DASH:          {eResult = SDLK_UNDERSCORE; break;}
     case orxKEYBOARD_KEY_F1:            {eResult = SDLK_F1; break;}

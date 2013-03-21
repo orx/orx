@@ -112,7 +112,7 @@ static sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eK
     case orxKEYBOARD_KEY_QUOTE:         {eResult = sf::Key::Quote; break;}
     case orxKEYBOARD_KEY_SLASH:         {eResult = sf::Key::Slash; break;}
     case orxKEYBOARD_KEY_BACKSLASH:     {eResult = sf::Key::BackSlash; break;}
-    case orxKEYBOARD_KEY_TILDE:         {eResult = sf::Key::Tilde; break;}
+    case orxKEYBOARD_KEY_BACKQUOTE:     {eResult = sf::Key::Tilde; break;}
     case orxKEYBOARD_KEY_EQUAL:         {eResult = sf::Key::Equal; break;}
     case orxKEYBOARD_KEY_DASH:          {eResult = sf::Key::Dash; break;}
     case orxKEYBOARD_KEY_F1:            {eResult = sf::Key::F1; break;}
@@ -227,7 +227,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_GetKeyID(sf::Key::Code _eKey
     case sf::Key::Quote:      {eResult = orxKEYBOARD_KEY_QUOTE; break;}
     case sf::Key::Slash:      {eResult = orxKEYBOARD_KEY_SLASH; break;}
     case sf::Key::BackSlash:  {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
-    case sf::Key::Tilde:      {eResult = orxKEYBOARD_KEY_TILDE; break;}
+    case sf::Key::Tilde:      {eResult = orxKEYBOARD_KEY_BACKQUOTE; break;}
     case sf::Key::Equal:      {eResult = orxKEYBOARD_KEY_EQUAL; break;}
     case sf::Key::Dash:       {eResult = orxKEYBOARD_KEY_DASH; break;}
     case sf::Key::F1:         {eResult = orxKEYBOARD_KEY_F1; break;}
