@@ -104,7 +104,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawMesh, orxSTATUS, const orxBITMAP *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE, orxU32, const orxDISPLAY_VERTEX *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteShader, void, orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StartShader, orxSTATUS, const orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StopShader, orxSTATUS, const orxHANDLE);
@@ -331,9 +331,9 @@ orxBOOL orxFASTCALL orxDisplay_HasShaderSupport()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_HasShaderSupport)();
 }
 
-orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateShader)(_zCode, _pstParamList);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateShader)(_zCode, _pstParamList, _bUseCustomParam);
 }
 
 void orxFASTCALL orxDisplay_DeleteShader(orxHANDLE _hShader)

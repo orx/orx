@@ -1731,7 +1731,7 @@ extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_HasShaderSupport()
   return (sf::PostFX::CanUsePostFX() != false) ? orxTRUE : orxFALSE;
 }
 
-extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 

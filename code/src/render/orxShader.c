@@ -366,6 +366,13 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           /* Protects it */
           orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
+          /* Use custom param? */
+          if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE)
+          {
+            /* Updates status */
+            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+          }
+
           /* For all parameters */
           for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
           {
@@ -455,6 +462,16 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                         {
                           /* Marks as time */
                           bIsTime = orxTRUE;
+  
+                          /* Is not using custom param? */
+                          if(!orxStructure_TestFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
+                          {
+                            /* Forces it */
+                            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+
+                            /* Logs message */
+                            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", pstResult->zReference, pstResult, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
+                          }
 
                           /* Logs message */
                           orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't use array for time parameter. <%s> will be declared as a regular variable.", pstResult->zReference, pstResult, zParamName);
@@ -490,6 +507,16 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                       {
                         /* Marks as time */
                         bIsTime = orxTRUE;
+
+                        /* Is not using custom param? */
+                        if(!orxStructure_TestFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
+                        {
+                          /* Forces it */
+                          orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+
+                          /* Logs message */
+                          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", pstResult->zReference, pstResult, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
+                        }
                       }
                       /* Is screen? */
                       else if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
@@ -541,13 +568,6 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Increases its reference counter to keep it in cache table */
             orxStructure_IncreaseCounter(pstResult);
-          }
-
-          /* Use custom param? */
-          if((orxConfig_HasValue(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) == orxFALSE) || (orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE))
-          {
-            /* Updates status */
-            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
           }
         }
         else
@@ -1257,7 +1277,7 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
   if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
   {
     /* Creates compiled shader */
-    _pstShader->hData = orxDisplay_CreateShader(_zCode, &(_pstShader->stParamList));
+    _pstShader->hData = orxDisplay_CreateShader(_zCode, &(_pstShader->stParamList), orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM) ? orxTRUE : orxFALSE);
 
     /* Success? */
     if(_pstShader->hData != orxHANDLE_UNDEFINED)
