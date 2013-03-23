@@ -235,8 +235,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga497ef75237b5ba9a4fad420e761be164"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacfe7630f589a37750b8a64611b5fcedc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gacfe7630f589a37750b8a64611b5fcedc">orxDisplay_CreateBitmap</a> (orxU32 _u32Width, orxU32 _u32Height)</td></tr>
 <tr class="separator:gacfe7630f589a37750b8a64611b5fcedc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa9943e90cc99fcbafaf56c63f62525c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaa9943e90cc99fcbafaf56c63f62525c7">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList)</td></tr>
-<tr class="separator:gaa9943e90cc99fcbafaf56c63f62525c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0587d98e18d1172f0e2af286f447a89c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0587d98e18d1172f0e2af286f447a89c">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList, orxBOOL _bUseCustomParam)</td></tr>
+<tr class="separator:ga0587d98e18d1172f0e2af286f447a89c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf17f6bda43eee81dd41e66acb61478c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf17f6bda43eee81dd41e66acb61478c2">orxDisplay_DeleteBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr class="separator:gaf17f6bda43eee81dd41e66acb61478c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga37a6f1e12616eca46dac46f8ff81a9d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2">orxDisplay_DeleteShader</a> (orxHANDLE _hShader)</td></tr>
@@ -1325,7 +1325,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaa9943e90cc99fcbafaf56c63f62525c7"></a>
+<a class="anchor" id="ga0587d98e18d1172f0e2af286f447a89c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1339,7 +1339,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *&#160;</td>
-          <td class="paramname"><em>_pstParamList</em>&#160;</td>
+          <td class="paramname"><em>_pstParamList</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bUseCustomParam</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1353,6 +1359,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zCode</td><td>Shader code to compile </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstParamList</td><td>Shader parameters (should be a link list of <a class="el" href="structorx_s_h_a_d_e_r___p_a_r_a_m.html">orxSHADER_PARAM</a>) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bUseCustomParam</td><td>Shader uses custom parameters </td></tr>
   </table>
   </dd>
 </dl>
