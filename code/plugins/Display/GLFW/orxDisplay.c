@@ -164,10 +164,10 @@ typedef struct __orxDISPLAY_PARAM_INFO_t
  */
 typedef struct __orxDISPLAY_SHADER_t
 {
+  orxLINKLIST_NODE          stNode;
   GLhandleARB               hProgram;
   GLint                     iTextureCounter;
   orxS32                    s32ParamCounter;
-  orxBOOL                   bActive;
   orxBOOL                   bInitialized;
   orxSTRING                 zCode;
   orxDISPLAY_TEXTURE_INFO  *astTextureInfoList;
@@ -181,6 +181,7 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxBANK                  *pstBitmapBank;
   orxBANK                  *pstShaderBank;
+  orxLINKLIST               stActiveShaderList;
   orxBOOL                   bDefaultSmoothing;
   orxBITMAP                *pstScreen;
   orxBITMAP                *pstDestinationBitmap;
@@ -191,7 +192,6 @@ typedef struct __orxDISPLAY_STATIC_t
   GLint                     iTextureUnitNumber;
   GLuint                    uiFrameBuffer;
   GLuint                    uiIndexBuffer;
-  orxS32                    s32ActiveShaderCounter;
   orxS32                    s32BufferIndex;
   orxU32                    u32GLFWFlags;
   orxU32                    u32Flags;
@@ -734,25 +734,21 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     }
 
     /* Has active shaders? */
-    if(sstDisplay.s32ActiveShaderCounter > 0)
+    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
     {
       orxDISPLAY_SHADER *pstShader;
 
-      /* For all shaders */
-      for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+      /* For all active shaders */
+      for(pstShader = (orxDISPLAY_SHADER *)orxLinkList_GetFirst(&(sstDisplay.stActiveShaderList));
           pstShader != orxNULL;
-          pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+          pstShader = (orxDISPLAY_SHADER *)orxLinkList_GetNext(&(pstShader->stNode)))
       {
-        /* Is active? */
-        if(pstShader->bActive != orxFALSE)
-        {
-          /* Inits shader */
-          orxDisplay_GLFW_InitShader(pstShader);
+        /* Inits shader */
+        orxDisplay_GLFW_InitShader(pstShader);
 
-          /* Draws elements */
-          glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
-          glASSERT();
-        }
+        /* Draws elements */
+        glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
+        glASSERT();
       }
     }
     else
@@ -791,7 +787,7 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     glASSERT();
 
     /* No active shader? */
-    if(sstDisplay.s32ActiveShaderCounter == 0)
+    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
     {
       /* Stores it */
       sstDisplay.pstLastBitmap = _pstBitmap;
@@ -931,7 +927,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   fHeight = (GLfloat)(_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
   /* End of buffer? */
-  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
   {
     /* Draw arrays */
     orxDisplay_GLFW_DrawArrays();
@@ -1122,7 +1118,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           fWidth = pstGlyph->fWidth;
 
           /* End of buffer? */
-          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
           {
             /* Draw arrays */
             orxDisplay_GLFW_DrawArrays();
@@ -2045,7 +2041,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
         }
 
         /* End of buffer? */
-        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
         {
           /* Draws arrays */
           orxDisplay_GLFW_DrawArrays();
@@ -3502,10 +3498,10 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         orxString_NPrint(pc, s32Free, "%s\n", _zCode);
 
         /* Inits shader */
+        orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
         pstShader->hProgram               = (GLhandleARB)orxU32_UNDEFINED;
         pstShader->iTextureCounter        = 0;
         pstShader->s32ParamCounter        = 0;
-        pstShader->bActive                = orxFALSE;
         pstShader->bInitialized           = orxFALSE;
         pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
         pstShader->astTextureInfoList     = (orxDISPLAY_TEXTURE_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO), orxMEMORY_TYPE_MAIN);
@@ -3591,11 +3587,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StartShader(orxHANDLE _hShader)
   glASSERT();
 
   /* Updates its status */
-  pstShader->bActive      = orxTRUE;
   pstShader->bInitialized = orxFALSE;
 
-  /* Updates active shader counter */
-  sstDisplay.s32ActiveShaderCounter++;
+  /* Adds it to the active list */
+  orxLinkList_AddEnd(&(sstDisplay.stActiveShaderList), &(pstShader->stNode));
 
   /* Done! */
   return eResult;
@@ -3669,11 +3664,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
   /* Clears texture info list */
   orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
 
-  /* Updates its status */
-  pstShader->bActive = orxFALSE;
-
-  /* Updates active shader counter */
-  sstDisplay.s32ActiveShaderCounter--;
+  /* Removes it from active list */
+  orxLinkList_Remove(&(pstShader->stNode));
 
   /* Done! */
   return eResult;
