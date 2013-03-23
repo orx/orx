@@ -3210,8 +3210,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
          glASSERT();
 
         /* Creates default shaders */
-        sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
-        sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
+        sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
+        sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxFALSE);
 
         /* Uses it */
         orxDisplay_StopShader(orxNULL);

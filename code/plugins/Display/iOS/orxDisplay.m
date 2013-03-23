@@ -3707,8 +3707,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
           glASSERT();
 
           /* Creates default shaders */
-          sstDisplay.pstDefaultShader   = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL);
-          sstDisplay.pstNoTextureShader = orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL);
+          sstDisplay.pstDefaultShader   = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
+          sstDisplay.pstNoTextureShader = orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxFALSE);
 
           /* Uses it */
           orxDisplay_StopShader(orxNULL);
