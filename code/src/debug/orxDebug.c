@@ -502,7 +502,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 #else /* __orxANDROID__ */
 
       FILE *pstFile;
-      
+
       if(_eLevel == orxDEBUG_LEVEL_LOG)
       {
         pstFile = stdout;
@@ -627,14 +627,14 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
   }
 
   /* Had a previous external name? */
-  if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
+  if((sstDebug.zDebugFile != orxNULL) && (strcmp(sstDebug.zDebugFile, orxDEBUG_KZ_DEFAULT_DEBUG_FILE) != 0))
   {
     /* Deletes it */
     free(sstDebug.zDebugFile);
   }
 
   /* Valid? */
-  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY) && (_zFileName != (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY) && (strcmp(_zFileName, orxDEBUG_KZ_DEFAULT_DEBUG_FILE) != 0))
   {
     orxU32 u32Size;
 
@@ -671,14 +671,14 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
   }
 
   /* Had a previous external name? */
-  if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
+  if((sstDebug.zLogFile != orxNULL) && (strcmp(sstDebug.zLogFile, orxDEBUG_KZ_DEFAULT_LOG_FILE) != 0))
   {
     /* Deletes it */
     free(sstDebug.zLogFile);
   }
 
   /* Valid? */
-  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY) && (_zFileName != (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE))
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY) && (strcmp(_zFileName, orxDEBUG_KZ_DEFAULT_LOG_FILE) != 0))
   {
     orxU32 u32Size;
 
