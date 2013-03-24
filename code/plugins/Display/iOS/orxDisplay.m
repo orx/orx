@@ -4017,6 +4017,9 @@ void orxFASTCALL orxDisplay_iOS_DeleteShader(orxHANDLE _hShader)
   /* Deletes its texture info list */
   orxMemory_Free(pstShader->astTextureInfoList);
 
+  /* Deletes its param info list */
+  orxMemory_Free(pstShader->astParamInfoList);
+
   /* Frees it */
   orxBank_Free(sstDisplay.pstShaderBank, pstShader);
 
