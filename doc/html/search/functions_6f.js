@@ -796,6 +796,7 @@ var searchData=
   ['orxprofiler_5fpushmarker',['orxProfiler_PushMarker',['../group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971',1,'orxProfiler.h']]],
   ['orxprofiler_5fresetallmarkers',['orxProfiler_ResetAllMarkers',['../group__orx_profiler.html#ga324b7b0136fbda66d63b7dd715c5728b',1,'orxProfiler.h']]],
   ['orxprofiler_5fresetallmaxima',['orxProfiler_ResetAllMaxima',['../group__orx_profiler.html#ga7a3ec1d7238daade394651ed47909a11',1,'orxProfiler.h']]],
+  ['orxprofiler_5fsetmarkerqueryframe',['orxProfiler_SetMarkerQueryFrame',['../group__orx_profiler.html#ga799ffce2c0c8adbd30a3e36d575d4b8c',1,'orxProfiler.h']]],
   ['orxprofiler_5fsetup',['orxProfiler_Setup',['../group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb',1,'orxProfiler.h']]],
   ['orxrender_5fexit',['orxRender_Exit',['../group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088',1,'orxRender.h']]],
   ['orxrender_5fgetscreenposition',['orxRender_GetScreenPosition',['../group__orx_render.html#gae08c3ff585427542ad1b269cfe00eca8',1,'orxRender.h']]],

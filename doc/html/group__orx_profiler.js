@@ -1,6 +1,7 @@
 var group__orx_profiler =
 [
     [ "orxPROFILER_KS32_MARKER_ID_NONE", "group__orx_profiler.html#ga2b4928419f83ca68d4f4b65164e83efe", null ],
+    [ "orxPROFILER_KU32_HISTORY_LENGTH", "group__orx_profiler.html#gac4f1815b6680b23d52244da9a3463a5a", null ],
     [ "orxPROFILER_POP_MARKER", "group__orx_profiler.html#ga90c7c9280ab9e00ad524b12b14f4ead2", null ],
     [ "orxPROFILER_PUSH_MARKER", "group__orx_profiler.html#ga26117096ab5a2206800707b3bbaf7218", null ],
     [ "orxProfiler_EnableMarkerOperations", "group__orx_profiler.html#ga6d33bf751bc265edd09c9e17e9ab055a", null ],
@@ -24,5 +25,6 @@ var group__orx_profiler =
     [ "orxProfiler_PushMarker", "group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971", null ],
     [ "orxProfiler_ResetAllMarkers", "group__orx_profiler.html#ga324b7b0136fbda66d63b7dd715c5728b", null ],
     [ "orxProfiler_ResetAllMaxima", "group__orx_profiler.html#ga7a3ec1d7238daade394651ed47909a11", null ],
+    [ "orxProfiler_SetMarkerQueryFrame", "group__orx_profiler.html#ga799ffce2c0c8adbd30a3e36d575d4b8c", null ],
     [ "orxProfiler_Setup", "group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb", null ]
 ];
