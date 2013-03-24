@@ -3587,8 +3587,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
   if(pstShader != orxNULL)
   {
     /* Not already removed? */
-    if((pstShader != orxNULL)
-    && (orxLinkList_GetList(&(pstShader->stNode)) != orxNULL)
+    if((orxLinkList_GetList(&(pstShader->stNode)) != orxNULL)
     && (pstShader->bPending == orxFALSE))
     {
       /* Empty buffer? */
