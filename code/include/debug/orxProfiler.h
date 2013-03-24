@@ -71,11 +71,15 @@
 
   #define orxPROFILER_POP_MARKER()                orxProfiler_PopMarker();
 
+  #define orxPROFILER_KU32_HISTORY_LENGTH         (2 * 60)
+
 #else /* __orxPROFILER__ */
 
   #define orxPROFILER_PUSH_MARKER(NAME)
 
   #define orxPROFILER_POP_MARKER()
+
+  #define orxPROFILER_KU32_HISTORY_LENGTH         1
 
 #endif /* __orxPROFILER__ */
 
@@ -161,6 +165,13 @@ extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextMarkerID(or
  * @return Next registered marker's ID / orxPROFILER_KS32_MARKER_ID_NONE if the current marker was the last one
  */
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID);
+
+
+/** Sets the query frame for all GetMarker* functions below, in number of frame elapsed from the last one
+ * @param[in] _u32QueryFrame    Query frame, in number of frame elapsed since the last one (ie. 0 -> last frame, 1 -> frame before last, ...)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILRE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxProfiler_SetMarkerQueryFrame(orxU32 _u32QueryFrame);
 
 
 /** Gets the marker's cumulated time

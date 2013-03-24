@@ -105,11 +105,13 @@ typedef struct __orxPROFILER_STATIC_t
   orxS32                  s32CurrentMarker;
   orxS32                  s32WaterStamp;
   orxS32                  s32MarkerPopToSkip;
+  orxU32                  u32HistoryIndex;
+  orxU32                  u32HistoryQueryIndex;
   orxU32                  u32Flags;
   orxU16                  u16CurrentMarkerDepth;
 
   orxPROFILER_MARKER      astMarkerList[orxPROFILER_KU32_MAX_MARKER_NUMBER];
-  orxPROFILER_MARKER_INFO astPreviousInfoList[orxPROFILER_KU32_MAX_MARKER_NUMBER];
+  orxPROFILER_MARKER_INFO aastPreviousInfoList[orxPROFILER_KU32_HISTORY_LENGTH][orxPROFILER_KU32_MAX_MARKER_NUMBER];
 
 } orxPROFILER_STATIC;
 
@@ -499,6 +501,10 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
   /* Checks */
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
 
+  /* Updates history indices */
+  sstProfiler.u32HistoryIndex       = (sstProfiler.u32HistoryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
+  sstProfiler.u32HistoryQueryIndex  = (sstProfiler.u32HistoryQueryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
+
   /* For all markers */
   for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
   {
@@ -508,7 +514,7 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
     pstMarker = &(sstProfiler.astMarkerList[i]);
 
     /* Stores current values for queries */
-    orxMemory_Copy(&(sstProfiler.astPreviousInfoList[i]), &(pstMarker->stInfo), sizeof(orxPROFILER_MARKER_INFO));
+    orxMemory_Copy(&(sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryIndex][i]), &(pstMarker->stInfo), sizeof(orxPROFILER_MARKER_INFO));
 
     /* Resets it */
     pstMarker->stInfo.dFirstTimeStamp = orx2D(0.0);
@@ -654,7 +660,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
     /* Get previous marker's time stamp */
-    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.astPreviousInfoList[s32ID].dFirstTimeStamp : orx2D(0.0);
+    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp : orx2D(0.0);
   }
   else
   {
@@ -671,7 +677,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     orxDOUBLE dTime;
 
     /* Gets its time */
-    dTime = sstProfiler.astPreviousInfoList[i].dFirstTimeStamp;
+    dTime = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][i].dFirstTimeStamp;
 
     /* Is better candidate? */
     if((((dTime == dPreviousTime)
@@ -687,6 +693,31 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
 
   /* Done! */
   return s32Result;
+}
+
+/** Sets the query frame for all GetMarker* functions below, in number of frame elapsed from the last one
+ * @param[in] _u32QueryFrame    Query frame, in number of frame elapsed since the last one (ie. 0 -> last frame, 1 -> frame before last, ...)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILRE
+ */
+orxSTATUS orxFASTCALL orxProfiler_SetMarkerQueryFrame(orxU32 _u32QueryFrame)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
+
+  /* Is frame valid? */
+  if(_u32QueryFrame < orxPROFILER_KU32_HISTORY_LENGTH)
+  {
+    /* Computes index */
+    sstProfiler.u32HistoryQueryIndex = ((sstProfiler.u32HistoryIndex + orxPROFILER_KU32_HISTORY_LENGTH) - _u32QueryFrame) % orxPROFILER_KU32_HISTORY_LENGTH;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets the marker's cumulated time
@@ -709,7 +740,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
   if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    dResult = sstProfiler.astPreviousInfoList[s32ID].dCumulatedTime;
+    dResult = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dCumulatedTime;
   }
   else
   {
@@ -744,7 +775,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerMaxTime(orxS32 _s32MarkerID)
   if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    dResult = sstProfiler.astPreviousInfoList[s32ID].dMaxCumulatedTime;
+    dResult = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dMaxCumulatedTime;
   }
   else
   {
@@ -814,7 +845,7 @@ orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
   if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    u32Result = sstProfiler.astPreviousInfoList[s32ID].u32PushCounter;
+    u32Result = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].u32PushCounter;
   }
   else
   {
@@ -887,7 +918,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
     if(orxFLAG_TEST(sstProfiler.astMarkerList[s32ID].u32Flags, orxPROFILER_KU32_FLAG_UNIQUE))
     {
       /* Updates result */
-      dResult = sstProfiler.astPreviousInfoList[s32ID].dFirstTimeStamp;
+      dResult = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp;
     }
     else
     {
@@ -934,7 +965,7 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
     if(orxFLAG_TEST(sstProfiler.astMarkerList[s32ID].u32Flags, orxPROFILER_KU32_FLAG_UNIQUE))
     {
       /* Updates result */
-      u32Result = sstProfiler.astPreviousInfoList[s32ID].u32Depth;
+      u32Result = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].u32Depth;
     }
     else
     {
