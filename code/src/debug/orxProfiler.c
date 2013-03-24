@@ -98,7 +98,6 @@ typedef struct __orxPROFILER_MARKER_t
  */
 typedef struct __orxPROFILER_STATIC_t
 {
-  orxDOUBLE               dPreviousTimeStamp;
   orxDOUBLE               dTimeStamp;
   orxDOUBLE               dMaxResetTime;
   orxS32                  s32MarkerCounter;
@@ -109,9 +108,10 @@ typedef struct __orxPROFILER_STATIC_t
   orxU32                  u32HistoryQueryIndex;
   orxU32                  u32Flags;
   orxU16                  u16CurrentMarkerDepth;
+  orxDOUBLE               adTimeStampHistory[orxPROFILER_KU32_HISTORY_LENGTH];
 
   orxPROFILER_MARKER      astMarkerList[orxPROFILER_KU32_MAX_MARKER_NUMBER];
-  orxPROFILER_MARKER_INFO aastPreviousInfoList[orxPROFILER_KU32_HISTORY_LENGTH][orxPROFILER_KU32_MAX_MARKER_NUMBER];
+  orxPROFILER_MARKER_INFO aastInfoListHistory[orxPROFILER_KU32_HISTORY_LENGTH][orxPROFILER_KU32_MAX_MARKER_NUMBER];
 
 } orxPROFILER_STATIC;
 
@@ -502,8 +502,7 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
 
   /* Updates history indices */
-  sstProfiler.u32HistoryIndex       = (sstProfiler.u32HistoryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
-  sstProfiler.u32HistoryQueryIndex  = (sstProfiler.u32HistoryQueryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
+  sstProfiler.u32HistoryQueryIndex = sstProfiler.u32HistoryIndex = (sstProfiler.u32HistoryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
 
   /* For all markers */
   for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
@@ -514,7 +513,7 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
     pstMarker = &(sstProfiler.astMarkerList[i]);
 
     /* Stores current values for queries */
-    orxMemory_Copy(&(sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryIndex][i]), &(pstMarker->stInfo), sizeof(orxPROFILER_MARKER_INFO));
+    orxMemory_Copy(&(sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryIndex][i]), &(pstMarker->stInfo), sizeof(orxPROFILER_MARKER_INFO));
 
     /* Resets it */
     pstMarker->stInfo.dFirstTimeStamp = orx2D(0.0);
@@ -527,8 +526,8 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
   }
 
   /* Updates time stamps */
-  sstProfiler.dPreviousTimeStamp  = sstProfiler.dTimeStamp;
-  sstProfiler.dTimeStamp          = orxSystem_GetTime();
+  sstProfiler.adTimeStampHistory[sstProfiler.u32HistoryIndex] = sstProfiler.dTimeStamp;
+  sstProfiler.dTimeStamp = orxSystem_GetTime();
 
   /* Done! */
   return;
@@ -568,7 +567,9 @@ orxDOUBLE orxFASTCALL orxProfiler_GetResetTime()
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  dResult = sstProfiler.dTimeStamp - sstProfiler.dPreviousTimeStamp;
+  dResult = (sstProfiler.u32HistoryQueryIndex == sstProfiler.u32HistoryIndex)
+            ? sstProfiler.dTimeStamp - sstProfiler.adTimeStampHistory[sstProfiler.u32HistoryQueryIndex]
+            : sstProfiler.adTimeStampHistory[(sstProfiler.u32HistoryQueryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH] - sstProfiler.adTimeStampHistory[sstProfiler.u32HistoryQueryIndex];
 
   /* Longer than previous? */
   if(dResult > sstProfiler.dMaxResetTime)
@@ -660,7 +661,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
     /* Get previous marker's time stamp */
-    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp : orx2D(0.0);
+    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp : orx2D(0.0);
   }
   else
   {
@@ -677,7 +678,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     orxDOUBLE dTime;
 
     /* Gets its time */
-    dTime = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][i].dFirstTimeStamp;
+    dTime = sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][i].dFirstTimeStamp;
 
     /* Is better candidate? */
     if((((dTime == dPreviousTime)
@@ -740,7 +741,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
   if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    dResult = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dCumulatedTime;
+    dResult = sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].dCumulatedTime;
   }
   else
   {
@@ -775,7 +776,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerMaxTime(orxS32 _s32MarkerID)
   if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    dResult = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dMaxCumulatedTime;
+    dResult = sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].dMaxCumulatedTime;
   }
   else
   {
@@ -845,7 +846,7 @@ orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
   if((s32ID >= 0) && (s32ID < sstProfiler.s32MarkerCounter))
   {
     /* Updates result */
-    u32Result = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].u32PushCounter;
+    u32Result = sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].u32PushCounter;
   }
   else
   {
@@ -918,7 +919,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
     if(orxFLAG_TEST(sstProfiler.astMarkerList[s32ID].u32Flags, orxPROFILER_KU32_FLAG_UNIQUE))
     {
       /* Updates result */
-      dResult = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp;
+      dResult = sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp;
     }
     else
     {
@@ -965,7 +966,7 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
     if(orxFLAG_TEST(sstProfiler.astMarkerList[s32ID].u32Flags, orxPROFILER_KU32_FLAG_UNIQUE))
     {
       /* Updates result */
-      u32Result = sstProfiler.aastPreviousInfoList[sstProfiler.u32HistoryQueryIndex][s32ID].u32Depth;
+      u32Result = sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].u32Depth;
     }
     else
     {
