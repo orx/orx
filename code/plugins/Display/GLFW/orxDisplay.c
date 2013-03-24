@@ -540,6 +540,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     "{"
     "  gl_TexCoord[0] = gl_MultiTexCoord0;"
     "  gl_Position    = gl_ProjectionMatrix * gl_Vertex;"
+    "  gl_FrontColor  = gl_Color;"
     "}";
 
   GLhandleARB hProgram, hVertexShader, hFragmentShader;
