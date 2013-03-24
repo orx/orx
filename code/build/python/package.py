@@ -179,6 +179,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': '../extern/Box2D_2.1.3/lib/ios',                            'dst': None},
     {'src': '../extern/Box2D_2.1.3/src',                                'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
+    {'src': '../extern/stb_vorbis',                                     'dst': None},
     {'src': 'build/mac/xcode/orx-ios.xcodeproj',                        'dst': None},
     {'src': 'demo/iOS',                                                 'dst': None},
     {'src': 'plugins/Display/iOS',                                      'dst': None},

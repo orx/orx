@@ -42,7 +42,7 @@ Files
   CreationTemplate.ini              - List of all config parameters used when creating objects, sounds, graphics, ...
   SettingsTemplate.ini              - List of all config parameters for physics, display, ... setup
 
-  liborx-fat-1.4-sdk4.2.zip         - Fat static library of orx,
+  liborx-fat-sdk4.2.zip             - Fat static library of orx,
                                       including both simulator & device (iPhone/iPod Touch/iPad) versions compiled with iOS SDK 4.2
 
 /doc/html                           - Orx's API documentation (doxygen)
