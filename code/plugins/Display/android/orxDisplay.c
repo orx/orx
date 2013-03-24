@@ -484,13 +484,13 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
   "attribute mediump vec2 _vTexCoord_;"
   "varying mediump vec2 _gl_TexCoord0_;"
   "attribute mediump vec4 _vColor_;"
-  "varying mediump vec4 _Color_;"
+  "varying mediump vec4 _Color__;"
   "void main()"
   "{"
   "  mediump float fCoef = 1.0 / 255.0;"
   "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
   "  _gl_TexCoord0_   = _vTexCoord_;"
-  "  _Color_      = fCoef * _vColor_;"
+  "  _Color__         = fCoef * _vColor_;"
   "}";
 
   GLuint    uiProgram, uiVertexShader, uiFragmentShader;
@@ -3208,20 +3208,20 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
         "varying vec2 _gl_TexCoord0_;"
-        "varying vec4 _Color_;"
+        "varying vec4 _Color__;"
         "uniform sampler2D _Texture_;"
         "void main()"
         "{"
-        "  gl_FragColor = _Color_ * texture2D(_Texture_, _gl_TexCoord0_);"
+        "  gl_FragColor = _Color__ * texture2D(_Texture_, _gl_TexCoord0_);"
         "}";
         static const orxSTRING szNoTextureFragmentShaderSource =
         "precision mediump float;"
         "varying vec2 _gl_TexCoord0_;"
-        "varying vec4 _Color_;"
+        "varying vec4 _Color__;"
         "uniform sampler2D _Texture_;"
         "void main()"
         "{"
-        "  gl_FragColor = _Color_;"
+        "  gl_FragColor = _Color__;"
         "}";
 
         /* Inits flags */
@@ -3379,7 +3379,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
           orxSHADER_PARAM  *pstParam;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color__;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -3441,6 +3441,15 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
           {
             /* Replaces it */
             orxMemory_Copy(pcReplace, "_gl_TexCoord0_", 14 * sizeof(orxCHAR));
+          }
+
+          /* For all gl_Color */
+          for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
+              pcReplace != orxNULL;
+              pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
+          {
+            /* Replaces it */
+            orxMemory_Copy(pcReplace, "_Color__", 8 * sizeof(orxCHAR));
           }
         }
         else
