@@ -3999,9 +3999,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, orxS32 
   /* Valid? */
   if(_s32ID >= 0)
   {
-    /* Updates its value */
+    /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
     glUniform1fARB((GLint)_s32ID, (GLfloat)_fValue);
-    glASSERT();
+    glGetError();
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -4028,9 +4028,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, orxS32
   /* Valid? */
   if(_s32ID >= 0)
   {
-    /* Updates its value */
+    /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
     glUniform3fARB((GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
-    glASSERT();
+    glGetError();
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
