@@ -1250,6 +1250,225 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
   return eResult;
 }
 
+/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
+ * @param[in] _afValueList            Parameter's float value list
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)
+{
+  orxSHADER_PARAM  *pstParam;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+  orxASSERT(_afValueList != orxNULL);
+
+  /* For all defined parameters? */
+  for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
+     pstParam != orxNULL;
+     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+  {
+    /* Found? */
+    if(!orxString_Compare(_zName, pstParam->zName))
+    {
+      /* Correct type? */
+      if(pstParam->eType == orxSHADER_PARAM_TYPE_FLOAT)
+      {
+        /* Correct size? */
+        if(pstParam->u32ArraySize == _u32ArraySize)
+        {
+          orxSHADER_PARAM_VALUE  *pstParamValue;
+          orxS32                  i;
+
+          /* For all values */
+          for(i = (_u32ArraySize != 0) ? 0 : -1, pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamValueList));
+              (i < (orxS32)_u32ArraySize) && (pstParamValue != orxNULL);
+              pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
+          {
+            /* Match current param? */
+            if(pstParamValue->pstParam == pstParam)
+            {
+              /* Updates it */
+              pstParamValue->fValue = _afValueList[orxMAX(i, 0)];
+
+              /* Updates index */
+              i++;
+            }
+          }
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCounter(&(_pstShader->stParamValueList)), _u32ArraySize);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: incorrect type (float) used.", _pstShader->zReference, _pstShader, _zName);
+      }
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
+ * @param[in] _apstValueList          Parameter's texture value list
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList)
+{
+  orxSHADER_PARAM  *pstParam;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+  orxASSERT(_apstValueList != orxNULL);
+
+  /* For all defined parameters? */
+  for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
+     pstParam != orxNULL;
+     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+  {
+    /* Found? */
+    if(!orxString_Compare(_zName, pstParam->zName))
+    {
+      /* Correct type? */
+      if(pstParam->eType == orxSHADER_PARAM_TYPE_TEXTURE)
+      {
+        /* Correct size? */
+        if(pstParam->u32ArraySize == _u32ArraySize)
+        {
+          orxSHADER_PARAM_VALUE  *pstParamValue;
+          orxS32                  i;
+
+          /* For all values */
+          for(i = (_u32ArraySize != 0) ? 0 : -1, pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamValueList));
+              (i < (orxS32)_u32ArraySize) && (pstParamValue != orxNULL);
+              pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
+          {
+            /* Match current param? */
+            if(pstParamValue->pstParam == pstParam)
+            {
+              /* Updates it */
+              pstParamValue->pstValue = _apstValueList[orxMAX(i, 0)];
+
+              /* Updates index */
+              i++;
+            }
+          }
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCounter(&(_pstShader->stParamValueList)), _u32ArraySize);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: incorrect type (texture) used.", _pstShader->zReference, _pstShader, _zName);
+      }
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
+ * @param[in] _avValueList            Parameter's vector value list
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList)
+{
+  orxSHADER_PARAM  *pstParam;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+  orxASSERT(_avValueList != orxNULL);
+
+  /* For all defined parameters? */
+  for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
+     pstParam != orxNULL;
+     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+  {
+    /* Found? */
+    if(!orxString_Compare(_zName, pstParam->zName))
+    {
+      /* Correct type? */
+      if(pstParam->eType == orxSHADER_PARAM_TYPE_VECTOR)
+      {
+        /* Correct size? */
+        if(pstParam->u32ArraySize == _u32ArraySize)
+        {
+          orxSHADER_PARAM_VALUE  *pstParamValue;
+          orxS32                  i;
+
+          /* For all values */
+          for(i = (_u32ArraySize != 0) ? 0 : -1, pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamValueList));
+              (i < (orxS32)_u32ArraySize) && (pstParamValue != orxNULL);
+              pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
+          {
+            /* Match current param? */
+            if(pstParamValue->pstParam == pstParam)
+            {
+              /* Updates it */
+              orxVector_Copy(&(pstParamValue->vValue), &(_avValueList[orxMAX(i, 0)]));
+
+              /* Updates index */
+              i++;
+            }
+          }
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCounter(&(_pstShader->stParamValueList)), _u32ArraySize);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: incorrect type (vector) used.", _pstShader->zReference, _pstShader, _zName);
+      }
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets shader code (& compiles it)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zCode                  Shader's code (will be compiled immediately)
@@ -1305,20 +1524,6 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
 
   /* Done! */
   return eResult;
-}
-
-/** Gets shader parameter list
- * @param[in] _pstShader              Concerned Shader
- * @return orxLINKLIST / orxNULL
- */
-const orxLINKLIST *orxFASTCALL orxShader_GetParamList(const orxSHADER *_pstShader)
-{
-  /* Checks */
-  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstShader);
-
-  /* Done! */
-  return(&(_pstShader->stParamValueList));
 }
 
 /** Enables/disables a shader
