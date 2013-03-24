@@ -1185,13 +1185,13 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
   "attribute mediump vec2 __vTexCoord__;"
   "varying mediump vec2 ___TexCoord___;"
   "attribute mediump vec4 __vColor__;"
-  "varying mediump vec4 ___Color___;"
+  "varying mediump vec4 ___Color;"
   "void main()"
   "{"
   "  mediump float fCoef = 1.0 / 255.0;"
   "  gl_Position      = __mProjection__ * vec4(__vPosition__.xy, 0.0, 1.0);"
   "  ___TexCoord___   = __vTexCoord__;"
-  "  ___Color___      = fCoef * __vColor__;"
+  "  ___Color         = fCoef * __vColor__;"
   "}";
 
   GLuint    uiProgram, uiVertexShader, uiFragmentShader;
@@ -3706,20 +3706,20 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
           static const orxSTRING szFragmentShaderSource =
           "precision mediump float;"
           "varying vec2 ___TexCoord___;"
-          "varying vec4 ___Color___;"
+          "varying vec4 ___Color;"
           "uniform sampler2D __Texture__;"
           "void main()"
           "{"
-          "  gl_FragColor = ___Color___ * texture2D(__Texture__, ___TexCoord___);"
+          "  gl_FragColor = ___Color * texture2D(__Texture__, ___TexCoord___);"
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
           "precision mediump float;"
           "varying vec2 ___TexCoord___;"
-          "varying vec4 ___Color___;"
+          "varying vec4 ___Color;"
           "uniform sampler2D __Texture__;"
           "void main()"
           "{"
-          "  gl_FragColor = ___Color___;"
+          "  gl_FragColor = ___Color;"
           "}";
 
           /* Inits flags */
@@ -3887,7 +3887,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
           orxCHAR *pcReplace;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -3947,6 +3947,15 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
           {
             /* Replaces it */
             orxMemory_Copy(pcReplace, "___TexCoord___", 14 * sizeof(orxCHAR));
+          }
+
+          /* For all gl_Color */
+          for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
+              pcReplace != orxNULL;
+              pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
+          {
+            /* Replaces it */
+            orxMemory_Copy(pcReplace, "___Color", 8 * sizeof(orxCHAR));
           }
         }
         else
