@@ -959,7 +959,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   /* End of buffer? */
   if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
   {
-    /* Draw arrays */
+    /* Draws arrays */
     orxDisplay_GLFW_DrawArrays();
   }
 
@@ -1150,7 +1150,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           /* End of buffer? */
           if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
           {
-            /* Draw arrays */
+            /* Draws arrays */
             orxDisplay_GLFW_DrawArrays();
           }
 
@@ -1398,7 +1398,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   /* End of buffer? */
   if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 3)
   {
-    /* Draw arrays */
+    /* Draws arrays */
     orxDisplay_GLFW_DrawArrays();
 
     /* Too many vertices? */
@@ -3656,7 +3656,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
     if(sstDisplay.s32BufferIndex == 0)
     {
       orxDISPLAY_SHADER *pstActive, *pstNextActive;
-   
+
       /* For all active shaders */
       for(pstActive = (orxDISPLAY_SHADER *)orxLinkList_GetFirst(&(sstDisplay.stActiveShaderList));
           pstActive != orxNULL;
@@ -3670,13 +3670,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
         {
           /* Clears its texture counter */
           pstActive->iTextureCounter = 0;
-   
+
           /* Clears its texture info list */
           orxMemory_Zero(pstActive->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
-   
+
           /* Removes its pending status */
           pstActive->bPending = orxFALSE;
-   
+
           /* Removes it from active list */
           orxLinkList_Remove(&(pstActive->stNode));
 
@@ -3684,7 +3684,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
           sstDisplay.s32PendingShaderCounter--;
         }
       }
-   
+
       /* Defines the vertex list */
       sstDisplay.astVertexList[0].fX  =
       sstDisplay.astVertexList[1].fX  = sstDisplay.pstScreen->stClip.vTL.fX;
@@ -3694,7 +3694,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
       sstDisplay.astVertexList[3].fY  = sstDisplay.pstScreen->stClip.vTL.fY;
       sstDisplay.astVertexList[0].fY  =
       sstDisplay.astVertexList[2].fY  = sstDisplay.pstScreen->stClip.vBR.fY;
-   
+
       /* Defines the texture coord list */
       sstDisplay.astVertexList[0].fU  =
       sstDisplay.astVertexList[1].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
@@ -3704,25 +3704,25 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
       sstDisplay.astVertexList[3].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
       sstDisplay.astVertexList[0].fV  =
       sstDisplay.astVertexList[2].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
-   
+
       /* Fills the color list */
       sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
       sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
       sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
       sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
-   
+
       /* Updates counter */
       sstDisplay.s32BufferIndex = 4;
-   
+
       /* Draws arrays */
       orxDisplay_GLFW_DrawArrays();
-   
+
       /* Clears texture counter */
       pstShader->iTextureCounter = 0;
-   
+
       /* Clears texture info list */
       orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
-   
+
       /* Removes it from active list */
       orxLinkList_Remove(&(pstShader->stNode));
     }
@@ -3731,13 +3731,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
     {
       /* Draws arrays */
       orxDisplay_GLFW_DrawArrays();
-   
+
       /* Clears texture counter */
       pstShader->iTextureCounter = 0;
-   
+
       /* Clears texture info list */
       orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
-   
+
       /* Removes it from active list */
       orxLinkList_Remove(&(pstShader->stNode));
     }
@@ -3924,7 +3924,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
-      
+
       break;
     }
   }
@@ -3944,11 +3944,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
           /* Uses screen bitmap */
           _pstValue = sstDisplay.pstScreen;
         }
-   
+
         /* Updates texture info */
         pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
         pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
-   
+
         /* Updates corner values */
         glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
         glASSERT();
@@ -3958,10 +3958,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
         glASSERT();
         glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
         glASSERT();
-   
+
         /* Updates texture counter */
         pstShader->iTextureCounter++;
-   
+
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -3969,18 +3969,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
       {
         /* Outputs log */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't find texture parameter (ID <%d>) for fragment shader.", _s32ID);
-   
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
       }
     }
     else
     {
       /* Outputs log */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%d>) for fragment shader: all the texture units are used.", _s32ID);
-   
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
     }
   }
 
