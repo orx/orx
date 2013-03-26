@@ -128,6 +128,21 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_PopMarker();
  */
 extern orxDLLAPI void orxFASTCALL                 orxProfiler_EnableMarkerOperations(orxBOOL _bEnable);
 
+/** Are marker push/pop operations enabled?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_AreMarkerOperationsEnabled();
+
+/** Pauses/unpauses the profiler
+ * @param[in] _bPause           Pause
+ */
+extern orxDLLAPI void orxFASTCALL                 orxProfiler_Pause(orxBOOL _bPause);
+
+/** Is profiler paused?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_IsPaused();
+
 
 /** Resets all markers (usually called at the end of the frame)
  */

@@ -305,7 +305,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
   orxDOUBLE               dFrameStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
-  orxBOOL                 bLandscape;
+  orxBOOL                 bLandscape, bDraw;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   orxCHAR                 acLabel[64];
@@ -490,7 +490,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   stTransform.fScaleY = fHeight - orx2F(2.0f);
 
   /* For all sorted markers */
-  for(u32CurrentDepth = 0, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+  for(bDraw = orxFALSE, u32CurrentDepth = 0, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
@@ -500,6 +500,16 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       orxDOUBLE dTime, dStartTime;
       orxCOLOR  stBarColor;
       orxU32    u32Depth;
+
+      /* Should draw previous marker? */
+      if(bDraw != orxFALSE)
+      {
+        /* Draws bar */
+        orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+        /* Resets draw status */
+        bDraw = orxFALSE;
+      }
 
       /* Gets its depth */
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID) - 1;
@@ -545,9 +555,19 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
-      /* Draws bar */
-      orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      /* Asks for deferred draw */
+      bDraw = orxTRUE;
     }
+  }
+
+  /* Draw last bar? */
+  if(bDraw != orxFALSE)
+  {
+    /* Adjusts its size */
+    stTransform.fScaleX = fWidth + fBorder - stTransform.fDstX;
+
+    /* Draws it */
+    orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
   /* Updates vertical position & marker's height */
