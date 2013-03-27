@@ -71,7 +71,7 @@
 
   #define orxPROFILER_POP_MARKER()                orxProfiler_PopMarker();
 
-  #define orxPROFILER_KU32_HISTORY_LENGTH         (2 * 60)
+  #define orxPROFILER_KU32_HISTORY_LENGTH         (3 * 60)
 
 #else /* __orxPROFILER__ */
 
