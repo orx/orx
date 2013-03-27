@@ -551,7 +551,8 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
     orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
 
     /* Updates history indices */
-    sstProfiler.u32HistoryQueryIndex = sstProfiler.u32HistoryIndex = (sstProfiler.u32HistoryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
+    sstProfiler.u32HistoryQueryIndex  = sstProfiler.u32HistoryIndex;
+    sstProfiler.u32HistoryIndex       = (sstProfiler.u32HistoryIndex + 1) % orxPROFILER_KU32_HISTORY_LENGTH;
 
     /* For all markers */
     for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
@@ -754,7 +755,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
  * @param[in] _u32QueryFrame    Query frame, in number of frame elapsed since the last one (ie. 0 -> last frame, 1 -> frame before last, ...)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILRE
  */
-orxSTATUS orxFASTCALL orxProfiler_SetMarkerQueryFrame(orxU32 _u32QueryFrame)
+orxSTATUS orxFASTCALL orxProfiler_SelectQueryFrame(orxU32 _u32QueryFrame)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -765,7 +766,7 @@ orxSTATUS orxFASTCALL orxProfiler_SetMarkerQueryFrame(orxU32 _u32QueryFrame)
   if(_u32QueryFrame < orxPROFILER_KU32_HISTORY_LENGTH)
   {
     /* Computes index */
-    sstProfiler.u32HistoryQueryIndex = ((sstProfiler.u32HistoryIndex + orxPROFILER_KU32_HISTORY_LENGTH) - _u32QueryFrame) % orxPROFILER_KU32_HISTORY_LENGTH;
+    sstProfiler.u32HistoryQueryIndex = ((sstProfiler.u32HistoryIndex + orxPROFILER_KU32_HISTORY_LENGTH - 1) - _u32QueryFrame) % orxPROFILER_KU32_HISTORY_LENGTH;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
