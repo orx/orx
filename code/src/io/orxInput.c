@@ -227,6 +227,28 @@ void orxFASTCALL orxInput_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/** Command: IsActive
+ */
+void orxFASTCALL orxInput_CommandIsActive(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_IsActive(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Command: HasNewStatus
+ */
+void orxFASTCALL orxInput_CommandHasNewStatus(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_HasNewStatus(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the input commands
  */
 static orxINLINE void orxInput_RegisterCommands()
@@ -242,6 +264,11 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, ResetValue, "Input", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetValue, "Value", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: IsActive */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, IsActive, "Active?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: HasNewStatus */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasNewStatus, "NewStatus?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the input commands
@@ -259,6 +286,11 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, ResetValue);
   /* Command: GetValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetValue);
+
+  /* Command: IsActive */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, IsActive);
+  /* Command: HasNewStatus */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasNewStatus);
 }
 
 static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
