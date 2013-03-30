@@ -2567,8 +2567,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
+
+    /* Updates VSync status */
+    glfwSwapInterval(-1);
+
+#else /* __orxWINDOWS__ || __orxLINUX__ */
+
     /* Updates VSync status */
     glfwSwapInterval(1);
+
+#endif /* __orxWINDOWS__ || __orxLINUX__ */
 
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
