@@ -81,7 +81,7 @@
  */
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          1024        /**< Default section bank size */
 #define orxCONFIG_KU32_STACK_BANK_SIZE            8           /**< Default stack bank size */
-#define orxCONFIG_KU32_ENTRY_BANK_SIZE            8           /**< Default entry bank size */
+#define orxCONFIG_KU32_ENTRY_BANK_SIZE            2048        /**< Default entry bank size */
 #define orxCONFIG_KU32_ORIGIN_BANK_SIZE           32          /**< Default origin bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          4           /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
@@ -214,9 +214,8 @@ typedef struct __orxCONFIG_SECTION_t
   orxU32            u32ID;                  /**< Section ID (CRC) : 20 */
   orxS32            s32ProtectionCounter;   /**< Protection counter : 24 */
   orxSTRING         zName;                  /**< Section name : 28 */
-  orxBANK          *pstEntryBank;           /**< Entry bank : 32 */
+  orxCONFIG_ORIGIN *pstOrigin;              /**< Origin : 32 */
   orxLINKLIST       stEntryList;            /**< Entry list : 44 */
-  orxCONFIG_ORIGIN *pstOrigin;              /**< Origin : 48 */
 
 } orxCONFIG_SECTION;
 
@@ -234,6 +233,7 @@ typedef struct __orxCONFIG_STACK_ENTRY_t
 typedef struct __orxCONFIG_STATIC_t
 {
   orxBANK            *pstSectionBank;       /**< Section bank */
+  orxBANK            *pstEntryBank;         /**< Entry bank */
   orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
   orxBANK            *pstHistoryBank;       /**< History bank */
   orxBANK            *pstStackBank;         /**< Stack bank */
@@ -806,7 +806,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
     orxCONFIG_ENTRY *pstEntry;
 
     /* Creates entry */
-    pstEntry = (orxCONFIG_ENTRY *)orxBank_Allocate(sstConfig.pstCurrentSection->pstEntryBank);
+    pstEntry = (orxCONFIG_ENTRY *)orxBank_Allocate(sstConfig.pstEntryBank);
 
     /* Valid? */
     if(pstEntry != orxNULL)
@@ -858,7 +858,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
           orxString_Delete(pstEntry->zKey);
 
           /* Deletes entry */
-          orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
+          orxBank_Free(sstConfig.pstEntryBank, pstEntry);
         }
       }
       else
@@ -867,7 +867,7 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
         orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to duplicate zValue string(%s).", _zValue);
 
         /* Deletes entry */
-        orxBank_Free(sstConfig.pstCurrentSection->pstEntryBank, pstEntry);
+        orxBank_Free(sstConfig.pstEntryBank, pstEntry);
       }
     }
   }
@@ -877,10 +877,9 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
 }
 
 /** Deletes an entry
- * @param[in] _pstSection       Concerned section
  * @param[in] _pstEntry         Entry to delete
  */
-static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection, orxCONFIG_ENTRY *_pstEntry)
+static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_ENTRY *_pstEntry)
 {
   /* Checks */
   orxASSERT(_pstEntry != orxNULL);
@@ -900,7 +899,7 @@ static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection, orxC
   orxLinkList_Remove(&(_pstEntry->stNode));
 
   /* Deletes the entry */
-  orxBank_Free(_pstSection->pstEntryBank, _pstEntry);
+  orxBank_Free(sstConfig.pstEntryBank, _pstEntry);
 
   return;
 }
@@ -927,61 +926,40 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
     /* Valid? */
     if(pstSection != orxNULL)
     {
-      /* Creates its bank */
-      pstSection->pstEntryBank = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+      /* Duplicates its name */
+      pstSection->zName = orxString_Duplicate(_zSectionName);
 
       /* Valid? */
-      if(pstSection->pstEntryBank != orxNULL)
+      if(pstSection->zName != orxNULL)
       {
-        /* Duplicates its name */
-        pstSection->zName = orxString_Duplicate(_zSectionName);
+        /* Creates origin */
+        pstSection->pstOrigin = orxConfig_CreateOrigin();
 
-        /* Valid? */
-        if(pstSection->zName != orxNULL)
-        {
-          /* Creates origin */
-          pstSection->pstOrigin = orxConfig_CreateOrigin();
+        /* Clears its entry list */
+        orxMemory_Zero(&(pstSection->stEntryList), sizeof(orxLINKLIST));
 
-          /* Clears its entry list */
-          orxMemory_Zero(&(pstSection->stEntryList), sizeof(orxLINKLIST));
+        /* Adds it to list */
+        orxMemory_Zero(&(pstSection->stNode), sizeof(orxLINKLIST_NODE));
+        orxLinkList_AddEnd(&(sstConfig.stSectionList), &(pstSection->stNode));
 
-          /* Adds it to list */
-          orxMemory_Zero(&(pstSection->stNode), sizeof(orxLINKLIST_NODE));
-          orxLinkList_AddEnd(&(sstConfig.stSectionList), &(pstSection->stNode));
+        /* Adds it to table */
+        orxHashTable_Add(sstConfig.pstSectionTable, _u32SectionID, pstSection);
 
-          /* Adds it to table */
-          orxHashTable_Add(sstConfig.pstSectionTable, _u32SectionID, pstSection);
+        /* Sets its ID */
+        pstSection->u32ID = _u32SectionID;
 
-          /* Sets its ID */
-          pstSection->u32ID = _u32SectionID;
+        /* Inits its parent ID */
+        pstSection->u32ParentID = _u32ParentID;
 
-          /* Inits its parent ID */
-          pstSection->u32ParentID = _u32ParentID;
-
-          /* Clears its protection counter */
-          pstSection->s32ProtectionCounter = 0;
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Duplicating section name failed.");
-
-          /* Deletes its bank */
-          orxBank_Delete(pstSection->pstEntryBank);
-
-          /* Deletes it */
-          orxBank_Free(sstConfig.pstSectionBank, pstSection);
-
-          /* Updates result */
-          pstSection = orxNULL;
-        }
+        /* Clears its protection counter */
+        pstSection->s32ProtectionCounter = 0;
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to create config bank.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Duplicating section name failed.");
 
-        /* Deletes the section */
+        /* Deletes it */
         orxBank_Free(sstConfig.pstSectionBank, pstSection);
 
         /* Updates result */
@@ -1014,7 +992,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   while((pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(_pstSection->stEntryList))) != orxNULL)
   {
     /* Deletes entry */
-    orxConfig_DeleteEntry(_pstSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Not protected? */
@@ -1045,9 +1023,6 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
       /* Deselects it */
       sstConfig.pstCurrentSection = orxNULL;
     }
-
-    /* Deletes its entry bank */
-    orxBank_Delete(_pstSection->pstEntryBank);
 
     /* Deletes its origin */
     orxConfig_DeleteOrigin(_pstSection->pstOrigin);
@@ -2338,10 +2313,12 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     sstConfig.pstOriginBank   = orxBank_Create(orxCONFIG_KU32_ORIGIN_BANK_SIZE, sizeof(orxCONFIG_ORIGIN), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxSTRING), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
-    if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstOriginBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
+    if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstOriginBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
       /* Inits values */
       sstConfig.zLoadFile = orxSTRING_EMPTY;
@@ -2397,6 +2374,13 @@ orxSTATUS orxFASTCALL orxConfig_Init()
         orxBank_Delete(sstConfig.pstSectionBank);
       }
 
+      /* Should delete entry bank? */
+      if(sstConfig.pstEntryBank != orxNULL)
+      {
+        /* Deletes it */
+        orxBank_Delete(sstConfig.pstEntryBank);
+      }
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate stack bank and/or section bank/table.");
     }
@@ -2437,6 +2421,10 @@ void orxFASTCALL orxConfig_Exit()
     /* Deletes section bank */
     orxBank_Delete(sstConfig.pstSectionBank);
     sstConfig.pstSectionBank = orxNULL;
+
+    /* Deletes entry bank */
+    orxBank_Delete(sstConfig.pstEntryBank);
+    sstConfig.pstEntryBank = orxNULL;
 
     /* Deletes history bank */
     orxBank_Delete(sstConfig.pstHistoryBank);
@@ -2879,7 +2867,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, sstConfig.pstCurrentSection->zName, pstEntry->zKey, pcValueStart, pstEntry->stValue.zValue);
 
                 /* Deletes entry */
-                orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+                orxConfig_DeleteEntry(pstEntry);
               }
 
               /* Adds entry */
@@ -4430,7 +4418,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearValue(const orxSTRING _zKey)
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -4812,7 +4800,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value)
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -4851,7 +4839,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -4890,7 +4878,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value)
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -4929,7 +4917,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value)
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -4968,7 +4956,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -5001,7 +4989,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(const orxSTRING _zKey, const orxSTRING
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -5034,7 +5022,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringBlock(const orxSTRING _zKey, const orxS
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -5066,7 +5054,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue)
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -5106,7 +5094,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR
   if(pstEntry != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    orxConfig_DeleteEntry(pstEntry);
   }
 
   /* Adds new entry */
@@ -5545,7 +5533,7 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
       if(pstEntry != orxNULL)
       {
         /* Deletes it */
-        orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+        orxConfig_DeleteEntry(pstEntry);
       }
 
       /* Removes last separator */
