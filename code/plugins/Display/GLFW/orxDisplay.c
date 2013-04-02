@@ -2616,6 +2616,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
   /* Has specified video mode? */
   if(_pstVideoMode != orxNULL)
   {
@@ -3072,6 +3075,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
     /* Updates its title */
     glfwSetWindowTitle(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
+
+    /* Uses default program */
+    glUseProgramObjectARB(0);
+    glASSERT();
+
+    /* Selects first texture unit */
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+    glASSERT();
 
     /* Pops config section */
     orxConfig_PopSection();
