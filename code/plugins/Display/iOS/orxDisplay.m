@@ -3539,9 +3539,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Clears last blend mode & last bitmap */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-  sstDisplay.pstLastBitmap  = orxNULL;
+  /* Draws remaining items */
+  orxDisplay_iOS_DrawArrays();
 
   /* Shader support? */
   if([sstDisplay.poView bShaderSupport] != NO)
@@ -3561,6 +3560,22 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glASSERT();
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
+
+    /* Uses default program */
+    glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
+    glASSERT();
+
+    /* Updates first texture unit */
+    glUniform1i(sstDisplay.pstDefaultShader->uiTextureLocation, 0);
+    glASSERT();
+
+    /* Selects it */
+    glActiveTexture(GL_TEXTURE0);
+    glASSERT();
+
+    /* Updates projection matrix */
+    glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+    glASSERT();
   }
   else
   {
@@ -3572,6 +3587,10 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
   }
+
+  /* Clears last blend mode & last bitmap */
+  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  sstDisplay.pstLastBitmap  = orxNULL;
 
   /* Done! */
   return eResult;
