@@ -124,19 +124,21 @@ static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
 
-  /* Compute the base aligned segment size */
+  /* Compute the base segment size */
   u32BaseSegmentSize = sizeof(orxBANK_SEGMENT) + _pstBank->u16SizeSegmentBitField * sizeof(orxU32);
-  u32BaseSegmentSize = orxALIGN(u32BaseSegmentSize, orxBANK_KU32_CACHE_LINE_SIZE);
 
   /* Allocates a new segment of memory */
-  pstSegment = (orxBANK_SEGMENT *)orxMemory_Allocate(u32BaseSegmentSize + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize), _pstBank->eMemType);
+  pstSegment = (orxBANK_SEGMENT *)orxMemory_Allocate(u32BaseSegmentSize + orxBANK_KU32_CACHE_LINE_SIZE - 1 + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize), _pstBank->eMemType);
   if(pstSegment != orxNULL)
   {
+    orxU8 *pAlignedSegmentData;
+
     /* Set initial segment values */
     orxMemory_Zero(pstSegment, u32BaseSegmentSize + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize));
     pstSegment->pstNext               = orxNULL;
     pstSegment->u32NbFree             = _pstBank->u16NbCellPerSegments;
-    pstSegment->pSegmentData          = (void *)(((orxU8 *)pstSegment) + u32BaseSegmentSize);
+    pAlignedSegmentData               = ((orxU8 *)pstSegment) + u32BaseSegmentSize;
+    pstSegment->pSegmentData          = (void *)orxALIGN(pAlignedSegmentData, orxBANK_KU32_CACHE_LINE_SIZE);
   }
 
   /* Profiles */
