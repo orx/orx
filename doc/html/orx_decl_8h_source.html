@@ -427,7 +427,7 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;</div>
-<div class="line"><a name="l00349"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">  349</a></span>&#160;<span class="preprocessor">#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((ADDRESS) + ((BLOCK_SIZE) - 1)) &amp; (~((BLOCK_SIZE) - 1)))</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">  349</a></span>&#160;<span class="preprocessor">#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((BLOCK_SIZE) - 1)) &amp; (~((BLOCK_SIZE) - 1)))</span></div>
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00351"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gad568d895c9d5dd496b0d720750b4429f">  351</a></span>&#160;<span class="preprocessor">#define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)</span></div>
 <div class="line"><a name="l00352"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7f7f410f595812b1c9c36c21ef1c3480">  352</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)</span></div>
