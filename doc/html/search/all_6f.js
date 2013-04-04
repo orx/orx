@@ -529,6 +529,7 @@ var searchData=
   ['orxdisplay_5fblend_5fmode_5fmultiply',['orxDISPLAY_BLEND_MODE_MULTIPLY',['../group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca261a25b5ba1e31c61fe52dfbbc6ed3a8',1,'orxDisplay.h']]],
   ['orxdisplay_5fblend_5fmode_5fnone',['orxDISPLAY_BLEND_MODE_NONE',['../group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820',1,'orxDisplay.h']]],
   ['orxdisplay_5fblend_5fmode_5fnumber',['orxDISPLAY_BLEND_MODE_NUMBER',['../group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca57ef77a9ca5752adf6295bd6f9270f23',1,'orxDisplay.h']]],
+  ['orxdisplay_5fblend_5fmode_5fpremul',['orxDISPLAY_BLEND_MODE_PREMUL',['../group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fcaa14d13f5c4c5ea5b613bc34e1936d889',1,'orxDisplay.h']]],
   ['orxdisplay_5fclearbitmap',['orxDisplay_ClearBitmap',['../group__orx_display.html#ga497ef75237b5ba9a4fad420e761be164',1,'orxDisplay.h']]],
   ['orxdisplay_5fcreatebitmap',['orxDisplay_CreateBitmap',['../group__orx_display.html#gacfe7630f589a37750b8a64611b5fcedc',1,'orxDisplay.h']]],
   ['orxdisplay_5fcreateshader',['orxDisplay_CreateShader',['../group__orx_display.html#ga0587d98e18d1172f0e2af286f447a89c',1,'orxDisplay.h']]],

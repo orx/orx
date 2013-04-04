@@ -1,5 +1,7 @@
 var NAVTREEINDEX15 =
 {
+"orx_mouse_8h.html#gaba18c64581d32b073609e55f318065c5":[3,0,0,5,4,12],
+"orx_mouse_8h.html#gac62f80b39434be0ab05eaf445065819f":[3,0,0,5,4,9],
 "orx_mouse_8h.html#gac8dec019d5aeb23f02b5caedf73270b9":[3,0,0,5,4,0],
 "orx_mouse_8h.html#gad6eb69bc822eb4d9001ae85c052d62cb":[3,0,0,5,4,5],
 "orx_mouse_8h.html#gae169232145ac3e80beb2431471a7ba84":[3,0,0,5,4,11],
@@ -247,7 +249,5 @@ var NAVTREEINDEX15 =
 "orx_physics_8h.html#gga1c4aaa4ece57611bd21ae6470a07a29da5e985e7f1f008b88a1d9d5c5e2b3a762":[3,0,0,10,1,43,0],
 "orx_physics_8h.html#gga1c4aaa4ece57611bd21ae6470a07a29dab29cafaf8e8cecac3431a4a88a5d5849":[3,0,0,10,1,43,2],
 "orx_physics_8h.html#gga1c4aaa4ece57611bd21ae6470a07a29dabd96287e1c69421f63607aad7aee16b0":[3,0,0,10,1,43,1],
-"orx_physics_8h_source.html":[3,0,0,10,1],
-"orx_plugin_8h.html":[3,0,0,11,1],
-"orx_plugin_8h.html#ga230eab1bb1033f4e1984d444f4cb7e92":[3,0,0,11,1,8]
+"orx_physics_8h_source.html":[3,0,0,10,1]
 };

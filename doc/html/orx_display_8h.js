@@ -30,6 +30,7 @@ var orx_display_8h =
       [ "orxDISPLAY_BLEND_MODE_ALPHA", "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fca109031a2954c14e60394b49532675c84", null ],
       [ "orxDISPLAY_BLEND_MODE_MULTIPLY", "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fca261a25b5ba1e31c61fe52dfbbc6ed3a8", null ],
       [ "orxDISPLAY_BLEND_MODE_ADD", "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fcaa280c24899a96b50fad2cb3359df0eea", null ],
+      [ "orxDISPLAY_BLEND_MODE_PREMUL", "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fcaa14d13f5c4c5ea5b613bc34e1936d889", null ],
       [ "orxDISPLAY_BLEND_MODE_NUMBER", "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fca57ef77a9ca5752adf6295bd6f9270f23", null ],
       [ "orxDISPLAY_BLEND_MODE_NONE", "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820", null ]
     ] ],

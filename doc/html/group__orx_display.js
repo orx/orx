@@ -87,6 +87,7 @@ var group__orx_display =
       [ "orxDISPLAY_BLEND_MODE_ALPHA", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca109031a2954c14e60394b49532675c84", null ],
       [ "orxDISPLAY_BLEND_MODE_MULTIPLY", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca261a25b5ba1e31c61fe52dfbbc6ed3a8", null ],
       [ "orxDISPLAY_BLEND_MODE_ADD", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fcaa280c24899a96b50fad2cb3359df0eea", null ],
+      [ "orxDISPLAY_BLEND_MODE_PREMUL", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fcaa14d13f5c4c5ea5b613bc34e1936d889", null ],
       [ "orxDISPLAY_BLEND_MODE_NUMBER", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca57ef77a9ca5752adf6295bd6f9270f23", null ],
       [ "orxDISPLAY_BLEND_MODE_NONE", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820", null ]
     ] ],

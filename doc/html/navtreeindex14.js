@@ -1,5 +1,7 @@
 var NAVTREEINDEX14 =
 {
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea53af77f0c92b9df212d4d58198acfb21":[3,0,0,5,3,0,20],
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea557f7338be95d0c1d9a7709e7e13a756":[3,0,0,5,3,0,48],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea5801f22be51388cb761bea4421e3b93c":[3,0,0,5,3,0,73],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea5cbeca1d7c2e3f47cd280595ab8e0bc4":[3,0,0,5,3,0,24],
 "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea5fdc716294255f26b1793d46fc4b6674":[3,0,0,5,3,0,21],
@@ -247,7 +249,5 @@ var NAVTREEINDEX14 =
 "orx_mouse_8h.html#ga4aa7e7ce639a01898aac250b3a910181":[3,0,0,5,4,3],
 "orx_mouse_8h.html#ga6aaffc62cd94fb5e9f2e09d709280af2":[3,0,0,5,4,13],
 "orx_mouse_8h.html#ga6b2ba55d2755279233740ec8b008bb97":[3,0,0,5,4,8],
-"orx_mouse_8h.html#gaa0f43e289f6e13f24f218386c8d30960":[3,0,0,5,4,2],
-"orx_mouse_8h.html#gaba18c64581d32b073609e55f318065c5":[3,0,0,5,4,12],
-"orx_mouse_8h.html#gac62f80b39434be0ab05eaf445065819f":[3,0,0,5,4,9]
+"orx_mouse_8h.html#gaa0f43e289f6e13f24f218386c8d30960":[3,0,0,5,4,2]
 };
