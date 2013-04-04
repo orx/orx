@@ -82,6 +82,7 @@
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA    0x00100000  /**< Blend mode alpha flag */
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY 0x00200000  /**< Blend mode multiply flag */
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_ADD      0x00400000  /**< Blend mode add flag */
+#define orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL   0x00800000  /**< Blend mode premul flag */
 
 #define orxOBJECT_KU32_MASK_BLEND_MODE_ALL      0x00F00000  /**< Blend mode mask */
 
@@ -141,6 +142,7 @@
 #define orxOBJECT_KZ_ALPHA                      "alpha"
 #define orxOBJECT_KZ_MULTIPLY                   "multiply"
 #define orxOBJECT_KZ_ADD                        "add"
+#define orxOBJECT_KZ_PREMUL                     "premul"
 #define orxOBJECT_KZ_SCALE                      "scale"
 #define orxOBJECT_KZ_POSITION                   "position"
 
@@ -3069,6 +3071,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Updates flags */
           u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ADD;
+        }
+        /* Pre-multiplied alpha blend mode? */
+        else if(orxString_Compare(zBlendMode, orxOBJECT_KZ_PREMUL) == 0)
+        {
+          /* Updates flags */
+          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL;
         }
       }
       else
@@ -7090,7 +7098,15 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
     case orxDISPLAY_BLEND_MODE_ADD:
     {
       /* Updates status */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_ADD, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_PREMUL:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
 
       break;
     }
@@ -7146,6 +7162,14 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const orxOBJECT *_pstOb
     {
       /* Updates result */
       eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+      break;
+    }
+
+    case orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_PREMUL;
 
       break;
     }

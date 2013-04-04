@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxDisplay
- * 
+ *
  * Display plugin module
  * Module that handles display
  *
@@ -152,6 +152,7 @@ typedef enum __orxDISPLAY_BLEND_MODE_t
   orxDISPLAY_BLEND_MODE_ALPHA = 0,
   orxDISPLAY_BLEND_MODE_MULTIPLY,
   orxDISPLAY_BLEND_MODE_ADD,
+  orxDISPLAY_BLEND_MODE_PREMUL,
 
   orxDISPLAY_BLEND_MODE_NUMBER,
 
@@ -291,7 +292,7 @@ extern orxDLLAPI void orxFASTCALL orxDisplay_Setup();
 static orxINLINE orxRGBA          orxRGBA_Set(orxU8 _u8R, orxU8 _u8G, orxU8 _u8B, orxU8 _u8A)
 {
   orxRGBA stResult;
-  
+
   // Updates result
   stResult.u8R = _u8R;
   stResult.u8G = _u8G;

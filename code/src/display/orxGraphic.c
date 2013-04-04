@@ -62,6 +62,7 @@
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA     0x00100000  /**< Blend mode alpha flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL    0x00800000  /**< Blend mode premul flag */
 
 #define orxGRAPHIC_KU32_MASK_ALIGN                0x000003F0  /**< Alignment mask */
 
@@ -101,6 +102,7 @@
 #define orxGRAPHIC_KZ_ALPHA                       "alpha"
 #define orxGRAPHIC_KZ_MULTIPLY                    "multiply"
 #define orxGRAPHIC_KZ_ADD                         "add"
+#define orxGRAPHIC_KZ_PREMUL                      "premul"
 
 
 /***************************************************************************
@@ -676,6 +678,12 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Updates flags */
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
+          }
+          /* Pre-multiplied alpha blend mode? */
+          else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_PREMUL) == 0)
+          {
+            /* Updates flags */
+            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
           }
         }
 
@@ -1492,6 +1500,14 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
       break;
     }
 
+    case orxDISPLAY_BLEND_MODE_PREMUL:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
     default:
     {
       /* Updates status */
@@ -1543,6 +1559,14 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
     {
       /* Updates result */
       eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+      break;
+    }
+
+    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_PREMUL;
 
       break;
     }
