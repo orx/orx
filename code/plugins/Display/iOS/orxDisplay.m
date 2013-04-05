@@ -757,9 +757,13 @@ static orxView *spoInstance;
   /* Screen? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    /* Binds screen frame buffer */
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiScreenFrameBuffer);
-    glASSERT();
+    /* Wasn't already bound? */
+    if(sstDisplay.pstDestinationBitmap != sstDisplay.pstScreen)
+    {
+      /* Binds screen frame buffer */
+      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiScreenFrameBuffer);
+      glASSERT();
+    }
 
     /* Updates result */
     bResult = (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) == GL_FRAMEBUFFER_COMPLETE_OES) ? YES : NO;
@@ -767,9 +771,14 @@ static orxView *spoInstance;
   }
   else
   {
-    /* Binds texture frame buffer */
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiTextureFrameBuffer);
-    glASSERT();
+    /* Wasn't already bound? */
+    if((sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    || (sstDisplay.pstDestinationBitmap == orxNULL))
+    {
+      /* Binds texture frame buffer */
+      glBindFramebufferOES(GL_FRAMEBUFFER_OES, uiTextureFrameBuffer);
+      glASSERT();
+    }
 
     /* Links texture to it */
     glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
@@ -2789,33 +2798,27 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
 
-    /* Stores it */
-    sstDisplay.pstDestinationBitmap = _pstBitmap;
-
     /* Is valid? */
     if(_pstBitmap != orxNULL)
     {
-      /* Sets OpenGL context */
-      [EAGLContext setCurrentContext:sstDisplay.poView.poThreadContext];
-
       /* Recreates render target */
       [sstDisplay.poView CreateRenderTarget:_pstBitmap];
 
       /* Is screen? */
-      if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+      if(_pstBitmap == sstDisplay.pstScreen)
       {
         /* Flushes pending commands */
         glFlush();
         glASSERT();
 
         /* Inits viewport */
-        glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glViewport(0, 0, (GLsizei)orxF2S(_pstBitmap->fWidth), (GLsizei)orxF2S(_pstBitmap->fHeight));
         glASSERT();
       }
       else
       {
         /* Inits viewport */
-        glViewport(0, (orxS32)sstDisplay.pstDestinationBitmap->u32RealHeight - orxF2S(sstDisplay.pstDestinationBitmap->fHeight), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glViewport(0, (orxS32)_pstBitmap->u32RealHeight - orxF2S(_pstBitmap->fHeight), (GLsizei)orxF2S(_pstBitmap->fWidth), (GLsizei)orxF2S(_pstBitmap->fHeight));
         glASSERT();
       }
 
@@ -2823,7 +2826,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
       {
         /* Inits projection matrix */
-        orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+        orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _pstBitmap->fWidth, _pstBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
         /* Passes it to shader */
         glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
@@ -2836,7 +2839,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
         glASSERT();
         glLoadIdentity();
         glASSERT();
-        glOrthof(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+        glOrthof(0.0f, _pstBitmap->fWidth, _pstBitmap->fHeight, 0.0f, -1.0f, 1.0f);
         glASSERT();
         glMatrixMode(GL_MODELVIEW);
         glASSERT();
@@ -2849,6 +2852,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmap(orxBITMAP *_pstBitmap)
      /* Updates result */
      eResult = orxSTATUS_FAILURE;
     }
+
+    /* Stores it */
+    sstDisplay.pstDestinationBitmap = _pstBitmap;
   }
 
   /* Done! */

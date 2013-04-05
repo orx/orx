@@ -447,7 +447,7 @@ static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MAT
   orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY;
 
   /* Has rotation? */
-  if (_fRotation != orxFLOAT_0)
+  if(_fRotation != orxFLOAT_0)
   {
     /* Gets its cos/sin */
     fCos = orxMath_Cos(_fRotation);
@@ -922,7 +922,7 @@ static orxINLINE void orxDisplay_Android_DrawBitmap(const orxBITMAP *_pstBitmap,
   fHeight = (GLfloat) (_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
   /* End of buffer? */
-  if (sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
+  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
   {
     /* Draws arrays */
     orxDisplay_Android_DrawArrays();
@@ -1093,7 +1093,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
       case orxCHAR_CR:
       {
         /* Half EOL? */
-        if (*pc == orxCHAR_LF)
+        if(*pc == orxCHAR_LF)
         {
           /* Updates pointer */
           pc++;
@@ -1122,13 +1122,13 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
         orxFLOAT                  fWidth;
 
         /* Valid? */
-        if (pstGlyph != orxNULL)
+        if(pstGlyph != orxNULL)
         {
           /* Gets character width */
           fWidth = pstGlyph->fWidth;
 
           /* End of buffer? */
-          if (sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
+          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
           {
             /* Draws arrays */
             orxDisplay_Android_DrawArrays();
@@ -1443,7 +1443,7 @@ void orxFASTCALL orxDisplay_Android_DeleteBitmap(orxBITMAP *_pstBitmap)
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Not screen? */
-  if (_pstBitmap != sstDisplay.pstScreen)
+  if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Is last used bitmap? */
     if(sstDisplay.pstLastBitmap == _pstBitmap)
@@ -1475,7 +1475,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
   pstBitmap = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
 
   /* Valid? */
-  if (pstBitmap != orxNULL)
+  if(pstBitmap != orxNULL)
   {
     GLint iTexture;
 
@@ -1607,7 +1607,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
   u32Height = orxF2U(_pstBitmap->fHeight);
 
   /* Valid? */
-  if ((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
+  if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
   {
     GLint iTexture;
     orxU8 *pu8ImageBuffer;
@@ -1660,7 +1660,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
   else
   {
     /* Screen? */
-    if (_pstBitmap == sstDisplay.pstScreen)
+    if(_pstBitmap == sstDisplay.pstScreen)
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: can't use screen as destination bitmap.");
@@ -1807,7 +1807,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapColor(orxBITMAP *_pstBitmap, o
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Not screen? */
-  if (_pstBitmap != sstDisplay.pstScreen)
+  if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Stores it */
     _pstBitmap->stColor = _stColor;
@@ -1826,7 +1826,7 @@ orxRGBA orxFASTCALL orxDisplay_Android_GetBitmapColor(const orxBITMAP *_pstBitma
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Not screen? */
-  if (_pstBitmap != sstDisplay.pstScreen)
+  if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Updates result */
     stResult = _pstBitmap->stColor;
@@ -1844,13 +1844,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Different destination bitmap? */
-  if (_pstBitmap != sstDisplay.pstDestinationBitmap)
+  if(_pstBitmap != sstDisplay.pstDestinationBitmap)
   {
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
-
-    /* Stores it */
-    sstDisplay.pstDestinationBitmap = _pstBitmap;
 
     /* Is valid? */
     if(_pstBitmap != orxNULL)
@@ -1868,9 +1865,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       }
       else
       {
-        /* Binds frame buffer */
-        glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
-        glASSERT();
+        /* Wasn't previously linked to the texture FBO? */
+        if((sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+        || (sstDisplay.pstDestinationBitmap == orxNULL))
+        {
+          /* Binds frame buffer */
+          glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
+          glASSERT();
+        }
 
         /* Links texture to frame buffer */
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
@@ -1882,21 +1884,21 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       }
 
       /* Is screen? */
-      if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+      if(_pstBitmap == sstDisplay.pstScreen)
       {
         /* Inits viewport */
-        glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glViewport(0, 0, (GLsizei)orxF2S(_pstBitmap->fWidth), (GLsizei)orxF2S(_pstBitmap->fHeight));
         glASSERT();
       }
       else
       {
         /* Inits viewport */
-        glViewport(0, (orxS32)sstDisplay.pstDestinationBitmap->u32RealHeight - orxF2S(sstDisplay.pstDestinationBitmap->fHeight), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
+        glViewport(0, (orxS32)_pstBitmap->u32RealHeight - orxF2S(_pstBitmap->fHeight), (GLsizei)orxF2S(_pstBitmap->fWidth), (GLsizei)orxF2S(_pstBitmap->fHeight));
         glASSERT();
       }
 
       /* Inits projection matrix */
-      orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+      orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _pstBitmap->fWidth, _pstBitmap->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
       /* Passes it to shader */
       glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
@@ -1906,6 +1908,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
     {
       eResult = orxSTATUS_FAILURE;
     }
+
+    /* Stores new destination bitmap */
+    sstDisplay.pstDestinationBitmap = _pstBitmap;
   }
 
   /* Done! */
@@ -1941,7 +1946,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
   orxDisplay_Android_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
   /* No repeat? */
-  if ((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
+  if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
   {
     /* Draws it */
     orxDisplay_Android_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
@@ -1965,7 +1970,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
     for (fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
     {
       /* Partial line? */
-      if (i < orxFLOAT_1)
+      if(i < orxFLOAT_1)
       {
         /* Updates height */
         fHeight *= (GLfloat) i;
@@ -1988,7 +1993,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
       for (fX = 0.0f, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
       {
         /* Partial column? */
-        if (j < orxFLOAT_1)
+        if(j < orxFLOAT_1)
         {
           /* Updates width */
           fWidth *= (GLfloat) j;
@@ -1998,7 +2003,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
         }
 
         /* End of buffer? */
-        if (sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
+        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
         {
           /* Draws arrays */
           orxDisplay_Android_DrawArrays();
@@ -2371,7 +2376,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
         orxU32  u32BPP;
 
         // figure out what the image format is
-        if (stHeader.ddspf.dwFlags & DDS_FOURCC)
+        if(stHeader.ddspf.dwFlags & DDS_FOURCC)
         {
           switch(stHeader.ddspf.dwFourCC)
           {
@@ -2419,7 +2424,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
         else
         {
           // Check for a supported pixel format
-          if ((stHeader.ddspf.dwRGBBitCount == 32) &&
+          if((stHeader.ddspf.dwRGBBitCount == 32) &&
               (stHeader.ddspf.dwRBitMask == 0x000000FF) &&
               (stHeader.ddspf.dwGBitMask == 0x0000FF00) &&
               (stHeader.ddspf.dwBBitMask == 0x00FF0000) &&
@@ -2433,7 +2438,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             eInternalFormat  = GL_UNSIGNED_BYTE;
             bCompressed      = orxFALSE;
           }
-          else if ((stHeader.ddspf.dwRGBBitCount == 16) &&
+          else if((stHeader.ddspf.dwRGBBitCount == 16) &&
               (stHeader.ddspf.dwRBitMask == 0x0000F800) &&
               (stHeader.ddspf.dwGBitMask == 0x000007E0) &&
               (stHeader.ddspf.dwBBitMask == 0x0000001F) &&
@@ -2447,7 +2452,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             eInternalFormat  = GL_UNSIGNED_SHORT_5_6_5;
             bCompressed      = orxFALSE;
           }
-          else if ((stHeader.ddspf.dwRGBBitCount == 8) &&
+          else if((stHeader.ddspf.dwRGBBitCount == 8) &&
               (stHeader.ddspf.dwRBitMask == 0x00000000) &&
               (stHeader.ddspf.dwGBitMask == 0x00000000) &&
               (stHeader.ddspf.dwBBitMask == 0x00000000) &&
@@ -2460,7 +2465,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             eInternalFormat  = GL_UNSIGNED_BYTE;
             bCompressed      = orxFALSE;
           }
-          else if ((stHeader.ddspf.dwRGBBitCount == 8) &&
+          else if((stHeader.ddspf.dwRGBBitCount == 8) &&
               (stHeader.ddspf.dwRBitMask == 0x000000FF) &&
               (stHeader.ddspf.dwGBitMask == 0x00000000) &&
               (stHeader.ddspf.dwBBitMask == 0x00000000) &&
@@ -2473,7 +2478,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             eInternalFormat  = GL_UNSIGNED_BYTE;
             bCompressed      = orxFALSE;
           }
-          else if ((stHeader.ddspf.dwRGBBitCount == 16) &&
+          else if((stHeader.ddspf.dwRGBBitCount == 16) &&
               (((stHeader.ddspf.dwRBitMask == 0x000000FF) &&
                 (stHeader.ddspf.dwGBitMask == 0x00000000) &&
                 (stHeader.ddspf.dwBBitMask == 0x00000000) &&
@@ -2638,9 +2643,9 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
         orxResource_Seek(hResource, sizeof(KTX_header) + stHeader.bytesOfKeyValueData, orxSEEK_OFFSET_WHENCE_START);
 
         /* Check glType and glFormat */
-        if (stHeader.glType == 0 || stHeader.glFormat == 0)
+        if(stHeader.glType == 0 || stHeader.glFormat == 0)
         {
-          if (stHeader.glType + stHeader.glFormat != 0)
+          if(stHeader.glType + stHeader.glFormat != 0)
           {
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", _zFilename);
@@ -2650,7 +2655,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
 
         /* KTX files require an unpack alignment of 4 */
         glGetIntegerv(GL_UNPACK_ALIGNMENT, &previousUnpackAlignment);
-        if (previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
+        if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
         {
           glPixelStorei(GL_UNPACK_ALIGNMENT, KTX_GL_UNPACK_ALIGNMENT);
         }
@@ -2658,7 +2663,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
         orxU32  u32DataSize, u32DataSizeRounded;
         GLenum  eInternalFormat, eTextureType = 0;
 
-        if (bCompressed)
+        if(bCompressed)
           eInternalFormat = stHeader.glInternalFormat;
         else
           eInternalFormat = stHeader.glBaseInternalFormat;
@@ -2960,7 +2965,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Screen? */
-  if (_pstBitmap == sstDisplay.pstScreen)
+  if(_pstBitmap == sstDisplay.pstScreen)
   {
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
@@ -3153,7 +3158,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Was not already initialized? */
-  if (!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
+  if(!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "orxDisplay_Android_Init()");
 
@@ -3180,7 +3185,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
-    if (sstDisplay.pstBitmapBank != orxNULL
+    if(sstDisplay.pstBitmapBank != orxNULL
     && (sstDisplay.pstShaderBank != orxNULL))
     {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
@@ -3189,7 +3194,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
         /* Depth buffer? */
-        if (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
         {
           /* Updates flags */
            sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER;
@@ -3325,7 +3330,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
 void orxFASTCALL orxDisplay_Android_Exit()
 {
-  if (sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
+  if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
