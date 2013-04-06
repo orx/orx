@@ -127,8 +127,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Load(const orxSTRING 
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Save(const orxSTRING _zFileName);
 
 
-/** Selects current working set
+/** Selects (and enables) current working set
  * @param[in] _zSetName         Set name to select
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxSTRING _zSetName);
 
@@ -136,6 +137,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxST
  * @return Current selected set
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
+
+
+/** Enables/disables working set (without selecting it)
+ * @param[in] _zSetName         Set name to enable/disable
+ * @param[in] _bEnable          Enable / Disable
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEnable);
+
+/** Is working set enabled (includes current working set)?
+ * @param[in] _zSetName         Set name to check
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsEnabled(const orxSTRING _zSetName);
 
 
 /** Is input active?
