@@ -43,6 +43,7 @@
 
 #include "orxInclude.h"
 #include "display/orxFont.h"
+#include "io/orxInput.h"
 
 
 /** Console module setup
@@ -68,6 +69,14 @@ extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL 
  * @return orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
+
+
+/** Sets the console toggle
+* @param[in] _eInputType      Type of input peripheral
+* @param[in] _eInputID        ID of button/key/axis
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID);
 
 
 /** Logs to the console

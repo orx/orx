@@ -564,7 +564,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       }
     }
 
-    /* Autocomplete? */
+    /* Auto-complete? */
     if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE) != orxFALSE))
     {
       const orxCHAR  *pcStart = pstEntry->acBuffer;
@@ -1254,6 +1254,47 @@ orxBOOL orxFASTCALL orxConsole_IsEnabled()
 
   /* Done! */
   return bResult;
+}
+
+/** Sets the console toggle
+* @param[in] _eInputType      Type of input peripheral
+* @param[in] _eInputID        ID of button/key/axis
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Has current bindings? */
+  if((sstConsole.eToggleKeyType != orxINPUT_TYPE_NONE)
+  && (sstConsole.eToggleKeyID != orxENUM_NONE))
+  {
+    /* Unbinds current toggle */
+    orxInput_Unbind(sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
+  }
+
+  /* Binds new toggle */
+  eResult = orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, _eInputType, _eInputID);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Stores new toggle bindings */
+    sstConsole.eToggleKeyType = _eInputType;
+    sstConsole.eToggleKeyID = _eInputID;
+  }
+  else
+  {
+    /* Clears toggle bindings */
+    sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
+    sstConsole.eToggleKeyID = orxENUM_NONE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Logs to the console
