@@ -507,7 +507,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
   return pstResult;
 }
 
-static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet, orxBOOL _bSendEvent)
+static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
 {
   orxINPUT_ENTRY *pstEntry;
 
@@ -612,8 +612,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet, orxBOOL _bSendEv
     if(bActive != orxFALSE)
     {
       /* Was not active and should send events? */
-      if((!orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
-      && (_bSendEvent != orxFALSE))
+      if(!orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
       {
         orxINPUT_EVENT_PAYLOAD stPayload;
 
@@ -682,8 +681,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet, orxBOOL _bSendEv
     else
     {
       /* Was active and should send events? */
-      if((orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
-      && (_bSendEvent != orxFALSE))
+      if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
       {
         orxINPUT_EVENT_PAYLOAD stPayload;
 
@@ -798,7 +796,6 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
 static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   orxINPUT_SET *pstSet;
-  orxBOOL       bSendEvent;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxInput_Update");
@@ -808,14 +805,6 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   {
     /* Updates mouse move */
     orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
-
-    /* Asks for events */
-    bSendEvent = orxTRUE;
-  }
-  else
-  {
-    /* Don't send events */
-    bSendEvent = orxFALSE;
   }
 
   /* Gets set from parameter */
@@ -825,7 +814,7 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   if(pstSet != orxNULL)
   {
     /* Updates it */
-    orxInput_UpdateSet(pstSet, bSendEvent);
+    orxInput_UpdateSet(pstSet);
   }
   else
   {
@@ -839,7 +828,7 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
       || (pstSet == sstInput.pstCurrentSet))
       {
         /* Updates it */
-        orxInput_UpdateSet(pstSet, bSendEvent);
+        orxInput_UpdateSet(pstSet);
       }
     }
   }
@@ -1359,13 +1348,6 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
           /* Selects it */
           sstInput.pstCurrentSet = pstSet;
 
-          /* Wasn't already enabled? */
-          if(!orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED))
-          {
-            /* Updates it */
-            orxInput_Update(orxNULL, (void *)pstSet);
-          }
-
           break;
         }
       }
@@ -1481,9 +1463,6 @@ orxSTATUS orxFASTCALL orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEn
         {
           /* Enables it */
           orxFLAG_SET(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED, orxINPUT_KU32_SET_FLAG_NONE);
-
-          /* Updates it */
-          orxInput_Update(orxNULL, (void *)pstSet);
         }
         else
         {

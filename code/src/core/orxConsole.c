@@ -370,15 +370,16 @@ static orxINLINE orxU32 orxConsole_PrintLastResult(orxCHAR *_acBuffer, orxU32 _u
  */
 static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  const orxSTRING zPreviousSet;
+
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxConsole_Update");
 
-  /* Should toggle? */
-  if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_TOGGLE) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_TOGGLE) != orxFALSE))
-  {
-    /* Toggles it */
-    orxConsole_Enable(!orxConsole_IsEnabled());
-  }
+  /* Backups previous input set */
+  zPreviousSet = orxInput_GetCurrentSet();
+
+  /* Selects console set */
+  orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
 
   /* Is enabled? */
   if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
@@ -759,6 +760,9 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
     }
   }
 
+  /* Restores previous set */
+  orxInput_SelectSet(zPreviousSet);
+
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
@@ -816,14 +820,18 @@ static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
   /* Depending on event ID */
   switch(_pstEvent->eID)
   {
-    /* Select set */
-    case orxINPUT_EVENT_SELECT_SET:
+    case orxINPUT_EVENT_ON:
     {
-      /* Is toggle key type valid? */
-      if(sstConsole.eToggleKeyType != orxINPUT_TYPE_NONE)
+      orxINPUT_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Toggle? */
+      if(!orxString_Compare(pstPayload->zInputName, orxCONSOLE_KZ_INPUT_TOGGLE))
       {
-        /* Forces toggle input binding */
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
+        /* Toggles it */
+        orxConsole_Enable(!orxConsole_IsEnabled());
       }
 
       break;
@@ -1046,6 +1054,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Binds console inputs */
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER);
@@ -1056,6 +1065,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END);
+
+        /* Enables set */
+        orxInput_EnableSet(orxCONSOLE_KZ_INPUT_SET, orxTRUE);
 
         /* Restores previous set */
         orxInput_SelectSet(zPreviousSet);
@@ -1263,10 +1275,17 @@ orxBOOL orxFASTCALL orxConsole_IsEnabled()
  */
 orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID)
 {
-  orxSTATUS eResult;
+  const orxSTRING zPreviousSet;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Backups previous input set */
+  zPreviousSet = orxInput_GetCurrentSet();
+
+  /* Selects console set */
+  orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
 
   /* Has current bindings? */
   if((sstConsole.eToggleKeyType != orxINPUT_TYPE_NONE)
@@ -1292,6 +1311,9 @@ orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _e
     sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
     sstConsole.eToggleKeyID = orxENUM_NONE;
   }
+
+  /* Restores previous input set */
+  orxInput_SelectSet(zPreviousSet);
 
   /* Done! */
   return eResult;
