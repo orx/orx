@@ -82,8 +82,7 @@
 #define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.2f)
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE       orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE     orx2F(0.8f/3.0f)
-#define orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF orx2F(-0.6f)
-#define orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF  orx2F(-0.3f)
+#define orxRENDER_KC_PROFILER_DEPTH_MARKER          '*'
 
 #define orxRENDER_KST_CONSOLE_BACKGROUND_COLOR      orx2RGBA(0x11, 0x55, 0x11, 0x99)
 #define orxRENDER_KST_CONSOLE_SEPARATOR_COLOR       orx2RGBA(0x88, 0x11, 0x11, 0xFF)
@@ -364,6 +363,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxBOOL                 bLandscape;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
+  orxFLOAT                fMarkerWidth;
   orxCHAR                 acLabel[64];
   orxDOUBLE              *adDepthBlockEndTime;
 
@@ -384,6 +384,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Gets its map */
   pstMap = orxFont_GetMap(pstFont);
+
+  /* Gets its marker width */
+  fMarkerWidth = ((orxCHARACTER_GLYPH *)orxHashTable_Get(pstMap->pstCharacterTable, orxRENDER_KC_PROFILER_DEPTH_MARKER))->fWidth;
 
   /* Creates pixel texture */
   pstTexture = orxTexture_CreateFromFile("pixel");
@@ -485,9 +488,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     {
       /* Inits both vertices */
       astVertexList[2 * i].fX     =
-      astVertexList[2 * i + 1].fX = (orxFLOAT_1 - orxU2F(i) / orxU2F(orxPROFILER_KU32_HISTORY_LENGTH)) * (fScreenWidth - fBorder);
+      astVertexList[2 * i + 1].fX = (bLandscape != orxFALSE) ? (orxFLOAT_1 - orxU2F(i) / orxU2F(orxPROFILER_KU32_HISTORY_LENGTH)) * (fScreenWidth - fBorder) : fScreenWidth - fBorder;
       astVertexList[2 * i].fY     = 
-      astVertexList[2 * i + 1].fY = fScreenHeight - fBorder;
+      astVertexList[2 * i + 1].fY = (bLandscape != orxFALSE) ? fScreenHeight - fBorder : fScreenHeight - (orxFLOAT_1 - orxU2F(i) / orxU2F(orxPROFILER_KU32_HISTORY_LENGTH)) * (fScreenHeight - fBorder);
       astVertexList[2 * i].fU     =
       astVertexList[2 * i + 1].fU =
       astVertexList[2 * i].fV     =
@@ -543,13 +546,27 @@ static orxINLINE void orxRender_Home_RenderProfiler()
               /* Selects it */
               orxProfiler_SelectQueryFrame(i);
 
-              /* Updates bottom vertex with previous top one */
-              astVertexList[2 * i].fY     = fScreenHeight - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-              astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+              /* Landscape? */
+              if(bLandscape != orxFALSE)
+              {
+                /* Updates bottom vertex with previous top one */
+                astVertexList[2 * i].fY     = fScreenHeight - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
 
-              /* Updates top vertex */
-              astVertexList[2 * i + 1].fY     = astVertexList[2 * i].fY - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-              astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                /* Updates top vertex */
+                astVertexList[2 * i + 1].fY     = astVertexList[2 * i].fY - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+              }
+              else
+              {
+                /* Updates bottom vertex with previous top one */
+                astVertexList[2 * i].fX     = fScreenWidth - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+
+                /* Updates top vertex */
+                astVertexList[2 * i + 1].fX     = astVertexList[2 * i].fX - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+              }
             }
 
             /* Draws it */
@@ -691,27 +708,39 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       /* Updates current depth */
       u32CurrentDepth = u32Depth;
 
-      /* Updates pixel's color */
+      /* Updates pixel color */
       stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
-      if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY) && (u32Depth + 1 == sstRender.u32SelectedMarkerDepth))
-      {
-        stColor.vHSL.fL += orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
-        stColor.vHSL.fS += orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
-        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
-        stColor.vHSL.fL -= orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
-        stColor.vHSL.fS -= orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
-      }
-      else
-      {
-        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
-      }
+      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
       orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+      /* Is selected depth for history? */
+      if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY) && (u32Depth + 1 == sstRender.u32SelectedMarkerDepth))
+      {
+        /* Updates is width */
+        stTransform.fScaleX = fBorder - orx2F(2.0f);
+
+        /* Updates its position */
+        if(bLandscape != orxFALSE)
+        {
+          stTransform.fDstX = orxFLOAT_1;
+        }
+        else
+        {
+          stTransform.fDstY = fScreenHeight - orxFLOAT_1;
+        }
+
+        /* Updates pixel color */
+        orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
+
+        /* Draws marker */
+        orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      }
     }
   }
 
-  /* Updates vertical position & marker's height */
+  /* Updates vertical position & marker height */
   if(bLandscape != orxFALSE)
   {
     stTransform.fDstX = fBorder;
@@ -756,21 +785,36 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Sets font's color */
       stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+
+      /* Is selected depth for history? */
       if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY) && (u32Depth == sstRender.u32SelectedMarkerDepth))
       {
-        stColor.vHSL.fL += orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
-        stColor.vHSL.fS += orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
-        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
-        stColor.vHSL.fL -= orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
-        stColor.vHSL.fS -= orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
+        /* Adds marker */
+        acLabel[0] = orxRENDER_KC_PROFILER_DEPTH_MARKER;
+
+        /* Updates depth and iterator for text display */
+        u32Depth++;
+        i = 1;
+
+        /* Updates position */
+        if(bLandscape != orxFALSE)
+        {
+          stTransform.fDstX -= fMarkerWidth * fTextScale;
+        }
+        else
+        {
+          stTransform.fDstY += fMarkerWidth * fTextScale;
+        }
       }
       else
       {
-        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+        /* Inits iterator */
+        i = 0;
       }
 
       /* Adds depth markers */
-      for(i = 0; i < u32Depth; i++)
+      for(; i < u32Depth; i++)
       {
         acLabel[i] = '+';
       }
@@ -782,11 +826,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       /* Updates position */
       if(bLandscape != orxFALSE)
       {
-        stTransform.fDstY += fHeight;
+        stTransform.fDstX   = fBorder;
+        stTransform.fDstY  += fHeight;
       }
       else
       {
-        stTransform.fDstX += fHeight;
+        stTransform.fDstX  += fHeight;
+        stTransform.fDstY   = fScreenHeight - fBorder;
       }
     }
   }
