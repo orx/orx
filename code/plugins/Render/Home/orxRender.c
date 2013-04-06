@@ -110,7 +110,7 @@
 #define orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH        orxKEYBOARD_KEY_DOWN
 
 #define orxRENDER_KF_INPUT_RESET_FIRST_DELAY        orx2F(0.25f)
-#define orxRENDER_KF_INPUT_RESET_DELAY              orx2F(0.05f)
+#define orxRENDER_KF_INPUT_RESET_DELAY              orx2F(0.02f)
 
 
 /***************************************************************************
