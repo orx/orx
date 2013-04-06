@@ -72,7 +72,7 @@
 
 #define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
 
-#define orxCONSOLE_KZ_INPUT_TOGGLE                    "-=ToggleConsole=-"             /**< Toggle console input */
+#define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
 #define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_BACKQUOTE       /**< Default toggle key */
 
 #define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
@@ -96,8 +96,8 @@
 #define orxCONSOLE_KE_KEY_START                       orxKEYBOARD_KEY_HOME            /**< Start key */
 #define orxCONSOLE_KE_KEY_END                         orxKEYBOARD_KEY_END             /**< End key */
 
-#define orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY  orx2F(0.25f)
-#define orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY        orx2F(0.05f)
+#define orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY         orx2F(0.25f)
+#define orxCONSOLE_KF_INPUT_RESET_DELAY               orx2F(0.05f)
 
 
 /***************************************************************************
@@ -148,7 +148,7 @@ static orxCONSOLE_STATIC sstConsole;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Resets delete input
+/** Resets input callback
  */
 static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
@@ -164,10 +164,9 @@ static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, voi
     orxInput_SetValue(zInput, orxFLOAT_0);
 
     /* Re-adds input reset timer */
-    orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_DELAY, 1, zInput);
+    orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_DELAY, 1, zInput);
   }
 }
-
 
 /** Origin save callback
  */
@@ -495,7 +494,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       }
 
       /* Adds input reset timer */
-      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_DELETE);
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_DELETE);
     }
 
     /* Previous history? */
@@ -505,7 +504,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       u32HistoryIndex = (sstConsole.u32HistoryIndex != 0) ? sstConsole.u32HistoryIndex - 1 : orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1;
 
       /* Adds input reset timer */
-      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_PREVIOUS);
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_PREVIOUS);
     }
     /* Next history? */
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_NEXT) != orxFALSE))
@@ -517,7 +516,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         u32HistoryIndex = (sstConsole.u32HistoryIndex == orxCONSOLE_KU32_INPUT_ENTRY_NUMBER - 1) ? 0 : sstConsole.u32HistoryIndex + 1;
 
         /* Adds input reset timer */
-        orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_NEXT);
+        orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_NEXT);
       }
     }
 
@@ -743,7 +742,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       }
 
       /* Adds input reset timer */
-      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_LEFT);
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_LEFT);
     }
     /* Move cursor right? */
     else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_RIGHT) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_RIGHT) != orxFALSE))
@@ -756,7 +755,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       }
 
       /* Adds input reset timer */
-      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_DELETE_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_RIGHT);
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_RIGHT);
     }
   }
 
@@ -996,8 +995,6 @@ orxSTATUS orxFASTCALL orxConsole_Init()
   /* Not already Initialized? */
   if(!(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY))
   {
-    const orxSTRING zPreviousSet;
-
     /* Cleans control structure */
     orxMemory_Zero(&sstConsole, sizeof(orxCONSOLE_STATIC));
 
@@ -1044,10 +1041,12 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      const orxSTRING zPreviousSet;
+
       /* Backups previous input set */
       zPreviousSet = orxInput_GetCurrentSet();
 
-      /* Replaces input set */
+      /* Selects console input set */
       eResult = orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
 
       /* Success */

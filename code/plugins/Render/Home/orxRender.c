@@ -50,44 +50,67 @@
 
 /** Module flags
  */
-#define orxRENDER_KU32_STATIC_FLAG_NONE           0x00000000 /**< No flags */
+#define orxRENDER_KU32_STATIC_FLAG_NONE             0x00000000 /**< No flags */
 
-#define orxRENDER_KU32_STATIC_FLAG_READY          0x00000001 /**< Ready flag */
-#define orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA   0x00000002 /**< Reset maxima flag */
-#define orxRENDER_KU32_STATIC_FLAG_REGISTERED     0x00000004 /**< Rendering function registered flag */
+#define orxRENDER_KU32_STATIC_FLAG_READY            0x00000001 /**< Ready flag */
+#define orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA     0x00000002 /**< Reset maxima flag */
+#define orxRENDER_KU32_STATIC_FLAG_REGISTERED       0x00000004 /**< Rendering function registered flag */
+#define orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK    0x00000008 /**< Console blink flag */
+#define orxRENDER_KU32_STATIC_FLAG_PROFILER         0x00000010 /**< Profiler flag */
+#define orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY 0x00000020 /**< Profiler history flag */
 
-#define orxRENDER_KU32_STATIC_MASK_ALL            0xFFFFFFFF /**< All mask */
+#define orxRENDER_KU32_STATIC_MASK_ALL              0xFFFFFFFF /**< All mask */
 
 
 /** Defines
  */
-#define orxRENDER_KF_TICK_SIZE                    orx2F(1.0f / 10.0f)
-#define orxRENDER_KU32_ORDER_BANK_SIZE            256
-#define orxRENDER_KST_DEFAULT_COLOR               orx2RGBA(255, 0, 0, 255)
-#define orxRENDER_KZ_FPS_FORMAT                   "FPS: %d"
-#define orxCONSOLE_KF_BLINK_DELAY                 orx2F(0.5f)
+#define orxRENDER_KF_TICK_SIZE                      orx2F(1.0f / 10.0f)
+#define orxRENDER_KU32_ORDER_BANK_SIZE              256
+#define orxRENDER_KST_DEFAULT_COLOR                 orx2RGBA(255, 0, 0, 255)
+#define orxRENDER_KZ_FPS_FORMAT                     "FPS: %d"
+#define orxRENDER_KF_CONSOLE_BLINK_DELAY            orx2F(0.5f)
 
-#define orxRENDER_KF_PROFILER_BORDER              orx2F(0.01f)
-#define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH     orx2F(0.5f)
-#define orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT    orx2F(0.25f)
-#define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT      orx2F(5.0f)
-#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT      orx2F(32.0f)
-#define orxRENDER_KF_PROFILER_BAR_ALPHA           orx2F(0.8f)
-#define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT     orx2F(0.5f)
-#define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT     orx2F(1.0f)
-#define orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH  orx2F(800.0f)
-#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA     orx2F(0.2f)
-#define orxRENDER_KF_PROFILER_HUE_STACK_RANGE     orx2F(2.0f)
-#define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE   orx2F(0.8f/3.0f)
+#define orxRENDER_KF_PROFILER_BORDER                orx2F(0.01f)
+#define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH       orx2F(0.5f)
+#define orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT      orx2F(0.25f)
+#define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT        orx2F(5.0f)
+#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(32.0f)
+#define orxRENDER_KF_PROFILER_BAR_ALPHA             orx2F(0.8f)
+#define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT       orx2F(0.5f)
+#define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT       orx2F(1.0f)
+#define orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH    orx2F(800.0f)
+#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.2f)
+#define orxRENDER_KF_PROFILER_HUE_STACK_RANGE       orx2F(2.0f)
+#define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE     orx2F(0.8f/3.0f)
+#define orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF orx2F(-0.5f)
+#define orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF  orx2F(-0.5f)
 
-#define orxRENDER_KST_CONSOLE_BACKGROUND_COLOR    orx2RGBA(0x11, 0x55, 0x11, 0x99)
-#define orxRENDER_KST_CONSOLE_SEPARATOR_COLOR     orx2RGBA(0x88, 0x11, 0x11, 0xFF)
-#define orxRENDER_KST_CONSOLE_LOG_COLOR           orx2RGBA(0xAA, 0xAA, 0xAA, 0xFF)
-#define orxRENDER_KST_CONSOLE_INPUT_COLOR         orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF)
-#define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR  orx2RGBA(0x88, 0x88, 0x88, 0xFF)
-#define orxRENDER_KF_CONSOLE_MARGIN_WIDTH         orx2F(0.02f)
-#define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT        orx2F(0.05f)
-#define orxRENDER_KF_CONSOLE_SPEED                orx2F(3000.0f)
+#define orxRENDER_KST_CONSOLE_BACKGROUND_COLOR      orx2RGBA(0x11, 0x55, 0x11, 0x99)
+#define orxRENDER_KST_CONSOLE_SEPARATOR_COLOR       orx2RGBA(0x88, 0x11, 0x11, 0xFF)
+#define orxRENDER_KST_CONSOLE_LOG_COLOR             orx2RGBA(0xAA, 0xAA, 0xAA, 0xFF)
+#define orxRENDER_KST_CONSOLE_INPUT_COLOR           orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF)
+#define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR    orx2RGBA(0x88, 0x88, 0x88, 0xFF)
+#define orxRENDER_KF_CONSOLE_MARGIN_WIDTH           orx2F(0.02f)
+#define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT          orx2F(0.05f)
+#define orxRENDER_KF_CONSOLE_SPEED                  orx2F(3000.0f)
+
+#define orxRENDER_KZ_INPUT_SET                      "-=RenderSet=-"
+#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY  "ProfToggleHistory"
+#define orxRENDER_KZ_INPUT_PROFILER_PAUSE           "ProfPause"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME  "ProfPrevFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME      "ProfNextFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH  "ProfPrevDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH      "ProfNextDepth"
+
+#define orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY    orxKEYBOARD_KEY_SCROLL_LOCK
+#define orxRENDER_KE_KEY_PROFILER_PAUSE             orxKEYBOARD_KEY_PAUSE
+#define orxRENDER_KE_KEY_PROFILER_PREVIOUS_FRAME    orxKEYBOARD_KEY_LEFT
+#define orxRENDER_KE_KEY_PROFILER_NEXT_FRAME        orxKEYBOARD_KEY_RIGHT
+#define orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH    orxKEYBOARD_KEY_UP
+#define orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH        orxKEYBOARD_KEY_DOWN
+
+#define orxRENDER_KF_INPUT_RESET_FIRST_DELAY        orx2F(0.25f)
+#define orxRENDER_KF_INPUT_RESET_DELAY              orx2F(0.05f)
 
 
 /***************************************************************************
@@ -96,14 +119,14 @@
 
 typedef struct __orxRENDER_RENDER_NODE_t
 {
-  orxLINKLIST_NODE      stNode;                   /**< Linklist node : 12 */
-  orxFLOAT              fZ;                       /**< Z coordinate : 16 */
-  orxTEXTURE           *pstTexture;               /**< Texture pointer : 20 */
-  const orxSHADER      *pstShader;                /**< Shader pointer : 24 */
-  orxDISPLAY_BLEND_MODE eBlendMode;               /**< Blend mode : 28 */
-  orxDISPLAY_SMOOTHING  eSmoothing;               /**< Smoothing : 32 */
-  orxOBJECT            *pstObject;                /**< Object pointer : 36 */
-  orxFLOAT              fDepthCoef;               /**< Depth coef : 40 */
+  orxLINKLIST_NODE      stNode;                     /**< Linklist node : 12 */
+  orxFLOAT              fZ;                         /**< Z coordinate : 16 */
+  orxTEXTURE           *pstTexture;                 /**< Texture pointer : 20 */
+  const orxSHADER      *pstShader;                  /**< Shader pointer : 24 */
+  orxDISPLAY_BLEND_MODE eBlendMode;                 /**< Blend mode : 28 */
+  orxDISPLAY_SMOOTHING  eSmoothing;                 /**< Smoothing : 32 */
+  orxOBJECT            *pstObject;                  /**< Object pointer : 36 */
+  orxFLOAT              fDepthCoef;                 /**< Depth coef : 40 */
 
 } orxRENDER_NODE;
 
@@ -111,16 +134,16 @@ typedef struct __orxRENDER_RENDER_NODE_t
  */
 typedef struct __orxRENDER_STATIC_t
 {
-  orxU32        u32Flags;                         /**< Control flags */
-  orxCLOCK     *pstClock;                         /**< Rendering clock pointer */
-  orxFRAME     *pstFrame;                         /**< Conversion frame */
-  orxBANK      *pstRenderBank;                    /**< Rendering bank */
-  orxLINKLIST   stRenderList;                     /**< Rendering list */
-  orxBOOL       bBlink;                           /**< Blink status */
-  orxFLOAT      fDefaultConsoleOffset;            /**< Default console offset */
-  orxFLOAT      fConsoleOffset;                   /**< Console offset */
-  orxBOOL       bDisplayProfilerHistory;          /**< Display profiler history */
-  orxU32        u32SelectedMarkerDepth;           /**< Selected marker depth */
+  orxU32        u32Flags;                           /**< Control flags */
+  orxCLOCK     *pstClock;                           /**< Rendering clock pointer */
+  orxFRAME     *pstFrame;                           /**< Conversion frame */
+  orxBANK      *pstRenderBank;                      /**< Rendering bank */
+  orxLINKLIST   stRenderList;                       /**< Rendering list */
+  orxFLOAT      fDefaultConsoleOffset;              /**< Default console offset */
+  orxFLOAT      fConsoleOffset;                     /**< Console offset */
+  orxU32        u32SelectedFrame;                   /**< Selected frame */
+  orxU32        u32SelectedMarkerDepth;             /**< Selected marker depth */
+  orxU32        u32MaxMarkerDepth;                  /**< Maximum marker depth */
 
 } orxRENDER_STATIC;
 
@@ -166,7 +189,7 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
 static void orxFASTCALL orxRender_Home_BlinkTimer(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
   /* Updates blink status */
-  sstRender.bBlink = !sstRender.bBlink;
+  orxFLAG_SWAP(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK);
 
   /* Done! */
   return;
@@ -181,6 +204,36 @@ static void orxFASTCALL orxRender_Home_ResetProfilerMaxima(const orxCLOCK_INFO *
 
   /* Done! */
   return;
+}
+
+/** Resets input callback
+ */
+static void orxFASTCALL orxRender_ResetInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  const orxSTRING zPreviousSet;
+  orxSTRING       zInput;
+
+  /* Backups previous input set */
+  zPreviousSet = orxInput_GetCurrentSet();
+
+  /* Selects render input set */
+  orxInput_SelectSet(orxRENDER_KZ_INPUT_SET);
+
+  /* Gets input */
+  zInput = (orxSTRING)_pContext;
+
+  /* Is input still active? */
+  if(orxInput_IsActive(zInput) != orxFALSE)
+  {
+    /* Resets it */
+    orxInput_SetValue(zInput, orxFLOAT_0);
+
+    /* Re-adds input reset timer */
+    orxClock_AddGlobalTimer(orxRender_ResetInput, orxRENDER_KF_INPUT_RESET_DELAY, 1, zInput);
+  }
+
+  /* Restores previous input set */
+  orxInput_SelectSet(zPreviousSet);
 }
 
 /** Renders FPS counter
@@ -304,7 +357,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
-  orxU32                  u32CurrentDepth, u32MaxDepth, i;
+  orxU32                  u32CurrentDepth, i;
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
   orxDOUBLE               dFrameStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
@@ -342,7 +395,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   s32MarkerCounter = orxProfiler_GetMarkerCounter();
 
   /* For all markers */
-  for(s32UniqueCounter = 0, u32MaxDepth = 0, s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+  for(s32UniqueCounter = 0, sstRender.u32MaxMarkerDepth = 0, s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextMarkerID(s32MarkerID))
   {
@@ -355,10 +408,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
       /* Deeper than previous? */
-      if(u32Depth > u32MaxDepth)
+      if(u32Depth > sstRender.u32MaxMarkerDepth)
       {
         /* Stores it */
-        u32MaxDepth = u32Depth;
+        sstRender.u32MaxMarkerDepth = u32Depth;
       }
 
       /* Updates counter */
@@ -367,8 +420,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   }
 
   /* Allocates & inits array for storing block ends at each depth */
-  adDepthBlockEndTime = (orxDOUBLE *)alloca(u32MaxDepth * sizeof(orxDOUBLE));
-  orxMemory_Zero(adDepthBlockEndTime, u32MaxDepth * sizeof(orxDOUBLE));
+  adDepthBlockEndTime = (orxDOUBLE *)alloca(sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
+  orxMemory_Zero(adDepthBlockEndTime, sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
 
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
@@ -387,13 +440,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   if(bLandscape != orxFALSE)
   {
     fWidth      = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth - orx2F(2.0f) * fBorder;
-    fHeight     = orxMath_Floor(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight / orxU2F(u32MaxDepth + 2));
+    fHeight     = orxMath_Floor(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight / orxU2F(sstRender.u32MaxMarkerDepth + 2));
     fTextScale  = orxMIN(fScreenWidth / orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH, orxFLOAT_1);
   }
   else
   {
     fWidth      = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight - orx2F(2.0f) * fBorder;
-    fHeight     = orxMath_Floor(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth / orxU2F(u32MaxDepth + 2));
+    fHeight     = orxMath_Floor(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth / orxU2F(sstRender.u32MaxMarkerDepth + 2));
     fTextScale  = orxMIN(fScreenHeight / orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH, orxFLOAT_1);
   }
   fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
@@ -417,7 +470,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Should render history? */
-  if(sstRender.bDisplayProfilerHistory != orxFALSE)
+  if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
   {
     orxDISPLAY_VERTEX astVertexList[2 * orxPROFILER_KU32_HISTORY_LENGTH];
     orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH];
@@ -492,11 +545,11 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
               /* Updates bottom vertex with previous top one */
               astVertexList[2 * i].fY     = fScreenHeight - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-              astVertexList[2 * i].stRGBA = stRGBA;
+              astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
 
               /* Updates top vertex */
               astVertexList[2 * i + 1].fY     = astVertexList[2 * i].fY - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-              astVertexList[2 * i + 1].stRGBA = stRGBA;
+              astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
             }
 
             /* Draws it */
@@ -505,10 +558,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         }
       }
     }
-
-    /* Selects last frame */
-    orxProfiler_SelectQueryFrame(0);
   }
+
+  /* Resets frame selection */
+  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame);
 
   /* Inits color */
   orxColor_Set(&stColor, &orxVECTOR_GREEN, orxRENDER_KF_PROFILER_BAR_ALPHA);
@@ -640,7 +693,18 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Updates pixel's color */
       stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
-      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+      if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY) && (u32Depth + 1 == sstRender.u32SelectedMarkerDepth))
+      {
+        stColor.vHSL.fL += orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
+        stColor.vHSL.fS += orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
+        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+        stColor.vHSL.fL -= orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
+        stColor.vHSL.fS -= orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
+      }
+      else
+      {
+        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
+      }
 
       /* Draws bar */
       orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -692,7 +756,18 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Sets font's color */
       stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
-      orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+      if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY) && (u32Depth == sstRender.u32SelectedMarkerDepth))
+      {
+        stColor.vHSL.fL += orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
+        stColor.vHSL.fS += orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
+        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+        stColor.vHSL.fL -= orxRENDER_KF_PROFILER_DEPTH_SATURATION_COEF;
+        stColor.vHSL.fS -= orxRENDER_KF_PROFILER_DEPTH_LIGHTNESS_COEF;
+      }
+      else
+      {
+        orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
+      }
 
       /* Adds depth markers */
       for(i = 0; i < u32Depth; i++)
@@ -1015,7 +1090,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   if(u32CursorIndex < 255)
   {
     /* Should display it? */
-    if(sstRender.bBlink != orxFALSE)
+    if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK))
     {
       ((orxCHAR*)zText)[u32CursorIndex] = '_';
       orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -2015,6 +2090,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA, orxRENDER_KU32_STATIC_FLAG_NONE);
         }
+
+        /* Updates status */
+        orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER, orxRENDER_KU32_STATIC_FLAG_NONE);
       }
       else
       {
@@ -2027,6 +2105,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
         }
+
+        /* Updates status */
+        orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PROFILER);
       }
 
       /* Is console enabled? */
@@ -2100,6 +2181,88 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
 
         /* Inits console */
         orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
+      }
+
+      break;
+    }
+
+    case orxEVENT_TYPE_INPUT:
+    {
+      /* If profiler rendered? */
+      if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER))
+      {
+        /* Input on? */
+        if(_pstEvent->eID == orxINPUT_EVENT_ON)
+        {
+          orxINPUT_EVENT_PAYLOAD *pstPayload;
+
+          /* Gets payload */
+          pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+          /* Toggle profiler history? */
+          if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY))
+          {
+            /* Updates profiler history status */
+            orxFLAG_SWAP(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY);
+          }
+          /* Toggle profiler pause? */
+          else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PAUSE))
+          {
+            /* Updates profiler pause status */
+            orxProfiler_Pause(!orxProfiler_IsPaused());
+          }
+          /* Previous profiler frame? */
+          else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME))
+          {
+            /* Not first frame? */
+            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH)
+            {
+              /* Updates it */
+              sstRender.u32SelectedFrame++;
+            }
+
+            /* Adds input reset timer */
+            orxClock_AddGlobalTimer(orxRender_ResetInput, orxRENDER_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME);
+          }
+          /* Next profiler frame? */
+          else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME))
+          {
+            /* Not last frame? */
+            if(sstRender.u32SelectedFrame > 0)
+            {
+              /* Updates it */
+              sstRender.u32SelectedFrame--;
+            }
+
+            /* Adds input reset timer */
+            orxClock_AddGlobalTimer(orxRender_ResetInput, orxRENDER_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME);
+          }
+
+          /* Is profiler history rendered? */
+          if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
+          {
+            /* Previous profiler depth? */
+            if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH))
+            {
+              /* Not first depth? */
+              if(sstRender.u32SelectedMarkerDepth > 1)
+              {
+                /* Updates it */
+                sstRender.u32SelectedMarkerDepth--;
+              }
+            }
+            /* Next profiler depth? */
+            else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH))
+            {
+              /* Not last marker depth? */
+              if(sstRender.u32SelectedMarkerDepth < sstRender.u32MaxMarkerDepth)
+              {
+                /* Updates depth */
+                sstRender.u32SelectedMarkerDepth++;
+              }
+            }
+          }
+        }
       }
 
       break;
@@ -2444,6 +2607,27 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           if(eResult != orxSTATUS_FAILURE)
           {
             orxFLOAT fScreenWidth, fScreenHeight;
+            const orxSTRING zPreviousSet;
+
+            /* Backups previous input set */
+            zPreviousSet = orxInput_GetCurrentSet();
+
+            /* Selects render input set */
+            orxInput_SelectSet(orxRENDER_KZ_INPUT_SET);
+
+            /* Binds console inputs */
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PAUSE, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PAUSE);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_FRAME);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_FRAME);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH);
+
+            /* Enables set */
+            orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxTRUE);
+
+            /* Restores previous set */
+            orxInput_SelectSet(zPreviousSet);
 
             /* Inits it */
             orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);
@@ -2451,11 +2635,12 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxFrame_SetScale(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_1);
 
             /* Adds blinking timer */
-            orxClock_AddGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, -1, orxNULL);
+            orxClock_AddGlobalTimer(orxRender_Home_BlinkTimer, orxRENDER_KF_CONSOLE_BLINK_DELAY, -1, orxNULL);
 
             /* Adds event handlers */
             orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
             orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxRender_Home_EventHandler);
+            orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxRender_Home_EventHandler);
 
             /* Gets screen size */
             orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
@@ -2463,8 +2648,11 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             /* Inits console */
             orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
 
-            /* Inits selecter marker depth */
+            /* Inits selected marker depth */
             sstRender.u32SelectedMarkerDepth = 1;
+
+            /* Inits selected frame */
+            sstRender.u32SelectedFrame = 0;
 
             /* Inits Flags */
             sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY | orxRENDER_KU32_STATIC_FLAG_REGISTERED;
@@ -2528,9 +2716,10 @@ void orxFASTCALL orxRender_Home_Exit()
     /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxRender_Home_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxRender_Home_EventHandler);
 
     /* Removes blinking timer */
-    orxClock_RemoveGlobalTimer(orxRender_Home_BlinkTimer, orxCONSOLE_KF_BLINK_DELAY, orxNULL);
+    orxClock_RemoveGlobalTimer(orxRender_Home_BlinkTimer, orxRENDER_KF_CONSOLE_BLINK_DELAY, orxNULL);
 
     /* Unregisters rendering function */
     if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_REGISTERED))
