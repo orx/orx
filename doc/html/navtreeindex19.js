@@ -1,5 +1,13 @@
 var NAVTREEINDEX19 =
 {
+"orx_system_8h.html#gga064bb4565c24e8324d940ff70964afeeac928c48753b795e4892dd9c1b5607ddb":[3,0,0,2,7,0,8],
+"orx_system_8h.html#gga064bb4565c24e8324d940ff70964afeeaca2200f4fcd8418629a015d5500887ba":[3,0,0,2,7,0,11],
+"orx_system_8h.html#gga064bb4565c24e8324d940ff70964afeeacb1022e05c114dc1585aa4d2a6ca3baa":[3,0,0,2,7,0,10],
+"orx_system_8h_source.html":[3,0,0,2,7],
+"orx_text_8h.html":[3,0,0,4,4],
+"orx_text_8h.html#ga14c4856a4f1a9e4cb084646e71b30182":[3,0,0,4,4,9],
+"orx_text_8h.html#ga1d65bbeba32adec6b694e8deffade036":[3,0,0,4,4,11],
+"orx_text_8h.html#ga29d5de5b4a21a24bd3bfbad5cf57b799":[3,0,0,4,4,6],
 "orx_text_8h.html#ga48540a8acf5c3b2914e4139d0471f0b5":[3,0,0,4,4,8],
 "orx_text_8h.html#ga6c17c8e949027b0f40e6c2d682d5ae83":[3,0,0,4,4,10],
 "orx_text_8h.html#ga790a85f0fda7a8a57c9b19fb37b8e44b":[3,0,0,4,4,7],
@@ -241,13 +249,5 @@ var NAVTREEINDEX19 =
 "structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#aa5d780ad27118c4f17825a83ebbf2138":[1,37,1,17],
 "structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#aa605c4caacceecccd232220a6baaf5e9":[1,37,1,1],
 "structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#ab1179bf7c3f8d8908f84a589db13ad12":[1,37,1,21],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#abb1c258b485d06bea8845393411fee26":[1,37,1,26],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#ac00f6370cb4956d0b837a376bac8849c":[1,37,1,2],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#acb4e934a7ead2ac1693f18f4b9fb8a73":[1,37,1,11],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#acd1009763219e494383fd0a2b986e02b":[1,37,1,19],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#ace743e8d3d25168362fbd01b1680a02d":[1,37,1,3],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#ad34f6028d27d92e7eb6ea18080b2a323":[1,37,1,5],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#ad9ebe31ac1cf9d15eedf155629a5bc4b":[1,37,1,29],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#af3522f32e38e67313380aff3ed27e89f":[1,37,1,23],
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#afe8bc4b16b85590b0065a0cc37135c43":[1,37,1,4]
+"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#abb1c258b485d06bea8845393411fee26":[1,37,1,26]
 };

@@ -31,6 +31,7 @@ var group__orx_resource =
     [ "orxResource_Open", "group__orx_resource.html#gaf09cc8992e2773da7f6a83ec20bd1962", null ],
     [ "orxResource_Read", "group__orx_resource.html#ga144224dc81b0ddc8c2ce26d318087aa9", null ],
     [ "orxResource_RegisterType", "group__orx_resource.html#ga9fd6dd2c287cdccda40e47f3ac7cc91a", null ],
+    [ "orxResource_ReloadStorage", "group__orx_resource.html#gadba8c905ff1d9f9f7a68858e8805d694", null ],
     [ "orxResource_RemoveStorage", "group__orx_resource.html#ga3347a87e9f0b798d12e42c3d7b397ee7", null ],
     [ "orxResource_Seek", "group__orx_resource.html#ga433173f60b7b6a1165d57ae7eac2cce2", null ],
     [ "orxResource_Setup", "group__orx_resource.html#gabe07fd5cad2cda2a6c91b303d55cace3", null ],
