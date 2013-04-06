@@ -54,11 +54,23 @@
 
 /** Misc defines
  */
-#define orxRENDER_KZ_CONFIG_SECTION       "Render"
-#define orxRENDER_KZ_CONFIG_SHOW_FPS      "ShowFPS"
-#define orxRENDER_KZ_CONFIG_SHOW_PROFILER "ShowProfiler"
-#define orxRENDER_KZ_CONFIG_MIN_FREQUENCY "MinFrequency"
-#define orxRENDER_KZ_CONFIG_CONSOLE_COLOR "ConsoleColor"
+#define orxRENDER_KZ_CONFIG_SECTION                 "Render"
+#define orxRENDER_KZ_CONFIG_SHOW_FPS                "ShowFPS"
+#define orxRENDER_KZ_CONFIG_SHOW_PROFILER           "ShowProfiler"
+#define orxRENDER_KZ_CONFIG_MIN_FREQUENCY           "MinFrequency"
+#define orxRENDER_KZ_CONFIG_CONSOLE_COLOR           "ConsoleColor"
+
+
+/** Inputs
+ */
+#define orxRENDER_KZ_INPUT_SET                      "-=RenderSet=-"
+
+#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY  "ProfilerToggleHistory"
+#define orxRENDER_KZ_INPUT_PROFILER_PAUSE           "ProfilerPause"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME  "ProfilerPreviousFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME      "ProfilerNextFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH  "ProfilerPreviousDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH      "ProfilerNextDepth"
 
 
 /** Event enum

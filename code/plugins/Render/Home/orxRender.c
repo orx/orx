@@ -93,14 +93,6 @@
 #define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT          orx2F(0.05f)
 #define orxRENDER_KF_CONSOLE_SPEED                  orx2F(3000.0f)
 
-#define orxRENDER_KZ_INPUT_SET                      "-=RenderSet=-"
-#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY  "ProfToggleHistory"
-#define orxRENDER_KZ_INPUT_PROFILER_PAUSE           "ProfPause"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME  "ProfPrevFrame"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME      "ProfNextFrame"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH  "ProfPrevDepth"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH      "ProfNextDepth"
-
 #define orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY    orxKEYBOARD_KEY_SCROLL_LOCK
 #define orxRENDER_KE_KEY_PROFILER_PAUSE             orxKEYBOARD_KEY_PAUSE
 #define orxRENDER_KE_KEY_PROFILER_PREVIOUS_FRAME    orxKEYBOARD_KEY_LEFT

@@ -70,20 +70,7 @@
 
 #define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension*/
 
-#define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
-
-#define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
 #define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_BACKQUOTE       /**< Default toggle key */
-
-#define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
-#define orxCONSOLE_KZ_INPUT_DELETE                    "Delete"                        /**< Delete input */
-#define orxCONSOLE_KZ_INPUT_ENTER                     "Enter"                         /**< Enter input */
-#define orxCONSOLE_KZ_INPUT_PREVIOUS                  "Previous"                      /**< Previous input */
-#define orxCONSOLE_KZ_INPUT_NEXT                      "Next"                          /**< Next input */
-#define orxCONSOLE_KZ_INPUT_LEFT                      "Left"                          /**< Cursor move left */
-#define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
-#define orxCONSOLE_KZ_INPUT_START                     "Start"                         /**< Cursor move start */
-#define orxCONSOLE_KZ_INPUT_END                       "End"                           /**< Cursor move end */
 
 #define orxCONSOLE_KE_KEY_AUTOCOMPLETE                orxKEYBOARD_KEY_TAB             /**< Autocomplete key */
 #define orxCONSOLE_KE_KEY_DELETE                      orxKEYBOARD_KEY_BACKSPACE       /**< Delete key */
