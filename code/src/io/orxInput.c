@@ -187,6 +187,31 @@ void orxFASTCALL orxInput_CommandGetCurrentSet(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: EnableSet
+ */
+void orxFASTCALL orxInput_CommandEnableSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Enabled it */
+  orxInput_EnableSet(_astArgList[0].zValue, _astArgList[1].bValue);
+
+  /* Updates result */
+  _pstResult->zValue = orxInput_IsSetEnabled(_astArgList[0].zValue) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsSetEnabled
+ */
+void orxFASTCALL orxInput_CommandIsSetEnabled(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_IsSetEnabled(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetValue
  */
 void orxFASTCALL orxInput_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -266,6 +291,11 @@ static orxINLINE void orxInput_RegisterCommands()
   /* Command: GetCurrentSet */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
+  /* Command: EnableSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, EnableSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsSetEnabled */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, IsSetEnabled, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: SetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Input", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Input", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: ResetValue */
@@ -287,6 +317,11 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SelectSet);
   /* Command: GetCurrentSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetCurrentSet);
+
+  /* Command: EnableSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, EnableSet);
+  /* Command: IsSetEnabled */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, IsSetEnabled);
 
   /* Command: SetValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SetValue);
@@ -1471,7 +1506,7 @@ orxSTATUS orxFASTCALL orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEn
 /** Is working set enabled (includes current working set)?
  * @return orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxInput_IsEnabled(const orxSTRING _zSetName)
+orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
 {
   orxBOOL bResult = orxFALSE;
 

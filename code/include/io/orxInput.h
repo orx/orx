@@ -150,7 +150,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxST
  * @param[in] _zSetName         Set name to check
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsEnabled(const orxSTRING _zSetName);
+extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const orxSTRING _zSetName);
 
 
 /** Is input active?
