@@ -102,6 +102,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage);
 
+/** Reloads storage from config
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ReloadStorage();
+
 
 /** Gets number of storages for a given resource group
  * @param[in] _zGroup           Concerned resource group

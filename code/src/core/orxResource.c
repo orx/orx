@@ -555,7 +555,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP *pstGroup = orxNULL;
+    orxRESOURCE_GROUP *pstGroup;
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
@@ -635,7 +635,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP *pstGroup = orxNULL;
+    orxRESOURCE_GROUP *pstGroup;
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
@@ -672,6 +672,84 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
       }
     }
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Reloads storage from config
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxResource_ReloadStorage()
+{
+  orxS32    i, s32SectionCounter;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Pushes resource config section */
+  orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+  /* For all keys */
+  for(i = 0, s32SectionCounter = orxConfig_GetKeyCounter(); i < s32SectionCounter; i++)
+  {
+    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    const orxSTRING     zGroup;
+    orxS32              j;
+
+    /* Gets group name */
+    zGroup = orxConfig_GetKey(i);
+
+    /* Finds it */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        (pstGroup != orxNULL) && (orxString_Compare(pstGroup->zName, zGroup) != 0);
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+
+    /* For all storages in list */
+    for(j = orxConfig_GetListCounter(zGroup) - 1; j >= 0; j--)
+    {
+      const orxSTRING zStorage;
+      orxBOOL         bAdd = orxTRUE;
+
+      /* Gets storage name */
+      zStorage = orxConfig_GetListString(zGroup, j);
+
+      /* Did the group exist? */
+      if(pstGroup != orxNULL)
+      {
+        orxRESOURCE_STORAGE *pstStorage;
+
+        /* For all storages in group */
+        for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
+            pstStorage != orxNULL;
+            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
+        {
+          /* Found? */
+          if(orxString_Compare(zStorage, pstStorage->zStorage) == 0)
+          {
+            /* Don't add it */
+            bAdd = orxFALSE;
+
+            break;
+          }
+        }
+      }
+
+      /* Should add storage? */
+      if(bAdd != orxFALSE)
+      {
+        /* Adds storage to group */
+        orxResource_AddStorage(zGroup, zStorage, orxTRUE);
+      }
+    }
+
+    /* Updates status */
+    orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Done! */
   return eResult;
@@ -777,33 +855,8 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   /* Isn't config already loaded? */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
   {
-    orxS32 i, s32SectionCounter;
-
-    /* Pushes resource config section */
-    orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
-
-    /* For all keys */
-    for(i = 0, s32SectionCounter = orxConfig_GetKeyCounter(); i < s32SectionCounter; i++)
-    {
-      const orxSTRING zGroup;
-      orxS32          j;
-
-      /* Gets group */
-      zGroup = orxConfig_GetKey(i);
-
-      /* For all storages in list */
-      for(j = orxConfig_GetListCounter(zGroup) - 1; j >= 0; j--)
-      {
-        /* Adds it to group */
-        orxResource_AddStorage(zGroup, orxConfig_GetListString(zGroup, j), orxTRUE);
-      }
-
-      /* Updates status */
-      orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
-    }
-
-    /* Pops config section */
-    orxConfig_PopSection();
+    /* Reloads storage */
+    orxResource_ReloadStorage();
   }
 
   /* Valid? */
