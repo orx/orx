@@ -5,6 +5,13 @@ var orx_render_8h =
     [ "orxRENDER_KZ_CONFIG_SECTION", "orx_render_8h.html#gac18069a6467cbcee0503abdaa6aaa5f6", null ],
     [ "orxRENDER_KZ_CONFIG_SHOW_FPS", "orx_render_8h.html#gadd4ac9e534660a0c1798f4577950f791", null ],
     [ "orxRENDER_KZ_CONFIG_SHOW_PROFILER", "orx_render_8h.html#ga2000d01d9338be90001a4b06cdcd718b", null ],
+    [ "orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH", "orx_render_8h.html#ga4c8cef3d0cf4f64e09e7520812b2922a", null ],
+    [ "orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME", "orx_render_8h.html#ga981028fe6a3dec719a65368dcd828f1d", null ],
+    [ "orxRENDER_KZ_INPUT_PROFILER_PAUSE", "orx_render_8h.html#gad4ad1ebad0022db8122f1489d2d61940", null ],
+    [ "orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH", "orx_render_8h.html#ga07558cb0ea9e12f0eaacf9e26723e9f2", null ],
+    [ "orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME", "orx_render_8h.html#gab2c47110cb123c05096304d26382ecc8", null ],
+    [ "orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY", "orx_render_8h.html#gafc1244ea589c1dcc2138b4524d9af274", null ],
+    [ "orxRENDER_KZ_INPUT_SET", "orx_render_8h.html#gaa5c2f3d39cba63bed26ec7b7f97bfc08", null ],
     [ "orxRENDER_EVENT", "orx_render_8h.html#gaf2df6db5cb046f3e29a234036b54c684", [
       [ "orxRENDER_EVENT_START", "orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684a7e64d645ce7f8ba974770de15c7e33fc", null ],
       [ "orxRENDER_EVENT_STOP", "orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684ad82fbd8aba731e5f39fcc64572649b31", null ],
