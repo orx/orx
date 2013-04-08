@@ -3504,13 +3504,10 @@ orxBOOL orxFASTCALL orxDisplay_iOS_IsFullScreen()
 
 orxU32 orxFASTCALL orxDisplay_iOS_GetVideoModeCounter()
 {
-  orxU32 u32Result = 0;
+  orxU32 u32Result = 1;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return u32Result;
@@ -3524,23 +3521,15 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iOS_GetVideoMode(orxU32 _u32Index,
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstVideoMode != orxNULL);
 
-  /* Default mode? */
-  if(_u32Index == orxU32_UNDEFINED)
-  {
-    /* Gets default mode */
-    _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
-    _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
-    _pstVideoMode->u32Depth       = 32;
-    _pstVideoMode->u32RefreshRate = 60;
+  /* Gets default mode */
+  _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
+  _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
+  _pstVideoMode->u32Depth       = 32;
+  _pstVideoMode->u32RefreshRate = 60;
+  _pstVideoMode->bFullScreen    = orxTRUE;
 
-    /* Updates result */
-    pstResult = _pstVideoMode;
-  }
-  else
-  {
-    /* Not available */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
-  }
+  /* Updates result */
+  pstResult = _pstVideoMode;
 
   /* Done! */
   return pstResult;

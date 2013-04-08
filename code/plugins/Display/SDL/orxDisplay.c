@@ -1472,13 +1472,27 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
     if((apstModeList != NULL) && (apstModeList != (SDL_Rect **)-1))
     {
       /* Stores info */
-      _pstVideoMode->u32Width   = apstModeList[_u32Index]->w;
-      _pstVideoMode->u32Height  = apstModeList[_u32Index]->h;
-      _pstVideoMode->u32Depth   = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+      _pstVideoMode->u32Width       = apstModeList[_u32Index]->w;
+      _pstVideoMode->u32Height      = apstModeList[_u32Index]->h;
+      _pstVideoMode->u32Depth       = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+      _pstVideoMode->u32RefreshRate = 0;
+      _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN) ? orxTRUE : orxFALSE;
 
       /* Updates result */
       pstResult = _pstVideoMode;
     }
+  }
+  else if(_u32Index != orxU32_UNDEFINED)
+  {
+    /* Stores info */
+    _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
+    _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
+    _pstVideoMode->u32Depth       = sstDisplay.pstScreen->u32Depth;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Updates result */
+    pstResult = _pstVideoMode;
   }
 
   /* Done! */
@@ -1583,6 +1597,18 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
   {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  }
+
+  /* Fullscreen? */
+  if(_pstVideoMode->bFullScreen != orxFALSE)
+  {
+    /* Updates window style */
+    orxFLAG_SET(sstDisplay.u32SDLFlags, SDL_FULLSCREEN, 0);
+  }
+  else
+  {
+    /* Updates window style */
+    orxFLAG_SET(sstDisplay.u32SDLFlags, 0, SDL_FULLSCREEN);
   }
 
   /* Pushes display section */
@@ -1770,13 +1796,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
     if(pfnWGLSwapIntervalEXT != NULL)
     {
       /* Updates VSync status */
-      pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? 1 : 0);
+      pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? -1 : 0);
     }
   }
   else
   {
     /* Updates VSync status */
-    pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? 1 : 0);
+    pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? -1 : 0);
   }
 
 #elif defined(__orxLINUX__)
@@ -1796,13 +1822,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
     if(pfnglXSwapIntervalSGI != NULL)
     {
       /* Updates VSync status */
-      pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? 1 : 0);
+      pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? -1 : 0);
     }
   }
   else
   {
     /* Updates VSync status */
-    pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? 1 : 0);
+    pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? -1 : 0);
   }
 
 #endif
@@ -1857,9 +1883,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
     /* Wasn't already full screen? */
     if(!orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32SDLFlags, SDL_FULLSCREEN, 0);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -1869,9 +1892,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
     /* Was full screen? */
     if(orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32SDLFlags, 0, SDL_FULLSCREEN);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -1883,9 +1903,10 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
     orxDISPLAY_VIDEO_MODE stVideoMode;
 
     /* Inits video mode */
-    stVideoMode.u32Width  = orxF2U(sstDisplay.pstScreen->fWidth);
-    stVideoMode.u32Height = orxF2U(sstDisplay.pstScreen->fHeight);
-    stVideoMode.u32Depth  = sstDisplay.pstScreen->u32Depth;
+    stVideoMode.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+    stVideoMode.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
+    stVideoMode.u32Depth    = sstDisplay.pstScreen->u32Depth;
+    stVideoMode.bFullScreen = _bFullScreen;
 
     /* Updates video mode */
     eResult = orxDisplay_SDL_SetVideoMode(&stVideoMode);

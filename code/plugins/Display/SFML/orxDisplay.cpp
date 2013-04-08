@@ -948,25 +948,44 @@ extern "C" orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SFML_GetVideoMode(orxU3
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstVideoMode != orxNULL);
 
+  /* Desktop mode? */
+  if(_u32Index == orxU32_UNDEFINED)
+  {
+    /* Gets desktop video mode */
+    sf::VideoMode roVideoMode = sf::VideoMode::GetDesktopMode();
+
+    /* Stores info */
+    _pstVideoMode->u32Width       = roVideoMode.Width;
+    _pstVideoMode->u32Height      = roVideoMode.Height;
+    _pstVideoMode->u32Depth       = roVideoMode.BitsPerPixel;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxDisplay_SFML_IsFullScreen();
+  }
   /* Is index valid? */
-  if(_u32Index < orxDisplay_SFML_GetVideoModeCounter())
+  else if(_u32Index < orxDisplay_SFML_GetVideoModeCounter())
   {
     /* Gets video mode */
     sf::VideoMode roVideoMode = sf::VideoMode::GetMode(_u32Index);
 
     /* Stores info */
-    _pstVideoMode->u32Width   = roVideoMode.Width;
-    _pstVideoMode->u32Height  = roVideoMode.Height;
-    _pstVideoMode->u32Depth   = roVideoMode.BitsPerPixel;
-
-    /* Updates result */
-    pstResult = _pstVideoMode;
+    _pstVideoMode->u32Width       = roVideoMode.Width;
+    _pstVideoMode->u32Height      = roVideoMode.Height;
+    _pstVideoMode->u32Depth       = roVideoMode.BitsPerPixel;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxDisplay_SFML_IsFullScreen();
   }
   else
   {
-    /* Updates result */
-    pstResult = orxNULL;
+    /* Stores info */
+    _pstVideoMode->u32Width       = sstDisplay.u32ScreenWidth;
+    _pstVideoMode->u32Height      = sstDisplay.u32ScreenHeight;
+    _pstVideoMode->u32Depth       = sstDisplay.u32ScreenDepth;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxDisplay_SFML_IsFullScreen();
   }
+
+  /* Updates result */
+  pstResult = _pstVideoMode;
 
   /* Done! */
   return pstResult;
@@ -1017,7 +1036,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Full screen? */
-    if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+    if(_pstVideoMode->bFullScreen != orxFALSE)
     {
       /* Updates flags */
       sstDisplay.ulWindowStyle = sf::Style::Fullscreen;
@@ -1043,6 +1062,18 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
 
     /* Enforces VSync status */
     sstDisplay.poRenderWindow->UseVerticalSync(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? true : false);
+
+    /* Is fullscreen? */
+    if(_pstVideoMode->bFullScreen != orxFALSE)
+    {
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
+    }
 
     /* Pops config section */
     orxConfig_PopSection();

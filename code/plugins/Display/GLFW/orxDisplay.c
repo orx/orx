@@ -197,7 +197,6 @@ typedef struct __orxDISPLAY_STATIC_t
   GLuint                    uiFrameBuffer;
   GLuint                    uiIndexBuffer;
   orxS32                    s32BufferIndex;
-  orxU32                    u32GLFWFlags;
   orxU32                    u32Flags;
   orxU32                    u32Depth;
   orxU32                    u32RefreshRate;
@@ -292,10 +291,11 @@ static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
       orxDISPLAY_VIDEO_MODE stVideoMode;
 
       /* Inits video mode */
-      stVideoMode.u32Width       = (orxU32)_iWidth;
-      stVideoMode.u32Height      = (orxU32)_iHeight;
-      stVideoMode.u32Depth       = sstDisplay.u32Depth;
-      stVideoMode.u32RefreshRate = sstDisplay.u32RefreshRate;
+      stVideoMode.u32Width        = (orxU32)_iWidth;
+      stVideoMode.u32Height       = (orxU32)_iHeight;
+      stVideoMode.u32Depth        = sstDisplay.u32Depth;
+      stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+      stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
       /* Applies it */
       orxDisplay_SetVideoMode(&stVideoMode);
@@ -2475,6 +2475,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
     _pstVideoMode->u32Height      = sstDisplay.u32DefaultHeight;
     _pstVideoMode->u32Depth       = sstDisplay.u32DefaultDepth;
     _pstVideoMode->u32RefreshRate = sstDisplay.u32DefaultRefreshRate;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
     /* 24-bit? */
     if(_pstVideoMode->u32Depth == 24)
@@ -2482,9 +2483,6 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
       /* Gets 32-bit instead */
       _pstVideoMode->u32Depth = 32;
     }
-
-    /* Updates result */
-    pstResult = _pstVideoMode;
   }
   /* Is index valid? */
   else if(_u32Index < u32Counter)
@@ -2494,6 +2492,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
     _pstVideoMode->u32Height      = astModeList[_u32Index].Height;
     _pstVideoMode->u32Depth       = astModeList[_u32Index].RedBits + astModeList[_u32Index].GreenBits + astModeList[_u32Index].BlueBits;
     _pstVideoMode->u32RefreshRate = (astModeList[_u32Index].RefreshRate != 0) ? astModeList[_u32Index].RefreshRate : sstDisplay.u32DefaultRefreshRate;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
     /* 24-bit? */
     if(_pstVideoMode->u32Depth == 24)
@@ -2501,15 +2500,20 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
       /* Gets 32-bit instead */
       _pstVideoMode->u32Depth = 32;
     }
-
-    /* Updates result */
-    pstResult = _pstVideoMode;
   }
+  /* Gets current mode */
   else
   {
-    /* Updates result */
-    pstResult = orxNULL;
+    /* Stores info */
+    _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
+    _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
+    _pstVideoMode->u32Depth       = sstDisplay.pstScreen->u32Depth;
+    _pstVideoMode->u32RefreshRate = sstDisplay.u32RefreshRate;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
   }
+
+  /* Updates result */
+  pstResult = _pstVideoMode;
 
   /* Done! */
   return pstResult;
@@ -2625,8 +2629,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
 
     /* Not in full screen and same depth/refresh rate? */
-    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN)
-    && !orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN)
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN)
+    && (_pstVideoMode->bFullScreen == orxFALSE)
     && (sstDisplay.u32Depth == (orxU32)iDepth)
     && (sstDisplay.u32RefreshRate == (orxU32)iRefreshRate))
     {
@@ -2642,7 +2646,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       stPayload.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
       stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
       stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
-      stPayload.bFullScreen             = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+      stPayload.bFullScreen             = _pstVideoMode->bFullScreen;
 
       /* Ignores resize event for now */
       sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
@@ -2820,7 +2824,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         case 16:
         {
           /* Updates video mode */
-          eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (_pstVideoMode->bFullScreen != orxFALSE) ? GLFW_FULLSCREEN : GLFW_WINDOW) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           break;
         }
@@ -2829,7 +2833,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         case 24:
         {
           /* Updates video mode */
-          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (_pstVideoMode->bFullScreen != orxFALSE) ? GLFW_FULLSCREEN : GLFW_WINDOW) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           break;
         }
@@ -2839,7 +2843,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         case 32:
         {
           /* Updates video mode */
-          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (_pstVideoMode->bFullScreen != orxFALSE) ? GLFW_FULLSCREEN : GLFW_WINDOW) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           break;
         }
@@ -2849,6 +2853,18 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       if(eResult != orxSTATUS_FAILURE)
       {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
+
+        /* Is fullscreen? */
+        if(_pstVideoMode->bFullScreen != orxFALSE)
+        {
+          /* Updates status */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+        }
+        else
+        {
+          /* Updates status */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
+        }
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
@@ -2860,7 +2876,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         stPayload.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
         stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
         stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
-        stPayload.bFullScreen             = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+        stPayload.bFullScreen             = _pstVideoMode->bFullScreen;
 
         /* Inits extensions */
         orxDisplay_GLFW_InitExtensions();
@@ -3061,7 +3077,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Isn't fullscreen? */
-    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
       orxVECTOR vPosition;
 
@@ -3123,11 +3139,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   if(_bFullScreen != orxFALSE)
   {
     /* Wasn't already full screen? */
-    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN, GLFW_WINDOW);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -3135,11 +3148,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   else
   {
     /* Was full screen? */
-    if(orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_WINDOW, GLFW_FULLSCREEN);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -3155,6 +3165,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
     stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
     stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
     stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+    stVideoMode.bFullScreen     = _bFullScreen;
 
     /* Updates video mode */
     eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode);
@@ -3163,22 +3174,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
     if(eResult == orxSTATUS_FAILURE)
     {
       /* Restores previous full screen status */
-      orxFLAG_SWAP(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN);
+      stVideoMode.bFullScreen = !stVideoMode.bFullScreen;
 
       /* Updates video mode */
       orxDisplay_GLFW_SetVideoMode(&stVideoMode);
-    }
-
-    /* Has full screen? */
-    if(orxFLAG_TEST(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
-    {
-      /* Updates current status */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-    }
-    else
-    {
-      /* Updates current status */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
     }
   }
 
@@ -3194,7 +3193,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsFullScreen()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  bResult = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+  bResult = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -3288,18 +3287,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         stVideoMode.u32Height       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : sstDisplay.u32DefaultHeight;
         stVideoMode.u32Depth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
         stVideoMode.u32RefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32DefaultRefreshRate;
-
-        /* Full screen? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
-        {
-          /* Updates flags */
-          sstDisplay.u32GLFWFlags = GLFW_FULLSCREEN;
-        }
-        else
-        {
-          /* Updates flags */
-          sstDisplay.u32GLFWFlags = GLFW_WINDOW;
-        }
+        stVideoMode.bFullScreen     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN);
 
         /* No decoration? */
         if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE)
@@ -3333,14 +3321,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         /* Sets video mode? */
         if((eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode)) == orxSTATUS_FAILURE)
         {
-          /* Updates display flags */
-          sstDisplay.u32GLFWFlags = GLFW_WINDOW;
-
           /* Updates resolution */
           stVideoMode.u32Width        = sstDisplay.u32DefaultWidth;
           stVideoMode.u32Height       = sstDisplay.u32DefaultHeight;
           stVideoMode.u32Depth        = sstDisplay.u32DefaultDepth;
           stVideoMode.u32RefreshRate  = sstDisplay.u32DefaultRefreshRate;
+          stVideoMode.bFullScreen     = orxFALSE;
 
           /* Sets video mode using default parameters */
           eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode);

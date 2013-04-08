@@ -109,6 +109,7 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 typedef struct __orxDISPLAY_VIDEO_MODE_t
 {
   orxU32  u32Width, u32Height, u32Depth, u32RefreshRate;
+  orxBOOL bFullScreen;
 
 } orxDISPLAY_VIDEO_MODE;
 
@@ -1093,7 +1094,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsFullScreen();
 extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCounter();
 
 /** Gets an available video mode
- * @param[in]   _u32Index                             Video mode index, must be lesser than orxDisplay_GetVideoModeCounter(), pass orxU32_UNDEFINED to get the default (desktop) mode
+ * @param[in]   _u32Index                             Video mode index, pass _u32Index < orxDisplay_GetVideoModeCounter() for an available listed mode, orxU32_UNDEFINED for the the default (desktop) mode and any other value for current mode
  * @param[out]  _pstVideoMode                         Storage for the video mode
  * @return orxDISPLAY_VIDEO_MODE / orxNULL if invalid
  */
