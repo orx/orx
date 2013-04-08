@@ -2628,9 +2628,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     iDepth        = (int)_pstVideoMode->u32Depth;
     iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
 
-    /* Not in full screen and same depth/refresh rate? */
-    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN)
-    && (_pstVideoMode->bFullScreen == orxFALSE)
+    /* Same fullscreen/windowed mode and same depth/refresh rate? */
+    if(((orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE) == _pstVideoMode->bFullScreen)
     && (sstDisplay.u32Depth == (orxU32)iDepth)
     && (sstDisplay.u32RefreshRate == (orxU32)iRefreshRate))
     {
