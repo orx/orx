@@ -46,7 +46,6 @@
 #define orxFONTGEN_KU32_STATIC_FLAG_SIZE            0x00000002  /**< Size flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE       0x00000004  /**< Monospace flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_ADVANCE         0x00000008  /**< Advance flag */
-#define orxFONTGEN_KU32_STATIC_FLAG_ASCENDER        0x00000010  /**< Ascender flag */
 
 #define orxFONTGEN_KU32_STATIC_MASK_READY           0x00000003  /**< Ready mask */
 
@@ -269,7 +268,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
     }
 
     // Logs message
-    orxLOG("[LOAD]    '%s': added %ld characters.", _zFileName, u32Counter);
+    orxLOG("[LOAD]    '%s': added %d characters.", _zFileName, u32Counter);
 
     // Updates result
     eResult = orxSTATUS_SUCCESS;
@@ -496,24 +495,6 @@ static orxSTATUS orxFASTCALL ProcessMonospaceParams(orxU32 _u32ParamCount, const
   return eResult;
 }
 
-static orxSTATUS orxFASTCALL ProcessAscenderParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  // Defined?
-  if(_u32ParamCount > 0)
-  {
-    // Updates status flags
-    orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ASCENDER, orxFONTGEN_KU32_STATIC_FLAG_NONE);
-
-    // Logs message
-    orxLOG("[FONT]    Using font's ascender value to define baseline.");
-  }
-
-  // Done!
-  return eResult;
-}
-
 static orxSTATUS orxFASTCALL ProcessAdvanceParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -609,75 +590,53 @@ static orxSTATUS orxFASTCALL Init()
         // Success?
         if(eResult != orxSTATUS_FAILURE)
         {
-          // Asks for command line ascender parameter
+          // Asks for command line input file parameter
           stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-          stParams.zShortName = "asc";
-          stParams.zLongName  = "ascender";
-          stParams.zShortDesc = "Use font's ascender value to define the baseline";
-          stParams.zLongDesc  = "Use font's ascender value instead of max glyph height to define the baseline";
-          stParams.pfnParser  = ProcessAscenderParams;
+          stParams.zShortName = "t";
+          stParams.zLongName  = "textlist";
+          stParams.zShortDesc = "List of input text files";
+          stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
+          stParams.pfnParser  = ProcessInputParams;
 
           // Registers params
           eResult = orxParam_Register(&stParams);
 
-          // Not using ascender?
-          if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ASCENDER))
-          {
-            // Logs message
-            orxLOG("[FONT]    Using max glyph height to define baseline.");
-          }
-
-          // Valid?
+          // Success?
           if(eResult != orxSTATUS_FAILURE)
           {
-            // Asks for command line input file parameter
+            // Asks for command line monospaced parameter
             stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-            stParams.zShortName = "t";
-            stParams.zLongName  = "textlist";
-            stParams.zShortDesc = "List of input text files";
-            stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
-            stParams.pfnParser  = ProcessInputParams;
+            stParams.zShortName = "m";
+            stParams.zLongName  = "monospace";
+            stParams.zShortDesc = "Monospaced font";
+            stParams.zLongDesc  = "Should output a monospaced (ie. fixed-width) font";
+            stParams.pfnParser  = ProcessMonospaceParams;
 
             // Registers params
             eResult = orxParam_Register(&stParams);
 
-            // Success?
-            if(eResult != orxSTATUS_FAILURE)
+            // Not monospaced?
+            if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
             {
-              // Asks for command line monospaced parameter
+              // Logs message
+              orxLOG("[MODE]    Output mode set to non-monospace.");
+
+              // Asks for command line advance parameter
               stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-              stParams.zShortName = "m";
-              stParams.zLongName  = "monospace";
-              stParams.zShortDesc = "Monospaced font";
-              stParams.zLongDesc  = "Should output a monospaced (ie. fixed-width) font";
-              stParams.pfnParser  = ProcessMonospaceParams;
+              stParams.zShortName = "a";
+              stParams.zLongName  = "advance";
+              stParams.zShortDesc = "Use glyph advance values for non-monospace fonts";
+              stParams.zLongDesc  = "In non-monospace mode only: the font's original glyph advance values will be used instead of packing glyphs as much as possible";
+              stParams.pfnParser  = ProcessAdvanceParams;
 
               // Registers params
               eResult = orxParam_Register(&stParams);
 
-              // Not monospaced?
-              if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+              // Not using original advance values?
+              if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
               {
                 // Logs message
-                orxLOG("[MODE]    Output mode set to non-monospace.");
-
-                // Asks for command line advance parameter
-                stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-                stParams.zShortName = "a";
-                stParams.zLongName  = "advance";
-                stParams.zShortDesc = "Use glyph advance values for non-monospace fonts";
-                stParams.zLongDesc  = "In non-monospace mode only: the font's original glyph advance values will be used instead of packing glyphs as much as possible";
-                stParams.pfnParser  = ProcessAdvanceParams;
-
-                // Registers params
-                eResult = orxParam_Register(&stParams);
-
-                // Not using original advance values?
-                if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
-                {
-                  // Logs message
-                  orxLOG("[PACKING] Characters will be packed.");
-                }
+                orxLOG("[PACKING] Characters will be packed.");
               }
             }
           }
@@ -734,7 +693,7 @@ static void Run()
     // Valid?
     if(u32Counter)
     {
-      orxS32      s32Width, s32Height, s32BaseLine;
+      orxS32      s32Width, s32Height, s32BaseLine, s32MaxAscend, s32MaxDescend;
       orxSTRING  *azWidthList = orxNULL;
       orxFLOAT    fWidth, fHeight;
       orxU8      *pu8ImageBuffer;
@@ -818,7 +777,7 @@ static void Run()
         orxFONTGEN_GLYPH *pstGlyph;
 
         // For all defined glyphs
-        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0;
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0, s32MaxAscend = 0, s32MaxDescend = 0;
             pstGlyph;
             pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
         {
@@ -828,6 +787,20 @@ static void Run()
           // Loads rendered glyph
           eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
           orxASSERT(!eError);
+
+          // Is ascend bigger than any previous?
+          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
+          {
+            // Stores it
+            s32MaxAscend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
+          }
+
+          // Is descened bigger than any previous?
+          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxDescend)
+          {
+            // Stores it
+            s32MaxDescend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
+          }
 
           // Use original advance value?
           if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
@@ -865,23 +838,62 @@ static void Run()
         // Updates height
         s32Height = s32Y + orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding + sstFontGen.vCharacterSpacing.fY);
       }
+      else
+      {
+        orxFONTGEN_GLYPH *pstGlyph;
+
+        // For all defined glyphs
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32MaxAscend = 0, s32MaxDescend = 0;
+            pstGlyph;
+            pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
+        {
+          FT_Error eError;
+
+          // Loads rendered glyph
+          eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
+          orxASSERT(!eError);
+
+          // Is ascend bigger than any previous?
+          if(sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
+          {
+            // Stores it
+            s32MaxAscend = sstFontGen.pstFontFace->glyph->bitmap_top;
+          }
+
+          // Is descened bigger than any previous?
+          if(sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1 > s32MaxDescend)
+          {
+            // Stores it
+            s32MaxDescend = sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1;
+          }
+        }
+      }
+
+      // Can't fit all characters?
+      if(s32MaxAscend + s32MaxDescend + 1 > orxF2S(sstFontGen.vCharacterSize.fY))
+      {
+        // Logs message
+        orxLOG("[PROCESS] Some characters will be cropped (height=%d/%d).", s32MaxAscend + s32MaxDescend + 1, orxF2S(sstFontGen.vCharacterSize.fY));
+      }
+
+      // Gets baseline (using scaled ascender)
+      s32BaseLine = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->ascender)));
+
+      // Is baseline incorrect?
+      if((s32BaseLine < s32MaxAscend)
+      || (s32BaseLine + s32MaxDescend + 1) > orxF2S(sstFontGen.vCharacterSize.fY))
+      {
+        // Logs messages
+        orxLOG("[PROCESS] Adjusting baseline to %d (%+d).", s32MaxAscend, s32MaxAscend - s32BaseLine);
+
+        // Adjusts value
+        s32BaseLine = s32MaxAscend;
+      }
 
       // Logs messages
       orxLOG("[PROCESS] Calculated character size:    %4g x %g.", sstFontGen.vCharacterSize.fX + sstFontGen.fPadding, sstFontGen.vCharacterSize.fY + sstFontGen.fPadding);
       orxLOG("[PROCESS] Calculated character spacing: %4g x %g.", sstFontGen.vCharacterSpacing.fX, sstFontGen.vCharacterSpacing.fY);
-      orxLOG("[PROCESS] Calculated texture size:      %4ld x %ld.", s32Width, s32Height);
-
-      // Use ascender?
-      if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ASCENDER))
-      {
-        // Gets baseline (using scaled ascender)
-        s32BaseLine = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->ascender)));
-      }
-      else
-      {
-        // Gets baseline (using scaled height)
-        s32BaseLine = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->height)));
-      }
+      orxLOG("[PROCESS] Calculated texture size:      %4d x %d.", s32Width, s32Height);
 
       // Allocates image buffer
       pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(s32Width * s32Height * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
@@ -948,7 +960,7 @@ static void Run()
               s32CharacterWidth = orxF2S(sstFontGen.fPadding) + ((s32CharacterWidth > 0) ? s32CharacterWidth : orxF2S(sstFontGen.vCharacterSize.fX));
 
               // Stores its value
-              orxString_NPrint(azWidthList[s32Index], 8, "%ld", s32CharacterWidth);
+              orxString_NPrint(azWidthList[s32Index], 8, "%d", s32CharacterWidth);
             }
 
             // Next line?
@@ -961,7 +973,7 @@ static void Run()
             // Has data?
             if(sstFontGen.pstFontFace->glyph->bitmap.buffer)
             {
-              orxS32  s32AdjustedX, s32AdjustedY, i;
+              orxS32  s32AdjustedX, s32AdjustedY, s32AdjustedHeight, s32DeltaHeight, i;
               orxU8  *pu8Src, *pu8Dst;
 
               // Is monospaced?
@@ -977,11 +989,30 @@ static void Run()
               }
 
               // Gets adjusted Y position
-              s32AdjustedY = s32Y + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) - orxMIN((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top, s32BaseLine);
+              s32AdjustedY = s32Y + orxF2S(orx2F(0.5f) * sstFontGen.fPadding) - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
+
+              // Gets default height
+              s32AdjustedHeight = (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows;
+
+              // Gets delta height
+              s32DeltaHeight = s32AdjustedHeight - (orxF2S(sstFontGen.vCharacterSize.fY) - s32BaseLine + (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top);
+
+              // Needs cropping?
+              if(s32DeltaHeight > 0)
+              {
+                // Adjusts height
+                s32AdjustedHeight -= s32DeltaHeight;
+
+                // Terminates string
+                *(pc + u32Offset) = orxCHAR_NULL;
+
+                // Logs message
+                orxLOG("[PROCESS] Cropping %d rows from character '%s'.", s32DeltaHeight, pc);
+              }
 
               // For all rows
               for(i = 0, pu8Src = (orxU8 *)sstFontGen.pstFontFace->glyph->bitmap.buffer, pu8Dst = pu8ImageBuffer + sizeof(orxRGBA) * ((s32AdjustedY * s32Width) + s32AdjustedX);
-                  i < (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows;
+                  i < s32AdjustedHeight;
                   i++, pu8Src += orxMAX(sstFontGen.pstFontFace->glyph->bitmap.pitch, -sstFontGen.pstFontFace->glyph->bitmap.pitch) - sstFontGen.pstFontFace->glyph->bitmap.width, pu8Dst += sizeof(orxRGBA) * (s32Width - (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width))
               {
                 orxS32 j;
@@ -1064,7 +1095,7 @@ static void Run()
         SOIL_save_image(acBuffer, SOIL_SAVE_TYPE_PNG, s32Width, s32Height, sizeof(orxRGBA), pu8ImageBuffer);
 
         // Logs message
-        orxLOG("[PROCESS] %ld glyphs generated in '%s'.", u32Counter, acBuffer);
+        orxLOG("[PROCESS] %d glyphs generated in '%s'.", u32Counter, acBuffer);
 
         // Gets config file name
         orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.ini", sstFontGen.zFontName);
@@ -1087,7 +1118,7 @@ static void Run()
       else
       {
         // Logs message
-        orxLOG("[PROCESS] Couldn't allocate memory for bitmap (%ld x %ld), aborting.", s32Width, s32Height);
+        orxLOG("[PROCESS] Couldn't allocate memory for bitmap (%d x %d), aborting.", s32Width, s32Height);
       }
     }
     else
