@@ -202,7 +202,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   /* *** SOLDIER MOVE UPDATE *** */
 
   /* Has mouse world position? */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos) != orxNULL)
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), orxNULL, &vPos) != orxNULL)
   {
     orxVECTOR vSoldierPos;
 

@@ -91,7 +91,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   }
 
   /* Is mouse in viewport? */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPosition), &vPosition))
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPosition), orxNULL, &vPosition))
   {
     orxVECTOR vParentPosition;
 
