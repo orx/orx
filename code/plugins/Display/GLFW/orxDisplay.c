@@ -2203,16 +2203,47 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   /* Clears padding */
   orxMemory_Zero(pu8ImageBuffer, u32LineSize * orxF2U(_pstBitmap->fHeight));
 
-  /* For all lines */
-  for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
-    i < orxF2U(_pstBitmap->fHeight);
-    i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+  /* Screen? */
+  if(_pstBitmap == sstDisplay.pstScreen)
   {
-    /* Copies data */
-    orxMemory_Copy(pu8ImageBuffer + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
+    orxRGBA stOpaque;
+
+    /* Sets opaque pixel */
+    stOpaque = orx2RGBA(0x00, 0x00, 0x00, 0xFF);
+
+    /* For all lines */
+    for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+      i < orxF2U(_pstBitmap->fHeight);
+      i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+    {
+      orxU32 j;
+
+      /* For all columns */
+      for(j = 0; j < orxF2U(_pstBitmap->fWidth); j++)
+      {
+        orxRGBA stPixel;
+
+        /* Gets opaque pixel */
+        stPixel.u32RGBA = ((orxRGBA *)(pu8ImageData + u32SrcOffset))[j].u32RGBA | stOpaque.u32RGBA;
+
+        /* Stores it */
+        ((orxRGBA *)(pu8ImageBuffer + u32DstOffset))[j] = stPixel;
+      }
+    }
+  }
+  else
+  {
+    /* For all lines */
+    for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+      i < orxF2U(_pstBitmap->fHeight);
+      i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+    {
+      /* Copies data */
+      orxMemory_Copy(pu8ImageBuffer + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
+    }
   }
 
-  /* Saves screenshot */
+  /* Saves image to disk */
   eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageBuffer) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Frees buffers */
