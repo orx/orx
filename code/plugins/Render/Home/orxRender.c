@@ -2079,7 +2079,7 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
     /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0x00));
+    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
 
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
@@ -2127,6 +2127,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
 
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA, orxRENDER_KU32_STATIC_FLAG_NONE);
+
+          /* Enables input set */
+          orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxTRUE);
         }
 
         /* Updates status */
@@ -2142,6 +2145,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
 
           /* Updates status */
           orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
+
+          /* Disables input set */
+          orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxFALSE);
         }
 
         /* Updates status */
@@ -2338,10 +2344,11 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
 
 /** Gets a world position from a screen one
  * @param[in]  _pvScreenPosition        Screen space position
+ * @param[in]  _pstViewport             Concerned viewport, if orxNULL then the first viewport will be used
  * @param[out] _pvWorldPosition         Corresponding world position
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
   orxVECTOR    *pvResult = orxNULL;
@@ -2358,9 +2365,11 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   {
     orxCAMERA *pstCamera;
 
-    /* Is active and has camera? */
-    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-    && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
+    /* Is active and has camera or is selected? */
+    if(((_pstViewport == orxNULL)
+     && (orxViewport_IsEnabled(pstViewport) != orxFALSE)
+     && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
+    || (_pstViewport == pstViewport))
     {
       orxAABOX  stViewportBox;
       orxFLOAT  fCorrectionRatio;
@@ -2660,9 +2669,6 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_FRAME);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH);
-
-            /* Enables set */
-            orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxTRUE);
 
             /* Restores previous set */
             orxInput_SelectSet(zPreviousSet);

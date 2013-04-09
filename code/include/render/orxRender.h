@@ -124,10 +124,11 @@ extern orxDLLAPI void orxFASTCALL             orxRender_Exit();
 
 /** Get a world position given a screen one (absolute picking)
  * @param[in]   _pvScreenPosition                     Concerned screen position
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then the first viewport containing the screen position will be used
  * @param[out]  _pvWorldPosition                      Corresponding world position
  * @return      orxVECTOR if found, orxNULL otherwise
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvWorldPosition);
 
 /** Get a screen position given a world one and a viewport (rendering position)
  * @param[in]   _pvWorldPosition                      Concerned world position

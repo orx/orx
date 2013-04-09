@@ -87,7 +87,7 @@ static orxSTATUS orxFASTCALL Run()
   orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
 
   /* Gets mouse position in world space */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos))
   {
     orxVECTOR vGeneratorPos;
 
