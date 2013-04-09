@@ -1824,7 +1824,7 @@ var searchData=
   ['orxrender_5fevent_5fviewport_5fstop',['orxRENDER_EVENT_VIEWPORT_STOP',['../group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a93d3c87196f358847d4d5ea86d2dde22',1,'orxRender.h']]],
   ['orxrender_5fexit',['orxRender_Exit',['../group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088',1,'orxRender.h']]],
   ['orxrender_5fgetscreenposition',['orxRender_GetScreenPosition',['../group__orx_render.html#gae08c3ff585427542ad1b269cfe00eca8',1,'orxRender.h']]],
-  ['orxrender_5fgetworldposition',['orxRender_GetWorldPosition',['../group__orx_render.html#ga98e541f3a10b90c60d59fee51b9cd203',1,'orxRender.h']]],
+  ['orxrender_5fgetworldposition',['orxRender_GetWorldPosition',['../group__orx_render.html#ga0c680cd082eb2fcb10a0fd0926474080',1,'orxRender.h']]],
   ['orxrender_5finit',['orxRender_Init',['../group__orx_render.html#gaaa3bad32f53d505fd1678aa3cc0fafd3',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fconsole_5fcolor',['orxRENDER_KZ_CONFIG_CONSOLE_COLOR',['../group__orx_render.html#ga701dd688299d04234d916a551f8e651e',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fmin_5ffrequency',['orxRENDER_KZ_CONFIG_MIN_FREQUENCY',['../group__orx_render.html#ga7e6aff9a8d4890a31645cb96540f62c3',1,'orxRender.h']]],

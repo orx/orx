@@ -806,7 +806,7 @@ var searchData=
   ['orxprofiler_5fsetup',['orxProfiler_Setup',['../group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb',1,'orxProfiler.h']]],
   ['orxrender_5fexit',['orxRender_Exit',['../group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088',1,'orxRender.h']]],
   ['orxrender_5fgetscreenposition',['orxRender_GetScreenPosition',['../group__orx_render.html#gae08c3ff585427542ad1b269cfe00eca8',1,'orxRender.h']]],
-  ['orxrender_5fgetworldposition',['orxRender_GetWorldPosition',['../group__orx_render.html#ga98e541f3a10b90c60d59fee51b9cd203',1,'orxRender.h']]],
+  ['orxrender_5fgetworldposition',['orxRender_GetWorldPosition',['../group__orx_render.html#ga0c680cd082eb2fcb10a0fd0926474080',1,'orxRender.h']]],
   ['orxrender_5finit',['orxRender_Init',['../group__orx_render.html#gaaa3bad32f53d505fd1678aa3cc0fafd3',1,'orxRender.h']]],
   ['orxrender_5fsetup',['orxRender_Setup',['../group__orx_render.html#ga4b7ac65699376ae14f0ae79028d5c8b5',1,'orxRender.h']]],
   ['orxresource_5faddstorage',['orxResource_AddStorage',['../group__orx_resource.html#gadbbf62141368ea35da893b69667fa289',1,'orxResource.h']]],

@@ -24,7 +24,7 @@ var orx_render_8h =
     ] ],
     [ "orxRender_Exit", "orx_render_8h.html#gae4e114ec48db490af69413b5ed1a5088", null ],
     [ "orxRender_GetScreenPosition", "orx_render_8h.html#gae08c3ff585427542ad1b269cfe00eca8", null ],
-    [ "orxRender_GetWorldPosition", "orx_render_8h.html#ga98e541f3a10b90c60d59fee51b9cd203", null ],
+    [ "orxRender_GetWorldPosition", "orx_render_8h.html#ga0c680cd082eb2fcb10a0fd0926474080", null ],
     [ "orxRender_Init", "orx_render_8h.html#gaaa3bad32f53d505fd1678aa3cc0fafd3", null ],
     [ "orxRender_Setup", "orx_render_8h.html#ga4b7ac65699376ae14f0ae79028d5c8b5", null ]
 ];
