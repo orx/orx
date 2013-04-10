@@ -1631,6 +1631,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
   }
   else
   {
+    orxBITMAP *pstBackupBitmap;
+
+    /* Backups current destination */
+    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
+
+    /* Sets new destination bitmap */
+    orxDisplay_SetDestinationBitmap(_pstBitmap);
+
     /* Clears the color buffer with given color */
     glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
     glASSERT();
@@ -1644,6 +1652,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
       glClear(GL_DEPTH_BUFFER_BIT);
       glASSERT();
     }
+
+    /* Restores previous destination */
+    orxDisplay_SetDestinationBitmap(pstBackupBitmap);
   }
 
   /* Done! */

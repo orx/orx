@@ -2090,12 +2090,15 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxRender_Home_RenderViewport(pstViewport);
     }
 
+    /* Restores screen as destination bitmap */
+    orxDisplay_SetDestinationBitmap(orxDisplay_GetScreenBitmap());
+
     /* Restores screen bitmap clipping */
     orxDisplay_GetScreenSize(&fWidth, &fHeight);
     orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
 
     /* Sends render stop event */
-    orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
+    bRender = orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
 
     /* Increases FPS counter */
     orxFPS_IncreaseFrameCounter();
