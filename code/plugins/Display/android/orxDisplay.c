@@ -1528,43 +1528,28 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
 
 orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBITMAP  *pstBackupBitmap;
+  orxSTATUS  eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Is not screen? */
-  if(_pstBitmap != sstDisplay.pstScreen)
+  /* Backups current destination */
+  pstBackupBitmap = sstDisplay.pstDestinationBitmap;
+
+  /* Sets new destination bitmap */
+  orxDisplay_SetDestinationBitmap(_pstBitmap);
+
+  /* Clears the color buffer with given color */
+  glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
+  glASSERT();
+  glClear(GL_COLOR_BUFFER_BIT);
+  glASSERT();
+
+  /* Is screen? */
+  if(_pstBitmap == sstDisplay.pstScreen)
   {
-    orxBITMAP *pstBackupBitmap;
-
-    /* Backups current destination */
-    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
-
-    /* Sets new destination bitmap */
-    orxDisplay_SetDestinationBitmap(_pstBitmap);
-
-    /* Clears the color buffer with given color */
-    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
-    glASSERT();
-    glClear(GL_COLOR_BUFFER_BIT);
-    glASSERT();
-
-    /* Restores previous destination */
-    orxDisplay_SetDestinationBitmap(pstBackupBitmap);
-  }
-  else
-  {
-    /* Makes sure we're working on screen */
-    orxDisplay_SetDestinationBitmap(sstDisplay.pstScreen);
-
-    /* Clears the color buffer with given color */
-    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
-    glASSERT();
-    glClear(GL_COLOR_BUFFER_BIT);
-    glASSERT();
-
     /* Has depth buffer? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
     {
@@ -1573,6 +1558,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
       glASSERT();
     }
   }
+
+  /* Restores previous destination */
+  orxDisplay_SetDestinationBitmap(pstBackupBitmap);
 
   /* Done! */
   return eResult;
