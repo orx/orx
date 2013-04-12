@@ -4104,6 +4104,9 @@ orxSTATUS orxFASTCALL orxConfig_PushSection(const orxSTRING _zSectionName)
       /* Allocates stack entry */
       pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxBank_Allocate(sstConfig.pstStackBank);
 
+      /* Clears it */
+      orxMemory_Zero(pstStackEntry, sizeof(orxCONFIG_STACK_ENTRY));
+
       /* Valid? */
       if(pstStackEntry != orxNULL)
       {
