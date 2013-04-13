@@ -438,10 +438,10 @@ orxU32 orxFASTCALL orxLocale_GetLanguageCounter()
 }
 
 /** Gets language at the given index
- * @param[in] _s32LanguageIndex Index of the desired language
+ * @param[in] _u32LanguageIndex Index of the desired language
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _s32LanguageIndex)
+const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _u32LanguageIndex)
 {
   const orxSTRING zResult;
 
@@ -452,7 +452,7 @@ const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _s32LanguageIndex)
   orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
   /* Updates result */
-  zResult = orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, _s32LanguageIndex);
+  zResult = orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, _u32LanguageIndex);
 
   /* Pops config section */
   orxConfig_PopSection();
