@@ -2282,7 +2282,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
     orxHANDLE hResource;
 
     /* Opens it */
-    hResource = orxResource_Open(zResourceName);
+    hResource = orxResource_Open(zResourceName, orxFALSE);
 
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)

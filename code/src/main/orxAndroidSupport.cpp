@@ -515,7 +515,7 @@ static const orxSTRING orxRESOURCE_KZ_TYPE_TAG_APK = "apk";                     
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
 static orxCHAR s_acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];                  /**< File location buffer size */
 
-static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
+static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
   AAsset   *poAsset;
@@ -545,16 +545,25 @@ static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStor
   return zResult;
 }
 
-static orxHANDLE orxFASTCALL orxResource_APK_Open(const orxSTRING _zLocation)
+static orxHANDLE orxFASTCALL orxResource_APK_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
   AAsset   *poAsset;
   orxHANDLE hResult;
 
-  /* Opens Asset */
-  poAsset = AAssetManager_open(s_poAssetManager, _zLocation, AASSET_MODE_RANDOM);
+  /* Not in erase mode? */
+  if(_bEraseMode == orxFALSE)
+  {
+    /* Opens Asset */
+    poAsset = AAssetManager_open(s_poAssetManager, _zLocation, AASSET_MODE_RANDOM);
 
-  /* Updates result */
-  hResult = (poAsset != orxNULL) ? (orxHANDLE)poAsset : orxHANDLE_UNDEFINED;
+    /* Updates result */
+    hResult = (poAsset != orxNULL) ? (orxHANDLE)poAsset : orxHANDLE_UNDEFINED;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = orxHANDLE_UNDEFINED;
+  }
 
   /* Done! */
   return hResult;
@@ -645,6 +654,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
   stAPKTypeInfo.pfnSeek    = orxResource_APK_Seek;
   stAPKTypeInfo.pfnTell    = orxResource_APK_Tell;
   stAPKTypeInfo.pfnRead    = orxResource_APK_Read;
+  stAPKTypeInfo.pfnWrite   = orxNULL;
 
   /* Registers it */
   eResult = orxResource_RegisterType(&stAPKTypeInfo);

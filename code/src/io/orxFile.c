@@ -594,10 +594,10 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
    *** AVAILABLE CONVERSIONS :
    * READ | WRITE | APPEND | result
    *  X   |       |        | r
-   *      |  X    |        | w
+   *      |  X    |        | w+
    *      |       |   X    | a
    *      |  X    |   X    | a
-   *  X   |  X    |        | w+
+   *  X   |  X    |        | r+
    *  X   |       |   X    | a+
    *  X   |  X    |   X    | a+
    */
@@ -639,12 +639,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "wb");
+      orxString_Print(acMode, "wb+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "w");
+      orxString_Print(acMode, "w+");
     }
   }
   /* Append only ? */
@@ -669,12 +669,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "wb+");
+      orxString_Print(acMode, "rb+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "w+");
+      orxString_Print(acMode, "r+");
     }
   }
   else if((_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND))

@@ -1893,8 +1893,17 @@ orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectionName, 
 {
   orxBOOL bResult;
 
+#ifdef __orxWINDOWS__
+
+  /* Updates result */
+  bResult = ((_zKeyName != orxNULL) || (orxString_ICompare(_zFileName, orxConfig_GetSectionOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
+
+#else /* __orxWINDOWS__ */
+
   /* Updates result */
   bResult = ((_zKeyName != orxNULL) || (orxString_Compare(_zFileName, orxConfig_GetSectionOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
+
+#endif /* __orxWINDOWS__ */
 
   /* Done! */
   return bResult;
@@ -2643,7 +2652,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
   /* Valid file to open? */
   if((_zFileName != orxSTRING_EMPTY)
   && ((zResourceLocation = orxResource_Locate(orxCONFIG_KZ_RESOURCE_GROUP, _zFileName)) != orxNULL)
-  && ((hResource = orxResource_Open(zResourceLocation)) != orxHANDLE_UNDEFINED))
+  && ((hResource = orxResource_Open(zResourceLocation, orxFALSE)) != orxHANDLE_UNDEFINED))
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
@@ -3266,7 +3275,8 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   /* No encryption requested or has a valid key? */
   if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
-    orxFILE *pstFile;
+    const orxSTRING zResourceLocation;
+    orxHANDLE       hResource;
 
     /* Is given an invalid file name? */
     if((_zFileName == orxNULL) || (_zFileName == orxSTRING_EMPTY))
@@ -3280,11 +3290,9 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
       zFileName = _zFileName;
     }
 
-    /* Opens file */
-    pstFile = orxFile_Open(zFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
-
-    /* Valid? */
-    if(pstFile != orxNULL)
+    /* Valid file to open? */
+    if(((zResourceLocation = orxResource_GetLocation(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, _zFileName)) != orxNULL)
+    && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
     {
       orxCONFIG_SECTION  *pstSection;
       orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar = orxNULL;
@@ -3303,7 +3311,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
         /* Adds encryption tag */
-        orxFile_Print(pstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+        orxResource_Write(hResource, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, orxCONFIG_KZ_ENCRYPTION_TAG);
       }
 
       /* For all sections */
@@ -3353,7 +3361,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+          orxResource_Write(hResource, u32BufferSize, acBuffer);
 
           /* For all entries */
           for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
@@ -3434,7 +3442,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               }
 
               /* Saves it */
-              orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+              orxResource_Write(hResource, u32BufferSize, acBuffer);
             }
           }
 
@@ -3449,12 +3457,12 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          orxFile_Write(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+          orxResource_Write(hResource, u32BufferSize, acBuffer);
         }
       }
 
-      /* Flushes & closes the file */
-      eResult = orxFile_Close(pstFile);
+      /* Flushes & closes the resource */
+      orxResource_Close(hResource);
 
       /* Use encryption? */
       if(_bUseEncryption != orxFALSE)
@@ -3462,6 +3470,9 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         /* Restores previous encryption character */
         sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
       }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
@@ -3483,7 +3494,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
 }
 
 /** Copies a file with optional encryption
- * @param[in] _zDstFileName     Name of the destionation file
+ * @param[in] _zDstFileName     Name of the destination file
  * @param[in] _zSrcFileName     Name of the source file
  * @param[in] _zEncryptionKey   Encryption key to use when writing destination file, orxNULL for no encryption
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -3504,7 +3515,7 @@ orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const or
 
     /* Opens files */
     pstSrcFile = orxFile_Open(_zSrcFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
-    pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+    pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
     /* Valid? */
     if((pstSrcFile != orxNULL) && (pstDstFile != orxNULL))

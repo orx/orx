@@ -138,6 +138,7 @@ typedef struct __orxRESOURCE_STATIC_t
   orxBANK                  *pstResourceInfoBank;                                      /**< Resource info bank */
   orxBANK                  *pstOpenInfoBank;                                          /**< Open resource table size */
   orxLINKLIST               stTypeList;                                               /**< Type list */
+  orxSTRING                 zLastUncachedLocation;                                    /**< Last uncached location */
   orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   orxU32                    u32Flags;                                                 /**< Control flags */
 
@@ -157,7 +158,7 @@ static orxRESOURCE_STATIC sstResource;
  * Private functions                                                       *
  ***************************************************************************/
 
-static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, const orxSTRING _zName)
+static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
 
@@ -173,8 +174,9 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zSto
     orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
   }
 
-  /* Exist? */
-  if(orxFile_Exists(sstResource.acFileLocationBuffer) != orxFALSE)
+  /* Exists or doesn't require existence? */
+  if((_bRequireExistence == orxFALSE)
+  || (orxFile_Exists(sstResource.acFileLocationBuffer) != orxFALSE))
   {
     /* Updates result */
     zResult = sstResource.acFileLocationBuffer;
@@ -184,16 +186,16 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zSto
   return zResult;
 }
 
-static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation)
+static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
   orxFILE  *pstFile;
   orxHANDLE hResult;
 
   /* Opens file */
-  pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+  pstFile = orxFile_Open(_zLocation, (_bEraseMode != orxFALSE) ? orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY : orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
-  /* Couldn't open it in read/write mode? */
-  if(pstFile == orxNULL)
+  /* Not in erase mode and couldn't open it? */
+  if((_bEraseMode == orxFALSE) && (pstFile == orxNULL))
   {
     /* Opens it in read-only mode */
     pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
@@ -360,8 +362,8 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(const orxSTRING _zGr
       /* Clears node */
       orxMemory_Zero(&(pstStorage->stNode), sizeof(orxLINKLIST_NODE));
 
-      /* Adds it last */
-      orxLinkList_AddEnd(&(pstResult->stStorageList), &(pstStorage->stNode));
+      /* Adds it first */
+      orxLinkList_AddStart(&(pstResult->stStorageList), &(pstStorage->stNode));
     }
     else
     {
@@ -511,6 +513,13 @@ void orxFASTCALL orxResource_Exit()
     orxRESOURCE_GROUP      *pstGroup;
     orxRESOURCE_TYPE       *pstType;
     orxRESOURCE_OPEN_INFO  *pstOpenInfo;
+
+    /* Has uncached location? */
+    if(sstResource.zLastUncachedLocation != orxNULL)
+    {
+      /* Deletes it */
+      orxMemory_Free(sstResource.zLastUncachedLocation);
+    }
 
     /* For all groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
@@ -719,7 +728,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   {
     orxRESOURCE_GROUP  *pstGroup = orxNULL;
     const orxSTRING     zGroup;
-    orxS32              j;
+    orxS32              j, jCounter;
 
     /* Gets group name */
     zGroup = orxConfig_GetKey(i);
@@ -730,7 +739,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* For all storages in list */
-    for(j = orxConfig_GetListCounter(zGroup) - 1; j >= 0; j--)
+    for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
     {
       const orxSTRING zStorage;
       orxBOOL         bAdd = orxTRUE;
@@ -763,7 +772,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
       if(bAdd != orxFALSE)
       {
         /* Adds storage to group */
-        orxResource_AddStorage(zGroup, zStorage, orxTRUE);
+        orxResource_AddStorage(zGroup, zStorage, orxFALSE);
       }
     }
 
@@ -910,7 +919,7 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
   return zResult;
 }
 
-/** Gets the location of a resource for a given group
+/** Gets the location of an *existing* resource for a given group, location gets cached if found
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zName            Name of the resource to locate
  * @return Location string if found, orxSTRING_EMPTY otherwise
@@ -951,7 +960,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     /* Success? */
     if(pstGroup != orxNULL)
     {
-      orxU32            u32Key;
+      orxU32                u32Key;
       orxRESOURCE_LOCATION *pstResourceInfo;
 
       /* Gets resource info key */
@@ -985,7 +994,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
             const orxSTRING zLocation;
 
             /* Locates resource */
-            zLocation = pstType->stInfo.pfnLocate(pstStorage->zStorage, _zName);
+            zLocation = pstType->stInfo.pfnLocate(pstStorage->zStorage, _zName, orxTRUE);
 
             /* Success? */
             if(zLocation != orxNULL)
@@ -1022,17 +1031,98 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   return zResult;
 }
 
-/** Makes a location for a non-existing resource, in a given group and storage
+/** Gets the location for a resource (existing or not) in a *specific storage*, for a given group. The location doesn't get cached and thus needs to be copied by the caller before the next call
  * @param[in] _zGroup           Concerned resource group
- * @param[in] _zStorage         Concerned storage, if orxNULL then the default storage will be used
+ * @param[in] _zStorage         Concerned storage, if orxNULL then the highest priority storage will be used
  * @param[in] _zName            Name of the resource
  * @return Location string if found, orxNULL otherwise
  */
-const orxSTRING orxFASTCALL orxResource_MakeLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)
+const orxSTRING orxFASTCALL orxResource_GetLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)
 {
   const orxSTRING zResult = orxNULL;
 
-  //! TODO
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zGroup != orxNULL);
+  orxASSERT(_zName != orxNULL);
+
+  /* Isn't config already loaded? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
+  {
+    /* Reloads storage */
+    orxResource_ReloadStorage();
+  }
+
+  /* Valid? */
+  if(*_zGroup != orxCHAR_NULL)
+  {
+    orxRESOURCE_GROUP *pstGroup = orxNULL;
+
+    /* Gets group */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        (pstGroup != orxNULL) && (orxString_Compare(pstGroup->zName, _zGroup) != 0);
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+
+    /* Not found? */
+    if(pstGroup == orxNULL)
+    {
+      /* Creates it */
+      pstGroup = orxResource_CreateGroup(_zGroup);
+    }
+
+    /* Success? */
+    if(pstGroup != orxNULL)
+    {
+      orxRESOURCE_STORAGE *pstStorage;
+
+      /* For all storages in group */
+      for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
+          (zResult == orxNULL) && (pstStorage != orxNULL);
+          pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
+      {
+        /* Is the requested storage? */
+        if((_zStorage == orxNULL)
+        || (orxString_Compare(_zStorage, pstStorage->zStorage) == 0))
+        {
+          orxRESOURCE_TYPE *pstType;
+
+          /* For all registered types */
+          for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+              pstType != orxNULL;
+              pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
+          {
+            const orxSTRING zLocation;
+
+            /* Locates resource */
+            zLocation = pstType->stInfo.pfnLocate(pstStorage->zStorage, _zName, orxFALSE);
+
+            /* Success? */
+            if(zLocation != orxNULL)
+            {
+              /* Has previous uncached location? */
+              if(sstResource.zLastUncachedLocation != orxNULL)
+              {
+                /* Deletes it */
+                orxMemory_Free(sstResource.zLastUncachedLocation);
+              }
+
+              /* Creates new location */
+              sstResource.zLastUncachedLocation = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_MAIN);
+              orxASSERT(sstResource.zLastUncachedLocation != orxNULL);
+              orxString_Print(sstResource.zLastUncachedLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
+
+              /* Updates result */
+              zResult = sstResource.zLastUncachedLocation;
+
+              break;
+            }
+          }
+
+          break;
+        }
+      }
+    }
+  }
 
   /* Done! */
   return zResult;
@@ -1086,9 +1176,10 @@ const orxSTRING orxFASTCALL orxResource_GetName(const orxSTRING _zLocation)
 
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open
+ * @param[in] _bEraseMode       If true, the file will be erased if existing or created otherwise, if false, no content will get destroyed when opening
  * @return Handle to the open location, orxHANDLE_UNDEFINED otherwise
  */
-orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
+orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -1133,7 +1224,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
       pstOpenInfo->pstTypeInfo = &(pstType->stInfo);
 
       /* Opens it */
-      pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + u32TagLength + 1);
+      pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + u32TagLength + 1, _bEraseMode);
 
       /* Valid? */
       if((pstOpenInfo->hResource != orxHANDLE_UNDEFINED) && (pstOpenInfo->hResource != orxNULL))
@@ -1331,6 +1422,11 @@ orxS32 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, void
     {
       /* Updates result */
       s32Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s32Size, _pBuffer);
+    }
+    else
+    {
+      /* Updates result */
+      s32Result = -1;
     }
   }
 

@@ -2251,6 +2251,9 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
           {
             /* Updates profiler history status */
             orxFLAG_SWAP(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY);
+
+            /* Resets selected frame */
+            sstRender.u32SelectedFrame = 0;
           }
           /* Toggle profiler pause? */
           else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PAUSE))

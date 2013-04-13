@@ -380,7 +380,7 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
     orxHANDLE hResource;
 
     /* Opens it */
-    hResource = orxResource_Open(zResourceLocation);
+    hResource = orxResource_Open(zResourceLocation, orxFALSE);
 
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)

@@ -125,7 +125,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ReloadHistory();
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
 
 /** Copies a file with optional encryption
- * @param[in] _zDstFileName     Name of the destionation file
+ * @param[in] _zDstFileName     Name of the destination file
  * @param[in] _zSrcFileName     Name of the source file
  * @param[in] _zEncryptionKey   Encryption key to use when writing destination file, orxNULL for no encryption
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
