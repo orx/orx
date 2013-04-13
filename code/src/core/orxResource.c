@@ -190,7 +190,14 @@ static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation)
   orxHANDLE hResult;
 
   /* Opens file */
-  pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ |  orxFILE_KU32_FLAG_OPEN_BINARY);
+  pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+
+  /* Couldn't open it in read/write mode? */
+  if(pstFile == orxNULL)
+  {
+    /* Opens it in read-only mode */
+    pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+  }
 
   /* Updates result */
   hResult = (pstFile != orxNULL) ? (orxHANDLE)pstFile : orxHANDLE_UNDEFINED;
@@ -265,6 +272,21 @@ static orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s3
 
   /* Updates result */
   s32Result = orxFile_Read(_pBuffer, sizeof(orxCHAR), _s32Size, pstFile);
+
+  /* Done! */
+  return s32Result;
+}
+
+static orxS32 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+{
+  orxFILE  *pstFile;
+  orxS32    s32Result;
+
+  /* Gets file */
+  pstFile = (orxFILE *)_hResource;
+
+  /* Updates result */
+  s32Result = orxFile_Write(_pBuffer, sizeof(orxCHAR), _s32Size, pstFile);
 
   /* Done! */
   return s32Result;
@@ -415,6 +437,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
       stTypeInfo.pfnSeek    = orxResource_File_Seek;
       stTypeInfo.pfnTell    = orxResource_File_Tell;
       stTypeInfo.pfnRead    = orxResource_File_Read;
+      stTypeInfo.pfnWrite   = orxResource_File_Write;
 
       /* Registers it */
       eResult = orxResource_RegisterType(&stTypeInfo);
@@ -682,7 +705,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
  */
 orxSTATUS orxFASTCALL orxResource_ReloadStorage()
 {
-  orxS32    i, s32SectionCounter;
+  orxU32    i, u32SectionCounter;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -692,7 +715,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
   /* For all keys */
-  for(i = 0, s32SectionCounter = orxConfig_GetKeyCounter(); i < s32SectionCounter; i++)
+  for(i = 0, u32SectionCounter = orxConfig_GetKeyCounter(); i < u32SectionCounter; i++)
   {
     orxRESOURCE_GROUP  *pstGroup = orxNULL;
     const orxSTRING     zGroup;
@@ -755,13 +778,62 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   return eResult;
 }
 
+/** Gets number of resource groups
+ * @return Number of resource groups
+ */
+orxU32 orxFASTCALL orxResource_GetGroupCounter()
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  u32Result = orxBank_GetCounter(sstResource.pstGroupBank);
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets resource group at given index
+ * @param[in] _u32Index         Index of resource group
+ * @return Resource group if index is valid, orxNULL otherwise
+ */
+const orxSTRING orxFASTCALL orxResource_GetGroup(orxU32 _u32Index)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Valid index? */
+  if(_u32Index < orxBank_GetCounter(sstResource.pstGroupBank))
+  {
+    orxRESOURCE_GROUP *pstGroup;
+
+    /* Finds requested group */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        _u32Index > 0;
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup), _u32Index--);
+
+    /* Checks */
+    orxASSERT(pstGroup != orxNULL);
+
+    /* Updates result */
+    zResult = pstGroup->zName;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets number of storages for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @return Number of storages for this resource group
  */
-orxS32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
+orxU32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
 {
-  orxS32 s32Result = 0;
+  orxU32 u32Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -781,20 +853,20 @@ orxS32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
     if(pstGroup != orxNULL)
     {
       /* Updates result */
-      s32Result = orxLinkList_GetCounter(&(pstGroup->stStorageList));
+      u32Result = orxLinkList_GetCounter(&(pstGroup->stStorageList));
     }
   }
 
   /* Done! */
-  return s32Result;
+  return u32Result;
 }
 
 /** Gets storage at given index for a given resource group
  * @param[in] _zGroup           Concerned resource group
- * @param[in] _s32Index         Index of storage
+ * @param[in] _u32Index         Index of storage
  * @return Storage if index is valid, orxNULL otherwise
  */
-const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxS32 _s32Index)
+const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU32 _u32Index)
 {
   const orxSTRING zResult = orxNULL;
 
@@ -816,14 +888,14 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxS
     if(pstGroup != orxNULL)
     {
       /* Valid index? */
-      if(_s32Index < (orxS32)orxBank_GetCounter(pstGroup->pstStorageBank))
+      if(_u32Index < orxBank_GetCounter(pstGroup->pstStorageBank))
       {
         orxRESOURCE_STORAGE *pstStorage;
 
         /* Finds requested storage */
         for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
-            _s32Index > 0;
-            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)), _s32Index--);
+            _u32Index > 0;
+            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)), _u32Index--);
 
         /* Checks */
         orxASSERT(pstStorage != orxNULL);
@@ -950,6 +1022,22 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   return zResult;
 }
 
+/** Makes a location for a non-existing resource, in a given group and storage
+ * @param[in] _zGroup           Concerned resource group
+ * @param[in] _zStorage         Concerned storage, if orxNULL then the default storage will be used
+ * @param[in] _zName            Name of the resource
+ * @return Location string if found, orxNULL otherwise
+ */
+const orxSTRING orxFASTCALL orxResource_MakeLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)
+{
+  const orxSTRING zResult = orxNULL;
+
+  //! TODO
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets the resource name from a location
  * @param[in] _zLocation        Location of the concerned resource
  * @return Name string if valid, orxSTRING_EMPTY otherwise
@@ -972,19 +1060,19 @@ const orxSTRING orxFASTCALL orxResource_GetName(const orxSTRING _zLocation)
         pstType != orxNULL;
         pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
     {
-      orxS32 s32TagLength;
+      orxU32 u32TagLength;
 
       /* Gets tag length */
-      s32TagLength = orxString_GetLength(pstType->stInfo.zTag);
+      u32TagLength = orxString_GetLength(pstType->stInfo.zTag);
 
       /* Match tag? */
-      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, s32TagLength) == 0)
+      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
       {
         /* Valid? */
-        if(*(_zLocation + s32TagLength) == orxRESOURCE_KC_LOCATION_SEPARATOR)
+        if(*(_zLocation + u32TagLength) == orxRESOURCE_KC_LOCATION_SEPARATOR)
         {
           /* Updates result */
-          zResult = _zLocation + s32TagLength + 1;
+          zResult = _zLocation + u32TagLength + 1;
         }
 
         break;
@@ -1012,7 +1100,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
   if(*_zLocation != orxCHAR_NULL)
   {
     orxRESOURCE_TYPE *pstType;
-    orxS32            s32TagLength;
+    orxU32            u32TagLength;
 
     /* For all registered types */
     for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
@@ -1020,10 +1108,10 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
         pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
     {
       /* Gets tag length */
-      s32TagLength = orxString_GetLength(pstType->stInfo.zTag);
+      u32TagLength = orxString_GetLength(pstType->stInfo.zTag);
 
       /* Match tag? */
-      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, s32TagLength) == 0)
+      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
       {
         /* Selects it */
         break;
@@ -1045,7 +1133,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation)
       pstOpenInfo->pstTypeInfo = &(pstType->stInfo);
 
       /* Opens it */
-      pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + s32TagLength + 1);
+      pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + u32TagLength + 1);
 
       /* Valid? */
       if((pstOpenInfo->hResource != orxHANDLE_UNDEFINED) && (pstOpenInfo->hResource != orxNULL))
@@ -1215,11 +1303,46 @@ orxS32 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS32 _s32Size, void 
   return s32Result;
 }
 
+/** Writes data to a resource
+ * @param[in] _hResource        Concerned resource
+ * @param[in] _s32Size          Size to write (in bytes)
+ * @param[out] _pBuffer         Buffer that will be written
+ * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
+ */
+orxS32 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+{
+  orxS32 s32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_s32Size >= 0);
+  orxASSERT(_pBuffer != orxNULL);
+
+  /* Valid? */
+  if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
+  {
+    orxRESOURCE_OPEN_INFO *pstOpenInfo;
+
+    /* Gets open info */
+    pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
+
+    /* Supports writing? */
+    if(pstOpenInfo->pstTypeInfo->pfnWrite != orxNULL)
+    {
+      /* Updates result */
+      s32Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s32Size, _pBuffer);
+    }
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
 /** Registers a new resource type
  * @param[in] _pstInfo          Info describing the new resource type and how to handle it
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-const orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo)
+orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1282,6 +1405,55 @@ const orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO
 
   /* Done! */
   return eResult;
+}
+
+/** Gets number of registered resource types
+ * @return Number of registered resource types
+ */
+orxU32 orxFASTCALL orxResource_GetTypeCounter(const orxSTRING _zGroup)
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  u32Result = orxBank_GetCounter(sstResource.pstTypeBank);
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets registered type info at given index
+ * @param[in] _u32Index         Index of storage
+ * @return Type tag string if index is valid, orxNULL otherwise
+ */
+const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Valid index? */
+  if(_u32Index < orxBank_GetCounter(sstResource.pstTypeBank))
+  {
+    orxRESOURCE_TYPE *pstType;
+
+    /* Finds requested group */
+    for(pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, orxNULL);
+        _u32Index > 0;
+        pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, pstType), _u32Index--);
+
+    /* Checks */
+    orxASSERT(pstType != orxNULL);
+
+    /* Updates result */
+    zResult = pstType->stInfo.zTag;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Clears cache

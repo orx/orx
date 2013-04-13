@@ -82,7 +82,7 @@
     #define __orxPPC64__
 
   /* x86_64? */
-  #elif defined(__x86_64)
+  #elif defined(__x86_64) || defined(_M_X64) || defined(__ia64__)
 
     #define __orxX86_64__
 
@@ -95,18 +95,37 @@
 
 #endif /* !__orxARM__ && !__orxPPC__ && !__orxPPC64__ && !__orxX86_64__ && !__orxX86__ */
 
-/* Power PC? */
-#ifdef __orxPPC__
+/* Has byte order? */
+#if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
 
-  #define __orxBIG_ENDIAN__
-  #undef __orxLITTLE_ENDIAN__
+  #if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 
-#else /* __orxPPC__ */
+    #define __orxBIG_ENDIAN__
+    #undef __orxLITTLE_ENDIAN__
 
-  #define __orxLITTLE_ENDIAN__
-  #undef __orxBIG_ENDIAN__
+  #else /* (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) */
 
-#endif /* __orxPPC__ */
+    #define __orxLITTLE_ENDIAN__
+    #undef __orxBIG_ENDIAN__
+
+  #endif /* (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) */
+
+#else /* __BYTE_ORDER__ && __ORDER_BIG_ENDIAN__ */
+
+  /* Power PC? */
+  #ifdef __orxPPC__
+
+    #define __orxBIG_ENDIAN__
+    #undef __orxLITTLE_ENDIAN__
+
+  #else /* __orxPPC__ */
+
+    #define __orxLITTLE_ENDIAN__
+    #undef __orxBIG_ENDIAN__
+
+  #endif /* __orxPPC__ */
+
+#endif /* __BYTE_ORDER__ && __ORDER_BIG_ENDIAN__ */
 
 /* No compiler defines? */
 #if !defined(__orxLLVM__) && !defined(__orxGCC__) && !defined(__orxMSVC__)

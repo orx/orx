@@ -1064,7 +1064,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          orxS32  i, s32Counter;
+          orxU32  i, u32Counter;
           orxBOOL bDebugLevelBackup;
 
           /* Inits log end index */
@@ -1074,7 +1074,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
           /* For all keys */
-          for(i = 0, s32Counter = orxConfig_GetKeyCounter(); i < s32Counter; i++)
+          for(i = 0, u32Counter = orxConfig_GetKeyCounter(); i < u32Counter; i++)
           {
             const orxSTRING zKey;
 

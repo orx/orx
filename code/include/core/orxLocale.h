@@ -104,13 +104,13 @@ extern orxDLLAPI orxBOOL orxFASTCALL                      orxLocale_HasLanguage(
 /** Gets language counter
  * @return Number of languages defined
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxLocale_GetLanguageCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetLanguageCounter();
 
 /** Gets language at the given index
- * @param[in] _s32LanguageIndex Index of the desired language
+ * @param[in] _u32LanguageIndex Index of the desired language
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetLanguage(orxS32 _s32LanguageIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetLanguage(orxU32 _u32LanguageIndex);
 
 
 /** Has string for the given key?
@@ -135,13 +135,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SetString(co
 /** Gets key counter for the current language
  * @return Key counter the current language if valid, 0 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxLocale_GetKeyCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCounter();
 
 /** Gets key for the current language at the given index
- * @param[in] _s32KeyIndex      Index of the desired key
+ * @param[in] _u32KeyIndex      Index of the desired key
  * @return orxSTRING if exist, orxNULL otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetKey(orxS32 _s32KeyIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetKey(orxU32 _u32KeyIndex);
 
 #endif /*__orxLOCALE_H_*/
 

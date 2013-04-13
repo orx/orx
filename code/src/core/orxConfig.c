@@ -4284,25 +4284,25 @@ const orxSTRING orxFASTCALL orxConfig_GetSectionOrigin(const orxSTRING _zSection
 /** Gets section counter
  * @return Section counter
  */
-orxS32 orxFASTCALL orxConfig_GetSectionCounter()
+orxU32 orxFASTCALL orxConfig_GetSectionCounter()
 {
-  orxS32 s32Result;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  s32Result = orxLinkList_GetCounter(&(sstConfig.stSectionList));
+  u32Result = orxLinkList_GetCounter(&(sstConfig.stSectionList));
 
   /* Done! */
-  return s32Result;
+  return u32Result;
 }
 
 /** Gets section at the given index
- * @param[in] _s32SectionIndex  Index of the desired section
+ * @param[in] _u32SectionIndex  Index of the desired section
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxConfig_GetSection(orxS32 _s32SectionIndex)
+const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
 {
   const orxSTRING zResult;
 
@@ -4310,13 +4310,13 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxS32 _s32SectionIndex)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Valid? */
-  if(_s32SectionIndex < orxConfig_GetSectionCounter())
+  if(_u32SectionIndex < orxConfig_GetSectionCounter())
   {
     orxCONFIG_SECTION  *pstSection;
-    orxS32              i;
+    orxU32              i;
 
     /* Finds correct entry */
-    for(i = _s32SectionIndex, pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+    for(i = _u32SectionIndex, pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
         i > 0;
         i--, pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)));
 
@@ -5565,9 +5565,9 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
 /** Gets key counter for the current section
  * @return Key counter the current section if valid, 0 otherwise
  */
-orxS32 orxFASTCALL orxConfig_GetKeyCounter()
+orxU32 orxFASTCALL orxConfig_GetKeyCounter()
 {
-  orxS32 s32Result;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -5576,23 +5576,23 @@ orxS32 orxFASTCALL orxConfig_GetKeyCounter()
   if(sstConfig.pstCurrentSection != orxNULL)
   {
     /* Updates result */
-    s32Result = orxLinkList_GetCounter(&(sstConfig.pstCurrentSection->stEntryList));
+    u32Result = orxLinkList_GetCounter(&(sstConfig.pstCurrentSection->stEntryList));
   }
   else
   {
     /* Updates result */
-    s32Result = 0;
+    u32Result = 0;
   }
 
   /* Done! */
-  return s32Result;
+  return u32Result;
 }
 
 /** Gets key for the current section at the given index
- * @param[in] _s32KeyIndex      Index of the desired key
+ * @param[in] _u32KeyIndex      Index of the desired key
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
+const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
 {
   const orxSTRING zResult;
 
@@ -5600,13 +5600,13 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Valid? */
-  if(_s32KeyIndex < orxConfig_GetKeyCounter())
+  if(_u32KeyIndex < orxConfig_GetKeyCounter())
   {
     orxCONFIG_ENTRY  *pstEntry;
-    orxS32            i;
+    orxU32            i;
 
     /* Finds correct entry */
-    for(i = _s32KeyIndex, pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
+    for(i = _u32KeyIndex, pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
         i > 0;
         i--, pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)));
 

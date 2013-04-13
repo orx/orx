@@ -56,6 +56,7 @@ typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _
 typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_TELL)(orxHANDLE _hResource);
 typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_READ)(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
+typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
 
 /** Resource type info
  */
@@ -69,6 +70,7 @@ typedef struct __orxRESOURCE_TYPE_INFO_t
   orxRESOURCE_FUNCTION_SEEK     pfnSeek;
   orxRESOURCE_FUNCTION_TELL     pfnTell;
   orxRESOURCE_FUNCTION_READ     pfnRead;
+  orxRESOURCE_FUNCTION_WRITE    pfnWrite;
 
 } orxRESOURCE_TYPE_INFO;
 
@@ -108,18 +110,30 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStor
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ReloadStorage();
 
 
+/** Gets number of resource groups
+ * @return Number of resource groups
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetGroupCounter();
+
+/** Gets resource group at given index
+ * @param[in] _u32Index         Index of resource group
+ * @return Resource group if index is valid, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetGroup(orxU32 _u32Index);
+
+
 /** Gets number of storages for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @return Number of storages for this resource group
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_GetStorageCounter(const orxSTRING _zGroup);
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetStorageCounter(const orxSTRING _zGroup);
 
 /** Gets storage at given index for a given resource group
  * @param[in] _zGroup           Concerned resource group
- * @param[in] _s32Index         Index of storage
+ * @param[in] _u32Index         Index of storage
  * @return Storage if index is valid, orxNULL otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetStorage(const orxSTRING _zGroup, orxS32 _s32Index);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetStorage(const orxSTRING _zGroup, orxU32 _u32Index);
 
 
 /** Gets the location of a resource for a given group
@@ -128,6 +142,14 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetStorage
  * @return Location string if found, orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_Locate(const orxSTRING _zGroup, const orxSTRING _zName);
+
+/** Makes a location for a non-existing resource, in a given group and storage
+ * @param[in] _zGroup           Concerned resource group
+ * @param[in] _zStorage         Concerned storage, if orxNULL then the default storage will be used
+ * @param[in] _zName            Name of the resource
+ * @return Location string if found, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_MakeLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName);
 
 /** Gets the resource name from a location
  * @param[in] _zLocation        Location of the concerned resource
@@ -175,12 +197,31 @@ extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Tell(orxHA
  */
 extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
 
+/** Writes data to a resource
+ * @param[in] _hResource        Concerned resource
+ * @param[in] _s32Size          Size to write (in bytes)
+ * @param[out] _pBuffer         Buffer that will be written
+ * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
+ */
+extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
+
 
 /** Registers a new resource type
  * @param[in] _pstInfo          Info describing the new resource type and how to handle it
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI const orxSTATUS orxFASTCALL              orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo);
+
+/** Gets number of registered resource types
+ * @return Number of registered resource types
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCounter(const orxSTRING _zGroup);
+
+/** Gets registered type info at given index
+ * @param[in] _u32Index         Index of storage
+ * @return Type tag string if index is valid, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetTypeTag(orxU32 _u32Index);
 
 
 /** Clears cache

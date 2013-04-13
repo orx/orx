@@ -202,13 +202,13 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSectionOrigin(const o
 /** Gets section counter
  * @return Section counter
  */
-extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetSectionCounter();
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetSectionCounter();
 
 /** Gets section at the given index
- * @param[in] _s32SectionIndex  Index of the desired section
+ * @param[in] _u32SectionIndex  Index of the desired section
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSection(orxS32 _s32SectionIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSection(orxU32 _u32SectionIndex);
 
 
 /** Clears all config info
@@ -440,13 +440,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetListString(const orxS
 /** Gets key counter of the current section
  * @return Key counter of the current section if valid, 0 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetKeyCounter();
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetKeyCounter();
 
 /** Gets key for the current section at the given index
- * @param[in] _s32KeyIndex      Index of the desired key
+ * @param[in] _u32KeyIndex      Index of the desired key
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetKey(orxS32 _s32KeyIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetKey(orxU32 _u32KeyIndex);
 
 #endif /*_orxCONFIG_H_*/
 
