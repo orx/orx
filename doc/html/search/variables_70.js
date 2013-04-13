@@ -10,6 +10,7 @@ var searchData=
   ['pfnread',['pfnRead',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a124c1581a96127e9ec4f90065cc97a4a',1,'orxRESOURCE_TYPE_INFO']]],
   ['pfnseek',['pfnSeek',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac1c9fb9344200a727f50c5ac3365eeba',1,'orxRESOURCE_TYPE_INFO']]],
   ['pfntell',['pfnTell',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae5b87aec335d24b4314377aa79d3d9b0',1,'orxRESOURCE_TYPE_INFO']]],
+  ['pfnwrite',['pfnWrite',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a7cfd554c9170f173cea714f304b254a3',1,'orxRESOURCE_TYPE_INFO']]],
   ['pstanim',['pstAnim',['../structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ab9257a59b2cb5e9100e7cd0183128288',1,'orxANIM_EVENT_PAYLOAD']]],
   ['pstcharacterbank',['pstCharacterBank',['../structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a5ecf7f15c5669478c86c22337e9f5564',1,'orxCHARACTER_MAP']]],
   ['pstcharactertable',['pstCharacterTable',['../structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#ac95b5d9d4cebc3508f28ec632645391a',1,'orxCHARACTER_MAP']]],

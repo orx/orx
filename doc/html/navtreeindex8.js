@@ -1,5 +1,12 @@
 var NAVTREEINDEX8 =
 {
+"group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775ab5940bee79c88ccb166f6f72bedad3d1":[1,45,5,6],
+"group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775ab9e5a0d40cc74ecc80e52b53db575244":[1,45,5,2],
+"group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775af572d77ad9843a4be67512b335fc32d9":[1,45,5,7],
+"group__orx_sound_pointer.html":[1,46],
+"group__orx_sound_pointer.html#ga0188b5336738367bfb210e8907bdfcbb":[1,46,2],
+"group__orx_sound_pointer.html#ga08bd8779d5da76309b30b05427afc611":[1,46,17],
+"group__orx_sound_pointer.html#ga0a74d593ed91c023eea945e8219011de":[1,46,19],
 "group__orx_sound_pointer.html#ga149fe786057b3fb427e1622a52631289":[1,46,18],
 "group__orx_sound_pointer.html#ga1859c7902ef07a5c9fcf3a057ffc2902":[1,46,4],
 "group__orx_sound_pointer.html#ga20ee0447868c695794e123d6fb8ec9b8":[1,46,11],
@@ -242,12 +249,5 @@ var NAVTREEINDEX8 =
 "group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a0cf2ba3615a0f4705ab7907b86c5d59a":[1,50,37,3],
 "group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a76ed66b422d3b8a863395d26ae125f36":[1,50,37,1],
 "group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a90c550172eeacd28aec04e59807c4b46":[1,50,37,0],
-"group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9abbd853ca7009adc5b0fc0c2556051e34":[1,50,37,2],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a00f537835d607f70ffb31363889dec8e":[1,50,36,18],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a0dafce351a48bcb315a9cbb95dc95e6b":[1,50,36,4],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a253810235295d1a07a7c539c966ea702":[1,50,36,14],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a27a9cd17907d4b5fede3cf9d33103025":[1,50,36,13],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a3117a67a1c0b08f8e48f5af76600f6bf":[1,50,36,23],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a48b14df45d963b21b0ad76063b205d6b":[1,50,36,16],
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a554ee7e66ada830afda6e98c1745acee":[1,50,36,7]
+"group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9abbd853ca7009adc5b0fc0c2556051e34":[1,50,37,2]
 };
