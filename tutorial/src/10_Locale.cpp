@@ -136,14 +136,14 @@ public:
 
   void SelectNextLanguage();
 
-  Game() : m_poLogo(NULL), s32LanguageIndex(0) {};
+  Game() : m_poLogo(NULL), u32LanguageIndex(0) {};
   ~Game() {};
 
 private:
   orxSTATUS                     InitGame();
 
   Logo  *m_poLogo;
-  orxS32 s32LanguageIndex;
+  orxU32 u32LanguageIndex;
 };
 
 
@@ -154,10 +154,10 @@ Game soMyGame;
 void Game::SelectNextLanguage()
 {
   // Updates language index
-  s32LanguageIndex = (s32LanguageIndex == orxLocale_GetLanguageCounter() - 1) ? 0 : s32LanguageIndex + 1;
+  u32LanguageIndex = (u32LanguageIndex == orxLocale_GetLanguageCounter() - 1) ? 0 : u32LanguageIndex + 1;
 
   // Selects it
-  orxLocale_SelectLanguage(orxLocale_GetLanguage(s32LanguageIndex));
+  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex));
 }
 
 // Init game function
@@ -176,7 +176,7 @@ orxSTATUS Game::InitGame()
 
     // Displays all the available languages, C++ style
     std::cout << "The available languages are:" << std::endl;
-    for(orxS32 i = 0; i < orxLocale_GetLanguageCounter(); i++)
+    for(orxU32 i = 0; i < orxLocale_GetLanguageCounter(); i++)
     {
       std::cout << " - " << orxLocale_GetLanguage(i) << std::endl;
     }

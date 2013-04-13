@@ -85,7 +85,7 @@ typedef struct __Light_t
 static  orxHASHTABLE *pstTextureTable = orxNULL;
 static  orxVIEWPORT  *pstViewport     = orxNULL;
 static  orxOBJECT    *pstScene        = orxNULL;
-static  orxU32        u32LightIndex   = 0;
+static  orxS32        s32LightIndex   = 0;
 static  Light         astLightList[LIGHT_NUMBER];
 
 
@@ -281,7 +281,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is active? */
-    if(pstPayload->s32ParamIndex <= (orxS32)u32LightIndex)
+    if(pstPayload->s32ParamIndex <= s32LightIndex)
     {
       /* Use bumpmap status? */
       if(!orxString_Compare(pstPayload->zParamName, "UseBumpMap"))
@@ -417,13 +417,13 @@ orxSTATUS orxFASTCALL Run()
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Stores mouse position as current light position */
-  orxMouse_GetPosition(&(astLightList[u32LightIndex].vPosition));
+  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
 
   /* Creates a new light? */
   if(orxInput_IsActive("CreateLight") && orxInput_HasNewStatus("CreateLight"))
   {
     /* Updates light index */
-    u32LightIndex = orxMIN(LIGHT_NUMBER - 1, u32LightIndex + 1);
+    s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
   }
   /* Clears all lights? */
   else if(orxInput_IsActive("ClearLights") && orxInput_HasNewStatus("ClearLights"))
@@ -432,22 +432,22 @@ orxSTATUS orxFASTCALL Run()
     ClearLights();
 
     /* Resets light index */
-    u32LightIndex = 0;
+    s32LightIndex = 0;
   }
   /* Increases radius? */
   else if(orxInput_IsActive("IncreaseRadius") && orxInput_HasNewStatus("IncreaseRadius"))
   {
-    astLightList[u32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
+    astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
   }
   /* Decreases radius? */
   else if(orxInput_IsActive("DecreaseRadius") && orxInput_HasNewStatus("DecreaseRadius"))
   {
-    astLightList[u32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[u32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
+    astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
   }
   /* Toggle alpha? */
   else if(orxInput_IsActive("ToggleAlpha") && orxInput_HasNewStatus("ToggleAlpha"))
   {
-    astLightList[u32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[u32LightIndex].stColor.fAlpha;
+    astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
   }
   /* Should quit? */
   else if(orxInput_IsActive("Quit"))
