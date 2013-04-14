@@ -142,7 +142,7 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Read(void *_pReadData, orxU3
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file

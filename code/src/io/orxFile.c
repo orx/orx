@@ -729,7 +729,7 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxU32 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
   orxU32 u32Ret = 0;

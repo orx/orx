@@ -279,7 +279,7 @@ static orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s3
   return s32Result;
 }
 
-static orxS32 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+static orxS32 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer)
 {
   orxFILE  *pstFile;
   orxS32    s32Result;
@@ -1400,7 +1400,7 @@ orxS32 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS32 _s32Size, void 
  * @param[out] _pBuffer         Buffer that will be written
  * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
  */
-orxS32 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+orxS32 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer)
 {
   orxS32 s32Result = 0;
 

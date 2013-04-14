@@ -56,7 +56,7 @@ typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _
 typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_TELL)(orxHANDLE _hResource);
 typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_READ)(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
-typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
+typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer);
 
 /** Resource type info
  */
@@ -204,7 +204,7 @@ extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Read(orxHA
  * @param[out] _pBuffer         Buffer that will be written
  * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
+extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer);
 
 
 /** Registers a new resource type
