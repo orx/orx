@@ -441,7 +441,7 @@ orxU32 orxFASTCALL orxLocale_GetLanguageCounter()
  * @param[in] _u32LanguageIndex Index of the desired language
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _u32LanguageIndex)
+const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxU32 _u32LanguageIndex)
 {
   const orxSTRING zResult;
 
