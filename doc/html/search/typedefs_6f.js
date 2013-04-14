@@ -36,7 +36,7 @@ var searchData=
   ['orxresource_5ffunction_5fread',['orxRESOURCE_FUNCTION_READ',['../group__orx_resource.html#ga49a49d75887c48c31949445ccc9b48d8',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fseek',['orxRESOURCE_FUNCTION_SEEK',['../group__orx_resource.html#ga1525bfe1ab523b96bbf6340b62623cb2',1,'orxResource.h']]],
   ['orxresource_5ffunction_5ftell',['orxRESOURCE_FUNCTION_TELL',['../group__orx_resource.html#gae1c2addda04b67c0a79b7c63223f46d8',1,'orxResource.h']]],
-  ['orxresource_5ffunction_5fwrite',['orxRESOURCE_FUNCTION_WRITE',['../group__orx_resource.html#ga6959018f387fe8bcb10c84a6d9ab5857',1,'orxResource.h']]],
+  ['orxresource_5ffunction_5fwrite',['orxRESOURCE_FUNCTION_WRITE',['../group__orx_resource.html#ga312ac824eabf921ec8064f7dab69972d',1,'orxResource.h']]],
   ['orxshader',['orxSHADER',['../group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51',1,'orxShader.h']]],
   ['orxshaderpointer',['orxSHADERPOINTER',['../group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211',1,'orxShaderPointer.h']]],
   ['orxsound',['orxSOUND',['../group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87',1,'orxSound.h']]],

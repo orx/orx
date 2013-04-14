@@ -24,5 +24,5 @@ var orx_file_8h =
     [ "orxFile_Seek", "orx_file_8h.html#ga19bc558bba0b96d6f267a978683b42a9", null ],
     [ "orxFile_Setup", "orx_file_8h.html#ga3211b72acbc9ff98a67d97ee757acd7d", null ],
     [ "orxFile_Tell", "orx_file_8h.html#ga7e03dfe3355ee7eedf288737757389bf", null ],
-    [ "orxFile_Write", "orx_file_8h.html#ga179d964e4e74c7266468f7f6c54dc1ad", null ]
+    [ "orxFile_Write", "orx_file_8h.html#ga19602eb58ecd2fe3b96996cb4781c3b6", null ]
 ];

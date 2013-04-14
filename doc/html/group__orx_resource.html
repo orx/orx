@@ -131,8 +131,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:ga1525bfe1ab523b96bbf6340b62623cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae1c2addda04b67c0a79b7c63223f46d8"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gae1c2addda04b67c0a79b7c63223f46d8">orxRESOURCE_FUNCTION_TELL</a> )(orxHANDLE _hResource)</td></tr>
 <tr class="separator:gae1c2addda04b67c0a79b7c63223f46d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6959018f387fe8bcb10c84a6d9ab5857"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga6959018f387fe8bcb10c84a6d9ab5857">orxRESOURCE_FUNCTION_WRITE</a> )(orxHANDLE _hResource, orxS32 _s32Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
-<tr class="separator:ga6959018f387fe8bcb10c84a6d9ab5857"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga312ac824eabf921ec8064f7dab69972d"><td class="memItemLeft" align="right" valign="top">typedef orxS32(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga312ac824eabf921ec8064f7dab69972d">orxRESOURCE_FUNCTION_WRITE</a> )(orxHANDLE _hResource, orxS32 _s32Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
+<tr class="separator:ga312ac824eabf921ec8064f7dab69972d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -188,8 +188,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga38ce752f889f3bd8f8f7b20b2b542b3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga38ce752f889f3bd8f8f7b20b2b542b3c">orxResource_Tell</a> (orxHANDLE _hResource)</td></tr>
 <tr class="separator:ga38ce752f889f3bd8f8f7b20b2b542b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad7e898310b6a16e6e1360ec1ba1e3402"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gad7e898310b6a16e6e1360ec1ba1e3402">orxResource_Write</a> (orxHANDLE _hResource, orxS32 _s32Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
-<tr class="separator:gad7e898310b6a16e6e1360ec1ba1e3402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga70f8bed0373e453efce0c5f0eac613b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga70f8bed0373e453efce0c5f0eac613b8">orxResource_Write</a> (orxHANDLE _hResource, orxS32 _s32Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
+<tr class="separator:ga70f8bed0373e453efce0c5f0eac613b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Resource module Module that handles resource mapping </p>
@@ -308,12 +308,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga6959018f387fe8bcb10c84a6d9ab5857"></a>
+<a class="anchor" id="ga312ac824eabf921ec8064f7dab69972d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef orxS32(orxFASTCALL * orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS32 _s32Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td>
+          <td class="memname">typedef orxS32(orxFASTCALL * orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS32 _s32Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -940,7 +940,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gad7e898310b6a16e6e1360ec1ba1e3402"></a>
+<a class="anchor" id="ga70f8bed0373e453efce0c5f0eac613b8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -959,7 +959,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
           <td class="paramname"><em>_pBuffer</em>&#160;</td>
         </tr>
         <tr>
