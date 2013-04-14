@@ -2060,7 +2060,7 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
   if(zResourceName != orxNULL)
   {
     /* Opens it */
-    hResource = orxResource_Open(zResourceName);
+    hResource = orxResource_Open(zResourceName, orxFALSE);
 
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)
@@ -2304,7 +2304,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
   if(zResourceName != orxNULL)
   {
     /* Opens it */
-    hResource = orxResource_Open(zResourceName);
+    hResource = orxResource_Open(zResourceName, orxFALSE);
 
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)
@@ -2614,7 +2614,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
   if(zResourceName != orxNULL)
   {
     /* Opens it */
-    hResource = orxResource_Open(zResourceName);
+    hResource = orxResource_Open(zResourceName, orxFALSE);
 
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)
@@ -2777,7 +2777,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
     if(zResourceName != orxNULL)
     {
       /* Opens it */
-      hResource = orxResource_Open(zResourceName);
+      hResource = orxResource_Open(zResourceName, orxFALSE);
 
       /* Success? */
       if(hResource != orxHANDLE_UNDEFINED)

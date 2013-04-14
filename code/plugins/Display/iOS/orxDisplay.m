@@ -1677,7 +1677,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
   orxBITMAP  *pstBitmap = orxNULL;
 
   /* Opens resource */
-  hResource = orxResource_Open(_zFilename);
+  hResource = orxResource_Open(_zFilename, orxFALSE);
 
   /* Success? */
   if(hResource != orxHANDLE_UNDEFINED)
@@ -3180,7 +3180,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       orxHANDLE hResource;
 
       /* Opens resource */
-      hResource = orxResource_Open(zResourceName);
+      hResource = orxResource_Open(zResourceName, orxFALSE);
 
       /* Valid? */
       if(hResource != orxHANDLE_UNDEFINED)

@@ -201,7 +201,7 @@ static long tell_func(void* datasource)
   return orxResource_Tell((orxHANDLE) datasource);
 }
 
-static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
+static orxINLINE orxSTATUS orxSoundSystem_Android_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
   const orxSTRING zResourceName;
@@ -216,7 +216,7 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
   /* Success? */
   if(zResourceName != orxNULL)
   {
-    _pstData->hResource = orxResource_Open(zResourceName);
+    _pstData->hResource = orxResource_Open(zResourceName, orxFALSE);
 
     /* Success? */
     if(_pstData->hResource != orxHANDLE_UNDEFINED)
@@ -243,7 +243,7 @@ static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFile
   return eResult;
 }
 
-static orxINLINE void orxSoundSystem_OpenAL_CloseFile(orxSOUNDSYSTEM_DATA *_pstData)
+static orxINLINE void orxSoundSystem_Android_CloseFile(orxSOUNDSYSTEM_DATA *_pstData)
 {
   /* Checks */
   orxASSERT(_pstData != orxNULL);
@@ -260,7 +260,7 @@ static orxINLINE void orxSoundSystem_OpenAL_CloseFile(orxSOUNDSYSTEM_DATA *_pstD
   return;
 }
 
-static orxINLINE orxU32 orxSoundSystem_OpenAL_Read(orxSOUNDSYSTEM_DATA *_pstData, orxU32 _u32FrameNumber, void *_pBuffer)
+static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstData, orxU32 _u32FrameNumber, void *_pBuffer)
 {
   orxU32 u32Result, u32RequestBytes, u32BytesRead, u32FrameSize;
   char *pBuffer;
@@ -299,7 +299,7 @@ static orxINLINE orxU32 orxSoundSystem_OpenAL_Read(orxSOUNDSYSTEM_DATA *_pstData
   return u32Result;
 }
 
-static orxINLINE void orxSoundSystem_OpenAL_Rewind(orxSOUNDSYSTEM_DATA *_pstData)
+static orxINLINE void orxSoundSystem_Android_Rewind(orxSOUNDSYSTEM_DATA *_pstData)
 {
   /* Checks */
   orxASSERT(_pstData != orxNULL);
@@ -315,7 +315,7 @@ static orxINLINE void orxSoundSystem_OpenAL_Rewind(orxSOUNDSYSTEM_DATA *_pstData
   return;
 }
 
-static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_pstSound)
+static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   /* Checks */
   orxASSERT(_pstSound != orxNULL);
@@ -386,7 +386,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         orxBOOL bEOF = orxFALSE;
 
         /* Fills buffer */
-        u32FrameNumber = orxSoundSystem_OpenAL_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.as16StreamBuffer);
+        u32FrameNumber = orxSoundSystem_Android_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.as16StreamBuffer);
 
         /* Inits packet */
         stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stData.stInfo.u32ChannelNumber;
@@ -436,7 +436,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           if(bEOF != orxFALSE)
           {
             /* Rewinds file */
-            orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
+            orxSoundSystem_Android_Rewind(&(_pstSound->stData));
 
             /* Not looping? */
             if(_pstSound->bLoop == orxFALSE)
@@ -518,7 +518,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
   return;
 }
 
-static void orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+static void orxFASTCALL orxSoundSystem_Android_UpdateStreaming(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
   orxLINKLIST_NODE *pstNode;
 
@@ -536,14 +536,14 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(const orxCLOCK_INF
     pstSound = (orxSOUNDSYSTEM_SOUND *)((orxU8 *)pstNode - (orxU8 *)&(((orxSOUNDSYSTEM_SOUND *)0)->stNode));
 
     /* Fills its stream */
-    orxSoundSystem_OpenAL_FillStream(pstSound);
+    orxSoundSystem_Android_FillStream(pstSound);
   }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
+orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -600,7 +600,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
         {
           /* Adds streaming timer */
-          if(orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateStreaming, orxNULL, orxMODULE_ID_SOUNDSYSTEM, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)
+          if(orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_Android_UpdateStreaming, orxNULL, orxMODULE_ID_SOUNDSYSTEM, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)
           {
             ALfloat   afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
             orxFLOAT  fRatio;
@@ -713,13 +713,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
   return eResult;
 }
 
-void orxFASTCALL orxSoundSystem_OpenAL_Exit()
+void orxFASTCALL orxSoundSystem_Android_Exit()
 {
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
     /* Unregisters fill stream callback */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateStreaming);
+    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_Android_UpdateStreaming);
 
     /* Deletes working buffer list */
     orxMemory_Free(sstSoundSystem.auiWorkBufferList);
@@ -756,7 +756,7 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
   return;
 }
 
-orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
 {
   orxSOUNDSYSTEM_SAMPLE *pstResult = NULL;
 
@@ -821,7 +821,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
   return pstResult;
 }
 
-orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_Android_LoadSample(const orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_DATA     stData;
   orxSOUNDSYSTEM_SAMPLE  *pstResult = NULL;
@@ -831,7 +831,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
   orxASSERT(_zFilename != orxNULL);
 
   /* Opens file */
-  if(orxSoundSystem_OpenAL_OpenFile(_zFilename, &stData) != orxSTATUS_FAILURE)
+  if(orxSoundSystem_Android_OpenFile(_zFilename, &stData) != orxSTATUS_FAILURE)
   {
     /* Allocates sample */
     pstResult = (orxSOUNDSYSTEM_SAMPLE *)orxBank_Allocate(sstSoundSystem.pstSampleBank);
@@ -851,7 +851,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
         orxU32 u32ReadFrameNumber;
 
         /* Reads data */
-        u32ReadFrameNumber = orxSoundSystem_OpenAL_Read(&stData, stData.stInfo.u32FrameNumber, pBuffer);
+        u32ReadFrameNumber = orxSoundSystem_Android_Read(&stData, stData.stInfo.u32FrameNumber, pBuffer);
 
         /* Success? */
         if(u32ReadFrameNumber == stData.stInfo.u32FrameNumber)
@@ -899,14 +899,14 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
     }
 
     /* Closes file */
-    orxSoundSystem_OpenAL_CloseFile(&stData);
+    orxSoundSystem_Android_CloseFile(&stData);
   }
 
   /* Done! */
   return pstResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -923,7 +923,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_DeleteSample(orxSOUNDSYSTEM_SAMPLE *
   return orxSTATUS_SUCCESS;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -941,7 +941,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_GetSampleInfo(const orxSOUNDSYSTEM_S
   return orxSTATUS_SUCCESS;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber)
 {
   orxSTATUS eResult;
 
@@ -970,7 +970,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE 
   return eResult;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
 
@@ -1015,7 +1015,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateFromSample(const o
   return pstResult;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
 {
   orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
 
@@ -1072,7 +1072,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
   return pstResult;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
 {
   orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
 
@@ -1094,7 +1094,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
     alASSERT();
 
     /* Opens file */
-    if(orxSoundSystem_OpenAL_OpenFile(_zFilename, &(pstResult->stData)) != orxSTATUS_FAILURE)
+    if(orxSoundSystem_Android_OpenFile(_zFilename, &(pstResult->stData)) != orxSTATUS_FAILURE)
     {
       /* Generates all openAL buffers */
       alGenBuffers(sstSoundSystem.s32StreamBufferNumber, pstResult->auiBufferList);
@@ -1136,7 +1136,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
   return pstResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1152,7 +1152,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Delete(orxSOUNDSYSTEM_SOUND *_pstSou
   if(_pstSound->bIsStream != orxFALSE)
   {
     /* Dispose audio file */
-    orxSoundSystem_OpenAL_CloseFile(&(_pstSound->stData));
+    orxSoundSystem_Android_CloseFile(&(_pstSound->stData));
 
     /* Clears buffers */
     alDeleteBuffers(sstSoundSystem.s32StreamBufferNumber, _pstSound->auiBufferList);
@@ -1169,7 +1169,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Delete(orxSOUNDSYSTEM_SOUND *_pstSou
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1187,7 +1187,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Play(orxSOUNDSYSTEM_SOUND *_pstSound
       _pstSound->bStop = orxFALSE;
 
       /* Fills stream */
-      orxSoundSystem_OpenAL_FillStream(_pstSound);
+      orxSoundSystem_Android_FillStream(_pstSound);
     }
 
     /* Updates status */
@@ -1202,7 +1202,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Play(orxSOUNDSYSTEM_SOUND *_pstSound
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1225,7 +1225,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Pause(orxSOUNDSYSTEM_SOUND *_pstSoun
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1241,21 +1241,21 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
   if(_pstSound->bIsStream != orxFALSE)
   {
     /* Rewinds file */
-    orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
+    orxSoundSystem_Android_Rewind(&(_pstSound->stData));
 
     /* Updates status */
     _pstSound->bStop  = orxTRUE;
     _pstSound->bPause = orxFALSE;
 
     /* Fills stream */
-    orxSoundSystem_OpenAL_FillStream(_pstSound);
+    orxSoundSystem_Android_FillStream(_pstSound);
   }
 
   /* Done! */
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1267,7 +1267,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StopRecording()
+orxSTATUS orxFASTCALL orxSoundSystem_Android_StopRecording()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1278,7 +1278,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StopRecording()
   return eResult;
 }
 
-orxBOOL orxFASTCALL orxSoundSystem_OpenAL_HasRecordingSupport()
+orxBOOL orxFASTCALL orxSoundSystem_Android_HasRecordingSupport()
 {
 	const ALCchar  *zDeviceNameList;
   orxBOOL         bResult;
@@ -1296,7 +1296,7 @@ orxBOOL orxFASTCALL orxSoundSystem_OpenAL_HasRecordingSupport()
   return bResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1312,7 +1312,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetVolume(orxSOUNDSYSTEM_SOUND *_pst
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1328,7 +1328,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetPitch(orxSOUNDSYSTEM_SOUND *_pstS
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1345,7 +1345,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetPosition(orxSOUNDSYSTEM_SOUND *_p
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1361,7 +1361,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetAttenuation(orxSOUNDSYSTEM_SOUND 
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1377,7 +1377,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetReferenceDistance(orxSOUNDSYSTEM_
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1402,7 +1402,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Loop(orxSOUNDSYSTEM_SOUND *_pstSound
   return eResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1418,7 +1418,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetVolume(const orxSOUNDSYSTEM_SOUND 
   return fResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1434,7 +1434,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetPitch(const orxSOUNDSYSTEM_SOUND *
   return fResult;
 }
 
-orxVECTOR *orxFASTCALL orxSoundSystem_OpenAL_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_Android_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
 {
   orxVECTOR *pvResult = _pvPosition;
 
@@ -1454,7 +1454,7 @@ orxVECTOR *orxFASTCALL orxSoundSystem_OpenAL_GetPosition(const orxSOUNDSYSTEM_SO
   return pvResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -1473,7 +1473,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetAttenuation(const orxSOUNDSYSTEM_S
   return fResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -1492,7 +1492,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetReferenceDistance(const orxSOUNDSY
   return fResult;
 }
 
-orxBOOL orxFASTCALL orxSoundSystem_OpenAL_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxBOOL orxFASTCALL orxSoundSystem_Android_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   ALint   iLooping;
   orxBOOL bResult;
@@ -1521,7 +1521,7 @@ orxBOOL orxFASTCALL orxSoundSystem_OpenAL_IsLooping(const orxSOUNDSYSTEM_SOUND *
   return bResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1536,7 +1536,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetDuration(const orxSOUNDSYSTEM_SOUN
   return fResult;
 }
 
-orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_OpenAL_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_Android_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   ALint                 iState;
   orxSOUNDSYSTEM_STATUS eResult = orxSOUNDSYSTEM_STATUS_NONE;
@@ -1596,7 +1596,7 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_OpenAL_GetStatus(const orxSOUND
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetGlobalVolume(orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetGlobalVolume(orxFLOAT _fVolume)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1611,7 +1611,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetGlobalVolume(orxFLOAT _fVolume)
   return eResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetGlobalVolume()
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetGlobalVolume()
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1626,7 +1626,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetGlobalVolume()
   return fResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetListenerPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetListenerPosition(const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1642,7 +1642,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetListenerPosition(const orxVECTOR 
   return eResult;
 }
 
-orxVECTOR *orxFASTCALL orxSoundSystem_OpenAL_GetListenerPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_Android_GetListenerPosition(orxVECTOR *_pvPosition)
 {
   orxVECTOR *pvResult = _pvPosition;
 
@@ -1667,41 +1667,41 @@ orxVECTOR *orxFASTCALL orxSoundSystem_OpenAL_GetListenerPosition(orxVECTOR *_pvP
  ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Init, SOUNDSYSTEM, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Exit, SOUNDSYSTEM, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_CreateSample, SOUNDSYSTEM, CREATE_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_LoadSample, SOUNDSYSTEM, LOAD_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_DeleteSample, SOUNDSYSTEM, DELETE_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Delete, SOUNDSYSTEM, DELETE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Play, SOUNDSYSTEM, PLAY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Pause, SOUNDSYSTEM, PAUSE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Stop, SOUNDSYSTEM, STOP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_StartRecording, SOUNDSYSTEM, START_RECORDING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_StopRecording, SOUNDSYSTEM, STOP_RECORDING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_HasRecordingSupport, SOUNDSYSTEM, HAS_RECORDING_SUPPORT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetVolume, SOUNDSYSTEM, SET_VOLUME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetPitch, SOUNDSYSTEM, SET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetPosition, SOUNDSYSTEM, SET_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Loop, SOUNDSYSTEM, LOOP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetVolume, SOUNDSYSTEM, GET_VOLUME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetPitch, SOUNDSYSTEM, GET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetPosition, SOUNDSYSTEM, GET_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_IsLooping, SOUNDSYSTEM, IS_LOOPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetDuration, SOUNDSYSTEM, GET_DURATION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetStatus, SOUNDSYSTEM, GET_STATUS);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetGlobalVolume, SOUNDSYSTEM, SET_GLOBAL_VOLUME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetGlobalVolume, SOUNDSYSTEM, GET_GLOBAL_VOLUME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetListenerPosition, SOUNDSYSTEM, SET_LISTENER_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetListenerPosition, SOUNDSYSTEM, GET_LISTENER_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Init, SOUNDSYSTEM, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Exit, SOUNDSYSTEM, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateSample, SOUNDSYSTEM, CREATE_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_LoadSample, SOUNDSYSTEM, LOAD_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_DeleteSample, SOUNDSYSTEM, DELETE_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Delete, SOUNDSYSTEM, DELETE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Play, SOUNDSYSTEM, PLAY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Pause, SOUNDSYSTEM, PAUSE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Stop, SOUNDSYSTEM, STOP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_StartRecording, SOUNDSYSTEM, START_RECORDING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_StopRecording, SOUNDSYSTEM, STOP_RECORDING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_HasRecordingSupport, SOUNDSYSTEM, HAS_RECORDING_SUPPORT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetVolume, SOUNDSYSTEM, SET_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetPitch, SOUNDSYSTEM, SET_PITCH);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetPosition, SOUNDSYSTEM, SET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Loop, SOUNDSYSTEM, LOOP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetVolume, SOUNDSYSTEM, GET_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetPitch, SOUNDSYSTEM, GET_PITCH);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetPosition, SOUNDSYSTEM, GET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_IsLooping, SOUNDSYSTEM, IS_LOOPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetDuration, SOUNDSYSTEM, GET_DURATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetStatus, SOUNDSYSTEM, GET_STATUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetGlobalVolume, SOUNDSYSTEM, SET_GLOBAL_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetGlobalVolume, SOUNDSYSTEM, GET_GLOBAL_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetListenerPosition, SOUNDSYSTEM, SET_LISTENER_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetListenerPosition, SOUNDSYSTEM, GET_LISTENER_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
 #ifdef __orxMSVC__
