@@ -188,9 +188,6 @@ extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY 
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD,"Key <%s> is not handled by this plugin.", orxKeyboard_GetKeyName(_eKey));
-
     /* Updates result */
     bResult = orxFALSE;
   }
