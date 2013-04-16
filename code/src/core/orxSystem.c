@@ -164,9 +164,6 @@ orxSTATUS orxFASTCALL orxSystem_Init()
     /* Sets thread CPU affinity to remain on the same core */
     SetThreadAffinityMask(GetCurrentThread(), 1);
 
-    /* Asks for small time slices */
-    timeBeginPeriod(1);
-
     /* Should use high performance timer? */
     if(QueryPerformanceFrequency(&s64Frequency))
     {
@@ -227,13 +224,6 @@ void orxFASTCALL orxSystem_Exit()
   /* Checks */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
-#ifdef __orxWINDOWS__
-
-     /* Resets time slices */
-     timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
-
     /* Cleans static controller */
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
   }
