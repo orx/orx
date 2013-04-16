@@ -626,8 +626,8 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
         }
         else
         {
-          /* Adds it before default */
-          orxLinkList_AddBefore(orxLinkList_GetLast(&(pstGroup->stStorageList)), &(pstStorage->stNode));
+          /* Adds it last */
+          orxLinkList_AddEnd(&(pstGroup->stStorageList), &(pstStorage->stNode));
         }
 
         /* Updates result */
