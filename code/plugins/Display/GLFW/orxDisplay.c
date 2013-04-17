@@ -3404,7 +3404,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           if(pstClock != orxNULL)
           {
             /* Registers update function */
-            eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
+            eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER);
           }
 
           /* Shows mouse cursor */
