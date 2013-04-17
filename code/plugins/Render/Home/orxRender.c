@@ -2365,10 +2365,10 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
     orxCAMERA *pstCamera;
 
     /* Is active and has camera or is selected? */
-    if(((_pstViewport == orxNULL)
-     && (orxViewport_IsEnabled(pstViewport) != orxFALSE)
-     && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
-    || (_pstViewport == pstViewport))
+    if((((_pstViewport == orxNULL)
+      && (orxViewport_IsEnabled(pstViewport) != orxFALSE))
+     || (_pstViewport == pstViewport))
+    && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
     {
       orxAABOX  stViewportBox;
       orxFLOAT  fCorrectionRatio;
