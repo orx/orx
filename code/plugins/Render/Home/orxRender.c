@@ -326,13 +326,6 @@ static orxINLINE void orxRender_Home_RenderFPS()
     orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
-  /* Restores screen bitmap clipping to force pushing the batch of vertices to the GPU */
-  {
-    orxFLOAT fWidth, fHeight;
-    orxDisplay_GetScreenSize(&fWidth, &fHeight);
-    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-  }
-
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
 
