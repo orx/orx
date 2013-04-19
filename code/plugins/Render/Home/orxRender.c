@@ -58,6 +58,7 @@
 #define orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK    0x00000008 /**< Console blink flag */
 #define orxRENDER_KU32_STATIC_FLAG_PROFILER         0x00000010 /**< Profiler flag */
 #define orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY 0x00000020 /**< Profiler history flag */
+#define orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST  0x00000040 /**< Present request flag */
 
 #define orxRENDER_KU32_STATIC_MASK_ALL              0xFFFFFFFF /**< All mask */
 
@@ -336,7 +337,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
 /** Renders profiler info
  */
 static orxINLINE void orxRender_Home_RenderProfiler()
-{
+{ 
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
@@ -2175,14 +2176,8 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxConfig_PopSection();
     }
 
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
-
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxDisplay_Swap");
-
-    /* Swap buffers */
-    orxDisplay_Swap();
+    /* Updates status */
+    orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST, orxRENDER_KU32_STATIC_FLAG_NONE);
 
     /* Profiles */
     orxPROFILER_POP_MARKER();
@@ -2193,11 +2188,38 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
   }
 
-  /* Resets all profiler markers */
-  orxProfiler_ResetAllMarkers();
-
   /* Done! */
   return;
+}
+
+/** Presents frame (callback to register on a clock)
+ * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
+ * @param[in]   _pContext     Context sent when registering callback to the clock
+ */
+static void orxFASTCALL orxRender_Home_Present(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Checks */
+  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClockInfo != orxNULL);
+
+  /* Should present? */
+  if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST))
+  {
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxDisplay_Swap");
+
+    /* Swap buffers */
+    orxDisplay_Swap();
+
+    /* Updates status */
+    orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST);
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+  }
+
+  /* Resets all profiler markers */
+  orxProfiler_ResetAllMarkers();
 }
 
 /** Event handler
@@ -2316,8 +2338,9 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
       /* Close event? */
       if(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE)
       {
-        /* Unregisters rendering function */
+        /* Unregisters render & present functions */
         orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+        orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present);
 
         /* Updates flags */
         sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_REGISTERED;
@@ -2646,8 +2669,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
         /* Valid? */
         if(sstRender.pstFrame != orxNULL)
         {
-          /* Registers rendering function */
-          eResult = orxClock_Register(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
+          /* Registers render & present functions */
+          eResult = orxClock_Register(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_HIGHEST);
+          eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(sstRender.pstClock, orxRender_Home_Present, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
@@ -2702,6 +2726,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           }
           else
           {
+            /* Unregisters render function */
+            orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't register render clock callback.");
 
@@ -2768,6 +2795,7 @@ void orxFASTCALL orxRender_Home_Exit()
     if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_REGISTERED))
     {
       orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+      orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present);
     }
 
     /* Deletes conversion frame */
