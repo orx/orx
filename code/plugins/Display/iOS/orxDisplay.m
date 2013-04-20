@@ -815,6 +815,10 @@ static orxView *spoInstance;
 {
   /* Swaps */
   [[EAGLContext currentContext] presentRenderbuffer:GL_RENDERBUFFER_OES];
+
+  /* Waits for GPU work to be done */
+  glFinish();
+  glASSERT();
 }
 
 - (BOOL) IsExtensionSupported:(NSString *)_zExtension
