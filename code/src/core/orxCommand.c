@@ -2870,7 +2870,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
   orxASSERT(_pstResult != orxNULL);
 
   /* Valid? */
-  if((_zCommandLine != orxNULL) & (_zCommandLine != orxSTRING_EMPTY))
+  if((_zCommandLine != orxNULL) && (_zCommandLine != orxSTRING_EMPTY))
   {
     /* Processes it */
     pstResult = orxCommand_Process(_zCommandLine, orxU64_UNDEFINED, _pstResult);
