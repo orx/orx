@@ -86,17 +86,11 @@ static orxSTATUS orxFASTCALL Run()
   /* Updates generator's status */
   orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
 
-  if(orxInput_IsActive("Spawn") && orxInput_HasNewStatus("Spawn"))
-  {
-    orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), "../Documents/toto.png");
-    orxScreenshot_Capture();
-  }
-  
   /* Gets mouse position in world space */
   if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos))
   {
     orxVECTOR vGeneratorPos;
-    
+
     /* Gets generator position */
     orxObject_GetPosition(spstGenerator, &vGeneratorPos);
 
