@@ -76,3 +76,10 @@ tutorial/build/**.ncb
 **.cih
 tools/**.user
 tools/**/bin
+
+syntax: regexp
+^code/demo/android/bin$
+syntax: regexp
+^code/demo/android/libs$
+syntax: regexp
+^code/demo/android/obj$
