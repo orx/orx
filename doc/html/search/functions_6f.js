@@ -1005,6 +1005,7 @@ var searchData=
   ['orxstring_5fdelete',['orxString_Delete',['../group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28',1,'orxString.h']]],
   ['orxstring_5fduplicate',['orxString_Duplicate',['../group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd',1,'orxString.h']]],
   ['orxstring_5fgetcharactercounter',['orxString_GetCharacterCounter',['../group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998',1,'orxString.h']]],
+  ['orxstring_5fgetextension',['orxString_GetExtension',['../group__orx_string.html#ga3352602bfc1529ae7c20fc8c665c179d',1,'orxString.h']]],
   ['orxstring_5fgetfirstcharactercodepoint',['orxString_GetFirstCharacterCodePoint',['../group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756',1,'orxString.h']]],
   ['orxstring_5fgetlength',['orxString_GetLength',['../group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670',1,'orxString.h']]],
   ['orxstring_5fgetutf8characterlength',['orxString_GetUTF8CharacterLength',['../group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b',1,'orxString.h']]],

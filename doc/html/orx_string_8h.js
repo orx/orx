@@ -11,6 +11,7 @@ var orx_string_8h =
     [ "orxString_Delete", "orx_string_8h.html#ga27ae7f7f06d5e7d7710f65754966da28", null ],
     [ "orxString_Duplicate", "orx_string_8h.html#gac4aa5642b4c1106e8a2056515c3f5cbd", null ],
     [ "orxString_GetCharacterCounter", "orx_string_8h.html#ga08c8a06ad01a11f54df7ebc604dfa998", null ],
+    [ "orxString_GetExtension", "orx_string_8h.html#ga3352602bfc1529ae7c20fc8c665c179d", null ],
     [ "orxString_GetFirstCharacterCodePoint", "orx_string_8h.html#ga7782e2bf85e3f7d33ad24b29a921f756", null ],
     [ "orxString_GetLength", "orx_string_8h.html#ga5dd29b1e41db0845ef80863df67f5670", null ],
     [ "orxString_GetUTF8CharacterLength", "orx_string_8h.html#gaa62f828ae9bbcad9957df3195a4aca3b", null ],

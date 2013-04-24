@@ -1,5 +1,6 @@
 var NAVTREEINDEX13 =
 {
+"orx_frame_8h.html#ga2d4e31dbaf34ca37925cdb474f5c02a7":[3,0,0,9,0,10],
 "orx_frame_8h.html#ga2da19cebead5fb95d7c1d0bfb4f97a34":[3,0,0,9,0,12],
 "orx_frame_8h.html#ga315fa8b686358a68de12231f684b99dd":[3,0,0,9,0,24],
 "orx_frame_8h.html#ga4ba8fc4ce9e8e72961401741bda7cef1":[3,0,0,9,0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX13 =
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bafd113b4b5996372b29d06cc8ef06926d":[3,0,0,5,2,5,22],
 "orx_joystick_8h_source.html":[3,0,0,5,2],
 "orx_kernel_8h.html":[3,0,0,17],
-"orx_kernel_8h_source.html":[3,0,0,17],
-"orx_keyboard_8h.html":[3,0,0,5,3]
+"orx_kernel_8h_source.html":[3,0,0,17]
 };
