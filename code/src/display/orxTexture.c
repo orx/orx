@@ -66,6 +66,8 @@
 
 #define orxTEXTURE_KZ_PIXEL                     "pixel"
 
+#define orxTEXTURE_KZ_DEFAULT_EXTENSION         "png"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -278,8 +280,34 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
   /* Success? */
   if(pstTexture != orxNULL)
   {
+    const orxSTRING zName;
+    orxCHAR         acBuffer[256];
+
+    /* Was target name specified? */
+    if(_u32ArgNumber > 1)
+    {
+      /* Uses it */
+      zName = _astArgList[1].zValue;
+    }
+    else
+    {
+      /* Gets texture name */
+      zName = orxTexture_GetName(pstTexture);
+
+      /* Doesn't include extension? */
+      if(orxString_GetExtension(zName) == orxSTRING_EMPTY)
+      {
+        /* Appends default extension */
+        orxString_NPrint(acBuffer, 255, "%s.%s", zName, orxTEXTURE_KZ_DEFAULT_EXTENSION);
+        acBuffer[255] = orxCHAR_NULL;
+
+        /* Uses it */
+        zName = acBuffer;
+      }
+    }
+
     /* Saves it */
-    _pstResult->bValue = (orxDisplay_SaveBitmap(orxTexture_GetBitmap(pstTexture), _astArgList[1].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+    _pstResult->bValue = (orxDisplay_SaveBitmap(orxTexture_GetBitmap(pstTexture), zName) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
   }
   else
   {
@@ -307,7 +335,7 @@ static orxINLINE void orxTexture_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: Save */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64}, {"File", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture", orxCOMMAND_VAR_TYPE_U64}, {"File = Name", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the texture commands
