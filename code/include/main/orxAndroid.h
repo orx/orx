@@ -80,12 +80,6 @@ enum {
     APP_INPUT_TOUCH_EVENT
 };
 
-
-/**
-  Retrieve the Java Activity
-  */
-void* orxAndroid_GetActivity();
-
 /**
   Get the internal storage path
   */

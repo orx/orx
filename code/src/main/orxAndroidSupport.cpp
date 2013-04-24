@@ -74,7 +74,7 @@ typedef struct __orxANDROID_STATIC_t {
 	orxU32 u32Flags;
 
         // Main activity
-        jclass mActivityClass;
+        jobject mActivity;
 
         // method signatures
         jmethodID midCreateGLContext;
@@ -82,7 +82,7 @@ typedef struct __orxANDROID_STATIC_t {
         jmethodID midGetRotation;
 
         // AssetManager
-        AAssetManager *s_AssetManager;
+        AAssetManager *poAssetManager;
         jobject jAssetManager;
         char *s_AndroidInternalFilesPath;
 
@@ -212,7 +212,7 @@ static void app_write_cmd(int8_t cmd) {
 }
 
 // Called before main() to initialize JNI bindings
-extern "C" void orxAndroid_Init(JNIEnv* mEnv, jclass cls)
+extern "C" void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 {
     __android_log_print(ANDROID_LOG_INFO, "Orx", "orxAndroid_Init()");
 
@@ -221,18 +221,25 @@ extern "C" void orxAndroid_Init(JNIEnv* mEnv, jclass cls)
 
     Android_JNI_SetupThread();
 
-    sstAndroid.mActivityClass = (jclass)mEnv->NewGlobalRef(cls);
+// TODO release GlobalRef
+    sstAndroid.mActivity = mEnv->NewGlobalRef(thiz);
 
-    sstAndroid.midCreateGLContext = mEnv->GetStaticMethodID(sstAndroid.mActivityClass,
-                                "createGLContext","(II[I)Z");
-    sstAndroid.midFlipBuffers = mEnv->GetStaticMethodID(sstAndroid.mActivityClass,
-                                "flipBuffers","()V");
-    sstAndroid.midGetRotation = mEnv->GetStaticMethodID(sstAndroid.mActivityClass,
-                                "getRotation","()I");
+    jclass objClass = mEnv->GetObjectClass(thiz);
+
+    sstAndroid.midCreateGLContext = mEnv->GetMethodID(objClass, "createGLContext","(II[I)Z");
+    sstAndroid.midFlipBuffers = mEnv->GetMethodID(objClass, "flipBuffers","()V");
+    sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
 
     if(!sstAndroid.midCreateGLContext || !sstAndroid.midFlipBuffers || !sstAndroid.midGetRotation) {
         __android_log_print(ANDROID_LOG_WARN, "Orx", "Orx: Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
+
+    // setup AssetManager
+    jmethodID midGetAssets = mEnv->GetMethodID(objClass, "getAssets", "()Landroid/content/res/AssetManager;");
+    jobject jAssetManager = mEnv->CallObjectMethod(thiz, midGetAssets);
+// TODO release jAssetManager GlobalRef
+    sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
+    sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
 
     // setup looper for events
     int msgpipe[2];
@@ -255,10 +262,10 @@ extern "C" void orxAndroid_Init(JNIEnv* mEnv, jclass cls)
 extern int main(int argc, char *argv[]);
 
 // Start up the Orx app
-extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thiz)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
-    orxAndroid_Init(env, cls);
+    orxAndroid_Init(env, thiz);
 
     /* Run the application code! */
     int status;
@@ -270,7 +277,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jclass cls,
 
 // Resize
 extern "C" void Java_org_orx_lib_OrxActivity_onNativeResize(
-                                    JNIEnv* env, jclass jcls,
+                                    JNIEnv* env, jobject thiz,
                                     jint width, jint height)
 {
 // TODO send event here and move s_winWidth and s_winHeight to Display plugin
@@ -279,8 +286,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeResize(
 }
 
 // Keydown
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(
-                                    JNIEnv* env, jclass jcls, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobject thiz, jint keycode)
 {
   app_write_cmd(APP_INPUT_KEY_DOWN);
   if (write(sstAndroid.msgwrite, &keycode, sizeof(keycode)) != sizeof(keycode))
@@ -290,8 +296,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(
 }
 
 // Keyup
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(
-                                    JNIEnv* env, jclass jcls, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
   app_write_cmd(APP_INPUT_KEY_UP);
   // TODO WARNING thread "could" be interupted here, combine both write in a single call
@@ -303,7 +308,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(
 
 // Touch
 extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
-                                    JNIEnv* env, jclass jcls,
+                                    JNIEnv* env, jobject thiz,
                                     jint touch_device_id_in, jint pointer_finger_id_in,
                                     jint action, jfloat x, jfloat y, jfloat p)
 {
@@ -323,36 +328,31 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
 }
 
 // Quit
-extern "C" void Java_org_orx_lib_OrxActivity_nativeQuit(
-                                    JNIEnv* env, jclass cls)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeQuit(JNIEnv* env, jobject thiz)
 {    
   app_write_cmd(APP_CMD_QUIT);
 }
 
 // Pause
-extern "C" void Java_org_orx_lib_OrxActivity_nativePause(
-                                    JNIEnv* env, jclass cls)
+extern "C" void Java_org_orx_lib_OrxActivity_nativePause(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_PAUSE);
 }
 
 // Resume
-extern "C" void Java_org_orx_lib_OrxActivity_nativeResume(
-                                    JNIEnv* env, jclass cls)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeResume(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_RESUME);
 }
 
 // SurfaceDestroyed
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(
-                                    JNIEnv* env, jclass cls)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_SURFACE_DESTROYED);
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceCreated(
-                                    JNIEnv* env, jclass cls)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceCreated(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_SURFACE_CREATED);
 }
@@ -403,7 +403,7 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
     JNIEnv *env = Android_JNI_GetEnv();
     
-    jint rotation = env->CallStaticIntMethod(sstAndroid.mActivityClass, sstAndroid.midGetRotation);
+    jint rotation = env->CallIntMethod(sstAndroid.mActivity, sstAndroid.midGetRotation);
     return rotation;
 }
 
@@ -434,7 +434,7 @@ extern "C" orxBOOL orxAndroid_JNI_CreateContext(int majorVersion, int minorVersi
     array = env->NewIntArray(len);
     env->SetIntArrayRegion(array, 0, len, attribs);
 
-    jboolean success = env->CallStaticBooleanMethod(sstAndroid.mActivityClass, sstAndroid.midCreateGLContext, majorVersion, minorVersion, array);
+    jboolean success = env->CallBooleanMethod(sstAndroid.mActivity, sstAndroid.midCreateGLContext, majorVersion, minorVersion, array);
 
     env->DeleteLocalRef(array);
 
@@ -444,7 +444,7 @@ extern "C" orxBOOL orxAndroid_JNI_CreateContext(int majorVersion, int minorVersi
 extern "C" void orxAndroid_JNI_SwapWindow()
 {
     JNIEnv *mEnv = Android_JNI_GetEnv();
-    mEnv->CallStaticVoidMethod(sstAndroid.mActivityClass, sstAndroid.midFlipBuffers); 
+    mEnv->CallVoidMethod(sstAndroid.mActivity, sstAndroid.midFlipBuffers); 
 }
 
 
@@ -453,55 +453,11 @@ extern "C" void *orxAndroid_GetJNIEnv()
     return Android_JNI_GetEnv();
 }
 
-extern "C" void *orxAndroid_GetActivity()
-{
-    LocalReferenceHolder refs(__FUNCTION__);
-    jmethodID mid;
-
-    JNIEnv *env = Android_JNI_GetEnv();
-    if (!refs.init(env)) {
-        return NULL;
-    }
-
-    // return OrxActivity.getContext();
-    mid = env->GetStaticMethodID(sstAndroid.mActivityClass,
-            "getContext","()Landroid/content/Context;");
-    return env->CallStaticObjectMethod(sstAndroid.mActivityClass, mid);
-}
-
-extern "C" AAssetManager * orxAndroid_GetAssetManager()
-{
-    if (!sstAndroid.s_AssetManager) {
-        LocalReferenceHolder refs(__FUNCTION__);
-        jmethodID mid;
-        jobject context;
-        jobject jAssetManager;
-
-        JNIEnv *env = Android_JNI_GetEnv();
-        if (!refs.init(env)) {
-            return NULL;
-        }
-
-        // context = OrxActivity.getContext();
-        mid = env->GetStaticMethodID(sstAndroid.mActivityClass,
-                "getContext","()Landroid/content/Context;");
-        context = env->CallStaticObjectMethod(sstAndroid.mActivityClass, mid);
-
-        mid = env->GetMethodID(env->GetObjectClass(context), "getAssets", "()Landroid/content/res/AssetManager;");
-        jAssetManager = env->CallObjectMethod(context, mid);
-
-        sstAndroid.jAssetManager = env->NewGlobalRef(jAssetManager);
-        sstAndroid.s_AssetManager = AAssetManager_fromJava(env, jAssetManager);
-  }
-  return sstAndroid.s_AssetManager;
-}
-
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
     if (!sstAndroid.s_AndroidInternalFilesPath) {
         LocalReferenceHolder refs(__FUNCTION__);
         jmethodID mid;
-        jobject context;
         jobject fileObject;
         jstring pathString;
         const char *path;
@@ -511,15 +467,10 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
             return NULL;
         }
 
-        // context = OrxActivity.getContext();
-        mid = env->GetStaticMethodID(sstAndroid.mActivityClass,
-                "getContext","()Landroid/content/Context;");
-        context = env->CallStaticObjectMethod(sstAndroid.mActivityClass, mid);
-
         // fileObj = context.getFilesDir();
-        mid = env->GetMethodID(env->GetObjectClass(context),
+        mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity),
                 "getFilesDir", "()Ljava/io/File;");
-        fileObject = env->CallObjectMethod(context, mid);
+        fileObject = env->CallObjectMethod(sstAndroid.mActivity, mid);
         if (!fileObject) {
             LOGE("Couldn't get internal directory");
             return NULL;
@@ -684,7 +635,7 @@ static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStor
   }
 
   /* Exist? */
-  poAsset = AAssetManager_open(orxAndroid_GetAssetManager(), s_acFileLocationBuffer, AASSET_MODE_RANDOM);
+  poAsset = AAssetManager_open(sstAndroid.poAssetManager, s_acFileLocationBuffer, AASSET_MODE_RANDOM);
   if(poAsset != NULL)
   {
     /* Updates result */
@@ -705,7 +656,7 @@ static orxHANDLE orxFASTCALL orxResource_APK_Open(const orxSTRING _zLocation, or
   if(_bEraseMode == orxFALSE)
   {
     /* Opens Asset */
-    poAsset = AAssetManager_open(orxAndroid_GetAssetManager(), _zLocation, AASSET_MODE_RANDOM);
+    poAsset = AAssetManager_open(sstAndroid.poAssetManager, _zLocation, AASSET_MODE_RANDOM);
 
     /* Updates result */
     hResult = (poAsset != orxNULL) ? (orxHANDLE)poAsset : orxHANDLE_UNDEFINED;
