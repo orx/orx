@@ -3058,7 +3058,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
         oImage = CGImageCreate(_pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 32, 4 * _pstBitmap->u32RealWidth, oColorSpace, kCGBitmapByteOrderDefault, oProvider, nil, NO, kCGRenderingIntentDefault);
 
         /* Creates graphic context */
-        oContext = CGBitmapContextCreate(au8ImageBuffer, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 4 * _pstBitmap->u32RealWidth, CGImageGetColorSpace(oImage), kCGImageAlphaLast | kCGBitmapByteOrder32Big);
+        oContext = CGBitmapContextCreate(au8ImageBuffer, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 4 * _pstBitmap->u32RealWidth, CGImageGetColorSpace(oImage), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
 
         /* Valid? */
         if(oContext)

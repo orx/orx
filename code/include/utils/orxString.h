@@ -1511,6 +1511,30 @@ static orxINLINE orxS32 orxCDECL        orxString_NPrint(orxSTRING _zDstString, 
   return s32Result;
 }
 
+/** Gets the extension from a file name
+ * @param[in]  _zFileName     Concerned file name
+ * @return Extension if exists, orxSTRING_EMPTY otherwise
+ */
+static orxINLINE const orxSTRING        orxString_GetExtension(const orxSTRING _zFileName)
+{
+  orxS32          s32Index, s32NextIndex;
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(_zFileName != orxNULL);
+
+  /* Finds last '.' */
+  for(s32Index = orxString_SearchCharIndex(_zFileName, '.', 0);
+      (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(_zFileName, '.', s32Index + 1)) > 0);
+      s32Index = s32NextIndex);
+
+  /* Updates result */
+  zResult = (s32Index >= 0) ? _zFileName + s32Index + 1 : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
+}
+
 #ifdef __orxMSVC__
 
   #pragma warning(default : 4996)
