@@ -359,7 +359,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   {
     case orxSYSTEM_EVENT_FOCUS_GAINED:
     {
-      orxAndroid_JNI_CreateContext(2, 0, 5, 6, 5, 0, 0, 0, 0, 0, 0);
+      orxAndroid_JNI_CreateContext(2, 0,
+          5, 6, 5, 
+          0, 0, 
+          orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 0 : 16,
+          0, 0, 0);
       break;
     }
 
@@ -3206,10 +3210,15 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
           sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
         }
 
-        sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+        orxAndroid_JNI_CreateContext(2, 0,
+            5, 6, 5, 
+            0, 0, 
+            orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 0 : 16,
+            0, 0, 0);
+        
 
-        // TODO honour DEPTHBUFFER and Depth
-        orxAndroid_JNI_CreateContext(2, 0, 5, 6, 5, 0, 0, 0, 0, 0, 0);
+        //sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+        sstDisplay.u32Depth = 16
 
         // Init OpenGL ES 2.0
         initGLESConfig();
