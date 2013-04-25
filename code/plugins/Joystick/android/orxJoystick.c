@@ -168,7 +168,7 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
         ALooper* looper = ALooper_forThread();
         sstJoystick.sensorManager = ASensorManager_getInstance();
         sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-        sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
+        sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
         ASensorEventQueue_enableSensor(sensorEventQueue, sstJoystick.accelerometerSensor);
         ASensorEventQueue_setEventRate(sensorEventQueue, sstJoystick.accelerometerSensor, (1000L/u32Frequency)*1000); 
       }
@@ -178,7 +178,7 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
       ALooper* looper = ALooper_forThread();
       sstJoystick.sensorManager = ASensorManager_getInstance();
       sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-      sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
+      sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
       ASensorEventQueue_enableSensor(sensorEventQueue, sstJoystick.accelerometerSensor);
       ASensorEventQueue_setEventRate(sensorEventQueue, sstJoystick.accelerometerSensor, (1000L/60)*1000); 
     }

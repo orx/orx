@@ -62,11 +62,9 @@ enum {
      * and android_app_exec_cmd().
      */
     LOOPER_ID_MAIN = 1,
-
-    /**
-     * Start of user-defined ALooper identifiers.
-     */
-    LOOPER_ID_USER = 2,
+    LOOPER_ID_SENSOR = 2,
+    LOOPER_ID_KEY_EVENT = 3,
+    LOOPER_ID_TOUCH_EVENT = 4
 };
 
 enum {
@@ -74,10 +72,7 @@ enum {
     APP_CMD_RESUME,
     APP_CMD_SURFACE_DESTROYED,
     APP_CMD_SURFACE_CREATED,
-    APP_CMD_QUIT,
-    APP_INPUT_KEY_DOWN,
-    APP_INPUT_KEY_UP,
-    APP_INPUT_TOUCH_EVENT
+    APP_CMD_QUIT
 };
 
 /**

@@ -88,8 +88,9 @@ typedef struct __orxANDROID_STATIC_t {
 
         // looper stufs
         ALooper* looper;
-        int msgread;
-        int msgwrite;
+        int pipeCmd[2];
+        int pipeTouchEvent[2];
+        int pipeKeyEvent[2];
 
         orxBOOL bSurfaceReady;
         orxBOOL bPaused;
@@ -103,6 +104,12 @@ typedef struct __orxANDROID_TOUCH_EVENT_t {
         orxU32   u32Action;
 
 } orxANDROID_TOUCH_EVENT;
+
+typedef struct __orxANDROID_KEY_EVENT_t {
+       orxU32 u32Action;
+       orxU32 u32KeyCode;
+
+} orxANDROID_KEY_EVENT;
 
 /***************************************************************************
  * Static variables                                                        *
@@ -197,7 +204,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved)
 
 int8_t app_read_cmd() {
     int8_t cmd;
-    if (read(sstAndroid.msgread, &cmd, sizeof(cmd)) == sizeof(cmd)) {
+    if (read(sstAndroid.pipeCmd[0], &cmd, sizeof(cmd)) == sizeof(cmd)) {
         return cmd;
     } else {
         LOGE("No data on command pipe!");
@@ -206,13 +213,13 @@ int8_t app_read_cmd() {
 }
 
 static void app_write_cmd(int8_t cmd) {
-    if (write(sstAndroid.msgwrite, &cmd, sizeof(cmd)) != sizeof(cmd)) {
+    if (write(sstAndroid.pipeCmd[1], &cmd, sizeof(cmd)) != sizeof(cmd)) {
         LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
     }
 }
 
 // Called before main() to initialize JNI bindings
-extern "C" void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
+static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 {
     __android_log_print(ANDROID_LOG_INFO, "Orx", "orxAndroid_Init()");
 
@@ -221,7 +228,6 @@ extern "C" void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 
     Android_JNI_SetupThread();
 
-// TODO release GlobalRef
     sstAndroid.mActivity = mEnv->NewGlobalRef(thiz);
 
     jclass objClass = mEnv->GetObjectClass(thiz);
@@ -237,25 +243,47 @@ extern "C" void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
     // setup AssetManager
     jmethodID midGetAssets = mEnv->GetMethodID(objClass, "getAssets", "()Landroid/content/res/AssetManager;");
     jobject jAssetManager = mEnv->CallObjectMethod(thiz, midGetAssets);
-// TODO release jAssetManager GlobalRef
     sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
     sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
 
-    // setup looper for events
-    int msgpipe[2];
-    if (pipe(msgpipe)) {
+    sstAndroid.bSurfaceReady = orxTRUE;
+    sstAndroid.bPaused = orxFALSE;
+    sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
+
+    // setup looper for commandes
+    if (pipe(sstAndroid.pipeCmd)) {
         LOGE("could not create pipe: %s", strerror(errno));
         return;
     }
-    sstAndroid.msgread = msgpipe[0];
-    sstAndroid.msgwrite = msgpipe[1];
-    sstAndroid.bSurfaceReady = orxTRUE;
-    sstAndroid.bPaused = orxFALSE;
 
-    sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
-    ALooper_addFd(sstAndroid.looper, sstAndroid.msgread, LOOPER_ID_MAIN, ALOOPER_EVENT_INPUT, NULL, NULL);
+    ALooper_addFd(sstAndroid.looper, sstAndroid.pipeCmd[0], LOOPER_ID_MAIN, ALOOPER_EVENT_INPUT, NULL, NULL);
+
+    // setup looper for key events
+    if (pipe(sstAndroid.pipeKeyEvent)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
+
+    ALooper_addFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0], LOOPER_ID_KEY_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
+
+    // setup looper for touch events
+    if (pipe(sstAndroid.pipeTouchEvent)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
+
+    ALooper_addFd(sstAndroid.looper, sstAndroid.pipeTouchEvent[0], LOOPER_ID_TOUCH_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
 
     __android_log_print(ANDROID_LOG_INFO, "Orx", "orxAndroid_Init() finished!");
+}
+
+static void orxAndroid_Exit(JNIEnv* env)
+{
+  env->DeleteGlobalRef(sstAndroid.mActivity);
+  env->DeleteGlobalRef(sstAndroid.jAssetManager);
+  free(sstAndroid.s_AndroidInternalFilesPath);
+
+  // TODO close pipes fds
 }
 
 /* Main function to call */
@@ -271,6 +299,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thi
     int status;
     status = main(0, orxNULL);
 
+    orxAndroid_Exit(env);
     /* Do not issue an exit or the whole application will terminate instead of just the Orx thread */
     //exit(status);
 }
@@ -288,8 +317,11 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeResize(
 // Keydown
 extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobject thiz, jint keycode)
 {
-  app_write_cmd(APP_INPUT_KEY_DOWN);
-  if (write(sstAndroid.msgwrite, &keycode, sizeof(keycode)) != sizeof(keycode))
+  orxANDROID_KEY_EVENT stKeyEvent;
+
+  stKeyEvent.u32Action = 0;
+  stKeyEvent.u32KeyCode = keycode;
+  if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
   {
     LOGE("Failure writing keycode: %s\n", strerror(errno));
   }
@@ -298,9 +330,11 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobjec
 // Keyup
 extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
-  app_write_cmd(APP_INPUT_KEY_UP);
-  // TODO WARNING thread "could" be interupted here, combine both write in a single call
-  if (write(sstAndroid.msgwrite, &keycode, sizeof(keycode)) != sizeof(keycode))
+  orxANDROID_KEY_EVENT stKeyEvent;
+
+  stKeyEvent.u32Action = 1;
+  stKeyEvent.u32KeyCode = keycode;
+  if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
   {
     LOGE("Failure writing keycode: %s\n", strerror(errno));
   }
@@ -319,9 +353,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
   stTouchEvent.fX = x;
   stTouchEvent.fY = y;
 
-  app_write_cmd(APP_INPUT_TOUCH_EVENT);
-  // TODO WARNING thread "could" be interupted here, combine both write in a single call
-  if (write(sstAndroid.msgwrite, &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
+  if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
   {
     LOGE("Failure writing touch event: %s\n", strerror(errno));
   }
@@ -528,65 +560,9 @@ extern "C" void orxAndroid_PumpEvents()
         LOGI("APP_CMD_QUIT");
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
       }
-      if(cmd == APP_INPUT_KEY_DOWN) {
-        LOGI("APP_INPUT_KEY_DOWN");
-        orxS32 keyCode;
-
-        if (read(sstAndroid.msgread, &keyCode, sizeof(keyCode)) == sizeof(keyCode)) {
-          orxEVENT stEvent;
-          orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_DOWN, orxNULL, orxNULL, &keyCode);
-
-          orxEvent_Send(&stEvent);
-        } else {
-          LOGE("No data on command pipe!");
-        }
-      }
-      if(cmd == APP_INPUT_KEY_UP) {
-        LOGI("APP_INPUT_KEY_UP");
-        orxS32 keyCode;
-
-        if (read(sstAndroid.msgread, &keyCode, sizeof(keyCode)) == sizeof(keyCode)) {
-          orxEVENT stEvent;
-          orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_UP, orxNULL, orxNULL, &keyCode);
-
-          orxEvent_Send(&stEvent);
-        } else {
-          LOGE("No data on command pipe!");
-        }
-      }
-      if(cmd == APP_INPUT_TOUCH_EVENT) {
-        orxANDROID_TOUCH_EVENT stTouchEvent;
-
-        if (read(sstAndroid.msgread, &stTouchEvent, sizeof(stTouchEvent)) == sizeof(stTouchEvent)) {
-          orxSYSTEM_EVENT_PAYLOAD stPayload;
-
-          /* Inits event's payload */
-          orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-          stPayload.stTouch.fPressure = orxFLOAT_0;
-          stPayload.stTouch.fX = stTouchEvent.fX;
-          stPayload.stTouch.fY = stTouchEvent.fY;
-          stPayload.stTouch.u32ID = stTouchEvent.u32ID;
-
-          switch(stTouchEvent.u32Action) {
-          case 0: // MotionEvent.ACTION_DOWN
-          case 5: // MotionEvent.ACTION_POINTER_DOWN
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
-            break;
-          case 1: // MotionEvent.ACTION_UP
-          case 6: // MotionEvent.ACTION_POINTER_UP
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-            break;
-          case 2: // MotionEvent.ACTION_MOVE
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
-            break;
-          }
-        } else {
-          LOGE("No data on command pipe!");
-        }
-      }
     }
 
-    if(ident == LOOPER_ID_USER)
+    if(ident == LOOPER_ID_SENSOR)
     {
       orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
       ASensorEvent event;
@@ -605,6 +581,64 @@ extern "C" void orxAndroid_PumpEvents()
 
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
+      }
+    }
+
+    if(ident == LOOPER_ID_KEY_EVENT)
+    {
+      orxANDROID_KEY_EVENT stKeyEvent;
+
+      if (read(sstAndroid.pipeKeyEvent[0], &stKeyEvent, sizeof(stKeyEvent)) == sizeof(stKeyEvent))
+      {
+        orxEVENT stEvent;
+
+        switch(stKeyEvent.u32Action)
+        {
+        case 0: // down
+          orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_DOWN, orxNULL, orxNULL, &stKeyEvent.u32KeyCode);
+          break;
+        case 1: // up
+          orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_UP, orxNULL, orxNULL, &stKeyEvent.u32KeyCode);
+          break;
+        }
+
+        orxEvent_Send(&stEvent);
+      } else {
+        LOGE("No data on command pipe!");
+      }
+    }
+
+    if(ident == LOOPER_ID_TOUCH_EVENT)
+    {
+      orxANDROID_TOUCH_EVENT stTouchEvent;
+
+      if (read(sstAndroid.pipeTouchEvent[0], &stTouchEvent, sizeof(stTouchEvent)) == sizeof(stTouchEvent))
+      {
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+        /* Inits event's payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+        stPayload.stTouch.fPressure = orxFLOAT_0;
+        stPayload.stTouch.fX = stTouchEvent.fX;
+        stPayload.stTouch.fY = stTouchEvent.fY;
+        stPayload.stTouch.u32ID = stTouchEvent.u32ID;
+
+        switch(stTouchEvent.u32Action)
+        {
+        case 0: // MotionEvent.ACTION_DOWN
+        case 5: // MotionEvent.ACTION_POINTER_DOWN
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+          break;
+        case 1: // MotionEvent.ACTION_UP
+        case 6: // MotionEvent.ACTION_POINTER_UP
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+          break;
+        case 2: // MotionEvent.ACTION_MOVE
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
+          break;
+        }
+      } else {
+        LOGE("No data on command pipe!");
       }
     }
   }
