@@ -1595,6 +1595,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
 
   orxAndroid_JNI_SwapWindow();
 
+  /* Waits for GPU work to be done */
+  glFinish();
+  glASSERT();
+
   /* Done! */
   return eResult;
 }
