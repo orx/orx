@@ -3218,7 +3218,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         
 
         //sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
-        sstDisplay.u32Depth = 16
+        sstDisplay.u32Depth = 16;
 
         // Init OpenGL ES 2.0
         initGLESConfig();
