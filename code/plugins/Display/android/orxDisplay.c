@@ -42,6 +42,15 @@
 
 #include <sys/endian.h>
 
+// defined in orxAndroidSupport.cpp
+extern int s_winWidth;
+extern int s_winHeight;
+extern "C" orxBOOL orxAndroid_JNI_CreateContext(int majorVersion, int minorVersion,
+                                int red, int green, int blue, int alpha,
+                                int buffer, int depth, int stencil,
+                                int buffers, int samples);
+extern "C" void orxAndroid_JNI_SwapWindow();
+
 /** Module flags
  */
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags */
@@ -77,17 +86,9 @@ do                                                                      \
 
 #else /* __orxDEBUG__ */
 
-#define glASSERT()                                                      \
-do                                                                      \
-{                                                                       \
-  glGetError();                                                         \
-} while(orxFALSE)
+#define glASSERT()
 
 #endif /* __orxDEBUG__ */
-
-/* defined in orxAndroidSupport.cpp */
-extern int32_t s_winWidth;
-extern int32_t s_winHeight;
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -350,6 +351,30 @@ static const orxSTRING szPVRExtention = ".pvr";
 static char gDDSTexIdentifier[5] = "DDS ";
 static const orxSTRING szDDSExtention = ".dds";
 static const orxSTRING szKTXExtention = ".ktx";
+
+static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_pstEvent)
+{
+  /* Depending on ID */
+  switch(_pstEvent->eID)
+  {
+    case orxSYSTEM_EVENT_FOCUS_GAINED:
+    {
+      orxAndroid_JNI_CreateContext(2, 0,
+          5, 6, 5, 
+          0, 0, 
+          orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 0 : 16,
+          0, 0, 0);
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  return orxSTATUS_SUCCESS;
+}
 
 static orxINLINE orxBOOL initGLESConfig()
 {
@@ -1571,6 +1596,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
 
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
+
+  orxAndroid_JNI_SwapWindow();
+
+  /* Waits for GPU work to be done */
+  glFinish();
+  glASSERT();
 
   /* Done! */
   return eResult;
@@ -3138,6 +3169,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
+    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
+
     orxU32 i;
     GLushort u16Index;
 
@@ -3177,7 +3210,15 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
           sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
         }
 
-        sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+        orxAndroid_JNI_CreateContext(2, 0,
+            5, 6, 5, 
+            0, 0, 
+            orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 0 : 16,
+            0, 0, 0);
+        
+
+        //sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+        sstDisplay.u32Depth = 16;
 
         // Init OpenGL ES 2.0
         initGLESConfig();
@@ -3232,21 +3273,21 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Inits flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
-         /* Creates texture for screen backup */
-         glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-         glASSERT();
-         glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-         glASSERT();
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         glASSERT();
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-         glASSERT();
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-         glASSERT();
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-         glASSERT();
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-         glASSERT();
+        /* Creates texture for screen backup */
+        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glASSERT();
 
         /* Creates default shaders */
         sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
