@@ -995,13 +995,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
 
-  /* Restores screen bitmap clipping to force pushing the batch of vertices to the GPU */
-  {
-    orxFLOAT fWidth, fHeight;
-    orxDisplay_GetScreenSize(&fWidth, &fHeight);
-    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-  }
-
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
 
@@ -1151,13 +1144,6 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
-
-  /* Restores screen bitmap clipping to force pushing the batch of vertices to the GPU */
-  {
-    orxFLOAT fWidth, fHeight;
-    orxDisplay_GetScreenSize(&fWidth, &fHeight);
-    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-  }
 
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
