@@ -94,6 +94,7 @@ typedef struct __orxANDROID_STATIC_t {
 
         orxBOOL bSurfaceReady;
         orxBOOL bPaused;
+        orxBOOL bDestroyRequested;
 
 } orxANDROID_STATIC;
 
@@ -248,6 +249,8 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 
     sstAndroid.bSurfaceReady = orxTRUE;
     sstAndroid.bPaused = orxFALSE;
+    sstAndroid.bDestroyRequested = orxFALSE;
+
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
     // setup looper for commandes
@@ -281,9 +284,15 @@ static void orxAndroid_Exit(JNIEnv* env)
 {
   env->DeleteGlobalRef(sstAndroid.mActivity);
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
+
   free(sstAndroid.s_AndroidInternalFilesPath);
 
-  // TODO close pipes fds
+  close(sstAndroid.pipeCmd[0]);
+  close(sstAndroid.pipeCmd[1]);
+  close(sstAndroid.pipeTouchEvent[0]);
+  close(sstAndroid.pipeTouchEvent[1]);
+  close(sstAndroid.pipeKeyEvent[0]);
+  close(sstAndroid.pipeKeyEvent[1]);
 }
 
 /* Main function to call */
@@ -530,7 +539,7 @@ extern "C" void orxAndroid_PumpEvents()
   int ident;
   int events;
 
-  while ((ident=ALooper_pollAll(isInteractible() == orxTRUE ? 0 : -1, NULL, &events, NULL)) >= 0)
+  while ((ident=ALooper_pollAll(isInteractible() || sstAndroid.bDestroyRequested ? 0 : -1, NULL, &events, NULL)) >= 0)
   {
     if(ident == LOOPER_ID_MAIN)
     {
@@ -558,6 +567,7 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_QUIT) {
         LOGI("APP_CMD_QUIT");
+        sstAndroid.bDestroyRequested = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
       }
     }
