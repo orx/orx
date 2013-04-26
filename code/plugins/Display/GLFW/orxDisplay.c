@@ -190,6 +190,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBITMAP                *pstDestinationBitmap;
   const orxBITMAP          *pstLastBitmap;
   orxRGBA                   stLastColor;
+  orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxS32                    s32PendingShaderCounter;
   orxS32                    s32BitmapCounter;
@@ -2496,21 +2497,44 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
   /* Destination bitmap? */
   if(_pstBitmap == sstDisplay.pstDestinationBitmap)
   {
+    orxU32 u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight;
+
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
     /* Is screen? */
     if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
     {
-      /* Sets OpenGL clipping */
-      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
-      glASSERT();
+      /* Gets new clipping values */
+      u32ClipX      = _u32TLX;
+      u32ClipY      = orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY;
+      u32ClipWidth  = _u32BRX - _u32TLX;
+      u32ClipHeight = _u32BRY - _u32TLY;
     }
     else
     {
+      /* Gets new clipping values */
+      u32ClipX      = _u32TLX;
+      u32ClipY      = sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY;
+      u32ClipWidth  = _u32BRX - _u32TLX;
+      u32ClipHeight = _u32BRY - _u32TLY;
+    }
+
+    /* Different clipping? */
+    if((u32ClipX != sstDisplay.u32LastClipX)
+    || (u32ClipY != sstDisplay.u32LastClipY)
+    || (u32ClipWidth != sstDisplay.u32LastClipWidth)
+    || (u32ClipHeight != sstDisplay.u32LastClipHeight))
+    {
       /* Sets OpenGL clipping */
-      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glScissor((GLint)u32ClipX, (GLint)u32ClipY, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
       glASSERT();
+
+      /* Stores clipping values */
+      sstDisplay.u32LastClipX       = u32ClipX;
+      sstDisplay.u32LastClipY       = u32ClipY;
+      sstDisplay.u32LastClipWidth   = u32ClipWidth;
+      sstDisplay.u32LastClipHeight  = u32ClipHeight;
     }
   }
 
@@ -2782,6 +2806,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glASSERT();
       glClear(GL_COLOR_BUFFER_BIT);
       glASSERT();
+
+      /* Stores clipping values */
+      sstDisplay.u32LastClipX       = 0;
+      sstDisplay.u32LastClipY       = 0;
+      sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
+      sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
 
       /* Has depth buffer? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
@@ -3085,6 +3115,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glASSERT();
         glClear(GL_COLOR_BUFFER_BIT);
         glASSERT();
+
+        /* Stores clipping values */
+        sstDisplay.u32LastClipX       = 0;
+        sstDisplay.u32LastClipY       = 0;
+        sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
+        sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
 
         /* Enforces VSync status */
         orxDisplay_GLFW_EnableVSync(orxDisplay_GLFW_IsVSyncEnabled());
