@@ -193,11 +193,11 @@ static orxINLINE orxOBOX *                    orxOBox_2DRotate(orxOBOX *_pstRes,
   }
 
   /* Updates axis */
-  orxVector_Set(&(_pstRes->vX), (fCos * _pstRes->vX.fX) - (fSin * _pstRes->vX.fY), (fSin * _pstRes->vX.fX) + (fCos * _pstRes->vX.fY), _pstRes->vX.fZ);
-  orxVector_Set(&(_pstRes->vY), (fCos * _pstRes->vY.fX) - (fSin * _pstRes->vY.fY), (fSin * _pstRes->vY.fX) + (fCos * _pstRes->vY.fY), _pstRes->vY.fZ);
+  orxVector_Set(&(_pstRes->vX), (fCos * _pstOp->vX.fX) - (fSin * _pstOp->vX.fY), (fSin * _pstOp->vX.fX) + (fCos * _pstOp->vX.fY), _pstOp->vX.fZ);
+  orxVector_Set(&(_pstRes->vY), (fCos * _pstOp->vY.fX) - (fSin * _pstOp->vY.fY), (fSin * _pstOp->vY.fX) + (fCos * _pstOp->vY.fY), _pstOp->vY.fZ);
 
   /* Updates pivot */
-  orxVector_Set(&(_pstRes->vPivot), (fCos * _pstRes->vPivot.fX) - (fSin * _pstRes->vPivot.fY), (fSin * _pstRes->vPivot.fX) + (fCos * _pstRes->vPivot.fY), _pstRes->vPivot.fZ);
+  orxVector_Set(&(_pstRes->vPivot), (fCos * _pstOp->vPivot.fX) - (fSin * _pstOp->vPivot.fY), (fSin * _pstOp->vPivot.fX) + (fCos * _pstOp->vPivot.fY), _pstOp->vPivot.fZ);
 
   /* Done! */
   return _pstRes;
