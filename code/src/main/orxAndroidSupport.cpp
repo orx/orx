@@ -39,6 +39,7 @@
 #include <android/asset_manager_jni.h>
 #include <android/looper.h>
 #include <android/sensor.h>
+#include <android/native_window_jni.h>
 
 #include <errno.h>
 #include <pthread.h>
@@ -66,19 +67,14 @@
 #include "orxInclude.h"
 #include "orxKernel.h"
 #include "main/orxAndroid.h"
-#include <EGL/egl.h>
 
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-	orxU32 u32Flags;
-
         // Main activity
         jobject mActivity;
 
         // method signatures
-        jmethodID midCreateGLContext;
-        jmethodID midFlipBuffers;
         jmethodID midGetRotation;
 
         // AssetManager
@@ -121,14 +117,12 @@ typedef struct __orxANDROID_KEY_EVENT_t {
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t mThreadKey;
 static JavaVM* mJavaVM;
+static ANativeWindow* window;
 
 /*******************************************************************************
                                Globals
 *******************************************************************************/
 
-// TODO move this to Display plugin
-int s_winWidth;
-int s_winHeight;
 // TODO move this to Joystick plugin
 ASensorEventQueue* sensorEventQueue;
 
@@ -232,12 +226,9 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
     sstAndroid.mActivity = mEnv->NewGlobalRef(thiz);
 
     jclass objClass = mEnv->GetObjectClass(thiz);
-
-    sstAndroid.midCreateGLContext = mEnv->GetMethodID(objClass, "createGLContext","(II[I)Z");
-    sstAndroid.midFlipBuffers = mEnv->GetMethodID(objClass, "flipBuffers","()V");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
 
-    if(!sstAndroid.midCreateGLContext || !sstAndroid.midFlipBuffers || !sstAndroid.midGetRotation) {
+    if(!sstAndroid.midGetRotation) {
         __android_log_print(ANDROID_LOG_WARN, "Orx", "Orx: Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
 
@@ -318,9 +309,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeResize(
                                     JNIEnv* env, jobject thiz,
                                     jint width, jint height)
 {
-// TODO send event here and move s_winWidth and s_winHeight to Display plugin
-  s_winWidth = width;
-  s_winHeight = height;
+// TODO send event here to Display plugin
 }
 
 // Keydown
@@ -389,13 +378,20 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeResume(JNIEnv* env, jobject t
 // SurfaceDestroyed
 extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
+  ANativeWindow_release(window);
   app_write_cmd(APP_CMD_SURFACE_DESTROYED);
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceCreated(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
 {
-  app_write_cmd(APP_CMD_SURFACE_CREATED);
+  window = ANativeWindow_fromSurface(env, surface);
+}
+
+// SurfaceCreated
+extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, jobject thiz)
+{
+  app_write_cmd(APP_CMD_SURFACE_READY);
 }
 
 class LocalReferenceHolder
@@ -440,6 +436,11 @@ protected:
 };
 int LocalReferenceHolder::s_active;
 
+extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
+{
+  return window;
+}
+
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
     JNIEnv *env = Android_JNI_GetEnv();
@@ -447,47 +448,6 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
     jint rotation = env->CallIntMethod(sstAndroid.mActivity, sstAndroid.midGetRotation);
     return rotation;
 }
-
-extern "C" orxBOOL orxAndroid_JNI_CreateContext(int majorVersion, int minorVersion,
-                                int red, int green, int blue, int alpha,
-                                int buffer, int depth, int stencil,
-                                int buffers, int samples)
-{
-    JNIEnv *env = Android_JNI_GetEnv();
-
-    jint attribs[] = {
-        EGL_RED_SIZE, red,
-        EGL_GREEN_SIZE, green,
-        EGL_BLUE_SIZE, blue,
-        EGL_ALPHA_SIZE, alpha,
-        EGL_BUFFER_SIZE, buffer,
-        EGL_DEPTH_SIZE, depth,
-        EGL_STENCIL_SIZE, stencil,
-        EGL_SAMPLE_BUFFERS, buffers,
-        EGL_SAMPLES, samples,
-        EGL_RENDERABLE_TYPE, (majorVersion == 1 ? EGL_OPENGL_ES_BIT : EGL_OPENGL_ES2_BIT),
-        EGL_NONE
-    };
-    int len = 21;
-
-    jintArray array;
-
-    array = env->NewIntArray(len);
-    env->SetIntArrayRegion(array, 0, len, attribs);
-
-    jboolean success = env->CallBooleanMethod(sstAndroid.mActivity, sstAndroid.midCreateGLContext, majorVersion, minorVersion, array);
-
-    env->DeleteLocalRef(array);
-
-    return success ? orxTRUE : orxFALSE;
-}
-
-extern "C" void orxAndroid_JNI_SwapWindow()
-{
-    JNIEnv *mEnv = Android_JNI_GetEnv();
-    mEnv->CallVoidMethod(sstAndroid.mActivity, sstAndroid.midFlipBuffers); 
-}
-
 
 extern "C" void *orxAndroid_GetJNIEnv()
 {
@@ -560,8 +520,8 @@ extern "C" void orxAndroid_PumpEvents()
         sstAndroid.bSurfaceReady = orxFALSE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
       }
-      if(cmd == APP_CMD_SURFACE_CREATED) {
-        LOGI("APP_CMD_SURFACE_CREATED");
+      if(cmd == APP_CMD_SURFACE_READY) {
+        LOGI("APP_CMD_SURFACE_READY");
         sstAndroid.bSurfaceReady = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
       }

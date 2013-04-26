@@ -48,6 +48,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+#include <android/native_window.h>
+
 #if defined(__cplusplus)
 extern "C"
 {
@@ -71,9 +73,11 @@ enum {
     APP_CMD_PAUSE,
     APP_CMD_RESUME,
     APP_CMD_SURFACE_DESTROYED,
-    APP_CMD_SURFACE_CREATED,
+    APP_CMD_SURFACE_READY,
     APP_CMD_QUIT
 };
+
+ANativeWindow * orxAndroid_GetNativeWindow();
 
 /**
   Get the internal storage path

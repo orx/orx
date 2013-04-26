@@ -8,7 +8,7 @@ TARGET_PLATFORM = android-9
 
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
-LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid
+LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
 include $(PREBUILT_STATIC_LIBRARY)
 
@@ -20,7 +20,7 @@ TARGET_PLATFORM = android-9
 
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID__ -D__orxDEBUG__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
-LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid
+LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
 include $(PREBUILT_STATIC_LIBRARY)
 
@@ -32,7 +32,7 @@ TARGET_PLATFORM = android-9
 
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID__ -D__orxPROFILER__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
-LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid
+LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
 include $(PREBUILT_STATIC_LIBRARY)
 
