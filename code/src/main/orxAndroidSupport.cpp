@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-#define DEBUG_ANDROID_SUPPORT
+//#define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
