@@ -3380,6 +3380,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           sstDisplay.u32DefaultHeight       = (orxU32)stDesktopMode.Height;
           sstDisplay.u32DefaultDepth        = (orxU32)(stDesktopMode.RedBits + stDesktopMode.GreenBits +stDesktopMode.BlueBits);
 
+          /* 24-bit? */
+          if(sstDisplay.u32DefaultDepth == 24)
+          {
+            /* Gets 32-bit instead */
+            sstDisplay.u32DefaultDepth = 32;
+          }
+
           /* Hack: Corrects imprecise refresh rate reports for default mode */
           switch(stDesktopMode.RefreshRate)
           {
