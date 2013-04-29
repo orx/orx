@@ -1,6 +1,7 @@
 var orx_input_8h =
 [
     [ "orxINPUT_KU32_BINDING_NUMBER", "orx_input_8h.html#gaccb7c6f56180d6f17b0e9d6faee23767", null ],
+    [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "orx_input_8h.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "orx_input_8h.html#gaad778a6cb60c4e8b47e35f8a9216f108", [
       [ "orxINPUT_EVENT_ON", "orx_input_8h.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809", null ],
       [ "orxINPUT_EVENT_OFF", "orx_input_8h.html#ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00", null ],

@@ -910,6 +910,7 @@ var searchData=
   ['orxinput_5fisincombinemode',['orxInput_IsInCombineMode',['../group__orx_input.html#ga802173143cf6500c21cd543515cbecad',1,'orxInput.h']]],
   ['orxinput_5fissetenabled',['orxInput_IsSetEnabled',['../group__orx_input.html#ga353743b746e3bece0070e95850a0cbe6',1,'orxInput.h']]],
   ['orxinput_5fku32_5fbinding_5fnumber',['orxINPUT_KU32_BINDING_NUMBER',['../group__orx_input.html#gaccb7c6f56180d6f17b0e9d6faee23767',1,'orxInput.h']]],
+  ['orxinput_5fkz_5finternal_5fset_5fprefix',['orxINPUT_KZ_INTERNAL_SET_PREFIX',['../group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32',1,'orxInput.h']]],
   ['orxinput_5fload',['orxInput_Load',['../group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb',1,'orxInput.h']]],
   ['orxinput_5fresetvalue',['orxInput_ResetValue',['../group__orx_input.html#ga2a34aa6090226956398b7b1753760f71',1,'orxInput.h']]],
   ['orxinput_5fsave',['orxInput_Save',['../group__orx_input.html#gacb452866d26f0e8845775a8fe7b414d0',1,'orxInput.h']]],
