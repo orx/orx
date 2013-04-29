@@ -2,8 +2,6 @@ package org.orxproject.orxtest;
 
 import org.orx.lib.OrxActivity;
 
-import android.os.Bundle;
-
 public class OrxDemo extends OrxActivity {
 
 	static {
