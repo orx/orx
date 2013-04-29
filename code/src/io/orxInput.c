@@ -43,6 +43,12 @@
 #include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
+#ifdef __orxMSVC__
+
+  #include "malloc.h"
+
+#endif /* __orxMSVC__ */
+
 
 /** Module flags
  */
@@ -760,7 +766,7 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
 {
   orxBOOL bResult = orxFALSE;
 
-  /* Is it the input set? */
+  /* Input section? */
   if(orxString_Compare(_zSetName, orxINPUT_KZ_CONFIG_SECTION) == 0)
   {
     /* Updates result */
@@ -769,18 +775,26 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
   else
   {
     orxINPUT_SET *pstSet;
+    orxU32        u32PrefixLength;
+
+    /* Gets internal prefix length */
+    u32PrefixLength = orxString_GetLength(orxINPUT_KZ_INTERNAL_SET_PREFIX);
 
     /* For all sets */
     for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
         pstSet != orxNULL;
         pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
     {
-      /* Found? */
-      if(orxString_Compare(_zSetName, pstSet->zName) == 0)
+      /* Not internal? */
+      if(orxString_NCompare(orxINPUT_KZ_INTERNAL_SET_PREFIX, pstSet->zName, u32PrefixLength) != 0)
       {
-        /* Updates result */
-        bResult = orxTRUE;
-        break;
+        /* Found? */
+        if(orxString_Compare(_zSetName, pstSet->zName) == 0)
+        {
+          /* Updates result */
+          bResult = orxTRUE;
+          break;
+        }
       }
     }
   }
@@ -1225,57 +1239,52 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
   /* Valid? */
   if(_zFileName != orxSTRING_EMPTY)
   {
+    orxU32            u32Index, u32PrefixLength;
+    orxINPUT_SET     *pstSet;
+
+#ifdef __orxMSVC__
+
+    const orxSTRING  *azSetNameList = (const orxSTRING *)alloca(orxLinkList_GetCounter(&(sstInput.stSetList)) * sizeof(orxSTRING));
+
+#else /* __orxMSVC__ */
+
+    const orxSTRING   azSetNameList[orxLinkList_GetCounter(&(sstInput.stSetList))];
+
+#endif /* __orxMSVC__ */
+
+    /* Gets internal prefix length */
+    u32PrefixLength = orxString_GetLength(orxINPUT_KZ_INTERNAL_SET_PREFIX);
+
     /* Clears input section */
     orxConfig_ClearSection(orxINPUT_KZ_CONFIG_SECTION);
 
-    /* Pushes it */
-    if((orxConfig_HasSection(orxINPUT_KZ_CONFIG_SECTION) != orxFALSE)
-    && (orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
+    /* For all sets */
+    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList)), u32Index = 0;
+        pstSet != orxNULL;
+        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
     {
-      orxU32            u32Index, u32Counter;
-      orxINPUT_SET     *pstSet;
-      const orxSTRING  *azSetNameList;
-
-      /* Gets set counter */
-      u32Counter = orxLinkList_GetCounter(&(sstInput.stSetList));
-
-      /* Allocates set name list */
-      azSetNameList = (const orxSTRING *)orxMemory_Allocate(u32Counter * sizeof(orxSTRING), orxMEMORY_TYPE_TEMP);
-
-      /* For all sets */
-      for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList)), u32Index = 0;
-          pstSet != orxNULL;
-          pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)), u32Index++)
-      {
-        /* Checks */
-        orxASSERT(u32Index < u32Counter);
-
-        /* Adds name to list */
-        *(azSetNameList + u32Index) = pstSet->zName;
-      }
-
-      /* Adds set list to config */
-      orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);
-
-      /* Frees set name list memory */
-      orxMemory_Free((void *)azSetNameList);
-
-      /* Adds joystick threshold */
-      orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
-
-      /* Adds joystick multiplier */
-      orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER, sstInput.fJoystickAxisMultiplier);
-
-      /* For all sets */
-      for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
-          pstSet != orxNULL;
-          pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+      /* Not an internal input set? */
+      if(orxString_NCompare(pstSet->zName, orxINPUT_KZ_INTERNAL_SET_PREFIX, u32PrefixLength) != 0)
       {
         orxINPUT_ENTRY *pstEntry;
+        orxU32          u32CombineIndex = 0;
 
-        /* Clears and selects its section */
+#ifdef __orxMSVC__
+
+        const orxSTRING  *azCombineNameList = (const orxSTRING *)alloca(orxLinkList_GetCounter(&(pstSet->stEntryList)) * sizeof(orxSTRING));
+
+#else /* __orxMSVC__ */
+
+        const orxSTRING   azCombineNameList[orxLinkList_GetCounter(&(pstSet->stEntryList))];
+
+#endif /* __orxMSVC__ */
+
+        /* Adds it to the set list */
+        *(azSetNameList + u32Index++) = pstSet->zName;
+
+        /* Clears and pushes its section */
         orxConfig_ClearSection(pstSet->zName);
-        orxConfig_SelectSection(pstSet->zName);
+        orxConfig_PushSection(pstSet->zName);
 
         /* For all its entries */
         for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(pstSet->stEntryList));
@@ -1283,6 +1292,13 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
             pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
         {
           orxU32 i;
+
+          /* Is in combine mode? */
+          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE))
+          {
+            /* Adds it to the combine list */
+            *(azCombineNameList + u32CombineIndex++) = pstEntry->zName;
+          }
 
           /* For all bindings */
           for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
@@ -1295,13 +1311,35 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
             }
           }
         }
+
+        /* Has entries in combine mode? */
+        if(u32CombineIndex != 0)
+        {
+          /* Adds it to config */
+          orxConfig_SetListString(orxINPUT_KZ_CONFIG_COMBINE_LIST, azCombineNameList, u32CombineIndex);
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
       }
     }
 
-    /* Pops previous section */
+    /* Pushes input section */
+    orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+    /* Adds set list to config */
+    orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Index);
+
+    /* Adds joystick threshold */
+    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
+
+    /* Adds joystick multiplier */
+    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER, sstInput.fJoystickAxisMultiplier);
+
+    /* Pops config section */
     orxConfig_PopSection();
 
-    /* Saves it */
+    /* Saves file */
     eResult = orxConfig_Save(_zFileName, orxFALSE, orxInput_SaveCallback);
   }
 

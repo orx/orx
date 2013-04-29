@@ -201,8 +201,13 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #include "main/orxAndroid.h"
 
-extern orxMODULE_RUN_FUNCTION  pfnRun;
-
+/** Orx main execution function
+ * @param[in]   _u32NbParams                  Main function parameters number (argc)
+ * @param[in]   _azParams                     Main function parameter list (argv)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
 static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Inits the Debug System */
@@ -210,9 +215,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
   /* Checks */
   orxASSERT(_pfnRun != orxNULL);
-
-  /* register run function */
-  pfnRun = _pfnRun;
 
   /* Registers main module */
   orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
@@ -227,8 +229,59 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
     /* Inits the engine */
-    orxModule_Init(orxMODULE_ID_MAIN);
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Displays help */
+      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      {
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
+        orxSTATUS               eClockStatus, eMainStatus;
+        orxBOOL                 bStop;
+
+        /* Clears payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+        /* Main loop */
+        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
+            bStop == orxFALSE;
+            bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+        {
+          orxAndroid_PumpEvents();
+
+          /* Sends frame start event */
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+
+          /* Runs the engine */
+          eMainStatus = _pfnRun();
+
+          /* Updates clock system */
+          eClockStatus = orxClock_Update();
+
+          /* Sends frame stop event */
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
+
+          /* Updates frame counter */
+          stPayload.u32FrameCounter++;
+        }
+      }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
+    }
+
+    /* Exits from all modules */
+    orxModule_ExitAll();
   }
+
+  /* Exits from the Debug system */
+
+  orxDEBUG_EXIT();
 }
 
   #else /* __orxANDROID__ */

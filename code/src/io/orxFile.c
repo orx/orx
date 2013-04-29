@@ -212,37 +212,10 @@ orxSTATUS orxFASTCALL orxFile_Init()
 
 #ifdef __orxANDROID__
 
-    // TODO Retrieves the zExternalDataPath from Java
-    // sstFile.zExternalDataPath = orxNULL;
-
-    /* Retrieves the zInternalDataPath from Java */
-    JNIEnv *poJEnv = (JNIEnv*) orxAndroid_ThreadGetCurrentJNIEnv();
-    jobject oActivity = orxAndroid_GetActivity();
-
-    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
-    orxASSERT(objClass != orxNULL);
-    jmethodID getFilesDir = (*poJEnv)->GetMethodID(poJEnv, objClass, "getFilesDir", "()Ljava/io/File;");
-    orxASSERT(getFilesDir != orxNULL);
-    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getFilesDir);
-    orxASSERT(fileDir != orxNULL);
-    jclass fileClass = (*poJEnv)->GetObjectClass(poJEnv, fileDir);
-    orxASSERT(fileClass != orxNULL);
-    jmethodID getAbsolutePath = (*poJEnv)->GetMethodID(poJEnv, fileClass, "getAbsolutePath", "()Ljava/lang/String;");
-    orxASSERT(getAbsolutePath != orxNULL);
-    jstring absolutePath = (*poJEnv)->CallObjectMethod(poJEnv, fileDir, getAbsolutePath);
-    orxASSERT(absolutePath != orxNULL);
-    const char *zInternalDataPath = (*poJEnv)->GetStringUTFChars(poJEnv, absolutePath, 0);
-    orxASSERT(zInternalDataPath != orxNULL);
-
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "InternalDataPath is %s", zInternalDataPath);
-
-    if(chdir((const char*)zInternalDataPath) != 0)
+    if(chdir(orxAndroid_GetInternalStoragePath()) != 0)
     {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", zInternalDataPath);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", orxAndroid_GetInternalStoragePath());
     }
-
-    /* Releases Java String */
-    (*poJEnv)->ReleaseStringUTFChars(poJEnv, absolutePath, zInternalDataPath);
 
 #endif /* __orxANDROID__ */
 
