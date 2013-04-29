@@ -53,7 +53,9 @@
 
 /** Misc defines
  */
-#define orxINPUT_KU32_BINDING_NUMBER    4
+#define orxINPUT_KU32_BINDING_NUMBER      4
+
+#define orxINPUT_KZ_INTERNAL_SET_PREFIX   "-="
 
 
 /** Input type enum
