@@ -1257,24 +1257,8 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
       glDeleteShader(uiFragmentShader);
       glASSERT();
 
-      /* Binds attributes */
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "__vPosition__");
-      glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "__vTexCoord__");
-      glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "__vColor__");
-      glASSERT();
-
       /* Links program */
       glLinkProgram(uiProgram);
-      glASSERT();
-
-      /* Gets texture location */
-      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
-      glASSERT();
-
-      /* Gets projection matrix location */
-      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
       glASSERT();
 
       /* Gets linking status */
@@ -1287,6 +1271,22 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
         /* Updates shader */
         _pstShader->uiProgram       = uiProgram;
         _pstShader->iTextureCounter = 0;
+
+        /* Binds attributes */
+        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "__vPosition__");
+        glASSERT();
+        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "__vTexCoord__");
+        glASSERT();
+        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "__vColor__");
+        glASSERT();
+
+        /* Gets texture location */
+        _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
+        glASSERT();
+
+        /* Gets projection matrix location */
+        _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
+        glASSERT();
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -2033,6 +2033,25 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
 
   /* Done! */
   return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxDisplay_iOS_EventHandler(const orxEVENT *_pstEvent)
+{
+  /* Render stop? */
+  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  {
+    /* Draws remaining items */
+    orxDisplay_iOS_DrawArrays();
+
+    /* Flushes pending commands */
+    glFlush();
+    glASSERT();
+  }
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_iOS_GetScreenBitmap()
@@ -3664,6 +3683,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         /* Creates OpenGL thread context */
         [sstDisplay.poView CreateThreadContext];
 
+        /* Adds event handler */
+        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
+
         /* Has NPOT texture support? */
         if(([sstDisplay.poView bShaderSupport] != NO) || ([sstDisplay.poView IsExtensionSupported:@"GL_APPLE_texture_2D_limited_npot"] != NO))
         {
@@ -3820,6 +3842,9 @@ void orxFASTCALL orxDisplay_iOS_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
+
     /* Unregisters update function */
     orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
 

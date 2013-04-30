@@ -1111,6 +1111,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
 
     /* Flushes pending commands */
     glFlush();
+    glASSERT();
   }
 
   /* Done! */
@@ -3356,6 +3357,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Adds event handler */
       eResult = orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
 
       /* Success? */
