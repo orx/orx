@@ -498,26 +498,6 @@ static void orxAndroid_Display_CreateContext()
   sstDisplay.surface = surface;
 }
 
-static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_pstEvent)
-{
-  /* Depending on ID */
-  switch(_pstEvent->eID)
-  {
-    case orxSYSTEM_EVENT_FOCUS_GAINED:
-    {
-      orxAndroid_Display_CreateContext();
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
-
-  return orxSTATUS_SUCCESS;
-}
-
 static orxINLINE orxBOOL initGLESConfig()
 {
   /* Inits it */
@@ -714,22 +694,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glDeleteShader(uiFragmentShader);
       glASSERT();
 
-      /* Binds attributes */
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
-      glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
-      glASSERT();
-      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
-      glASSERT();
-
-      /* Gets texture location */
-      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
-      glASSERT();
-
-      /* Gets projection matrix location */
-      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
-      glASSERT();
-
       /* Gets linking status */
       glGetProgramiv(uiProgram, GL_LINK_STATUS, &iSuccess);
       glASSERT();
@@ -740,6 +704,23 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
         /* Updates shader */
         _pstShader->uiProgram       = uiProgram;
         _pstShader->iTextureCounter = 0;
+
+        /* Binds attributes */
+        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
+        glASSERT();
+        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
+        glASSERT();
+        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
+
+        glASSERT();
+
+        /* Gets texture location */
+        _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
+        glASSERT();
+
+        /* Gets projection matrix location */
+        _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
+        glASSERT();
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -2045,6 +2026,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmap(orxBITMAP *_pstBit
       /* Is screen? */
       if(_pstBitmap == sstDisplay.pstScreen)
       {
+        /* Flushes pending commands */
+        glFlush();
+        glASSERT();
+
         /* Inits viewport */
         glViewport(0, 0, (GLsizei)orxF2S(_pstBitmap->fWidth), (GLsizei)orxF2S(_pstBitmap->fHeight));
         glASSERT();
@@ -3298,6 +3283,29 @@ orxBOOL orxFASTCALL orxDisplay_Android_IsVideoModeAvailable(const orxDISPLAY_VID
   return bResult;
 }
 
+static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_pstEvent)
+{
+  /* Render stop? */
+  if(_pstEvent->eType == orxEVENT_TYPE_RENDER && _pstEvent->eID == orxRENDER_EVENT_STOP)
+  {
+    /* Draws remaining items */
+    orxDisplay_Android_DrawArrays();
+
+    /* Flushes pending commands */
+    glFlush();
+    glASSERT();
+  }
+
+  if(_pstEvent->eType == orxEVENT_TYPE_SYSTEM && _pstEvent->eID == orxSYSTEM_EVENT_FOCUS_GAINED)
+  {
+    orxAndroid_Display_CreateContext();
+  }
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
+}
+
+
 /*
  * init android display
  */
@@ -3318,6 +3326,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     sstDisplay.display = EGL_NO_DISPLAY;
     sstDisplay.config = orxNULL;
 
+    /* Adds event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
     orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
 
     orxU32 i;
@@ -3488,6 +3498,10 @@ void orxFASTCALL orxDisplay_Android_Exit()
 {
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
+
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
