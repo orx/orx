@@ -1077,7 +1077,7 @@ orxSTATUS orxFASTCALL orxInput_Init()
       if(pstClock != orxNULL)
       {
         /* Registers to core clock */
-        eResult = orxClock_Register(pstClock, orxInput_Update, orxNULL, orxMODULE_ID_INPUT, orxCLOCK_PRIORITY_HIGHER);
+        eResult = orxClock_Register(pstClock, orxInput_Update, orxNULL, orxMODULE_ID_INPUT, orxCLOCK_PRIORITY_HIGH);
 
         /* Succesful? */
         if(eResult != orxSTATUS_FAILURE)
