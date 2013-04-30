@@ -684,14 +684,30 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glAttachShader(uiProgram, uiFragmentShader);
       glASSERT();
 
-      /* Links program */
-      glLinkProgram(uiProgram);
-      glASSERT();
-
       /* Deletes shader objects */
       glDeleteShader(uiVertexShader);
       glASSERT();
       glDeleteShader(uiFragmentShader);
+      glASSERT();
+
+      /* Binds attributes */
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
+      glASSERT();
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
+      glASSERT();
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
+      glASSERT();
+
+      /* Links program */
+      glLinkProgram(uiProgram);
+      glASSERT();
+
+      /* Gets texture location */
+      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
+      glASSERT();
+
+      /* Gets projection matrix location */
+      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
       glASSERT();
 
       /* Gets linking status */
@@ -704,23 +720,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
         /* Updates shader */
         _pstShader->uiProgram       = uiProgram;
         _pstShader->iTextureCounter = 0;
-
-        /* Binds attributes */
-        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
-        glASSERT();
-        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
-        glASSERT();
-        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
-
-        glASSERT();
-
-        /* Gets texture location */
-        _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
-        glASSERT();
-
-        /* Gets projection matrix location */
-        _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
-        glASSERT();
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
