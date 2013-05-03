@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-//#define DEBUG_ANDROID_SUPPORT
+#define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -216,10 +216,7 @@ static void app_write_cmd(int8_t cmd) {
 // Called before main() to initialize JNI bindings
 static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 {
-    __android_log_print(ANDROID_LOG_INFO, "Orx", "orxAndroid_Init()");
-
-    /* Cleans static controller */
-    orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
+    LOGI("orxAndroid_Init()");
 
     Android_JNI_SetupThread();
 
@@ -238,37 +235,18 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
     sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
     sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
 
-    sstAndroid.bSurfaceReady = orxTRUE;
+    sstAndroid.bSurfaceReady = orxFALSE;
     sstAndroid.bPaused = orxFALSE;
     sstAndroid.bDestroyRequested = orxFALSE;
+    window = orxNULL;
 
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
-    // setup looper for commandes
-    if (pipe(sstAndroid.pipeCmd)) {
-        LOGE("could not create pipe: %s", strerror(errno));
-        return;
-    }
-
     ALooper_addFd(sstAndroid.looper, sstAndroid.pipeCmd[0], LOOPER_ID_MAIN, ALOOPER_EVENT_INPUT, NULL, NULL);
-
-    // setup looper for key events
-    if (pipe(sstAndroid.pipeKeyEvent)) {
-        LOGE("could not create pipe: %s", strerror(errno));
-        return;
-    }
-
     ALooper_addFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0], LOOPER_ID_KEY_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
-
-    // setup looper for touch events
-    if (pipe(sstAndroid.pipeTouchEvent)) {
-        LOGE("could not create pipe: %s", strerror(errno));
-        return;
-    }
-
     ALooper_addFd(sstAndroid.looper, sstAndroid.pipeTouchEvent[0], LOOPER_ID_TOUCH_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
 
-    __android_log_print(ANDROID_LOG_INFO, "Orx", "orxAndroid_Init() finished!");
+    LOGI("orxAndroid_Init() finished!");
 }
 
 static void orxAndroid_Exit(JNIEnv* env)
@@ -289,6 +267,32 @@ static void orxAndroid_Exit(JNIEnv* env)
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
+extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject thiz)
+{
+    LOGI("nativeCreate()");
+
+    /* Cleans static controller */
+    orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
+
+    // setup looper for commandes
+    if (pipe(sstAndroid.pipeCmd)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
+
+    // setup looper for key events
+    if (pipe(sstAndroid.pipeKeyEvent)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
+
+    // setup looper for touch events
+    if (pipe(sstAndroid.pipeTouchEvent)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
+}
+
 // Start up the Orx app
 extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thiz)
 {
@@ -302,14 +306,6 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thi
     orxAndroid_Exit(env);
     /* Do not issue an exit or the whole application will terminate instead of just the Orx thread */
     //exit(status);
-}
-
-// Resize
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeResize(
-                                    JNIEnv* env, jobject thiz,
-                                    jint width, jint height)
-{
-// TODO send event here to Display plugin
 }
 
 // Keydown
@@ -438,6 +434,10 @@ int LocalReferenceHolder::s_active;
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
+  while(window == orxNULL) {
+    // no window received yet
+    orxAndroid_PumpEvents();
+  }
   return window;
 }
 
@@ -499,7 +499,7 @@ extern "C" void orxAndroid_PumpEvents()
   int ident;
   int events;
 
-  while ((ident=ALooper_pollAll(isInteractible() || sstAndroid.bDestroyRequested ? 0 : -1, NULL, &events, NULL)) >= 0)
+  while ((ident=ALooper_pollAll(isInteractible() || sstAndroid.bDestroyRequested == orxTRUE ? 0 : -1, NULL, &events, NULL)) >= 0)
   {
     if(ident == LOOPER_ID_MAIN)
     {
