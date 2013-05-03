@@ -3298,6 +3298,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   if(_pstEvent->eType == orxEVENT_TYPE_SYSTEM && _pstEvent->eID == orxSYSTEM_EVENT_FOCUS_GAINED)
   {
     orxAndroid_Display_CreateContext();
+    initGLESConfig();
   }
 
   /* Done! */
@@ -3324,10 +3325,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     sstDisplay.context = EGL_NO_CONTEXT;
     sstDisplay.display = EGL_NO_DISPLAY;
     sstDisplay.config = orxNULL;
-
-    /* Adds event handler */
-    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
-    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
 
     orxU32 i;
     GLushort u16Index;
@@ -3373,6 +3370,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         // Init OpenGL ES 2.0
         orxAndroid_Display_CreateContext();
         initGLESConfig();
+
+        /* Adds event handler */
+        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
+        orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
