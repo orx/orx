@@ -117,6 +117,7 @@ typedef struct __orxANDROID_KEY_EVENT_t {
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t mThreadKey;
 static JavaVM* mJavaVM;
+static ANativeWindow* pendingWindow;
 static ANativeWindow* window;
 
 /*******************************************************************************
@@ -374,19 +375,13 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeResume(JNIEnv* env, jobject t
 // SurfaceDestroyed
 extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
-  ANativeWindow_release(window);
   app_write_cmd(APP_CMD_SURFACE_DESTROYED);
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, jobject thiz, jobject surface)
 {
-  window = ANativeWindow_fromSurface(env, surface);
-}
-
-// SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, jobject thiz)
-{
+  pendingWindow = ANativeWindow_fromSurface(env, surface);
   app_write_cmd(APP_CMD_SURFACE_READY);
 }
 
@@ -434,10 +429,13 @@ int LocalReferenceHolder::s_active;
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
+  LOGI("orxAndroid_GetNativeWindow()");
   while(window == orxNULL) {
     // no window received yet
+    LOGI("no window received yet");
     orxAndroid_PumpEvents();
   }
+
   return window;
 }
 
@@ -518,10 +516,13 @@ extern "C" void orxAndroid_PumpEvents()
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
         sstAndroid.bSurfaceReady = orxFALSE;
+        ANativeWindow_release(window);
+        window = orxNULL;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
       }
       if(cmd == APP_CMD_SURFACE_READY) {
         LOGI("APP_CMD_SURFACE_READY");
+        window = pendingWindow;
         sstAndroid.bSurfaceReady = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
       }
