@@ -175,12 +175,12 @@ $(document).ready(function(){initNavTree('orx_math_8h_source.html','');});
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
 <div class="line"><a name="l00162"></a><span class="lineno"><a class="code" href="group__orx_math.html#gad8ad9cd004390fcc987558ee068a4553">  162</a></span>&#160;<span class="keyword">static</span> orxINLINE orxU32               <a class="code" href="group__orx_math.html#gad8ad9cd004390fcc987558ee068a4553">orxMath_GetBitCount</a>(orxU32 _u32Value)</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;{</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  _u32Value -= ((_u32Value &gt;&gt; 1) &amp; 0x55555555);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  _u32Value = (((_u32Value &gt;&gt; 2) &amp; 0x33333333) + (_u32Value &amp; 0x33333333));</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  _u32Value = (((_u32Value &gt;&gt; 4) + _u32Value) &amp; 0x0F0F0F0F);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  _u32Value += (_u32Value &gt;&gt; 8);</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  _u32Value += (_u32Value &gt;&gt; 16);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keywordflow">return</span>(_u32Value &amp; 0x0000003F);</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  _u32Value  -= (_u32Value &gt;&gt; 1) &amp; 0x55555555;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  _u32Value   = (_u32Value &amp; 0x33333333) + ((_u32Value &gt;&gt; 2) &amp; 0x33333333;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  _u32Value   = (((_u32Value + (_u32Value &gt;&gt; 4)) &amp; 0x0F0F0F0F) * 0x01010101) &gt;&gt; 24;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="comment">/* Done! */</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keywordflow">return</span> _u32Value;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;}</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
 <div class="line"><a name="l00176"></a><span class="lineno"><a class="code" href="group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e">  176</a></span>&#160;<span class="keyword">static</span> orxINLINE orxU32               <a class="code" href="group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e">orxMath_GetTrailingZeroCount</a>(orxU32 _u32Value)</div>
@@ -449,7 +449,7 @@ $(document).ready(function(){initNavTree('orx_math_8h_source.html','');});
 <div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;<span class="preprocessor">#ifdef __orxMSVC__</span></div>
 <div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;  <span class="comment">/* Updates result */</span></div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;  fResult = (fmodf(_fOp, <a class="code" href="group__orx_type.html#ga90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a>) &gt;= orx2F(0.5f)) ? ceilf(_fOp) : floorf(_fOp);</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;  fResult = floorf(_fOp + orx2F(0.5f));</div>
 <div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;</div>
 <div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="preprocessor">#else </span><span class="comment">/* __orxMSVC__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="preprocessor"></span></div>
