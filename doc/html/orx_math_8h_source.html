@@ -176,7 +176,7 @@ $(document).ready(function(){initNavTree('orx_math_8h_source.html','');});
 <div class="line"><a name="l00162"></a><span class="lineno"><a class="code" href="group__orx_math.html#gad8ad9cd004390fcc987558ee068a4553">  162</a></span>&#160;<span class="keyword">static</span> orxINLINE orxU32               <a class="code" href="group__orx_math.html#gad8ad9cd004390fcc987558ee068a4553">orxMath_GetBitCount</a>(orxU32 _u32Value)</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;{</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  _u32Value  -= (_u32Value &gt;&gt; 1) &amp; 0x55555555;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  _u32Value   = (_u32Value &amp; 0x33333333) + ((_u32Value &gt;&gt; 2) &amp; 0x33333333;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  _u32Value   = (_u32Value &amp; 0x33333333) + ((_u32Value &gt;&gt; 2) &amp; 0x33333333);</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  _u32Value   = (((_u32Value + (_u32Value &gt;&gt; 4)) &amp; 0x0F0F0F0F) * 0x01010101) &gt;&gt; 24;</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="comment">/* Done! */</span></div>
