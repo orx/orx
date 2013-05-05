@@ -373,9 +373,9 @@ static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
   int bestIndex = -1;
 
   int minDepthBits = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0;
-  int minRedBits = sstDisplay.u32Depth == 24 ? 8 : 5;
-  int minGreenBits = sstDisplay.u32Depth == 24 ? 8 : 6;
-  int minBlueBits = sstDisplay.u32Depth == 24 ? 8 : 5;
+  int minRedBits = sstDisplay.u32Depth == 16 ? 5 : 8;
+  int minGreenBits = sstDisplay.u32Depth == 16 ? 6 : 8;
+  int minBlueBits = sstDisplay.u32Depth == 16 ? 5 : 8;
 
   int i;
   for (i = 0; i < count; i++)
