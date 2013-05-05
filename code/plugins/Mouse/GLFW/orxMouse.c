@@ -62,7 +62,7 @@
  */
 typedef struct __orxMOUSE_STATIC_t
 {
-  orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch, vScreenSize;
+  orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
   orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor;
@@ -127,32 +127,20 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
 
-  /* New video mode? */
-  if(_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE)
+  /* Registers mouse position callback */
+  glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
+
+  /* Registers mouse wheel callback */
+  glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
+
+  /* Restores cursor status */
+  if(sstMouse.bShowCursor != orxFALSE)
   {
-    orxDISPLAY_EVENT_PAYLOAD *pstPayload;
-
-    /* Gets payload */
-    pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Stores new screen size */
-    orxVector_Set(&(sstMouse.vScreenSize), orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height), orxFLOAT_0);
-
-    /* Registers mouse position callback */
-    glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
-
-    /* Registers mouse wheel callback */
-    glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
-
-    /* Restores cursor status */
-    if(sstMouse.bShowCursor != orxFALSE)
-    {
-      glfwEnable(GLFW_MOUSE_CURSOR);
-    }
-    else
-    {
-      glfwDisable(GLFW_MOUSE_CURSOR);
-    }
+    glfwEnable(GLFW_MOUSE_CURSOR);
+  }
+  else
+  {
+    glfwDisable(GLFW_MOUSE_CURSOR);
   }
 
   /* Done! */
@@ -329,9 +317,6 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Stores screen size */
-        orxDisplay_GetScreenSize(&(sstMouse.vScreenSize.fX), &(sstMouse.vScreenSize.fY));
-
         /* Updates status */
         sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 
@@ -425,10 +410,9 @@ orxVECTOR *orxFASTCALL orxMouse_GLFW_GetPosition(orxVECTOR *_pvPosition)
   glfwGetMousePos((int *)&s32X, (int *)&s32Y);
 
   /* Updates result */
-  orxVector_Set(_pvPosition, orxS2F(s32X), orxS2F(s32Y), orxFLOAT_0);
-
-  /* Clamps it */
-  orxVector_Clamp(_pvPosition, _pvPosition, &orxVECTOR_0, &(sstMouse.vScreenSize));
+  _pvPosition->fX = orxS2F(s32X);
+  _pvPosition->fY = orxS2F(s32Y);
+  _pvPosition->fZ = orxFLOAT_0;
 
   /* Done! */
   return pvResult;
