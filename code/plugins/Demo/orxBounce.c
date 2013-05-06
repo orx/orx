@@ -396,7 +396,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMousePos;
-  orxBOOL   bInViewport;
 
   if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
   {
