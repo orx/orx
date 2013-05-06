@@ -85,6 +85,7 @@ ANativeWindow * orxAndroid_GetNativeWindow();
 const char * orxAndroid_GetInternalStoragePath();
 
 orxU32 orxAndroid_JNI_GetRotation();
+void   orxAndroid_JNI_SetWindowFormat(orxU32 format);
 
 /**
   Register APK resources IO

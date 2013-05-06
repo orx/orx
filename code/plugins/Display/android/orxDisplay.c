@@ -471,8 +471,8 @@ static void orxAndroid_Display_CreateContext()
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
   ANativeWindow *window = orxAndroid_GetNativeWindow();
-  orxASSERT(window != orxNULL);
   ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
+  orxAndroid_JNI_SetWindowFormat(sstDisplay.u32Depth == 16 ? 4 /* PixelFormat.RGB_565 */ : 1 /* PixelFormat.RGBA_888 */);
 
   EGLSurface surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
   orxASSERT(surface != EGL_NO_SURFACE);

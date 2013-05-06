@@ -76,6 +76,7 @@ typedef struct __orxANDROID_STATIC_t {
 
         // method signatures
         jmethodID midGetRotation;
+	jmethodID midSetWindowFormat;
 
         // AssetManager
         AAssetManager *poAssetManager;
@@ -225,9 +226,10 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 
     jclass objClass = mEnv->GetObjectClass(thiz);
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
+    sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
 
-    if(!sstAndroid.midGetRotation) {
-        __android_log_print(ANDROID_LOG_WARN, "Orx", "Orx: Couldn't locate Java callbacks, check that they're named and typed correctly");
+    if(!sstAndroid.midGetRotation || !sstAndroid.midSetWindowFormat) {
+        __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
 
     // setup AssetManager
@@ -445,6 +447,12 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
     
     jint rotation = env->CallIntMethod(sstAndroid.mActivity, sstAndroid.midGetRotation);
     return rotation;
+}
+
+extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+    env->CallVoidMethod(sstAndroid.mActivity, sstAndroid.midSetWindowFormat, format);
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()
