@@ -1112,6 +1112,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
     /* Flushes pending commands */
     glFlush();
     glASSERT();
+
+    /* Polls events */
+    glfwPollEvents();
   }
 
   /* Done! */
@@ -2968,6 +2971,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       if(eResult != orxSTATUS_FAILURE)
       {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
+
+        /* Disables events auto-polling */
+        glfwDisable(GLFW_AUTO_POLL_EVENTS);
 
         /* Is fullscreen? */
         if(_pstVideoMode->bFullScreen != orxFALSE)
