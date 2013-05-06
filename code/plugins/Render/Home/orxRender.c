@@ -2350,15 +2350,16 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Gets a world position from a screen one
- * @param[in]  _pvScreenPosition        Screen space position
- * @param[in]  _pstViewport             Concerned viewport, if orxNULL then the first viewport will be used
- * @param[out] _pvWorldPosition         Corresponding world position
- * @return orxVECTOR / orxNULL
+/** Get a world position given a screen one (absolute picking)
+ * @param[in]   _pvScreenPosition                     Concerned screen position
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then either the first viewport that contains the position (if any), or the first viewport in the list if none contains the position
+ * @param[out]  _pvWorldPosition                      Corresponding world position
+ * @return      orxVECTOR if found *inside* the display surface, orxNULL otherwise
  */
 orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
+  orxBOOL       bFirstViewport;
   orxVECTOR    *pvResult = orxNULL;
 
   /* Checks */
@@ -2367,7 +2368,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   orxASSERT(_pvWorldPosition != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT)), bFirstViewport = orxTRUE;
       pstViewport != orxNULL;
       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
   {
@@ -2381,6 +2382,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
     {
       orxAABOX  stViewportBox;
       orxFLOAT  fCorrectionRatio;
+      orxBOOL   bInViewportBox;
 
       /* Gets viewport box */
       orxViewport_GetBox(pstViewport, &stViewportBox);
@@ -2414,11 +2416,14 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
         }
       }
 
-      /* Is position in box? */
-      if((_pvScreenPosition->fX >= stViewportBox.vTL.fX)
-      && (_pvScreenPosition->fX <= stViewportBox.vBR.fX)
-      && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
-      && (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
+      /* Updates position in box status? */
+      bInViewportBox = ((_pvScreenPosition->fX >= stViewportBox.vTL.fX)
+                     && (_pvScreenPosition->fX <= stViewportBox.vBR.fX)
+                     && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
+                     && (_pvScreenPosition->fY <= stViewportBox.vBR.fY)) ? orxTRUE : orxFALSE;
+
+      /* Is position in box or first viewport? */
+      if((bInViewportBox != orxFALSE) || (bFirstViewport != orxFALSE))
       {
         orxVECTOR vLocalPosition, vCenter, vCameraCenter, vCameraPosition;
         orxAABOX  stCameraFrustum;
@@ -2479,11 +2484,18 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
           _pvWorldPosition->fY *= fRecZoom;
         }
 
-        /* Updates result */
-        pvResult = _pvWorldPosition;
+        /* Is position in viewport box? */
+        if(bInViewportBox != orxFALSE)
+        {
+          /* Updates result */
+          pvResult = _pvWorldPosition;
 
-        break;
+          break;
+        }
       }
+
+      /* Updates status */
+      bFirstViewport = orxFALSE;
     }
   }
 

@@ -467,44 +467,40 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   }
 
   /* Gets mouse world position */
-  bInViewport = (orxRender_GetWorldPosition(&vMousePos, orxNULL, orxMouse_GetPosition(&vMousePos)) != orxNULL) ? orxTRUE : orxFALSE;
+  orxRender_GetWorldPosition(&vMousePos, orxNULL, orxMouse_GetPosition(&vMousePos));
 
-  /* Is mouse in a viewport? */
-  if(bInViewport != orxFALSE)
+  /* Updates position */
+  vMousePos.fZ += orx2F(0.5f);
+
+  /* Has ball spawner? */
+  if(spoBallSpawner != orxNULL)
   {
-    /* Updates position */
-    vMousePos.fZ += orx2F(0.5f);
+    /* Updates its position */
+    orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
+  }
 
-    /* Has ball spawner? */
-    if(spoBallSpawner != orxNULL)
+  /* Spawning */
+  if(orxInput_IsActive("Spawn"))
+  {
+    /* Spawns one ball */
+    orxSpawner_Spawn(spoBallSpawner, 1);
+  }
+  /* Picking? */
+  else if(orxInput_IsActive("Pick"))
+  {
+    orxOBJECT *pstObject;
+
+    /* Updates mouse position */
+    vMousePos.fZ -= orx2F(0.1f);
+
+    /* Picks object under mouse */
+    pstObject = orxObject_Pick(&vMousePos);
+
+    /* Found? */
+    if(pstObject)
     {
-      /* Updates its position */
-      orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
-    }
-
-    /* Spawning */
-    if(orxInput_IsActive("Spawn"))
-    {
-      /* Spawns one ball */
-      orxSpawner_Spawn(spoBallSpawner, 1);
-    }
-    /* Picking? */
-    else if(orxInput_IsActive("Pick"))
-    {
-      orxOBJECT *pstObject;
-
-      /* Updates mouse position */
-      vMousePos.fZ -= orx2F(0.1f);
-
-      /* Picks object under mouse */
-      pstObject = orxObject_Pick(&vMousePos);
-
-      /* Found? */
-      if(pstObject)
-      {
-        /* Adds FX */
-        orxObject_AddUniqueFX(pstObject, "Pick");
-      }
+      /* Adds FX */
+      orxObject_AddUniqueFX(pstObject, "Pick");
     }
   }
 
