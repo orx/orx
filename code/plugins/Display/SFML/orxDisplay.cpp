@@ -1788,7 +1788,7 @@ extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _z
         orxS32            s32Free;
 
         /* Inits buffer */
-        acBuffer[0] = acBuffer[32767] = orxCHAR_NULL;
+        acBuffer[0] = acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         pc          = acBuffer;
         s32Free     = 32767;
 
@@ -1952,7 +1952,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Inits buffer */
-  acBuffer[255] = orxCHAR_NULL;
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
   /* Screen? */
   if((_pstValue == orxNULL) || (_pstValue == orxDisplay::spoScreen))
@@ -1967,19 +1967,19 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
     fRecHeight = 1.0f / (float)sstDisplay.u32ScreenHeight;
 
     /* Gets top parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
     pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * sstDisplay.stScreenClip.vTL.fY));
 
     /* Gets left parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
     pstShader->poFX->SetParameter(acBuffer, fRecWidth * sstDisplay.stScreenClip.vTL.fX);
 
     /* Gets bottom parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
     pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * sstDisplay.stScreenClip.vBR.fY));
 
     /* Gets right parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
     pstShader->poFX->SetParameter(acBuffer, fRecWidth * sstDisplay.stScreenClip.vBR.fX);
   }
   else
@@ -2007,19 +2007,19 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
       fRecHeight = 1.0f / (float)poImage->GetHeight();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
       pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * stClip.Top));
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
       pstShader->poFX->SetParameter(acBuffer, fRecWidth * stClip.Left);
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
       pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * stClip.Bottom));
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
       pstShader->poFX->SetParameter(acBuffer, fRecWidth * stClip.Right);
     }
     else

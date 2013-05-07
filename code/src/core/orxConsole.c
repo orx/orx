@@ -210,7 +210,7 @@ static void orxFASTCALL orxConsole_SaveHistory()
     orxConfig_PopSection();
 
     /* Gets file name */
-    orxString_NPrint(acBuffer, 255, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
 
     /* Saves it */
     orxConfig_Save(acBuffer, orxFALSE, orxConsole_HistorySaveCallback);
@@ -228,7 +228,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
   orxCHAR acBuffer[256];
 
   /* Gets file name */
-  orxString_NPrint(acBuffer, 255, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+  orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
 
   /* Loads it */
   orxConfig_Load(acBuffer);
@@ -671,7 +671,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           /* Inits value */
           acValue[0]  = ':';
           acValue[1]  = ' ';
-          acValue[63] = orxCHAR_NULL;
+          acValue[sizeof(acValue) - 1] = orxCHAR_NULL;
 
           /* Prints result */
           orxConsole_PrintLastResult(acValue + 2, 253);
