@@ -365,7 +365,7 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
     orxU32 u32Index;
 
     /* Updates path & full name base */
-    u32Index = orxMIN(s32LastSeparator + 1, sizeof(_pstFileInfo->zPath) - 1);
+    u32Index = orxMIN((orxU32)(s32LastSeparator + 1), sizeof(_pstFileInfo->zPath) - 1);
     orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
     _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
     orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
