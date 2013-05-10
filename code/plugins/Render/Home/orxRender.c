@@ -2058,9 +2058,6 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
-    /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
-
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
         pstViewport != orxNULL;
@@ -2191,17 +2188,26 @@ static void orxFASTCALL orxRender_Home_Present(const orxCLOCK_INFO *_pstClockInf
   /* Should present? */
   if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST))
   {
+    orxFLOAT fWidth, fHeight;
+
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_Swap");
 
     /* Swap buffers */
     orxDisplay_Swap();
 
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+
     /* Updates status */
     orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST);
 
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
+    /* Restores screen bitmap clipping */
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+
+    /* Clears screen */
+    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
   }
 
   /* Resets all profiler markers */
