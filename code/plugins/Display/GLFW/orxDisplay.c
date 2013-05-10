@@ -622,8 +622,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxCHAR acBuffer[1024];
 
         /* Gets log */
-        glGetInfoLogARB(hProgram, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
         glASSERT();
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
         /* Outputs log */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -638,8 +639,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       orxCHAR acBuffer[1024];
 
       /* Gets log */
-      glGetInfoLogARB(hFragmentShader, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
       glASSERT();
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Outputs log */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -658,8 +660,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     orxCHAR acBuffer[1024];
 
     /* Gets log */
-    glGetInfoLogARB(hVertexShader, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
     glASSERT();
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Outputs log */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);

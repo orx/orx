@@ -1296,9 +1296,9 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
         orxCHAR acBuffer[4096];
 
         /* Gets log */
-        glGetProgramInfoLog(uiProgram, 4095 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
+        glGetProgramInfoLog(uiProgram, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
         glASSERT();
-        acBuffer[4095] = orxCHAR_NULL;
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
         /* Outputs log */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:\n%s\n", acBuffer);
@@ -1313,9 +1313,9 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
       orxCHAR acBuffer[4096];
 
       /* Gets log */
-      glGetShaderInfoLog(uiFragmentShader, 4095 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
+      glGetShaderInfoLog(uiFragmentShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
       glASSERT();
-      acBuffer[4095] = orxCHAR_NULL;
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Outputs log */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:\n%s\n", acBuffer);
@@ -1334,9 +1334,9 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
     orxCHAR acBuffer[4096];
 
     /* Gets log */
-    glGetShaderInfoLog(uiVertexShader, 4095 * sizeof(orxCHAR), NULL, (GLchar *)acBuffer);
+    glGetShaderInfoLog(uiVertexShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
     glASSERT();
-    acBuffer[4095] = orxCHAR_NULL;
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Outputs log */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:\n%s\n", acBuffer);
@@ -4298,7 +4298,7 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
     orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
 
     /* Inits buffer */
-    acBuffer[255] = orxCHAR_NULL;
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets corresponding param info */
     pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCounter];
@@ -4310,29 +4310,29 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
     if(_s32Index >= 0)
     {
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%ld]", _zParam, _s32Index);
 
       /* Gets parameter location */
       pstInfo->iLocation = glGetUniformLocation(pstShader->uiProgram, acBuffer);
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -4343,22 +4343,22 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -4368,11 +4368,11 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
     /* Array? */
     if(_s32Index >= 0)
     {
-      orxCHAR acBuffer[255];
+      orxCHAR acBuffer[256];
 
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%ld]", _zParam, _s32Index);
-      acBuffer[255] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%ld]", _zParam, _s32Index);
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Gets parameter location */
       s32Result = (orxS32)glGetUniformLocation(pstShader->uiProgram, acBuffer);
