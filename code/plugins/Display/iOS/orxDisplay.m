@@ -239,6 +239,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBITMAP                *pstDestinationBitmap;
   const orxBITMAP          *pstLastBitmap;
   orxCOLOR                  stLastColor;
+  orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxS32                    s32PendingShaderCounter;
   orxDISPLAY_SHADER        *pstDefaultShader;
@@ -1257,8 +1258,24 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
       glDeleteShader(uiFragmentShader);
       glASSERT();
 
+      /* Binds attributes */
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "__vPosition__");
+      glASSERT();
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "__vTexCoord__");
+      glASSERT();
+      glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "__vColor__");
+      glASSERT();
+
       /* Links program */
       glLinkProgram(uiProgram);
+      glASSERT();
+
+      /* Gets texture location */
+      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
+      glASSERT();
+
+      /* Gets projection matrix location */
+      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
       glASSERT();
 
       /* Gets linking status */
@@ -1271,22 +1288,6 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
         /* Updates shader */
         _pstShader->uiProgram       = uiProgram;
         _pstShader->iTextureCounter = 0;
-
-        /* Binds attributes */
-        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "__vPosition__");
-        glASSERT();
-        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "__vTexCoord__");
-        glASSERT();
-        glBindAttribLocation(uiProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "__vColor__");
-        glASSERT();
-
-        /* Gets texture location */
-        _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "__Texture__");
-        glASSERT();
-
-        /* Gets projection matrix location */
-        _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "__mProjection__");
-        glASSERT();
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -3425,21 +3426,44 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   /* Screen? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
+    orxU32 u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
+
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
 
     /* Is screen? */
     if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
     {
-      /* Sets OpenGL clipping */
-      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
-      glASSERT();
+      /* Gets new clipping values */
+      u32ClipX      = _u32TLX;
+      u32ClipY      = orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY;
+      u32ClipWidth  = _u32BRX - _u32TLX;
+      u32ClipHeight = _u32BRY - _u32TLY;
     }
     else
     {
+      /* Gets new clipping values */
+      u32ClipX      = _u32TLX;
+      u32ClipY      = sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY;
+      u32ClipWidth  = _u32BRX - _u32TLX;
+      u32ClipHeight = _u32BRY - _u32TLY;
+    }
+
+    /* Different clipping? */
+    if((u32ClipX != sstDisplay.u32LastClipX)
+    || (u32ClipY != sstDisplay.u32LastClipY)
+    || (u32ClipWidth != sstDisplay.u32LastClipWidth)
+    || (u32ClipHeight != sstDisplay.u32LastClipHeight))
+    {
       /* Sets OpenGL clipping */
-      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glScissor((GLint)u32ClipX, (GLint)u32ClipY, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
       glASSERT();
+
+      /* Stores clipping values */
+      sstDisplay.u32LastClipX       = u32ClipX;
+      sstDisplay.u32LastClipY       = u32ClipY;
+      sstDisplay.u32LastClipWidth   = u32ClipWidth;
+      sstDisplay.u32LastClipHeight  = u32ClipHeight;
     }
   }
   else
