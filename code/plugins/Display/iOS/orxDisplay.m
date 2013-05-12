@@ -3416,7 +3416,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   /* Screen? */
   if(_pstBitmap == sstDisplay.pstScreen)
   {
-    orxU32 u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
+    orxU32 u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight;
 
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
