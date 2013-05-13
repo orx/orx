@@ -77,6 +77,20 @@ enum {
     APP_CMD_QUIT
 };
 
+typedef struct __orxANDROID_TOUCH_EVENT_t {
+        orxU32   u32ID;
+        orxFLOAT fX;
+        orxFLOAT fY;
+        orxU32   u32Action;
+
+} orxANDROID_TOUCH_EVENT;
+
+typedef struct __orxANDROID_KEY_EVENT_t {
+       orxU32 u32Action;
+       orxU32 u32KeyCode;
+
+} orxANDROID_KEY_EVENT;
+
 ANativeWindow * orxAndroid_GetNativeWindow();
 
 /**
@@ -101,8 +115,6 @@ void orxAndroid_PumpEvents();
 #define orxANDROID_EVENT_KEYBOARD       0
 #define orxANDROID_EVENT_KEYBOARD_DOWN  0
 #define orxANDROID_EVENT_KEYBOARD_UP    1
-#define KEYCODE_BACK 0x04
-#define KEYCODE_MENU 0x52
 
 #endif /* __orxANDROID__ */
 

@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-#define DEBUG_ANDROID_SUPPORT
+//#define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -94,20 +94,6 @@ typedef struct __orxANDROID_STATIC_t {
         orxBOOL bDestroyRequested;
 
 } orxANDROID_STATIC;
-
-typedef struct __orxANDROID_TOUCH_EVENT_t {
-        orxU32   u32ID;
-        orxFLOAT fX;
-        orxFLOAT fY;
-        orxU32   u32Action;
-
-} orxANDROID_TOUCH_EVENT;
-
-typedef struct __orxANDROID_KEY_EVENT_t {
-       orxU32 u32Action;
-       orxU32 u32KeyCode;
-
-} orxANDROID_KEY_EVENT;
 
 /***************************************************************************
  * Static variables                                                        *
@@ -569,19 +555,9 @@ extern "C" void orxAndroid_PumpEvents()
 
       if (read(sstAndroid.pipeKeyEvent[0], &stKeyEvent, sizeof(stKeyEvent)) == sizeof(stKeyEvent))
       {
-        orxEVENT stEvent;
-
-        switch(stKeyEvent.u32Action)
-        {
-        case 0: // down
-          orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_DOWN, orxNULL, orxNULL, &stKeyEvent.u32KeyCode);
-          break;
-        case 1: // up
-          orxEVENT_INIT(stEvent, (orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD, orxANDROID_EVENT_KEYBOARD_UP, orxNULL, orxNULL, &stKeyEvent.u32KeyCode);
-          break;
-        }
-
-        orxEvent_Send(&stEvent);
+        orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD,
+                       stKeyEvent.u32Action == 0 ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP,
+                       orxNULL, orxNULL, &stKeyEvent);
       } else {
         LOGE("No data on command pipe!");
       }
