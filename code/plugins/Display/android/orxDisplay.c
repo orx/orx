@@ -65,6 +65,8 @@
 
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
+#define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
+
 /**  Misc defines
  */
 #ifdef __orxDEBUG__
@@ -174,7 +176,6 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBOOL                   bDefaultSmoothing;
   orxBITMAP                *pstScreen;
   orxBITMAP                *pstDestinationBitmap;
-  const orxBITMAP          *pstLastBitmap;
   orxCOLOR                  stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
@@ -189,6 +190,8 @@ typedef struct __orxDISPLAY_STATIC_t
   GLint                     iTextureUnitNumber;
   orxS32                    s32BufferIndex;
   orxU32                    u32Flags;
+  orxS32                    s32ActiveTextureUnit;
+  const orxBITMAP          *astBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxU32                    u32Depth;
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
   orxDISPLAY_VERTEX         astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
@@ -811,6 +814,12 @@ static void orxFASTCALL orxDisplay_Android_InitShader(orxDISPLAY_SHADER *_pstSha
       glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
       glASSERT();
 
+      /* Updates active texture unit */
+      sstDisplay.s32ActiveTextureUnit = (orxS32)i;
+
+      /* Updates bound texture */
+      sstDisplay.astBoundBitmapList[i] = _pstShader->astTextureInfoList[i].pstBitmap;
+
       /* Screen and not already captured? */
       if((_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen) && (bCaptured == orxFALSE))
       {
@@ -891,6 +900,9 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
       /* Updates projection matrix */
       glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       glASSERT();
+
+      /* Updates active texture unit */
+      sstDisplay.s32ActiveTextureUnit = 0;
     }
     else
     {
@@ -928,7 +940,7 @@ static orxINLINE void orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBitm
   }
 
   /* New bitmap? */
-  if(_pstBitmap != sstDisplay.pstLastBitmap)
+  if(_pstBitmap != sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit])
   {
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
@@ -937,8 +949,8 @@ static orxINLINE void orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBitm
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
 
-    /* Stores it */
-    sstDisplay.pstLastBitmap = _pstBitmap;
+    /* Updates bound texture */
+    sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = _pstBitmap;
   }
 
   /* Depending on smoothing type */
@@ -1502,7 +1514,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
   orxASSERT(_astVertexList != orxNULL);
 
   /* Gets bitmap to use */
-  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.pstLastBitmap;
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
 
   /* Prepares bitmap for drawing */
   orxDisplay_Android_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
@@ -1590,10 +1602,10 @@ void orxFASTCALL orxDisplay_Android_DeleteBitmap(orxBITMAP *_pstBitmap)
   if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Is last used bitmap? */
-    if(sstDisplay.pstLastBitmap == _pstBitmap)
+    if(_pstBitmap == sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit])
     {
       /* Resets it */
-      sstDisplay.pstLastBitmap = orxNULL;
+      sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
     }
 
     /* Deletes its texture */
@@ -1621,8 +1633,6 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
   /* Valid? */
   if(pstBitmap != orxNULL)
   {
-    GLint iTexture;
-
     /* Pushes display section */
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -1637,10 +1647,6 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     pstBitmap->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
-
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-    glASSERT();
 
     /* Creates new texture */
     glGenTextures(1, &pstBitmap->uiTexture);
@@ -1659,7 +1665,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
     /* Pops config section */
@@ -1749,7 +1755,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
   /* Valid? */
   if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
   {
-    GLint iTexture;
     orxU8 *pu8ImageBuffer;
     orxU32 i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
@@ -1775,10 +1780,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
       orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
     }
 
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-    glASSERT();
-
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
@@ -1788,7 +1789,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
     glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
     /* Frees buffer */
@@ -2375,8 +2376,6 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
               /* Success? */
               if(pstBitmap != orxNULL)
               {
-                GLint iTexture;
-
                 /* Pushes config section */
                 orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -2391,10 +2390,6 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
                 pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
                 orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
                 orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
-
-                /* Backups current texture */
-                glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-                glASSERT();
 
                 /* Creates new texture */
                 glGenTextures(1, &pstBitmap->uiTexture);
@@ -2424,7 +2419,7 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
                 glASSERT();
 
                 /* Restores previous texture */
-                glBindTexture(GL_TEXTURE_2D, iTexture);
+                glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
                 glASSERT();
 
                 /* Pops config section */
@@ -2687,8 +2682,6 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
           /* Success? */
           if(pstBitmap != orxNULL)
           {
-            GLint iTexture;
-
             /* Pushes config section */
             orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -2703,10 +2696,6 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
             orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
             orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
-
-            /* Backups current texture */
-            glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-            glASSERT();
 
             /* Creates new texture */
             glGenTextures(1, &pstBitmap->uiTexture);
@@ -2736,7 +2725,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             glASSERT();
 
             /* Restores previous texture */
-            glBindTexture(GL_TEXTURE_2D, iTexture);
+            glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
             glASSERT();
 
             /* Pops config section */
@@ -2833,8 +2822,6 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
             /* Success? */
             if(pstBitmap != orxNULL)
             {
-              GLint iTexture;
-
               /* Pushes config section */
               orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -2849,10 +2836,6 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
               pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
               orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
               orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
-
-              /* Backups current texture */
-              glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-              glASSERT();
 
               /* Creates new texture */
               glGenTextures(1, &pstBitmap->uiTexture);
@@ -2882,7 +2865,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
               glASSERT();
 
               /* Restores previous texture */
-              glBindTexture(GL_TEXTURE_2D, iTexture);
+              glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
               glASSERT();
 
               /* Pops config section */
@@ -2969,7 +2952,6 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
             if(pstResult != orxNULL)
             {
               GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize, uiRealWidth, uiRealHeight;
-              GLint   iTexture;
               orxU8  *pu8ImageBuffer;
 
               /* Gets its real size */
@@ -3016,10 +2998,6 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
                 orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
               }
 
-              /* Backups current texture */
-              glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-              glASSERT();
-
               /* Creates new texture */
               glGenTextures(1, &pstResult->uiTexture);
               glASSERT();
@@ -3037,7 +3015,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
               glASSERT();
 
               /* Restores previous texture */
-              glBindTexture(GL_TEXTURE_2D, iTexture);
+              glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
               glASSERT();
 
               /* Frees image buffer */
@@ -3285,9 +3263,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
   glASSERT();
 
+  /* Updates active texture unit */
+  sstDisplay.s32ActiveTextureUnit = 0;
+
   /* Clears last blend mode & last bitmap */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-  sstDisplay.pstLastBitmap  = orxNULL;
+  sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
   /* Done! */
   return eResult;
@@ -3416,6 +3397,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
         glASSERT();
 
+        /* Updates bound texture */
+        sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
+
         /* Updates config info */
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
@@ -3427,6 +3411,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Gets max texture unit number */
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
         glASSERT();
+        sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
@@ -3930,6 +3915,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
       /* Updates projection matrix */
       glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       glASSERT();
+
+      /* Updates active texture unit */
+      sstDisplay.s32ActiveTextureUnit = 0;
     }
     else
     {
@@ -3954,6 +3942,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
     /* Updates projection matrix */
     glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
     glASSERT();
+
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = 0;
   }
 
   /* Done! */
