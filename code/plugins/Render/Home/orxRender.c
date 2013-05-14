@@ -320,8 +320,8 @@ static orxINLINE void orxRender_Home_RenderFPS()
     orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_DEFAULT_COLOR);
 
     /* Writes string */
-    orxString_NPrint(acBuffer, 15, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
-    acBuffer[15] = orxCHAR_NULL;
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Displays it */
     orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -360,7 +360,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
   /* Inits buffer */
-  acLabel[63] = orxCHAR_NULL;
+  acLabel[sizeof(acLabel) - 1] = orxCHAR_NULL;
 
   /* Gets default font */
   pstFont = orxFont_GetDefaultFont();
@@ -592,7 +592,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, 63, "-=orxPROFILER=-     Frame [%.2f|%.2fms]", orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
+  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=orxPROFILER=-     Frame [%.2f|%.2fms]", orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
@@ -806,7 +806,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, 63 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -848,7 +848,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = 1;
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, 63 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -977,7 +977,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel, 63, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -2058,9 +2058,6 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
-    /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
-
     /* For all viewports */
     for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
         pstViewport != orxNULL;
@@ -2191,17 +2188,26 @@ static void orxFASTCALL orxRender_Home_Present(const orxCLOCK_INFO *_pstClockInf
   /* Should present? */
   if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST))
   {
+    orxFLOAT fWidth, fHeight;
+
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_Swap");
 
     /* Swap buffers */
     orxDisplay_Swap();
 
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+
     /* Updates status */
     orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST);
 
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
+    /* Restores screen bitmap clipping */
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+
+    /* Clears screen */
+    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
   }
 
   /* Resets all profiler markers */
@@ -2350,15 +2356,16 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Gets a world position from a screen one
- * @param[in]  _pvScreenPosition        Screen space position
- * @param[in]  _pstViewport             Concerned viewport, if orxNULL then the first viewport will be used
- * @param[out] _pvWorldPosition         Corresponding world position
- * @return orxVECTOR / orxNULL
+/** Get a world position given a screen one (absolute picking)
+ * @param[in]   _pvScreenPosition                     Concerned screen position
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then either the first viewport that contains the position (if any), or the first viewport in the list if none contains the position
+ * @param[out]  _pvWorldPosition                      Corresponding world position
+ * @return      orxVECTOR if found *inside* the display surface, orxNULL otherwise
  */
 orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
+  orxBOOL       bFirstViewport;
   orxVECTOR    *pvResult = orxNULL;
 
   /* Checks */
@@ -2367,7 +2374,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   orxASSERT(_pvWorldPosition != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT)), bFirstViewport = orxTRUE;
       pstViewport != orxNULL;
       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
   {
@@ -2381,6 +2388,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
     {
       orxAABOX  stViewportBox;
       orxFLOAT  fCorrectionRatio;
+      orxBOOL   bInViewportBox;
 
       /* Gets viewport box */
       orxViewport_GetBox(pstViewport, &stViewportBox);
@@ -2414,11 +2422,14 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
         }
       }
 
-      /* Is position in box? */
-      if((_pvScreenPosition->fX >= stViewportBox.vTL.fX)
-      && (_pvScreenPosition->fX <= stViewportBox.vBR.fX)
-      && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
-      && (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
+      /* Updates position in box status? */
+      bInViewportBox = ((_pvScreenPosition->fX >= stViewportBox.vTL.fX)
+                     && (_pvScreenPosition->fX <= stViewportBox.vBR.fX)
+                     && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
+                     && (_pvScreenPosition->fY <= stViewportBox.vBR.fY)) ? orxTRUE : orxFALSE;
+
+      /* Is position in box or first viewport? */
+      if((bInViewportBox != orxFALSE) || (bFirstViewport != orxFALSE))
       {
         orxVECTOR vLocalPosition, vCenter, vCameraCenter, vCameraPosition;
         orxAABOX  stCameraFrustum;
@@ -2479,11 +2490,18 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
           _pvWorldPosition->fY *= fRecZoom;
         }
 
-        /* Updates result */
-        pvResult = _pvWorldPosition;
+        /* Is position in viewport box? */
+        if(bInViewportBox != orxFALSE)
+        {
+          /* Updates result */
+          pvResult = _pvWorldPosition;
 
-        break;
+          break;
+        }
       }
+
+      /* Updates status */
+      bFirstViewport = orxFALSE;
     }
   }
 

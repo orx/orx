@@ -188,7 +188,6 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBOOL                   bDefaultSmoothing;
   orxBITMAP                *pstScreen;
   orxBITMAP                *pstDestinationBitmap;
-  const orxBITMAP          *pstLastBitmap;
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
@@ -207,7 +206,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DefaultDepth;
   orxU32                    u32DefaultRefreshRate;
   orxS32                    s32ActiveTextureUnit;
-  GLuint                    auiBoundTextureList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  const orxBITMAP *         astBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDISPLAY_GLFW_VERTEX    astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
@@ -623,8 +622,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxCHAR acBuffer[1024];
 
         /* Gets log */
-        glGetInfoLogARB(hProgram, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
         glASSERT();
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
         /* Outputs log */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -639,8 +639,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       orxCHAR acBuffer[1024];
 
       /* Gets log */
-      glGetInfoLogARB(hFragmentShader, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
       glASSERT();
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Outputs log */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -659,8 +660,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     orxCHAR acBuffer[1024];
 
     /* Gets log */
-    glGetInfoLogARB(hVertexShader, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
     glASSERT();
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Outputs log */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -705,7 +707,7 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
       sstDisplay.s32ActiveTextureUnit = (orxS32)i;
 
       /* Updates bound texture */
-      sstDisplay.auiBoundTextureList[i]   = _pstShader->astTextureInfoList[i].pstBitmap->uiTexture;
+      sstDisplay.astBoundBitmapList[i] = _pstShader->astTextureInfoList[i].pstBitmap;
 
       /* Screen and not already captured? */
       if((_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen) && (bCaptured == orxFALSE))
@@ -833,7 +835,7 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
   }
 
   /* New bitmap? */
-  if(_pstBitmap != sstDisplay.pstLastBitmap)
+  if(_pstBitmap != sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit])
   {
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
@@ -843,10 +845,7 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     glASSERT();
 
     /* Updates bound texture */
-    sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit] = _pstBitmap->uiTexture;
-
-    /* Stores it */
-    sstDisplay.pstLastBitmap = _pstBitmap;
+    sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = _pstBitmap;
   }
 
   /* Depending on smoothing type */
@@ -1112,6 +1111,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
     /* Flushes pending commands */
     glFlush();
     glASSERT();
+
+    /* Polls events */
+    glfwPollEvents();
   }
 
   /* Done! */
@@ -1423,7 +1425,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   orxASSERT(_astVertexList != orxNULL);
 
   /* Gets bitmap to use */
-  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.pstLastBitmap;
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
 
   /* Prepares bitmap for drawing */
   orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
@@ -1511,10 +1513,10 @@ void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
   if(_pstBitmap != sstDisplay.pstScreen)
   {
     /* Is last used bitmap? */
-    if(sstDisplay.pstLastBitmap == _pstBitmap)
+    if(sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] == _pstBitmap)
     {
       /* Resets it */
-      sstDisplay.pstLastBitmap = orxNULL;
+      sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
     }
 
     /* Deletes its texture */
@@ -1574,7 +1576,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit]);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
     /* Pops config section */
@@ -1648,7 +1650,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
       glASSERT();
 
       /* Restores previous texture */
-      glBindTexture(GL_TEXTURE_2D, sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit]);
+      glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
       glASSERT();
 
       /* Frees buffer */
@@ -1772,7 +1774,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
     glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit]);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
     /* Frees buffer */
@@ -1856,7 +1858,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(orxBITMAP *_pstBitmap, orxU8
     }
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit]);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
     /* Gets line sizes */
@@ -2247,7 +2249,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   glASSERT();
 
   /* Restores previous texture */
-  glBindTexture(GL_TEXTURE_2D, sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit]);
+  glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
   glASSERT();
 
   /* Gets line sizes */
@@ -2425,7 +2427,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
             glASSERT();
 
             /* Restores previous texture */
-            glBindTexture(GL_TEXTURE_2D, sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit]);
+            glBindTexture(GL_TEXTURE_2D, (sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
             glASSERT();
 
             /* Frees image buffer */
@@ -2795,7 +2797,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glASSERT();
 
       /* Updates bound texture */
-      sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen->uiTexture;
+      sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
 
       /* Clears destination bitmap */
       sstDisplay.pstDestinationBitmap = orxNULL;
@@ -2969,6 +2971,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
 
+        /* Disables events auto-polling */
+        glfwDisable(GLFW_AUTO_POLL_EVENTS);
+
         /* Is fullscreen? */
         if(_pstVideoMode->bFullScreen != orxFALSE)
         {
@@ -3107,7 +3112,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         sstDisplay.pstDestinationBitmap = orxNULL;
 
         /* Updates bound texture */
-        sstDisplay.auiBoundTextureList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen->uiTexture;
+        sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
 
         /* Clears new display surface */
         glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
@@ -3244,7 +3249,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
   /* Clears last blend mode & last bitmap */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-  sstDisplay.pstLastBitmap  = orxNULL;
+  sstDisplay.astBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
   /* Done! */
   return eResult;
@@ -3967,7 +3972,7 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
 
     /* Inits buffer */
-    acBuffer[255] = orxCHAR_NULL;
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets corresponding param info */
     pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCounter];
@@ -3979,29 +3984,29 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     if(_s32Index >= 0)
     {
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       pstInfo->iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
     }
@@ -4012,22 +4017,22 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
     }
@@ -4040,8 +4045,8 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
       orxCHAR acBuffer[256];
 
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%d]", _zParam, _s32Index);
-      acBuffer[255] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Gets parameter location */
       s32Result = (orxS32)glGetUniformLocationARB(pstShader->hProgram, acBuffer);

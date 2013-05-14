@@ -473,12 +473,12 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvScreenPosition</td><td>Concerned screen position </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstViewport</td><td>Concerned viewport, if orxNULL then the first viewport containing the screen position will be used </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstViewport</td><td>Concerned viewport, if orxNULL then either the first viewport that contains the position (if any), or the first viewport in the list if none contains the position </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pvWorldPosition</td><td>Corresponding world position </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> if found, orxNULL otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> if found <em>inside</em> the display surface, orxNULL otherwise </dd></dl>
 
 </div>
 </div>

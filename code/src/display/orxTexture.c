@@ -298,8 +298,8 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
       if(orxString_GetExtension(zName) == orxSTRING_EMPTY)
       {
         /* Appends default extension */
-        orxString_NPrint(acBuffer, 255, "%s.%s", zName, orxTEXTURE_KZ_DEFAULT_EXTENSION);
-        acBuffer[255] = orxCHAR_NULL;
+        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s.%s", zName, orxTEXTURE_KZ_DEFAULT_EXTENSION);
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
         /* Uses it */
         zName = acBuffer;

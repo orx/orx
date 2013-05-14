@@ -101,6 +101,7 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
     struct
     {
       stb_vorbis     *pstFile;
+      orxHANDLE       hResource;
     } vorbis;
 
     struct
@@ -316,29 +317,46 @@ static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilenam
   /* Success? */
   if(zResourceName != orxNULL)
   {
-    /* Opens file with vorbis */
-    _pstData->vorbis.pstFile = stb_vorbis_open_filename((char *)orxResource_GetName(zResourceName), NULL, NULL);
+    orxHANDLE hResource;
+
+    /* Opens resource */
+    hResource = orxResource_Open(zResourceName, orxFALSE);
 
     /* Success? */
-    if(_pstData->vorbis.pstFile != NULL)
+    if(hResource != orxHANDLE_UNDEFINED)
     {
-      stb_vorbis_info stFileInfo;
+      /* Opens file with vorbis */
+      _pstData->vorbis.pstFile = stb_vorbis_open_file(hResource, FALSE, NULL, NULL);
 
-      /* Gets file info */
-      stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+      /* Success? */
+      if(_pstData->vorbis.pstFile != NULL)
+      {
+        stb_vorbis_info stFileInfo;
 
-      /* Stores info */
-      _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-      _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
-      _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
+        /* Gets file info */
+        stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
 
-      /* Updates status */
-      _pstData->bVorbis                 = orxTRUE;
+        /* Stores info */
+        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+        _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
+        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
+        _pstData->vorbis.hResource        = hResource;
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+        /* Updates status */
+        _pstData->bVorbis                 = orxTRUE;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Closes resource */
+        orxResource_Close(hResource);
+      }
     }
-    else
+    
+    /* Not a valid ogg vorbis? */
+    if(eResult == orxSTATUS_FAILURE)
     {
       NSString *poName;
       NSURL    *poURL;
@@ -447,6 +465,10 @@ static orxINLINE void orxSoundSystem_iOS_CloseFile(orxSOUNDSYSTEM_DATA *_pstData
       /* Closes file */
       stb_vorbis_close(_pstData->vorbis.pstFile);
       _pstData->vorbis.pstFile = orxNULL;
+
+      /* Closes resource */
+      orxResource_Close(_pstData->vorbis.hResource);
+      _pstData->vorbis.hResource = orxNULL;
     }
   }
   /* extaudio */

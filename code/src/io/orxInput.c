@@ -814,12 +814,8 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxInput_Update");
 
-  /* Not an internal call? */
-  if(_pstClockInfo != orxNULL)
-  {
-    /* Updates mouse move */
-    orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
-  }
+  /* Updates mouse move */
+  orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
 
   /* Gets set from parameter */
   pstSet = (orxINPUT_SET *)_pContext;
