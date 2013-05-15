@@ -159,73 +159,6 @@ static orxCOMMAND_STATIC sstCommand;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Parses numerical commands
- */
-static orxINLINE orxSTATUS orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList)
-{
-  orxU32    i;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* For all arguments */
-  for(i = 0; i < _u32ArgNumber; i++)
-  {
-    /* Gets vector operand */
-    if(orxString_ToVector(_astArgList[i].zValue, &(_astOperandList[i].vValue), orxNULL) != orxSTATUS_FAILURE)
-    {
-      /* Updates its type */
-      _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_VECTOR;
-    }
-    else
-    {
-      /* Hexadecimal, binary or octal?? */
-      if((_astArgList[i].zValue[0] != orxCHAR_EOL)
-      && (_astArgList[i].zValue[0] == '0')
-      && (_astArgList[i].zValue[1] != orxCHAR_EOL)
-      && (((_astArgList[i].zValue[1] | 0x20) == 'x')
-       || ((_astArgList[i].zValue[1] | 0x20) == 'b')
-       || ((_astArgList[i].zValue[1] >= '0')
-        && (_astArgList[i].zValue[1] <= '9'))))
-      {
-        /* Gets U64 operand */
-        if(orxString_ToU64(_astArgList[i].zValue, &(_astOperandList[i].u64Value), orxNULL) != orxSTATUS_FAILURE)
-        {
-          /* Gets its float value */
-          _astOperandList[i].fValue = orxU2F(_astOperandList[i].u64Value);
-
-          /* Updates its type */
-          _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
-        }
-        else
-        {
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
-
-          break;
-        }
-      }
-      else
-      {
-        /* Gets float operand */
-        if(orxString_ToFloat(_astArgList[i].zValue, &(_astOperandList[i].fValue), orxNULL) != orxSTATUS_FAILURE)
-        {
-          /* Updates its type */
-          _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
-        }
-        else
-        {
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
-
-          break;
-        }
-      }
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Gets literal name of a command var type
  */
 static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _eType)
@@ -2934,6 +2867,86 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32
 
   /* Done! */
   return pstResult;
+}
+
+/** Parses numerical arguments, string arguments will be evaluated to vectors or float when possible
+* @param[in]   _u32ArgNumber  Number of arguments to parse
+* @param[in]   _astArgList    List of arguments to parse
+* @param[out]  _astOperandList List of parsed arguments
+* @return orxSTATUS_SUCCESS if all numerical arguments have been correctly interpreted, orxSTATUS_FAILURE otherwise
+*/
+orxSTATUS orxFASTCALL orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
+  orxASSERT(_astArgList != orxNULL);
+  orxASSERT(_astOperandList != orxNULL);
+
+  /* For all arguments */
+  for(i = 0; i < _u32ArgNumber; i++)
+  {
+    /* Is a string? */
+    if(_astArgList[i].eType == orxCOMMAND_VAR_TYPE_STRING)
+    {
+      /* Gets vector operand */
+      if(orxString_ToVector(_astArgList[i].zValue, &(_astOperandList[i].vValue), orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates its type */
+        _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_VECTOR;
+      }
+      else
+      {
+        /* Hexadecimal, binary or octal?? */
+        if((_astArgList[i].zValue[0] != orxCHAR_EOL)
+        && (_astArgList[i].zValue[0] == '0')
+        && (_astArgList[i].zValue[1] != orxCHAR_EOL)
+        && (((_astArgList[i].zValue[1] | 0x20) == 'x')
+         || ((_astArgList[i].zValue[1] | 0x20) == 'b')
+         || ((_astArgList[i].zValue[1] >= '0')
+          && (_astArgList[i].zValue[1] <= '9'))))
+        {
+          /* Gets U64 operand */
+          if(orxString_ToU64(_astArgList[i].zValue, &(_astOperandList[i].u64Value), orxNULL) != orxSTATUS_FAILURE)
+          {
+            /* Gets its float value */
+            _astOperandList[i].fValue = orxU2F(_astOperandList[i].u64Value);
+
+            /* Updates its type */
+            _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
+          }
+          else
+          {
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+
+            break;
+          }
+        }
+        else
+        {
+          /* Gets float operand */
+          if(orxString_ToFloat(_astArgList[i].zValue, &(_astOperandList[i].fValue), orxNULL) != orxSTATUS_FAILURE)
+          {
+            /* Updates its type */
+            _astOperandList[i].eType = orxCOMMAND_VAR_TYPE_FLOAT;
+          }
+          else
+          {
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 #ifdef __orxMSVC__

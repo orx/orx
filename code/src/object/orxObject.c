@@ -350,28 +350,55 @@ void orxFASTCALL orxObject_CommandSetRotation(orxU32 _u32ArgNumber, const orxCOM
  */
 void orxFASTCALL orxObject_CommandSetScale(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxOBJECT *pstObject;
+  orxCOMMAND_VAR stOperand;
 
-  /* Gets object */
-  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
-
-  /* Valid? */
-  if(pstObject != orxNULL)
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, &_astArgList[1], &stOperand) != orxSTATUS_FAILURE)
   {
-    /* Global? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    orxOBJECT *pstObject;
+
+    /* Gets object */
+    pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+    /* Valid? */
+    if(pstObject != orxNULL)
     {
-      /* Sets its scale */
-      orxObject_SetWorldScale(pstObject, &(_astArgList[1].vValue));
+      orxVECTOR vScale;
+
+      /* Was single float value? */
+      if(stOperand.eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Sets vector */
+        orxVector_SetAll(&vScale, stOperand.fValue);
+      }
+      else
+      {
+        orxASSERT(stOperand.eType == orxCOMMAND_VAR_TYPE_VECTOR);
+
+        /* Copies vector */
+        orxVector_Copy(&vScale, &(stOperand.vValue));
+      }
+
+      /* Global? */
+      if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+      {
+        /* Sets its scale */
+        orxObject_SetWorldScale(pstObject, &vScale);
+      }
+      else
+      {
+        /* Sets its scale */
+        orxObject_SetScale(pstObject, &vScale);
+      }
+
+      /* Updates result */
+      _pstResult->u64Value = _astArgList[0].u64Value;
     }
     else
     {
-      /* Sets its scale */
-      orxObject_SetScale(pstObject, &(_astArgList[1].vValue));
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
     }
-
-    /* Updates result */
-    _pstResult->u64Value = _astArgList[0].u64Value;
   }
   else
   {
@@ -1777,7 +1804,7 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: SetRotation */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRotation, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Rotation", orxCOMMAND_VAR_TYPE_FLOAT}, {"Global = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetScale */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetScale, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Scale", orxCOMMAND_VAR_TYPE_VECTOR}, {"Global = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetScale, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Scale", orxCOMMAND_VAR_TYPE_STRING}, {"Global = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetPosition */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Global = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetRotation */

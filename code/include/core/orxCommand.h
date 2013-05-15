@@ -209,6 +209,15 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const 
 extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
 
 
+/** Parses numerical arguments, string arguments will be evaluated to vectors or float when possible
+* @param[in]   _u32ArgNumber  Number of arguments to parse
+* @param[in]   _astArgList    List of arguments to parse
+* @param[out]  _astOperandList List of parsed arguments
+* @return orxSTATUS_SUCCESS if all numerical arguments have been correctly interpreted, orxSTATUS_FAILURE otherwise
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);
+
+
 #endif /* _orxCOMMAND_H_ */
 
 /** @} */

@@ -1622,14 +1622,17 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 orxOBJECT      *pstObject;
                 orxFRAME       *pstCameraFrame;
                 orxRENDER_NODE *pstRenderNode;
-                orxVECTOR       vCameraCenter, vCameraPosition;
+                orxVECTOR       vCameraScale, vCameraCenter, vCameraPosition;
                 orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraBoundingRadius;
-
-                /* Gets camera zoom */
-                fZoom = orxCamera_GetZoom(pstCamera);
 
                 /* Gets camera frame */
                 pstCameraFrame = orxCamera_GetFrame(pstCamera);
+
+                /* Gets camera scale */
+                orxFrame_GetScale(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraScale);
+
+                /* Gets camera zoom */
+                fZoom = (vCameraScale.fX != orxFLOAT_0) ? orxFLOAT_1 / vCameraScale.fX : orxFLOAT_1;
 
                 /* Gets camera position */
                 orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
