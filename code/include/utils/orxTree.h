@@ -53,10 +53,10 @@
  */
 typedef struct __orxTREE_NODE_t
 {
-  struct __orxTREE_NODE_t *pstParent;           /**< Parent node pointer : 4 */
-  struct __orxTREE_NODE_t *pstChild;            /**< First child node pointer : 8 */
-  struct __orxTREE_NODE_t *pstSibling;          /**< Next sibling node pointer : 12 */
-  struct __orxTREE_t      *pstTree;             /**< Associated tree pointer : 16 */
+  struct __orxTREE_NODE_t *pstParent;           /**< Parent node pointer : 4/8 */
+  struct __orxTREE_NODE_t *pstChild;            /**< First child node pointer : 8/16 */
+  struct __orxTREE_NODE_t *pstSibling;          /**< Next sibling node pointer : 12/24 */
+  struct __orxTREE_t      *pstTree;             /**< Associated tree pointer : 16/32 */
 
 } orxTREE_NODE;
 
@@ -64,8 +64,8 @@ typedef struct __orxTREE_NODE_t
  */
 typedef struct __orxTREE_t
 {
-  orxTREE_NODE *pstRoot;                        /**< Root node pointer : 4 */
-  orxU32        u32Counter;                     /**< Node counter : 8 */
+  orxTREE_NODE *pstRoot;                        /**< Root node pointer : 4/8 */
+  orxU32        u32Counter;                     /**< Node counter : 8/12 */
 
 } orxTREE;
 

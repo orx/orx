@@ -163,13 +163,17 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
  */
 typedef struct __orxSTRUCTURE_t
 {
-  orxU64          u64GUID;          /**< Structure GUID : 8 */
+  orxU64          u64GUID;        /**< Structure GUID : 8 */
   orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12/16 */
   orxU32          u32Flags;       /**< Flags : 16/20 */
 
 #if defined(__orxX86_64__) || defined(__orxPPC64__)
 
-  orxU8           au8Padding[12]; /**< Extra padding to be 16-bit aligned on 64bit architectures */
+  orxU8           au8Padding[12]; /**< Extra padding to be 32-bytes aligned on 64bit architectures */
+
+#else /* __orxX86_64__ || __orxPPC64__ */
+
+  orxU8           au8Padding[16]; /**< Extra padding to be 32-bytes aligned on 32bit architectures */
 
 #endif /* __orxX86_64__ || __orxPPC64__ */
 

@@ -93,9 +93,9 @@
  */
 typedef struct __orxLINKLIST_NODE_t
 {
-  struct __orxLINKLIST_NODE_t *pstNext;         /**< Next node pointer : 4 */
-  struct __orxLINKLIST_NODE_t *pstPrevious;     /**< Previous node pointer : 8 */
-  struct __orxLINKLIST_t      *pstList;         /**< Associated list pointer : 12 */
+  struct __orxLINKLIST_NODE_t *pstNext;         /**< Next node pointer : 4/8 */
+  struct __orxLINKLIST_NODE_t *pstPrevious;     /**< Previous node pointer : 8/16 */
+  struct __orxLINKLIST_t      *pstList;         /**< Associated list pointer : 12/24 */
 
 } orxLINKLIST_NODE;
 
@@ -103,9 +103,9 @@ typedef struct __orxLINKLIST_NODE_t
  */
 typedef struct __orxLINKLIST_t
 {
-  orxLINKLIST_NODE *pstFirst;                   /**< First node pointer : 4 */
-  orxLINKLIST_NODE *pstLast;                    /**< Last node pointer : 8 */
-  orxU32            u32Counter;                 /**< Node counter : 12 */
+  orxLINKLIST_NODE *pstFirst;                   /**< First node pointer : 4/8 */
+  orxLINKLIST_NODE *pstLast;                    /**< Last node pointer : 8/16 */
+  orxU32            u32Counter;                 /**< Node counter : 12/20 */
 
 } orxLINKLIST;
 

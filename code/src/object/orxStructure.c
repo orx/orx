@@ -93,11 +93,11 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 {
   union
   {
-    orxLINKLIST_NODE stLinkListNode;          /**< Linklist node : 12 */
-    orxTREE_NODE stTreeNode;                  /**< Tree node : 16 */
-  };                                          /**< Storage node union : 16 */
-  orxSTRUCTURE *pstStructure;                 /**< Pointer to structure : 20 */
-  orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 24 */
+    orxLINKLIST_NODE        stLinkListNode;   /**< Linklist node : 12/24 */
+    orxTREE_NODE            stTreeNode;       /**< Tree node : 16/32 */
+  };                                          /**< Storage node union : 16/32 */
+  orxSTRUCTURE             *pstStructure;     /**< Pointer to structure : 20/40 */
+  orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 24/44 */
 
 } orxSTRUCTURE_STORAGE_NODE;
 
