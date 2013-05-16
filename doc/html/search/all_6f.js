@@ -359,6 +359,7 @@ var searchData=
   ['orxcommand_5finit',['orxCommand_Init',['../group__orx_command.html#ga8ae0806b0de227375bb09eba3f9dd5bc',1,'orxCommand.h']]],
   ['orxcommand_5fisalias',['orxCommand_IsAlias',['../group__orx_command.html#gaaeb95264c698906fdaf3f54ba91011b3',1,'orxCommand.h']]],
   ['orxcommand_5fisregistered',['orxCommand_IsRegistered',['../group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6',1,'orxCommand.h']]],
+  ['orxcommand_5fparsenumericalarguments',['orxCommand_ParseNumericalArguments',['../group__orx_command.html#gafc5ae72195e0e034dc9bf5052d9ac5cb',1,'orxCommand.h']]],
   ['orxcommand_5fregister',['orxCommand_Register',['../group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601',1,'orxCommand.h']]],
   ['orxcommand_5fregister_5fcore_5fcommand',['orxCOMMAND_REGISTER_CORE_COMMAND',['../group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2',1,'orxCommand.h']]],
   ['orxcommand_5fremovealias',['orxCommand_RemoveAlias',['../group__orx_command.html#gaa10f6ec80ec202751165294ee369bf51',1,'orxCommand.h']]],

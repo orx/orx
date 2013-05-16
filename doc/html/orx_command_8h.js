@@ -24,6 +24,7 @@ var orx_command_8h =
     [ "orxCommand_Init", "orx_command_8h.html#ga8ae0806b0de227375bb09eba3f9dd5bc", null ],
     [ "orxCommand_IsAlias", "orx_command_8h.html#gaaeb95264c698906fdaf3f54ba91011b3", null ],
     [ "orxCommand_IsRegistered", "orx_command_8h.html#ga2d0c16347e4fb4075ed39b0c561be3e6", null ],
+    [ "orxCommand_ParseNumericalArguments", "orx_command_8h.html#gafc5ae72195e0e034dc9bf5052d9ac5cb", null ],
     [ "orxCommand_Register", "orx_command_8h.html#gaabb6d028ab52dffb1c9bbfe3e75b9601", null ],
     [ "orxCommand_RemoveAlias", "orx_command_8h.html#gaa10f6ec80ec202751165294ee369bf51", null ],
     [ "orxCommand_Setup", "orx_command_8h.html#ga74927728d29562dce492a1c305a470ad", null ],

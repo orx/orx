@@ -1,6 +1,7 @@
 var group__orx_structure =
 [
     [ "orxSTRUCTURE", "structorx_s_t_r_u_c_t_u_r_e.html", [
+      [ "au8Padding", "structorx_s_t_r_u_c_t_u_r_e.html#ac986aee4f1f58ef3118467dc7715a74a", null ],
       [ "hStorageNode", "structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723", null ],
       [ "u32Flags", "structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef", null ],
       [ "u64GUID", "structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b", null ]
