@@ -108,7 +108,7 @@ Macros</h2></td></tr>
 <tr class="separator:ga96482e65a36cc89edf91aae3315de27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga05d360cf9a5b757bf9bb062335546679"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ga05d360cf9a5b757bf9bb062335546679">__orxX86__</a></td></tr>
 <tr class="separator:ga05d360cf9a5b757bf9bb062335546679"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga92c478fc93993c0ff07093dd9f69ec83"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">orxALIGN</a>(ADDRESS, BLOCK_SIZE)&#160;&#160;&#160;(((size_t)(ADDRESS) + ((BLOCK_SIZE) - 1)) &amp; (~((BLOCK_SIZE) - 1)))</td></tr>
+<tr class="memitem:ga92c478fc93993c0ff07093dd9f69ec83"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">orxALIGN</a>(ADDRESS, BLOCK_SIZE)&#160;&#160;&#160;(((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) &amp; (~((size_t)(BLOCK_SIZE) - 1)))</td></tr>
 <tr class="separator:ga92c478fc93993c0ff07093dd9f69ec83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad568d895c9d5dd496b0d720750b4429f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gad568d895c9d5dd496b0d720750b4429f">orxALIGN16</a>(ADDRESS)&#160;&#160;&#160;<a class="el" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">orxALIGN</a>(ADDRESS, 16)</td></tr>
 <tr class="separator:gad568d895c9d5dd496b0d720750b4429f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -181,7 +181,7 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(((size_t)(ADDRESS) + ((BLOCK_SIZE) - 1)) &amp; (~((BLOCK_SIZE) - 1)))</td>
+          <td></td><td>&#160;&#160;&#160;(((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) &amp; (~((size_t)(BLOCK_SIZE) - 1)))</td>
         </tr>
       </table>
 </div><div class="memdoc">
