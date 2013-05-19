@@ -83,6 +83,8 @@ static orxMEMORY_STATIC sstMemory;
 
 #if defined(__orxWINDOWS__)
 
+  #ifdef __orxMSVC__
+
 orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   SYSTEM_LOGICAL_PROCESSOR_INFORMATION *astProcessorInfoList;
@@ -119,6 +121,16 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
   /* Done! */
   return u32Result;
 }
+
+  #else /* __orxMSVC__ */
+
+orxINLINE orxU32 orxMemory_CacheLineSize()
+{
+  /* Done! */
+  return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
+}
+
+  #endif /* __orxMSVC__ */
 
 #elif defined(__orxMAC__) || defined(__orxIOS__)
 
