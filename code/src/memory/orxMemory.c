@@ -146,7 +146,7 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
   stSizeOfLineSize = sizeof(stLineSize);
 
   /* Gets cache line size */
-  sysctlbyname("hw.cachelinesize", &st2LineSize, &stSizeOfLineSize, 0, 0);
+  sysctlbyname("hw.cachelinesize", &stLineSize, &stSizeOfLineSize, 0, 0);
 
   /* Done! */
   return (orxU32)stLineSize;
