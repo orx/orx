@@ -16,6 +16,7 @@ var group__orx_memory =
     [ "orxMemory_Copy", "group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c", null ],
     [ "orxMemory_Exit", "group__orx_memory.html#ga643c775ffcf970857a16d419bf298020", null ],
     [ "orxMemory_Free", "group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d", null ],
+    [ "orxMemory_GetCacheLineSize", "group__orx_memory.html#ga7e69f5cbe4ac63c45077cc5d9a3da9f8", null ],
     [ "orxMemory_Init", "group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379", null ],
     [ "orxMemory_Move", "group__orx_memory.html#ga7e90efa0eef145702488f1d76719dda3", null ],
     [ "orxMemory_Reallocate", "group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b", null ],

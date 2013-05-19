@@ -577,6 +577,7 @@ var searchData=
   ['orxmemory_5fcopy',['orxMemory_Copy',['../group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c',1,'orxMemory.h']]],
   ['orxmemory_5fexit',['orxMemory_Exit',['../group__orx_memory.html#ga643c775ffcf970857a16d419bf298020',1,'orxMemory.h']]],
   ['orxmemory_5ffree',['orxMemory_Free',['../group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d',1,'orxMemory.h']]],
+  ['orxmemory_5fgetcachelinesize',['orxMemory_GetCacheLineSize',['../group__orx_memory.html#ga7e69f5cbe4ac63c45077cc5d9a3da9f8',1,'orxMemory.h']]],
   ['orxmemory_5finit',['orxMemory_Init',['../group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379',1,'orxMemory.h']]],
   ['orxmemory_5fmove',['orxMemory_Move',['../group__orx_memory.html#ga7e90efa0eef145702488f1d76719dda3',1,'orxMemory.h']]],
   ['orxmemory_5freallocate',['orxMemory_Reallocate',['../group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b',1,'orxMemory.h']]],
