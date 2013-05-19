@@ -364,17 +364,17 @@ void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
   return((void *)memset(_pDest, 0, (size_t)_u32Size));
 }
 
-/** Reallocates a portion of memory if the already allocated memory is not suffisant.
- * @param[in] _pMem	   Memory to reallocate.
- * @param[in] _u32Size Wanted size.
- * @return The pointer reallocated.
+/** Reallocates a portion of memory if the already allocated memory is not large enough
+ * @param[in] _pMem    Memory to reallocate
+ * @param[in] _u32Size Requested size
+ * @return Pointer to reallocated memory
  */
 void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 {
   return((void *)dlrealloc(_pMem, (size_t)_u32Size));
 }
 
-/** Gets cache line size
+/** Gets L1 data cache line size
  * @return Cache line size
  */
 orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
