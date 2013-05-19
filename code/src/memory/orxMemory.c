@@ -44,6 +44,8 @@
 
 #define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  8
 
+#define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -238,10 +240,8 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   void *pResult;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
-
-  /* Valid parameters ? */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
 
 #ifdef __orxPROFILER__
@@ -254,11 +254,11 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
   {
     size_t uMemoryChunkSize;
 
+    /* Tags memory chunk */
+    *(orxMEMORY_TYPE *)pResult = _eMemType;
+
     /* Gets memory chunk size */
     uMemoryChunkSize = dlmalloc_usable_size(pResult);
-
-    /* Tags memory chunk */
-    *(orxMEMORY_TYPE *)((orxU8 *)pResult + uMemoryChunkSize - sizeof(orxMEMORY_TYPE)) = _eMemType;
 
     /* Updates memory tracker */
     sstMemory.astMemoryTrackerList[_eMemType].u32Size += uMemoryChunkSize - sizeof(orxMEMORY_TYPE);
@@ -272,6 +272,9 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
       sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
     }
     sstMemory.astMemoryTrackerList[_eMemType].u32OperationCounter++;
+
+    /* Updates result */
+    pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
   }
 
 #else /* __orxPROFILER__ */
@@ -290,7 +293,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
  */
 void orxFASTCALL orxMemory_Free(void *_pMem)
 {
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
 
 #ifdef __orxPROFILER__
@@ -301,11 +304,14 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     orxMEMORY_TYPE eMemType;
     size_t         uMemoryChunkSize;
 
-    /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(_pMem);
+    /* Updates pointer */
+    _pMem = (orxU8 *)_pMem - sizeof(orxMEMORY_TYPE);
 
     /* Gets memory type from memory chunk tag */
-    eMemType = *(orxMEMORY_TYPE *)((orxU8 *)_pMem + uMemoryChunkSize - sizeof(orxMEMORY_TYPE));
+    eMemType = *(orxMEMORY_TYPE *)_pMem;
+
+    /* Gets memory chunk size */
+    uMemoryChunkSize = dlmalloc_usable_size(_pMem);
 
     /* Updates memory tracker */
     sstMemory.astMemoryTrackerList[eMemType].u32Size -= uMemoryChunkSize - sizeof(orxMEMORY_TYPE);
@@ -330,6 +336,10 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
  */
 void *orxFASTCALL orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size)
 {
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+  orxASSERT(_pSrc != orxNULL);
+
   return((void *)memcpy(_pDest, _pSrc, (size_t)_u32Size));
 }
 
@@ -341,6 +351,10 @@ void *orxFASTCALL orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Siz
  */
 void *orxFASTCALL orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
 {
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+  orxASSERT(_pSrc != orxNULL);
+
   return((void *)memmove(_pDest, _pSrc, (size_t)_u32Size));
 }
 
@@ -352,6 +366,10 @@ void *orxFASTCALL orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
  */
 orxU32 orxFASTCALL orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size)
 {
+  /* Checks */
+  orxASSERT(_pMem1 != orxNULL);
+  orxASSERT(_pMem2 != orxNULL);
+
   return((orxU32)memcmp(_pMem1, _pMem2, (size_t)_u32Size));
 }
 
@@ -363,6 +381,9 @@ orxU32 orxFASTCALL orxMemory_Compare(const void *_pMem1, const void *_pMem2, orx
  */
 void *orxFASTCALL orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size)
 {
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+
   return((void *)memset(_pDest, _u8Data, (size_t)_u32Size));
 }
 
@@ -373,17 +394,48 @@ void *orxFASTCALL orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size)
  */
 void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
 {
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+
   return((void *)memset(_pDest, 0, (size_t)_u32Size));
 }
 
-/** Reallocates a portion of memory if the already allocated memory is not large enough
- * @param[in] _pMem    Memory to reallocate
- * @param[in] _u32Size Requested size
- * @return Pointer to reallocated memory
+/** Gets memory type literal name
+ * @param[in] _eMemType               Concerned memory type
+ * @return Memory type name
  */
-void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
+const orxSTRING orxFASTCALL orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType)
 {
-  return((void *)dlrealloc(_pMem, (size_t)_u32Size));
+  const orxSTRING zResult;
+
+#define orxMEMORY_DECLARE_TYPE_NAME(TYPE) case orxMEMORY_TYPE_##TYPE: zResult = orxMEMORY_KZ_LITERAL_PREFIX#TYPE; break
+
+  /* Checks */
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
+
+  /* Depending on type */
+  switch(_eMemType)
+  {
+    orxMEMORY_DECLARE_TYPE_NAME(MAIN);
+    orxMEMORY_DECLARE_TYPE_NAME(VIDEO);
+    orxMEMORY_DECLARE_TYPE_NAME(CONFIG);
+    orxMEMORY_DECLARE_TYPE_NAME(TEXT);
+    orxMEMORY_DECLARE_TYPE_NAME(AUDIO);
+    orxMEMORY_DECLARE_TYPE_NAME(PHYSICS);
+    orxMEMORY_DECLARE_TYPE_NAME(TEMP);
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "No name defined for memory type #%d.", _eMemType);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Gets L1 data cache line size
@@ -392,6 +444,9 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
 {
   orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
   u32Result = orxMemory_CacheLineSize();
@@ -414,6 +469,9 @@ orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
 orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Counter, orxU32 *_pu32PeakCounter, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCounter)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
 
   /* Valid? */
   if(_eMemType < orxMEMORY_TYPE_NUMBER)
