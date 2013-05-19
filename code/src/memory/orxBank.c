@@ -41,25 +41,6 @@
 #define orxBANK_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
 
-#ifdef __orxBANK_ALIGN__
-
-  #if defined(__orxIOS__) || defined(__orxANDROID__)
-
-    #define orxBANK_KU32_CACHE_LINE_SIZE        32
-
-  #else /* __orxIOS__ || __orxANDROID__ */
-
-    #define orxBANK_KU32_CACHE_LINE_SIZE        64
-
-  #endif /* __orxIOS__ || __orxANDROID__ */
-
-#else /* __orxBANK_ALIGN__ */
-
-  #define orxBANK_KU32_CACHE_LINE_SIZE          8
-
-#endif /* __orxBANK_ALIGN__ */
-
-
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -93,6 +74,7 @@ struct __orxBANK_t
 typedef struct __orxBANK_STATIC_t
 {
   orxLINKLIST       stBankList;             /**< Bank linklist */
+  orxU32            u32CacheLineSize;       /**< Cache line size */
   orxU32            u32Flags;               /**< Flags set by the memory module */
 
 } orxBANK_STATIC;
@@ -128,7 +110,7 @@ static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
   u32BaseSegmentSize = sizeof(orxBANK_SEGMENT) + _pstBank->u16SizeSegmentBitField * sizeof(orxU32);
 
   /* Allocates a new segment of memory */
-  pstSegment = (orxBANK_SEGMENT *)orxMemory_Allocate(u32BaseSegmentSize + orxBANK_KU32_CACHE_LINE_SIZE - 1 + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize), _pstBank->eMemType);
+  pstSegment = (orxBANK_SEGMENT *)orxMemory_Allocate(u32BaseSegmentSize + sstBank.u32CacheLineSize - 1 + (_pstBank->u16NbCellPerSegments * _pstBank->u32ElemSize), _pstBank->eMemType);
   if(pstSegment != orxNULL)
   {
     orxU8 *pAlignedSegmentData;
@@ -138,7 +120,7 @@ static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
     pstSegment->pstNext               = orxNULL;
     pstSegment->u32NbFree             = _pstBank->u16NbCellPerSegments;
     pAlignedSegmentData               = ((orxU8 *)pstSegment) + u32BaseSegmentSize;
-    pstSegment->pSegmentData          = (void *)orxALIGN(pAlignedSegmentData, orxBANK_KU32_CACHE_LINE_SIZE);
+    pstSegment->pSegmentData          = (void *)orxALIGN(pAlignedSegmentData, sstBank.u32CacheLineSize);
   }
 
   /* Profiles */
@@ -212,6 +194,9 @@ orxSTATUS orxFASTCALL orxBank_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstBank, sizeof(orxBANK_STATIC));
 
+    /* Gets cache line size */
+    sstBank.u32CacheLineSize = orxMemory_GetCacheLineSize();
+
     /* Set module has ready */
     sstBank.u32Flags = orxBANK_KU32_STATIC_FLAG_READY;
 
@@ -273,8 +258,8 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
     /* Set initial values */
     orxMemory_Zero(pstBank, sizeof(orxBANK));
     pstBank->u32Counter               = 0;
-    pstBank->u32ElemSize              = (_u32Size > orxBANK_KU32_CACHE_LINE_SIZE)
-                                        ? orxALIGN(_u32Size, orxBANK_KU32_CACHE_LINE_SIZE)
+    pstBank->u32ElemSize              = (_u32Size > sstBank.u32CacheLineSize)
+                                        ? orxALIGN(_u32Size, sstBank.u32CacheLineSize)
                                         : (orxMath_IsPowerOfTwo(_u32Size) == orxFALSE)
                                           ? orxMath_GetNextPowerOfTwo(_u32Size)
                                           : _u32Size;

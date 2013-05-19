@@ -39,8 +39,10 @@
 #include "malloc.c"
 
 
-#define orxMEMORY_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxMEMORY_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
+#define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
+#define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
+
+#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  8
 
 
 /***************************************************************************
@@ -78,6 +80,83 @@ static orxMEMORY_STATIC sstMemory;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+#if defined(__orxWINDOWS__)
+
+orxINLINE orxU32 orxMemory_CacheLineSize()
+{
+  SYSTEM_LOGICAL_PROCESSOR_INFORMATION *astProcessorInfoList;
+  orxU32                                u32InfoListSize = 0, u32Result = orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE, i, iNumber;
+
+  /* Requests total size of processors info */
+  GetLogicalProcessorInformation(0, &u32InfoListSize);
+
+  /* Allocates info list */
+  astProcessorInfoList = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION *)orxMemory_Allocate(u32InfoListSize, orxMEMORY_TYPE_TEMP);
+
+  /* Gets processors info */
+  GetLogicalProcessorInformation(astProcessorInfoList, &u32InfoListSize);
+
+  /* For all processor info */
+  for(i = 0, iNumber = u32InfoListSize / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
+      i < iNumber;
+      i++)
+  {
+    /* Found first level cache info? */
+    if((astProcessorInfoList[i].Relationship == RelationCache)
+    && (astProcessorInfoList[i].Cache.Level == 1))
+    {
+      /* Updates result */
+      u32Result = astProcessorInfoList[i].Cache.LineSize;
+
+      break;
+    }
+  }
+
+  /* Frees info list */
+  orxMemory_Free(astProcessorInfoList);
+
+  /* Done! */
+  return u32Result;
+}
+
+#elif defined(__orxMAC__) || defined(__orxIOS__)
+
+#include <sys/sysctl.h>
+
+orxINLINE orxU32 orxMemory_CacheLineSize()
+{
+  size_t stLineSize = 0, stSizeOfLineSize;
+
+  /* Size of variable */
+  stSizeOfLineSize = sizeof(stLineSize);
+
+  /* Gets cache line size */
+  sysctlbyname("hw.cachelinesize", &st2LineSize, &stSizeOfLineSize, 0, 0);
+
+  /* Done! */
+  return (orxU32)stLineSize;
+}
+
+#elif defined(__orxLINUX__)
+
+#include <unistd.h>
+
+orxINLINE orxU32 orxMemory_CacheLineSize()
+{
+  /* Done! */
+  return (orxU32)sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
+}
+
+#else
+
+orxINLINE orxU32 orxMemory_CacheLineSize()
+{
+  /* Done! */
+  return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
+}
+
+#endif
 
 
 /***************************************************************************
@@ -293,6 +372,20 @@ void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
 void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 {
   return((void *)dlrealloc(_pMem, (size_t)_u32Size));
+}
+
+/** Gets cache line size
+ * @return Cache line size
+ */
+orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
+{
+  orxU32 u32Result;
+
+  /* Updates result */
+  u32Result = orxMemory_CacheLineSize();
+
+  /* Done! */
+  return u32Result;
 }
 
 #ifdef __orxPROFILER__

@@ -68,7 +68,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxBANK_ALIGN__ -flto
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -flto
 LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
@@ -144,7 +144,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__ -D__orxBANK_ALIGN__ -flto
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__ -flto
 LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
@@ -220,7 +220,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -D__orxBANK_ALIGN__ -flto
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -flto
 LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
