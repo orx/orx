@@ -136,15 +136,15 @@ extern orxDLLAPI void *orxFASTCALL      orxMemory_Set(void *_pDest, orxU8 _u8Dat
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Zero(void *_pDest, orxU32 _u32Size);
 
-/** Reallocates a portion of memory if the already allocated memory is not suffisant
+/** Reallocates a portion of memory if the already allocated memory is not large enough
  * @param[in] _pMem    Memory to reallocate
- * @param[in] _u32Size Wanted size
- * @return The pointer reallocated
+ * @param[in] _u32Size Requested size
+ * @return Pointer to reallocated memory
  */
 extern orxDLLAPI void *orxFASTCALL      orxMemory_Reallocate(void *_pMem, orxU32 _u32Size);
 
 
-/** Gets cache line size
+/** Gets L1 data cache line size
  * @return Cache line size
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetCacheLineSize();
