@@ -992,6 +992,64 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     }
   }
 
+#ifdef __orxPROFILER__
+
+  /* Draws separator */
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX   = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth;
+    stTransform.fScaleX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth;
+  }
+  else
+  {
+    stTransform.fDstY   = fScreenHeight - orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight;
+    stTransform.fScaleX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight;
+  }
+  orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fScaleX = orxFLOAT_1;
+  if(bLandscape != orxFALSE)
+  {
+    stTransform.fDstX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth + fBorder;
+  }
+  else
+  {
+    stTransform.fDstY = fScreenHeight - (orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight + fBorder);
+  }
+
+  /* For all memory types */
+  for(i = 0; i < orxMEMORY_TYPE_NUMBER; i++)
+  {
+    orxU32                  u32Counter, u32PeakCounter, u32Size, u32PeakSize, u32OperationCounter, u32UnitIndex;
+    orxFLOAT                fSize, fPeakSize;
+    static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
+
+    /* Updates position */
+    if(bLandscape != orxFALSE)
+    {
+      stTransform.fDstY += 20.0f;
+    }
+    else
+    {
+      stTransform.fDstX += 20.0f;
+    }
+
+    /* Gets its usage info */
+    orxMemory_GetUsage((orxMEMORY_TYPE)i, &u32Counter, &u32PeakCounter, &u32Size, &u32PeakSize, &u32OperationCounter);
+
+    /* Finds best unit */
+    for(u32UnitIndex = 0, fSize = orxU2F(u32Size), fPeakSize = orxU2F(u32PeakSize);
+        (u32UnitIndex < sizeof(azUnitList) / sizeof(azUnitList[0])) && (fPeakSize > orx2F(1024.0f));
+        u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f));
+    u32UnitIndex = orxMIN(u32UnitIndex, sizeof(azUnitList) / sizeof(azUnitList[0]));
+
+    /* Draws it */
+    orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f/%.2f%s] [%d#]", orxMemory_GetTypeName((orxMEMORY_TYPE)i), u32Counter, u32PeakCounter, fSize, fPeakSize, azUnitList[u32UnitIndex], u32OperationCounter);
+    orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  }
+
+#endif /* __orxPROFILER__ */
+
   /* Deletes pixel texture */
   orxTexture_Delete(pstTexture);
 
