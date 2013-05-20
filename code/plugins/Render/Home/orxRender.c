@@ -518,7 +518,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             orxRGBA   stRGBA;
 
             /* Gets associated color */
-            stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
             stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
 
             /* For all past frames */
@@ -695,7 +695,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel color */
-      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -770,7 +770,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
       /* Sets font's color */
-      stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
       /* Is selected depth for history? */
@@ -916,7 +916,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
         /* Updates display color */
-        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+        stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
         orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
         /* Draws bar */
@@ -967,7 +967,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
       {
         /* Updates display color */
-        stColor.vHSL.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
         orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
       }
       else
@@ -1022,6 +1021,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     orxU32                  u32Counter, u32PeakCounter, u32Size, u32PeakSize, u32OperationCounter, u32UnitIndex;
     orxFLOAT                fSize, fPeakSize;
+    static const orxFLOAT   sfSaturationThreshold = orxFLOAT_1 / orxU2F(128 * 1024 * 1024);
     static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
 
     /* Updates position */
@@ -1042,6 +1042,25 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         (u32UnitIndex < sizeof(azUnitList) / sizeof(azUnitList[0])) && (fPeakSize > orx2F(1024.0f));
         u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f));
     u32UnitIndex = orxMIN(u32UnitIndex, sizeof(azUnitList) / sizeof(azUnitList[0]));
+
+    /* Is used? */
+    if(u32Counter > 0)
+    {
+      /* Inits display color */
+      orxColor_SetRGBA(&stColor, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
+    }
+    else
+    {
+      /* Inits display color */
+      orxColor_SetRGBA(&stColor, orx2RGBA(0x66, 0x66, 0x66, 0xCC));
+    }
+
+    /* Updates color */
+    orxColor_FromRGBToHSV(&stColor, &stColor);
+    stColor.vHSV.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u32Size) * sfSaturationThreshold);
+    stColor.vHSV.fS = orxFLOAT_1;
+    orxColor_FromHSVToRGB(&stColor, &stColor);
+    orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(&stColor));
 
     /* Draws it */
     orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f/%.2f%s] [%d#]", orxMemory_GetTypeName((orxMEMORY_TYPE)i), u32Counter, u32PeakCounter, fSize, fPeakSize, azUnitList[u32UnitIndex], u32OperationCounter);
