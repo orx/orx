@@ -644,7 +644,12 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
               fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
 
               /* Adds it */
-              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
+              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+              {
+                /* Updates graphic's owner */
+                orxStructure_SetOwner(pstGraphic, pstResult);
+              }
+              else
               {
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
@@ -827,6 +832,9 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
       /* Is 2D data? */
       if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D))
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(pstKey->pstData, orxNULL);
+
         /* Deletes it */
         orxGraphic_Delete(orxGRAPHIC(pstKey->pstData));
       }
