@@ -2566,6 +2566,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Updates flags */
           orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstFrame, pstResult);
         }
       }
 
@@ -2655,6 +2658,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+            /* Updates its owner */
+            orxStructure_SetOwner(pstGraphic, pstResult);
           }
         }
       }
@@ -2680,6 +2686,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_ANIMPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+            /* Updates its owner */
+            orxStructure_SetOwner(pstAnimPointer, pstResult);
 
             /* Has frequency? */
             if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FREQUENCY) != orxFALSE)
@@ -2809,6 +2818,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
 
+            /* Updates its owner */
+            orxStructure_SetOwner(pstBody, pstResult);
+
             /* Using depth scale xor auto scroll? */
             if(orxFLAG_TEST(u32FrameFlags, orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH)
             && !orxFLAG_TEST_ALL(u32FrameFlags, orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH))
@@ -2846,6 +2858,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_CLOCK].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+            /* Updates its owner */
+            orxStructure_SetOwner(pstClock, pstResult);
           }
         }
       }
@@ -2869,12 +2884,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstSpawner)) != orxSTATUS_FAILURE)
           {
-            /* Sets object as parent & owner */
+            /* Sets object as parent */
             orxSpawner_SetParent(pstSpawner, pstResult);
-            orxSpawner_SetOwner(pstSpawner, pstResult);
 
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_SPAWNER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+            /* Updates its owner */
+            orxStructure_SetOwner(pstSpawner, pstResult);
           }
         }
       }
@@ -3192,7 +3209,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure id(%d).", eStructureID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't link structure ID <%d> to object <%s>.", eStructureID, _pstObject->zReference);
 
     /* Wrong structure ID */
     eResult = orxSTATUS_FAILURE;
@@ -3227,6 +3244,9 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
     /* Was internally handled? */
     if(orxFLAG_TEST(_pstObject->astStructureList[_eStructureID].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL))
     {
+      /* Removes its owner */
+      orxStructure_SetOwner(pstStructure, orxNULL);
+
       /* Depending on structure ID */
       switch(_eStructureID)
       {
@@ -4934,6 +4954,9 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
     {
       /* Updates internal flag */
       orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_ANIMPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstAnimPointer, _pstObject);
     }
   }
   else
@@ -6182,6 +6205,9 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
           /* Updates flags */
           orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
 
+          /* Updates its owner */
+          orxStructure_SetOwner(pstFXPointer, _pstObject);
+
           /* Adds FX from config */
           eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
         }
@@ -6239,6 +6265,9 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
         {
           /* Updates flags */
           orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstFXPointer, _pstObject);
 
           /* Adds FX from config */
           eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
@@ -6371,6 +6400,9 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
         {
           /* Updates flags */
           orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_SOUNDPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstSoundPointer, _pstObject);
 
           /* Adds sound from config */
           eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
@@ -6569,6 +6601,9 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
           /* Updates flags */
           orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_SHADERPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
 
+          /* Updates its owner */
+          orxStructure_SetOwner(pstShaderPointer, _pstObject);
+
           /* Adds shader from config */
           eResult = orxShaderPointer_AddShaderFromConfig(pstShaderPointer, _zShaderConfigID);
         }
@@ -6710,6 +6745,9 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
         {
           /* Updates flags */
           orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_TIMELINE].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstTimeLine, _pstObject);
 
           /* Adds timeline track from config */
           eResult = orxTimeLine_AddTrackFromConfig(pstTimeLine, _zTrackConfigID);

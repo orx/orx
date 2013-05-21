@@ -99,10 +99,9 @@ struct __orxSPAWNER_t
   orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 38 */
   orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 40 */
   orxFRAME           *pstFrame;                   /**< Frame : 44 */
-  orxSTRUCTURE       *pstOwner;                   /**< Owner: 48 */
-  orxFLOAT            fWaveTimer;                  /**< Wave timer : 52 */
-  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 56 */
-  orxU32              u32WaveSize;                /**< Number of objects spawned in a wave : 60 */
+  orxFLOAT            fWaveTimer;                  /**< Wave timer : 48 */
+  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 52 */
+  orxU32              u32WaveSize;                /**< Number of objects spawned in a wave : 56 */
 };
 
 /** Static structure
@@ -198,7 +197,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           orxOBJECT *pstOwner;
 
           /* Gets owner */
-          pstOwner = orxOBJECT(pstSpawner->pstOwner);
+          pstOwner = orxOBJECT(orxStructure_GetOwner(pstSpawner));
 
           /* Valid? */
           if(pstOwner != orxNULL)
@@ -337,7 +336,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
       if(pstSpawner->fWaveTimer <= orxFLOAT_0)
       {
         /* Checks */
-        orxASSERT(orxOBJECT(pstSpawner->pstOwner) == pstObject);
+        orxASSERT(orxOBJECT(orxStructure_GetOwner(pstSpawner)) == pstObject);
 
         /* Sends wave start event */
         orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
@@ -1662,42 +1661,6 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pPare
 
   /* Done! */
   return eResult;
-}
-
-/** Sets owner for a spawner
- * @param[in]   _pstSpawner   Concerned spawner
- * @param[in]   _pOwner       Owner to set / orxNULL
- */
-void orxFASTCALL orxSpawner_SetOwner(orxSPAWNER *_pstSpawner, void *_pOwner)
-{
-  /* Checks */
-  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstSpawner);
-  orxASSERT((_pOwner == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pOwner) < orxSTRUCTURE_ID_NUMBER));
-
-  /* Sets new owner */
-  _pstSpawner->pstOwner = orxSTRUCTURE(_pOwner);
-
-  return;
-}
-
-/** Gets spawner's owner
- * @param[in]   _pstSpawner   Concerned object
- * @return      Owner / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxSpawner_GetOwner(const orxSPAWNER *_pstSpawner)
-{
-  orxSTRUCTURE *pResult;
-
-  /* Checks */
-  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstSpawner);
-
-  /* Gets owner */
-  pResult = _pstSpawner->pstOwner;
-
-  /* Done! */
-  return pResult;
 }
 
 /** Gets spawner name

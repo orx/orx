@@ -311,19 +311,6 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldScale(const orxSP
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pParent);
 
 
-/** Sets owner for a spawner
- * @param[in]   _pstSpawner   Concerned spawner
- * @param[in]   _pOwner       Owner to set / orxNULL
- */
-extern orxDLLAPI void orxFASTCALL           orxSpawner_SetOwner(orxSPAWNER *_pstSpawner, void *_pOwner);
-
-/** Gets spawner's owner
- * @param[in]   _pstSpawner   Concerned object
- * @return      Owner / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxSpawner_GetOwner(const orxSPAWNER *_pstSpawner);
-
-
 /** Gets spawner name
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      orxSTRING / orxSTRING_EMPTY

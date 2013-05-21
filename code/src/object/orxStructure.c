@@ -449,6 +449,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
                                 | ((orxU64)u32ItemID << orxSTRUCTURE_GUID_SHIFT_ITEM_ID)
                                 | ((orxU64)sstStructure.au32InstanceCounter[_eStructureID] << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
 
+          /* Cleans owner GUID */
+          pstStructure->u64OwnerGUID = orxU64_UNDEFINED;
+
           /* Stores storage handle */
           pstStructure->hStorageNode = (orxHANDLE)pstNode;
 
@@ -779,7 +782,7 @@ orxSTATUS orxFASTCALL orxStructure_SetOwner(void *_pStructure, void *_pOwner)
   else
   {
     /* Removes owner */
-    orxSTRUCTURE(_pStructure)->u64OwnerGUID = 0;
+    orxSTRUCTURE(_pStructure)->u64OwnerGUID = orxU64_UNDEFINED;
   }
 
   /* Done! */
