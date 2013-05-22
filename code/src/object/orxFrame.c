@@ -784,81 +784,73 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* 2D data? */
     if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
     {
-      const orxVECTOR *pvGlobalPos;
+      const orxVECTOR *pvGlobalPos, *pvParentPos;
+      orxVECTOR         vLocalPos, vParentScale;
+      orxFLOAT          fParentAngle, fCos, fSin, fX, fY, fLocalX, fLocalY;
+      orxFRAME         *pstParent, *pstChild;
 
       /* Gets global position */
       pvGlobalPos = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
-      /* Needs update? */
-      if((pvGlobalPos->fX != _pvPos->fX)
-      || (pvGlobalPos->fY != _pvPos->fY)
-      || (pvGlobalPos->fZ != _pvPos->fZ))
+      /* gets parent frame */
+      pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+      /* Gets parent's global data */
+      pvParentPos   = _orxFrame_GetPosition(pstParent, orxFRAME_SPACE_GLOBAL);
+      fParentAngle  = _orxFrame_GetRotation(pstParent, orxFRAME_SPACE_GLOBAL);
+      _orxFrame_GetScale(pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
+
+      /* Gets cosine & sine */
+      if(fParentAngle == orxFLOAT_0)
       {
-        orxVECTOR         vLocalPos, vParentScale;
-        orxFLOAT          fParentAngle, fCos, fSin, fX, fY, fLocalX, fLocalY;
-        const orxVECTOR  *pvParentPos;
-        orxFRAME         *pstParent, *pstChild;
-
-        /* gets parent frame */
-        pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
-
-        /* Gets parent's global data */
-        pvParentPos   = _orxFrame_GetPosition(pstParent, orxFRAME_SPACE_GLOBAL);
-        fParentAngle  = _orxFrame_GetRotation(pstParent, orxFRAME_SPACE_GLOBAL);
-        _orxFrame_GetScale(pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
-
-        /* Gets cosine & sine */
-        if(fParentAngle == orxFLOAT_0)
-        {
-          fCos = orxFLOAT_1;
-          fSin = orxFLOAT_0;
-        }
-        else
-        {
-          fCos = orxMath_Cos(fParentAngle);
-          fSin = orxMath_Sin(fParentAngle);
-        }
-
-        /* Computes intermediate coordinates */
-        fX = _pvPos->fX - pvParentPos->fX;
-        fY = _pvPos->fY - pvParentPos->fY;
-
-        /* Removes rotation from X&Y coordinates */
-        fLocalX = (fX * fCos) + (fY * fSin);
-        fLocalY = (fY * fCos) - (fX * fSin);
-
-        /* Removes scale from X&Y coordinates */
-        if(vParentScale.fX != orxFLOAT_0)
-        {
-          vLocalPos.fX = fLocalX / vParentScale.fX;
-        }
-        if(vParentScale.fY != orxFLOAT_0)
-        {
-          vLocalPos.fY = fLocalY / vParentScale.fX;
-        }
-
-        /* Z coordinate is not affected by rotation nor scale in 2D */
-        vLocalPos.fZ = _pvPos->fZ - pvParentPos->fZ;
-
-        /* Stores it */
-        _orxFrame_SetPosition(_pstFrame, &vLocalPos, orxFRAME_SPACE_LOCAL);
-        _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_GLOBAL);
-
-        /* Profiles */
-        orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-        /* For all children */
-        for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
-            pstChild != orxNULL;
-            pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
-        {
-          /* Processes it */
-          orxFrame_Process(pstChild, _pstFrame);
-        }
-
-        /* Profiles */
-        orxPROFILER_POP_MARKER();
+        fCos = orxFLOAT_1;
+        fSin = orxFLOAT_0;
       }
+      else
+      {
+        fCos = orxMath_Cos(fParentAngle);
+        fSin = orxMath_Sin(fParentAngle);
+      }
+
+      /* Computes intermediate coordinates */
+      fX = _pvPos->fX - pvParentPos->fX;
+      fY = _pvPos->fY - pvParentPos->fY;
+
+      /* Removes rotation from X&Y coordinates */
+      fLocalX = (fX * fCos) + (fY * fSin);
+      fLocalY = (fY * fCos) - (fX * fSin);
+
+      /* Removes scale from X&Y coordinates */
+      if(vParentScale.fX != orxFLOAT_0)
+      {
+        vLocalPos.fX = fLocalX / vParentScale.fX;
+      }
+      if(vParentScale.fY != orxFLOAT_0)
+      {
+        vLocalPos.fY = fLocalY / vParentScale.fY;
+      }
+
+      /* Z coordinate is not affected by rotation nor scale in 2D */
+      vLocalPos.fZ = _pvPos->fZ - pvParentPos->fZ;
+
+      /* Stores it */
+      _orxFrame_SetPosition(_pstFrame, &vLocalPos, orxFRAME_SPACE_LOCAL);
+      _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_GLOBAL);
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+      /* For all children */
+      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+          pstChild != orxNULL;
+          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
+      {
+        /* Processes it */
+        orxFrame_Process(pstChild, _pstFrame);
+      }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
     else
     {
@@ -902,45 +894,39 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* 2D data? */
     if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
     {
-      orxFLOAT fGlobalAngle;
+      orxFLOAT  fGlobalAngle, fParentAngle, fLocalAngle;
+      orxFRAME *pstParent, *pstChild;
 
       /* Gets global angle */
       fGlobalAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
-      /* Needs update? */
-      if(fGlobalAngle != _fAngle)
+      /* gets parent frame */
+      pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+      /* Gets parent's global angle */
+      fParentAngle = _orxFrame_GetRotation(pstParent, orxFRAME_SPACE_GLOBAL);
+
+      /* Gets local angle */
+      fLocalAngle = _fAngle - fParentAngle;
+
+      /* Stores it */
+      _orxFrame_SetRotation(_pstFrame, fLocalAngle, orxFRAME_SPACE_LOCAL);
+      _orxFrame_SetRotation(_pstFrame, _fAngle, orxFRAME_SPACE_GLOBAL);
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+      /* For all children */
+      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+          pstChild != orxNULL;
+          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
       {
-        orxFLOAT fParentAngle, fLocalAngle;
-        orxFRAME *pstParent, *pstChild;
-
-        /* gets parent frame */
-        pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
-
-        /* Gets parent's global angle */
-        fParentAngle = _orxFrame_GetRotation(pstParent, orxFRAME_SPACE_GLOBAL);
-
-        /* Gets local angle */
-        fLocalAngle = _fAngle - fParentAngle;
-
-        /* Stores it */
-        _orxFrame_SetRotation(_pstFrame, fLocalAngle, orxFRAME_SPACE_LOCAL);
-        _orxFrame_SetRotation(_pstFrame, _fAngle, orxFRAME_SPACE_GLOBAL);
-
-        /* Profiles */
-        orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-        /* For all children */
-        for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
-            pstChild != orxNULL;
-            pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
-        {
-          /* Processes it */
-          orxFrame_Process(pstChild, _pstFrame);
-        }
-
-        /* Profiles */
-        orxPROFILER_POP_MARKER();
+        /* Processes it */
+        orxFrame_Process(pstChild, _pstFrame);
       }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
     else
     {
@@ -985,54 +971,46 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
     /* 2D data? */
     if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
     {
-      orxVECTOR vGlobalScale;
+      orxVECTOR vGlobalScale, vParentScale, vLocalScale;
+      orxFRAME *pstParent, *pstChild;
 
       /* Gets global scale */
       _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
 
-      /* Needs update? */
-      if((vGlobalScale.fX != _pvScale->fX)
-      || (vGlobalScale.fY != _pvScale->fY)
-      || (vGlobalScale.fZ != _pvScale->fZ))
+      /* gets parent frame */
+      pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+      /* Gets parent's global scale */
+      _orxFrame_GetScale(pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
+
+      /* Gets local scale */
+      if(vParentScale.fX != orxFLOAT_0)
       {
-        orxVECTOR vParentScale, vLocalScale;
-        orxFRAME *pstParent, *pstChild;
-
-        /* gets parent frame */
-        pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
-
-        /* Gets parent's global scale */
-        _orxFrame_GetScale(pstParent, orxFRAME_SPACE_GLOBAL, &vParentScale);
-
-        /* Gets local scale */
-        if(vParentScale.fX != orxFLOAT_0)
-        {
-          vLocalScale.fX = _pvScale->fX / vParentScale.fX;
-        }
-        if(vParentScale.fY != orxFLOAT_0)
-        {
-          vLocalScale.fY = _pvScale->fY / vParentScale.fY;
-        }
-
-        /* Stores it */
-        _orxFrame_SetScale(_pstFrame, &vLocalScale, orxFRAME_SPACE_LOCAL);
-        _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_GLOBAL);
-
-        /* Profiles */
-        orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-        /* For all children */
-        for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
-            pstChild != orxNULL;
-            pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
-        {
-          /* Processes it */
-          orxFrame_Process(pstChild, _pstFrame);
-        }
-
-        /* Profiles */
-        orxPROFILER_POP_MARKER();
+        vLocalScale.fX = _pvScale->fX / vParentScale.fX;
       }
+      if(vParentScale.fY != orxFLOAT_0)
+      {
+        vLocalScale.fY = _pvScale->fY / vParentScale.fY;
+      }
+
+      /* Stores it */
+      _orxFrame_SetScale(_pstFrame, &vLocalScale, orxFRAME_SPACE_LOCAL);
+      _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_GLOBAL);
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+      /* For all children */
+      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+          pstChild != orxNULL;
+          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
+      {
+        /* Processes it */
+        orxFrame_Process(pstChild, _pstFrame);
+      }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
     else
     {
