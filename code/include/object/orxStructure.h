@@ -286,7 +286,7 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetOwner(co
 
 /** Sets structure owner
  * @param[in]   _pStructure    Concerned structure
- * @param[in]   _pParent       Structure to set as owner
+ * @param[in]   _pOwner        Structure to set as owner
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_SetOwner(void *_pStructure, void *_pOwner);
