@@ -1,5 +1,12 @@
 var NAVTREEINDEX9 =
 {
+"group__orx_structure.html#gae682e499ff6fb12878575a10c1e8e59d":[1,50,32],
+"group__orx_structure.html#gae7fd7c3caf111fe23c2c27e72dbecb29":[1,50,52],
+"group__orx_structure.html#gae81b19ba4b0a8a103d08e9da42f9bb3a":[1,50,10],
+"group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c":[1,50,49],
+"group__orx_structure.html#gaf44366c412e25f7f0fecc2d6ec226ac5":[1,50,4],
+"group__orx_structure.html#gafb154568e5f92f5d65109b4dc3a0a3fb":[1,50,30],
+"group__orx_structure.html#gafed02c22755889a77177dfcfe6b0e263":[1,50,1],
 "group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a0cf2ba3615a0f4705ab7907b86c5d59a":[1,50,37,3],
 "group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a76ed66b422d3b8a863395d26ae125f36":[1,50,37,1],
 "group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a90c550172eeacd28aec04e59807c4b46":[1,50,37,0],
@@ -242,12 +249,5 @@ var NAVTREEINDEX9 =
 "orx_8h.html":[3,0,0,15],
 "orx_8h.html#ga0558e5e4d1eb112a8033e5d95b60b226":[3,0,0,15,3],
 "orx_8h.html#ga25f8974b9edb1f72d95af8c0ae4ce7d9":[3,0,0,15,4],
-"orx_8h.html#ga28c87695a2a3cae32d0e2e1bcfa49ae0":[3,0,0,15,1],
-"orx_8h.html#ga55fefcd75e9fa01c47e0543d530a358c":[3,0,0,15,5],
-"orx_8h.html#ga62230a89f7961eab406d0bbbb6acbf00":[3,0,0,15,2],
-"orx_8h.html#ga85d75b8c9e37db787fac4910ba02462f":[3,0,0,15,0],
-"orx_8h_source.html":[3,0,0,15],
-"orx_a_a_box_8h.html":[3,0,0,7,0],
-"orx_a_a_box_8h.html#ga39f0e04fcf9a3f8a7ee36c775f7f02b3":[3,0,0,7,0,1],
-"orx_a_a_box_8h.html#ga78bffcbfc4217d920eb51deccef41b58":[3,0,0,7,0,4]
+"orx_8h.html#ga28c87695a2a3cae32d0e2e1bcfa49ae0":[3,0,0,15,1]
 };

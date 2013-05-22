@@ -34,6 +34,7 @@ var orx_spawner_8h =
     [ "orxSpawner_GetName", "orx_spawner_8h.html#ga916c22f1f611db75738be14dfee0d846", null ],
     [ "orxSpawner_GetNextWaveDelay", "orx_spawner_8h.html#ga3fd316d5e6209271c4362de0b925ee32", null ],
     [ "orxSpawner_GetObjectSpeed", "orx_spawner_8h.html#ga3a2cdb23f680bae3192e36d6f3aede27", null ],
+    [ "orxSpawner_GetParent", "orx_spawner_8h.html#ga5df9094e4b084ca4e3741eb61f4a33b3", null ],
     [ "orxSpawner_GetPosition", "orx_spawner_8h.html#ga52ebd1b1eb8cd55f9240f394ffb7c35d", null ],
     [ "orxSpawner_GetRotation", "orx_spawner_8h.html#gadbb9862a0f7c458421a564c48994cf39", null ],
     [ "orxSpawner_GetScale", "orx_spawner_8h.html#gae2f9d0834d08a82d25b3d7f43a3655aa", null ],
