@@ -4790,6 +4790,8 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxV
 orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
 {
   orxFRAME   *pstFrame;
+  orxBODY    *pstBody;
+  orxVECTOR   vScale;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -4799,6 +4801,30 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Has joint children? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all direct children */
+      for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
+      {
+        /* Is a joint child? */
+        if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+        {
+          /* Attaches it back */
+          orxObject_Attach(pstChild, _pstObject);
+        }
+      }
+    }
+  }
 
   /* No parent? */
   if(_pParent == orxNULL)
@@ -4852,6 +4878,44 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
         eResult = orxSTATUS_FAILURE;
 
         break;
+      }
+    }
+  }
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Updates body scale */
+    orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+
+    /* Has joint children? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all direct children */
+      for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
+      {
+        /* Is a joint child? */
+        if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+        {
+          orxFRAME *pstChildFrame;
+          orxVECTOR vPosition, vScale;
+
+          /* Gets its frame */
+          pstChildFrame = orxOBJECT_GET_STRUCTURE(pstChild, FRAME);
+
+          /* Gets its world position & scale */
+          orxFrame_GetPosition(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+          orxFrame_GetScale(pstChildFrame, orxFRAME_SPACE_GLOBAL, &vScale);
+
+          /* Removes its parent */
+          orxObject_SetParent(pstChild, orxNULL);
+
+          /* Updates its position & scale (including body and eventual joint children) */
+          orxObject_SetPosition(pstChild, &vPosition);
+          orxObject_SetScale(pstChild, &vScale);
+        }
       }
     }
   }
