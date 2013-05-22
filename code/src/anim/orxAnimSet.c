@@ -1504,6 +1504,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
               /* Adds it to set */
               u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
 
+              /* Sets its owner */
+              orxStructure_SetOwner(pstAnim, pstResult);
+
               /* Adds it to ID table */
               orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
             }
@@ -1858,6 +1861,9 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32
       /* Was internally allocated? */
       if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_INTERNAL) != orxFALSE)
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(_pstAnimSet->pastAnim[u32AnimIndex], orxNULL);
+
         /* Deletes animset */
         orxAnim_Delete(_pstAnimSet->pastAnim[u32AnimIndex]);
       }

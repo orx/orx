@@ -435,6 +435,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
         /* Is internal? */
         if(orxFLAG_TEST(_pstShaderPointer->astShaderList[i].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(_pstShaderPointer->astShaderList[i].pstShader, orxNULL);
+
           /* Deletes it */
           orxShader_Delete(_pstShaderPointer->astShaderList[i].pstShader);
         }
@@ -669,6 +672,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShader
         /* Is internal? */
         if(orxFLAG_TEST(_pstShaderPointer->astShaderList[i].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstShader, orxNULL);
+
           /* Deletes it */
           orxShader_Delete(pstShader);
         }
@@ -741,6 +747,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
       /* Adds it to holder */
       _pstShaderPointer->astShaderList[u32Index].pstShader = pstShader;
 
+      /* Updates its owner */
+      orxStructure_SetOwner(pstShader, _pstShaderPointer);
+
       /* Updates its flags */
       orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
 
@@ -810,6 +819,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
         /* Is internal? */
         if(orxFLAG_TEST(_pstShaderPointer->astShaderList[i].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstShader, orxNULL);
+
           /* Deletes it */
           orxShader_Delete(pstShader);
         }

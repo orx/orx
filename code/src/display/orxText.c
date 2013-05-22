@@ -197,6 +197,9 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             /* Updates text */
             if(orxText_SetFont(pstText, pstFont) != orxSTATUS_FAILURE)
             {
+              /* Sets its owner */
+              orxStructure_SetOwner(pstFont, pstText);
+
               /* Updates flags */
               orxStructure_SetFlags(pstText, orxTEXT_KU32_FLAG_INTERNAL, orxTEXT_KU32_FLAG_NONE);
             }
@@ -520,6 +523,9 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
           /* Stores it */
           if(orxText_SetFont(pstResult, pstFont) != orxSTATUS_FAILURE)
           {
+            /* Sets its owner */
+            orxStructure_SetOwner(pstFont, pstResult);
+
             /* Updates flags */
             orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_INTERNAL, orxTEXT_KU32_FLAG_NONE);
           }
@@ -784,6 +790,9 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
       /* Internally handled? */
       if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL))
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(_pstText->pstFont, orxNULL);
+
         /* Deletes it */
         orxFont_Delete(_pstText->pstFont);
 

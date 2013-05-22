@@ -400,6 +400,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           /* Sets it */
           orxViewport_SetTexture(pstResult, pstTexture);
 
+          /* Updates its owner */
+          orxStructure_SetOwner(pstTexture, pstResult);
+
           /* Updates status flags */
           orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE, orxVIEWPORT_KU32_FLAG_NONE);
         }
@@ -438,6 +441,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         {
           /* Sets it */
           orxViewport_SetCamera(pstResult, pstCamera);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstCamera, pstResult);
 
           /* Updates flags */
           orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
@@ -583,6 +589,9 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
       /* Was internally allocated? */
       if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE) != orxFALSE)
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(_pstViewport->pstTexture, orxNULL);
+
         /* Deletes it */
         orxTexture_Delete(_pstViewport->pstTexture);
       }
@@ -597,6 +606,9 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
       /* Was internally allocated? */
       if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER) != orxFALSE)
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(_pstViewport->pstShaderPointer, orxNULL);
+
         /* Deletes it */
         orxShaderPointer_Delete(_pstViewport->pstShaderPointer);
       }
@@ -648,8 +660,18 @@ void orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_
     /* Updates previous texture reference counter */
     orxStructure_DecreaseCounter((_pstViewport->pstTexture));
 
+    /* Was internally allocated? */
+    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE) != orxFALSE)
+    {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstViewport->pstTexture, orxNULL);
+
+      /* Deletes it */
+      orxTexture_Delete(_pstViewport->pstTexture);
+    }
+
     /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_TEXTURE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_TEXTURE | orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE);
   }
 
   /* Updates texture pointer */
@@ -865,6 +887,9 @@ void orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_ps
     /* Was internally allocated? */
     if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA) != orxFALSE)
     {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstViewport->pstCamera, orxNULL);
+
       /* Deletes it */
       orxCamera_Delete(_pstViewport->pstCamera);
     }
@@ -943,6 +968,9 @@ orxSTATUS orxFASTCALL orxViewport_AddShader(orxVIEWPORT *_pstViewport, const orx
 
         /* Updates flags */
         orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER, orxVIEWPORT_KU32_FLAG_NONE);
+
+        /* Updates its owner */
+        orxStructure_SetOwner(_pstViewport->pstShaderPointer, _pstViewport);
 
         /* Adds shader from config */
         eResult = orxShaderPointer_AddShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);

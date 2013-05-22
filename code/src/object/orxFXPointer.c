@@ -248,6 +248,9 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
               /* Is internal? */
               if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
               {
+                /* Removes its owner */
+                orxStructure_SetOwner(pstFX, orxNULL);
+
                 /* Deletes it */
                 orxFX_Delete(pstFX);
               }
@@ -420,6 +423,9 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(_pstFXPointer->astFXList[i].pstFX, orxNULL);
+
           /* Deletes it */
           orxFX_Delete(_pstFXPointer->astFXList[i].pstFX);
         }
@@ -627,6 +633,9 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstFX, orxNULL);
+
           /* Deletes it */
           orxFX_Delete(pstFX);
         }
@@ -726,6 +735,9 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
 
       /* Inits its start time */
       _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime + _fDelay;
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstFX, _pstFXPointer);
 
       /* Updates its flags */
       orxFLAG_SET(_pstFXPointer->astFXList[u32Index].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxFXPOINTER_HOLDER_KU32_MASK_ALL);
@@ -867,6 +879,9 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstFX, orxNULL);
+
           /* Deletes it */
           orxFX_Delete(pstFX);
         }

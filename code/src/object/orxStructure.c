@@ -720,41 +720,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Get(orxU64 _u64GUID)
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetOwner(const void *_pStructure)
 {
-  orxU64        u64StructureID, u64OwnerGUID;
   orxSTRUCTURE *pstResult;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
 
-  /* Gets owner GUID */
-  u64OwnerGUID = orxSTRUCTURE(_pStructure)->u64OwnerGUID;
-
-  /* Gets structure ID */
-  u64StructureID = (u64OwnerGUID & orxSTRUCTURE_GUID_MASK_STRUCTURE_ID) >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID;
-
-  /* Valid? */
-  if(u64StructureID < orxSTRUCTURE_ID_NUMBER)
-  {
-    /* Gets structure at index */
-    pstResult = (orxSTRUCTURE *)orxBank_GetAtIndex(sstStructure.astStorage[u64StructureID].pstStructureBank, (orxU32)((u64OwnerGUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
-
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      /* Invalid instance ID? */
-      if((pstResult->u64GUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID) != (u64OwnerGUID & orxSTRUCTURE_GUID_MASK_INSTANCE_ID))
-      {
-        /* Clears result */
-        pstResult = orxNULL;
-      }
-    }
-  }
-  else
-  {
-    /* Clears result */
-    pstResult = orxNULL;
-  }
+  /* Updates result */
+  pstResult = orxStructure_Get(((orxSTRUCTURE *)_pStructure)->u64OwnerGUID);
 
   /* Done! */
   return pstResult;
@@ -774,7 +747,7 @@ orxSTATUS orxFASTCALL orxStructure_SetOwner(void *_pStructure, void *_pOwner)
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Has owner? */
-  if(orxSTRUCTURE(_pOwner) != orxNULL)
+  if(_pOwner != orxNULL)
   {
     /* Updates structure's owner GUID */
     orxSTRUCTURE(_pStructure)->u64OwnerGUID = orxStructure_GetGUID(_pOwner);
