@@ -172,12 +172,11 @@ struct __orxOBJECT_t
   orxFLOAT          fActiveTime;                /**< Active time : 104 */
   orxFLOAT          fRepeatX;                   /**< Object repeat X : 108 */
   orxFLOAT          fRepeatY;                   /**< Object repeat Y : 112 */
-  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 116 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 120 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 132 */
-  orxCOLOR          stColor;                    /**< Object color : 148 */
-  orxOBJECT        *pstChild;                   /**< Child: 152 */
-  orxOBJECT        *pstSibling;                 /**< Sibling: 156 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 116 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 128 */
+  orxCOLOR          stColor;                    /**< Object color : 144 */
+  orxOBJECT        *pstChild;                   /**< Child: 148 */
+  orxOBJECT        *pstSibling;                 /**< Sibling: 152 */
 };
 
 /** Static structure
@@ -2937,7 +2936,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           if(pstChild != orxNULL)
           {
             /* Stores its owner */
-            pstChild->pstOwner = orxSTRUCTURE(pstResult);
+            orxStructure_SetOwner(pstChild, pstResult);
 
             /* Has last child? */
             if(pstLastChild != orxNULL)
@@ -3484,7 +3483,7 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   orxASSERT((_pOwner == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pOwner) < orxSTRUCTURE_ID_NUMBER));
 
   /* Had a previous object owner? */
-  if((pstOwner = orxOBJECT(_pstObject->pstOwner)) != orxNULL)
+  if((pstOwner = orxOBJECT(orxStructure_GetOwner(_pstObject))) != orxNULL)
   {
     /* Is it the first child? */
     if(pstOwner->pstChild == _pstObject)
@@ -3515,8 +3514,8 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
   }
 
   /* Sets new owner */
-  _pstObject->pstOwner    = orxSTRUCTURE(_pOwner);
-  _pstObject->pstSibling  = orxNULL;
+  orxStructure_SetOwner(_pstObject, _pOwner);
+  _pstObject->pstSibling = orxNULL;
 
   /* Is new owner an object? */
   if((pstOwner = orxOBJECT(_pOwner)) != orxNULL)
@@ -3559,7 +3558,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetOwner(const orxOBJECT *_pstObject)
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets owner */
-  pResult = _pstObject->pstOwner;
+  pResult = orxStructure_GetOwner(_pstObject);
 
   /* Done! */
   return pResult;
@@ -3599,7 +3598,7 @@ orxOBJECT *orxFASTCALL orxObject_GetOwnedSibling(const orxOBJECT *_pstObject)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(orxStructure_TestFlags(orxOBJECT(_pstObject->pstOwner), orxOBJECT_KU32_FLAG_HAS_CHILDREN));
+  orxASSERT(orxStructure_TestFlags(orxOBJECT(orxStructure_GetOwner(_pstObject)), orxOBJECT_KU32_FLAG_HAS_CHILDREN));
 
   /* Updates result */
   pstResult = _pstObject->pstSibling;
