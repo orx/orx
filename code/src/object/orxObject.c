@@ -1064,6 +1064,123 @@ void orxFASTCALL orxObject_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: GetParent
+ */
+void orxFASTCALL orxObject_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxSTRUCTURE *pstParent;
+
+    /* Gets its parent */
+    pstParent = orxObject_GetParent(pstObject);
+
+    /* Valid? */
+    if(pstParent != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstParent);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetChild
+ */
+void orxFASTCALL orxObject_CommandGetChild(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxSTRUCTURE *pstChild;
+
+    /* Gets its child */
+    pstChild = orxObject_GetChild(pstObject);
+
+    /* Valid? */
+    if(pstChild != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstChild);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetSibling
+ */
+void orxFASTCALL orxObject_CommandGetSibling(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxSTRUCTURE *pstSibling;
+
+    /* Gets its sibling */
+    pstSibling = orxObject_GetSibling(pstObject);
+
+    /* Valid? */
+    if(pstSibling != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstSibling);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: Attach
  */
 void orxFASTCALL orxObject_CommandAttach(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1853,6 +1970,13 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetParent, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetParent, "Parent", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetChild */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetChild, "Child", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetSibling */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetSibling, "Sibling", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: Attach */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Attach, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
   /* Command: Detach */
@@ -1977,6 +2101,13 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: SetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetParent);
+  /* Command: GetParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetParent);
+  /* Command: GetChild */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetChild);
+  /* Command: GetSibling */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetSibling);
+
   /* Command: Attach */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Attach);
   /* Command: Detach */
@@ -4802,6 +4933,9 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
   /* Gets body */
   pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
 
@@ -4922,6 +5056,114 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets object's parent
+ * @param[in]   _pstObject    Concerned object
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
+{
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetParent(pstFrame);
+
+  /* Gets its owner */
+  pstResult = orxStructure_GetOwner(pstParentFrame);
+
+  /* No owner? */
+  if(pstResult == orxNULL)
+  {
+    /* Updates result with frame itself */
+    pstResult = (orxSTRUCTURE *)pstParentFrame;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets object's first child
+ * @param[in]   _pstObject    Concerned object
+ * @return      First child structure (object, spawner, camera or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
+{
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetChild(pstFrame);
+
+  /* Gets its owner */
+  pstResult = orxStructure_GetOwner(pstParentFrame);
+
+  /* No owner? */
+  if(pstResult == orxNULL)
+  {
+    /* Updates result with frame itself */
+    pstResult = (orxSTRUCTURE *)pstParentFrame;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets object's next sibling
+ * @param[in]   _pstObject    Concerned object
+ * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
+{
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetSibling(pstFrame);
+
+  /* Gets its owner */
+  pstResult = orxStructure_GetOwner(pstParentFrame);
+
+  /* No owner? */
+  if(pstResult == orxNULL)
+  {
+    /* Updates result with frame itself */
+    pstResult = (orxSTRUCTURE *)pstParentFrame;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Attaches an object to a parent while maintaining the object's world position

@@ -265,6 +265,9 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
         /* Stores frame */
         pstCamera->pstFrame = pstFrame;
 
+        /* Updates its owner */
+        orxStructure_SetOwner(pstFrame, pstCamera);
+
         /* Increases its reference counter */
         orxStructure_IncreaseCounter(pstFrame);
 
@@ -449,6 +452,9 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   {
     /* Removes frame reference */
     orxStructure_DecreaseCounter(_pstCamera->pstFrame);
+
+    /* Removes its owner */
+    orxStructure_SetOwner(_pstCamera->pstFrame, orxNULL);
 
     /* Deletes frame*/
     orxFrame_Delete(_pstCamera->pstFrame);
@@ -768,4 +774,40 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets camera parent
+ * @param[in]   _pstCamera      Concerned camera
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxCamera_GetParent(const orxCAMERA *_pstCamera)
+{
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Gets frame */
+  pstFrame = _pstCamera->pstFrame;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetParent(pstFrame);
+
+  /* Gets its owner */
+  pstResult = orxStructure_GetOwner(pstParentFrame);
+
+  /* No owner? */
+  if(pstResult == orxNULL)
+  {
+    /* Updates result with frame itself */
+    pstResult = (orxSTRUCTURE *)pstParentFrame;
+  }
+
+  /* Done! */
+  return pstResult;
 }

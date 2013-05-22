@@ -113,7 +113,7 @@ static orxFRAME_STATIC sstFrame;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Sets a frame position
+/** Sets frame position
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pvPos          Position to set
  * @param[in]   _eSpace         Coordinate space system to use
@@ -162,7 +162,7 @@ static orxINLINE orxBOOL _orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVEC
   return bResult;
 }
 
-/** Sets a frame rotation
+/** Sets frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _fAngle         Rotation angle to set (radians)
  * @param[in]   _eSpace         Coordinate space system to use
@@ -206,7 +206,7 @@ static orxINLINE orxBOOL _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fA
   return bResult;
 }
 
-/** Sets a frame scale
+/** Sets frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pvScale        Scale to set
  * @param[in]   _eSpace         Coordinate space system to use
@@ -255,7 +255,7 @@ static orxINLINE orxBOOL _orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR
   return bResult;
 }
 
-/** Gets a frame position
+/** Gets frame position
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @return orxVECTOR / orxNULL
@@ -282,7 +282,7 @@ static orxINLINE const orxVECTOR *_orxFrame_GetPosition(const orxFRAME *_pstFram
   return pvResult;
 }
 
-/** Gets a frame rotation
+/** Gets frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @return orxFLOAT (radians) / orxNULL
@@ -309,7 +309,7 @@ static orxINLINE orxFLOAT _orxFrame_GetRotation(const orxFRAME *_pstFrame, orxFR
   return fAngle;
 }
 
-/** Gets a frame scale
+/** Gets frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @param[out]  _pvScale        Scale
@@ -661,7 +661,7 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   return eResult;
 }
 
-/** Sets a frame parent
+/** Sets frame parent
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pstParent      Parent frame to set
  */
@@ -713,7 +713,7 @@ void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
   return;
 }
 
-/** Get a frame parent
+/** Gets frame parent
  * @param[in]   _pstFrame       Concerned frame
  * @return orxFRAME / orxNULL
  */
@@ -725,8 +725,53 @@ orxFRAME *orxFASTCALL orxFrame_GetParent(const orxFRAME *_pstFrame)
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFrame);
 
-  /* Updates result*/
+  /* Gets parent */
   pstResult = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+  /* Is root? */
+  if(pstResult == sstFrame.pstRoot)
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets frame first child
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxFRAME / orxNULL
+ */
+orxFRAME *orxFASTCALL orxFrame_GetChild(const orxFRAME *_pstFrame)
+{
+  orxFRAME *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFrame);
+
+  /* Gets child */
+  pstResult = orxFRAME(orxStructure_GetChild(_pstFrame));
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets frame next sibling
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxFRAME / orxNULL
+ */
+orxFRAME *orxFASTCALL orxFrame_GetSibling(const orxFRAME *_pstFrame)
+{
+  orxFRAME *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFrame);
+
+  /* Gets sibling */
+  pstResult = orxFRAME(orxStructure_GetSibling(_pstFrame));
 
   /* Done! */
   return pstResult;
@@ -751,7 +796,7 @@ orxBOOL orxFASTCALL orxFrame_IsRootChild(const orxFRAME *_pstFrame)
   return bResult;
 }
 
-/** Sets a frame position
+/** Sets frame position
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @param[in]   _pvPos          Position to set
@@ -862,7 +907,7 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
   return;
 }
 
-/** Sets a frame rotation
+/** Sets frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @param[in]   _fAngle         Angle to set (radians)
@@ -938,7 +983,7 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
   return;
 }
 
-/** Sets a frame scale
+/** Sets frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @param[in]   _pvScale        Scale to set
@@ -1022,7 +1067,7 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
   return;
 }
 
-/** Gets a frame position
+/** Gets frame position
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @param[out]  _pvPos          Position of the given frame
@@ -1056,7 +1101,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
   return pvResult;
 }
 
-/** Gets a frame rotation
+/** Gets frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @return Rotation of the given frame (radians)
@@ -1086,7 +1131,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
   return fAngle;
 }
 
-/** Gets a frame scale
+/** Gets frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
  * @param[out]  _pvScale        Scale

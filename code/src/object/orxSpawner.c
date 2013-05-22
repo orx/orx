@@ -499,6 +499,9 @@ orxSPAWNER *orxFASTCALL orxSpawner_Create()
       /* Inits flags */
       orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_MASK_ALL);
 
+      /* Updates its owner */
+      orxStructure_SetOwner(pstResult->pstFrame, pstResult);
+
       /* Increases counter */
       orxStructure_IncreaseCounter(pstResult);
 
@@ -780,6 +783,9 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
         }
       }
     }
+
+    /* Removes frame's owner */
+    orxStructure_SetOwner(_pstSpawner->pstFrame, orxNULL);
 
     /* Decreases frame's ref counter */
     orxStructure_DecreaseCounter(_pstSpawner->pstFrame);
@@ -1585,7 +1591,7 @@ orxVECTOR *orxFASTCALL orxSpawner_GetWorldScale(const orxSPAWNER *_pstSpawner, o
   return pvResult;
 }
 
-/** Sets an spawner parent
+/** Sets spawner parent
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _pParent        Parent structure to set (spawner, spawner, camera or frame) / orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -1661,6 +1667,42 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pPare
 
   /* Done! */
   return eResult;
+}
+
+/** Gets spawner parent
+ * @param[in]   _pstSpawner Concerned spawner
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxSpawner_GetParent(const orxSPAWNER *_pstSpawner)
+{
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Gets frame */
+  pstFrame = _pstSpawner->pstFrame;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetParent(pstFrame);
+
+  /* Gets its owner */
+  pstResult = orxStructure_GetOwner(pstParentFrame);
+
+  /* No owner? */
+  if(pstResult == orxNULL)
+  {
+    /* Updates result with frame itself */
+    pstResult = (orxSTRUCTURE *)pstParentFrame;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets spawner name

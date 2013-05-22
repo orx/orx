@@ -395,7 +395,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         /* Stores its type */
         pstNode->eType = sstStructure.astStorage[_eStructureID].eType;
 
-        /* Dependig on type */
+        /* Depending on type */
         switch(pstNode->eType)
         {
           case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
@@ -516,6 +516,7 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(((orxSTRUCTURE *)_pStructure)->u64OwnerGUID == orxU64_UNDEFINED);
 
   /* Gets storage node */
   pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
@@ -523,7 +524,9 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   /* Valid? */
   if(pstNode != orxNULL)
   {
-    /* Dependig on type */
+    orxSTRUCTURE_ID eStructureID;
+
+    /* Depending on type */
     switch(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType)
     {
       case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
@@ -551,14 +554,17 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
       }
     }
 
-    /* Deletes it */
-    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstNodeBank, pstNode);
-
-    /* Deletes structure */
-    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstStructureBank, _pStructure);
+    /* Gets structure ID */
+    eStructureID = orxStructure_GetID(_pStructure);
 
     /* Tags structure as deleted */
     orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
+
+    /* Deletes storage node */
+    orxBank_Free(sstStructure.astStorage[eStructureID].pstNodeBank, pstNode);
+
+    /* Deletes structure */
+    orxBank_Free(sstStructure.astStorage[eStructureID].pstStructureBank, _pStructure);
   }
   else
   {
@@ -596,7 +602,7 @@ orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
-  /* Dependig on type */
+  /* Depending on type */
   switch(sstStructure.astStorage[_eStructureID].eType)
   {
     case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
