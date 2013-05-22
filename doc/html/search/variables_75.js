@@ -24,6 +24,7 @@ var searchData=
   ['u32vertexcounter',['u32VertexCounter',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a77861c705d1e4a33603f25fcbc1f64df',1,'orxBODY_PART_DEF']]],
   ['u32width',['u32Width',['../structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#a2c2c632e5b79ae139080986155c6724d',1,'orxDISPLAY_VIDEO_MODE::u32Width()'],['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3dd9e7e575ea285a59e773dc78383e6d',1,'orxDISPLAY_EVENT_PAYLOAD::u32Width()']]],
   ['u64guid',['u64GUID',['../structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b',1,'orxSTRUCTURE']]],
+  ['u64ownerguid',['u64OwnerGUID',['../structorx_s_t_r_u_c_t_u_r_e.html#a74470ce89445905ff831bfb16cd8fcd4',1,'orxSTRUCTURE']]],
   ['u64value',['u64Value',['../structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca',1,'orxCOMMAND_VAR']]],
   ['u8a',['u8A',['../structorx_r_g_b_a.html#a763b1884457ce7d6665a244d0aded266',1,'orxRGBA']]],
   ['u8b',['u8B',['../structorx_r_g_b_a.html#ae63e5a3ad2848dd6840232749d911a3f',1,'orxRGBA']]],

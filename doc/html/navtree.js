@@ -47,7 +47,7 @@ var NAVTREEINDEX =
 "orx_physics_8h.html#ga8ce7e4f2a2590fae1d458f003a4f6fe8",
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba7ccb7f7fd5837d332ec5f77ef78d73d2",
 "orx_sound_8h.html#gga7e5aec8c210684f5fc8920bd2c13a474abd46bd305984386e8023c8edd59eb0e9",
-"orx_structure_8h.html#gacdcd1868be2f1b62e444c81dfccb1c27",
+"orx_structure_8h.html#gae4e2dfb3c7a38e389941211b90931e1e",
 "orx_viewport_8h.html#gaf2a59486f07d77ec447a0ad2ae9bb9c0",
 "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad09d9ed476407093979ce0038a3db767"
 ];

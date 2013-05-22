@@ -1,9 +1,9 @@
 var NAVTREEINDEX19 =
 {
-"orx_structure_8h.html#gacdcd1868be2f1b62e444c81dfccb1c27":[3,0,0,9,5,62],
-"orx_structure_8h.html#gadc054536d88700f7e8b10489e94609cf":[3,0,0,9,5,50],
+"orx_structure_8h.html#gae4e2dfb3c7a38e389941211b90931e1e":[3,0,0,9,5,61],
 "orx_structure_8h.html#gae595f4aeb26996db954c589d4582dbd0":[3,0,0,9,5,43],
 "orx_structure_8h.html#gae682e499ff6fb12878575a10c1e8e59d":[3,0,0,9,5,31],
+"orx_structure_8h.html#gae7fd7c3caf111fe23c2c27e72dbecb29":[3,0,0,9,5,51],
 "orx_structure_8h.html#gae81b19ba4b0a8a103d08e9da42f9bb3a":[3,0,0,9,5,9],
 "orx_structure_8h.html#gaf3c56df6bbb64e8fde476fbe2a0d784c":[3,0,0,9,5,48],
 "orx_structure_8h.html#gaf44366c412e25f7f0fecc2d6ec226ac5":[3,0,0,9,5,3],
