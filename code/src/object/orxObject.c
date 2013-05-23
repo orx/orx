@@ -212,7 +212,7 @@ void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_
   pstObject = orxObject_CreateFromConfig(_astArgList[0].zValue);
 
   /* Updates result */
-  _pstResult->u64Value = (pstObject != orxNULL) ? orxStructure_GetGUID(orxSTRUCTURE(pstObject)) : orxU64_UNDEFINED;
+  _pstResult->u64Value = (pstObject != orxNULL) ? orxStructure_GetGUID(pstObject) : orxU64_UNDEFINED;
 
   /* Done! */
   return;
