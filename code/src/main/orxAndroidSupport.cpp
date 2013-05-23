@@ -114,7 +114,7 @@ static ANativeWindow* window;
 // TODO move this to Joystick plugin
 ASensorEventQueue* sensorEventQueue;
 
-JNIEnv* Android_JNI_GetEnv(void) {
+static JNIEnv* Android_JNI_GetEnv() {
     /* From http://developer.android.com/guide/practices/jni.html
      * All threads are Linux threads, scheduled by the kernel.
      * They're usually started from managed code (using Thread.start), but they can also be created elsewhere and then
@@ -444,6 +444,11 @@ extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
 extern "C" void *orxAndroid_GetJNIEnv()
 {
     return Android_JNI_GetEnv();
+}
+
+extern "C" jobject orxAndroid_GetActivity()
+{
+  return sstAndroid.mActivity;
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
