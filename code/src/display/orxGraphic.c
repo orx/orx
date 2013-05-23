@@ -395,6 +395,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
           {
+            /* Updates its owner */
+            orxStructure_SetOwner(pstTexture, pstResult);
+
             /* Inits default 2D flags */
             u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
@@ -467,6 +470,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             /* Links it */
             if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstText) != orxSTATUS_FAILURE)
             {
+              /* Sets its owner */
+              orxStructure_SetOwner(pstText, pstResult);
+
               /* Inits default text flags */
               u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_TEXT;
 
@@ -774,6 +780,9 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     /* Internally handled? */
     if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_INTERNAL))
     {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstGraphic->pstData, orxNULL);
+
       /* 2D data? */
       if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
       {

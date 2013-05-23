@@ -365,7 +365,7 @@
 
 
 /** Memory alignment macros */
-#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((BLOCK_SIZE) - 1)) & (~((BLOCK_SIZE) - 1)))
+#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) & (~((size_t)(BLOCK_SIZE) - 1)))
 
 #define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)
 #define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)

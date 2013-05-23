@@ -294,13 +294,13 @@ static orxINLINE orxRGBA          orxRGBA_Set(orxU8 _u8R, orxU8 _u8G, orxU8 _u8B
 {
   orxRGBA stResult;
 
-  // Updates result
+  /* Updates result */
   stResult.u8R = _u8R;
   stResult.u8G = _u8G;
   stResult.u8B = _u8B;
   stResult.u8A = _u8A;
 
-  // Done!
+  /* Done! */
   return stResult;
 }
 

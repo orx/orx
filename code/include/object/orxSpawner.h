@@ -303,25 +303,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetScale(const orxSPAWNER
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldScale(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvScale);
 
 
-/** Sets an spawner parent
+/** Sets spawner parent
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _pParent        Parent structure to set (spawner, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pParent);
 
-
-/** Sets owner for a spawner
- * @param[in]   _pstSpawner   Concerned spawner
- * @param[in]   _pOwner       Owner to set / orxNULL
+/** Gets spawner parent
+ * @param[in]   _pstSpawner Concerned spawner
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
  */
-extern orxDLLAPI void orxFASTCALL           orxSpawner_SetOwner(orxSPAWNER *_pstSpawner, void *_pOwner);
-
-/** Gets spawner's owner
- * @param[in]   _pstSpawner   Concerned object
- * @return      Owner / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxSpawner_GetOwner(const orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxSpawner_GetParent(const orxSPAWNER *_pstSpawner);
 
 
 /** Gets spawner name

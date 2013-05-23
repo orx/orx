@@ -386,6 +386,25 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
 
+/** Gets object's parent
+ * @param[in]   _pstObject    Concerned object
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT *_pstObject);
+
+/** Gets object's first child
+ * @param[in]   _pstObject    Concerned object
+ * @return      First child structure (object, spawner, camera or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetChild(const orxOBJECT *_pstObject);
+
+/** Gets object's next sibling
+ * @param[in]   _pstObject    Concerned object
+ * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+
 /** Attaches an object to a parent while maintaining the object's world position
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pParent        Parent structure to attach to (object, spawner, camera or frame)

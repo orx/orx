@@ -664,7 +664,11 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   {
                     *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
                   }
+                }
 
+                /* Was a string value? */
+                if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
+                {
                   /* Deletes it */
                   orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
                 }

@@ -99,10 +99,9 @@ struct __orxSPAWNER_t
   orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 38 */
   orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 40 */
   orxFRAME           *pstFrame;                   /**< Frame : 44 */
-  orxSTRUCTURE       *pstOwner;                   /**< Owner: 48 */
-  orxFLOAT            fWaveTimer;                  /**< Wave timer : 52 */
-  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 56 */
-  orxU32              u32WaveSize;                /**< Number of objects spawned in a wave : 60 */
+  orxFLOAT            fWaveTimer;                  /**< Wave timer : 48 */
+  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 52 */
+  orxU32              u32WaveSize;                /**< Number of objects spawned in a wave : 56 */
 };
 
 /** Static structure
@@ -198,7 +197,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           orxOBJECT *pstOwner;
 
           /* Gets owner */
-          pstOwner = orxOBJECT(pstSpawner->pstOwner);
+          pstOwner = orxOBJECT(orxStructure_GetOwner(pstSpawner));
 
           /* Valid? */
           if(pstOwner != orxNULL)
@@ -337,7 +336,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
       if(pstSpawner->fWaveTimer <= orxFLOAT_0)
       {
         /* Checks */
-        orxASSERT(orxOBJECT(pstSpawner->pstOwner) == pstObject);
+        orxASSERT(orxOBJECT(orxStructure_GetOwner(pstSpawner)) == pstObject);
 
         /* Sends wave start event */
         orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
@@ -499,6 +498,9 @@ orxSPAWNER *orxFASTCALL orxSpawner_Create()
 
       /* Inits flags */
       orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_MASK_ALL);
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstResult->pstFrame, pstResult);
 
       /* Increases counter */
       orxStructure_IncreaseCounter(pstResult);
@@ -781,6 +783,9 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
         }
       }
     }
+
+    /* Removes frame's owner */
+    orxStructure_SetOwner(_pstSpawner->pstFrame, orxNULL);
 
     /* Decreases frame's ref counter */
     orxStructure_DecreaseCounter(_pstSpawner->pstFrame);
@@ -1586,7 +1591,7 @@ orxVECTOR *orxFASTCALL orxSpawner_GetWorldScale(const orxSPAWNER *_pstSpawner, o
   return pvResult;
 }
 
-/** Sets an spawner parent
+/** Sets spawner parent
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _pParent        Parent structure to set (spawner, spawner, camera or frame) / orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -1664,40 +1669,40 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pPare
   return eResult;
 }
 
-/** Sets owner for a spawner
- * @param[in]   _pstSpawner   Concerned spawner
- * @param[in]   _pOwner       Owner to set / orxNULL
+/** Gets spawner parent
+ * @param[in]   _pstSpawner Concerned spawner
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
  */
-void orxFASTCALL orxSpawner_SetOwner(orxSPAWNER *_pstSpawner, void *_pOwner)
+orxSTRUCTURE *orxFASTCALL orxSpawner_GetParent(const orxSPAWNER *_pstSpawner)
 {
-  /* Checks */
-  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstSpawner);
-  orxASSERT((_pOwner == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pOwner) < orxSTRUCTURE_ID_NUMBER));
-
-  /* Sets new owner */
-  _pstSpawner->pstOwner = orxSTRUCTURE(_pOwner);
-
-  return;
-}
-
-/** Gets spawner's owner
- * @param[in]   _pstSpawner   Concerned object
- * @return      Owner / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxSpawner_GetOwner(const orxSPAWNER *_pstSpawner)
-{
-  orxSTRUCTURE *pResult;
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
 
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
-  /* Gets owner */
-  pResult = _pstSpawner->pstOwner;
+  /* Gets frame */
+  pstFrame = _pstSpawner->pstFrame;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetParent(pstFrame);
+
+  /* Gets its owner */
+  pstResult = orxStructure_GetOwner(pstParentFrame);
+
+  /* No owner? */
+  if(pstResult == orxNULL)
+  {
+    /* Updates result with frame itself */
+    pstResult = (orxSTRUCTURE *)pstParentFrame;
+  }
 
   /* Done! */
-  return pResult;
+  return pstResult;
 }
 
 /** Gets spawner name

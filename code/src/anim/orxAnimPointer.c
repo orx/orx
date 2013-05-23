@@ -549,6 +549,9 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *
           orxAnimPointer_SetFrequency(pstResult, orxConfig_GetFloat(orxANIMPOINTER_KZ_CONFIG_FREQUENCY));
         }
 
+        /* Sets AnimSet's owner */
+        orxStructure_SetOwner(pstAnimSet, pstResult);
+
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxANIMPOINTER_KU32_FLAG_INTERNAL, orxANIMPOINTER_KU32_FLAG_NONE);
       }
@@ -624,6 +627,9 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
       /* Was internally allocated? */
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INTERNAL) != orxFALSE)
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(_pstAnimPointer, orxNULL);
+
         /* Deletes animset */
         orxAnimSet_Delete(_pstAnimPointer->pstAnimSet);
       }

@@ -384,6 +384,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
         /* Is internal? */
         if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(_pstSoundPointer->astSoundList[i].pstSound, orxNULL);
+
           /* Deletes it */
           orxSound_Delete(_pstSoundPointer->astSoundList[i].pstSound);
         }
@@ -758,6 +761,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
         /* Is internal? */
         if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstSound, orxNULL);
+
           /* Deletes it */
           orxSound_Delete(pstSound);
         }
@@ -824,6 +830,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSound
       /* Is internal? */
       if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(pstSound, orxNULL);
+
         /* Deletes it */
         orxSound_Delete(pstSound);
       }
@@ -915,6 +924,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
 
       /* Adds it to holder */
       _pstSoundPointer->astSoundList[u32Index].pstSound = pstSound;
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstSound, _pstSoundPointer);
 
       /* Updates its flags */
       orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
@@ -1028,6 +1040,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
         /* Is internal? */
         if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstSound, orxNULL);
+
           /* Deletes it */
           orxSound_Delete(pstSound);
         }

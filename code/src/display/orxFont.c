@@ -672,6 +672,9 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
               orxFLOAT       *afCharacterWidthList = orxNULL, fCharacterHeight;
               const orxSTRING zCharacterList;
 
+              /* Sets its owner */
+              orxStructure_SetOwner(pstTexture, pstResult);
+
               /* Updates flags */
               orxStructure_SetFlags(pstResult, orxFONT_KU32_FLAG_INTERNAL, orxFONT_KU32_MASK_ALL);
 
@@ -973,6 +976,9 @@ orxSTATUS orxFASTCALL orxFont_SetTexture(orxFONT *_pstFont, orxTEXTURE *_pstText
     /* Internally handled? */
     if(orxStructure_TestFlags(_pstFont, orxFONT_KU32_FLAG_INTERNAL))
     {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstFont->pstTexture, orxNULL);
+
       /* Deletes it */
       orxTexture_Delete(_pstFont->pstTexture);
 
