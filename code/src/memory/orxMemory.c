@@ -162,6 +162,14 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
   return (orxU32)sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
 }
 
+#elif defined(__orxANDROID__)
+
+orxINLINE orxU32 orxMemory_CacheLineSize()
+{
+  /* Done! */
+  return (orxU32)32;
+}
+
 #else
 
 orxINLINE orxU32 orxMemory_CacheLineSize()
