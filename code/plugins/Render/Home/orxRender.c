@@ -342,7 +342,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
-  orxU32                  u32CurrentDepth, i, u32HueIndex;
+  orxU32                  u32CurrentDepth, i;
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
   orxDOUBLE               dFrameStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
@@ -483,10 +483,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       astVertexList[2 * i + 1].fV = orxFLOAT_0;
     }
 
-    /* For all markers */
-    for(bFirst = orxTRUE, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE), u32HueIndex = 0;
+    /* For all sorted markers */
+    for(bFirst = orxTRUE, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
         s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
-        s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID), u32HueIndex++)
+        s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
     {
       /* Is unique? */
       if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
@@ -518,7 +518,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             orxRGBA   stRGBA;
 
             /* Gets associated color */
-            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
             stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
 
             /* For all past frames */
@@ -643,9 +643,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   stTransform.fScaleY = fHeight - orx2F(2.0f);
 
   /* For all sorted markers */
-  for(u32CurrentDepth = 0, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE), u32HueIndex = 0;
+  for(u32CurrentDepth = 0, s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
-      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID), u32HueIndex++)
+      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
     /* Is unique and has been pushed? */
     if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
@@ -695,7 +695,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel color */
-      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -751,9 +751,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxColor_FromRGBToHSV(&stColor, &stColor);
 
   /* For all sorted markers */
-  for(s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE), u32HueIndex = 0;
+  for(s32MarkerID = orxProfiler_GetNextSortedMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
-      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID), u32HueIndex++)
+      s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
     /* Is unique and has been pushed? */
     if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
@@ -770,7 +770,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
       /* Sets font's color */
-      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((u32HueIndex & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
       /* Is selected depth for history? */
