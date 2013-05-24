@@ -628,7 +628,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INTERNAL) != orxFALSE)
       {
         /* Removes its owner */
-        orxStructure_SetOwner(_pstAnimPointer, orxNULL);
+        orxStructure_SetOwner(_pstAnimPointer->pstAnimSet, orxNULL);
 
         /* Deletes animset */
         orxAnimSet_Delete(_pstAnimPointer->pstAnimSet);
