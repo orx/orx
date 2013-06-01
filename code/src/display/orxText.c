@@ -74,7 +74,7 @@
  */
 struct __orxTEXT_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
   orxFONT          *pstFont;                    /**< Font : 20 */
   const orxSTRING   zString;                    /**< String : 24 */
   orxFLOAT          fWidth;                     /**< Width : 28 */

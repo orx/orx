@@ -185,7 +185,7 @@ typedef struct __orxFX_SLOT_t
  */
 struct __orxFX_t
 {
-  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 32 */
   const orxSTRING zReference;                             /**< FX reference : 20 */
   orxFLOAT        fDuration;                              /**< FX duration : 24 */
   orxFX_SLOT      astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 472 */

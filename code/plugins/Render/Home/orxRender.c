@@ -1238,13 +1238,12 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
 /** Renders a viewport
  * @param[in]   _pstObject        Object to render
- * @param[in]   _pstRenderBitmap  Bitmap surface where to render
  * @param[in]   _pstFrame         Rendering frame
  * @param[in]   _eSmoothing       Smoothing
  * @param[in]   _eBlendMode       Blend mode
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstObject, orxFRAME *_pstRenderFrame, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
@@ -1255,7 +1254,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pstRenderBitmap != orxNULL);
   orxASSERT(_pstRenderFrame != orxNULL);
 
   /* Gets object's graphic */
@@ -1272,8 +1270,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
     orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_OBJECT_PAYLOAD));
 
     /* Inits it */
-    stPayload.pstRenderBitmap = _pstRenderBitmap;
-    stPayload.pstRenderFrame  = _pstRenderFrame;
+    stPayload.pstRenderFrame = _pstRenderFrame;
 
     /* Inits event */
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
@@ -1570,27 +1567,38 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
   /* Is viewport enabled? */
   if(orxViewport_IsEnabled(_pstViewport) != orxFALSE)
   {
-    orxTEXTURE *pstTexture;
-    orxBITMAP  *pstBitmap;
+    orxU32      u32TextureCounter, i;
+    orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
+    orxBITMAP  *apstBitmapList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
+    orxBOOL     bSuccess = orxTRUE;
 
-    /* Gets viewport texture */
-    pstTexture = orxViewport_GetTexture(_pstViewport);
+    /* Gets viewport's texture counter */
+    u32TextureCounter = orxViewport_GetTextureCounter(_pstViewport);
 
-    /* Has texture? */
-    if(pstTexture != orxNULL)
+    /* Gets viewport textures */
+    orxViewport_GetTextureList(_pstViewport, u32TextureCounter, apstTextureList);
+
+    /* For all of them */
+    for(i = 0; i < u32TextureCounter; i++)
     {
       /* Gets its bitmap */
-      pstBitmap = orxTexture_GetBitmap(pstTexture);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to get texture for viewport.");
-      pstBitmap = orxNULL;
+      apstBitmapList[i] = orxTexture_GetBitmap(apstTextureList[i]);
+
+      /* Invalid? */
+      if(apstBitmapList[i] == orxNULL)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to get a textures for viewport.");
+
+        /* Updates status */
+        bSuccess = orxFALSE;
+
+        break;
+      }
     }
 
     /* Valid? */
-    if(pstBitmap != orxNULL)
+    if(bSuccess != orxFALSE)
     {
       orxCAMERA  *pstCamera;
 
@@ -1612,7 +1620,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           orxFRAME *pstRenderFrame;
 
           /* Sets destination bitmap */
-          orxDisplay_SetDestinationBitmap(pstBitmap);
+          orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
 
           /* Creates rendering frame */
           pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
@@ -1632,7 +1640,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
             fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
 
             /* Gets texture size */
-            orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
+            orxTexture_GetSize(apstTextureList[0], &fTextureWidth, &fTextureHeight);
 
             /* Inits texture box */
             orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
@@ -1647,7 +1655,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
             /* Does it intersect with texture */
             if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
             {
-              orxFLOAT fCorrectionRatio;
+              orxFLOAT  fCorrectionRatio;
+              orxCOLOR  stColor;
+              orxBOOL   bHasColor = orxFALSE;
 
               /* Gets current correction ratio */
               fCorrectionRatio = orxViewport_GetCorrectionRatio(_pstViewport);
@@ -1681,19 +1691,25 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 }
               }
 
-              /* Sets bitmap clipping */
-              orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
-
               /* Does viewport have a background color? */
-              if(orxViewport_HasBackgroundColor(_pstViewport) != orxFALSE)
+              if((bHasColor = orxViewport_HasBackgroundColor(_pstViewport)) != orxFALSE)
               {
-                orxCOLOR stColor;
-
                 /* Gets it */
                 orxViewport_GetBackgroundColor(_pstViewport, &stColor);
+              }
 
-                /* Clears viewport */
-                orxDisplay_ClearBitmap(pstBitmap, orxColor_ToRGBA(&stColor));
+              /* For all bitmaps */
+              for(i = 0; i < u32TextureCounter; i++)
+              {
+                /* Sets its clipping */
+                orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+
+                /* Does viewport have a background color? */
+                if(bHasColor != orxFALSE)
+                {
+                  /* Clears bitmap */
+                  orxDisplay_ClearBitmap(apstBitmapList[i], orxColor_ToRGBA(&stColor));
+                }
               }
 
               /* Valid? */
@@ -2055,10 +2071,10 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                   orxFrame_SetScale(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vObjectScale);
 
                   /* Renders it */
-                  if(orxRender_Home_RenderObject(pstObject, pstBitmap, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
+                  if(orxRender_Home_RenderObject(pstObject, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
                   {
                     /* Prints error message */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s -> orxBITMAP %p] couldn't be rendered.", pstObject, orxObject_GetName(pstObject), pstBitmap);
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s] couldn't be rendered.", pstObject, orxObject_GetName(pstObject));
                   }
                 }
 
@@ -2151,13 +2167,6 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxRender_Home_RenderViewport(pstViewport);
     }
 
-    /* Restores screen as destination bitmap */
-    orxDisplay_SetDestinationBitmap(orxDisplay_GetScreenBitmap());
-
-    /* Restores screen bitmap clipping */
-    orxDisplay_GetScreenSize(&fWidth, &fHeight);
-    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-
     /* Sends render stop event */
     bRender = orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
 
@@ -2167,6 +2176,18 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     /* Should render? */
     if(bRender != orxFALSE)
     {
+      orxBITMAP *pstScreen;
+
+      /* Gets screen bitmap */
+      pstScreen = orxDisplay_GetScreenBitmap();
+
+      /* Restores screen as destination bitmap */
+      orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
+
+      /* Restores screen bitmap clipping */
+      orxDisplay_GetScreenSize(&fWidth, &fHeight);
+      orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+
       /* Pushes render config section */
       orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 

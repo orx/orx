@@ -80,7 +80,7 @@
  */
 struct __orxCAMERA_t
 {
-  orxSTRUCTURE    stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE    stStructure;                /**< Public structure, first structure member : 32 */
   orxFRAME       *pstFrame;                   /**< Frame : 20 */
   orxAABOX        stFrustum;                  /**< Frustum : 44 */
   const orxSTRING zReference;                 /**< Reference : 48 */

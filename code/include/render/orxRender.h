@@ -94,8 +94,7 @@ typedef enum __orxRENDER_EVENT_t
  */
 typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
 {
-  orxBITMAP *pstRenderBitmap;             /**< Bitmap where object is rendered : 4 */
-  orxFRAME  *pstRenderFrame;              /**< Frame position where object is rendered : 8 */
+  orxFRAME *pstRenderFrame;              /**< Frame position where object is rendered : 4 / 8 */
 
 } orxRENDER_EVENT_OBJECT_PAYLOAD;
 

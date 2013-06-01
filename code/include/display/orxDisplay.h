@@ -852,11 +852,12 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(cons
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
 
 
-/** Sets destination bitmap
- * @param[in]   _pstDst                               Destination bitmap
+/** Sets destination bitmaps
+ * @param[in]   _apstBitmapList                       Destination bitmap list
+ * @param[in]   _u32Number                            Number of destination bitmaps
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmap(orxBITMAP *_pstDst);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number);
 
 /** Clears a bitmap
  * @param[in]   _pstBitmap                            Concerned bitmap

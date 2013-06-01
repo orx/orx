@@ -85,7 +85,7 @@ typedef struct __orxFRAME_DATA_2D_t
  */
 struct __orxFRAME_t
 {
-  orxSTRUCTURE      stStructure;            /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;            /**< Public structure, first structure member : 32 */
   orxFRAME_DATA_2D  stData;                 /**< Frame data : 64 */
 };
 

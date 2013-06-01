@@ -77,7 +77,7 @@
  */
 struct __orxTEXTURE_t
 {
-  orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 32 */
   orxSTRING     zDataName;                      /**< Associated bitmap name : 20 */
   orxFLOAT      fWidth;                         /**< Width : 24 */
   orxFLOAT      fHeight;                        /**< Height : 28 */

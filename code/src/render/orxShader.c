@@ -105,7 +105,7 @@ typedef struct __orxSHADER_PARAM_VALUE_t
  */
 struct __orxSHADER_t
 {
-  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 32 */
   orxLINKLIST     stParamList;                            /**< Parameter list : 28 */
   orxLINKLIST     stParamValueList;                       /**< Parameter value list : 40 */
   const orxSTRING zReference;                             /**< Shader reference : 44 */
@@ -737,7 +737,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
           case orxSTRUCTURE_ID_VIEWPORT:
           {
             /* Updates owner texture */
-            pstOwnerTexture = orxViewport_GetTexture(orxVIEWPORT(_pstOwner));
+            orxViewport_GetTextureList(orxVIEWPORT(_pstOwner), 1, &pstOwnerTexture);
 
             break;
           }

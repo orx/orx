@@ -76,7 +76,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, void, orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmap, orxSTATUS, orxBITMAP *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmaps, orxSTATUS, orxBITMAP **, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
 
@@ -143,7 +143,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_BITMAP, orxDisplay_DeleteBitma
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, LOAD_BITMAP, orxDisplay_LoadBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAP, orxDisplay_SetDestinationBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAPS, orxDisplay_SetDestinationBitmaps)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CLEAR_BITMAP, orxDisplay_ClearBitmap)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_CLIPPING, orxDisplay_SetBitmapClipping)
@@ -266,9 +266,9 @@ orxSTATUS orxFASTCALL orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stC
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SetDestinationBitmap(orxBITMAP *_pstDst)
+orxSTATUS orxFASTCALL orxDisplay_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetDestinationBitmap)(_pstDst);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetDestinationBitmaps)(_apstBitmapList, _u32Number);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)

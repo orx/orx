@@ -1104,22 +1104,22 @@ orxRGBA orxFASTCALL orxDisplay_SDL_GetBitmapColor(const orxBITMAP *_pstBitmap)
   return stResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP *_pstDst)
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP **_apstDst, orxU32 _u32Number)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_apstDst[0] == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
 
   /* Different destination bitmap? */
-  if(_pstDst != sstDisplay.pstDestinationBitmap)
+  if(_apstDst[0] != sstDisplay.pstDestinationBitmap)
   {
     /* Stores it */
-    sstDisplay.pstDestinationBitmap = _pstDst;
+    sstDisplay.pstDestinationBitmap = _apstDst[0];
 
     /* Valid? */
-    if(_pstDst != orxNULL)
+    if(_apstDst[0] != orxNULL)
     {
       /* Inits viewport */
       glViewport(0, 0, (GLsizei)sstDisplay.pstDestinationBitmap->fWidth, (GLsizei)sstDisplay.pstDestinationBitmap->fHeight);
@@ -3174,7 +3174,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);

@@ -133,7 +133,7 @@ typedef struct __orxTIMELINE_TRACK_HOLDER_t
  */
 struct __orxTIMELINE_t
 {
-  orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 32 */
   const orxSTRUCTURE       *pstOwner;                 /**< Owner structure : 20 */
   orxFLOAT                  fTime;                    /**< Time : 24 */
   orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 152 */

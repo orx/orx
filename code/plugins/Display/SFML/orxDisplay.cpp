@@ -617,13 +617,13 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(const orxBITMAP *_ps
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmap(orxBITMAP *_pstDst)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmaps(orxBITMAP **_apstDst, orxU32 _u32Number)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_apstDst[0] == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
 
   /* Done! */
   return eResult;
@@ -2083,7 +2083,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);

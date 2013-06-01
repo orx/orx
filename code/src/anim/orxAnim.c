@@ -81,7 +81,7 @@ typedef struct __orxANIM_KEY_t
  */
 struct __orxANIM_t
 {
-  orxSTRUCTURE          stStructure;        /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE          stStructure;        /**< Public structure, first structure member : 32 */
   const orxSTRING       zName;              /**< Anim name : 20 */
   orxU16                u16KeySize;         /**< Key size : 22 */
   orxU16                u16KeyCounter;      /**< Key counter : 24 */

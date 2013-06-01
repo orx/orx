@@ -55,9 +55,8 @@
 
 #define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
 #define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
-#define orxVIEWPORT_KU32_FLAG_TEXTURE           0x00000004  /**< Has texture flag */
-#define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000008  /**< Has background color flag */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE  0x10000000  /**< Internal texture handling flag  */
+#define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000004  /**< Has background color flag */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES  0x10000000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
 
@@ -71,6 +70,7 @@
 /** Misc defines
  */
 #define orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME      "Texture"
+#define orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME "TextureList"
 #define orxVIEWPORT_KZ_CONFIG_POSITION          "Position"
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION "RelativePosition"
 #define orxVIEWPORT_KZ_CONFIG_SIZE              "Size"
@@ -93,23 +93,23 @@
  */
 struct __orxVIEWPORT_t
 {
-  orxSTRUCTURE      stStructure;              /**< Public structure, first structure member : 16 */
-  orxFLOAT          fX;                       /**< X position (top left corner) : 20 */
-  orxFLOAT          fY;                       /**< Y position (top left corner) : 24 */
-  orxFLOAT          fWidth;                   /**< Width : 28 */
-  orxFLOAT          fHeight;                  /**< Height : 32 */
-  orxCOLOR          stBackgroundColor;        /**< Background color : 48 */
-  orxCAMERA        *pstCamera;                /**< Associated camera : 52 */
-  orxTEXTURE       *pstTexture;               /**< Associated texture : 56 */
-  orxSHADERPOINTER *pstShaderPointer;         /**< Shader pointer : 60 */
+  orxSTRUCTURE      stStructure;                                          /**< Public structure, first structure member : 32 */
+  orxFLOAT          fX;                                                   /**< X position (top left corner) : 36 */
+  orxFLOAT          fY;                                                   /**< Y position (top left corner) : 40 */
+  orxFLOAT          fWidth;                                               /**< Width : 44 */
+  orxFLOAT          fHeight;                                              /**< Height : 48 */
+  orxCOLOR          stBackgroundColor;                                    /**< Background color : 64 */
+  orxU32            u32TextureCounter;                                    /**< Associated texture counter : 68 */
+  orxCAMERA        *pstCamera;                                            /**< Associated camera : 72 / 76 */
+  orxSHADERPOINTER *pstShaderPointer;                                     /**< Shader pointer : 76 / 84 */
+  orxTEXTURE       *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 140 / 212 */
 };
-
 
 /** Static structure
  */
 typedef struct __orxVIEWPORT_STATIC_t
 {
-  orxU32 u32Flags;                            /**< Control flags : 4 */
+  orxU32 u32Flags;                                                        /**< Control flags : 4 */
 
 } orxVIEWPORT_STATIC;
 
@@ -161,7 +161,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
           pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
       {
         /* Is linked to screen? */
-        if(pstViewport->pstTexture == orxNULL)
+        if(pstViewport->u32TextureCounter == 0)
         {
           /* Updates relative position & dimension */
           pstViewport->fX      *= fWidthRatio;
@@ -377,34 +377,115 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      const orxSTRING zTextureName;
       const orxSTRING zCameraName;
       orxS32          s32Number;
 
-      /* *** Texture *** */
+      /* *** Textures *** */
 
-      /* Gets its name */
-      zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME);
-
-      /* Valid? */
-      if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
+      /* Has texture list? */
+      if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME)) > 0)
       {
-        orxTEXTURE *pstTexture;
+        orxS32      i, s32TextureCounter;
+        orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
 
-        /* Creates texture */
-        pstTexture = orxTexture_CreateFromFile(zTextureName);
-
-        /* Valid? */
-        if(pstTexture != orxNULL)
+        /* For all entries */
+        for(i = 0, s32TextureCounter = 0; i < s32Number; i++)
         {
-          /* Sets it */
-          orxViewport_SetTexture(pstResult, pstTexture);
+          const orxSTRING zTextureName;
 
-          /* Updates its owner */
-          orxStructure_SetOwner(pstTexture, pstResult);
+          /* Gets its name */
+          zTextureName = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME, i);
+
+          /* Valid? */
+          if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
+          {
+            orxTEXTURE *pstTexture;
+
+            /* Creates texture */
+            pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+            /* Valid? */
+            if(pstTexture != orxNULL)
+            {
+              /* Updates its owner */
+              orxStructure_SetOwner(pstTexture, pstResult);
+
+              /* Stores it */
+              apstTextureList[s32TextureCounter++] = pstTexture;
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't link texture [%s] to viewport [%s], skipping.", zTextureName, _zConfigID);
+            }
+          }
+        }
+
+        /* Has valid textures? */
+        if(s32TextureCounter > 0)
+        {
+          orxS32 j;
+
+          /* Stores them */
+          orxViewport_SetTextureList(pstResult, (orxU32)s32TextureCounter, apstTextureList);
+
+          /* For all secondary textures */
+          for(j = 1; j < s32TextureCounter; j++)
+          {
+            orxU32  k;
+            orxBOOL bStored = orxFALSE;
+
+            for(k = 1; k < pstResult->u32TextureCounter; k++)
+            {
+              /* Found? */
+              if(pstResult->apstTextureList[k] == apstTextureList[j])
+              {
+                /* Updates status */
+                bStored = orxTRUE;
+
+                break;
+              }
+            }
+
+            /* Wasn't stored? */
+            if(bStored == orxFALSE)
+            {
+              /* Deletes it */
+              orxTexture_Delete(apstTextureList[j]);
+            }
+          }
 
           /* Updates status flags */
-          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE, orxVIEWPORT_KU32_FLAG_NONE);
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
+        }
+      }
+      else
+      {
+        const orxSTRING zTextureName;
+
+        /* Gets old-style texture name */
+        zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME);
+
+        /* Valid? */
+        if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
+        {
+          orxTEXTURE *pstTexture;
+
+          /* Creates texture */
+          pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+          /* Valid? */
+          if(pstTexture != orxNULL)
+          {
+            /* Sets it */
+            orxViewport_SetTextureList(pstResult, 1, &pstTexture);
+
+            /* Updates its owner */
+            orxStructure_SetOwner(pstTexture, pstResult);
+
+            /* Updates status flags */
+            orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
+          }
         }
       }
 
@@ -580,20 +661,26 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
     /* Removes camera */
     orxViewport_SetCamera(_pstViewport, orxNULL);
 
-    /* Was linked to a texture? */
-    if(_pstViewport->pstTexture != orxNULL)
+    /* Was linked to textures? */
+    if(_pstViewport->u32TextureCounter != 0)
     {
-      /* Removes its reference */
-      orxStructure_DecreaseCounter((_pstViewport->pstTexture));
+      orxU32 i;
 
-      /* Was internally allocated? */
-      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE) != orxFALSE)
+      /* For all textures */
+      for(i = 0; i < _pstViewport->u32TextureCounter; i++)
       {
-        /* Removes its owner */
-        orxStructure_SetOwner(_pstViewport->pstTexture, orxNULL);
+        /* Removes its reference */
+        orxStructure_DecreaseCounter(_pstViewport->apstTextureList[i]);
 
-        /* Deletes it */
-        orxTexture_Delete(_pstViewport->pstTexture);
+        /* Was internally allocated? */
+        if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES) != orxFALSE)
+        {
+          /* Removes its owner */
+          orxStructure_SetOwner(_pstViewport->apstTextureList[i], orxNULL);
+
+          /* Deletes it */
+          orxTexture_Delete(_pstViewport->apstTextureList[i]);
+        }
       }
     }
 
@@ -644,47 +731,85 @@ void orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32
   return;
 }
 
-/** Sets a viewport texture
+/** Sets a viewport texture list
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _pstTexture     Texture to associate with the viewport
+ * @param[in]   _u32TextureNumber Number of textures to associate with the viewport
+ * @param[in]   _apstTextureList List of textures to associate with the viewport
  */
-void orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstTexture)
+void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u32TextureNumber, orxTEXTURE **_apstTextureList)
 {
+  orxU32 i;
+
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_u32TextureNumber < orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER);
 
-  /* Has already a texture? */
-  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE) != orxFALSE)
+  /* For all associated textures */
+  for(i = 0; i < _pstViewport->u32TextureCounter; i++)
   {
-    /* Updates previous texture reference counter */
-    orxStructure_DecreaseCounter((_pstViewport->pstTexture));
+    /* Updates its reference counter */
+    orxStructure_DecreaseCounter((_pstViewport->apstTextureList[i]));
 
     /* Was internally allocated? */
-    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE) != orxFALSE)
+    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES) != orxFALSE)
     {
       /* Removes its owner */
-      orxStructure_SetOwner(_pstViewport->pstTexture, orxNULL);
+      orxStructure_SetOwner(_pstViewport->apstTextureList[i], orxNULL);
 
       /* Deletes it */
-      orxTexture_Delete(_pstViewport->pstTexture);
+      orxTexture_Delete(_pstViewport->apstTextureList[i]);
     }
-
-    /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_TEXTURE | orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE);
   }
 
-  /* Updates texture pointer */
-  _pstViewport->pstTexture = _pstTexture;
-
-  /* Has a new texture? */
-  if(_pstTexture != orxNULL)
+  /* Has new textures? */
+  if(_u32TextureNumber != 0)
   {
-    /* Updates texture reference counter */
-    orxStructure_IncreaseCounter(_pstTexture);
+    orxFLOAT fTextureWidth, fTextureHeight;
+    orxU32 u32TextureCounter;
 
-    /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE, orxVIEWPORT_KU32_FLAG_NONE);
+    /* Checks */
+    orxASSERT(_apstTextureList != orxNULL);
+
+    /* For all new textures */
+    for(i = 0, u32TextureCounter = 0; i < _u32TextureNumber; i++)
+    {
+      /* Checks */
+      orxSTRUCTURE_ASSERT(_apstTextureList[i]);
+
+      /* First texture? */
+      if(i == 0)
+      {
+        /* Stores its size */
+        orxTexture_GetSize(_apstTextureList[i], &fTextureWidth, &fTextureHeight);
+      }
+      else
+      {
+        orxFLOAT fWidth, fHeight;
+
+        /* Gets its size */
+        orxTexture_GetSize(_apstTextureList[i], &fWidth, &fHeight);
+
+        /* Doesn't match first texture? */
+        if((fWidth != fTextureWidth) || (fHeight != fTextureHeight))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't associate texture [%s] with viewport: texture size [%u, %u] doesn't match the original one [%u, %u].", orxTexture_GetName(_apstTextureList[i]), orxF2U(fWidth), orxF2U(fHeight), orxF2U(fTextureWidth), orxF2U(fTextureHeight));
+
+          /* Skips that texture */
+          continue;
+        }
+      }
+
+      /* Stores it */
+      _pstViewport->apstTextureList[u32TextureCounter++] = _apstTextureList[i];
+
+      /* Updates its reference counter */
+      orxStructure_IncreaseCounter(_apstTextureList[i]);
+    }
+
+    /* Updates texture counter */
+    _pstViewport->u32TextureCounter = u32TextureCounter;
 
     /* Reinits relative size & position */
     _pstViewport->fX = _pstViewport->fY = orxFLOAT_0;
@@ -692,39 +817,72 @@ void orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_
   }
   else
   {
+    /* Updates texture counter */
+    _pstViewport->u32TextureCounter = _u32TextureNumber;
+
     /* Deactivates viewport */
     orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_ENABLED);
   }
 
+  /* Done! */
   return;
 }
 
-/** Gets a viewport texture
+/** Gets a viewport texture list
  * @param[in]   _pstViewport    Concerned viewport
- * @return      Associated orxTEXTURE / orxNULL
+ * @param[in]   _u32TextureNumber Number of textures to be retrieved
+ * @param[out]  _apstTextureList List of textures associated with the viewport
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxTEXTURE *orxFASTCALL orxViewport_GetTexture(const orxVIEWPORT *_pstViewport)
+orxSTATUS orxFASTCALL orxViewport_GetTextureList(const orxVIEWPORT *_pstViewport, orxU32 _u32TextureNumber, orxTEXTURE **_apstTextureList)
 {
-  orxTEXTURE *pstResult = orxNULL;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_u32TextureNumber != 0);
+  orxASSERT(_apstTextureList != orxNULL);
+
+  /* Has texture? */
+  if(_pstViewport->u32TextureCounter != 0)
+  {
+    orxU32 i;
+
+    /* For all requested textures */
+    for(i = 0; i < _u32TextureNumber; i++)
+    {
+      /* Stores it */
+      _apstTextureList[i] = _pstViewport->apstTextureList[i];
+    }
+  }
+  else
+  {
+    /* Gets screen texture */
+    _apstTextureList[0] = orxTexture_GetScreenTexture();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets a viewport texture counter
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      Number of textures associated with the viewport
+ */
+orxU32 orxFASTCALL orxViewport_GetTextureCounter(const orxVIEWPORT *_pstViewport)
+{
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
 
-  /* Has texture? */
-  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE) != orxFALSE)
-  {
-    /* Updates result */
-    pstResult = _pstViewport->pstTexture;
-  }
-  else
-  {
-    /* Gets screen texture */
-    pstResult = orxTexture_GetScreenTexture();
-  }
+  /* Updates result */
+  u32Result = (_pstViewport->u32TextureCounter != 0) ? _pstViewport->u32TextureCounter : 1;
 
   /* Done! */
-  return pstResult;
+  return u32Result;
 }
 
 /** Sets a viewport background color
@@ -1114,8 +1272,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
   orxASSERT(_pstViewport->fWidth > orxFLOAT_0);
   orxASSERT(_pstViewport->fHeight > orxFLOAT_0);
 
-  /* Gets associated texture */
-  pstTexture = orxViewport_GetTexture(_pstViewport);
+  /* Gets first associated texture */
+  orxViewport_GetTextureList(_pstViewport, 1, &pstTexture);
 
   /* Valid? */
   if(pstTexture != orxNULL)
@@ -1234,8 +1392,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
   orxASSERT((_fW >= 0.0f));
   orxASSERT((_fH >= 0.0f));
 
-  /* Gets viewport texture */
-  pstTexture = orxViewport_GetTexture(_pstViewport);
+  /* Gets first associated texture */
+  orxViewport_GetTextureList(_pstViewport, 1, &pstTexture);
 
   /* Valid? */
   if(pstTexture != orxNULL)
@@ -1296,8 +1454,8 @@ void orxFASTCALL orxViewport_GetRelativeSize(const orxVIEWPORT *_pstViewport, or
   orxASSERT(_pfW != orxNULL);
   orxASSERT(_pfH != orxNULL);
 
-  /* Gets viewport texture */
-  pstTexture = orxViewport_GetTexture(_pstViewport);
+  /* Gets first associated texture */
+  orxViewport_GetTextureList(_pstViewport, 1, &pstTexture);
 
   /* Valid? */
   if(pstTexture != orxNULL)

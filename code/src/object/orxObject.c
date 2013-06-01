@@ -164,7 +164,7 @@ typedef struct __orxOBJECT_STORAGE_t
  */
 struct __orxOBJECT_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
   orxOBJECT_STORAGE astStructureList[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 88 */
   void             *pUserData;                  /**< User data : 92 */
   const orxSTRING   zReference;                 /**< Config reference : 96 */

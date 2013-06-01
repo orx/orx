@@ -91,7 +91,7 @@
  */
 struct __orxSPAWNER_t
 {
-  orxSTRUCTURE        stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE        stStructure;                /**< Public structure, first structure member : 32 */
   orxVECTOR           vSpeed;                     /**< Speed : 28 */
   const orxSTRING     zReference;                 /**< Spawner reference : 32 */
   orxU16              u16TotalObjectLimit;        /**< Limit of objects that can be spawned, 0 for unlimited stock : 34 */

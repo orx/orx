@@ -85,7 +85,7 @@
  */
 struct __orxFONT_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
   orxCHARACTER_MAP *pstMap;                     /**< Font's map : 20 */
   orxFLOAT         *afCharacterWidthList;       /**< Character width list : 24 */
   orxFLOAT          fCharacterHeight;           /**< Character height : 28 */

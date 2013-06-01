@@ -99,7 +99,7 @@ typedef struct __orxSOUND_SAMPLE_t
  */
 struct __orxSOUND_t
 {
-  orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 32 */
   const orxSTRING       zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
   orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */

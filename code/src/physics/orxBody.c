@@ -182,7 +182,7 @@ struct __orxBODY_JOINT_t
  */
 struct __orxBODY_t
 {
-  orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 32 */
   orxVECTOR               vSpeed;                                     /**< Speed : 28 */
   orxVECTOR               vScale;                                     /**< Scale : 40 */
   orxVECTOR               vPreviousPosition;                          /**< Previous position : 52 */

@@ -113,7 +113,7 @@
  */
 struct __orxGRAPHIC_t
 {
-  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 32 */
   orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
   orxVECTOR     vPivot;                     /**< Pivot : 32 */
   orxCOLOR      stColor;                    /**< Color : 48 */

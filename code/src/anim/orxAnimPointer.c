@@ -84,7 +84,7 @@
  */
 struct __orxANIMPOINTER_t
 {
-  orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 32 */
   orxANIMSET             *pstAnimSet;                 /**< Referenced AnimationSet : 20 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
   orxU32                  u32CurrentAnim;             /**< Current animation ID : 28 */

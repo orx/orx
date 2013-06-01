@@ -158,7 +158,7 @@ struct __orxANIMSET_LINK_TABLE_t
  */
 struct __orxANIMSET_t
 {
-  orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 32 */
   orxANIM               **pastAnim;                   /**< Used animation pointer array : 20 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
   orxHASHTABLE           *pstIDTable;                 /**< ID hash table : 28 */

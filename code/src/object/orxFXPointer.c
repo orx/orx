@@ -87,7 +87,7 @@ typedef struct __orxFXPOINTER_HOLDER_t
  */
 struct __orxFXPOINTER_t
 {
-  orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 32 */
   orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 112 */
   orxFLOAT                fTime;                                  /**< Time stamp : 116 */
   const orxSTRUCTURE     *pstOwner;                               /**< Owner structure : 120 */

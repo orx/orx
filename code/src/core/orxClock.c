@@ -113,7 +113,7 @@ typedef struct __orxCLOCK_TIMER_STORAGE_t
  */
 struct __orxCLOCK_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
   orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 40 */
   orxFLOAT          fPartialDT;                 /**< Clock partial DT : 44 */
   orxBANK          *pstFunctionBank;            /**< Function bank : 48 */
