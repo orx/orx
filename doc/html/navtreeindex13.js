@@ -1,5 +1,7 @@
 var NAVTREEINDEX13 =
 {
+"orx_font_8h.html#ga6eaf162b26fb22952530260f4861f5f0":[3,0,0,4,1,8],
+"orx_font_8h.html#ga8e56191650ac7c5a713a01d5081243a9":[3,0,0,4,1,1],
 "orx_font_8h.html#gaa7fe16b2b6016e5f3aaed55489d6c73e":[3,0,0,4,1,13],
 "orx_font_8h.html#gab691adc491d2136ac68d160d1f14bc1d":[3,0,0,4,1,0],
 "orx_font_8h.html#gac3f1cf184136cd0ffd837143e79bfe31":[3,0,0,4,1,15],
@@ -247,7 +249,5 @@ var NAVTREEINDEX13 =
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94babcec3f48c231b6594797214b0e975f18":[3,0,0,5,2,5,18],
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94babd8c52d599a7cbf1dbaeca7b2d7d48d0":[3,0,0,5,2,5,36],
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac03d1f39893323cad3a2be06db3fd24d":[3,0,0,5,2,5,24],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac3c6f141cc05c6cafed0580022879460":[3,0,0,5,2,5,41],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac50f8f3fce79f8091b91f50d2bcf34f8":[3,0,0,5,2,5,25],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac9a86577673c7e22666a245dec8f7af8":[3,0,0,5,2,5,15]
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac3c6f141cc05c6cafed0580022879460":[3,0,0,5,2,5,41]
 };

@@ -1,7 +1,6 @@
 var group__orx_render =
 [
     [ "orxRENDER_EVENT_OBJECT_PAYLOAD", "structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html", [
-      [ "pstRenderBitmap", "structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a09bc8e5c015fc924439c34d9bf1f9f9a", null ],
       [ "pstRenderFrame", "structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a9581e959503204d4ce5dde0ed9c05783", null ]
     ] ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "group__orx_render.html#ga701dd688299d04234d916a551f8e651e", null ],

@@ -23,7 +23,6 @@ var searchData=
   ['pstparent',['pstParent',['../structorx_t_r_e_e___n_o_d_e.html#ad38a0127f9e3908887c62a1577160011',1,'orxTREE_NODE']]],
   ['pstpayload',['pstPayload',['../structorx_e_v_e_n_t.html#aed283fb8a616b4c4254ddf76f7de909f',1,'orxEVENT']]],
   ['pstprevious',['pstPrevious',['../structorx_l_i_n_k_l_i_s_t___n_o_d_e.html#a78532d6c5e868b20abc649b55e130f05',1,'orxLINKLIST_NODE']]],
-  ['pstrenderbitmap',['pstRenderBitmap',['../structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a09bc8e5c015fc924439c34d9bf1f9f9a',1,'orxRENDER_EVENT_OBJECT_PAYLOAD']]],
   ['pstrenderframe',['pstRenderFrame',['../structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a9581e959503204d4ce5dde0ed9c05783',1,'orxRENDER_EVENT_OBJECT_PAYLOAD']]],
   ['pstroot',['pstRoot',['../structorx_t_r_e_e.html#ac8eb6aef655adaecc1a09e4d697f8f50',1,'orxTREE']]],
   ['pstshader',['pstShader',['../structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a840511e6a220f4b2fedb3740184192a8',1,'orxSHADER_EVENT_PAYLOAD']]],

@@ -323,7 +323,7 @@ var searchData=
   ['orxdisplay_5fsetbitmapcolor',['orxDisplay_SetBitmapColor',['../group__orx_display.html#gac46c653446e1a50b19715ffb1a181cde',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetbitmapcolorkey',['orxDisplay_SetBitmapColorKey',['../group__orx_display.html#ga18aa50eae6667cacdfc804e0643bfa47',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetbitmapdata',['orxDisplay_SetBitmapData',['../group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239',1,'orxDisplay.h']]],
-  ['orxdisplay_5fsetdestinationbitmap',['orxDisplay_SetDestinationBitmap',['../group__orx_display.html#gad4098ceb20034f92eabf178087d29b27',1,'orxDisplay.h']]],
+  ['orxdisplay_5fsetdestinationbitmaps',['orxDisplay_SetDestinationBitmaps',['../group__orx_display.html#gac191bdfc80e11b88a093d0ffb2208b8e',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetfullscreen',['orxDisplay_SetFullScreen',['../group__orx_display.html#ga26e2f135b978a2dc39e53a8465940e42',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetshaderbitmap',['orxDisplay_SetShaderBitmap',['../group__orx_display.html#gae35b6b44dc14c72c07b9eac939938653',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetshaderfloat',['orxDisplay_SetShaderFloat',['../group__orx_display.html#ga6713394aee70a8c115ff79ac41f01b68',1,'orxDisplay.h']]],
@@ -1178,7 +1178,8 @@ var searchData=
   ['orxviewport_5fgetrelativesize',['orxViewport_GetRelativeSize',['../group__orx_viewport.html#gafc6d9a5c61ebb87c8e8c41252a09fa97',1,'orxViewport.h']]],
   ['orxviewport_5fgetshaderpointer',['orxViewport_GetShaderPointer',['../group__orx_viewport.html#gaf2a59486f07d77ec447a0ad2ae9bb9c0',1,'orxViewport.h']]],
   ['orxviewport_5fgetsize',['orxViewport_GetSize',['../group__orx_viewport.html#ga3b6cbedca7b2e175e928bfe294b49960',1,'orxViewport.h']]],
-  ['orxviewport_5fgettexture',['orxViewport_GetTexture',['../group__orx_viewport.html#gaab346738bcfe2b29a3093c943f5d40cf',1,'orxViewport.h']]],
+  ['orxviewport_5fgettexturecounter',['orxViewport_GetTextureCounter',['../group__orx_viewport.html#gaebf199482a6a50f71f01565e5500ed9b',1,'orxViewport.h']]],
+  ['orxviewport_5fgettexturelist',['orxViewport_GetTextureList',['../group__orx_viewport.html#ga8e12a07c0a06d857f132adc17dde6226',1,'orxViewport.h']]],
   ['orxviewport_5fhasbackgroundcolor',['orxViewport_HasBackgroundColor',['../group__orx_viewport.html#ga33e1130fcab6494a30fded85b8379dff',1,'orxViewport.h']]],
   ['orxviewport_5finit',['orxViewport_Init',['../group__orx_viewport.html#ga6bfbc0987b56d9a2a9ead46e44c43297',1,'orxViewport.h']]],
   ['orxviewport_5fisenabled',['orxViewport_IsEnabled',['../group__orx_viewport.html#ga583441b79aeaa36dd5fd166ca7c98138',1,'orxViewport.h']]],
@@ -1191,6 +1192,6 @@ var searchData=
   ['orxviewport_5fsetrelativeposition',['orxViewport_SetRelativePosition',['../group__orx_viewport.html#ga24b66707b17087ccdac32062abdfdc96',1,'orxViewport.h']]],
   ['orxviewport_5fsetrelativesize',['orxViewport_SetRelativeSize',['../group__orx_viewport.html#gaab5478e8f7a7fbcd581b45e06733e591',1,'orxViewport.h']]],
   ['orxviewport_5fsetsize',['orxViewport_SetSize',['../group__orx_viewport.html#ga2a0c78b744ddad425c221c87e7caa9d1',1,'orxViewport.h']]],
-  ['orxviewport_5fsettexture',['orxViewport_SetTexture',['../group__orx_viewport.html#ga54ca42c6e2f9d7903dbaa57a7c679ffa',1,'orxViewport.h']]],
+  ['orxviewport_5fsettexturelist',['orxViewport_SetTextureList',['../group__orx_viewport.html#ga0f56100eaf3d393adcd78a31d82be049',1,'orxViewport.h']]],
   ['orxviewport_5fsetup',['orxViewport_Setup',['../group__orx_viewport.html#gaf34598e30c0dca306594ad8b75704477',1,'orxViewport.h']]]
 ];

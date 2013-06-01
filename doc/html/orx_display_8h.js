@@ -89,7 +89,7 @@ var orx_display_8h =
     [ "orxDisplay_SetBitmapColor", "orx_display_8h.html#gac46c653446e1a50b19715ffb1a181cde", null ],
     [ "orxDisplay_SetBitmapColorKey", "orx_display_8h.html#ga18aa50eae6667cacdfc804e0643bfa47", null ],
     [ "orxDisplay_SetBitmapData", "orx_display_8h.html#gaf8a80961deb17b680772616fe2fd7239", null ],
-    [ "orxDisplay_SetDestinationBitmap", "orx_display_8h.html#gad4098ceb20034f92eabf178087d29b27", null ],
+    [ "orxDisplay_SetDestinationBitmaps", "orx_display_8h.html#gac191bdfc80e11b88a093d0ffb2208b8e", null ],
     [ "orxDisplay_SetFullScreen", "orx_display_8h.html#ga26e2f135b978a2dc39e53a8465940e42", null ],
     [ "orxDisplay_SetShaderBitmap", "orx_display_8h.html#gae35b6b44dc14c72c07b9eac939938653", null ],
     [ "orxDisplay_SetShaderFloat", "orx_display_8h.html#ga6713394aee70a8c115ff79ac41f01b68", null ],

@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -130,6 +136,8 @@ Macros</h2></td></tr>
 <tr class="separator:gad5e97420fe63dd9b0281b363f977484c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga62aa2bbe77727231dcd39d60cb6c9d63"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga62aa2bbe77727231dcd39d60cb6c9d63">orxVIEWPORT_KU32_FLAG_ALIGN_TOP</a>&#160;&#160;&#160;0x40000000</td></tr>
 <tr class="separator:ga62aa2bbe77727231dcd39d60cb6c9d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab13349a38f8c432cce7f247abe4f20c6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gab13349a38f8c432cce7f247abe4f20c6">orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER</a>&#160;&#160;&#160;16</td></tr>
+<tr class="separator:gab13349a38f8c432cce7f247abe4f20c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -171,8 +179,10 @@ Functions</h2></td></tr>
 <tr class="separator:gaf2a59486f07d77ec447a0ad2ae9bb9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3b6cbedca7b2e175e928bfe294b49960"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga3b6cbedca7b2e175e928bfe294b49960">orxViewport_GetSize</a> (const <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 <tr class="separator:ga3b6cbedca7b2e175e928bfe294b49960"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaab346738bcfe2b29a3093c943f5d40cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gaab346738bcfe2b29a3093c943f5d40cf">orxViewport_GetTexture</a> (const <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
-<tr class="separator:gaab346738bcfe2b29a3093c943f5d40cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaebf199482a6a50f71f01565e5500ed9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gaebf199482a6a50f71f01565e5500ed9b">orxViewport_GetTextureCounter</a> (const <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
+<tr class="separator:gaebf199482a6a50f71f01565e5500ed9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8e12a07c0a06d857f132adc17dde6226"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga8e12a07c0a06d857f132adc17dde6226">orxViewport_GetTextureList</a> (const <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxU32 _u32TextureNumber, <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> **_apstTextureList)</td></tr>
+<tr class="separator:ga8e12a07c0a06d857f132adc17dde6226"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga33e1130fcab6494a30fded85b8379dff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga33e1130fcab6494a30fded85b8379dff">orxViewport_HasBackgroundColor</a> (const <a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
 <tr class="separator:ga33e1130fcab6494a30fded85b8379dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6bfbc0987b56d9a2a9ead46e44c43297"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga6bfbc0987b56d9a2a9ead46e44c43297">orxViewport_Init</a> ()</td></tr>
@@ -197,8 +207,8 @@ Functions</h2></td></tr>
 <tr class="separator:gaab5478e8f7a7fbcd581b45e06733e591"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2a0c78b744ddad425c221c87e7caa9d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga2a0c78b744ddad425c221c87e7caa9d1">orxViewport_SetSize</a> (<a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxFLOAT _fWidth, orxFLOAT _fHeight)</td></tr>
 <tr class="separator:ga2a0c78b744ddad425c221c87e7caa9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga54ca42c6e2f9d7903dbaa57a7c679ffa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga54ca42c6e2f9d7903dbaa57a7c679ffa">orxViewport_SetTexture</a> (<a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture)</td></tr>
-<tr class="separator:ga54ca42c6e2f9d7903dbaa57a7c679ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0f56100eaf3d393adcd78a31d82be049"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#ga0f56100eaf3d393adcd78a31d82be049">orxViewport_SetTextureList</a> (<a class="el" href="group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxU32 _u32TextureNumber, <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> **_apstTextureList)</td></tr>
+<tr class="separator:ga0f56100eaf3d393adcd78a31d82be049"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf34598e30c0dca306594ad8b75704477"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gaf34598e30c0dca306594ad8b75704477">orxViewport_Setup</a> ()</td></tr>
 <tr class="separator:gaf34598e30c0dca306594ad8b75704477"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

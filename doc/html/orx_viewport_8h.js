@@ -5,6 +5,7 @@ var orx_viewport_8h =
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_LEFT", "orx_viewport_8h.html#ga62cc1ead8c95201bf187d58c1d14452a", null ],
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT", "orx_viewport_8h.html#gad5e97420fe63dd9b0281b363f977484c", null ],
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_TOP", "orx_viewport_8h.html#ga62aa2bbe77727231dcd39d60cb6c9d63", null ],
+    [ "orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER", "orx_viewport_8h.html#gab13349a38f8c432cce7f247abe4f20c6", null ],
     [ "orxVIEWPORT", "orx_viewport_8h.html#ga75b5cb6cbb6a2156cf382a50c65ee71a", null ],
     [ "orxViewport_AddShader", "orx_viewport_8h.html#gafae98230b6e33fb16c5827b48db78b4b", null ],
     [ "orxViewport_ClearBackgroundColor", "orx_viewport_8h.html#ga4d1f31dfcb2b9b1ea8efd000ea57c0e4", null ],
@@ -22,7 +23,8 @@ var orx_viewport_8h =
     [ "orxViewport_GetRelativeSize", "orx_viewport_8h.html#gafc6d9a5c61ebb87c8e8c41252a09fa97", null ],
     [ "orxViewport_GetShaderPointer", "orx_viewport_8h.html#gaf2a59486f07d77ec447a0ad2ae9bb9c0", null ],
     [ "orxViewport_GetSize", "orx_viewport_8h.html#ga3b6cbedca7b2e175e928bfe294b49960", null ],
-    [ "orxViewport_GetTexture", "orx_viewport_8h.html#gaab346738bcfe2b29a3093c943f5d40cf", null ],
+    [ "orxViewport_GetTextureCounter", "orx_viewport_8h.html#gaebf199482a6a50f71f01565e5500ed9b", null ],
+    [ "orxViewport_GetTextureList", "orx_viewport_8h.html#ga8e12a07c0a06d857f132adc17dde6226", null ],
     [ "orxViewport_HasBackgroundColor", "orx_viewport_8h.html#ga33e1130fcab6494a30fded85b8379dff", null ],
     [ "orxViewport_Init", "orx_viewport_8h.html#ga6bfbc0987b56d9a2a9ead46e44c43297", null ],
     [ "orxViewport_IsEnabled", "orx_viewport_8h.html#ga583441b79aeaa36dd5fd166ca7c98138", null ],
@@ -35,6 +37,6 @@ var orx_viewport_8h =
     [ "orxViewport_SetRelativePosition", "orx_viewport_8h.html#ga24b66707b17087ccdac32062abdfdc96", null ],
     [ "orxViewport_SetRelativeSize", "orx_viewport_8h.html#gaab5478e8f7a7fbcd581b45e06733e591", null ],
     [ "orxViewport_SetSize", "orx_viewport_8h.html#ga2a0c78b744ddad425c221c87e7caa9d1", null ],
-    [ "orxViewport_SetTexture", "orx_viewport_8h.html#ga54ca42c6e2f9d7903dbaa57a7c679ffa", null ],
+    [ "orxViewport_SetTextureList", "orx_viewport_8h.html#ga0f56100eaf3d393adcd78a31d82be049", null ],
     [ "orxViewport_Setup", "orx_viewport_8h.html#gaf34598e30c0dca306594ad8b75704477", null ]
 ];
