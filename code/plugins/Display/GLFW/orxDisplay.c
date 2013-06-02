@@ -432,9 +432,8 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   {
       orxU32 i;
 
-    /* Supports frame buffer and draw buffer? */
-    if((glfwExtensionSupported("GL_EXT_framebuffer_object") != GL_FALSE)
-    && (glfwExtensionSupported("GL_ARB_draw_buffers") != GL_FALSE))
+    /* Supports frame buffer? */
+    if(glfwExtensionSupported("GL_EXT_framebuffer_object") != GL_FALSE)
     {
 #ifndef __orxMAC__
 
@@ -445,24 +444,36 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC, glCheckFramebufferStatusEXT);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC, glFramebufferTexture2DEXT);
 
-      /* Loads draw buffers extension functions */
-      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDRAWBUFFERSARBPROC, glDrawBuffersARB);
-
 #endif /* __orxMAC__ */
-
-      glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &sstDisplay.iDrawBufferNumber);
-      glASSERT();
-      sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
     else
     {
-      sstDisplay.iDrawBufferNumber = 1;
-
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER);
+    }
+
+    /* Supports draw buffer? */
+    if(glfwExtensionSupported("GL_ARB_draw_buffers") != GL_FALSE)
+    {
+#ifndef __orxMAC__
+
+      /* Loads draw buffers extension functions */
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDRAWBUFFERSARBPROC, glDrawBuffersARB);
+
+#endif /* __orxMAC__ */
+
+      /* Gets number of available draw buffers */
+      glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &sstDisplay.iDrawBufferNumber);
+      glASSERT();
+      sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+    }
+    else
+    {
+      /* Uses only a single draw buffer */
+      sstDisplay.iDrawBufferNumber = 1;
     }
 
     /* Fills the list of draw buffer symbols */
@@ -2116,9 +2127,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     }
     else
     {
-      /* Updates draw buffers */
-      glDrawBuffersARB((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
-      glASSERT();
+      /* Supports more than a single draw buffer? */
+      if(sstDisplay.iDrawBufferNumber > 1)
+      {
+        /* Updates draw buffers */
+        glDrawBuffersARB((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
+        glASSERT();
+      }
 
       /* Inits viewport */
       glViewport(0, (orxS32)sstDisplay.apstDestinationBitmapList[0]->u32RealHeight - orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight), (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth), (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight));
