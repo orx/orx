@@ -33,6 +33,7 @@
 #include "sound/orxSound.h"
 
 #include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
 #include "core/orxConfig.h"
@@ -284,6 +285,7 @@ void orxFASTCALL orxSound_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_SOUNDSYSTEM);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_RESOURCE);
@@ -475,6 +477,9 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
     /* Is a sound? */
     if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_SOUND) != orxFALSE)
     {
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Sound)");
+
       /* Creates sound */
       pstResult = orxSound_Create();
 
@@ -520,11 +525,17 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
       }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
     /* Is a music? */
     else if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_MUSIC) != orxFALSE)
     {
       const orxSTRING zMusicName;
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Music)");
 
       /* Gets music name */
       zMusicName = orxConfig_GetString(orxSOUND_KZ_CONFIG_MUSIC);
@@ -556,6 +567,9 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
           orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_MASK_ALL);
         }
       }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
     }
 
     /* Valid sound? */
