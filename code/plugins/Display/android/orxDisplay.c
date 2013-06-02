@@ -1678,8 +1678,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
 
 orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
-  orxU32      u32BackupBitmapCounter;
+  orxBITMAP  *pstBackupBitmap;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1687,8 +1686,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Backups current destinations */
-  orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
-  u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
+  pstBackupBitmap = sstDisplay.pstDestinationBitmap;
 
   /* Sets new destination bitmap */
   orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1);
@@ -1712,7 +1710,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
   }
 
   /* Restores previous destination */
-  orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
+  orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
 
   /* Done! */
   return eResult;
@@ -4246,7 +4244,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_TransformText, DISPLAY, TRANSFORM_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_LoadBitmap, DISPLAY, LOAD_BITMAP);
