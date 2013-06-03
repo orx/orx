@@ -89,6 +89,12 @@
 
 /**  Misc defines
  */
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+#else /* __orxGCC__ || __orxLLVM__ */
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
+#endif /* __orxGCC__ || __orxLLVM__ */
+
 #ifdef __orxDEBUG__
 
 #define glASSERT()                                                        \
@@ -102,9 +108,21 @@ do                                                                        \
   }                                                                       \
 } while(orxFALSE)
 
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glGetError();}} while(orxFALSE)
+#else /* __orxGCC__ || __orxLLVM__ */
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glGetError();}} while(orxFALSE)
+#endif /* __orxGCC__ || __orxLLVM__ */
+
 #else /* __orxDEBUG__ */
 
 #define glASSERT()
+
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+#else /* __orxGCC__ || __orxLLVM__ */
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+#endif /* __orxGCC__ || __orxLLVM__ */
 
 #endif /* __orxDEBUG__ */
 
@@ -737,8 +755,7 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
     for(i = 0; i < _pstShader->iTextureCounter; i++)
     {
       /* Updates corresponding texture unit */
-      glUniform1iARB(_pstShader->astTextureInfoList[i].iLocation, i);
-      glASSERT();
+      glUNIFORM(1iARB, _pstShader->astTextureInfoList[i].iLocation, i);
       glActiveTextureARB(GL_TEXTURE0_ARB + i);
       glASSERT();
       glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
@@ -4197,14 +4214,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
         pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-        glASSERT();
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glASSERT();
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-        glASSERT();
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
-        glASSERT();
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       }
 
       /* Updates result */
@@ -4235,14 +4248,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
         pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-        glASSERT();
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glASSERT();
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-        glASSERT();
-        glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
-        glASSERT();
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
 
         /* Updates texture counter */
         pstShader->iTextureCounter++;
@@ -4279,10 +4288,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, orxS32 
   if(_s32ID >= 0)
   {
     /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
-    glUniform1fARB((GLint)_s32ID, (GLfloat)_fValue);
-#ifdef __orxDEBUG__
-    glGetError();
-#endif /* __orxDEBUG__ */
+    glUNIFORM_NO_ASSERT(1fARB, (GLint)_s32ID, (GLfloat)_fValue);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -4310,10 +4316,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, orxS32
   if(_s32ID >= 0)
   {
     /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
-    glUniform3fARB((GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
-#ifdef __orxDEBUG__
-    glGetError();
-#endif /* __orxDEBUG__ */
+    glUNIFORM_NO_ASSERT(3fARB, (GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
