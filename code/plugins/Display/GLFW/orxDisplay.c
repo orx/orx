@@ -209,6 +209,9 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxS32                    s32PendingShaderCounter;
+  GLint                     iLastViewportX, iLastViewportY;
+  GLsizei                   iLastViewportWidth, iLastViewportHeight;
+  GLdouble                  dLastOrthoRight, dLastOrthoBottom;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
   orxU32                    u32DestinationBitmapCounter;
@@ -2135,12 +2138,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    GLint   iX, iY;
+    GLsizei iWidth, iHeight;
+
     /* Is screen? */
     if(sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
     {
-      /* Inits viewport */
-      glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth), (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight));
-      glASSERT();
+      /* Updates viewport info */
+      iX      = 0;
+      iY      = 0;
+      iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
+      iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
     }
     else
     {
@@ -2152,22 +2160,46 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
         glASSERT();
       }
 
-      /* Inits viewport */
-      glViewport(0, (orxS32)sstDisplay.apstDestinationBitmapList[0]->u32RealHeight - orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight), (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth), (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight));
-      glASSERT();
+      /* Updates viewport info */
+      iX      = 0;
+      iY      = (GLint)((orxS32)sstDisplay.apstDestinationBitmapList[0]->u32RealHeight - orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight));
+      iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
+      iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
     }
 
-    /* Inits matrices */
-    glMatrixMode(GL_PROJECTION);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
-    glOrtho(0.0f, sstDisplay.apstDestinationBitmapList[0]->fWidth, sstDisplay.apstDestinationBitmapList[0]->fHeight, 0.0f, -1.0f, 1.0f);
-    glASSERT();
-    glMatrixMode(GL_MODELVIEW);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
+    /* Should update viewport? */
+    if((iX != sstDisplay.iLastViewportX)
+    || (iY != sstDisplay.iLastViewportY)
+    || (iWidth != sstDisplay.iLastViewportWidth)
+    || (iHeight != sstDisplay.iLastViewportHeight))
+    {
+      /* Inits viewport */
+      glViewport(iX, iY, iWidth, iHeight);
+      glASSERT();
+
+      /* Stores its info */
+      sstDisplay.iLastViewportX       = iX;
+      sstDisplay.iLastViewportY       = iY;
+      sstDisplay.iLastViewportWidth   = iWidth;
+      sstDisplay.iLastViewportHeight  = iHeight;
+    }
+
+    /* Should update the orthogonal projection? */
+    if(((GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth != sstDisplay.dLastOrthoRight)
+    || ((GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight != sstDisplay.dLastOrthoBottom))
+    {
+      /* Inits matrices */
+      glMatrixMode(GL_PROJECTION);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
+      sstDisplay.dLastOrthoRight  = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      sstDisplay.dLastOrthoBottom = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight;
+      glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f);
+      glASSERT();
+      glMatrixMode(GL_MODELVIEW);
+      glASSERT();
+    }
   }
 
   /* Done! */
@@ -3357,7 +3389,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
     glLoadIdentity();
     glASSERT();
-    glOrtho(0.0f, (sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth, (sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight, 0.0f, -1.0f, 1.0f);
+    sstDisplay.dLastOrthoRight  = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
+    sstDisplay.dLastOrthoBottom = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
+    glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f);
     glASSERT();
     glMatrixMode(GL_MODELVIEW);
     glASSERT();
