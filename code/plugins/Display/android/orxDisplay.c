@@ -69,6 +69,9 @@
 
 /**  Misc defines
  */
+
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+
 #ifdef __orxDEBUG__
 
 #define glASSERT()                                                      \
@@ -78,9 +81,13 @@ do                                                                      \
   orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
 } while(orxFALSE)
 
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glGetError();}} while(orxFALSE)
+
 #else /* __orxDEBUG__ */
 
 #define glASSERT()
+
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
 
 #endif /* __orxDEBUG__ */
 
@@ -180,6 +187,9 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxS32                    s32PendingShaderCounter;
+  GLint                     iLastViewportX, iLastViewportY;
+  GLsizei                   iLastViewportWidth, iLastViewportHeight;
+  GLfloat                   fLastOrthoRight, fLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLuint                    uiIndexBuffer;
@@ -807,8 +817,7 @@ static void orxFASTCALL orxDisplay_Android_InitShader(orxDISPLAY_SHADER *_pstSha
     for(i = 0; i < _pstShader->iTextureCounter; i++)
     {
       /* Updates corresponding texture unit */
-      glUniform1i(_pstShader->astTextureInfoList[i].iLocation, i);
-      glASSERT();
+      glUNIFORM(1i, _pstShader->astTextureInfoList[i].iLocation, i);
       glActiveTexture(GL_TEXTURE0 + i);
       glASSERT();
       glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
@@ -890,16 +899,14 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
       glASSERT();
 
       /* Updates first texture unit */
-      glUniform1i(sstDisplay.pstDefaultShader->uiTextureLocation, 0);
-      glASSERT();
+      glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
 
       /* Selects it */
       glActiveTexture(GL_TEXTURE0);
       glASSERT();
 
       /* Updates projection matrix */
-      glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-      glASSERT();
+      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
       /* Updates active texture unit */
       sstDisplay.s32ActiveTextureUnit = 0;
@@ -1979,6 +1986,7 @@ orxRGBA orxFASTCALL orxDisplay_Android_GetBitmapColor(const orxBITMAP *_pstBitma
 
 orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
+  orxBOOL   bFlush = orxFALSE;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1994,6 +2002,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
     /* Is valid? */
     if(_apstBitmapList[0] != orxNULL)
     {
+      GLint   iX, iY;
+      GLsizei iWidth, iHeight;
+
       /* Screen? */
       if(_apstBitmapList[0] == sstDisplay.pstScreen)
       {
@@ -2028,27 +2039,55 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
       /* Is screen? */
       if(_apstBitmapList[0] == sstDisplay.pstScreen)
       {
-        /* Flushes pending commands */
-        glFlush();
-        glASSERT();
+        /* Requests pending commands flush */
+        bFlush = orxTRUE;
 
-        /* Inits viewport */
-        glViewport(0, 0, (GLsizei)orxF2S(_apstBitmapList[0]->fWidth), (GLsizei)orxF2S(_apstBitmapList[0]->fHeight));
-        glASSERT();
+        /* Updates viewport info */
+        iX      = 0;
+        iY      = 0;
+        iWidth  = (GLsizei)orxF2S(_apstBitmapList[0]->fWidth);
+        iHeight = (GLsizei)orxF2S(_apstBitmapList[0]->fHeight);
       }
       else
       {
-        /* Inits viewport */
-        glViewport(0, (orxS32)_apstBitmapList[0]->u32RealHeight - orxF2S(_apstBitmapList[0]->fHeight), (GLsizei)orxF2S(_apstBitmapList[0]->fWidth), (GLsizei)orxF2S(_apstBitmapList[0]->fHeight));
-        glASSERT();
+        /* Updates viewport info */
+        iX      = 0;
+        iY      = (GLint)((orxS32)_apstBitmapList[0]->u32RealHeight - orxF2S(_apstBitmapList[0]->fHeight));
+        iWidth  = (GLsizei)orxF2S(_apstBitmapList[0]->fWidth);
+        iHeight = (GLsizei)orxF2S(_apstBitmapList[0]->fHeight);
       }
 
-      /* Inits projection matrix */
-      orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+      /* Should update viewport? */
+      if((iX != sstDisplay.iLastViewportX)
+      || (iY != sstDisplay.iLastViewportY)
+      || (iWidth != sstDisplay.iLastViewportWidth)
+      || (iHeight != sstDisplay.iLastViewportHeight))
+      {
+        /* Inits viewport */
+        glViewport(iX, iY, iWidth, iHeight);
+        glASSERT();
 
-      /* Passes it to shader */
-      glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-      glASSERT();
+        /* Stores its info */
+        sstDisplay.iLastViewportX       = iX;
+        sstDisplay.iLastViewportY       = iY;
+        sstDisplay.iLastViewportWidth   = iWidth;
+        sstDisplay.iLastViewportHeight  = iHeight;
+      }
+
+      /* Should update the orthogonal projection? */
+      if(((GLfloat)_apstBitmapList[0]->fWidth != sstDisplay.fLastOrthoRight)
+      || ((GLfloat)_apstBitmapList[0]->fHeight != sstDisplay.fLastOrthoBottom))
+      {
+        /* Stores data */
+        sstDisplay.fLastOrthoRight  = (GLfloat)_apstBitmapList[0]->fWidth;
+        sstDisplay.fLastOrthoBottom = (GLfloat)_apstBitmapList[0]->fHeight;
+
+        /* Inits projection matrix */
+        orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+
+        /* Passes it to shader */
+        glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+      }
     }
     else
     {
@@ -2057,6 +2096,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
 
     /* Stores new destination bitmap */
     sstDisplay.pstDestinationBitmap = _apstBitmapList[0];
+  }
+
+  /* Should flush? */
+  if(bFlush != orxFALSE)
+  {
+    /* Flushes command buffer */
+    glFlush();
+    glASSERT();
   }
 
   /* Done! */
@@ -3253,16 +3300,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glASSERT();
 
   /* Updates first texture unit */
-  glUniform1i(sstDisplay.pstDefaultShader->uiTextureLocation, 0);
-  glASSERT();
+  glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
 
   /* Selects it */
   glActiveTexture(GL_TEXTURE0);
   glASSERT();
 
   /* Updates projection matrix */
-  glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-  glASSERT();
+  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Updates active texture unit */
   sstDisplay.s32ActiveTextureUnit = 0;
@@ -3787,8 +3832,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StartShader(orxHANDLE _hShader)
   glASSERT();
 
   /* Updates projection matrix */
-  glUniformMatrix4fv(pstShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-  glASSERT();
+  glUNIFORM(Matrix4fv, pstShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Done! */
   return eResult;
@@ -3916,16 +3960,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
       glASSERT();
 
       /* Updates first texture unit */
-      glUniform1i(sstDisplay.pstDefaultShader->uiTextureLocation, 0);
-      glASSERT();
+      glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
 
       /* Selects it */
       glActiveTexture(GL_TEXTURE0);
       glASSERT();
 
       /* Updates projection matrix */
-      glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-      glASSERT();
+      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
       /* Updates active texture unit */
       sstDisplay.s32ActiveTextureUnit = 0;
@@ -3943,16 +3985,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
     glASSERT();
 
     /* Updates first texture unit */
-    glUniform1i(sstDisplay.pstDefaultShader->uiTextureLocation, 0);
-    glASSERT();
+    glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
 
     /* Selects it */
     glActiveTexture(GL_TEXTURE0);
     glASSERT();
 
     /* Updates projection matrix */
-    glUniformMatrix4fv(sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-    glASSERT();
+    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
     /* Updates active texture unit */
     sstDisplay.s32ActiveTextureUnit = 0;
@@ -4107,14 +4147,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
         pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-        glASSERT();
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glASSERT();
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-        glASSERT();
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
-        glASSERT();
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       }
 
       /* Updates result */
@@ -4145,14 +4181,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
         pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-        glASSERT();
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glASSERT();
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-        glASSERT();
-        glUniform1f(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
-        glASSERT();
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
 
         /* Updates texture counter */
         pstShader->iTextureCounter++;
@@ -4189,8 +4221,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderFloat(orxHANDLE _hShader, orxS
   if(_s32ID >= 0)
   {
     /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
-    glUniform1f((GLint)_s32ID, (GLfloat)_fValue);
-    glGetError();
+    glUNIFORM_NO_ASSERT(1f, (GLint)_s32ID, (GLfloat)_fValue);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -4218,8 +4249,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderVector(orxHANDLE _hShader, orx
   if(_s32ID >= 0)
   {
     /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
-    glUniform3f((GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
-    glGetError();
+    glUNIFORM_NO_ASSERT(3f, (GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
