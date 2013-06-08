@@ -2013,7 +2013,7 @@ orxRGBA orxFASTCALL orxDisplay_GLFW_GetBitmapColor(const orxBITMAP *_pstBitmap)
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
   orxU32    i, j, u32Number;
-  orxBOOL   bBound = orxFALSE;
+  orxBOOL   bBound = orxFALSE, bFlush = orxFALSE;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2066,9 +2066,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
           eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
           glASSERT();
 
-          /* Flushes pending commands */
-          glFlush();
-          glASSERT();
+          /* Requests pending commands flush */
+          bFlush = orxTRUE;
         }
         /* Valid texture? */
         else if(pstBitmap != orxNULL)
@@ -2200,6 +2199,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       glMatrixMode(GL_MODELVIEW);
       glASSERT();
     }
+  }
+
+  /* Should flush? */
+  if(bFlush != orxFALSE)
+  {
+    /* Flushes command buffer */
+    glFlush();
+    glASSERT();
   }
 
   /* Done! */

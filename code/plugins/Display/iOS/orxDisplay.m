@@ -250,6 +250,9 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxS32                    s32PendingShaderCounter;
+  GLint                     iLastViewportX, iLastViewportY;
+  GLsizei                   iLastViewportWidth, iLastViewportHeight;
+  GLdouble                  dLastOrthoRight, dLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLuint                    uiIndexBuffer;
@@ -2794,6 +2797,7 @@ orxRGBA orxFASTCALL orxDisplay_iOS_GetBitmapColor(const orxBITMAP *_pstBitmap)
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
+  orxBOOL   bFlush = orxFALSE;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2809,49 +2813,81 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitm
     /* Is valid? */
     if(_apstBitmapList[0] != orxNULL)
     {
+      GLint   iX, iY;
+      GLsizei iWidth, iHeight;
+
       /* Recreates render target */
       [sstDisplay.poView CreateRenderTarget:_apstBitmapList[0]];
 
       /* Is screen? */
       if(_apstBitmapList[0] == sstDisplay.pstScreen)
       {
-        /* Flushes pending commands */
-        glFlush();
-        glASSERT();
+        /* Requests pending commands flush */
+        bFlush = orxTRUE;
 
-        /* Inits viewport */
-        glViewport(0, 0, (GLsizei)orxF2S(_apstBitmapList[0]->fWidth), (GLsizei)orxF2S(_apstBitmapList[0]->fHeight));
-        glASSERT();
+        /* Updates viewport info */
+        iX      = 0;
+        iY      = 0;
+        iWidth  = (GLsizei)orxF2S(_apstBitmapList[0]->fWidth);
+        iHeight = (GLsizei)orxF2S(_apstBitmapList[0]->fHeight);
       }
       else
       {
+        /* Updates viewport info */
+        iX      = 0;
+        iY      = (GLint)((orxS32)_apstBitmapList[0]->u32RealHeight - orxF2S(_apstBitmapList[0]->fHeight));
+        iWidth  = (GLsizei)orxF2S(_apstBitmapList[0]->fWidth);
+        iHeight = (GLsizei)orxF2S(_apstBitmapList[0]->fHeight);
+      }
+
+      /* Should update viewport? */
+      if((iX != sstDisplay.iLastViewportX)
+      || (iY != sstDisplay.iLastViewportY)
+      || (iWidth != sstDisplay.iLastViewportWidth)
+      || (iHeight != sstDisplay.iLastViewportHeight))
+      {
         /* Inits viewport */
-        glViewport(0, (orxS32)_apstBitmapList[0]->u32RealHeight - orxF2S(_apstBitmapList[0]->fHeight), (GLsizei)orxF2S(_apstBitmapList[0]->fWidth), (GLsizei)orxF2S(_apstBitmapList[0]->fHeight));
+        glViewport(iX, iY, iWidth, iHeight);
         glASSERT();
+
+        /* Stores its info */
+        sstDisplay.iLastViewportX       = iX;
+        sstDisplay.iLastViewportY       = iY;
+        sstDisplay.iLastViewportWidth   = iWidth;
+        sstDisplay.iLastViewportHeight  = iHeight;
       }
 
-      /* Shader support? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+      /* Should update the orthogonal projection? */
+      if(((GLdouble)_apstBitmapList[0]->fWidth != sstDisplay.dLastOrthoRight)
+      || ((GLdouble)_apstBitmapList[0]->fHeight != sstDisplay.dLastOrthoBottom))
       {
-        /* Inits projection matrix */
-        orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+        /* Stores data */
+        sstDisplay.dLastOrthoRight  = (GLdouble)_apstBitmapList[0]->fWidth;
+        sstDisplay.dLastOrthoBottom = (GLdouble)_apstBitmapList[0]->fHeight;
 
-        /* Passes it to shader */
-        glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-      }
-      else
-      {
-        /* Inits matrices */
-        glMatrixMode(GL_PROJECTION);
-        glASSERT();
-        glLoadIdentity();
-        glASSERT();
-        glOrthof(0.0f, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, 0.0f, -1.0f, 1.0f);
-        glASSERT();
-        glMatrixMode(GL_MODELVIEW);
-        glASSERT();
-        glLoadIdentity();
-        glASSERT();
+        /* Shader support? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+        {
+          /* Inits projection matrix */
+          orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+
+          /* Passes it to shader */
+          glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+        }
+        else
+        {
+          /* Inits matrices */
+          glMatrixMode(GL_PROJECTION);
+          glASSERT();
+          glLoadIdentity();
+          glASSERT();
+          glOrthof(0.0f, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, 0.0f, -1.0f, 1.0f);
+          glASSERT();
+          glMatrixMode(GL_MODELVIEW);
+          glASSERT();
+          glLoadIdentity();
+          glASSERT();
+        }
       }
     }
     else
@@ -2862,6 +2898,14 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitm
 
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _apstBitmapList[0];
+  }
+
+  /* Should flush? */
+  if(bFlush != orxFALSE)
+  {
+    /* Flushes command buffer */
+    glFlush();
+    glASSERT();
   }
 
   /* Done! */
