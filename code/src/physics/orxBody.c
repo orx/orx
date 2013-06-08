@@ -742,7 +742,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_
     orxMemory_Zero(pstResult, sizeof(orxBODY_PART));
 
     /* Creates physics part */
-    pstBodyPart = orxPhysics_CreateBodyPart(_pstBody->pstData, pstResult, _pstBodyPartDef);
+    pstBodyPart = orxPhysics_CreatePart(_pstBody->pstData, pstResult, _pstBodyPartDef);
 
     /* Valid? */
     if(pstBodyPart != orxNULL)
@@ -1054,7 +1054,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY_PART *_pstBodyPart)
     orxLinkList_Remove(&(_pstBodyPart->stNode));
 
     /* Deletes its data */
-    orxPhysics_DeleteBodyPart(_pstBodyPart->pstData);
+    orxPhysics_DeletePart(_pstBodyPart->pstData);
 
     /* Has reference? */
     if(_pstBodyPart->zReference != orxNULL)
@@ -1107,7 +1107,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJoint(orxBODY *_pstSrcBody, orxBODY *_pstD
     orxMemory_Zero(pstResult, sizeof(orxBODY_JOINT));
 
     /* Creates physics joint */
-    pstBodyJoint = orxPhysics_CreateBodyJoint(_pstSrcBody->pstData, _pstDstBody->pstData, pstResult, _pstBodyJointDef);
+    pstBodyJoint = orxPhysics_CreateJoint(_pstSrcBody->pstData, _pstDstBody->pstData, pstResult, _pstBodyJointDef);
 
     /* Valid? */
     if(pstBodyJoint != orxNULL)
@@ -1501,7 +1501,7 @@ orxSTATUS orxFASTCALL orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint)
     orxLinkList_Remove(&(_pstBodyJoint->stDstNode));
 
     /* Deletes its data */
-    orxPhysics_DeleteBodyJoint(_pstBodyJoint->pstData);
+    orxPhysics_DeleteJoint(_pstBodyJoint->pstData);
 
     /* Has reference? */
     if(_pstBodyJoint->zReference != orxNULL)

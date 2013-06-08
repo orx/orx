@@ -202,10 +202,10 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetGravity, orxSTATUS, const orxVECTOR
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetGravity, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_DEF *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBody, void, orxPHYSICS_BODY *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_PART_DEF *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyPart, void, orxPHYSICS_BODY_PART *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyJoint, orxPHYSICS_BODY_JOINT *, orxPHYSICS_BODY *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_JOINT_DEF *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyJoint, void, orxPHYSICS_BODY_JOINT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreatePart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_PART_DEF *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeletePart, void, orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateJoint, orxPHYSICS_BODY_JOINT *, orxPHYSICS_BODY *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_JOINT_DEF *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteJoint, void, orxPHYSICS_BODY_JOINT *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableMotor, void, orxPHYSICS_BODY_JOINT *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMotorSpeed, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMaxMotorTorque, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
@@ -248,10 +248,10 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_GRAVITY, orxPhysics_SetGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_GRAVITY, orxPhysics_GetGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY, orxPhysics_CreateBody)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY, orxPhysics_DeleteBody)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_PART, orxPhysics_CreateBodyPart)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY_PART, orxPhysics_DeleteBodyPart)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_JOINT, orxPhysics_CreateBodyJoint)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY_JOINT, orxPhysics_DeleteBodyJoint)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_PART, orxPhysics_CreatePart)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_PART, orxPhysics_DeletePart)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_JOINT, orxPhysics_CreateJoint)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_JOINT, orxPhysics_DeleteJoint)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_POSITION, orxPhysics_SetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ROTATION, orxPhysics_SetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_SPEED, orxPhysics_SetSpeed)
@@ -318,24 +318,24 @@ void orxFASTCALL orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody)
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBody)(_pstBody);
 }
 
-orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
+orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_CreatePart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyPart)(_pstBody, _hUserData, _pstBodyPartDef);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreatePart)(_pstBody, _hUserData, _pstBodyPartDef);
 }
 
-void orxFASTCALL orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
+void orxFASTCALL orxPhysics_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyPart)(_pstBodyPart);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeletePart)(_pstBodyPart);
 }
 
-orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
+orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_CreateJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyJoint)(_pstSrcBody, _pstDstBody, _hUserData, _pstBodyJointDef);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateJoint)(_pstSrcBody, _pstDstBody, _hUserData, _pstBodyJointDef);
 }
 
-void orxFASTCALL orxPhysics_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint)
+void orxFASTCALL orxPhysics_DeleteJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyJoint)(_pstBodyJoint);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteJoint)(_pstBodyJoint);
 }
 
 orxSTATUS orxFASTCALL orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)

@@ -366,12 +366,12 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBody(orxP
  * @param[in]   _pstBodyPartDef                       Physical body part definition
  * @return orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreatePart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Deletes a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  */
-extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart);
 
 
 /** Creates a joint to link two physical bodies together
@@ -381,12 +381,12 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyPart(
  * @param[in]   _pstBodyJointDef                      Physical body joint definition
  * @return orxPHYSICS_BODY_JOINT / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef);
+extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef);
 
 /** Deletes a physical body joint
  * @param[in]   _pstBodyJoint                         Concerned physical body joint
  */
-extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint);
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint);
 
 
 /** Sets the position of a physical body
