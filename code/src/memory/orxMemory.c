@@ -87,7 +87,7 @@ static orxMEMORY_STATIC sstMemory;
 
   #ifdef __orxMSVC__
 
-orxINLINE orxU32 orxMemory_CacheLineSize()
+static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   SYSTEM_LOGICAL_PROCESSOR_INFORMATION *astProcessorInfoList;
   orxU32                                u32InfoListSize = 0, u32Result = orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE, i, iNumber;
@@ -126,7 +126,7 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
 
   #else /* __orxMSVC__ */
 
-orxINLINE orxU32 orxMemory_CacheLineSize()
+static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
   return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
@@ -138,7 +138,7 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
 
 #include <sys/sysctl.h>
 
-orxINLINE orxU32 orxMemory_CacheLineSize()
+static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   size_t stLineSize = 0, stSizeOfLineSize;
 
@@ -156,7 +156,7 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
 
 #include <unistd.h>
 
-orxINLINE orxU32 orxMemory_CacheLineSize()
+static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
   return (orxU32)sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
@@ -164,7 +164,7 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
 
 #elif defined(__orxANDROID__)
 
-orxINLINE orxU32 orxMemory_CacheLineSize()
+static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
   return (orxU32)32;
@@ -172,7 +172,7 @@ orxINLINE orxU32 orxMemory_CacheLineSize()
 
 #else
 
-orxINLINE orxU32 orxMemory_CacheLineSize()
+static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
   return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
