@@ -22,6 +22,9 @@ var orx_type_8h =
       [ "orxSTATUS_NUMBER", "orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340da8eebe889e601ec634f60f02b456e11bf", null ],
       [ "orxSTATUS_NONE", "orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340daedaf4b96685d2a752f629da7715f9745", null ]
     ] ],
+    [ "orxDOUBLE_0", "orx_type_8h.html#ga51d2ebd5fa76d351c989320f63407a10", null ],
+    [ "orxDOUBLE_1", "orx_type_8h.html#gabdf7a945561859cfae77c03f8943974c", null ],
+    [ "orxDOUBLE_MAX", "orx_type_8h.html#ga4f3008a8bfb2e9e3d1a05cd731006b4b", null ],
     [ "orxFLOAT_0", "orx_type_8h.html#gad7be3fa68f9c7280e208fc7a65b80e9a", null ],
     [ "orxFLOAT_1", "orx_type_8h.html#ga90038a35c998993f88db62d2a02e4dc7", null ],
     [ "orxFLOAT_MAX", "orx_type_8h.html#ga26d9eda0236909a5bc1b0b3a81b47ed7", null ],

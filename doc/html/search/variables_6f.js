@@ -1,5 +1,8 @@
 var searchData=
 [
+  ['orxdouble_5f0',['orxDOUBLE_0',['../group__orx_type.html#ga51d2ebd5fa76d351c989320f63407a10',1,'orxType.h']]],
+  ['orxdouble_5f1',['orxDOUBLE_1',['../group__orx_type.html#gabdf7a945561859cfae77c03f8943974c',1,'orxType.h']]],
+  ['orxdouble_5fmax',['orxDOUBLE_MAX',['../group__orx_type.html#ga4f3008a8bfb2e9e3d1a05cd731006b4b',1,'orxType.h']]],
   ['orxfloat_5f0',['orxFLOAT_0',['../group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a',1,'orxType.h']]],
   ['orxfloat_5f1',['orxFLOAT_1',['../group__orx_type.html#ga90038a35c998993f88db62d2a02e4dc7',1,'orxType.h']]],
   ['orxfloat_5fmax',['orxFLOAT_MAX',['../group__orx_type.html#ga26d9eda0236909a5bc1b0b3a81b47ed7',1,'orxType.h']]],
