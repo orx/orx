@@ -982,8 +982,12 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
-      /* Updates shader uniform */
-      glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+      /* No other shader active? */
+      if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+      {
+        /* Updates shader uniform */
+        glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+      }
     }
   }
 
