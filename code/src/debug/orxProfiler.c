@@ -566,9 +566,9 @@ void orxFASTCALL orxProfiler_ResetAllMarkers()
       orxMemory_Copy(&(sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryIndex][i]), &(pstMarker->stInfo), sizeof(orxPROFILER_MARKER_INFO));
 
       /* Resets it */
-      pstMarker->stInfo.dFirstTimeStamp = orx2D(0.0);
-      pstMarker->stInfo.dCumulatedTime  = orx2D(0.0);
-      pstMarker->dTimeStamp             = orx2D(0.0);
+      pstMarker->stInfo.dFirstTimeStamp = orxDOUBLE_0;
+      pstMarker->stInfo.dCumulatedTime  = orxDOUBLE_0;
+      pstMarker->dTimeStamp             = orxDOUBLE_0;
       pstMarker->stInfo.u32PushCounter  = 0;
       pstMarker->stInfo.u32Depth        = 0;
       pstMarker->s32ParentID            = orxPROFILER_KS32_MARKER_ID_NONE;
@@ -600,11 +600,11 @@ void orxFASTCALL orxProfiler_ResetAllMaxima()
     for(i = 0; i < sstProfiler.s32MarkerCounter; i++)
     {
       /* Resets its maximum */
-      sstProfiler.astMarkerList[i].stInfo.dMaxCumulatedTime = orx2D(0.0);
+      sstProfiler.astMarkerList[i].stInfo.dMaxCumulatedTime = orxDOUBLE_0;
     }
 
     /* Resets max reset time */
-    sstProfiler.dMaxResetTime = orx2D(0.0);
+    sstProfiler.dMaxResetTime = orxDOUBLE_0;
   }
 
   /* Done! */
@@ -716,7 +716,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     s32ID = _s32MarkerID & orxPROFILER_KU32_MASK_MARKER_ID;
 
     /* Get previous marker's time stamp */
-    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp : orx2D(0.0);
+    dPreviousTime = (s32ID < sstProfiler.s32MarkerCounter) ? sstProfiler.aastInfoListHistory[sstProfiler.u32HistoryQueryIndex][s32ID].dFirstTimeStamp : orxDOUBLE_0;
   }
   else
   {
@@ -724,7 +724,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     s32ID = orxPROFILER_KS32_MARKER_ID_NONE;
 
     /* Get previous marker's time stamp */
-    dPreviousTime = orx2D(0.0);
+    dPreviousTime = orxDOUBLE_0;
   }
 
   /* For all markers */
@@ -804,7 +804,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerTime(orxS32 _s32MarkerID)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
-    dResult = orx2D(0.0);
+    dResult = orxDOUBLE_0;
   }
 
   /* Done! */
@@ -839,7 +839,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMarkerMaxTime(orxS32 _s32MarkerID)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
-    dResult = orx2D(0.0);
+    dResult = orxDOUBLE_0;
   }
 
   /* Done! */
@@ -982,7 +982,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't get start time of marker <%s> [ID: %d] as it hasn't been uniquely pushed.", sstProfiler.astMarkerList[s32ID].zName, _s32MarkerID);
 
       /* Updates result */
-      dResult = orx2D(0.0);
+      dResult = orxDOUBLE_0;
     }
   }
   else
@@ -991,7 +991,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetUniqueMarkerStartTime(orxS32 _s32MarkerID)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't access marker data: invalid ID [%d].", _s32MarkerID);
 
     /* Updates result */
-    dResult = orx2D(0.0);
+    dResult = orxDOUBLE_0;
   }
 
   /* Done! */

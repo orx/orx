@@ -189,7 +189,12 @@ typedef enum __orxSEEK_OFFSET_WHENCE_t
 /* *** Float constants *** */
 static const orxFLOAT             orxFLOAT_0            = orx2F(0.0f);
 static const orxFLOAT             orxFLOAT_1            = orx2F(1.0f);
-static const orxFLOAT             orxFLOAT_MAX          = orx2F(1e37);
+static const orxFLOAT             orxFLOAT_MAX          = orx2F(3.402823466e+38f);
+
+/* *** Double constants *** */
+static const orxDOUBLE            orxDOUBLE_0           = orx2D(0.0);
+static const orxDOUBLE            orxDOUBLE_1           = orx2D(1.0);
+static const orxDOUBLE            orxDOUBLE_MAX         = orx2D(1.7976931348623158e+308);
 
 
 /* *** Undefined constants *** */

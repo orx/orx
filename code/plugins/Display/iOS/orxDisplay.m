@@ -1967,7 +1967,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
     orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Inits it */
-    orxDisplay_iOS_InitShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+    orxDisplay_iOS_InitShader(sstDisplay.pstNoTextureShader);
   }
   else
   {
@@ -3851,8 +3851,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
           glASSERT();
 
           /* Creates default shaders */
-          sstDisplay.pstDefaultShader   = orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
-          sstDisplay.pstNoTextureShader = orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxFALSE);
+          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
+          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxFALSE);
 
           /* Uses it */
           orxDisplay_StopShader(orxNULL);

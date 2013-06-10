@@ -345,7 +345,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
 
       /* Updates result */
-      dResult = orx2D(0.0);
+      dResult = orxDOUBLE_0;
     }
   }
 

@@ -344,7 +344,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
   orxU32                  u32CurrentDepth, i;
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
-  orxDOUBLE               dFrameStartTime = orx2D(0.0), dTotalTime, dRecTotalTime;
+  orxDOUBLE               dFrameStartTime = orxDOUBLE_0, dTotalTime, dRecTotalTime;
   orxCOLOR                stColor;
   orxBOOL                 bLandscape;
   const orxFONT          *pstFont;
@@ -414,7 +414,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
-  dRecTotalTime = orx2D(1.0) / dTotalTime;
+  dRecTotalTime = orxDOUBLE_1 / dTotalTime;
 
   /* Gets screen size */
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
@@ -661,7 +661,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       dStartTime = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
 
       /* First one? */
-      if(dFrameStartTime == orx2D(0.0))
+      if(dFrameStartTime == orxDOUBLE_0)
       {
         /* Updates start time */
         dFrameStartTime = dStartTime;
