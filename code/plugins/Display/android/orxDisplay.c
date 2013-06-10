@@ -161,8 +161,8 @@ typedef struct __orxDISPLAY_SHADER_t
 {
   orxLINKLIST_NODE          stNode;
   GLuint                    uiProgram;
-  GLuint                    uiTextureLocation;
-  GLuint                    uiProjectionMatrixLocation;
+  GLint                     iTextureLocation;
+  GLint                     iProjectionMatrixLocation;
   GLint                     iTextureCounter;
   orxS32                    s32ParamCounter;
   orxBOOL                   bPending;
@@ -189,7 +189,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32PendingShaderCounter;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
-  GLfloat                   fLastOrthoRight, fLastOrthoBottom;
+  orxFLOAT                  fLastOrthoRight, fLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLuint                    uiIndexBuffer;
@@ -717,11 +717,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       glASSERT();
 
       /* Gets texture location */
-      _pstShader->uiTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
+      _pstShader->iTextureLocation = glGetUniformLocation(uiProgram, "_Texture_");
       glASSERT();
 
       /* Gets projection matrix location */
-      _pstShader->uiProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
+      _pstShader->iProjectionMatrixLocation = glGetUniformLocation(uiProgram, "_mProjection_");
       glASSERT();
 
       /* Gets linking status */
@@ -899,14 +899,14 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
       glASSERT();
 
       /* Updates first texture unit */
-      glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
+      glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
 
       /* Selects it */
       glActiveTexture(GL_TEXTURE0);
       glASSERT();
 
       /* Updates projection matrix */
-      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
       /* Updates active texture unit */
       sstDisplay.s32ActiveTextureUnit = 0;
@@ -2075,18 +2075,18 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
       }
 
       /* Should update the orthogonal projection? */
-      if(((GLfloat)_apstBitmapList[0]->fWidth != sstDisplay.fLastOrthoRight)
-      || ((GLfloat)_apstBitmapList[0]->fHeight != sstDisplay.fLastOrthoBottom))
+      if((_apstBitmapList[0]->fWidth != sstDisplay.fLastOrthoRight)
+      || (_apstBitmapList[0]->fHeight != sstDisplay.fLastOrthoBottom))
       {
         /* Stores data */
-        sstDisplay.fLastOrthoRight  = (GLfloat)_apstBitmapList[0]->fWidth;
-        sstDisplay.fLastOrthoBottom = (GLfloat)_apstBitmapList[0]->fHeight;
+        sstDisplay.fLastOrthoRight  = _apstBitmapList[0]->fWidth;
+        sstDisplay.fLastOrthoBottom = _apstBitmapList[0]->fHeight;
 
         /* Inits projection matrix */
         orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
         /* Passes it to shader */
-        glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+        glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       }
     }
     else
@@ -3300,14 +3300,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glASSERT();
 
   /* Updates first texture unit */
-  glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
+  glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
 
   /* Selects it */
   glActiveTexture(GL_TEXTURE0);
   glASSERT();
 
   /* Updates projection matrix */
-  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Updates active texture unit */
   sstDisplay.s32ActiveTextureUnit = 0;
@@ -3832,7 +3832,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StartShader(orxHANDLE _hShader)
   glASSERT();
 
   /* Updates projection matrix */
-  glUNIFORM(Matrix4fv, pstShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+  glUNIFORM(Matrix4fv, pstShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Done! */
   return eResult;
@@ -3960,14 +3960,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
       glASSERT();
 
       /* Updates first texture unit */
-      glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
+      glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
 
       /* Selects it */
       glActiveTexture(GL_TEXTURE0);
       glASSERT();
 
       /* Updates projection matrix */
-      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
       /* Updates active texture unit */
       sstDisplay.s32ActiveTextureUnit = 0;
@@ -3985,14 +3985,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
     glASSERT();
 
     /* Updates first texture unit */
-    glUNIFORM(1i, sstDisplay.pstDefaultShader->uiTextureLocation, 0);
+    glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
 
     /* Selects it */
     glActiveTexture(GL_TEXTURE0);
     glASSERT();
 
     /* Updates projection matrix */
-    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->uiProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
     /* Updates active texture unit */
     sstDisplay.s32ActiveTextureUnit = 0;
