@@ -66,7 +66,8 @@ enum {
     LOOPER_ID_MAIN = 1,
     LOOPER_ID_SENSOR = 2,
     LOOPER_ID_KEY_EVENT = 3,
-    LOOPER_ID_TOUCH_EVENT = 4
+    LOOPER_ID_TOUCH_EVENT = 4,
+    LOOPER_ID_USER = 5
 };
 
 enum {
