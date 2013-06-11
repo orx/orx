@@ -1248,8 +1248,14 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   /* Has shader support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
+    /* Bypasses the full screen rendering when stopping shader */
+    sstDisplay.s32BufferIndex = -1;
+
     /* Stops current shader */
     orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Resets buffer index */
+    sstDisplay.s32BufferIndex = 0;
   }
   else
   {
@@ -3343,7 +3349,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
           /* Creates default & no texture shaders */
           sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
-          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxFALSE);
+          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
 
           /* Uses default shader */
           orxDisplay_StopShader(orxNULL);
@@ -4229,8 +4235,21 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
       /* Using custom param? */
       else if(pstShader->bUseCustomParam != orxFALSE)
       {
-        /* Draws arrays */
-        orxDisplay_GLFW_DrawArrays();
+        /* Has something to display? */
+        if(sstDisplay.s32BufferIndex > 0)
+        {
+          /* Draws arrays */
+          orxDisplay_GLFW_DrawArrays();
+        }
+        else
+        {
+          /* Uses default program */
+          glUseProgramObjectARB(sstDisplay.pstDefaultShader->hProgram);
+          glASSERT();
+
+          /* Updates its texture unit */
+          glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+        }
 
         /* Clears texture counter */
         pstShader->iTextureCounter = 0;
@@ -4248,11 +4267,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
 
         /* Updates counter */
         sstDisplay.s32PendingShaderCounter++;
-      }
 
-      /* Uses default program */
-      glUseProgramObjectARB(sstDisplay.pstDefaultShader->hProgram);
-      glASSERT();
+        /* Uses default program */
+        glUseProgramObjectARB(sstDisplay.pstDefaultShader->hProgram);
+        glASSERT();
+
+        /* Updates its texture unit */
+        glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+      }
     }
     else
     {
