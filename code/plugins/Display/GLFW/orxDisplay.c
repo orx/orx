@@ -1718,11 +1718,8 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
   /* Valid? */
   if(pstBitmap != orxNULL)
   {
-    /* Pushes display section */
-    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
     /* Inits it */
-    pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+    pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
     pstBitmap->fWidth         = orxU2F(_u32Width);
     pstBitmap->fHeight        = orxU2F(_u32Height);
     pstBitmap->u32RealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Width : orxMath_GetNextPowerOfTwo(_u32Width);
@@ -1753,9 +1750,6 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     /* Restores previous texture */
     glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
-
-    /* Pops config section */
-    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -2643,11 +2637,8 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
             uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
             uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
 
-            /* Pushes display section */
-            orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
             /* Inits bitmap */
-            pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+            pstResult->bSmoothing     = sstDisplay.bDefaultSmoothing;
             pstResult->fWidth         = orxU2F(uiWidth);
             pstResult->fHeight        = orxU2F(uiHeight);
             pstResult->u32RealWidth   = uiRealWidth;
@@ -2706,9 +2697,6 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
 
             /* Frees image buffer */
             orxMemory_Free(pu8ImageBuffer);
-
-            /* Pops config section */
-            orxConfig_PopSection();
           }
 
           /* Deletes surface */
