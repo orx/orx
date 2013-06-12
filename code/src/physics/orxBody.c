@@ -165,7 +165,9 @@ struct __orxBODY_PART_t
 {
   orxLINKLIST_NODE        stNode;                                     /**< Linklist node : 12 */
   orxPHYSICS_BODY_PART   *pstData;                                    /**< Data structure : 16 */
-  const orxSTRING         zReference;                                 /**< Part reference name : 20 */
+  orxBODY_PART_DEF       *pstDef;                                     /**< Def : 20 */
+  orxBODY                *pstBody;                                    /**< Body : 24 */
+  const orxSTRING         zReference;                                 /**< Part reference name : 28 */
 };
 
 /** Body joint structure
@@ -202,6 +204,7 @@ typedef struct __orxBODY_STATIC_t
 {
   orxU32            u32Flags;                                         /**< Control flags */
   orxBANK          *pstPartBank;                                      /**< Part bank */
+  orxBANK          *pstPartDefBank;                                   /**< Part def bank */
   orxBANK          *pstJointBank;                                     /**< Joint bank */
 
 } orxBODY_STATIC;
@@ -306,10 +309,12 @@ orxSTATUS orxFASTCALL orxBody_Init()
 
     /* Creates banks */
     sstBody.pstPartBank   = orxBank_Create(orxBODY_KU32_PART_BANK_SIZE, sizeof(orxBODY_PART), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstBody.pstPartDefBank= orxBank_Create(orxBODY_KU32_PART_BANK_SIZE, sizeof(orxBODY_PART_DEF), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     sstBody.pstJointBank  = orxBank_Create(orxBODY_KU32_JOINT_BANK_SIZE, sizeof(orxBODY_JOINT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if((sstBody.pstPartBank != orxNULL)
+    && (sstBody.pstPartDefBank != orxNULL)
     && (sstBody.pstJointBank != orxNULL))
     {
       /* Registers structure type */
@@ -325,6 +330,11 @@ orxSTATUS orxFASTCALL orxBody_Init()
       {
         orxBank_Delete(sstBody.pstPartBank);
         sstBody.pstPartBank = orxNULL;
+      }
+      if(sstBody.pstPartDefBank != orxNULL)
+      {
+        orxBank_Delete(sstBody.pstPartDefBank);
+        sstBody.pstPartDefBank = orxNULL;
       }
       if(sstBody.pstJointBank != orxNULL)
       {
@@ -374,6 +384,8 @@ void orxFASTCALL orxBody_Exit()
     /* Deletes banks */
     orxBank_Delete(sstBody.pstPartBank);
     sstBody.pstPartBank = orxNULL;
+    orxBank_Delete(sstBody.pstPartDefBank);
+    sstBody.pstPartDefBank = orxNULL;
     orxBank_Delete(sstBody.pstJointBank);
     sstBody.pstJointBank = orxNULL;
 
@@ -723,18 +735,20 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetOwner(const orxBODY *_pstBody)
  */
 orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
-  orxBODY_PART *pstResult;
+  orxBODY_PART_DEF *pstLocalBodyPartDef;
+  orxBODY_PART     *pstResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
   orxASSERT(_pstBodyPartDef != orxNULL);
 
-  /* Creates a body part */
+  /* Creates a body part & body part def */
+  pstLocalBodyPartDef = (orxBODY_PART_DEF *)orxBank_Allocate(sstBody.pstPartDefBank);
   pstResult = (orxBODY_PART *)orxBank_Allocate(sstBody.pstPartBank);
 
   /* Valid? */
-  if(pstResult != orxNULL)
+  if((pstLocalBodyPartDef != orxNULL) && (pstResult != orxNULL))
   {
     orxPHYSICS_BODY_PART *pstBodyPart;
 
@@ -750,6 +764,15 @@ orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_
       /* Stores its data */
       pstResult->pstData = pstBodyPart;
 
+      /* Copies def */
+      orxMemory_Copy(pstLocalBodyPartDef, _pstBodyPartDef, sizeof(orxBODY_PART_DEF));
+
+      /* Stores def */
+      pstResult->pstDef = pstLocalBodyPartDef;
+
+      /* Stores body */
+      pstResult->pstBody = _pstBody;
+
       /* Links it */
       orxLinkList_AddEnd(&(_pstBody->stPartList), &(pstResult->stNode));
     }
@@ -762,6 +785,22 @@ orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_
       orxBank_Free(sstBody.pstPartBank, pstResult);
 
       /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Deletes banks */
+    if(pstLocalBodyPartDef != orxNULL)
+    {
+      /* Deletes it */
+      orxBank_Free(sstBody.pstPartDefBank, pstLocalBodyPartDef);
+      pstLocalBodyPartDef = orxNULL;
+    }
+    if(pstResult != orxNULL)
+    {
+      /* Deletes it */
+      orxBank_Free(sstBody.pstPartBank, pstResult);
       pstResult = orxNULL;
     }
   }
@@ -1036,6 +1075,57 @@ const orxSTRING orxFASTCALL orxBody_GetPartName(const orxBODY_PART *_pstBodyPart
   return zResult;
 }
 
+/** Gets a body part definition (matching current part status)
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxBODY_PART_DEF / orxNULL
+ */
+const orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartDef(const orxBODY_PART *_pstBodyPart)
+{
+  orxBODY_PART_DEF *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxBODY_PART_DEF *)_pstBodyPart->pstDef;
+
+  /* Updates its information */
+  orxVector_Copy(&(pstResult->vScale), &(_pstBodyPart->pstBody->vScale));
+  pstResult->u16CheckMask = orxBody_GetPartCheckMask(_pstBodyPart);
+  pstResult->u16SelfFlags = orxBody_GetPartSelfFlags(_pstBodyPart);
+  if(orxBody_IsPartSolid(_pstBodyPart) != orxFALSE)
+  {
+    orxFLAG_SET(pstResult->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID, orxBODY_PART_DEF_KU32_FLAG_NONE);
+  }
+  else
+  {
+    orxFLAG_SET(pstResult->u32Flags, orxBODY_PART_DEF_KU32_FLAG_NONE, orxBODY_PART_DEF_KU32_FLAG_SOLID);
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a body part body (ie. owner)
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxBODY / orxNULL
+ */
+orxBODY *orxFASTCALL orxBody_GetPartBody(const orxBODY_PART *_pstBodyPart)
+{
+  orxBODY *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxBODY *)_pstBodyPart->pstBody;
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Removes a body part
  * @param[in]   _pstBodyPart    Concerned body part
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -1062,6 +1152,9 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY_PART *_pstBodyPart)
       /* Unprotects it */
       orxConfig_ProtectSection(_pstBodyPart->zReference, orxFALSE);
     }
+
+    /* Frees part def */
+    orxBank_Free(sstBody.pstPartDefBank, _pstBodyPart->pstDef);
 
     /* Frees part */
     orxBank_Free(sstBody.pstPartBank, _pstBodyPart);
@@ -1122,10 +1215,10 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJoint(orxBODY *_pstSrcBody, orxBODY *_pstD
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to create body part.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to create body joint.");
 
       /* Deletes part */
-      orxBank_Free(sstBody.pstPartBank, pstResult);
+      orxBank_Free(sstBody.pstJointBank, pstResult);
 
       /* Updates result */
       pstResult = orxNULL;

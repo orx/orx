@@ -161,6 +161,18 @@ extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_GetNextPart(const orxBODY 
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetPartName(const orxBODY_PART *_pstBodyPart);
 
+/** Gets a body part definition (matching current part status)
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxBODY_PART_DEF / orxNULL
+ */
+extern orxDLLAPI const orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartDef(const orxBODY_PART *_pstBodyPart);
+
+/** Gets a body part body (ie. owner)
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxBODY / orxNULL
+ */
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_GetPartBody(const orxBODY_PART *_pstBodyPart);
+
 /** Removes a body part
  * @param[in]   _pstBodyPart    Concerned body part
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
