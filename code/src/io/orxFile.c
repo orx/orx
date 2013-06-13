@@ -152,8 +152,11 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   _pstFileInfo->u32Flags = 0;
 
   /* Read only file ? */
-  /* TODO : Update the way that read only is computed. It depends of the reader user/group */
-  if((stStat.st_mode & S_IROTH) && !(stStat.st_mode & S_IWOTH))
+  if(access(_pstFileInfo->zFullName, R_OK | W_OK) == 0)
+  {
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_NORMAL;
+  }
+  else if(access(_pstFileInfo->zFullName, R_OK) == 0)
   {
     _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_RDONLY;
   }
@@ -171,9 +174,9 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   }
 
   /* Normal file ? */
-  if(_pstFileInfo->u32Flags == 0)
+  if(_pstFileInfo->u32Flags != orxFILE_KU32_FLAG_INFO_NORMAL)
   {
-    _pstFileInfo->u32Flags = orxFILE_KU32_FLAG_INFO_NORMAL;
+    _pstFileInfo->u32Flags &= ~orxFILE_KU32_FLAG_INFO_NORMAL;
   }
 
   /* Sets time and last file access time */
