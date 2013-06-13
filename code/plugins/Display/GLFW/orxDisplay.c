@@ -3339,7 +3339,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "uniform sampler2D orxTexture;"
           "void main()"
           "{"
-          "  gl_FragColor = gl_Color * texture2D(orxTexture, gl_TexCoord[0]);"
+          "  gl_FragColor = gl_Color.rgba * texture2D(orxTexture, gl_TexCoord[0].st).rgba;"
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
           "void main()"
