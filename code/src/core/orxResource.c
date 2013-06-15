@@ -715,7 +715,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
 orxSTATUS orxFASTCALL orxResource_ReloadStorage()
 {
   orxU32    i, u32SectionCounter;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -772,7 +772,11 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
       if(bAdd != orxFALSE)
       {
         /* Adds storage to group */
-        orxResource_AddStorage(zGroup, zStorage, orxFALSE);
+        if(orxResource_AddStorage(zGroup, zStorage, orxFALSE) == orxSTATUS_FAILURE)
+        {
+          /* Updates */
+          eResult = orxSTATUS_FAILURE;
+        }
       }
     }
 
