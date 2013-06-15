@@ -84,14 +84,14 @@ typedef struct __orxSHADERPOINTER_HOLDER_t
   orxSHADER  *pstShader;                                        /**< Shader reference : 4 */
   orxU32      u32Flags;                                         /**< Flags : 8 */
 
-} orxSOUNDPOINTER_HOLDER;
+} orxSHADERPOINTER_HOLDER;
 
 /** ShaderPointer structure
  */
 struct __orxSHADERPOINTER_t
 {
   orxSTRUCTURE            stStructure;                          /**< Public structure, first structure member : 32 */
-  orxSOUNDPOINTER_HOLDER  astShaderList[orxSHADERPOINTER_KU32_SHADER_NUMBER]; /**< Shader list : 48 */
+  orxSHADERPOINTER_HOLDER astShaderList[orxSHADERPOINTER_KU32_SHADER_NUMBER]; /**< Shader list : 48 */
   const orxSTRUCTURE     *pstOwner;                             /**< Owner structure : 52 */
 };
 

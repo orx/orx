@@ -291,10 +291,14 @@ orxSHADER *orxFASTCALL orxShader_Create()
     }
     else
     {
-      /* Deletes bank */
+      /* Deletes banks */
       if(pstResult->pstParamValueBank != orxNULL)
       {
         orxBank_Delete(pstResult->pstParamValueBank);
+      }
+      if(pstResult->pstParamBank != orxNULL)
+      {
+        orxBank_Delete(pstResult->pstParamBank);
       }
 
       /* Logs message */
@@ -647,7 +651,7 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
         if(pstParamValue->pstParam->eType == orxSHADER_PARAM_TYPE_TEXTURE)
         {
           /* Is valid? */
-          if((pstParamValue->pstValue != orxNULL) && (pstParamValue->s32Index <= 0))
+          if(pstParamValue->pstValue != orxNULL)
           {
             /* Deletes it */
             orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);

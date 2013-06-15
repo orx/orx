@@ -318,13 +318,13 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section is empty.", _zTrackID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: memory allocation failure.", _zTrackID);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: memory allocation failure.", _zTrackID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section is empty.", _zTrackID);
     }
 
     /* Pops previous section */

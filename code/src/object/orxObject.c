@@ -6306,7 +6306,7 @@ orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOB
     pstResult = orxNULL;
 
     /* Cleans it */
-    orxMemory_Zero(_pstBoundingBox, sizeof(orxAABOX));
+    orxMemory_Zero(_pstBoundingBox, sizeof(orxOBOX));
   }
 
   /* Done! */
@@ -7200,7 +7200,7 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
     /* For all objects */
     for(u32Counter = 0, pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
         (u32Counter < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)), u32Counter++)
+        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
     {
       /* Gets its bounding box */
       if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
@@ -7218,6 +7218,9 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
           {
             /* Adds object */
             *ppstObject = pstObject;
+
+            /* Updates counter */
+            u32Counter++;
           }
           else
           {
