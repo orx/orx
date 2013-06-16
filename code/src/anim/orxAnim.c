@@ -705,12 +705,6 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnim) == 0)
   {
-    /* Frees key array */
-    orxMemory_Free(_pstAnim->astKeyList);
-
-    /* Frees event array */
-    orxMemory_Free(_pstAnim->astEventList);
-
     /* 2D Animation? */
     if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
     {
@@ -726,6 +720,12 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
 
     /* Removes all events */
     orxAnim_RemoveAllEvents(_pstAnim);
+
+    /* Frees key array */
+    orxMemory_Free(_pstAnim->astKeyList);
+
+    /* Frees event array */
+    orxMemory_Free(_pstAnim->astEventList);
 
     /* Deletes structure */
     orxStructure_Delete(_pstAnim);
