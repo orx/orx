@@ -64,8 +64,6 @@
 #define orxFONT_KU32_CHARACTER_BANK_SIZE        128         /**< Character bank size */
 #define orxFONT_KU32_CHARACTER_TABLE_SIZE       128         /**< Character table size */
 
-#define orxFONT_KZ_DEFAULT_FONT_NAME            "OrxDefaultFont"
-
 #define orxFONT_KZ_CONFIG_TEXTURE_NAME          "Texture"
 #define orxFONT_KZ_CONFIG_CHARACTER_LIST        "CharacterList"
 #define orxFONT_KZ_CONFIG_CHARACTER_SIZE        "CharacterSize"

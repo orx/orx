@@ -51,7 +51,7 @@
 
 /** Defines
  */
-#define orxTEXTURE_KZ_SCREEN_NAME         "-=SCREEN=-"
+#define orxTEXTURE_KZ_SCREEN_NAME         "-=Screen=-"
 
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
 

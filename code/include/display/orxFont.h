@@ -49,6 +49,11 @@
 #include "math/orxVector.h"
 
 
+/** Misc defines
+ */
+#define orxFONT_KZ_DEFAULT_FONT_NAME                  "-=DefaultFont=-"
+
+
 /** Internal font structure */
 typedef struct __orxFONT_t                            orxFONT;
 
