@@ -1056,7 +1056,7 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_eModType < orxCLOCK_MOD_TYPE_NUMBER);
+  orxASSERT((_eModType < orxCLOCK_MOD_TYPE_NUMBER) || (_eModType == orxCLOCK_MOD_TYPE_NONE));
 
   /* Valid modifier value? */
   if(_fModValue >= orxFLOAT_0)
