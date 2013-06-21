@@ -2006,6 +2006,26 @@ orxSTATUS orxFASTCALL orxBody_SetCustomGravity(orxBODY *_pstBody, const orxVECTO
   return eResult;
 }
 
+/** Sets a body fixed rotation
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _bFixed         Fixed / not fixed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixed)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetFixedRotation(_pstBody->pstData, _bFixed);
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -2150,6 +2170,25 @@ orxVECTOR *orxFASTCALL orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECT
 
   /* Done! */
   return pvResult;
+}
+
+/** Is a body using a fixed rotation
+ * @param[in]   _pstBody        Concerned body
+ * @return      orxTRUE if fixed rotation, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxBody_IsFixedRotation(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxPhysics_IsFixedRotation(_pstBody->pstData);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Gets a body mass

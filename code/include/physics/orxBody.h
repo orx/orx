@@ -258,6 +258,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularVelocity(orxBODY
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCustomGravity(orxBODY *_pstBody, const orxVECTOR *_pvCustomGravity);
 
+/** Sets a body fixed rotation
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _bFixed         Fixed / not fixed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixed);
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -290,6 +297,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(const o
  * @return      Body custom gravity / orxNULL is object doesn't have any
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECTOR *_pvCustomGravity);
+
+/** Is a body using a fixed rotation
+ * @param[in]   _pstBody        Concerned body
+ * @return      orxTRUE if fixed rotation, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsFixedRotation(const orxBODY *_pstBody);
 
 /** Gets a body mass
  * @param[in]   _pstBody        Concerned body
