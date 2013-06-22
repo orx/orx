@@ -1,5 +1,6 @@
 var orx_font_8h =
 [
+    [ "orxFONT_KZ_DEFAULT_FONT_NAME", "orx_font_8h.html#ga5a600515960df2d48b224d2f44d057f8", null ],
     [ "orxFONT", "orx_font_8h.html#gab691adc491d2136ac68d160d1f14bc1d", null ],
     [ "orxFont_Create", "orx_font_8h.html#ga8e56191650ac7c5a713a01d5081243a9", null ],
     [ "orxFont_CreateFromConfig", "orx_font_8h.html#ga2c0b05a012c9b10e55524432c2d1ad1e", null ],

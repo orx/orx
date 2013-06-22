@@ -1,5 +1,6 @@
 var group__orx_font =
 [
+    [ "orxFONT_KZ_DEFAULT_FONT_NAME", "group__orx_font.html#ga5a600515960df2d48b224d2f44d057f8", null ],
     [ "orxFONT", "group__orx_font.html#gab691adc491d2136ac68d160d1f14bc1d", null ],
     [ "orxFont_Create", "group__orx_font.html#ga8e56191650ac7c5a713a01d5081243a9", null ],
     [ "orxFont_CreateFromConfig", "group__orx_font.html#ga2c0b05a012c9b10e55524432c2d1ad1e", null ],
