@@ -2114,6 +2114,29 @@ orxVECTOR *orxFASTCALL orxBody_GetSpeed(const orxBODY *_pstBody, orxVECTOR *_pvS
   return pvResult;
 }
 
+/** Gets a body speed at a specified world point
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvPosition     Concerned world position
+ * @param[out]  _pvSpeed        Speed to get
+ * @return      Body speed / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxBody_GetSpeedAtWorldPosition(const orxBODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed)
+{
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvPosition != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Updates result */
+  pvResult = orxPhysics_GetSpeedAtWorldPosition(_pstBody->pstData, _pvPosition, _pvSpeed);
+
+  /* Done! */
+  return pvResult;
+}
+
 /** Gets a body angular velocity
  * @param[in]   _pstBody        Concerned body
  * @return      Body angular velocity (radians/seconds)

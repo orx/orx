@@ -451,6 +451,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetRotation(con
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
 
+/** Gets the speed of a physical body at a specified world position
+ * @param[in]   _pstBody                              Concerned body
+ * @param[in]   _pvPosition                           Concerned world position
+ * @param[out]  _pvSpeed                              Speed to get
+ * @return Speed of the physical body
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed);
+
 /** Gets the angular velocity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @return Angular velocity (radians/seconds) of the physical body

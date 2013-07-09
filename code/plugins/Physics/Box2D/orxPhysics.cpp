@@ -1862,6 +1862,34 @@ extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(const orxPHYSICS_BOD
   return pvResult;
 }
 
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed)
+{
+  b2Body   *poBody;
+  b2Vec2    vSpeed;
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its speed at given position */
+  vSpeed = poBody->GetLinearVelocityFromWorldPoint(b2Vec2(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY));
+
+  /* Updates result */
+  pvResult      = _pvSpeed;
+  pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
+  pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
+  pvResult->fZ  = orxFLOAT_0;
+
+  /* Done! */
+  return pvResult;
+}
+
 extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody)
 {
   b2Body   *poBody;

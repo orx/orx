@@ -218,6 +218,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetFixedRotation, orxSTATUS, orxPHYSIC
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeedAtWorldPosition, orxVECTOR *, const orxPHYSICS_BODY *, const orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetAngularVelocity, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetCustomGravity, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsFixedRotation, orxBOOL, const orxPHYSICS_BODY *);
@@ -263,6 +264,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_FIXED_ROTATION, orxPhysics_SetFix
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_POSITION, orxPhysics_GetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ROTATION, orxPhysics_GetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED, orxPhysics_GetSpeed)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED_AT_WORLD_POSITION, orxPhysics_GetSpeedAtWorldPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ANGULAR_VELOCITY, orxPhysics_GetAngularVelocity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_CUSTOM_GRAVITY, orxPhysics_GetCustomGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_FIXED_ROTATION, orxPhysics_IsFixedRotation)
@@ -385,6 +387,11 @@ orxFLOAT orxFASTCALL orxPhysics_GetRotation(const orxPHYSICS_BODY *_pstBody)
 orxVECTOR *orxFASTCALL orxPhysics_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetSpeed)(_pstBody, _pvSpeed);
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetSpeedAtWorldPosition)(_pstBody, _pvPosition, _pvSpeed);
 }
 
 orxFLOAT orxFASTCALL orxPhysics_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody)
