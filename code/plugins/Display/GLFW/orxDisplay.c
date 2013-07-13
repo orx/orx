@@ -1151,9 +1151,9 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
 
   /* Fills the color list */
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
@@ -1393,9 +1393,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
 
           /* Fills the color list */
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
@@ -1644,7 +1644,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
 
     /* Updates UV */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fTop + (fYCoef * _astVertexList[i].fV)));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)((fTop + (fYCoef * _astVertexList[i].fV)));
 
     /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
@@ -1933,9 +1933,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
     orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
 
     /* For all lines */
-    for(i = 0, u32SrcOffset = 0, u32DstOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - 1);
+    for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
         i < u32Height;
-        i++, u32SrcOffset += u32LineSize, u32DstOffset -= u32RealLineSize)
+        i++, u32SrcOffset += u32LineSize, u32DstOffset += u32RealLineSize)
     {
       /* Copies data */
       orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
@@ -2048,9 +2048,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(orxBITMAP *_pstBitmap, orxU8
     orxMemory_Zero(_au8Data, u32LineSize * orxF2U(_pstBitmap->fHeight));
 
     /* For all lines */
-    for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+    for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
         i < orxF2U(_pstBitmap->fHeight);
-        i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+        i++, u32SrcOffset += u32RealLineSize, u32DstOffset += u32LineSize)
     {
       /* Copies data */
       orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
@@ -2128,6 +2128,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
 {
   orxU32    i, j, u32Number;
   orxBOOL   bBound = orxFALSE, bFlush = orxFALSE;
+  GLdouble  dOrthoRight, dOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2262,6 +2263,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       iY      = 0;
       iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
       iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
+
+      /* Updates ortho info */
+      dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      dOrthoBottom  = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight;
     }
     else
     {
@@ -2275,9 +2280,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
 
       /* Updates viewport info */
       iX      = 0;
-      iY      = (GLint)((orxS32)sstDisplay.apstDestinationBitmapList[0]->u32RealHeight - orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight));
+      iY      = 0;
       iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
       iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
+
+      /* Updates ortho info */
+      dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      dOrthoBottom  = (GLdouble)-sstDisplay.apstDestinationBitmapList[0]->fHeight;
     }
 
     /* Should update viewport? */
@@ -2298,17 +2307,19 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     }
 
     /* Should update the orthogonal projection? */
-    if(((GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth != sstDisplay.dLastOrthoRight)
-    || ((GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight != sstDisplay.dLastOrthoBottom))
+    if((dOrthoRight != sstDisplay.dLastOrthoRight)
+    || (dOrthoBottom != sstDisplay.dLastOrthoBottom))
     {
       /* Inits matrices */
       glMatrixMode(GL_PROJECTION);
       glASSERT();
       glLoadIdentity();
       glASSERT();
-      sstDisplay.dLastOrthoRight  = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
-      sstDisplay.dLastOrthoBottom = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight;
-      glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f);
+      sstDisplay.dLastOrthoRight  = dOrthoRight;
+      sstDisplay.dLastOrthoBottom = dOrthoBottom;
+      (dOrthoBottom >= 0.0)
+      ? glOrtho(0.0f, dOrthoRight, dOrthoBottom, 0.0f, -1.0f, 1.0f)
+      : glOrtho(0.0f, dOrthoRight, 0.0f, -dOrthoBottom, -1.0f, 1.0f);
       glASSERT();
       glMatrixMode(GL_MODELVIEW);
       glASSERT();
@@ -2374,7 +2385,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
     /* Inits texture coords */
     fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
-    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
+    fTop    = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
 
     /* For all lines */
     for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -2387,13 +2398,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
       }
       else
       {
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
       }
 
       /* Resets bitmap width */
@@ -2564,9 +2575,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   else
   {
     /* For all lines */
-    for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+    for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
       i < orxF2U(_pstBitmap->fHeight);
-      i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+      i++, u32SrcOffset += u32RealLineSize, u32DstOffset += u32LineSize)
     {
       /* Copies data */
       orxMemory_Copy(pu8ImageBuffer + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
@@ -2670,9 +2681,9 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
             orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
 
             /* For all lines */
-            for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
+            for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
                 i < uiHeight;
-                i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
+                i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
             {
               /* Copies data */
               orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
@@ -2773,23 +2784,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
-    /* Is screen? */
-    if(sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
-    {
-      /* Gets new clipping values */
-      u32ClipX      = _u32TLX;
-      u32ClipY      = orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY;
-      u32ClipWidth  = _u32BRX - _u32TLX;
-      u32ClipHeight = _u32BRY - _u32TLY;
-    }
-    else
-    {
-      /* Gets new clipping values */
-      u32ClipX      = _u32TLX;
-      u32ClipY      = sstDisplay.apstDestinationBitmapList[0]->u32RealHeight - _u32BRY;
-      u32ClipWidth  = _u32BRX - _u32TLX;
-      u32ClipHeight = _u32BRY - _u32TLY;
-    }
+    /* Gets new clipping values */
+    u32ClipX      = _u32TLX;
+    u32ClipY      = orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY;
+    u32ClipWidth  = _u32BRX - _u32TLX;
+    u32ClipHeight = _u32BRY - _u32TLY;
 
     /* Different clipping? */
     if((u32ClipX != sstDisplay.u32LastClipX)
@@ -4440,9 +4439,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
         pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
         glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
         glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       }
 
@@ -4474,9 +4473,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
         pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
         glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
         glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
 
         /* Updates texture counter */
