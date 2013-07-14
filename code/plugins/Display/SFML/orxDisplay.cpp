@@ -480,7 +480,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstB
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   orxSTATUS eResult;
 

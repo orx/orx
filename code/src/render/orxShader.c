@@ -74,7 +74,6 @@
 #define orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM  "UseCustomParam"
 #define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
 
-#define orxSHADER_KZ_SCREEN                   "screen"
 #define orxSHADER_KZ_TIME                     "time"
 
 
@@ -482,17 +481,9 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
 
                           break;
                         }
-                        /* Is screen? */
-                        else if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
-                        {
-                          /* Gets its texture */
-                          ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
-                        }
-                        else
-                        {
-                          /* Creates texture */
-                          ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue);
-                        }
+
+                        /* Creates texture */
+                        ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue);
                       }
                       else
                       {
@@ -522,17 +513,9 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                           orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", pstResult->zReference, pstResult, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
                         }
                       }
-                      /* Is screen? */
-                      else if(!orxString_ICompare(zValue, orxSHADER_KZ_SCREEN))
-                      {
-                        /* Gets its texture */
-                        ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(orxTEXTURE_KZ_SCREEN_NAME);
-                      }
-                      else
-                      {
-                        /* Creates texture */
-                        ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue);
-                      }
+
+                      /* Creates texture */
+                      ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue);
                     }
                     else
                     {

@@ -84,7 +84,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMA
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, orxBITMAP *, orxU8 *, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, const orxBITMAP *, orxU8 *, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColor, orxSTATUS, orxBITMAP *, orxRGBA);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITMAP *);
@@ -311,7 +311,7 @@ orxBITMAP *orxFASTCALL orxDisplay_LoadBitmap(const orxSTRING _zFileName)
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadBitmap)(_zFileName);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+orxSTATUS orxFASTCALL orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapData)(_pstBitmap, _au8Data, _u32ByteNumber);
 }
