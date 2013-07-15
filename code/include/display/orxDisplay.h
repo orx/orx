@@ -898,7 +898,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(o
  * @param[in]   _u32ByteNumber                        Number of bytes of the buffer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
 /** Sets a bitmap color (lighting/hue)
  * @param[in]   _pstBitmap                            Concerned bitmap
