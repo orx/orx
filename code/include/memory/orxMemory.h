@@ -49,6 +49,13 @@
 #include "orxInclude.h"
 
 
+#ifdef __orxPROFILER__
+  #define orxMEMORY_TRACK(TYPE, SIZE, ALLOCATE)           orxMemory_Track(orxMEMORY_TYPE_##TYPE, SIZE, ALLOCATE)
+#else /* __orxPROFILER__ */
+  #define orxMEMORY_TRACK(TYPE, SIZE, ALLOCATE)
+#endif /* __orxPROFILER__ */
+
+
 typedef enum __orxMEMORY_TYPE_t
 {
   orxMEMORY_TYPE_MAIN = 0,                                /**< Main memory type */
@@ -159,9 +166,18 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxMemory_GetCacheLine
  * @param[out] _pu32Size              Current memory allocation size
  * @param[out] _pu32PeakSize          Peak memory allocation size
  * @param[out] _pu32OperationCounter  Total number of memory operations (malloc/free)
- * @return The pointer reallocated.
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Counter, orxU32 *_pu32PeakCounter, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCounter);
+
+
+/** Tracks (external) memory allocation
+ * @param[in] _eMemType               Concerned memory type
+ * @param[in] _s32Size                Size to track, in bytes
+ * @param[in] _bAllocate              orxTRUE if allocate, orxFALSE if free
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_Track(orxMEMORY_TYPE _eMemType, orxU32 _u32Size, orxBOOL _bAllocate);
 
 #endif /* __orxPROFILER__  */
 

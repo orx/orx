@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxRender
- * 
+ *
  * Render plugin module
  * Renders visible objects on screen, using active cameras/viewports.
  *

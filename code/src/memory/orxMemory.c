@@ -269,17 +269,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
     uMemoryChunkSize = dlmalloc_usable_size(pResult);
 
     /* Updates memory tracker */
-    sstMemory.astMemoryTrackerList[_eMemType].u32Size += uMemoryChunkSize - sizeof(orxMEMORY_TYPE);
-    sstMemory.astMemoryTrackerList[_eMemType].u32Counter++;
-    if(sstMemory.astMemoryTrackerList[_eMemType].u32Counter > sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter)
-    {
-      sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter = sstMemory.astMemoryTrackerList[_eMemType].u32Counter;
-    }
-    if(sstMemory.astMemoryTrackerList[_eMemType].u32Size > sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize)
-    {
-      sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
-    }
-    sstMemory.astMemoryTrackerList[_eMemType].u32OperationCounter++;
+    orxMemory_Track(_eMemType, uMemoryChunkSize - sizeof(orxMEMORY_TYPE), orxTRUE);
 
     /* Updates result */
     pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
@@ -322,9 +312,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     uMemoryChunkSize = dlmalloc_usable_size(_pMem);
 
     /* Updates memory tracker */
-    sstMemory.astMemoryTrackerList[eMemType].u32Size -= uMemoryChunkSize - sizeof(orxMEMORY_TYPE);
-    sstMemory.astMemoryTrackerList[eMemType].u32Counter--;
-    sstMemory.astMemoryTrackerList[eMemType].u32OperationCounter++;
+    orxMemory_Track(eMemType, uMemoryChunkSize - sizeof(orxMEMORY_TYPE), orxFALSE);
   }
 
 #endif /* __orxPROFILER__ */
@@ -472,7 +460,7 @@ orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
  * @param[out] _pu32Size        Current memory allocation size
  * @param[out] _pu32PeakSize    Peak memory allocation size
  * @param[out] _pu32OperationCounter  Total number of memory operations (malloc/free)
- * @return The pointer reallocated.
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Counter, orxU32 *_pu32PeakCounter, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCounter)
 {
@@ -518,6 +506,57 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
       /* Updates it */
       *_pu32OperationCounter = sstMemory.astMemoryTrackerList[_eMemType].u32OperationCounter;
     }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Tracks (external) memory allocation
+ * @param[in] _eMemType               Concerned memory type
+ * @param[in] _s32Size                Size to track, in bytes
+ * @param[in] _bAllocate              orxTRUE if allocate, orxFALSE if free
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxMemory_Track(orxMEMORY_TYPE _eMemType, orxU32 _u32Size, orxBOOL _bAllocate)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_eMemType < orxMEMORY_TYPE_NUMBER)
+  {
+    /* Allocate? */
+    if(_bAllocate != orxFALSE)
+    {
+      /* Updates counters */
+      sstMemory.astMemoryTrackerList[_eMemType].u32Size += _u32Size;
+      sstMemory.astMemoryTrackerList[_eMemType].u32Counter++;
+      if(sstMemory.astMemoryTrackerList[_eMemType].u32Counter > sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter)
+      {
+        sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter = sstMemory.astMemoryTrackerList[_eMemType].u32Counter;
+      }
+      if(sstMemory.astMemoryTrackerList[_eMemType].u32Size > sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize)
+      {
+        sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
+      }
+    }
+    else
+    {
+      /* Updates counters */
+      sstMemory.astMemoryTrackerList[_eMemType].u32Size -= _u32Size;
+      sstMemory.astMemoryTrackerList[_eMemType].u32Counter--;
+    }
+
+    /* Updates operation counter */
+    sstMemory.astMemoryTrackerList[_eMemType].u32OperationCounter++;
   }
   else
   {
