@@ -1687,6 +1687,9 @@ void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
       }
     }
 
+    /* Tracks video memory */
+    orxMEMORY_TRACK(VIDEO, _pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxFALSE);
+
     /* Deletes its texture */
     glDeleteTextures(1, &(_pstBitmap->uiTexture));
     glASSERT();
@@ -1724,6 +1727,9 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+    /* Tracks video memory */
+    orxMEMORY_TRACK(VIDEO, pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxTRUE);
 
     /* Creates new texture */
     glGenTextures(1, &pstBitmap->uiTexture);
@@ -1794,7 +1800,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
       orxRGBA  *astBuffer, *pstPixel;
 
       /* Allocates buffer */
-      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
+      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
 
       /* Checks */
       orxASSERT(astBuffer != orxNULL);
@@ -1920,7 +1926,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
       orxU32  i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
       /* Allocates buffer */
-      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
       /* Gets line sizes */
       u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
@@ -2009,7 +2015,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
     orxDisplay_GLFW_DrawArrays();
 
     /* Allocates buffer */
-    pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+    pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
     /* Checks */
     orxASSERT(pu8ImageBuffer != orxNULL);
@@ -2511,7 +2517,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
   /* Allocates buffer */
-  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_VIDEO);
+  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
 
   /* Valid? */
   if(pu8ImageData != orxNULL)
@@ -2645,7 +2651,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
               uiRealHeight  = (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
 
               /* Allocates buffer */
-              pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+              pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
               /* Checks */
               orxASSERT(pu8ImageBuffer != orxNULL);
@@ -2682,6 +2688,9 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
             pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
             orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
             orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
+
+            /* Tracks video memory */
+            orxMEMORY_TRACK(VIDEO, pstResult->u32RealWidth * pstResult->u32RealHeight * 4 * sizeof(orxU8), orxTRUE);
 
             /* Creates new texture */
             glGenTextures(1, &pstResult->uiTexture);
@@ -3029,6 +3038,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Reactivates resize event */
       sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
 
+      /* Tracks video memory */
+      orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8), orxFALSE);
+
       /* Deletes screen backup texture */
       glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
       glASSERT();
@@ -3042,6 +3054,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
       sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
       sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+
+      /* Tracks video memory */
+      orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8), orxTRUE);
 
       /* Creates texture for screen backup */
       glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
@@ -3136,7 +3151,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
             if(pstBitmap != sstDisplay.pstScreen)
             {
               /* Allocates its buffer */
-              aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+              aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
               /* Checks */
               orxASSERT(aau8BufferArray[u32Index] != orxNULL);
@@ -3149,12 +3164,18 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
               glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, aau8BufferArray[u32Index++]);
               glASSERT();
 
+              /* Tracks video memory */
+              orxMEMORY_TRACK(VIDEO, pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxFALSE);
+
               /* Deletes it */
               glDeleteTextures(1, &(pstBitmap->uiTexture));
               glASSERT();
             }
           }
         }
+
+        /* Tracks video memory */
+        orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8), orxFALSE);
 
         /* Deletes screen backup texture */
         glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
@@ -3387,6 +3408,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
 
+        /* Tracks video memory */
+        orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8), orxTRUE);
+
         /* Creates texture for screen backup */
         glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
         glASSERT();
@@ -3441,6 +3465,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
             /* Not screen? */
             if(pstBitmap != sstDisplay.pstScreen)
             {
+              /* Tracks video memory */
+              orxMEMORY_TRACK(VIDEO, pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxTRUE);
+
               /* Creates new texture */
               glGenTextures(1, &pstBitmap->uiTexture);
               glASSERT();
