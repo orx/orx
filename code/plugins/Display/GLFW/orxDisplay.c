@@ -4440,91 +4440,83 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+  orxASSERT((_pstValue != sstDisplay.pstScreen) && "Can't use screen bitmap as texture parameter (ID <%d>) for fragment shader.", _s32ID);
 
-  /* Not screen? */
-  if(_pstValue != sstDisplay.pstScreen)
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* For all already used texture units */
+  for(i = 0; i < pstShader->iTextureCounter; i++)
   {
-    /* Gets shader */
-    pstShader = (orxDISPLAY_SHADER *)_hShader;
-
-    /* For all already used texture units */
-    for(i = 0; i < pstShader->iTextureCounter; i++)
+    /* Same location? */
+    if(pstShader->astTextureInfoList[i].iLocation == pstShader->astParamInfoList[_s32ID].iLocation)
     {
-      /* Same location? */
-      if(pstShader->astTextureInfoList[i].iLocation == pstShader->astParamInfoList[_s32ID].iLocation)
+      /* Different texture? */
+      if(pstShader->astTextureInfoList[i].pstBitmap != _pstValue)
       {
-        /* Different texture? */
-        if(pstShader->astTextureInfoList[i].pstBitmap != _pstValue)
+        /* Draws remaining items */
+        orxDisplay_GLFW_DrawArrays();
+
+        /* Updates texture info */
+        pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
+
+        /* Updates corner values */
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+
+      break;
+    }
+  }
+
+  /* Not already done? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Has free texture unit left? */
+    if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
+    {
+      /* Valid? */
+      if(_s32ID >= 0)
+      {
+        /* No bitmap? */
+        if(_pstValue == orxNULL)
         {
-          /* Draws remaining items */
-          orxDisplay_GLFW_DrawArrays();
-
-          /* Updates texture info */
-          pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
-
-          /* Updates corner values */
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
+          /* Uses screen bitmap */
+          _pstValue = sstDisplay.pstScreen;
         }
+
+        /* Updates texture info */
+        pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
+        pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
+
+        /* Updates corner values */
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
+
+        /* Updates texture counter */
+        pstShader->iTextureCounter++;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
-
-        break;
-      }
-    }
-
-    /* Not already done? */
-    if(eResult == orxSTATUS_FAILURE)
-    {
-      /* Has free texture unit left? */
-      if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
-      {
-        /* Valid? */
-        if(_s32ID >= 0)
-        {
-          /* No bitmap? */
-          if(_pstValue == orxNULL)
-          {
-            /* Uses screen bitmap */
-            _pstValue = sstDisplay.pstScreen;
-          }
-
-          /* Updates texture info */
-          pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
-          pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
-
-          /* Updates corner values */
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-          glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
-
-          /* Updates texture counter */
-          pstShader->iTextureCounter++;
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
-        }
-        else
-        {
-          /* Outputs log */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't find texture parameter (ID <%d>) for fragment shader.", _s32ID);
-        }
       }
       else
       {
         /* Outputs log */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%d>) for fragment shader: all the texture units are used.", _s32ID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't find texture parameter (ID <%d>) for fragment shader.", _s32ID);
       }
     }
-  }
-  else
-  {
-    /* Outputs log */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't use screen bitmap as texture parameter (ID <%d>) for fragment shader.", _s32ID);
+    else
+    {
+      /* Outputs log */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%d>) for fragment shader: all the texture units are used.", _s32ID);
+    }
   }
 
   /* Done! */

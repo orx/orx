@@ -102,7 +102,8 @@ struct __orxVIEWPORT_t
   orxU32            u32TextureCounter;                                    /**< Associated texture counter : 68 */
   orxCAMERA        *pstCamera;                                            /**< Associated camera : 72 / 76 */
   orxSHADERPOINTER *pstShaderPointer;                                     /**< Shader pointer : 76 / 84 */
-  orxTEXTURE       *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 140 / 212 */
+  orxU32            u32TextureOwnerFlags;                                 /**< Texture owner flags : 80 / 88 */
+  orxTEXTURE       *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 144 / 216 */
 };
 
 /** Static structure
@@ -234,6 +235,9 @@ void orxFASTCALL orxViewport_Setup()
 orxSTATUS orxFASTCALL orxViewport_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER <= 32);
 
   /* Not already Initialized? */
   if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY))
@@ -380,12 +384,42 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       const orxSTRING zCameraName;
       orxS32          s32Number;
 
+      /* Has plain size */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+      {
+        orxVECTOR vSize;
+
+        /* Gets it */
+        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize);
+
+        /* Applies it */
+        orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+      }
+      else
+      {
+        /* Defaults to screen size */
+        orxDisplay_GetScreenSize(&(pstResult->fWidth), &(pstResult->fHeight));
+      }
+
+      /* Has plain position */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
+      {
+        orxVECTOR vPos;
+
+        /* Gets it */
+        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos);
+
+        /* Applies it */
+        orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
+      }
+
       /* *** Textures *** */
 
       /* Has texture list? */
       if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME)) > 0)
       {
         orxS32      i, s32TextureCounter;
+        orxU32      u32OwnerFlags = 0;
         orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
 
         /* For all entries */
@@ -401,8 +435,49 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           {
             orxTEXTURE *pstTexture;
 
-            /* Creates texture */
+            /* Creates texture from file */
             pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+            /* Not found? */
+            if(pstTexture == orxNULL)
+            {
+              orxBITMAP *pstBitmap;
+
+              /* Creates new bitmap */
+              pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstResult->fWidth), orxF2U(pstResult->fHeight));
+
+              /* Valid? */
+              if(pstBitmap != orxNULL)
+              {
+                /* Creates new texture */
+                pstTexture = orxTexture_Create();
+
+                /* Valid? */
+                if(pstTexture != orxNULL)
+                {
+                  /* Links them */
+                  if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName) != orxSTATUS_FAILURE)
+                  {
+                    /* Updates owner flags */
+                    u32OwnerFlags |= 1 << i;
+                  }
+                  else
+                  {
+                    /* Deletes texture */
+                    orxTexture_Delete(pstTexture);
+                    pstTexture = orxNULL;
+
+                    /* Deletes bitmap */
+                    orxDisplay_DeleteBitmap(pstBitmap);
+                  }
+                }
+                else
+                {
+                  /* Deletes bitmap */
+                  orxDisplay_DeleteBitmap(pstBitmap);
+                }
+              }
+            }
 
             /* Valid? */
             if(pstTexture != orxNULL)
@@ -450,10 +525,34 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             /* Wasn't stored? */
             if(bStored == orxFALSE)
             {
+              /* Was owned? */
+              if(u32OwnerFlags & (1 << j))
+              {
+                orxBITMAP *pstBitmap;
+
+                /* Gets linked bitmap */
+                pstBitmap = orxTexture_GetBitmap(apstTextureList[j]);
+
+                /* Unlinks it */
+                orxTexture_UnlinkBitmap(apstTextureList[j]);
+
+                /* Deletes it */
+                orxDisplay_DeleteBitmap(pstBitmap);
+
+                /* Updates owner flags */
+                u32OwnerFlags &= ~(1 << j);
+              }
+
+              /* Shifts owner flags to remove gap */
+              u32OwnerFlags = (u32OwnerFlags & ((1 << j) - 1)) | ((u32OwnerFlags & ~((1 << (j + 1)) - 1)) >> 1);
+
               /* Deletes it */
               orxTexture_Delete(apstTextureList[j]);
             }
           }
+
+          /* Stores texture owner flags */
+          pstResult->u32TextureOwnerFlags = u32OwnerFlags;
 
           /* Updates status flags */
           orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
@@ -470,15 +569,60 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
         {
           orxTEXTURE *pstTexture;
+          orxU32      u32OwnerFlags = 0;
 
-          /* Creates texture */
+          /* Creates texture from file */
           pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+          /* Not found? */
+          if(pstTexture == orxNULL)
+          {
+            orxBITMAP *pstBitmap;
+
+            /* Creates new bitmap */
+            pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstResult->fWidth), orxF2U(pstResult->fHeight));
+
+            /* Valid? */
+            if(pstBitmap != orxNULL)
+            {
+              /* Creates new texture */
+              pstTexture = orxTexture_Create();
+
+              /* Valid? */
+              if(pstTexture != orxNULL)
+              {
+                /* Links them */
+                if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName) != orxSTATUS_FAILURE)
+                {
+                  /* Updates  owner flags */
+                  u32OwnerFlags = 1;
+                }
+                else
+                {
+                  /* Deletes texture */
+                  orxTexture_Delete(pstTexture);
+                  pstTexture = orxNULL;
+
+                  /* Deletes bitmap */
+                  orxDisplay_DeleteBitmap(pstBitmap);
+                }
+              }
+              else
+              {
+                /* Deletes bitmap */
+                orxDisplay_DeleteBitmap(pstBitmap);
+              }
+            }
+          }
 
           /* Valid? */
           if(pstTexture != orxNULL)
           {
             /* Sets it */
             orxViewport_SetTextureList(pstResult, 1, &pstTexture);
+
+            /* Stores texture owner flags */
+            pstResult->u32TextureOwnerFlags = u32OwnerFlags;
 
             /* Updates its owner */
             orxStructure_SetOwner(pstTexture, pstResult);
@@ -561,17 +705,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* Applies it */
         orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
       }
-      /* Has plain size */
-      else if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
-      {
-        orxVECTOR vSize;
-
-        /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize);
-
-        /* Applies it */
-        orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
-      }
 
       /* Has relative position? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION) != orxFALSE)
@@ -610,17 +743,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Applies it */
         orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
-      }
-      /* Has plain position */
-      else if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
-      {
-        orxVECTOR vPos;
-
-        /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos);
-
-        /* Applies it */
-        orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
       }
     }
 
@@ -664,24 +786,8 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
     /* Was linked to textures? */
     if(_pstViewport->u32TextureCounter != 0)
     {
-      orxU32 i;
-
-      /* For all textures */
-      for(i = 0; i < _pstViewport->u32TextureCounter; i++)
-      {
-        /* Removes its reference */
-        orxStructure_DecreaseCounter(_pstViewport->apstTextureList[i]);
-
-        /* Was internally allocated? */
-        if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES) != orxFALSE)
-        {
-          /* Removes its owner */
-          orxStructure_SetOwner(_pstViewport->apstTextureList[i], orxNULL);
-
-          /* Deletes it */
-          orxTexture_Delete(_pstViewport->apstTextureList[i]);
-        }
-      }
+      /* Removes them */
+      orxViewport_SetTextureList(_pstViewport, 0, orxNULL);
     }
 
     /* Had a shader pointer? */
@@ -754,6 +860,21 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
     /* Was internally allocated? */
     if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES) != orxFALSE)
     {
+      /* Was bitmap owned? */
+      if(_pstViewport->u32TextureOwnerFlags & (1 << i))
+      {
+        orxBITMAP *pstBitmap;
+
+        /* Gets its linked bitmap */
+        pstBitmap = orxTexture_GetBitmap(_pstViewport->apstTextureList[i]);
+
+        /* Unlinks it */
+        orxTexture_UnlinkBitmap(_pstViewport->apstTextureList[i]);
+
+        /* Deletes it */
+        orxDisplay_DeleteBitmap(pstBitmap);
+      }
+
       /* Removes its owner */
       orxStructure_SetOwner(_pstViewport->apstTextureList[i], orxNULL);
 
@@ -761,6 +882,9 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
       orxTexture_Delete(_pstViewport->apstTextureList[i]);
     }
   }
+
+  /* Clears texture owner flags */
+  _pstViewport->u32TextureOwnerFlags = 0;
 
   /* Has new textures? */
   if(_u32TextureNumber != 0)
