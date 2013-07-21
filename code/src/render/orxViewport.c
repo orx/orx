@@ -56,7 +56,8 @@
 #define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
 #define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
 #define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000004  /**< Has background color flag */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES  0x10000000  /**< Internal texture handling flag  */
+#define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /** < Uses screen size */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x10000000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
 
@@ -156,19 +157,74 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
       fWidthRatio   = orxU2F(pstPayload->u32Width) / orxU2F(pstPayload->u32PreviousWidth);
       fHeightRatio  = orxU2F(pstPayload->u32Height) / orxU2F(pstPayload->u32PreviousHeight);
 
-      /* For all viewports */
-      for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-          pstViewport != orxNULL;
-          pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+      /* Changed? */
+      if((fWidthRatio != orxFLOAT_1) || (fHeightRatio != orxFLOAT_1))
       {
-        /* Is linked to screen? */
-        if(pstViewport->u32TextureCounter == 0)
+        /* For all viewports */
+        for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+            pstViewport != orxNULL;
+            pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
         {
-          /* Updates relative position & dimension */
-          pstViewport->fX      *= fWidthRatio;
-          pstViewport->fWidth  *= fWidthRatio;
-          pstViewport->fY      *= fHeightRatio;
-          pstViewport->fHeight *= fHeightRatio;
+          /* Is linked to screen? */
+          if(pstViewport->u32TextureCounter == 0)
+          {
+            /* Updates relative position & dimension */
+            pstViewport->fX      *= fWidthRatio;
+            pstViewport->fWidth  *= fWidthRatio;
+            pstViewport->fY      *= fHeightRatio;
+            pstViewport->fHeight *= fHeightRatio;
+          }
+          /* Uses screen size? */
+          else if(orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE))
+          {
+            /* Has owned textures? */
+            if(pstViewport->u32TextureOwnerFlags != 0)
+            {
+              orxU32 i;
+
+              /* Updates relative position & dimension */
+              pstViewport->fX      *= fWidthRatio;
+              pstViewport->fWidth  *= fWidthRatio;
+              pstViewport->fY      *= fHeightRatio;
+              pstViewport->fHeight *= fHeightRatio;
+
+              /* For all textures */
+              for(i = 0; i < pstViewport->u32TextureCounter; i++)
+              {
+                /* Is owned? */
+                if(pstViewport->u32TextureOwnerFlags & (1 << i))
+                {
+                  orxBITMAP  *pstBitmap;
+                  orxCHAR     acBuffer[256];
+
+                  /* Gets its name */
+                  orxString_NPrint(acBuffer, 255, "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
+                  acBuffer[255] = orxCHAR_NULL;
+
+                  /* Gets its linked bitmap */
+                  pstBitmap = orxTexture_GetBitmap(pstViewport->apstTextureList[i]);
+
+                  /* Unlinks it */
+                  orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
+
+                  /* Deletes it */
+                  orxDisplay_DeleteBitmap(pstBitmap);
+
+                  /* Re-creates it as the right size */
+                  pstBitmap = orxDisplay_CreateBitmap(pstPayload->u32Width, pstPayload->u32Height);
+
+                  /* Checks */
+                  orxASSERT(pstBitmap != orxNULL);
+
+                  /* Clears it */
+                  orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
+
+                  /* Re-links it */
+                  orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer);
+                }
+              }
+            }
+          }
         }
       }
 
@@ -399,6 +455,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       {
         /* Defaults to screen size */
         orxDisplay_GetScreenSize(&(pstResult->fWidth), &(pstResult->fHeight));
+
+        /* Updates flags */
+        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
       }
 
       /* Has plain position */
@@ -1502,6 +1561,7 @@ void orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, or
   _pstViewport->fWidth  = _fW;
   _pstViewport->fHeight = _fH;
 
+  /* Done! */
   return;
 }
 
