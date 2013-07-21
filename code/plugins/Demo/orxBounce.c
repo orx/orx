@@ -37,13 +37,13 @@
 #define             TRAIL_POINT_NUMBER                      80
 
 static orxU32       su32VideoModeIndex                    = 0;
-static orxSPAWNER  *spoBallSpawner;
-static orxVIEWPORT *spstViewport;
-static orxOBJECT   *spstWalls;
+static orxBOOL      sbShaderEnabled                       = orxFALSE;
+static orxSPAWNER  *spoBallSpawner                        = orxNULL;
+static orxOBJECT   *spstWalls                             = orxNULL;
 static orxFLOAT     sfShaderPhase                         = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude                     = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency                     = orx2F(1.0f);
-static orxVECTOR    svColor;
+static orxVECTOR    svColor                               = {0};
 static orxFLOAT     sfColorTime                           = orx2F(0.0f);
 static orxFLOAT     sfTrailTimer                          = orx2F(0.0f);
 static orxBOOL      sbRecord                              = orxFALSE;
@@ -232,8 +232,14 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       /* Gets its payload */
       pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
+      /* Enabled? */
+      if(!orxString_Compare(pstPayload->zParamName, "enabled"))
+      {
+        /* Updates its value */
+        pstPayload->fValue = (sbShaderEnabled != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+      }
       /* Phase? */
-      if(!orxString_Compare(pstPayload->zParamName, "phase"))
+      else if(!orxString_Compare(pstPayload->zParamName, "phase"))
       {
         /* Updates its value */
         pstPayload->fValue = sfShaderPhase;
@@ -509,8 +515,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   /* Toggle shader? */
   if(orxInput_IsActive("ToggleShader") && (orxInput_HasNewStatus("ToggleShader")))
   {
-    /* Toggles shader */
-    orxViewport_EnableShader(spstViewport, !orxViewport_IsShaderEnabled(spstViewport));
+    /* Toggles shader status */
+    sbShaderEnabled = !sbShaderEnabled;
   }
 }
 
@@ -559,9 +565,11 @@ static orxSTATUS orxBounce_Init()
       orxMouse_GetPosition(&savTrailPointList[i]);
     }
 
-    /* Creates viewport on screen */
-    spstViewport = orxViewport_CreateFromConfig("BounceViewport");
-    orxViewport_EnableShader(spstViewport, orxFALSE);
+    /* Creates all viewports */
+    for(i = 0; i < (orxU32)orxConfig_GetListCounter("ViewportList"); i++)
+    {
+      orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+    }
 
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);

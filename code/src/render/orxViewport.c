@@ -449,6 +449,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
               /* Valid? */
               if(pstBitmap != orxNULL)
               {
+                /* Clears it */
+                orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
+
                 /* Creates new texture */
                 pstTexture = orxTexture_Create();
 
@@ -585,6 +588,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             /* Valid? */
             if(pstBitmap != orxNULL)
             {
+              /* Clears it */
+              orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
+
               /* Creates new texture */
               pstTexture = orxTexture_Create();
 

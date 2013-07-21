@@ -44,7 +44,7 @@
 #if defined(__orxGCC__) && defined(__orxWINDOWS__)
 
   #define alloca __builtin_alloca
-  
+
 #endif /* __orxGCC__ && __orxWINDOWS__ */
 
 
@@ -337,7 +337,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
 /** Renders profiler info
  */
 static orxINLINE void orxRender_Home_RenderProfiler()
-{ 
+{
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
@@ -475,7 +475,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       /* Inits both vertices */
       astVertexList[2 * i].fX     =
       astVertexList[2 * i + 1].fX = (bLandscape != orxFALSE) ? (orxFLOAT_1 - orxU2F(i) / orxU2F(orxPROFILER_KU32_HISTORY_LENGTH)) * (fScreenWidth - fBorder) : fScreenWidth - fBorder;
-      astVertexList[2 * i].fY     = 
+      astVertexList[2 * i].fY     =
       astVertexList[2 * i + 1].fY = (bLandscape != orxFALSE) ? fScreenHeight - fBorder : fScreenHeight - (orxFLOAT_1 - orxU2F(i) / orxU2F(orxPROFILER_KU32_HISTORY_LENGTH)) * (fScreenHeight - fBorder);
       astVertexList[2 * i].fU     =
       astVertexList[2 * i + 1].fU =
@@ -1595,22 +1595,21 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
     /* Valid? */
     if(bSuccess != orxFALSE)
     {
+      orxEVENT    stEvent;
       orxCAMERA  *pstCamera;
 
       /* Gets camera */
       pstCamera = orxViewport_GetCamera(_pstViewport);
 
-      /* Valid 2D camera? */
-      if((pstCamera != orxNULL)
-      && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
+      /* Inits event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_START, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
+
+      /* Sends start event */
+      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_START, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
-
-        /* Sends start event */
-        if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+        /* Valid 2D camera? */
+        if((pstCamera != orxNULL)
+        && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
         {
           orxFRAME *pstRenderFrame;
 
@@ -2100,15 +2099,15 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
             orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Could not create rendering frame.");
           }
         }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Not a valid camera.");
+        }
+      }
 
-        /* Sends stop event */
-        orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_STOP, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Not a valid camera.");
-      }
+      /* Sends stop event */
+      orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_STOP, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
     }
     else
     {
