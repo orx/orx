@@ -1160,9 +1160,9 @@ static orxINLINE void orxDisplay_Android_DrawBitmap(const orxBITMAP *_pstBitmap,
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU =
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU = (GLfloat) (_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV = (GLfloat) (orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV     =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV = (GLfloat) (orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
 
   /* Fills the color list */
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA     =
@@ -1360,9 +1360,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU = (GLfloat) (_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV = (GLfloat) (orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV     =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV = (GLfloat) (orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
 
           /* Fills the color list */
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA     =
@@ -1611,7 +1611,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxBITMAP *_pstBitmap, o
 
     /* Updates UV */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fTop + (fYCoef * _astVertexList[i].fV)));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)((fTop + (fYCoef * _astVertexList[i].fV)));
 
     /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
@@ -1898,9 +1898,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
     orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
 
     /* For all lines */
-    for (i = 0, u32SrcOffset = 0, u32DstOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - 1);
+    for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
          i < u32Height;
-         i++, u32SrcOffset += u32LineSize, u32DstOffset -= u32RealLineSize)
+         i++, u32SrcOffset += u32LineSize, u32DstOffset += u32RealLineSize)
     {
       /* Copies data */
       orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
@@ -2021,9 +2021,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
       orxMemory_Zero(_au8Data, u32LineSize * orxF2U(_pstBitmap->fHeight));
 
       /* For all lines */
-      for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+      for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
           i < orxF2U(_pstBitmap->fHeight);
-          i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+          i++, u32SrcOffset += u32RealLineSize, u32DstOffset += u32LineSize)
       {
         /* Copies data */
         orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
@@ -2110,6 +2110,7 @@ orxRGBA orxFASTCALL orxDisplay_Android_GetBitmapColor(const orxBITMAP *_pstBitma
 orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
   orxBOOL   bFlush = orxFALSE;
+  orxFLOAT  fOrthoRight, fOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2170,14 +2171,22 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
         iY      = 0;
         iWidth  = (GLsizei)orxF2S(_apstBitmapList[0]->fWidth);
         iHeight = (GLsizei)orxF2S(_apstBitmapList[0]->fHeight);
+
+        /* Updates ortho info */
+        fOrthoRight   = _apstBitmapList[0]->fWidth;
+        fOrthoBottom  = _apstBitmapList[0]->fHeight;
       }
       else
       {
         /* Updates viewport info */
         iX      = 0;
-        iY      = (GLint)((orxS32)_apstBitmapList[0]->u32RealHeight - orxF2S(_apstBitmapList[0]->fHeight));
+        iY      = 0;
         iWidth  = (GLsizei)orxF2S(_apstBitmapList[0]->fWidth);
         iHeight = (GLsizei)orxF2S(_apstBitmapList[0]->fHeight);
+
+        /* Updates ortho info */
+        fOrthoRight   = _apstBitmapList[0]->fWidth;
+        fOrthoBottom  = -_apstBitmapList[0]->fHeight;
       }
 
       /* Should update viewport? */
@@ -2198,15 +2207,17 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
       }
 
       /* Should update the orthogonal projection? */
-      if((_apstBitmapList[0]->fWidth != sstDisplay.fLastOrthoRight)
-      || (_apstBitmapList[0]->fHeight != sstDisplay.fLastOrthoBottom))
+      if((fOrthoRight != sstDisplay.fLastOrthoRight)
+      || (fOrthoBottom != sstDisplay.fLastOrthoBottom))
       {
         /* Stores data */
-        sstDisplay.fLastOrthoRight  = _apstBitmapList[0]->fWidth;
-        sstDisplay.fLastOrthoBottom = _apstBitmapList[0]->fHeight;
+        sstDisplay.fLastOrthoRight  = fOrthoRight;
+        sstDisplay.fLastOrthoBottom = fOrthoBottom;
 
         /* Inits projection matrix */
-        orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, _apstBitmapList[0]->fWidth, _apstBitmapList[0]->fHeight, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+        (fOrthoBottom >= 0.0)
+        ? orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), 0.0f, fOrthoRight, fOrthoBottom, 0.0f, -1.0f, 1.0f)
+        : orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), 0.0f, fOrthoRight, 0.0f, -fOrthoBottom, -1.0f, 1.0f);
 
         /* Passes it to shader */
         glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
@@ -2280,7 +2291,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
 
     /* Inits texture coords */
     fLeft = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
-    fTop = orxFLOAT_1 - (_pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY);
+    fTop = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
 
     /* For all lines */
     for (fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -2292,14 +2303,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
         fHeight *= (GLfloat) i;
 
         /* Resets texture coords */
-        fRight = (GLfloat) (_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat) (orxFLOAT_1 - (_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)))));
+        fRight = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
+        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
       }
       else
       {
         /* Resets texture coords */
-        fRight = (GLfloat) (_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
-        fBottom = (GLfloat) (orxFLOAT_1 - (_pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY));
+        fRight = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
+        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
       }
 
       /* Resets bitmap width */
@@ -3149,9 +3160,9 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
               orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
 
               /* For all lines */
-              for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
+              for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
                   i < uiHeight;
-                  i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
+                  i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
               {
                 /* Copies data */
                 orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
@@ -3253,23 +3264,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
 
-    /* Is screen? */
-    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
-    {
-      /* Gets new clipping values */
-      u32ClipX      = _u32TLX;
-      u32ClipY      = orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY;
-      u32ClipWidth  = _u32BRX - _u32TLX;
-      u32ClipHeight = _u32BRY - _u32TLY;
-    }
-    else
-    {
-      /* Gets new clipping values */
-      u32ClipX      = _u32TLX;
-      u32ClipY      = sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY;
-      u32ClipWidth  = _u32BRX - _u32TLX;
-      u32ClipHeight = _u32BRY - _u32TLY;
-    }
+    /* Gets new clipping values */
+    u32ClipX      = _u32TLX;
+    u32ClipY      = orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY;
+    u32ClipWidth  = _u32BRX - _u32TLX;
+    u32ClipHeight = _u32BRY - _u32TLY;
 
     /* Different clipping? */
     if((u32ClipX != sstDisplay.u32LastClipX)
@@ -4257,9 +4256,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
         pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop,  (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       }
 
@@ -4291,9 +4290,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
         pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
 
         /* Updates corner values */
-        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
+        glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
 
         /* Updates texture counter */
