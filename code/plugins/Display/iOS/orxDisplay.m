@@ -264,6 +264,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32Flags;
   orxS32                    s32ActiveTextureUnit;
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  orxDOUBLE                 adMRUBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
   orxDISPLAY_IOS_VERTEX     astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
@@ -1131,6 +1132,81 @@ static void orxFASTCALL orxDisplay_iOS_Update(const orxCLOCK_INFO *_pstClockInfo
   return;
 }
 
+static orxINLINE void orxDisplay_iOS_BindBitmap(const orxBITMAP *_pstBitmap)
+{
+  orxDOUBLE dBestTime;
+  orxS32    i, s32BestCandidate;
+
+  /* For all texture units */
+  for(i = 0, s32BestCandidate = -1, dBestTime = orxDOUBLE_MAX; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Found? */
+    if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
+    {
+      /* Stops */
+      break;
+    }
+    /* Is first empty? */
+    else if((dBestTime != orxDOUBLE_0) && (sstDisplay.apstBoundBitmapList[i] == orxNULL))
+    {
+      /* Selects it */
+      s32BestCandidate = i;
+      dBestTime = orxDOUBLE_0;
+    }
+    /* Older candidate? */
+    else if(sstDisplay.adMRUBitmapList[i] < dBestTime)
+    {
+      /* Selects it */
+      s32BestCandidate = i;
+      dBestTime = sstDisplay.adMRUBitmapList[i];
+    }
+  }
+
+  /* Found? */
+  if(i < (orxS32)sstDisplay.iTextureUnitNumber)
+  {
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Selects unit */
+      glActiveTexture(GL_TEXTURE0 + i);
+      glASSERT();
+    }
+
+    /* Updates MRU timestamp */
+    sstDisplay.adMRUBitmapList[i] = orxSystem_GetSystemTime();
+
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = i;
+  }
+  else
+  {
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Selects unit */
+      glActiveTexture(GL_TEXTURE0 + s32BestCandidate);
+      glASSERT();
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Stores texture */
+    sstDisplay.apstBoundBitmapList[s32BestCandidate] = _pstBitmap;
+
+    /* Updates MRU timestamp */
+    sstDisplay.adMRUBitmapList[s32BestCandidate] = orxSystem_GetSystemTime();
+
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = s32BestCandidate;
+  }
+
+  /* Done! */
+  return;
+}
+
 static orxINLINE orxDISPLAY_MATRIX *orxDisplay_iOS_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, orxFLOAT _fPosX, orxFLOAT _fPosY, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFLOAT _fRotation, orxFLOAT _fPivotX, orxFLOAT _fPivotY)
 {
   orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY;
@@ -1383,18 +1459,11 @@ static void orxFASTCALL orxDisplay_iOS_InitShader(orxDISPLAY_SHADER *_pstShader)
     /* For all defined textures */
     for(i = 0; i < _pstShader->iTextureCounter; i++)
     {
-      /* Updates corresponding texture unit */
-      glUNIFORM(1i, _pstShader->astTextureInfoList[i].iLocation, i);
-      glActiveTexture(GL_TEXTURE0 + i);
-      glASSERT();
-      glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
-      glASSERT();
+      /* Binds bitmap */
+      orxDisplay_iOS_BindBitmap(_pstShader->astTextureInfoList[i].pstBitmap);
 
-      /* Updates active texture unit */
-      sstDisplay.s32ActiveTextureUnit = (orxS32)i;
-
-      /* Updates bound texture */
-      sstDisplay.apstBoundBitmapList[i] = _pstShader->astTextureInfoList[i].pstBitmap;
+      /* Updates shader uniform */
+      glUNIFORM(1i, _pstShader->astTextureInfoList[i].iLocation, sstDisplay.s32ActiveTextureUnit);
 
       /* Screen and not already captured? */
       if((_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen) && (bCaptured == orxFALSE))
@@ -1461,22 +1530,8 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
         }
       }
 
-      /* Uses default program */
-      glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
-      glASSERT();
-
-      /* Updates first texture unit */
-      glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
-
-      /* Selects it */
-      glActiveTexture(GL_TEXTURE0);
-      glASSERT();
-
-      /* Updates projection matrix */
-      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-      /* Updates active texture unit */
-      sstDisplay.s32ActiveTextureUnit = 0;
+      /* Uses default shader */
+      orxDisplay_StopShader(orxNULL);
     }
     else
     {
@@ -1519,12 +1574,19 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
 
-    /* Binds source's texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
+    /* Binds bitmap */
+    orxDisplay_iOS_BindBitmap(_pstShader->astTextureInfoList[i].pstBitmap);
 
-    /* Updates bound texture */
-    sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = _pstBitmap;
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* No other shader active? */
+      if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+      {
+        /* Updates shader uniform */
+        glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+      }
+    }
   }
 
   /* Depending on smoothing type */
@@ -1860,11 +1922,8 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
             /* Success? */
             if(pstBitmap != orxNULL)
             {
-              /* Pushes config section */
-              orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
               /* Inits bitmap */
-              pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+              pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
               pstBitmap->fWidth         = orxU2F(stHeader.width);
               pstBitmap->fHeight        = orxU2F(stHeader.height);
               pstBitmap->u32RealWidth   = stHeader.width;
@@ -1905,9 +1964,6 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
               /* Restores previous texture */
               glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
               glASSERT();
-
-              /* Pops config section */
-              orxConfig_PopSection();
             }
             else
             {
@@ -1984,12 +2040,18 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
     glASSERT();
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glASSERT();
+
+    /* Updates blend mode */
+    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_ALPHA;
   }
   else
   {
     /* Disables alpha blending */
     glDisable(GL_BLEND);
     glASSERT();
+
+    /* Updates blend mode */
+    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NONE;
   }
 
   /* Only 2 vertices? */
@@ -2029,8 +2091,14 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
   /* Has shader support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
+    /* Bypasses the full screen rendering when stopping shader */
+    sstDisplay.s32BufferIndex = -1;
+
     /* Stops current shader */
     orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Resets buffer index */
+    sstDisplay.s32BufferIndex = 0;
   }
   else
   {
@@ -2038,9 +2106,6 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
     glEnable(GL_TEXTURE_2D);
     glASSERT();
   }
-
-  /* Clears last blend mode */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -2460,11 +2525,18 @@ void orxFASTCALL orxDisplay_iOS_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    /* Is last used bitmap? */
-    if(_pstBitmap == sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit])
+    orxS32 i;
+
+    /* For all bound bitmaps */
+    for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
     {
-      /* Resets it */
-      sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
+      /* Is deleted bitmap? */
+      if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
+      {
+        /* Resets it */
+        sstDisplay.apstBoundBitmapList[i] = orxNULL;
+        sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+      }
     }
 
     /* Deletes its texture */
@@ -2492,11 +2564,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
   /* Valid? */
   if(pstBitmap != orxNULL)
   {
-    /* Pushes display section */
-    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
     /* Inits it */
-    pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+    pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
     pstBitmap->fWidth         = orxU2F(_u32Width);
     pstBitmap->fHeight        = orxU2F(_u32Height);
     pstBitmap->u32RealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Width : orxMath_GetNextPowerOfTwo(_u32Width);
@@ -2526,9 +2595,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
     /* Restores previous texture */
     glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
-
-    /* Pops config section */
-    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -3347,11 +3413,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
                   *pstPixel = orxColor_ToRGBA(&stColor);
                 }
 
-                /* Pushes display section */
-                orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
                 /* Inits it */
-                pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+                pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
                 pstBitmap->fWidth         = orxU2F(uiWidth);
                 pstBitmap->fHeight        = orxU2F(uiHeight);
                 pstBitmap->u32RealWidth   = uiRealWidth;
@@ -3381,9 +3444,6 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
                 /* Restores previous texture */
                 glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
                 glASSERT();
-
-                /* Pops config section */
-                orxConfig_PopSection();
 
                 /* Deletes context */
                 CGContextRelease(oContext);
@@ -3606,6 +3666,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_iOS_GetVideoMode(orxU32 _u32Index,
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -3633,22 +3694,15 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
 
-    /* Uses default program */
-    glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
-    glASSERT();
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = 0;
 
-    /* Updates first texture unit */
-    glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
-
-    /* Selects it */
+    /* Selects first texture unit */
     glActiveTexture(GL_TEXTURE0);
     glASSERT();
 
-    /* Updates projection matrix */
-    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-    /* Updates active texture unit */
-    sstDisplay.s32ActiveTextureUnit = 0;
+    /* Uses default shader */
+    orxDisplay_StopShader(orxNULL);
   }
   else
   {
@@ -3661,9 +3715,18 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glASSERT();
   }
 
-  /* Clears last blend mode & last bitmap */
+  /* For all texture units */
+  for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Clears its bound bitmap */
+    sstDisplay.apstBoundBitmapList[i] = orxNULL;
+
+    /* Clears its MRU timestamp */
+    sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+  }
+
+  /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-  sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
   /* Done! */
   return eResult;
@@ -3799,16 +3862,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
         sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
-        /* Pushes config section */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-        /* Stores texture unit and draw buffer numbers */
-        orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
-        orxConfig_SetU32("DrawBufferNumber", 1);
-
-        /* Pops config section */
-        orxConfig_PopSection();
-
         /* Has shader support? */
         if([sstDisplay.poView bShaderSupport] != NO)
         {
@@ -3819,7 +3872,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
           "uniform sampler2D __Texture__;"
           "void main()"
           "{"
-          "  gl_FragColor = ___Color * texture2D(__Texture__, ___TexCoord___);"
+          "  gl_FragColor = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
           "precision mediump float;"
@@ -3852,16 +3905,29 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
           /* Creates default shaders */
           sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
-          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxFALSE);
+          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
 
           /* Uses it */
           orxDisplay_StopShader(orxNULL);
         }
         else
         {
+          /* Updates texture unit number */
+          sstDisplay.iTextureUnitNumber = 1;
+
           /* Inits flags */
           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
         }
+
+        /* Pushes config section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+        /* Stores texture unit and draw buffer numbers */
+        orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
+        orxConfig_SetU32("DrawBufferNumber", 1);
+
+        /* Pops config section */
+        orxConfig_PopSection();
 
         /* Generates index buffer object (IBO) */
         glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
@@ -4285,8 +4351,21 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
       /* Using custom param? */
       else if(pstShader->bUseCustomParam != orxFALSE)
       {
-        /* Draws arrays */
-        orxDisplay_iOS_DrawArrays();
+        /* Has something to display? */
+        if(sstDisplay.s32BufferIndex > 0)
+        {
+          /* Draws arrays */
+          orxDisplay_iOS_DrawArrays();
+        }
+        else
+        {
+          /* Uses default program */
+          glUseProgramObject(sstDisplay.pstDefaultShader->uiProgram);
+          glASSERT();
+
+          /* Updates its texture unit */
+          glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+        }
 
         /* Clears texture counter */
         pstShader->iTextureCounter = 0;
@@ -4304,24 +4383,17 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
 
         /* Updates counter */
         sstDisplay.s32PendingShaderCounter++;
+
+        /* Uses default program */
+        glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
+        glASSERT();
+
+        /* Updates its texture unit */
+        glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
       }
-
-      /* Uses default program */
-      glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
-      glASSERT();
-
-      /* Updates first texture unit */
-      glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
-
-      /* Selects it */
-      glActiveTexture(GL_TEXTURE0);
-      glASSERT();
 
       /* Updates projection matrix */
       glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-      /* Updates active texture unit */
-      sstDisplay.s32ActiveTextureUnit = 0;
     }
     else
     {
@@ -4335,18 +4407,11 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
     glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
     glASSERT();
 
-    /* Updates first texture unit */
-    glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, 0);
-
-    /* Selects it */
-    glActiveTexture(GL_TEXTURE0);
-    glASSERT();
+    /* Updates its texture unit */
+    glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
 
     /* Updates projection matrix */
     glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-    /* Updates active texture unit */
-    sstDisplay.s32ActiveTextureUnit = 0;
   }
 
   /* Done! */

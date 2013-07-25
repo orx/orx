@@ -3579,7 +3579,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     sstDisplay.apstBoundBitmapList[i] = orxNULL;
 
     /* Clears its MRU timestamp */
-    sstDisplay.adMRUBitmapList[i] = 0.0;
+    sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
   }
 
   /* Clears last blend mode */
