@@ -182,6 +182,7 @@ struct __orxBITMAP_t
   orxAABOX                  stClip;
   orxU32                    u32RealWidth, u32RealHeight;
   orxFLOAT                  fRecRealWidth, fRecRealHeight;
+  orxU32                    u32DataSize;
   orxRGBA                   stColor;
 };
 
@@ -1911,7 +1912,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
           u32DataSize = (stHeader.width * stHeader.height * u32BPP) / 8;
 
           /* Allocates buffer */
-          au8ImageBuffer = orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_VIDEO);
+          au8ImageBuffer = orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
           /* Reads the image content (mimaps will be ignored) */
           if(orxResource_Read(hResource, u32DataSize * sizeof(orxU8), au8ImageBuffer) > 0)
@@ -1930,6 +1931,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
               pstBitmap->u32RealHeight  = stHeader.height;
               pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
               pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+              pstBitmap->u32DataSize    = u32DataSize;
               pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
               orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
               orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -1960,6 +1962,9 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
                 glTexImage2D(GL_TEXTURE_2D, 0, eTextureType, stHeader.width, stHeader.height, 0, eTextureType, eInternalFormat, au8ImageBuffer);
               }
               glASSERT();
+
+              /* Tracks video memory */
+              orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
 
               /* Restores previous texture */
               glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
@@ -2539,6 +2544,9 @@ void orxFASTCALL orxDisplay_iOS_DeleteBitmap(orxBITMAP *_pstBitmap)
       }
     }
 
+    /* Tracks video memory */
+    orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxFALSE);
+
     /* Deletes its texture */
     glDeleteTextures(1, &(_pstBitmap->uiTexture));
     glASSERT();
@@ -2572,9 +2580,13 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
     pstBitmap->u32RealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Height : orxMath_GetNextPowerOfTwo(_u32Height);
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+    pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+    /* Tracks video memory */
+    orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
 
     /* Creates new texture */
     glGenTextures(1, &pstBitmap->uiTexture);
@@ -2718,7 +2730,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapData(orxBITMAP *_pstBitmap, const 
     orxU32  i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
     /* Allocates buffer */
-    au8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
+    au8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
 
     /* Gets line sizes */
     u32LineSize     = orxF2U(_pstBitmap->fWidth) * sizeof(orxRGBA);
@@ -2806,7 +2818,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
       orxU8  *pu8ImageData;
 
       /* Allocates buffer */
-      pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+      pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
       /* Checks */
       orxASSERT(pu8ImageData != orxNULL);
@@ -3399,7 +3411,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
             uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : orxMath_GetNextPowerOfTwo(uiHeight);
 
             /* Allocates image buffer */
-            au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_VIDEO);
+            au8ImageBuffer = (GLubyte *)orxMemory_Allocate(uiRealWidth * uiRealHeight * sizeof(GLuint), orxMEMORY_TYPE_MAIN);
 
             /* Valid? */
             if(au8ImageBuffer != orxNULL)
@@ -3460,9 +3472,13 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
                 pstBitmap->u32RealHeight  = uiRealHeight;
                 pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
                 pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+                pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
                 pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
                 orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
                 orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+                /* Tracks video memory */
+                orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
 
                 /* Creates new texture */
                 glGenTextures(1, &pstBitmap->uiTexture);
@@ -3879,6 +3895,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fHeight) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
         sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+        sstDisplay.pstScreen->u32DataSize     = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
         sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
@@ -3925,6 +3942,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
           /* Inits flags */
           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
+          /* Tracks video memory */
+          orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
 
           /* Creates texture for screen backup */
           glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
