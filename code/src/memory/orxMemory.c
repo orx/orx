@@ -149,7 +149,7 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
   sysctlbyname("hw.cachelinesize", &stLineSize, &stSizeOfLineSize, 0, 0);
 
   /* Done! */
-  return (orxU32)stLineSize;
+  return (orxU32)(stLineSize != 0) ? stLineSize : 32;
 }
 
 #elif defined(__orxLINUX__)
