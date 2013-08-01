@@ -2101,8 +2101,12 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
         }
         else
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Not a valid camera.");
+          /* Doesn't the viewport have shaders? */
+          if(orxViewport_GetShaderPointer(_pstViewport) == orxNULL)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No valid camera or no shader attached to viewport.");
+          }
         }
       }
 
