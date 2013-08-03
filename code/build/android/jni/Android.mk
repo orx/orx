@@ -69,7 +69,6 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -flto
-LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9
@@ -145,7 +144,6 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__ -flto
-LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9
@@ -221,7 +219,6 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -flto
-LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9
