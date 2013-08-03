@@ -1724,84 +1724,19 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
 
 orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
+  orxBITMAP  *pstBackupBitmap;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Is not screen? */
-  if(_pstBitmap != sstDisplay.pstScreen)
+  /* Backups current destination */
+  pstBackupBitmap = sstDisplay.pstDestinationBitmap;
+
+  /* Sets new destination bitmap */
+  if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
   {
-    orxBITMAP  *pstBackupBitmap;
-
-    /* Backups current destinations */
-    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
-
-    /* Sets new destination bitmap */
-    if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
-    {
-      /* Different clear color? */
-      if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
-      {
-        /* Updates it */
-        glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
-        glASSERT();
-
-        /* Stores it */
-        sstDisplay.stLastColor.u32RGBA = _stColor.u32RGBA;
-      }
-
-      /* Clears the color buffer with given color */
-      glClear(GL_COLOR_BUFFER_BIT);
-      glASSERT();
-
-      /* Restores previous destination */
-      orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
-    }
-    else
-    {
-      orxRGBA  *astBuffer, *pstPixel;
-
-      /* Allocates buffer */
-      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
-
-      /* Checks */
-      orxASSERT(astBuffer != orxNULL);
-
-      /* For all pixels */
-      for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
-      {
-        /* Sets its value */
-        *pstPixel = _stColor;
-      }
-
-      /* Binds texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
-      /* Updates texture */
-      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-      glASSERT();
-
-      /* Restores previous texture */
-      glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
-      glASSERT();
-
-      /* Frees buffer */
-      orxMemory_Free(astBuffer);
-    }
-  }
-  else
-  {
-    orxBITMAP  *pstBackupBitmap;
-
-    /* Backups current destinations */
-    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
-
-    /* Sets new destination bitmap */
-    orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1);
-
     /* Different clear color? */
     if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
     {
@@ -1817,8 +1752,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
 
-    /* Has depth buffer? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+    /* Is screen and has depth buffer? */
+    if((_pstBitmap == sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER)))
     {
       /* Clears depth buffer */
       glClear(GL_DEPTH_BUFFER_BIT);
@@ -1827,6 +1762,39 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
 
     /* Restores previous destination */
     orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
+  }
+  /* Not screen? */
+  else if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    orxRGBA *astBuffer, *pstPixel;
+
+    /* Allocates buffer */
+    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+
+    /* Checks */
+    orxASSERT(astBuffer != orxNULL);
+
+    /* For all pixels */
+    for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+    {
+      /* Sets its value */
+      *pstPixel = _stColor;
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Updates texture */
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+    glASSERT();
+
+    /* Frees buffer */
+    orxMemory_Free(astBuffer);
   }
 
   /* Done! */
@@ -3371,7 +3339,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
     sstDisplay.apstBoundBitmapList[i] = orxNULL;
 
     /* Clears its MRU timestamp */
-    sstDisplay.adMRUBitmapList[i] = 0.0;
+    sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
   }
 
   /* Clears last blend mode */
@@ -3537,7 +3505,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         "uniform sampler2D _Texture_;"
         "void main()"
         "{"
-        "  gl_FragColor = _Color0_ * texture2D(_Texture_, _gl_TexCoord0_);"
+        "  gl_FragColor = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
         "}";
         static const orxSTRING szNoTextureFragmentShaderSource =
         "precision mediump float;"
