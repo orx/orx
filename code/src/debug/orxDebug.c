@@ -490,13 +490,17 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     {
 #if defined(__orxANDROID__)
 
+#define  LOG_TAG    "orxDebug"
+#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+
       if(_eLevel == orxDEBUG_LEVEL_LOG)
       {
-        __android_log_print(ANDROID_LOG_INFO, "ORX", zBuffer);
+        LOGI(zBuffer);
       }
       else
       {
-        __android_log_print(ANDROID_LOG_DEBUG, "ORX", zBuffer);
+        LOGD(zBuffer);
       }
 
 #else /* __orxANDROID__ */
