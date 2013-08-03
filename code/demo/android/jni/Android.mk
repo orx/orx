@@ -6,7 +6,6 @@ LOCAL_MODULE    := orxTest
 
 LOCAL_SRC_FILES := orxTest.c
 LOCAL_STATIC_LIBRARIES := orxd
-LOCAL_LDFLAGS := -flto
 
 LOCAL_ARM_MODE := arm
 
