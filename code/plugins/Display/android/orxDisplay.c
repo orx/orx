@@ -2132,8 +2132,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
 
         /* Inits projection matrix */
         (fOrthoBottom >= orxFLOAT_0)
-        ? orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -1.0f, 1.0f)
-        : orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -1.0f, 1.0f);
+        ? orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+        : orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
         /* Passes it to shader */
         glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
@@ -3928,9 +3928,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
         sstDisplay.astVertexList[2].fU  =
         sstDisplay.astVertexList[3].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
         sstDisplay.astVertexList[1].fV  =
-        sstDisplay.astVertexList[3].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+        sstDisplay.astVertexList[3].fV  = (GLfloat)(sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
         sstDisplay.astVertexList[0].fV  =
-        sstDisplay.astVertexList[2].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
+        sstDisplay.astVertexList[2].fV  = (GLfloat)(sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
 
         /* Fills the color list */
         sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
