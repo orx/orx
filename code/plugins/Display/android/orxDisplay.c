@@ -80,11 +80,20 @@ do                                                                      \
   orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
 } while(orxFALSE)
 
+#define eglASSERT()                                                     \
+do                                                                      \
+{                                                                       \
+  EGLint eError = eglGetError();                                        \
+  orxASSERT(eError == EGL_SUCCESS && "EGL error code: 0x%X", eError);   \
+} while(orxFALSE)
+
 #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glGetError();}} while(orxFALSE)
 
 #else /* __orxDEBUG__ */
 
 #define glASSERT()
+
+#define eglASSERT()
 
 #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
 
@@ -366,26 +375,21 @@ static char gDDSTexIdentifier[5] = "DDS ";
 static const orxSTRING szDDSExtention = ".dds";
 static const orxSTRING szKTXExtention = ".ktx";
 
-static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
+static EGLConfig defaultEGLChooser(EGLDisplay disp)
 {
   EGLint count = 0;
-  if (!eglGetConfigs(disp, NULL, 0, &count))
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "defaultEGLChooser cannot query count of all configs");
-    return orxFALSE;
-  }
+  EGLConfig bestConfig = orxNULL;
+
+  eglGetConfigs(disp, NULL, 0, &count);
+  eglASSERT();
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config count = %d", count);
 
   EGLConfig* configs = new EGLConfig[count];
-  if (!eglGetConfigs(disp, configs, count, &count))
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "defaultEGLChooser cannot query all configs");
-    return orxFALSE;
-  }
+  eglGetConfigs(disp, configs, count, &count);
+  eglASSERT();
 
   int bestMatch = 1<<30;
-  int bestIndex = -1;
 
   int minDepthBits = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0;
   int minRedBits = sstDisplay.u32Depth == 16 ? 5 : 8;
@@ -406,13 +410,21 @@ static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
     EGLint renderableFlags = 0;
 
     eglGetConfigAttrib(disp, configs[i], EGL_SURFACE_TYPE, &surfaceType);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_BLUE_SIZE, &blueBits);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_GREEN_SIZE, &greenBits);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_RED_SIZE, &redBits);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_ALPHA_SIZE, &alphaBits);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_DEPTH_SIZE, &depthBits);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_STENCIL_SIZE, &stencilBits);
+    eglASSERT();
     eglGetConfigAttrib(disp, configs[i], EGL_RENDERABLE_TYPE, &renderableFlags);
+    eglASSERT();
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config[%d]: R%dG%dB%dA%d D%dS%d Type=%04x Render=%04x",
       i, redBits, greenBits, blueBits, alphaBits, depthBits, stencilBits, surfaceType, renderableFlags);
 
@@ -438,24 +450,17 @@ static orxBOOL defaultEGLChooser(EGLDisplay disp, EGLConfig& bestConfig)
     penalty = stencilBits;
     match += penalty * penalty;
 
-    if ((match < bestMatch) || (bestIndex == -1))
+    if ((match < bestMatch) || (bestConfig == orxNULL))
     {
       bestMatch = match;
-      bestIndex = i;
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config[%d] is the new best config", i);
+      bestConfig = configs[i];
     }
   }
 
-  if (bestIndex < 0)
-  {
-    delete[] configs;
-    return orxFALSE;
-  }
-
-  bestConfig = configs[bestIndex];
   delete[] configs;
 
-  return orxTRUE;
+  return bestConfig;
 }
 
 static void orxAndroid_Display_CreateContext()
@@ -465,24 +470,25 @@ static void orxAndroid_Display_CreateContext()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Starting up OpenGL ES");
 
     sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglASSERT();
+
     eglInitialize(sstDisplay.display, 0, 0);
-    if(defaultEGLChooser(sstDisplay.display, sstDisplay.config) == orxFALSE)
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGLChooser failed!");
-    }
+    eglASSERT();
+    sstDisplay.config = defaultEGLChooser(sstDisplay.display);
+
     eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
+    eglASSERT();
     EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
     sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
+    eglASSERT();
   }
-  orxASSERT(sstDisplay.display != EGL_NO_DISPLAY);
-  orxASSERT(sstDisplay.config != orxNULL);
 
   if(sstDisplay.context == EGL_NO_CONTEXT)
   {
     EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
     sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
+    eglASSERT();
   }
-  orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
   ANativeWindow *window = orxAndroid_GetNativeWindow();
@@ -490,10 +496,12 @@ static void orxAndroid_Display_CreateContext()
   orxAndroid_JNI_SetWindowFormat(sstDisplay.u32Depth == 16 ? 4 /* PixelFormat.RGB_565 */ : 1 /* PixelFormat.RGBA_888 */);
 
   EGLSurface surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
-  orxASSERT(surface != EGL_NO_SURFACE);
+  eglASSERT();
 
   eglQuerySurface(sstDisplay.display, surface, EGL_WIDTH, &sstDisplay.width);
+  eglASSERT();
   eglQuerySurface(sstDisplay.display, surface, EGL_HEIGHT, &sstDisplay.height);
+  eglASSERT();
 
   if(eglMakeCurrent(sstDisplay.display, surface, surface, sstDisplay.context) == EGL_FALSE)
   {
@@ -501,12 +509,12 @@ static void orxAndroid_Display_CreateContext()
 
     EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
     sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
-    orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
+    eglASSERT();
 
     if(eglMakeCurrent(sstDisplay.display, surface, surface, sstDisplay.context) == EGL_FALSE)
     {
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed making EGL Context current");
-      orxASSERT(orxFALSE);
+      eglASSERT();
     }
   }
 
@@ -3425,6 +3433,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     && (sstDisplay.pstShaderBank != orxNULL))
     {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
+        const orxSTRING zGlRenderer;
+        const orxSTRING zGlVersion;
 
         /* Pushes display section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -3444,6 +3454,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         // Init OpenGL ES 2.0
         orxAndroid_Display_CreateContext();
+
+        zGlRenderer = (const orxSTRING) glGetString(GL_RENDERER);
+        glASSERT();
+        zGlVersion = (const orxSTRING) glGetString(GL_VERSION);
+        glASSERT();
+
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Renderer: %s, Version: %s", zGlRenderer, zGlVersion);
+
         initGLESConfig();
 
         /* Adds event handler */
@@ -3483,6 +3501,18 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
         glASSERT();
         sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+
+        /* hack for old Adreno drivers */
+        if(orxString_SearchString(zGlRenderer, "Adreno") != orxNULL)
+        {
+          orxU32 u32Version;
+          orxString_ToU32(zGlVersion + orxString_GetLength("OpenGL ES 2.0"), &u32Version, orxNULL);
+          if(u32Version > 0 && u32Version < 1849878)
+          {
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Bugged Andreno GPU driver found!, enabling workaround");
+            sstDisplay.iTextureUnitNumber = 1;
+          }
+        }
 
         /* Pushes config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
