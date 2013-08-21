@@ -2153,6 +2153,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     orxVIEWPORT  *pstViewport;
     orxFLOAT      fWidth, fHeight;
 
+    /* Clears screen */
+    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
+
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
@@ -2308,9 +2311,6 @@ static void orxFASTCALL orxRender_Home_Present(const orxCLOCK_INFO *_pstClockInf
     /* Restores screen bitmap clipping */
     orxDisplay_GetScreenSize(&fWidth, &fHeight);
     orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-
-    /* Clears screen */
-    orxDisplay_ClearBitmap(orxDisplay_GetScreenBitmap(), orx2RGBA(0x00, 0x00, 0x00, 0xFF));
   }
 
   /* Resets all profiler markers */

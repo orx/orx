@@ -2809,12 +2809,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
   /* Is size matching? */
   if(_u32ByteNumber == u32BufferSize)
   {
-    /* Updates result */
-    eResult = ([sstDisplay.poView CreateRenderTarget:_pstBitmap] != NO) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    glASSERT();
+    orxBITMAP *pstBackupBitmap;
 
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Backups current destination */
+    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
+
+    /* Sets new destination bitmap */
+    if((eResult = orxDisplay_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
     {
       orxU32  u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
       orxU8  *pu8ImageBuffer;
@@ -2824,10 +2825,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
 
       /* Checks */
       orxASSERT(pu8ImageBuffer != orxNULL);
-
-      /* Binds bitmap's associated texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
 
       /* Reads OpenGL data */
       glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
@@ -2886,10 +2883,10 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
           orxMemory_Free(pu8ImageBuffer);
         }
       }
-    }
 
-    /* Clears destination bitmap for a rebind */
-    sstDisplay.pstDestinationBitmap = orxNULL;
+      /* Restores previous destination */
+      orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
+    }
   }
   else
   {
@@ -3252,38 +3249,29 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    GLubyte  *au8Buffer;
-    orxU8    *au8ImageBuffer;
-    orxU32    u32BufferSize;
+    orxU8  *pu8ImageData, *au8ImageBuffer;
+    orxU32  u32BufferSize;
 
     /* Gets buffer size */
     u32BufferSize = _pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(GLubyte);
 
     /* Allocates both buffers */
-    au8Buffer       = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
+    pu8ImageData    = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
     au8ImageBuffer  = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
-    if((au8Buffer != orxNULL) && (au8ImageBuffer != orxNULL))
+    if((pu8ImageData != orxNULL) && (au8ImageBuffer != orxNULL))
     {
-      /* Updates result */
-      eResult = ([sstDisplay.poView CreateRenderTarget:_pstBitmap] != NO) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-      glASSERT();
-
-      /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
+      /* Gets bitmap data */
+      if(orxDisplay_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
       {
         CGDataProviderRef oProvider;
         CGColorSpaceRef   oColorSpace;
         CGContextRef      oContext;
         CGImageRef        oImage;
 
-        /* Reads OpenGL data */
-        glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, au8Buffer);
-        glASSERT();
-
         /* Creates data provider */
-        oProvider = CGDataProviderCreateWithData(NULL, au8Buffer, u32BufferSize, NULL);
+        oProvider = CGDataProviderCreateWithData(NULL, pu8ImageData, u32BufferSize, NULL);
 
         /* Creates a device color space */
         oColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -3338,9 +3326,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
         /* Deletes provider */
         CGDataProviderRelease(oProvider);
       }
-
-      /* Clears destination bitmap for a rebind */
-      sstDisplay.pstDestinationBitmap = orxNULL;
     }
     else
     {
@@ -3352,9 +3337,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
     }
 
     /* Deletes buffers */
-    if(au8Buffer != orxNULL)
+    if(pu8ImageData != orxNULL)
     {
-      orxMemory_Free(au8Buffer);
+      orxMemory_Free(pu8ImageData);
     }
     if(au8ImageBuffer != orxNULL)
     {

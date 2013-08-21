@@ -2534,6 +2534,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
+
+    /* Frees buffer */
+    orxMemory_Free(pu8ImageData);
   }
   else
   {
@@ -3048,8 +3051,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
 
       /* Clears destination bitmap */
-      sstDisplay.apstDestinationBitmapList[0]   = orxNULL;
-      sstDisplay.u32DestinationBitmapCounter    = 1;
+      sstDisplay.apstDestinationBitmapList[0] = orxNULL;
+      sstDisplay.u32DestinationBitmapCounter  = 1;
 
       /* Clears new display surface */
       glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
