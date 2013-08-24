@@ -1,5 +1,8 @@
 var NAVTREEINDEX2 =
 {
+"group__orx_debug.html#gadf9d1b0f7a47a89354265444fc8c2563":[1,13,11],
+"group__orx_debug.html#gae0dbd70f5f6a5c00f20a280c9cfe8340":[1,13,6],
+"group__orx_debug.html#gae12d833d38a39eb2b9fe8bd6c20abd7b":[1,13,16],
 "group__orx_debug.html#gae92928b41b4fe70c1447be8e62db496f":[1,13,1],
 "group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb":[1,13,30],
 "group__orx_debug.html#gaef231c6d9b73ff9c36a0941e334c0d32":[1,13,29],
@@ -88,6 +91,7 @@ var NAVTREEINDEX2 =
 "group__orx_display.html#ga6ed6d3266bdcd9baf06f65877c074100":[1,15,75],
 "group__orx_display.html#ga7099d1d4919c383535a31bbe900f7e3c":[1,15,66],
 "group__orx_display.html#ga7fa359660d9c77056030146c0fa7dd98":[1,15,28],
+"group__orx_display.html#ga83e034c2d49365fec77eebed6743e844":[1,15,60],
 "group__orx_display.html#ga8484ff566cd9b6d1d352de05f7c889d6":[1,15,84],
 "group__orx_display.html#ga84a632229162932161247c99e67605fd":[1,15,14],
 "group__orx_display.html#ga8769b56a32923375fb48d0a65f0cf8cd":[1,15,90],
@@ -120,7 +124,6 @@ var NAVTREEINDEX2 =
 "group__orx_display.html#gad5566d8dc330ac06b979eda31d80e3ca":[1,15,16],
 "group__orx_display.html#gad88758772634d94e250d0163567af051":[1,15,62],
 "group__orx_display.html#gadf48952815832df78cd7a8a12d0b7959":[1,15,87],
-"group__orx_display.html#gae1da1268cc2137d50a7026d1c29e3a2a":[1,15,60],
 "group__orx_display.html#gae35b6b44dc14c72c07b9eac939938653":[1,15,81],
 "group__orx_display.html#gae3acb236a4a537a86ff72091dc556829":[1,15,74],
 "group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332":[1,15,51],
@@ -246,8 +249,5 @@ var NAVTREEINDEX2 =
 "group__orx_f_x_pointer.html#ga943a8964c1fdea3a1d4cf8945aad3197":[1,19,0],
 "group__orx_f_x_pointer.html#ga96875b3fec4419b8b87b43def6cbebe3":[1,19,6],
 "group__orx_f_x_pointer.html#ga9e2a5d5e49650c0fd808f2193016bd03":[1,19,8],
-"group__orx_f_x_pointer.html#gac9327397471848fa184877b11a151052":[1,19,10],
-"group__orx_f_x_pointer.html#gad41398775c3d1393fb089b7823e3de67":[1,19,2],
-"group__orx_f_x_pointer.html#gae34de9529ee823b8f5b27ac87c7c4cdf":[1,19,20],
-"group__orx_f_x_pointer.html#gaf347fd366c75f28435f58ae22947d6a8":[1,19,13]
+"group__orx_f_x_pointer.html#gac9327397471848fa184877b11a151052":[1,19,10]
 };
