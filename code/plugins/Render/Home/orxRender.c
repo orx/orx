@@ -1714,7 +1714,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 orxFRAME       *pstCameraFrame;
                 orxRENDER_NODE *pstRenderNode;
                 orxVECTOR       vCameraScale, vCameraCenter, vCameraPosition;
-                orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraBoundingRadius;
+                orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fRecZoom, fRenderRotation, fCameraBoundingRadius;
 
                 /* Gets camera frame */
                 pstCameraFrame = orxCamera_GetFrame(pstCamera);
@@ -1722,8 +1722,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 /* Gets camera scale */
                 orxFrame_GetScale(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraScale);
 
-                /* Gets camera zoom */
-                fZoom = (vCameraScale.fX != orxFLOAT_0) ? orxFLOAT_1 / vCameraScale.fX : orxFLOAT_1;
+                /* Gets camera reciprocal zoom */
+                fRecZoom = (vCameraScale.fX != orxFLOAT_0) ? vCameraScale.fX : orxFLOAT_1;
 
                 /* Gets camera position */
                 orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -1740,11 +1740,11 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
 
                 /* Gets camera square bounding radius */
-                fCameraBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight)) / fZoom;
+                fCameraBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight)) * fRecZoom;
 
                 /* Gets rendering scales */
-                fRenderScaleX = fZoom * (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / fCameraWidth;
-                fRenderScaleY = fZoom * (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / fCameraHeight;
+                fRenderScaleX = (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / (fRecZoom * fCameraWidth);
+                fRenderScaleY = (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / (fRecZoom * fCameraHeight);
 
                 /* Gets camera rotation */
                 fRenderRotation = orxFrame_GetRotation(pstCameraFrame, orxFRAME_SPACE_GLOBAL);
