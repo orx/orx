@@ -1913,69 +1913,45 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
   if(_pstBitmap == sstDisplay.pstScreen)
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GetBitmapData() from Screen not implemented yet.");
-
-    return orxSTATUS_FAILURE;
-  }
-
-  /* Is size matching? */
-  if(_u32ByteNumber == u32BufferSize)
-  {
-    GLuint uiFrameBuffer;
-
-    /* Draws remaining items */
-    orxDisplay_Android_DrawArrays();
-
-    /* Generates frame buffer */
-    glGenFramebuffers(1, &uiFrameBuffer);
-    glASSERT();
-
-    /* Binds frame buffer */
-    glBindFramebuffer(GL_FRAMEBUFFER, uiFrameBuffer);
-    glASSERT();
-
-    /* Links it to frame buffer */
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-    glASSERT();
-
-    /* Updates result */
-    eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    glASSERT();
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      orxU8  *pu8ImageBuffer;
-
-      pu8ImageBuffer = _au8Data;
-
-      /* Inits viewport */
-      glViewport(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight);
-      glASSERT();
-
-      /* Reads OpenGL data */
-      glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-      glASSERT();
-
-      /* Restore viewport */
-      glViewport(sstDisplay.iLastViewportX, sstDisplay.iLastViewportY, sstDisplay.iLastViewportWidth, sstDisplay.iLastViewportHeight);
-      glASSERT();
-    }
-
-    /* unBinds frame buffer */
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glASSERT();
-
-    /* Deletes it */
-    glDeleteFramebuffers(1, &uiFrameBuffer);
-    glASSERT();
+    eResult = orxSTATUS_FAILURE;
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap's data <0x%X> as the buffer size is %ld when it should be %ls.", _pstBitmap, _u32ByteNumber, u32BufferSize);
+    /* Is size matching? */
+    if(_u32ByteNumber == u32BufferSize)
+    {
+      orxBITMAP *pstBackupBitmap;
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+      /* Backups current destination */
+      pstBackupBitmap = sstDisplay.pstDestinationBitmap;
+
+      /* Sets new destination bitmap */
+      if((eResult = orxDisplay_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
+      {
+        orxU8  *pu8ImageBuffer;
+
+        /* Allocates buffer */
+        pu8ImageBuffer = _au8Data;
+
+        /* Checks */
+        orxASSERT(pu8ImageBuffer != orxNULL);
+
+        /* Reads OpenGL data */
+        glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+        glASSERT();
+
+        /* Restores previous destination */
+        orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap's data <0x%X> as the buffer size is %ld when it should be %ls.", _pstBitmap, _u32ByteNumber, u32BufferSize);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Done! */
