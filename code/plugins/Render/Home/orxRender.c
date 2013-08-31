@@ -1607,14 +1607,14 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
       /* Sends start event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
+        /* Sets destination bitmap */
+        orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
+
         /* Valid 2D camera? */
         if((pstCamera != orxNULL)
         && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
         {
           orxFRAME *pstRenderFrame;
-
-          /* Sets destination bitmap */
-          orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
 
           /* Creates rendering frame */
           pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
