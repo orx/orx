@@ -254,8 +254,8 @@ static orxINLINE void orxRender_Home_RenderFPS()
     /* Clears text transform */
     orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
-    /* Gets first viewport */
-    pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+    /* Gets last viewport */
+    pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
 
     /* Valid? */
     if(pstViewport != orxNULL)
@@ -1595,11 +1595,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
     /* Valid? */
     if(bSuccess != orxFALSE)
     {
-      orxEVENT    stEvent;
-      orxCAMERA  *pstCamera;
-
-      /* Gets camera */
-      pstCamera = orxViewport_GetCamera(_pstViewport);
+      orxEVENT stEvent;
 
       /* Inits event */
       orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_START, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
@@ -1607,104 +1603,111 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
       /* Sends start event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
+        orxAABOX  stViewportBox, stTextureBox;
+        orxFLOAT  fTextureWidth, fTextureHeight;
+        orxVECTOR vViewportCenter;
+
         /* Sets destination bitmap */
         orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
 
-        /* Valid 2D camera? */
-        if((pstCamera != orxNULL)
-        && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
+        /* Gets texture size */
+        orxTexture_GetSize(apstTextureList[0], &fTextureWidth, &fTextureHeight);
+
+        /* Inits texture box */
+        orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
+        orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
+
+        /* Gets viewport box */
+        orxViewport_GetBox(_pstViewport, &stViewportBox);
+
+        /* Gets its center */
+        orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
+
+        /* Does it intersect with texture */
+        if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
         {
-          orxFRAME *pstRenderFrame;
+          orxFLOAT    fCorrectionRatio;
+          orxCOLOR    stColor;
+          orxBOOL     bHasColor = orxFALSE;
+          orxCAMERA  *pstCamera;
 
-          /* Creates rendering frame */
-          pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+          /* Gets current correction ratio */
+          fCorrectionRatio = orxViewport_GetCorrectionRatio(_pstViewport);
 
-          /* Valid? */
-          if(pstRenderFrame != orxNULL)
+          /* Has correction ratio? */
+          if(fCorrectionRatio != orxFLOAT_1)
           {
-            orxAABOX  stFrustum, stViewportBox, stTextureBox;
-            orxFLOAT  fCameraWidth, fCameraHeight, fTextureWidth, fTextureHeight;
-            orxVECTOR vViewportCenter;
-
-            /* Gets camera frustum */
-            orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-            /* Gets camera size */
-            fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
-            fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
-
-            /* Gets texture size */
-            orxTexture_GetSize(apstTextureList[0], &fTextureWidth, &fTextureHeight);
-
-            /* Inits texture box */
-            orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
-            orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
-
-            /* Gets viewport box */
-            orxViewport_GetBox(_pstViewport, &stViewportBox);
-
-            /* Gets its center */
-            orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
-
-            /* Does it intersect with texture */
-            if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
+            /* X axis? */
+            if(fCorrectionRatio < orxFLOAT_1)
             {
-              orxFLOAT  fCorrectionRatio;
-              orxCOLOR  stColor;
-              orxBOOL   bHasColor = orxFALSE;
+              orxFLOAT fDelta;
 
-              /* Gets current correction ratio */
-              fCorrectionRatio = orxViewport_GetCorrectionRatio(_pstViewport);
+              /* Gets rendering limit delta using correction ratio */
+              fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
 
-              /* Has correction ratio? */
-              if(fCorrectionRatio != orxFLOAT_1)
-              {
-                /* X axis? */
-                if(fCorrectionRatio < orxFLOAT_1)
-                {
-                  orxFLOAT fDelta;
+              /* Updates viewport */
+              stViewportBox.vTL.fX += fDelta;
+              stViewportBox.vBR.fX -= fDelta;
+            }
+            /* Y axis */
+            else
+            {
+              orxFLOAT fDelta;
 
-                  /* Gets rendering limit delta using correction ratio */
-                  fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+              /* Gets rendering limit delta using correction ratio */
+              fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
 
-                  /* Updates viewport */
-                  stViewportBox.vTL.fX += fDelta;
-                  stViewportBox.vBR.fX -= fDelta;
-                }
-                /* Y axis */
-                else
-                {
-                  orxFLOAT fDelta;
+              /* Updates viewport */
+              stViewportBox.vTL.fY += fDelta;
+              stViewportBox.vBR.fY -= fDelta;
+            }
+          }
 
-                  /* Gets rendering limit delta using correction ratio */
-                  fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+          /* Does viewport have a background color? */
+          if((bHasColor = orxViewport_HasBackgroundColor(_pstViewport)) != orxFALSE)
+          {
+            /* Gets it */
+            orxViewport_GetBackgroundColor(_pstViewport, &stColor);
+          }
 
-                  /* Updates viewport */
-                  stViewportBox.vTL.fY += fDelta;
-                  stViewportBox.vBR.fY -= fDelta;
-                }
-              }
+          /* For all bitmaps */
+          for(i = 0; i < u32TextureCounter; i++)
+          {
+            /* Sets its clipping */
+            orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
 
-              /* Does viewport have a background color? */
-              if((bHasColor = orxViewport_HasBackgroundColor(_pstViewport)) != orxFALSE)
-              {
-                /* Gets it */
-                orxViewport_GetBackgroundColor(_pstViewport, &stColor);
-              }
+            /* Does viewport have a background color? */
+            if(bHasColor != orxFALSE)
+            {
+              /* Clears bitmap */
+              orxDisplay_ClearBitmap(apstBitmapList[i], orxColor_ToRGBA(&stColor));
+            }
+          }
 
-              /* For all bitmaps */
-              for(i = 0; i < u32TextureCounter; i++)
-              {
-                /* Sets its clipping */
-                orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+          /* Gets camera */
+          pstCamera = orxViewport_GetCamera(_pstViewport);
 
-                /* Does viewport have a background color? */
-                if(bHasColor != orxFALSE)
-                {
-                  /* Clears bitmap */
-                  orxDisplay_ClearBitmap(apstBitmapList[i], orxColor_ToRGBA(&stColor));
-                }
-              }
+          /* Valid 2D camera? */
+          if((pstCamera != orxNULL)
+          && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
+          {
+            orxFRAME *pstRenderFrame;
+
+            /* Creates rendering frame */
+            pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+            /* Valid? */
+            if(pstRenderFrame != orxNULL)
+            {
+              orxAABOX stFrustum;
+              orxFLOAT fCameraWidth, fCameraHeight;
+
+              /* Gets camera frustum */
+              orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+              /* Gets camera size */
+              fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
+              fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
 
               /* Valid? */
               if((fCameraWidth > orxFLOAT_0)
@@ -2090,23 +2093,23 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport does not intersect with texture.");
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Could not create rendering frame.");
             }
           }
           else
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Could not create rendering frame.");
+            /* Doesn't the viewport have shaders? */
+            if(orxViewport_GetShaderPointer(_pstViewport) == orxNULL)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No valid camera or no shader attached to viewport.");
+            }
           }
         }
         else
         {
-          /* Doesn't the viewport have shaders? */
-          if(orxViewport_GetShaderPointer(_pstViewport) == orxNULL)
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No valid camera or no shader attached to viewport.");
-          }
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport does not intersect with texture.");
         }
       }
 
@@ -2160,9 +2163,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     orxPROFILER_PUSH_MARKER("orxRender_RenderAll");
 
     /* For all viewports */
-    for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+    for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
         pstViewport != orxNULL;
-        pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
+        pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
     {
       /* Renders it */
       orxRender_Home_RenderViewport(pstViewport);
@@ -2461,14 +2464,15 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
 
 /** Get a world position given a screen one (absolute picking)
  * @param[in]   _pvScreenPosition                     Concerned screen position
- * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then either the first viewport that contains the position (if any), or the first viewport in the list if none contains the position
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then either the last viewport that contains the position (if any), or the last viewport with a camera in the list if none contains the position
  * @param[out]  _pvWorldPosition                      Corresponding world position
  * @return      orxVECTOR if found *inside* the display surface, orxNULL otherwise
  */
 orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvWorldPosition)
 {
+  orxVECTOR     vResult;
   orxVIEWPORT  *pstViewport;
-  orxBOOL       bFirstViewport;
+  orxBOOL       bLastViewport, bFound;
   orxVECTOR    *pvResult = orxNULL;
 
   /* Checks */
@@ -2477,9 +2481,9 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   orxASSERT(_pvWorldPosition != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT)), bFirstViewport = orxTRUE;
+  for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT)), bLastViewport = orxTRUE, bFound = orxFALSE;
       pstViewport != orxNULL;
-      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+      pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
   {
     orxCAMERA *pstCamera;
 
@@ -2531,12 +2535,15 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
                      && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
                      && (_pvScreenPosition->fY <= stViewportBox.vBR.fY)) ? orxTRUE : orxFALSE;
 
-      /* Is position in box or first viewport? */
-      if((bInViewportBox != orxFALSE) || (bFirstViewport != orxFALSE))
+      /* Is position in box or last viewport? */
+      if((bInViewportBox != orxFALSE) || (bLastViewport != orxFALSE))
       {
         orxVECTOR vLocalPosition, vCenter, vCameraCenter, vCameraPosition;
         orxAABOX  stCameraFrustum;
         orxFLOAT  fZoom, fRotation;
+
+        /* Updates status */
+        bFound = orxTRUE;
 
         /* Gets viewport center */
         orxVector_Mulf(&vCenter, orxVector_Add(&vCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
@@ -2572,12 +2579,12 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
           fSin = orxMath_Sin(-fRotation);
 
           /* Gets its world coordinates */
-          orxVector_Set(_pvWorldPosition, (vCameraCenter.fX * fZoom) + (fCos * vLocalPosition.fX) + (fSin * vLocalPosition.fY), (vCameraCenter.fY * fZoom) + (-fSin * vLocalPosition.fX) + (fCos * vLocalPosition.fY), stCameraFrustum.vTL.fZ);
+          orxVector_Set(&vResult, (vCameraCenter.fX * fZoom) + (fCos * vLocalPosition.fX) + (fSin * vLocalPosition.fY), (vCameraCenter.fY * fZoom) + (-fSin * vLocalPosition.fX) + (fCos * vLocalPosition.fY), stCameraFrustum.vTL.fZ);
         }
         else
         {
           /* Gets its world coordinates */
-          orxVector_Set(_pvWorldPosition, vCameraCenter.fX * fZoom + vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX), vCameraCenter.fY * fZoom + vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY), stCameraFrustum.vTL.fZ);
+          orxVector_Set(&vResult, vCameraCenter.fX * fZoom + vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX), vCameraCenter.fY * fZoom + vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY), stCameraFrustum.vTL.fZ);
         }
 
         /* Has zoom? */
@@ -2589,8 +2596,8 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
           fRecZoom = orxFLOAT_1 / fZoom;
 
           /* Updates result */
-          _pvWorldPosition->fX *= fRecZoom;
-          _pvWorldPosition->fY *= fRecZoom;
+          vResult.fX *= fRecZoom;
+          vResult.fY *= fRecZoom;
         }
 
         /* Is position in viewport box? */
@@ -2604,8 +2611,15 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
       }
 
       /* Updates status */
-      bFirstViewport = orxFALSE;
+      bLastViewport = orxFALSE;
     }
+  }
+
+  /* Has found result? */
+  if(bFound != orxFALSE)
+  {
+    /* Copies it */
+    orxVector_Copy(_pvWorldPosition, &vResult);
   }
 
   /* Done! */
@@ -2614,7 +2628,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
 
 /** Get a screen position given a world one and a viewport (rendering position)
  * @param[in]   _pvWorldPosition                      Concerned world position
- * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then the first viewport will be used
+ * @param[in]   _pstViewport                          Concerned viewport, if orxNULL then the last viewport with a camera will be used
  * @param[out]  _pvScreenPosition                     Corresponding screen position
  * @return      orxVECTOR if found (can be off-screen), orxNULL otherwise
  */
@@ -2636,8 +2650,10 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
   }
   else
   {
-    /* Uses first viewport */
-    pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+    /* Uses last with camera viewport */
+    for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+        (pstViewport != orxNULL) && ((orxViewport_IsEnabled(pstViewport) == orxFALSE) || (orxViewport_GetCamera(pstViewport) == orxNULL));
+        pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)));
   }
 
   /* Valid? */

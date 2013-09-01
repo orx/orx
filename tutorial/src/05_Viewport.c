@@ -78,7 +78,7 @@ orxVIEWPORT *pstViewport;
  */
 void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
-  orxVECTOR vPos;
+  orxVECTOR vPos, vSoldierPos;
   orxCAMERA *pstCamera;
   orxFLOAT  fWidth, fHeight, fX, fY;
 
@@ -201,20 +201,17 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 
   /* *** SOLDIER MOVE UPDATE *** */
 
-  /* Has mouse world position? */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), orxNULL, &vPos) != orxNULL)
-  {
-    orxVECTOR vSoldierPos;
+  /* Gets mouse world position? */
+  orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), orxNULL, &vPos);
 
-    /* Gets object current position */
-    orxObject_GetWorldPosition(pstSoldier, &vSoldierPos);
+  /* Gets object current position */
+  orxObject_GetWorldPosition(pstSoldier, &vSoldierPos);
 
-    /* Keeps Z value */
-    vPos.fZ = vSoldierPos.fZ;
+  /* Keeps Z value */
+  vPos.fZ = vSoldierPos.fZ;
 
-    /* Moves the soldier under the cursor */
-    orxObject_SetPosition(pstSoldier, &vPos);
-  }
+  /* Moves the soldier under the cursor */
+  orxObject_SetPosition(pstSoldier, &vPos);
 }
 
 
@@ -300,10 +297,10 @@ orxSTATUS orxFASTCALL Init()
          zInputViewportScaleUp, zInputViewportScaleDown);
 
   /* Creates all viewports */
-  pstViewport = orxViewport_CreateFromConfig("Viewport1");
-  orxViewport_CreateFromConfig("Viewport2");
-  orxViewport_CreateFromConfig("Viewport3");
   orxViewport_CreateFromConfig("Viewport4");
+  orxViewport_CreateFromConfig("Viewport3");
+  orxViewport_CreateFromConfig("Viewport2");
+  pstViewport = orxViewport_CreateFromConfig("Viewport1");
 
   /* Creates objects */
   orxObject_CreateFromConfig("Box");
