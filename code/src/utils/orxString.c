@@ -228,6 +228,9 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
 {
   orxU32 u32Result = 0;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxString_GetID");
+
   /* Checks */
   orxASSERT(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY);
   orxASSERT(_zString != orxNULL);
@@ -242,6 +245,9 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
     orxHashTable_Add(sstString.pstIDTable, u32Result, orxString_Duplicate(_zString));
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return u32Result;
 }
@@ -254,6 +260,9 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
 {
   const orxSTRING zResult;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxString_GetFromID");
+
   /* Gets string from table */
   zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, _u32ID);
 
@@ -263,6 +272,9 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
     /* Updates result */
     zResult = orxSTRING_EMPTY;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return zResult;
