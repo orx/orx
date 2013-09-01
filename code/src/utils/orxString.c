@@ -32,6 +32,11 @@
 
 #include "utils/orxString.h"
 
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
+#include "memory/orxMemory.h"
+#include "utils/orxHashTable.h"
+
 
 /** Module flags
  */
@@ -98,7 +103,8 @@ const orxU32 sau32CRCTable[256] =
  */
 typedef struct __orxSTRING_STATIC_t
 {
-  orxU32  u32Flags;                                       /**< Control flags */
+  orxHASHTABLE *pstIDTable;                               /** String ID table */
+  orxU32        u32Flags;                                 /**< Control flags */
 
 } orxSTRING_STATIC;
 
@@ -147,8 +153,20 @@ orxSTATUS orxFASTCALL orxString_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstString, sizeof(orxSTRING_STATIC));
 
-    /* Inits Flags */
-    sstString.u32Flags = orxSTRING_KU32_STATIC_FLAG_READY;
+    /* Creates ID table */
+    sstString.pstIDTable = orxHashTable_Create(orxSTRING_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Success? */
+    if(sstString.pstIDTable != orxNULL)
+    {
+      /* Inits Flags */
+      sstString.u32Flags = orxSTRING_KU32_STATIC_FLAG_READY;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't create StringID table.");
+    }
 
     /* Everything's ok */
     eResult = orxSTATUS_SUCCESS;
@@ -173,6 +191,22 @@ void orxFASTCALL orxString_Exit()
   /* Initialized? */
   if(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY)
   {
+    orxU32    u32Key;
+    orxHANDLE hIterator;
+    orxSTRING zString;
+
+    /* For all string IDs */
+    for(hIterator = orxHashTable_GetNext(sstString.pstIDTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&zString);
+        hIterator != orxHANDLE_UNDEFINED;
+        hIterator = orxHashTable_GetNext(sstString.pstIDTable, hIterator, &u32Key, (void **)&zString))
+    {
+      /* Deletes its string */
+      orxString_Delete(zString);
+    }
+
+    /* Deletes ID table */
+    orxHashTable_Delete(sstString.pstIDTable);
+
     /* Updates flags */
     sstString.u32Flags &= ~orxSTRING_KU32_STATIC_FLAG_READY;
   }
@@ -184,4 +218,52 @@ void orxFASTCALL orxString_Exit()
 
   /* Done! */
   return;
+}
+
+/** Gets a string's ID (and stores the string internally to prevent duplication)
+ * @param[in]   _zString        Concerned string
+ * @return      String's ID
+ */
+orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+
+  /* Gets its ID */
+  u32Result = orxString_ToCRC(_zString);
+
+  /* Not already stored? */
+  if(orxHashTable_Get(sstString.pstIDTable, u32Result) == orxNULL)
+  {
+    /* Adds it */
+    orxHashTable_Add(sstString.pstIDTable, u32Result, orxString_Duplicate(_zString));
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets a string from an ID (it should have already been stored internally with a call to orxString_GetID)
+ * @param[in]   _hID            Concerned string ID
+ * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
+ */
+const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
+{
+  const orxSTRING zResult;
+
+  /* Gets string from table */
+  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, _u32ID);
+
+  /* Invalid? */
+  if(zResult == orxNULL)
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return zResult;
 }

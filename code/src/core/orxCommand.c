@@ -2461,7 +2461,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
           {
             /* Updates aliased name */
             pstAliasNode->pstCommand->zAliasedCommandName = orxString_Duplicate(_zCommand);
-            pstAliasNode->pstCommand->zArgs               = (_zArgs != orxCHAR_NULL) ? orxString_Duplicate(_zArgs) : orxNULL;
+            pstAliasNode->pstCommand->zArgs               = (_zArgs != orxNULL) ? orxString_Duplicate(_zArgs) : orxNULL;
           }
         }
         else
