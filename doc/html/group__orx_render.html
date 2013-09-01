@@ -438,7 +438,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvWorldPosition</td><td>Concerned world position </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstViewport</td><td>Concerned viewport, if orxNULL then the first viewport will be used </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstViewport</td><td>Concerned viewport, if orxNULL then the last viewport with a camera will be used </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pvScreenPosition</td><td>Corresponding screen position </td></tr>
   </table>
   </dd>
@@ -480,7 +480,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvScreenPosition</td><td>Concerned screen position </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstViewport</td><td>Concerned viewport, if orxNULL then either the first viewport that contains the position (if any), or the first viewport in the list if none contains the position </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstViewport</td><td>Concerned viewport, if orxNULL then either the last viewport that contains the position (if any), or the last viewport with a camera in the list if none contains the position </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pvWorldPosition</td><td>Corresponding world position </td></tr>
   </table>
   </dd>
