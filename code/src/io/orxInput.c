@@ -1032,7 +1032,9 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
 void orxFASTCALL orxInput_Setup()
 {
   /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_EVENT);

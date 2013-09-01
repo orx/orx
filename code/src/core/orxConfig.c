@@ -2260,6 +2260,7 @@ void orxFASTCALL orxConfig_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);

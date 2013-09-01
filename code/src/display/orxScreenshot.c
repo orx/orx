@@ -224,6 +224,7 @@ void orxFASTCALL orxScreenshot_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);

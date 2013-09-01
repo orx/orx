@@ -33,6 +33,23 @@
 #include "utils/orxString.h"
 
 
+/** Module flags
+ */
+
+#define orxSTRING_KU32_STATIC_FLAG_NONE                   0x00000000
+
+#define orxSTRING_KU32_STATIC_FLAG_READY                  0x00000001
+
+#define orxSTRING_KU32_STATIC_MASK_ALL                    0xFFFFFFFF
+
+
+/** Defines
+ */
+#define orxSTRING_KU32_ID_TABLE_SIZE                      16384
+
+#define orxSTRING_KU32_ID_BUFFER_SIZE                     131072
+
+
 /***************************************************************************
  * CRC Table                                                               *
  ***************************************************************************/
@@ -74,9 +91,97 @@ const orxU32 sau32CRCTable[256] =
 
 
 /***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
+ */
+typedef struct __orxSTRING_STATIC_t
+{
+  orxU32  u32Flags;                                       /**< Control flags */
+
+} orxSTRING_STATIC;
+
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** static data
+ */
+static orxSTRING_STATIC sstString;
+
+
+/***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
 
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/** String module setup
+ */
+void orxFASTCALL orxString_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_PROFILER);
+
+  /* Done! */
+  return;
+}
+
+/** Initializess the string module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxString_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not already Initialized? */
+  if(!(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstString, sizeof(orxSTRING_STATIC));
+
+    /* Inits Flags */
+    sstString.u32Flags = orxSTRING_KU32_STATIC_FLAG_READY;
+
+    /* Everything's ok */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize string module when it was already initialized.");
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Exits from the string module
+ */
+void orxFASTCALL orxString_Exit()
+{
+  /* Initialized? */
+  if(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY)
+  {
+    /* Updates flags */
+    sstString.u32Flags &= ~orxSTRING_KU32_STATIC_FLAG_READY;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit string module when it wasn't initialized.");
+  }
+
+  /* Done! */
+  return;
+}

@@ -317,6 +317,7 @@ void orxFASTCALL orxClock_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_EVENT);

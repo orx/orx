@@ -33,8 +33,8 @@
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "math/orxMath.h"
 #include "utils/orxLinkList.h"
-#include "utils/orxString.h"
 
 
 #define orxBANK_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */

@@ -2015,6 +2015,7 @@ void orxFASTCALL orxCommand_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_PROFILER);
 

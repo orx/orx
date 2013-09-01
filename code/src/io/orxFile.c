@@ -197,6 +197,7 @@ void orxFASTCALL orxFile_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_STRING);
 
   return;
 }

@@ -87,6 +87,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SOUNDPOINTER, orxSoundPointer);
   orxMODULE_REGISTER(orxMODULE_ID_SOUNDSYSTEM, orxSoundSystem);
   orxMODULE_REGISTER(orxMODULE_ID_SPAWNER, orxSpawner);
+  orxMODULE_REGISTER(orxMODULE_ID_STRING, orxString);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
   orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);

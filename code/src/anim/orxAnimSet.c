@@ -1269,9 +1269,10 @@ void orxFASTCALL orxAnimSet_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_PROFILER);
-  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_ANIM);
 
   return;
