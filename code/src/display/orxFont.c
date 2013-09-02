@@ -1027,9 +1027,6 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterList(orxFONT *_pstFont, const orxSTRIN
   /* Had a character list? */
   if(_pstFont->zCharacterList != orxSTRING_EMPTY)
   {
-    /* Deletes it */
-    orxString_Delete((orxSTRING)_pstFont->zCharacterList);
-
     /* Cleans its reference */
     _pstFont->zCharacterList = orxSTRING_EMPTY;
   }
@@ -1038,7 +1035,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterList(orxFONT *_pstFont, const orxSTRIN
   if((_zList != orxNULL) && (_zList != orxSTRING_EMPTY))
   {
     /* Stores it */
-    _pstFont->zCharacterList = orxString_Duplicate(_zList);
+    _pstFont->zCharacterList = orxString_GetFromID(orxString_GetID(_zList));
   }
   else
   {

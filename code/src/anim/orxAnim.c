@@ -914,7 +914,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
        pstEvent = &(_pstAnim->astEventList[u32Counter]);
 
        /* Stores key info */
-       pstEvent->zName       = orxString_Duplicate(_zEventName);
+       pstEvent->zName       = orxString_GetFromID(orxString_GetID(_zEventName));
        pstEvent->fTimeStamp  = _fTimeStamp;
        pstEvent->fValue      = _fValue;
 
@@ -975,9 +975,6 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastEvent(orxANIM *_pstAnim)
 
     /* Updates event counter */
     orxAnim_DecreaseEventCounter(_pstAnim);
-
-    /* Deletes event name */
-    orxString_Delete((orxSTRING)pstEvent->zName);
 
     /* Cleans the event info */
     orxMemory_Zero(pstEvent, sizeof(orxANIM_CUSTOM_EVENT));

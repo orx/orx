@@ -2796,8 +2796,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             /* Has key & value? */
             if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
             {
-              orxSTRING         pcValueEnd;
-              orxCONFIG_ENTRY  *pstEntry;
+              orxSTRING pcValueEnd;
 
               /* Not in block mode? */
               if(bBlockMode == orxFALSE)
@@ -2870,7 +2869,8 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
 #ifdef __orxDEBUG__
               {
-                orxU32 u32KeyID;
+                orxCONFIG_ENTRY  *pstEntry;
+                orxU32            u32KeyID;
 
                 /* Gets key ID */
                 u32KeyID = orxString_ToCRC(pcLineStart);

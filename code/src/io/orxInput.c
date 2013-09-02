@@ -118,8 +118,8 @@ typedef struct __orxINPUT_BINDING_t
 typedef struct __orxINPUT_ENTRY_t
 {
   orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
-  orxSTRING         zName;                                        /**< Entry name : 16 */
-  orxU32            u32ID;                                        /**< Name ID (CRC) : 20 */
+  orxU32            u32ID;                                        /**< Name ID (CRC) : 16 */
+  const orxSTRING   zName;                                        /**< Entry name : 20 */
   orxU32            u32Status;                                    /**< Entry status : 24 */
   orxFLOAT          fExternalValue;                               /**< External value : 28 */
 
@@ -133,7 +133,7 @@ typedef struct __orxINPUT_SET_t
 {
   orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
   orxU32            u32ID;                                        /**< Set CRC : 16 */
-  orxSTRING         zName;                                        /**< Set name : 20 */
+  const orxSTRING   zName;                                        /**< Set name : 20 */
   orxU32            u32Flags;                                     /** Flags : 24 */
   orxBANK          *pstEntryBank;                                 /**< Entry bank : 28 */
   orxLINKLIST       stEntryList;                                  /**< Entry list : 42 */
@@ -878,8 +878,8 @@ static orxINLINE orxINPUT_ENTRY *orxInput_CreateEntry(const orxSTRING _zEntryNam
       orxLinkList_AddEnd(&(sstInput.pstCurrentSet->stEntryList), &(pstResult->stNode));
 
       /* Inits it */
-      pstResult->zName      = orxString_Duplicate(_zEntryName);
-      pstResult->u32ID      = orxString_ToCRC(_zEntryName);
+      pstResult->u32ID      = orxString_GetID(_zEntryName);
+      pstResult->zName      = orxString_GetFromID(pstResult->u32ID);
       pstResult->u32Status  = orxINPUT_KU32_ENTRY_FLAG_NONE;
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
@@ -902,9 +902,6 @@ static orxINLINE void orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY
   orxASSERT(_pstSet != orxNULL);
   orxASSERT(_pstEntry != orxNULL);
 
-  /* Deletes its name */
-  orxString_Delete(_pstEntry->zName);
-
   /* Removes it from list */
   orxLinkList_Remove(&(_pstEntry->stNode));
 
@@ -918,13 +915,9 @@ static orxINLINE void orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY
  * @param[in] _zSetName         Name of the set to create
  * @param[in] _u32SetID         ID of the set to create
  */
-static orxINLINE orxINPUT_SET *orxInput_CreateSet(const orxSTRING _zSetName, orxU32 _u32SetID)
+static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxU32 _u32SetID)
 {
   orxINPUT_SET *pstResult;
-
-  /* Checks */
-  orxASSERT(_zSetName != orxNULL);
-  orxASSERT(_zSetName != orxSTRING_EMPTY);
 
   /* Allocates it */
   pstResult = (orxINPUT_SET *)orxBank_Allocate(sstInput.pstSetBank);
@@ -939,7 +932,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(const orxSTRING _zSetName, orx
     if(pstResult->pstEntryBank != orxNULL)
     {
       /* Duplicates its name */
-      pstResult->zName = orxString_Duplicate(_zSetName);
+      pstResult->zName = orxString_GetFromID(_u32SetID);
 
       /* Valid? */
       if(pstResult->zName != orxNULL)
@@ -1367,7 +1360,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
     pstPreviousSet = sstInput.pstCurrentSet;
 
     /* Gets the set ID */
-    u32SetID = orxString_ToCRC(_zSetName);
+    u32SetID = orxString_GetID(_zSetName);
 
     /* Not already selected? */
     if((sstInput.pstCurrentSet == orxNULL)
@@ -1398,7 +1391,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
     if(pstSet == orxNULL)
     {
       /* Creates it */
-      pstSet = orxInput_CreateSet(_zSetName, u32SetID);
+      pstSet = orxInput_CreateSet(u32SetID);
 
       /* Success? */
       if(pstSet != orxNULL)

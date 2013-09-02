@@ -77,21 +77,21 @@
  */
 struct __orxTEXTURE_t
 {
-  orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 32 */
-  orxSTRING     zDataName;                      /**< Associated bitmap name : 20 */
-  orxFLOAT      fWidth;                         /**< Width : 24 */
-  orxFLOAT      fHeight;                        /**< Height : 28 */
-  orxHANDLE     hData;                          /**< Data : 32 */
+  orxSTRUCTURE    stStructure;                  /**< Public structure, first structure member : 32 */
+  const orxSTRING zDataName;                    /**< Associated bitmap name : 20 */
+  orxFLOAT        fWidth;                       /**< Width : 24 */
+  orxFLOAT        fHeight;                      /**< Height : 28 */
+  orxHANDLE       hData;                        /**< Data : 32 */
 };
 
 /** Static structure
  */
 typedef struct __orxTEXTURE_STATIC_t
 {
-  orxHASHTABLE *pstTable;                       /**< Bitmap hashtable : 4 */
-  orxTEXTURE   *pstScreen;                      /**< Screen texture : 8 */
-  orxTEXTURE   *pstPixel;                       /**< Pixel texture : 12 */
-  orxU32        u32Flags;                       /**< Control flags : 16 */
+  orxHASHTABLE   *pstTable;                     /**< Bitmap hashtable : 4 */
+  orxTEXTURE     *pstScreen;                    /**< Screen texture : 8 */
+  orxTEXTURE     *pstPixel;                     /**< Pixel texture : 12 */
+  orxU32          u32Flags;                     /**< Control flags : 16 */
 
 } orxTEXTURE_STATIC;
 
@@ -368,6 +368,7 @@ void orxFASTCALL orxTexture_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_COMMAND);
@@ -747,7 +748,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
       orxDisplay_GetBitmapSize(_pstBitmap, &(_pstTexture->fWidth), &(_pstTexture->fHeight));
 
       /* Updates texture name */
-      _pstTexture->zDataName = orxString_Duplicate(_zDataName);
+      _pstTexture->zDataName = orxString_GetFromID(orxString_GetID(_zDataName));
 
       /* Adds it to hash table */
       orxHashTable_Add(sstTexture.pstTable, orxString_ToCRC(_zDataName), _pstTexture);
@@ -805,8 +806,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     /* Removes from hash table */
     orxHashTable_Remove(sstTexture.pstTable, orxString_ToCRC(_pstTexture->zDataName));
 
-    /* Deletes name */
-    orxString_Delete(_pstTexture->zDataName);
+    /* Clears name */
     _pstTexture->zDataName = orxNULL;
   }
   else
@@ -897,7 +897,7 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
  */
 const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
 {
-  orxSTRING zResult = orxNULL;
+  const orxSTRING zResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);

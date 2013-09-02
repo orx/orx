@@ -448,7 +448,7 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
       pstResult->pstData = orxSoundSystem_CreateStream(_u32ChannelNumber, _u32SampleRate, _zName);
 
       /* Stores its reference */
-      pstResult->zReference = orxString_Duplicate(_zName);
+      pstResult->zReference = orxString_GetFromID(orxString_GetID(_zName));
 
       /* Updates its status */
       orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM | orxSOUND_KU32_FLAG_INTERNAL_REFERENCE, orxSOUND_KU32_MASK_ALL);
@@ -692,13 +692,8 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
       /* Stops it */
       orxSound_Stop(_pstSound);
 
-      /* Has internal reference? */
-      if(orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_INTERNAL_REFERENCE) != orxFALSE)
-      {
-        /* Deletes its reference */
-        orxString_Delete((orxSTRING)_pstSound->zReference);
-      }
-      else
+      /* Has not internal reference? */
+      if(orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_INTERNAL_REFERENCE) == orxFALSE)
       {
         /* Unprotects it */
         orxConfig_ProtectSection(_pstSound->zReference, orxFALSE);
@@ -935,7 +930,7 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _
       if(_pstSound->pstData != orxNULL)
       {
         /* Stores its reference */
-        _pstSound->zReference = orxString_Duplicate(_zSampleName);
+        _pstSound->zReference = orxString_GetFromID(orxString_GetID(_zSampleName));
 
         /* Updates its status */
         orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE | orxSOUND_KU32_FLAG_INTERNAL_REFERENCE, orxSOUND_KU32_MASK_ALL);
@@ -989,13 +984,8 @@ orxSTATUS orxFASTCALL orxSound_UnlinkSample(orxSOUND *_pstSound)
     /* Stops it */
     orxSound_Stop(_pstSound);
 
-    /* Has internal reference? */
-    if(orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_INTERNAL_REFERENCE) != orxFALSE)
-    {
-      /* Deletes its reference */
-      orxString_Delete((orxSTRING)_pstSound->zReference);
-    }
-    else
+    /* Has not internal reference? */
+    if(orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_INTERNAL_REFERENCE) == orxFALSE)
     {
       /* Unprotects it */
       orxConfig_ProtectSection(_pstSound->zReference, orxFALSE);
