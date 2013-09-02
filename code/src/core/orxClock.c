@@ -701,10 +701,10 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
             orxCLOCK_MOD_TYPE eModifierType;
 
             /* Gets modifier type */
-            zModifierType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE));
+            zModifierType = orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE);
 
             /* Capped? */
-            if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
+            if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
             {
               /* Updates modifier value */
               fModifierValue = orxFLOAT_1 / fModifierValue;
@@ -713,7 +713,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
               eModifierType = orxCLOCK_MOD_TYPE_MAXED;
             }
             /* Fixed? */
-            else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
             {
               /* Updates modifier value */
               fModifierValue = orxFLOAT_1 / fModifierValue;
@@ -722,7 +722,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
               eModifierType = orxCLOCK_MOD_TYPE_FIXED;
             }
             /* Multiply? */
-            else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
             {
               /* Updates modifier type */
               eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;

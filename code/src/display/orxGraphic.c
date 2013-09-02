@@ -494,8 +494,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has data? */
       if(pstResult->pstData != orxNULL)
       {
-        orxSTRING zFlipping;
-        orxVECTOR vPivot;
+        const orxSTRING zFlipping;
+        orxVECTOR       vPivot;
 
         /* Gets pivot value */
         if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)
@@ -506,11 +506,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has relative pivot point? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_PIVOT) != orxFALSE)
         {
+          orxCHAR   acBuffer[64];
           orxSTRING zRelativePos;
           orxU32    u32AlignmentFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
 
-          /* Gets it */
-          zRelativePos = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT));
+          /* Gets lower case value */
+          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT), sizeof(acBuffer) - 1));
 
           /* Left? */
           if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
@@ -561,22 +563,22 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Gets flipping value */
-        zFlipping = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP));
+        zFlipping = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP);
 
         /* X flipping? */
-        if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_X) == 0)
+        if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_X) == 0)
         {
           /* Updates frame flags */
           u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X;
         }
         /* Y flipping? */
-        else if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
+        else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
         {
           /* Updates frame flags */
           u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_Y;
         }
         /* Both flipping? */
-        else if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
+        else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
         {
           /* Updates frame flags */
           u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X | orxGRAPHIC_KU32_FLAG_FLIP_Y;
@@ -662,31 +664,31 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has blend mode? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_BLEND_MODE) != orxFALSE)
         {
-          orxSTRING zBlendMode;
+          const orxSTRING zBlendMode;
 
           /* Gets blend mode value */
-          zBlendMode = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE));
+          zBlendMode = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE);
 
           /* alpha blend mode? */
-          if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ALPHA) == 0)
+          if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_ALPHA) == 0)
           {
             /* Updates flags */
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
           }
           /* Multiply blend mode? */
-          else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_MULTIPLY) == 0)
+          else if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_MULTIPLY) == 0)
           {
             /* Updates flags */
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
           }
           /* Add blend mode? */
-          else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ADD) == 0)
+          else if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_ADD) == 0)
           {
             /* Updates flags */
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
           }
           /* Pre-multiplied alpha blend mode? */
-          else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_PREMUL) == 0)
+          else if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_PREMUL) == 0)
           {
             /* Updates flags */
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;

@@ -335,99 +335,6 @@ static orxINLINE void orxConfig_DeleteOrigin(orxCONFIG_ORIGIN *_pstOrigin)
   return;
 }
 
-static orxINLINE orxSTRING orxConfig_DuplicateValue(const orxSTRING _zValue, orxBOOL _bBlockMode)
-{
-  orxSTRING zResult;
-
-  /* Checks */
-  orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_BUFFER_SIZE);
-
-  /* Not in block mode? */
-  if(_bBlockMode == orxFALSE)
-  {
-    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
-    const orxCHAR  *pcInput;
-
-    /* For all characters */
-    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
-    {
-      /* Not a space? */
-      if((*pcInput != ' ') && (*pcInput != '\t'))
-      {
-        /* Copies it */
-        *pcOutput++ = *pcInput++;
-
-        /* Is a list separator? */
-        if(*(pcInput - 1) == orxCONFIG_KC_LIST_SEPARATOR)
-        {
-          /* Skips all trailing and leading spaces */
-          while((*pcInput == ' ') || (*pcInput == '\t'))
-          {
-            pcInput++;
-          }
-        }
-      }
-      else
-      {
-        const orxCHAR *pcTest;
-
-        /* Scans all the spaces */
-        for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
-
-        /* Is a list separator or end of string? */
-        if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
-        {
-          /* Skips all trailing spaces */
-          pcInput = pcTest;
-        }
-        else
-        {
-          /* For all spaces */
-          for(; pcInput < pcTest; pcInput++, pcOutput++)
-          {
-            /* Copies it */
-            *pcOutput = *pcInput;
-          }
-        }
-      }
-    }
-
-    /* Ends string */
-    *pcOutput = orxCHAR_NULL;
-
-    /* Updates result */
-    zResult = orxString_Duplicate(acBuffer);
-  }
-  else
-  {
-    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
-    const orxCHAR  *pcInput;
-
-    /* For all characters */
-    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL; pcInput++, pcOutput++)
-    {
-      /* Copies it */
-      *pcOutput = *pcInput;
-
-      /* First block character of two? */
-      if((*pcInput == orxCONFIG_KC_BLOCK) && (*(pcInput + 1) == orxCONFIG_KC_BLOCK))
-      {
-        /* Skips it */
-        pcInput++;
-      }
-    }
-
-    /* Ends string */
-    *pcOutput = orxCHAR_NULL;
-
-    /* Updates result */
-    zResult = orxString_Duplicate(acBuffer);
-  }
-
-  /* Done! */
-  return zResult;
-}
-
 /** Computes a working config value (process random, inheritance and list attributes)
  * @param[in] _pstValue         Concerned config value
  */
@@ -529,6 +436,151 @@ static orxINLINE void orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstValue)
   _pstValue->u16Flags      &= ~orxCONFIG_VALUE_KU16_FLAG_LIST;
   _pstValue->u16ListCounter = 1;
   _pstValue->u16CacheIndex  = 0;
+}
+
+static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue, orxBOOL _bBlockMode)
+{
+  orxBOOL   bNeedDuplication = orxFALSE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_BUFFER_SIZE);
+
+  /* Not in block mode? */
+  if(_bBlockMode == orxFALSE)
+  {
+    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
+    const orxCHAR  *pcInput;
+
+    /* For all characters */
+    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
+    {
+      /* Not a space? */
+      if((*pcInput != ' ') && (*pcInput != '\t'))
+      {
+        /* Copies it */
+        *pcOutput++ = *pcInput++;
+
+        /* Is a list separator? */
+        if(*(pcInput - 1) == orxCONFIG_KC_LIST_SEPARATOR)
+        {
+          /* Asks for duplication */
+          bNeedDuplication = orxTRUE;
+
+          /* Skips all trailing and leading spaces */
+          while((*pcInput == ' ') || (*pcInput == '\t'))
+          {
+            pcInput++;
+          }
+        }
+      }
+      else
+      {
+        const orxCHAR *pcTest;
+
+        /* Scans all the spaces */
+        for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
+
+        /* Is a list separator or end of string? */
+        if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
+        {
+          /* Skips all trailing spaces */
+          pcInput = pcTest;
+        }
+        else
+        {
+          /* For all spaces */
+          for(; pcInput < pcTest; pcInput++, pcOutput++)
+          {
+            /* Copies it */
+            *pcOutput = *pcInput;
+          }
+        }
+      }
+    }
+
+    /* Ends string */
+    *pcOutput = orxCHAR_NULL;
+
+    /* Needs duplication? */
+    if(bNeedDuplication != orxFALSE)
+    {
+      /* Duplicates string */
+      _pstValue->zValue = orxString_Duplicate(acBuffer);
+
+      /* Valid? */
+      if(_pstValue->zValue != orxNULL)
+      {
+        /* Computes working value */
+        orxConfig_ComputeWorkingValue(_pstValue);
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+    else
+    {
+      /* Stores value */
+      _pstValue->zValue = (orxSTRING)orxString_GetFromID(orxString_GetID(acBuffer));
+
+      /* Computes working value */
+      orxConfig_ComputeWorkingValue(_pstValue);
+    }
+  }
+  else
+  {
+    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
+    const orxCHAR  *pcInput;
+
+    /* For all characters */
+    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL; pcInput++, pcOutput++)
+    {
+      /* Copies it */
+      *pcOutput = *pcInput;
+
+      /* First block character of two? */
+      if((*pcInput == orxCONFIG_KC_BLOCK) && (*(pcInput + 1) == orxCONFIG_KC_BLOCK))
+      {
+        /* Skips it */
+        pcInput++;
+      }
+    }
+
+    /* Ends string */
+    *pcOutput = orxCHAR_NULL;
+
+    /* Stores value */
+    _pstValue->zValue = (orxSTRING)orxString_GetFromID(orxString_GetID(acBuffer));
+
+    /* Block mode, no list nor random allowed */
+    _pstValue->u16Flags       = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
+    _pstValue->u16ListCounter = 1;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
+{
+  /* Not in block mode? */
+  if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+  {
+    /* Is a list? */
+    if(_pstValue->u16ListCounter != 1)
+    {
+      /* Restore literal value */
+      orxConfig_RestoreLiteralValue(_pstValue);
+
+      /* Deletes it */
+      orxString_Delete(_pstValue->zValue);
+    }
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Gets a list value
@@ -807,15 +859,8 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
     /* Found? */
     if(pstEntry != orxNULL)
     {
-      /* Not in block mode? */
-      if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
-      {
-        /* Restore literal value */
-        orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
-      }
-
       /* Deletes value */
-      orxString_Delete(pstEntry->stValue.zValue);
+      orxConfig_CleanValue(&(pstEntry->stValue));
 
       /* Updates status */
       bReuse = orxTRUE;
@@ -832,25 +877,12 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
     /* Valid? */
     if(pstEntry != orxNULL)
     {
-      /* Stores value */
-      pstEntry->stValue.zValue = orxConfig_DuplicateValue(_zValue, _bBlockMode);
+      /* Inits value */
+      eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _bBlockMode);
 
       /* Valid? */
-      if(pstEntry->stValue.zValue != orxNULL)
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Not in block mode? */
-        if(_bBlockMode == orxFALSE)
-        {
-          /* Computes working value */
-          orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
-        }
-        else
-        {
-          /* Block mode, no list nor random allowed */
-          pstEntry->stValue.u16Flags        = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
-          pstEntry->stValue.u16ListCounter  = 1;
-        }
-
         /* Not reusing entry? */
         if(bReuse == orxFALSE)
         {
@@ -864,14 +896,11 @@ static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxST
 
         /* Inits its type */
         pstEntry->stValue.u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to store value (%s).", _zValue);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to init config entry [%s] with value [%s].", _zKey, _zValue);
 
         /* Reusing entry? */
         if(bReuse != orxFALSE)
@@ -898,15 +927,8 @@ static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_ENTRY *_pstEntry)
   /* Checks */
   orxASSERT(_pstEntry != orxNULL);
 
-  /* Not in block mode? */
-  if(!orxFLAG_TEST(_pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
-  {
-    /* Restore literal value */
-    orxConfig_RestoreLiteralValue(&(_pstEntry->stValue));
-  }
-
   /* Deletes value */
-  orxString_Delete(_pstEntry->stValue.zValue);
+  orxConfig_CleanValue(&(_pstEntry->stValue));
 
   /* Removes it from list */
   orxLinkList_Remove(&(_pstEntry->stNode));
@@ -2774,7 +2796,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             /* Has key & value? */
             if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
             {
-              orxU32            u32KeyID;
               orxSTRING         pcValueEnd;
               orxCONFIG_ENTRY  *pstEntry;
 
@@ -2847,22 +2868,36 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               /* Cuts the strings */
               *pcKeyEnd = *(++pcValueEnd) = orxCHAR_NULL;
 
-              /* Gets key ID */
-              u32KeyID = orxString_ToCRC(pcLineStart);
-
-              /* Already defined? */
-              if((pstEntry = orxConfig_GetEntry(u32KeyID)) != orxNULL)
+#ifdef __orxDEBUG__
               {
-                /* Not in block mode? */
-                if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
-                {
-                  /* Restores literal value */
-                  orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
-                }
+                orxU32 u32KeyID;
 
-                /* Logs */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                /* Gets key ID */
+                u32KeyID = orxString_ToCRC(pcLineStart);
+
+                /* Already defined? */
+                if((pstEntry = orxConfig_GetEntry(u32KeyID)) != orxNULL)
+                {
+                  /* Not in block mode? */
+                  if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+                  {
+                    /* Restores literal value */
+                    orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+
+                    /* Logs */
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+
+                    /* Recomputes working value */
+                    orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+                  }
+                  else
+                  {
+                    /* Logs */
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                  }
+                }
               }
+#endif /* __orxDEBUG__ */
 
               /* Adds/replaces entry */
               orxConfig_AddEntry(pcLineStart, pcValueStart, bBlockMode);

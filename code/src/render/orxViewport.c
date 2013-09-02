@@ -774,11 +774,13 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has relative position? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION) != orxFALSE)
       {
+        orxCHAR   acBuffer[64];
         orxSTRING zRelativePos;
         orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
         /* Gets it */
-        zRelativePos = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION));
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+        zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1));
 
         /* Left? */
         if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)

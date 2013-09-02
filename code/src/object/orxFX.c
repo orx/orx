@@ -2311,44 +2311,44 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
   if((orxConfig_HasSection(_zSlotID) != orxFALSE)
   && (orxConfig_PushSection(_zSlotID) != orxSTATUS_FAILURE))
   {
-    orxSTRING   zCurveType;
-    orxFX_CURVE eCurve;
+    const orxSTRING zCurveType;
+    orxFX_CURVE     eCurve;
 
     /* Gets its curve type */
-    zCurveType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxFX_KZ_CONFIG_CURVE));
+    zCurveType = orxConfig_GetString(orxFX_KZ_CONFIG_CURVE);
 
     /* Linear curve? */
-    if(orxString_Compare(zCurveType, orxFX_KZ_LINEAR) == 0)
+    if(orxString_ICompare(zCurveType, orxFX_KZ_LINEAR) == 0)
     {
       /* Updates its curve */
       eCurve = orxFX_CURVE_LINEAR;
     }
     /* Triangle curve? */
-    else if(orxString_Compare(zCurveType, orxFX_KZ_TRIANGLE) == 0)
+    else if(orxString_ICompare(zCurveType, orxFX_KZ_TRIANGLE) == 0)
     {
       /* Updates its curve */
       eCurve = orxFX_CURVE_TRIANGLE;
     }
     /* Square curve? */
-    else if(orxString_Compare(zCurveType, orxFX_KZ_SQUARE) == 0)
+    else if(orxString_ICompare(zCurveType, orxFX_KZ_SQUARE) == 0)
     {
       /* Updates its curve */
       eCurve = orxFX_CURVE_SQUARE;
     }
     /* Sine curve? */
-    else if(orxString_Compare(zCurveType, orxFX_KZ_SINE) == 0)
+    else if(orxString_ICompare(zCurveType, orxFX_KZ_SINE) == 0)
     {
       /* Updates its curve */
       eCurve = orxFX_CURVE_SINE;
     }
     /* Smoother curve? */
-    else if(orxString_Compare(zCurveType, orxFX_KZ_SMOOTHER) == 0)
+    else if(orxString_ICompare(zCurveType, orxFX_KZ_SMOOTHER) == 0)
     {
       /* Updates its curve */
       eCurve = orxFX_CURVE_SMOOTHER;
     }
     /* Smooth curve? */
-    else if(orxString_Compare(zCurveType, orxFX_KZ_SMOOTH) == 0)
+    else if(orxString_ICompare(zCurveType, orxFX_KZ_SMOOTH) == 0)
     {
       /* Updates its curve */
       eCurve = orxFX_CURVE_SMOOTH;
@@ -2365,9 +2365,9 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      orxFLOAT  fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fPow;
-      orxSTRING zType;
-      orxU32    u32Flags = 0;
+      orxFLOAT        fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fPow;
+      const orxSTRING zType;
+      orxU32          u32Flags = 0;
 
       /* Gets its start & end time */
       fStartTime  = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_TIME);
@@ -2396,10 +2396,10 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       fPow = orxConfig_HasValue(orxFX_KZ_CONFIG_POW) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_POW) : orxFLOAT_1;
 
       /* Gets its type */
-      zType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxFX_KZ_CONFIG_TYPE));
+      zType = orxConfig_GetString(orxFX_KZ_CONFIG_TYPE);
 
       /* Alpha fade? */
-      if(orxString_Compare(zType, orxFX_KZ_ALPHA) == 0)
+      if(orxString_ICompare(zType, orxFX_KZ_ALPHA) == 0)
       {
         orxFLOAT fStartAlpha, fEndAlpha;
 
@@ -2411,7 +2411,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddAlpha(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fStartAlpha, fEndAlpha, eCurve, fPow, u32Flags);
       }
       /* Color blend? */
-      else if(orxString_Compare(zType, orxFX_KZ_COLOR) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_COLOR) == 0)
       {
         orxVECTOR vStartColor, vEndColor;
 
@@ -2427,7 +2427,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddRGB(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
       }
       /* RGB blend? */
-      else if(orxString_Compare(zType, orxFX_KZ_RGB) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_RGB) == 0)
       {
         orxVECTOR vStartColor, vEndColor;
 
@@ -2439,7 +2439,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddRGB(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
       }
       /* HSL blend? */
-      else if(orxString_Compare(zType, orxFX_KZ_HSL) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_HSL) == 0)
       {
         orxVECTOR vStartColor, vEndColor;
 
@@ -2451,7 +2451,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddHSL(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
       }
       /* HSV blend? */
-      else if(orxString_Compare(zType, orxFX_KZ_HSV) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_HSV) == 0)
       {
         orxVECTOR vStartColor, vEndColor;
 
@@ -2463,7 +2463,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddHSV(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
       }
       /* Rotation? */
-      else if(orxString_Compare(zType, orxFX_KZ_ROTATION) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_ROTATION) == 0)
       {
         orxFLOAT fStartRotation, fEndRotation;
 
@@ -2475,7 +2475,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddRotation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, orxMATH_KF_DEG_TO_RAD * fStartRotation, orxMATH_KF_DEG_TO_RAD * fEndRotation, eCurve, fPow, u32Flags);
       }
       /* Scale? */
-      else if(orxString_Compare(zType, orxFX_KZ_SCALE) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_SCALE) == 0)
       {
         orxVECTOR vStartScale, vEndScale;
 
@@ -2507,7 +2507,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddScale(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartScale, &vEndScale, eCurve, fPow, u32Flags);
       }
       /* Position? */
-      else if(orxString_Compare(zType, orxFX_KZ_POSITION) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_POSITION) == 0)
       {
         orxVECTOR vStartPosition, vEndPosition;
         orxU32    u32LocalFlags;
@@ -2539,7 +2539,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddPosition(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartPosition, &vEndPosition, eCurve, fPow, u32Flags | u32LocalFlags);
       }
       /* Speed? */
-      else if(orxString_Compare(zType, orxFX_KZ_SPEED) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_SPEED) == 0)
       {
         orxVECTOR vStartSpeed, vEndSpeed;
         orxU32    u32LocalFlags;
@@ -2571,7 +2571,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddSpeed(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartSpeed, &vEndSpeed, eCurve, fPow, u32Flags | u32LocalFlags);
       }
       /* Volume? */
-      else if(orxString_Compare(zType, orxFX_KZ_VOLUME) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_VOLUME) == 0)
       {
         orxFLOAT fStartVolume, fEndVolume;
 
@@ -2583,7 +2583,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         eResult = orxFX_AddVolume(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fStartVolume, fEndVolume, eCurve, fPow, u32Flags);
       }
       /* Pitch? */
-      else if(orxString_Compare(zType, orxFX_KZ_PITCH) == 0)
+      else if(orxString_ICompare(zType, orxFX_KZ_PITCH) == 0)
       {
         orxFLOAT fStartPitch, fEndPitch;
 

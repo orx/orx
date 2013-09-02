@@ -1553,10 +1553,12 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(u32Link != orxU32_UNDEFINED)
               {
+                orxCHAR   acBuffer[64];
                 orxSTRING zProperty;
 
                 /* Gets lower case property */
-                zProperty = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY));
+                acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+                zProperty = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY), sizeof(acBuffer) - 1));
 
                 /* Immediate link? */
                 if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
