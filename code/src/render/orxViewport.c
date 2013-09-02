@@ -1001,10 +1001,6 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
 
     /* Updates texture counter */
     _pstViewport->u32TextureCounter = u32TextureCounter;
-
-    /* Reinits relative size & position */
-    _pstViewport->fX = _pstViewport->fY = orxFLOAT_0;
-    orxViewport_SetRelativeSize(_pstViewport, orxFLOAT_1, orxFLOAT_1);
   }
   else
   {
