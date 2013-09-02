@@ -2761,7 +2761,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
 
     /* Gets new clipping values */
     u32ClipX      = _u32TLX;
-    u32ClipY      = orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY;
+    u32ClipY      = (_pstBitmap == sstDisplay.pstScreen) ? orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY : _u32TLY;
     u32ClipWidth  = _u32BRX - _u32TLX;
     u32ClipHeight = _u32BRY - _u32TLY;
 
@@ -4197,13 +4197,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
 
         /* Defines the texture coord list */
         sstDisplay.astVertexList[0].fU  =
-        sstDisplay.astVertexList[1].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
+        sstDisplay.astVertexList[1].fU  = 0.0f;
         sstDisplay.astVertexList[2].fU  =
-        sstDisplay.astVertexList[3].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
+        sstDisplay.astVertexList[3].fU  = 1.0f;
         sstDisplay.astVertexList[1].fV  =
-        sstDisplay.astVertexList[3].fV  = (GLfloat)(sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+        sstDisplay.astVertexList[3].fV  = 0.0f;
         sstDisplay.astVertexList[0].fV  =
-        sstDisplay.astVertexList[2].fV  = (GLfloat)(sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
+        sstDisplay.astVertexList[2].fV  = 1.0f;
 
         /* Fills the color list */
         sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
