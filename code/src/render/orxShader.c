@@ -422,7 +422,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                 const orxSTRING zValue;
 
                 /* Gets its literal value */
-                zValue = (orxSTRING)orxConfig_GetString(zParamName);
+                zValue = orxConfig_GetString(zParamName);
 
                 /* Is a float? */
                 if(orxString_ToFloat(zValue, (orxFLOAT *)as8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
