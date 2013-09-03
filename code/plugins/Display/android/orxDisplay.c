@@ -3142,8 +3142,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Screen? */
-  if(_pstBitmap == sstDisplay.pstScreen)
+  /* Destination bitmap? */
+  if(_pstBitmap == sstDisplay.pstDestinationBitmap)
   {
     orxU32 u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight;
 
@@ -3152,7 +3152,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
 
     /* Gets new clipping values */
     u32ClipX      = _u32TLX;
-    u32ClipY      = orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY;
+    u32ClipY      = (_pstBitmap == sstDisplay.pstScreen) ? orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY : _u32TLY;
     u32ClipWidth  = _u32BRX - _u32TLX;
     u32ClipHeight = _u32BRY - _u32TLY;
 
@@ -3174,12 +3174,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapClipping(orxBITMAP *_pstBitmap
     }
 
   }
-  else
-  {
-    /* Stores clip coords */
-    orxVector_Set(&(_pstBitmap->stClip.vTL), orxU2F(_u32TLX), orxU2F(_u32TLY), orxFLOAT_0);
-    orxVector_Set(&(_pstBitmap->stClip.vBR), orxU2F(_u32BRX), orxU2F(_u32BRY), orxFLOAT_0);
-  }
+
+  /* Stores clip coords */
+  orxVector_Set(&(_pstBitmap->stClip.vTL), orxU2F(_u32TLX), orxU2F(_u32TLY), orxFLOAT_0);
+  orxVector_Set(&(_pstBitmap->stClip.vBR), orxU2F(_u32BRX), orxU2F(_u32BRY), orxFLOAT_0);
 
   /* Done! */
   return eResult;
@@ -3920,23 +3918,23 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
 
         /* Defines the vertex list */
         sstDisplay.astVertexList[0].fX  =
-        sstDisplay.astVertexList[1].fX  = sstDisplay.pstScreen->stClip.vTL.fX;
+        sstDisplay.astVertexList[1].fX  = sstDisplay.pstDestinationBitmap->stClip.vTL.fX;
         sstDisplay.astVertexList[2].fX  =
-        sstDisplay.astVertexList[3].fX  = sstDisplay.pstScreen->stClip.vBR.fX;
+        sstDisplay.astVertexList[3].fX  = sstDisplay.pstDestinationBitmap->stClip.vBR.fX;
         sstDisplay.astVertexList[1].fY  =
-        sstDisplay.astVertexList[3].fY  = sstDisplay.pstScreen->stClip.vTL.fY;
+        sstDisplay.astVertexList[3].fY  = sstDisplay.pstDestinationBitmap->stClip.vTL.fY;
         sstDisplay.astVertexList[0].fY  =
-        sstDisplay.astVertexList[2].fY  = sstDisplay.pstScreen->stClip.vBR.fY;
+        sstDisplay.astVertexList[2].fY  = sstDisplay.pstDestinationBitmap->stClip.vBR.fY;
 
         /* Defines the texture coord list */
         sstDisplay.astVertexList[0].fU  =
-        sstDisplay.astVertexList[1].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
+        sstDisplay.astVertexList[1].fU  = 0.0f;
         sstDisplay.astVertexList[2].fU  =
-        sstDisplay.astVertexList[3].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
+        sstDisplay.astVertexList[3].fU  = 1.0f
         sstDisplay.astVertexList[1].fV  =
-        sstDisplay.astVertexList[3].fV  = (GLfloat)(sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
+        sstDisplay.astVertexList[3].fV  = 0.0f;
         sstDisplay.astVertexList[0].fV  =
-        sstDisplay.astVertexList[2].fV  = (GLfloat)(sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
+        sstDisplay.astVertexList[2].fV  = 1.0f;
 
         /* Fills the color list */
         sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
