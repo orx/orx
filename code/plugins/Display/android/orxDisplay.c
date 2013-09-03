@@ -3930,7 +3930,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
         sstDisplay.astVertexList[0].fU  =
         sstDisplay.astVertexList[1].fU  = 0.0f;
         sstDisplay.astVertexList[2].fU  =
-        sstDisplay.astVertexList[3].fU  = 1.0f
+        sstDisplay.astVertexList[3].fU  = 1.0f;
         sstDisplay.astVertexList[1].fV  =
         sstDisplay.astVertexList[3].fV  = 0.0f;
         sstDisplay.astVertexList[0].fV  =
