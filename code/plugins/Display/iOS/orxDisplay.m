@@ -4385,13 +4385,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
 
         /* Defines the vertex list */
         sstDisplay.astVertexList[0].fX  =
-        sstDisplay.astVertexList[1].fX  = sstDisplay.pstScreen->stClip.vTL.fX;
+        sstDisplay.astVertexList[1].fX  = sstDisplay.pstDestinationBitmap->stClip.vTL.fX;
         sstDisplay.astVertexList[2].fX  =
-        sstDisplay.astVertexList[3].fX  = sstDisplay.pstScreen->stClip.vBR.fX;
+        sstDisplay.astVertexList[3].fX  = sstDisplay.pstDestinationBitmap->stClip.vBR.fX;
         sstDisplay.astVertexList[1].fY  =
-        sstDisplay.astVertexList[3].fY  = sstDisplay.pstScreen->stClip.vTL.fY;
+        sstDisplay.astVertexList[3].fY  = sstDisplay.pstDestinationBitmap->stClip.vTL.fY;
         sstDisplay.astVertexList[0].fY  =
-        sstDisplay.astVertexList[2].fY  = sstDisplay.pstScreen->stClip.vBR.fY;
+        sstDisplay.astVertexList[2].fY  = sstDisplay.pstDestinationBitmap->stClip.vBR.fY;
 
         /* Defines the texture coord list */
         sstDisplay.astVertexList[0].fU  =
