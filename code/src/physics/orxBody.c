@@ -286,6 +286,7 @@ void orxFASTCALL orxBody_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PHYSICS);
@@ -827,7 +828,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    orxSTRING         zBodyPartType;
+    const orxSTRING   zBodyPartType;
     orxBODY_PART_DEF  stBodyPartDef;
     orxBOOL           bSuccess = orxTRUE;
 
@@ -835,7 +836,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     orxMemory_Zero(&stBodyPartDef, sizeof(orxBODY_PART_DEF));
 
     /* Gets body part type */
-    zBodyPartType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
+    zBodyPartType = orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE);
 
     /* Inits it */
     stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
@@ -849,14 +850,14 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SOLID;
     }
     /* Sphere? */
-    if(orxString_Compare(zBodyPartType, orxBODY_KZ_TYPE_SPHERE) == 0)
+    if(orxString_ICompare(zBodyPartType, orxBODY_KZ_TYPE_SPHERE) == 0)
     {
       /* Updates sphere specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SPHERE;
       if(((orxConfig_HasValue(orxBODY_KZ_CONFIG_CENTER) == orxFALSE)
        && (orxConfig_HasValue(orxBODY_KZ_CONFIG_RADIUS) == orxFALSE))
-      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS)), orxBODY_KZ_FULL) == 0)
-      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
+      || (orxString_ICompare(orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS), orxBODY_KZ_FULL) == 0)
+      || (orxString_ICompare(orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER), orxBODY_KZ_FULL) == 0))
       {
         orxVECTOR vPivot, vSize;
 
@@ -878,14 +879,14 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       }
     }
     /* Box? */
-    else if(orxString_Compare(zBodyPartType, orxBODY_KZ_TYPE_BOX) == 0)
+    else if(orxString_ICompare(zBodyPartType, orxBODY_KZ_TYPE_BOX) == 0)
     {
       /* Updates box specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_BOX;
       if(((orxConfig_HasValue(orxBODY_KZ_CONFIG_TOP_LEFT) == orxFALSE)
        && (orxConfig_HasValue(orxBODY_KZ_CONFIG_BOTTOM_RIGHT) == orxFALSE))
-      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT)), orxBODY_KZ_FULL) == 0)
-      || (orxString_Compare(orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT)), orxBODY_KZ_FULL) == 0))
+      || (orxString_ICompare(orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT), orxBODY_KZ_FULL) == 0)
+      || (orxString_ICompare(orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT), orxBODY_KZ_FULL) == 0))
       {
         orxVECTOR vPivot, vSize;
 
@@ -904,7 +905,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       }
     }
     /* Mesh */
-    else if(orxString_Compare(zBodyPartType, orxBODY_KZ_TYPE_MESH) == 0)
+    else if(orxString_ICompare(zBodyPartType, orxBODY_KZ_TYPE_MESH) == 0)
     {
       /* Updates mesh specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_MESH;
@@ -1250,7 +1251,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
   && (orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    orxSTRING         zBodyJointType;
+    const orxSTRING   zBodyJointType;
     orxBODY_JOINT_DEF stBodyJointDef;
     orxBOOL           bSuccess = orxTRUE;
 
@@ -1258,7 +1259,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
     orxMemory_Zero(&stBodyJointDef, sizeof(orxBODY_JOINT_DEF));
 
     /* Gets body joint type */
-    zBodyJointType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
+    zBodyJointType = orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE);
 
     /* Inits it */
     orxVector_Copy(&(stBodyJointDef.vSrcScale), &(_pstSrcBody->vScale));
@@ -1271,7 +1272,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
     }
 
     /* Revolute? */
-    if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_REVOLUTE) == 0)
+    if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_REVOLUTE) == 0)
     {
       /* Stores type */
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE;
@@ -1304,7 +1305,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       }
     }
     /* Prismatic? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_PRISMATIC) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_PRISMATIC) == 0)
     {
       /* Stores type */
       stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC;
@@ -1340,7 +1341,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       }
     }
     /* Spring? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_SPRING) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_SPRING) == 0)
     {
       orxVECTOR vSrcPos, vDstPos;
 
@@ -1357,7 +1358,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stSpring.fDamping    = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
     }
     /* Rope? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_ROPE) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_ROPE) == 0)
     {
       orxVECTOR vSrcPos, vDstPos;
 
@@ -1368,7 +1369,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstSrcBody)), &vSrcPos), orxObject_GetWorldPosition(orxOBJECT(orxBody_GetOwner(_pstDstBody)), &vDstPos));;
     }
     /* Pulley? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
     {
       orxVECTOR vPos;
 
@@ -1389,7 +1390,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stPulley.fMaxDstLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fDstLength;
     }
     /* Suspension? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_SUSPENSION) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_SUSPENSION) == 0)
     {
       /* Stores type */
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION;
@@ -1422,7 +1423,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       }
     }
     /* Weld? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_WELD) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_WELD) == 0)
     {
       /* Stores type */
       stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_WELD;
@@ -1431,7 +1432,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stWeld.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstDstBody))) - orxObject_GetWorldRotation(orxOBJECT(orxBody_GetOwner(_pstSrcBody)));
     }
     /* Friction? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_FRICTION) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_FRICTION) == 0)
     {
       /* Stores type */
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_FRICTION;
@@ -1441,7 +1442,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stFriction.fMaxTorque  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TORQUE);
     }
     /* Gear? */
-    else if(orxString_Compare(zBodyJointType, orxBODY_KZ_TYPE_GEAR) == 0)
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_GEAR) == 0)
     {
       /* Stores type */
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_GEAR;

@@ -54,6 +54,7 @@ typedef struct __orxHASHTABLE_CELL_t
 #ifdef __orxMSVC__
   #pragma warning(disable : 4200)
 #endif /* __orxMSVC__ */
+
 struct __orxHASHTABLE_t
 {
   orxBANK            *pstBank;                                /**< Bank where are stored cells : 4 */
@@ -61,6 +62,7 @@ struct __orxHASHTABLE_t
   orxU32              u32Size;                                /**< Hashtable size : 12 */
   orxHASHTABLE_CELL  *apstCell[0];                            /**< Hash table */
 };
+
 #ifdef __orxMSVC__
   #pragma warning(default : 4200)
 #endif /* __orxMSVC__ */
@@ -102,9 +104,9 @@ static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable
  */
 orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
-  orxHASHTABLE *pstHashTable = orxNULL; /* New created hash table */
+  orxHASHTABLE *pstHashTable = orxNULL;
   orxU32        u32Size;
-  orxU32        u32Flags;               /* Flags used for bank creation */
+  orxU32        u32Flags;
 
   /* Checks */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
@@ -221,8 +223,8 @@ orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
  */
 void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
 {
-  orxU32 u32Index;                    /* Hash table index */
-  orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
+  orxU32              u32Index;
+  orxHASHTABLE_CELL  *pstCell = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxHashTable_Get");
@@ -230,22 +232,19 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
-  /* Get the index from the key */
+  /* Gets the index from the key */
   u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
 
-  /* Traverse to find the key */
-  pstCell = _pstHashTable->apstCell[u32Index];
-  while(pstCell != orxNULL && pstCell->u32Key != _u32Key)
-  {
-    /* Try with next cell */
-    pstCell = pstCell->pstNext;
-  }
+  /* Finds the corresponding cell */
+  for(pstCell = _pstHashTable->apstCell[u32Index];
+      (pstCell != orxNULL) && (pstCell->u32Key != _u32Key);
+      pstCell = pstCell->pstNext);
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
   /* Done! */
-  return((pstCell != orxNULL) ? pstCell->pData : orxNULL);
+  return (pstCell != orxNULL) ? pstCell->pData : orxNULL;
 }
 
 /** Set an item value.
@@ -256,8 +255,8 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
  */
 orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
-  orxU32 u32Index;                      /* Hash table index */
-  orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
+  orxU32              u32Index;
+  orxHASHTABLE_CELL  *pstCell = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxHashTable_Set");
@@ -265,37 +264,34 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
-  /* Get the index from the key */
+  /* Gets the index from the key */
   u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
 
-  /* Traverse to find the key */
-  pstCell = _pstHashTable->apstCell[u32Index];
-  while(pstCell != orxNULL && pstCell->u32Key != _u32Key)
-  {
-    /* Try with next cell */
-    pstCell = pstCell->pstNext;
-  }
+  /* Finds the corresponding cell */
+  for(pstCell = _pstHashTable->apstCell[u32Index];
+      (pstCell != orxNULL) && (pstCell->u32Key != _u32Key);
+      pstCell = pstCell->pstNext);
 
-  /* Cell found ? */
+  /* Found ? */
   if(pstCell != orxNULL)
   {
-    /* Set associated datas */
+    /* Stores data */
     pstCell->pData = _pData;
   }
   else
   {
-    /* Allocate a new cell if possible */
+    /* Creates a new cell */
     pstCell = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
 
-    /* If allocation succeed, insert the new cell */
+    /* Success? */
     if(pstCell != orxNULL)
     {
-      /* Set datas */
-      pstCell->u32Key = _u32Key;
-      pstCell->pData  = _pData;
-      pstCell->pstNext = _pstHashTable->apstCell[u32Index];
+      /* Inits cell */
+      pstCell->u32Key   = _u32Key;
+      pstCell->pData    = _pData;
+      pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
-      /* Insert it */
+      /* Inserts it */
       _pstHashTable->apstCell[u32Index] = pstCell;
     }
   }
@@ -316,44 +312,47 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
  */
 orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
-  orxU32 u32Index;                      /* Hash index */
-  orxHASHTABLE_CELL *pstCell;             /* New cell to add */
-  orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
+  orxU32              u32Index;
+  orxHASHTABLE_CELL  *pstCell;
+  orxSTATUS           eStatus = orxSTATUS_FAILURE;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxHashTable_Add");
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
-
-  /* Can't add a NULL pointer, else Get will returns orxNULL and it won't be possible to detect errors
-   * Maybe that this behaviour should be different ?
-   */
   orxASSERT(_pData != orxNULL);
 
-  /* The key must not exist */
-  if(orxHashTable_Get(_pstHashTable, _u32Key) == orxNULL)
-  {
-    /* Get the hash table index */
-    u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
+  /* Gets the index from the key */
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
 
-    /* Allocate a new cell if possible */
+  /* Finds the corresponding cell */
+  for(pstCell = _pstHashTable->apstCell[u32Index];
+      (pstCell != orxNULL) && (pstCell->u32Key != _u32Key);
+      pstCell = pstCell->pstNext);
+
+  /* Not found? */
+  if(pstCell == orxNULL)
+  {
+    /* Creates a new cell */
     pstCell = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
 
-    /* If allocation succeed, insert the new cell */
+    /* Success? */
     if(pstCell != orxNULL)
     {
-      /* Set datas */
-      pstCell->u32Key = _u32Key;
-      pstCell->pData  = _pData;
-      pstCell->pstNext = _pstHashTable->apstCell[u32Index];
+      /* Inits cell */
+      pstCell->u32Key   = _u32Key;
+      pstCell->pData    = _pData;
+      pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
-      /* Insert it */
+      /* Inserts it */
       _pstHashTable->apstCell[u32Index] = pstCell;
-      eStatus = orxSTATUS_SUCCESS;
 
       /* Updates counter */
       _pstHashTable->u32Counter++;
+
+      /* Updates result */
+      eStatus = orxSTATUS_SUCCESS;
     }
   }
 

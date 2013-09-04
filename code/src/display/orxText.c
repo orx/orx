@@ -744,9 +744,6 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   /* Has current string? */
   if((_pstText->zString != orxNULL) && (_pstText->zString != orxSTRING_EMPTY))
   {
-    /* Deletes it */
-    orxString_Delete((orxSTRING)_pstText->zString);
-
     /* Cleans reference */
     _pstText->zString = orxNULL;
   }
@@ -755,7 +752,7 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   if((_zString != orxNULL) && (_zString != orxSTRING_EMPTY))
   {
     /* Stores a duplicate */
-    _pstText->zString = orxString_Duplicate(_zString);
+    _pstText->zString = orxString_GetFromID(orxString_GetID(_zString));
   }
 
   /* Updates text size */

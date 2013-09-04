@@ -140,6 +140,7 @@ void orxFASTCALL orxStructure_Setup()
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_PROFILER);
 
+  /* Done! */
   return;
 }
 
@@ -264,6 +265,7 @@ void orxFASTCALL orxStructure_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit structure module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 

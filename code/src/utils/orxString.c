@@ -32,6 +32,28 @@
 
 #include "utils/orxString.h"
 
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
+#include "memory/orxMemory.h"
+#include "utils/orxHashTable.h"
+
+
+/** Module flags
+ */
+
+#define orxSTRING_KU32_STATIC_FLAG_NONE                   0x00000000
+
+#define orxSTRING_KU32_STATIC_FLAG_READY                  0x00000001
+
+#define orxSTRING_KU32_STATIC_MASK_ALL                    0xFFFFFFFF
+
+
+/** Defines
+ */
+#define orxSTRING_KU32_ID_TABLE_SIZE                      16384
+
+#define orxSTRING_KU32_ID_BUFFER_SIZE                     131072
+
 
 /***************************************************************************
  * CRC Table                                                               *
@@ -74,9 +96,186 @@ const orxU32 sau32CRCTable[256] =
 
 
 /***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
+ */
+typedef struct __orxSTRING_STATIC_t
+{
+  orxHASHTABLE *pstIDTable;                               /** String ID table */
+  orxU32        u32Flags;                                 /**< Control flags */
+
+} orxSTRING_STATIC;
+
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** static data
+ */
+static orxSTRING_STATIC sstString;
+
+
+/***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
 
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/** String module setup
+ */
+void orxFASTCALL orxString_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_PROFILER);
+
+  /* Done! */
+  return;
+}
+
+/** Initializess the string module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxString_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not already Initialized? */
+  if(!(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstString, sizeof(orxSTRING_STATIC));
+
+    /* Creates ID table */
+    sstString.pstIDTable = orxHashTable_Create(orxSTRING_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Success? */
+    if(sstString.pstIDTable != orxNULL)
+    {
+      /* Inits Flags */
+      sstString.u32Flags = orxSTRING_KU32_STATIC_FLAG_READY;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't create StringID table.");
+    }
+
+    /* Everything's ok */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize string module when it was already initialized.");
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Exits from the string module
+ */
+void orxFASTCALL orxString_Exit()
+{
+  /* Initialized? */
+  if(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY)
+  {
+    orxU32    u32Key;
+    orxHANDLE hIterator;
+    orxSTRING zString;
+
+    /* For all string IDs */
+    for(hIterator = orxHashTable_GetNext(sstString.pstIDTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&zString);
+        hIterator != orxHANDLE_UNDEFINED;
+        hIterator = orxHashTable_GetNext(sstString.pstIDTable, hIterator, &u32Key, (void **)&zString))
+    {
+      /* Deletes its string */
+      orxString_Delete(zString);
+    }
+
+    /* Deletes ID table */
+    orxHashTable_Delete(sstString.pstIDTable);
+
+    /* Updates flags */
+    sstString.u32Flags &= ~orxSTRING_KU32_STATIC_FLAG_READY;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit string module when it wasn't initialized.");
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Gets a string's ID (and stores the string internally to prevent duplication)
+ * @param[in]   _zString        Concerned string
+ * @return      String's ID
+ */
+orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
+{
+  orxU32 u32Result = 0;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxString_GetID");
+
+  /* Checks */
+  orxASSERT(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+
+  /* Gets its ID */
+  u32Result = orxString_ToCRC(_zString);
+
+  /* Not already stored? */
+  if(orxHashTable_Get(sstString.pstIDTable, u32Result) == orxNULL)
+  {
+    /* Adds it */
+    orxHashTable_Add(sstString.pstIDTable, u32Result, orxString_Duplicate(_zString));
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets a string from an ID (it should have already been stored internally with a call to orxString_GetID)
+ * @param[in]   _hID            Concerned string ID
+ * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
+ */
+const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
+{
+  const orxSTRING zResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxString_GetFromID");
+
+  /* Gets string from table */
+  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, _u32ID);
+
+  /* Invalid? */
+  if(zResult == orxNULL)
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return zResult;
+}

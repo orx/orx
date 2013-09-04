@@ -60,6 +60,8 @@
 
 #endif /* TARGET_OS_ANDROID */
 
+#include <stddef.h>
+
 
 /* *** Platform dependent base declarations */
 

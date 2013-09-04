@@ -93,11 +93,20 @@ typedef struct __orxCOMMAND_STACK_ENTRY_t
 
 } orxCOMMAND_STACK_ENTRY;
 
+/** Command variable info structure
+ */
+typedef struct __orxCOMMAND_VAR_INFO_t
+{
+  orxU32                    u32NameID;                                                /**< Name ID : 4 */
+  orxCOMMAND_VAR_TYPE       eType;                                                    /**< Type : 8 */
+
+} orxCOMMAND_VAR_INFO;
+
 /** Command structure
  */
 typedef struct __orxCOMMAND_t
 {
-  orxSTRING                 zName;                                                    /**< Name : 4 */
+  orxU32                    u32NameID;                                                /**< Name : 4 */
   orxBOOL                   bIsAlias;                                                 /**> Is an alias? : 8 */
 
   union
@@ -111,10 +120,10 @@ typedef struct __orxCOMMAND_t
     struct
     {
       orxCOMMAND_FUNCTION   pfnFunction;                                              /**< Function : 12 */
-      orxCOMMAND_VAR_DEF    stResult;                                                 /**< Result definition : 20 */
+      orxCOMMAND_VAR_INFO   stResult;                                                 /**< Result definition : 20 */
       orxU16                u16RequiredParamNumber;                                   /**< Required param number : 22 */
       orxU16                u16OptionalParamNumber;                                   /**< Optional param number : 24 */
-      orxCOMMAND_VAR_DEF   *astParamList;                                             /**< Param list : 28 */
+      orxCOMMAND_VAR_INFO  *astParamList;                                             /**< Param list : 28 */
     };
   };
 
@@ -216,7 +225,7 @@ static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, o
         if(_astArgList[i].eType != _pstCommand->astParamList[i].eType)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command [%s]: invalid type for argument #%d (%s).", _pstCommand->zName, i + 1, _pstCommand->astParamList[i].zName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command [%s]: invalid type for argument #%d (%s).", orxString_GetFromID(_pstCommand->u32NameID), i + 1, orxString_GetFromID(_pstCommand->astParamList[i].u32NameID));
 
           /* Stops */
           break;
@@ -356,7 +365,7 @@ static orxINLINE void orxCommand_InsertInTrie(orxCOMMAND *_pstCommand)
   orxCOMMAND_TRIE_NODE *pstNode;
 
   /* Gets command trie node */
-  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxTRUE);
+  pstNode = orxCommand_FindTrieNode(orxString_GetFromID(_pstCommand->u32NameID), orxTRUE);
 
   /* Checks */
   orxASSERT(pstNode != orxNULL);
@@ -374,7 +383,7 @@ static orxINLINE void orxCommand_RemoveFromTrie(orxCOMMAND *_pstCommand)
   orxCOMMAND_TRIE_NODE *pstNode;
 
   /* Finds command trie node */
-  pstNode = orxCommand_FindTrieNode(_pstCommand->zName, orxFALSE);
+  pstNode = orxCommand_FindTrieNode(orxString_GetFromID(_pstCommand->u32NameID), orxFALSE);
 
   /* Checks */
   orxASSERT(pstNode != orxNULL);
@@ -1143,13 +1152,13 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
         if(pstAliasNode->pstCommand->zArgs != orxNULL)
         {
           /* Writes log */
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s +<%s> [%s]", zAlias, pstCommandNode->pstCommand->zName, pstAliasNode->pstCommand->zArgs, (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
+          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s +<%s> [%s]", zAlias, orxString_GetFromID(pstCommandNode->pstCommand->u32NameID), pstAliasNode->pstCommand->zArgs, (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
           acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         }
         else
         {
           /* Writes log */
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s [%s]", zAlias, pstCommandNode->pstCommand->zName, (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
+          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s [%s]", zAlias, orxString_GetFromID(pstCommandNode->pstCommand->u32NameID), (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
           acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         }
       }
@@ -2015,6 +2024,7 @@ void orxFASTCALL orxCommand_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_PROFILER);
 
@@ -2139,8 +2149,7 @@ void orxFASTCALL orxCommand_Exit()
   /* Initialized? */
   if(sstCommand.u32Flags & orxCOMMAND_KU32_STATIC_FLAG_READY)
   {
-    orxCOMMAND *pstCommand;
-    orxU32      i;
+    orxU32 i;
 
     /* Unregisters commands */
     orxCommand_UnregisterCommands();
@@ -2159,15 +2168,6 @@ void orxFASTCALL orxCommand_Exit()
         /* Deletes it */
         orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
       }
-    }
-
-    /* For all registered commands */
-    for(pstCommand = (orxCOMMAND *)orxBank_GetNext(sstCommand.pstBank, orxNULL);
-        pstCommand != orxNULL;
-        pstCommand = (orxCOMMAND *)orxBank_GetNext(sstCommand.pstBank, pstCommand))
-    {
-      /* Deletes its name */
-      orxString_Delete(pstCommand->zName);
     }
 
     /* Clears trie */
@@ -2229,16 +2229,16 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
 
         /* Inits it */
         orxMemory_Zero(pstCommand, sizeof(orxCOMMAND));
-        pstCommand->stResult.zName          = orxString_Duplicate(_pstResult->zName);
+        pstCommand->stResult.u32NameID      = orxString_GetID(_pstResult->zName);
+        pstCommand->stResult.eType          = _pstResult->eType;
         pstCommand->bIsAlias                = orxFALSE;
         pstCommand->pfnFunction             = _pfnFunction;
-        pstCommand->stResult.eType          = _pstResult->eType;
-        pstCommand->zName                   = orxString_Duplicate(_zCommand);
+        pstCommand->u32NameID               = orxString_GetID(_zCommand);
         pstCommand->u16RequiredParamNumber  = (orxU16)_u32RequiredParamNumber;
         pstCommand->u16OptionalParamNumber  = (orxU16)_u32OptionalParamNumber;
 
         /* Allocates parameter list */
-        pstCommand->astParamList = (orxCOMMAND_VAR_DEF *)orxMemory_Allocate((_u32RequiredParamNumber + _u32OptionalParamNumber) * sizeof(orxCOMMAND_VAR_DEF), orxMEMORY_TYPE_MAIN);
+        pstCommand->astParamList = (orxCOMMAND_VAR_INFO *)orxMemory_Allocate((_u32RequiredParamNumber + _u32OptionalParamNumber) * sizeof(orxCOMMAND_VAR_INFO), orxMEMORY_TYPE_MAIN);
 
         /* Checks */
         orxASSERT(pstCommand->astParamList != orxNULL);
@@ -2247,8 +2247,8 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
         for(i = 0; i < _u32RequiredParamNumber + _u32OptionalParamNumber; i++)
         {
           /* Inits it */
-          pstCommand->astParamList[i].zName = orxString_Duplicate(_astParamList[i].zName);
-          pstCommand->astParamList[i].eType = _astParamList[i].eType;
+          pstCommand->astParamList[i].u32NameID = orxString_GetID(_astParamList[i].zName);
+          pstCommand->astParamList[i].eType     = _astParamList[i].eType;
         }
 
         /* Inserts in trie */
@@ -2297,21 +2297,10 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
     /* Found? */
     if(pstCommand != orxNULL)
     {
-      orxU32 i;
-
       /* Removes it from trie */
       orxCommand_RemoveFromTrie(pstCommand);
 
-      /* For all its parameters */
-      for(i = 0; i < (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber; i++)
-      {
-        /* Deletes its name */
-        orxString_Delete((orxSTRING)pstCommand->astParamList[i].zName);
-      }
-
       /* Deletes its variables */
-      orxString_Delete((orxSTRING)pstCommand->stResult.zName);
-      orxString_Delete(pstCommand->zName);
       orxMemory_Free(pstCommand->astParamList);
 
       /* Deletes it */
@@ -2427,7 +2416,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
             {
               /* Inits */
               orxMemory_Zero(pstAliasNode->pstCommand, sizeof(orxCOMMAND));
-              pstAliasNode->pstCommand->zName     = orxString_Duplicate(zAlias);
+              pstAliasNode->pstCommand->u32NameID = orxString_GetID(zAlias);
               pstAliasNode->pstCommand->bIsAlias  = orxTRUE;
             }
             else
@@ -2460,7 +2449,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
           {
             /* Updates aliased name */
             pstAliasNode->pstCommand->zAliasedCommandName = orxString_Duplicate(_zCommand);
-            pstAliasNode->pstCommand->zArgs               = (_zArgs != orxCHAR_NULL) ? orxString_Duplicate(_zArgs) : orxNULL;
+            pstAliasNode->pstCommand->zArgs               = (_zArgs != orxNULL) ? orxString_Duplicate(_zArgs) : orxNULL;
           }
         }
         else
@@ -2512,8 +2501,7 @@ orxSTATUS orxFASTCALL orxCommand_RemoveAlias(const orxSTRING _zAlias)
       /* Is an alias? */
       if((pstNode->pstCommand != orxNULL) && (pstNode->pstCommand->bIsAlias != orxFALSE))
       {
-        /* Deletes its names */
-        orxString_Delete(pstNode->pstCommand->zName);
+        /* Deletes its aliased name */
         orxString_Delete(pstNode->pstCommand->zAliasedCommandName);
 
         /* Has arguments? */
@@ -2522,7 +2510,6 @@ orxSTATUS orxFASTCALL orxCommand_RemoveAlias(const orxSTRING _zAlias)
           /* Deletes it */
           orxString_Delete(pstNode->pstCommand->zArgs);
         }
-
         /* Deletes it */
         orxBank_Free(sstCommand.pstBank, pstNode->pstCommand);
 
@@ -2611,20 +2598,20 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
       orxU32 i, u32Size;
 
       /* Prints result and function name */
-      u32Size = orxString_NPrint(sstCommand.acPrototypeBuffer, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1, "{%s %s} %s", orxCommand_GetTypeString(pstCommand->stResult.eType), pstCommand->stResult.zName, pstCommand->zName);
+      u32Size = orxString_NPrint(sstCommand.acPrototypeBuffer, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1, "{%s %s} %s", orxCommand_GetTypeString(pstCommand->stResult.eType), orxString_GetFromID(pstCommand->stResult.u32NameID), orxString_GetFromID(pstCommand->u32NameID));
 
       /* For all required arguments */
       for(i = 0; i < (orxU32)pstCommand->u16RequiredParamNumber; i++)
       {
         /* Prints it */
-        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " (%s %s)", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), pstCommand->astParamList[i].zName);
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " (%s %s)", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), orxString_GetFromID(pstCommand->astParamList[i].u32NameID));
       }
 
       /* For all optional arguments */
       for(; i < (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber; i++)
       {
         /* Prints it */
-        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " [%s %s]", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), pstCommand->astParamList[i].zName);
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " [%s %s]", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), orxString_GetFromID(pstCommand->astParamList[i].u32NameID));
       }
 
       /* Had no parameters? */
@@ -2686,6 +2673,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
   {
     orxCOMMAND_TRIE_NODE *pstPreviousNode;
     const orxCOMMAND     *pstNextCommand;
+    const orxSTRING       zCommandName;
 
     /* Has previous command? */
     if(_zPrevious != orxNULL)
@@ -2741,8 +2729,11 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
         orxCOMMAND_TRIE_NODE *pstNode, *pstParent;
         orxU32                i, u32Position;
 
+        /* Gets command name */
+        zCommandName = orxString_GetFromID(pstNextCommand->u32NameID);
+
         /* Finds prefix node position */
-        for(pstNode = orxCommand_FindTrieNode(pstNextCommand->zName, orxFALSE), pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i = 0, u32Position = -1;
+        for(pstNode = orxCommand_FindTrieNode(zCommandName, orxFALSE), pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i = 0, u32Position = -1;
             pstNode != pstBaseNode;
             pstNode = pstParent, pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i++)
         {
@@ -2757,21 +2748,34 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
         /* Updates prefix length */
         if(_pu32CommonLength != orxNULL)
         {
-          *_pu32CommonLength = orxString_GetLength(pstNextCommand->zName) - u32Position - 1;
+          *_pu32CommonLength = orxString_GetLength(zCommandName) - u32Position - 1;
         }
       }
     }
     else
     {
-      /* Gets next command */
-      pstNextCommand = (pstBaseNode != pstPreviousNode) ? pstBaseNode->pstCommand : orxNULL;
+      /* Found a next command? */
+      if(pstBaseNode != pstPreviousNode)
+      {
+        /* Gets it */
+        pstNextCommand = pstBaseNode->pstCommand;
+
+        /* Gets its name */
+        zCommandName = orxString_GetFromID(pstNextCommand->u32NameID);
+      }
+      else
+      {
+        /* Clears command & name */
+        pstNextCommand  = orxNULL;
+        zCommandName    = orxNULL;
+      }
     }
 
     /* Found? */
     if(pstNextCommand != orxNULL)
     {
       /* Updates result */
-      zResult = pstNextCommand->zName;
+      zResult = zCommandName;
     }
     else
     {

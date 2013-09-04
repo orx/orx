@@ -169,6 +169,7 @@ void orxFASTCALL orxShader_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
@@ -421,7 +422,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                 const orxSTRING zValue;
 
                 /* Gets its literal value */
-                zValue = (orxSTRING)orxConfig_GetString(zParamName);
+                zValue = orxConfig_GetString(zParamName);
 
                 /* Is a float? */
                 if(orxString_ToFloat(zValue, (orxFLOAT *)as8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
@@ -609,8 +610,7 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
     if((_pstShader->zReference != orxNULL)
     && (_pstShader->zReference != orxSTRING_EMPTY))
     {
-      orxSHADER_PARAM_VALUE  *pstParamValue;
-      orxSHADER_PARAM        *pstParam;
+      orxSHADER_PARAM_VALUE *pstParamValue;
 
       /* Removes from hashtable */
       orxHashTable_Remove(sstShader.pstReferenceTable, orxString_ToCRC(_pstShader->zReference));
@@ -640,15 +640,6 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
             orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
           }
         }
-      }
-
-      /* For all parameters */
-      for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-          pstParam != orxNULL;
-          pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
-      {
-        /* Deletes its name */
-        orxString_Delete((orxSTRING)pstParam->zName);
       }
 
       /* Deletes param banks */
@@ -969,7 +960,7 @@ orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxST
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_FLOAT;
-      pstParam->zName         = orxString_Duplicate(_zName);
+      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1046,7 +1037,7 @@ orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orx
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TEXTURE;
-      pstParam->zName         = orxString_Duplicate(_zName);
+      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1124,7 +1115,7 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_VECTOR;
-      pstParam->zName         = orxString_Duplicate(_zName);
+      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1199,7 +1190,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TIME;
-      pstParam->zName         = orxString_Duplicate(_zName);
+      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
       pstParam->u32ArraySize  = 0;
 
       /* Adds it to list */

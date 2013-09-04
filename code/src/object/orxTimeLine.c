@@ -101,7 +101,7 @@
  */
 typedef struct __orxTIMELINE_TRACK_EVENT_t
 {
-  orxSTRING                 zEventText;               /**< Event text : 4 */
+  const orxSTRING           zEventText;               /**< Event text : 4 */
   orxFLOAT                  fTimeStamp;               /**< Event timestamp : 8 */
 
 } orxTIMELINE_TRACK_EVENT;
@@ -279,7 +279,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
 
               /* Stores event */
               pstResult->astEventList[u32EventIndex].fTimeStamp = fTime;
-              pstResult->astEventList[u32EventIndex].zEventText = orxString_Duplicate(orxConfig_GetListString(zKey, i));
+              pstResult->astEventList[u32EventIndex].zEventText = orxString_GetFromID(orxString_GetID(orxConfig_GetListString(zKey, i)));
             }
 
             /* Clears time entry */
@@ -350,8 +350,6 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
   /* Not referenced? */
   if(_pstTrack->u32RefCounter == 0)
   {
-    orxU32 i;
-
     /* Has an ID? */
     if((_pstTrack->zReference != orxNULL)
     && (_pstTrack->zReference != orxSTRING_EMPTY))
@@ -361,13 +359,6 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
 
       /* Unprotects it */
       orxConfig_ProtectSection(_pstTrack->zReference, orxFALSE);
-    }
-
-    /* For all its events */
-    for(i = 0; i < _pstTrack->u32EventCounter; i++)
-    {
-      /* Frees its text event */
-      orxString_Delete(_pstTrack->astEventList[i].zEventText);
     }
 
     /* Deletes it */
@@ -586,6 +577,7 @@ void orxFASTCALL orxTimeLine_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_CLOCK);
