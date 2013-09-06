@@ -1695,7 +1695,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Inits it */
-    pstBitmap->bSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+    pstBitmap->bSmoothing = sstDisplay.bDefaultSmoothing;
     pstBitmap->fWidth = orxU2F(_u32Width);
     pstBitmap->fHeight = orxU2F(_u32Height);
     pstBitmap->u32RealWidth = _u32Width;
@@ -2462,7 +2462,7 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
                 orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
                 /* Inits bitmap */
-                pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+                pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
                 pstBitmap->fWidth         = orxU2F(stHeader.width);
                 pstBitmap->fHeight        = orxU2F(stHeader.height);
                 pstBitmap->u32RealWidth   = stHeader.width;
@@ -2772,7 +2772,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
             orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
             /* Inits bitmap */
-            pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+            pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
             pstBitmap->fWidth         = orxU2F(stHeader.dwWidth);
             pstBitmap->fHeight        = orxU2F(stHeader.dwHeight);
             pstBitmap->u32RealWidth   = stHeader.dwWidth;
