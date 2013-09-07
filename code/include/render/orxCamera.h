@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxCamera
- * 
+ *
  * Camera Module
  * Allows to creates and handle cameras
  * Camera are structures used to render graphic (2D/3D) objects

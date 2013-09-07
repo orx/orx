@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxViewport
- * 
+ *
  * Viewport module
  * Allows to creates and handle viewports.
  * Viewports are structures associated to cameras and used for rendering.
@@ -279,6 +279,12 @@ extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(const orxVIEWPO
  * @return      Correction ratio value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport);
+
+/** Gets viewport config name
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxViewport_GetName(const orxVIEWPORT *_pstViewport);
 
 #endif /* _orxVIEWPORT_H_ */
 

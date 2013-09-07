@@ -104,7 +104,8 @@ struct __orxVIEWPORT_t
   orxCAMERA        *pstCamera;                                            /**< Associated camera : 72 / 76 */
   orxSHADERPOINTER *pstShaderPointer;                                     /**< Shader pointer : 76 / 84 */
   orxU32            u32TextureOwnerFlags;                                 /**< Texture owner flags : 80 / 88 */
-  orxTEXTURE       *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 144 / 216 */
+  const orxSTRING   zReference;                                           /**< Reference : 84 / 96 */
+  orxTEXTURE       *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 148 / 224 */
 };
 
 /** Static structure
@@ -811,6 +812,12 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* Applies it */
         orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
       }
+
+        /* Stores its reference key */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
     }
 
     /* Pops previous section */
@@ -872,6 +879,13 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
         /* Deletes it */
         orxShaderPointer_Delete(_pstViewport->pstShaderPointer);
       }
+    }
+
+    /* Has reference? */
+    if(_pstViewport->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstViewport->zReference, orxFALSE);
     }
 
     /* Deletes structure */
@@ -1729,4 +1743,23 @@ orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewp
 
   /* Done! */
   return fResult;
+}
+
+/** Gets viewport config name
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxViewport_GetName(const orxVIEWPORT *_pstViewport)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Updates result */
+  zResult = (_pstViewport->zReference != orxNULL) ? _pstViewport->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
 }
