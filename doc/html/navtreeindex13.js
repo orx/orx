@@ -1,5 +1,12 @@
 var NAVTREEINDEX13 =
 {
+"orx_file_8h.html#ga6b28e81a5fe57e673f79b20c3f6c641f":[3,0,0,5,0,20],
+"orx_file_8h.html#ga784ed4314bd3c15827cf819acf2845bf":[3,0,0,5,0,10],
+"orx_file_8h.html#ga7e03dfe3355ee7eedf288737757389bf":[3,0,0,5,0,23],
+"orx_file_8h.html#ga86b8ab492ac1345a01f7965aa32c9cf4":[3,0,0,5,0,5],
+"orx_file_8h.html#ga86e101811244bfbdc9bbb289d05c4ea1":[3,0,0,5,0,4],
+"orx_file_8h.html#ga8e45150c5019dc189069413c4ced085b":[3,0,0,5,0,9],
+"orx_file_8h.html#gaa488b51b271b256b7b4515516cb08dde":[3,0,0,5,0,19],
 "orx_file_8h.html#gab1b28f2e382eedcc12d639ae99e83b67":[3,0,0,5,0,14],
 "orx_file_8h.html#gab3f0c189fe842c6628177e5bdbd89166":[3,0,0,5,0,15],
 "orx_file_8h.html#gaf7834a06992a168a04f58274b01f8fd4":[3,0,0,5,0,0],
@@ -242,12 +249,5 @@ var NAVTREEINDEX13 =
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba4a165aa038c5b31d749832e2709d9a25":[3,0,0,5,2,5,7],
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba51461c7118da896a01b4bc2340a230ef":[3,0,0,5,2,5,34],
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba54d0f499b2d040c49b312496c57ef764":[3,0,0,5,2,5,20],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5886269f635e8651cc29e529560220cd":[3,0,0,5,2,5,49],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5a31ffd33ed0bed49e3bb5c89ae8bff5":[3,0,0,5,2,5,21],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba66aae85e5c279adb422a55823ccf83af":[3,0,0,5,2,5,8],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba68ce461f63a438d5a6366a002787c529":[3,0,0,5,2,5,60],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba6a71f9394a227e778c207165abce798f":[3,0,0,5,2,5,13],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba750060deabfa014636f29c69ea00e2ef":[3,0,0,5,2,5,47],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba7551d1b71514055ac98a1dffcac74810":[3,0,0,5,2,5,46],
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba75a97939f5d1507a4f1af4361e995170":[3,0,0,5,2,5,42]
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5886269f635e8651cc29e529560220cd":[3,0,0,5,2,5,49]
 };

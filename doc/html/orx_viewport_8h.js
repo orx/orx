@@ -19,6 +19,7 @@ var orx_viewport_8h =
     [ "orxViewport_GetBox", "orx_viewport_8h.html#ga25a473e0ff95af17b430497c357731f8", null ],
     [ "orxViewport_GetCamera", "orx_viewport_8h.html#ga96733c87b7fd2b3302f2b03552531b28", null ],
     [ "orxViewport_GetCorrectionRatio", "orx_viewport_8h.html#ga2e76d68db09680dd2c4d9b4568066c1c", null ],
+    [ "orxViewport_GetName", "orx_viewport_8h.html#ga7c1c59bc496b897390fead8ef5950de4", null ],
     [ "orxViewport_GetPosition", "orx_viewport_8h.html#ga93836499ffff1dd513c69b3b0e690cac", null ],
     [ "orxViewport_GetRelativeSize", "orx_viewport_8h.html#gafc6d9a5c61ebb87c8e8c41252a09fa97", null ],
     [ "orxViewport_GetShaderPointer", "orx_viewport_8h.html#gaf2a59486f07d77ec447a0ad2ae9bb9c0", null ],

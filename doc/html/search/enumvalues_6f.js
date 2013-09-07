@@ -403,6 +403,7 @@ var searchData=
   ['orxmodule_5fid_5fsoundpointer',['orxMODULE_ID_SOUNDPOINTER',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708a177da56f1cd218fb7dcc920c80aff7f2',1,'orxModule.h']]],
   ['orxmodule_5fid_5fsoundsystem',['orxMODULE_ID_SOUNDSYSTEM',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708adf8fd36b3fe37b2cc1947795d97e9ebe',1,'orxModule.h']]],
   ['orxmodule_5fid_5fspawner',['orxMODULE_ID_SPAWNER',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708ad29b6f2ac402e0cb5482c9fbc4a2f290',1,'orxModule.h']]],
+  ['orxmodule_5fid_5fstring',['orxMODULE_ID_STRING',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708a441b74c1e724d2f5b58b01845c590eb8',1,'orxModule.h']]],
   ['orxmodule_5fid_5fstructure',['orxMODULE_ID_STRUCTURE',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708af694c68af1ab094db8961aaa3fa732cc',1,'orxModule.h']]],
   ['orxmodule_5fid_5fsystem',['orxMODULE_ID_SYSTEM',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708ac6a13e1f67caab3688d6655b827a30c6',1,'orxModule.h']]],
   ['orxmodule_5fid_5ftext',['orxMODULE_ID_TEXT',['../group__orx_module.html#ggada33eee351097708b92f32d0c5972708a31f755b56737397757487f8a50066108',1,'orxModule.h']]],
