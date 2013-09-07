@@ -1,11 +1,11 @@
 Orx - Portable Game Engine (Version 1.5)
-
-=============================================================================
+========================================
 
 Email iarwain [at] orx-project.org to contact the author; or, better,
-check orx's homepage at http://orx-project.org for the most up-to-date contact information.
+check [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
 
-This engine is licensed under the very permissive zlib license, see the LICENSE file for details.
+This engine is licensed under the very permissive [zlib license](http://en.wikipedia.org/wiki/Zlib_License),
+see the [LICENSE](LICENSE) file for details.
 
 
 Summary
@@ -15,10 +15,11 @@ Orx is a 2D-oriented, data-driven, portable game engine focused primarily on eas
 See below for a list of supported platforms.
 
 This is the first release candidate for orx v1.5. If you find any bugs,
-please report them at http://forum.orx-project.org, on the "Bug report - Feature request" board,
-or via orx's issue page/tracker at https://bitbucket.org/orx/orx/issues?status=new&status=open
+please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
+or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
 The current features of orx engine are:
+
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
 - powerful config system that makes orx data-driven and provides an easy to use load/save system
@@ -27,7 +28,7 @@ The current features of orx engine are:
 - animation engine (including a chaining graph & custom animation events for synchronization)
 - fragment (pixel) shader support
 - visual FXs based on curve combinations
-- integrated runtime profiler (with graphical display) to easily spot which parts of your game needs to be optimized
+- integrated runtime profiler (with graphical display) to easily spot which parts of your game need to be optimized
 - collision handling and rigid body physics
 - camera/viewport scheme allowing multiple views displayed with camera translation, zoom and rotation
 - generic input system that abstracts keyboard, mouse, joystick, touch and accelerometer inputs
@@ -43,22 +44,24 @@ The current features of orx engine are:
 - plugin system
 - screenshot capture tool (supports bmp, png, jpg, tga and dds)
 
-See doc/html directory for the doxygen documentation of orx's API.
+See the [doc/html](doc/html) directory for the doxygen documentation of orx's API.
 
 You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
-(ie. how to use the config system) on orx's wiki at: http://wiki.orx-project.org
-
-The English version is the most complete one.
-Chinese and Spanish translations are entirely written and maintained by community members, and they might be less accurate/somewhat outdated.
+(ie. how to use the config system) on [orx's wiki](http://wiki.orx-project.org).  
+The English version is the most complete one.  
+Chinese and Spanish translations are entirely written and maintained by community members,
+and they might be less accurate/somewhat outdated.
 
 
 Supported Platforms
 -------------------
 
 The engine compiles and is tested for:
+
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
 - Windows (x86 with vs2008, vs2010 and mingw32 with codelite, codeblocks and GNU makefile)
-- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support).
+- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile),  
+  version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support)
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, no simulator support)
 
@@ -87,11 +90,11 @@ or the static ones, you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
+
 - GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms
 - OpenAL-based (+libsndfile/stb_vorbis) plugins for sound for all non-Android platforms
 - Box2D-based plugin for physics
 - homemade plugin for 2D rendering
-
 - OpenGL ES/OpenAL-based plugins for display and sound on iOS
 - OpenGL ES-based plugin for display on Android
 - NDK-based plugin for sound on Android
@@ -101,42 +104,38 @@ The embedded versions currently use:
 All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
 
 Some tools (precompiled binaries only) are also shipped with the dev packages:
-  . orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
-  . orxFontGen: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
+
+- orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
+- orxFontGen: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
 
 
 Packages
 --------
 
-You can download all the packages from sourceforge (http://orx.sf.net) or bitbucket (https://bitbucket.orx/orx/orx).
+You can download all the packages from [sourceforge](http://orx.sf.net) or [bitbucket](https://bitbucket.orx/orx/orx).
 Here is a list with a small description for each package.
 
 - orx-doc-1.5.zip: orx's API doxygen documentation
-
 - orx-src-1.5.zip: orx's source code including build projects for
-  . codelite (Windows and Linux, all versions, Mac OS X, non-static versions)
-  . codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)
-  . GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)
-  . vs2008 & vs2010 (Windows Visual Studio, all versions)
-  . xcode (3.2+, for MacOS X, non-static versions; 4.2 for iOS, static embedded versions)
-  . ndk build files for Android (static embedded versions)
+    - codelite (Windows and Linux, all versions, Mac OS X, non-static versions)
+    - codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)
+    - GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)
+    - vs2008 & vs2010 (Windows Visual Studio, all versions)
+    - xcode (3.2+, for MacOS X, non-static versions; 4.2 for iOS, static embedded versions)
+    - ndk build files for Android (static embedded versions)
 NB: You'll need orx-extern-1.5.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
-
-- orx-extern-1.5.zip: orx's external dependencies. You will only *NEED* these if you
-use orx-src-1.5.zip and you plan on compiling orx yourself. They are not needed otherwise.
-The external libraries are usually modified versions of the original ones.
-VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions and not the official ones.
-
+- orx-extern-1.5.zip: orx's external dependencies. You will *only NEED* these if you
+  use orx-src-1.5.zip and you plan on compiling orx yourself. They are not needed otherwise.
+  The external libraries are usually modified versions of the original ones.  
+  __VERY IMPORTANT__: If you want to compile orx yourself, you'll need these versions and not the official ones.
 - orx-dev-linux32-1.5.tar.bz2      : dynamic embedded binaries for Linux (x86), release/profile/debug + tutorials + tools.
 - orx-dev-linux64-1.5.tar.bz2      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tutorials + tools.
 - orx-dev-mac-1.5.zip              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tutorials + tools.
 - orx-dev-mingw-1.5.zip            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tutorials + tools.
 - orx-dev-vs2008-1.5.zip           : dynamic embedded binaries for Windows (Visual Studio 2008), release/profile/debug + tutorials + tools.
 - orx-dev-vs2010-1.5.zip           : dynamic embedded binaries for Windows (Visual Studio 2010), release/profile/debug + tutorials + tools.
-
 - orx-full-ios-1.5.zip             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
 - orx-full-android-1.5.zip         : static embedded binaries for Android, release/profile/debug + doc + source + NDK files.
-
 - orx-tutorial-linux32-1.5.tar.bz2 : tutorials for Linux (x86)
 - orx-tutorial-linux64-1.5.tar.bz2 : tutorials for Linux (x86-64)
 - orx-tutorial-mac-1.5.zip         : tutorials for MacOS X (x86/x86-64)
@@ -144,18 +143,20 @@ VERY IMPORTANT: If you want to compile orx yourself, you'll need these versions 
 - orx-tutorial-vs2008-1.5.zip      : tutorials for Windows (Visual Studio 2008)
 - orx-tutorial-vs2010-1.5.zip      : tutorials for Windows (Visual Studio 2010)
 
-All the *-dev-* packages above include:
- . orx release/profile/debug libraries used for linking
- . runtime release/profile/debug orx libraries
- . headers to include at compile time
- . template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
+All the `*-dev-*` packages above include:
 
-All the *-tutorial-* packages above include:
- . heavily commented source code for 11 basic and advanced tutorials
- . precompiled binaries (orx link library, orx runtime library)
- . headers to include at compile time
- . template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
- . build/project files
+- orx release/profile/debug libraries used for linking
+- runtime release/profile/debug orx libraries
+- headers to include at compile time
+- template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
+
+All the `*-tutorial-*` packages above include:
+
+- heavily commented source code for 11 basic and advanced tutorials
+- precompiled binaries (orx link library, orx runtime library)
+- headers to include at compile time
+- template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
+- build/project files
 
 
 Compiling
@@ -170,59 +171,63 @@ The debug version is far slower than the release one, but will output all the wa
 and error messages useful for debugging.
 
 Here's a quick list of the available compile preprocessor flags:
-- __orxDEBUG__    : used to compile and link against the debug versions of orx library
+
+- `__orxDEBUG__`    : used to compile and link against the debug versions of orx library
                     (liborxd.a / orxd.lib / liborxd.dylib), if not specified it refers to
-                    the release versions (liborx.a / orx.lib / liborx.dylib).
+                    the release versions (liborx.a / orx.lib / liborx.dylib).  
                     NB: If you want to link against the debug versions of orx library, you need
                     to specify it to your compiler!
 
-- __orxPROFILER__ : used to enable the profiling push/pop macros for release builds
+- `__orxPROFILER__` : used to enable the profiling push/pop macros for release builds
                     It's automatically enabled for debug builds and it has been enabled to
-                    build liborxp.a / orxp.lib / orxp.dll / liborxp.dylib / liborxp.so
+                    build liborxp.a / orxp.lib / orxp.dll / liborxp.dylib / liborxp.so  
                     NB: You can define it in your projects even when using regular release builds,
                     but you won't be able to see orx's internal profiling markers!
 
-- __orxSTATIC__   : used to compile and link against the static versions of orx library.
+- `__orxSTATIC__`   : used to compile and link against the static versions of orx library.  
                     NB: If you want to link against the static versions of orx library, you need
                     to specify it to your compiler!
 
-- __orxEMBEDDED__ : used to compile the embedded versions of orx library.
+- `__orxEMBEDDED__` : used to compile the embedded versions of orx library.  
                     NB: this flag is *ONLY* needed when compiling orx library, not when linking
                     against it.
 
 
 There are other preprocessor flags used when compiling the orx library,
-but those should be easy enough to decipher.
+but those should be easy enough to decipher.  
 However, you might want to specify them manually for cross-compiling or
 use them so that your code will behave differently depending on the architecture
 for which you're compiling. Here's a quick list of these flags:
-- __orxARM__          : orx is being compiled for an ARM architecture
-- __orxPPC__          : orx is being compiled for a PowerPC architecture
-- __orxPPC64__        : orx is being compiled for a PowerPC 64 architecture
-- __orxX86__          : orx is being compiled for a x86 architecture
-- __orxX86_64__       : orx is being compiled for a x86-64 architecture
-- __orxLITTLE_ENDIAN  : orx is being compiled for a little endian architecture
-- __orxBIG_ENDIAN     : orx is being compiled for a big endian architecture
-- __orxGCC__          : orx is being compiled with gcc
-- __orxMSVC__         : orx is being compiled with visual studio C/C++
-- __orxLLVM__         : orx is being compiled with llvm/clang
-- __orxWINDOWS__      : orx is being compiled for Windows (x86)
-- __orxMAC__          : orx is being compiled for MacOS X (ppc/x86/x86-64)
-- __orxLINUX__        : orx is being compiled for Linux (x86/x86-64)
-- __orxIOS__          : orx is being compiled for iOS
-- __orxANDROID__      : orx is being compiled for Android
-- __orxRASPBERRY_PI_  : orx is being compiled for Raspberry Pi
-- __orxCPP__          : orx is being compiled with a C++ compiler
-- __orxOBJC__         : orx is being compiled with an Objective-C compiler
-- __orxFREEBASIC__    : orx is being compiled for FreeBasic, WIP
-- __orxPLUGIN__       : a plugin for orx is being compiled
-- __orxEXTERN__       : code using orx's library is being compiled
+
+  Flag                  | Description
+:----------------------:|--------------------------------------------------------
+  `__orxARM__`          | orx is being compiled for an ARM architecture
+  `__orxPPC__`          | orx is being compiled for a PowerPC architecture
+  `__orxPPC64__`        | orx is being compiled for a PowerPC 64 architecture
+  `__orxX86__`          | orx is being compiled for a x86 architecture
+  `__orxX86_64__`       | orx is being compiled for a x86-64 architecture
+  `__orxLITTLE_ENDIAN`  | orx is being compiled for a little endian architecture
+  `__orxBIG_ENDIAN`     | orx is being compiled for a big endian architecture
+  `__orxGCC__`          | orx is being compiled with gcc
+  `__orxMSVC__`         | orx is being compiled with visual studio C/C
+  `__orxLLVM__`         | orx is being compiled with llvm/clang
+  `__orxWINDOWS__`      | orx is being compiled for Windows (x86
+  `__orxMAC__`          | orx is being compiled for MacOS X (ppc/x86/x86-64
+  `__orxLINUX__`        | orx is being compiled for Linux (x86/x86-64
+  `__orxIOS__`          | orx is being compiled for iOS
+  `__orxANDROID__`      | orx is being compiled for Android
+  `__orxRASPBERRY_PI_`  | orx is being compiled for Raspberry Pi
+  `__orxCPP__`          | orx is being compiled with a C++ compiler
+  `__orxOBJC__`         | orx is being compiled with an Objective-C compiler
+  `__orxFREEBASIC__`    | orx is being compiled for FreeBasic, WIP
+  `__orxPLUGIN__`       | a plugin for orx is being compiled
+  `__orxEXTERN__`       | code using orx's library is being compiled
 
 
 Comments
 --------
 
 If you have any questions, comments, ideas or reviews, feel free to post them
-on orx's forum (http://forum.orx-project.org) or send them directly by mail to iarwain [at] orx-project.org
+on [orx's forum](http://forum.orx-project.org) or send them directly by email to iarwain [at] orx-project.org
 
 Enjoy!
