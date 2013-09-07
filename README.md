@@ -206,8 +206,8 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxPPC64__`        | orx is being compiled for a PowerPC 64 architecture
   `__orxX86__`          | orx is being compiled for a x86 architecture
   `__orxX86_64__`       | orx is being compiled for a x86-64 architecture
-  `__orxLITTLE_ENDIAN`  | orx is being compiled for a little endian architecture
-  `__orxBIG_ENDIAN`     | orx is being compiled for a big endian architecture
+  `__orxLITTLE_ENDIAN__`| orx is being compiled for a little endian architecture
+  `__orxBIG_ENDIAN__`   | orx is being compiled for a big endian architecture
   `__orxGCC__`          | orx is being compiled with gcc
   `__orxMSVC__`         | orx is being compiled with visual studio C/C
   `__orxLLVM__`         | orx is being compiled with llvm/clang
@@ -216,7 +216,7 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxLINUX__`        | orx is being compiled for Linux (x86/x86-64
   `__orxIOS__`          | orx is being compiled for iOS
   `__orxANDROID__`      | orx is being compiled for Android
-  `__orxRASPBERRY_PI_`  | orx is being compiled for Raspberry Pi
+  `__orxRASPBERRY_PI__` | orx is being compiled for Raspberry Pi
   `__orxCPP__`          | orx is being compiled with a C++ compiler
   `__orxOBJC__`         | orx is being compiled with an Objective-C compiler
   `__orxFREEBASIC__`    | orx is being compiled for FreeBasic, WIP
