@@ -239,7 +239,7 @@ void orxFASTCALL orxBank_Exit()
  */
 orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
-  orxBANK *pstBank = orxNULL; /* New bank */
+  orxBANK *pstBank;
 
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);

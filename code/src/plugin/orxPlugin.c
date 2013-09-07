@@ -552,7 +552,7 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
  */
 static orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandle)
 {
-  orxPLUGIN_INFO *pstPluginInfo = orxNULL;
+  orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
   orxASSERT(_hPluginHandle != orxHANDLE_UNDEFINED);
@@ -1074,7 +1074,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   {
 
 #endif /* __orxDEBUG__ */
-    
+
   /* Gets complete name */
   orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s.%s", _zPluginFileName, szPluginLibraryExt);
 

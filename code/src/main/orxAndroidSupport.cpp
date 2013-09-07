@@ -643,12 +643,13 @@ static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStor
 
 static orxHANDLE orxFASTCALL orxResource_APK_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
-  AAsset   *poAsset;
   orxHANDLE hResult;
 
   /* Not in erase mode? */
   if(_bEraseMode == orxFALSE)
   {
+    AAsset *poAsset;
+
     /* Opens Asset */
     poAsset = AAssetManager_open(sstAndroid.poAssetManager, _zLocation, AASSET_MODE_RANDOM);
 
@@ -738,7 +739,7 @@ static orxS32 orxFASTCALL orxResource_APK_Read(orxHANDLE _hResource, orxS32 _s32
 
 orxSTATUS orxAndroid_RegisterAPKResource()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
   orxRESOURCE_TYPE_INFO stAPKTypeInfo;
 
   /* Inits apk type */

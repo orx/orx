@@ -829,13 +829,10 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* 2D data? */
     if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
     {
-      const orxVECTOR *pvGlobalPos, *pvParentPos;
+      const orxVECTOR  *pvParentPos;
       orxVECTOR         vLocalPos, vParentScale;
       orxFLOAT          fParentAngle, fCos, fSin, fX, fY, fLocalX, fLocalY;
       orxFRAME         *pstParent, *pstChild;
-
-      /* Gets global position */
-      pvGlobalPos = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
       /* gets parent frame */
       pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
@@ -939,11 +936,8 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* 2D data? */
     if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
     {
-      orxFLOAT  fGlobalAngle, fParentAngle, fLocalAngle;
+      orxFLOAT  fParentAngle, fLocalAngle;
       orxFRAME *pstParent, *pstChild;
-
-      /* Gets global angle */
-      fGlobalAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
       /* gets parent frame */
       pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));

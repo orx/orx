@@ -401,7 +401,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
 orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID)
 {
   orxEVENT  stEvent;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));

@@ -3724,7 +3724,7 @@ orxOBJECT *orxFASTCALL orxObject_GetOwnedChild(const orxOBJECT *_pstObject)
  */
 orxOBJECT *orxFASTCALL orxObject_GetOwnedSibling(const orxOBJECT *_pstObject)
 {
-  orxOBJECT *pstResult = orxNULL;
+  orxOBJECT *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -5217,7 +5217,7 @@ orxSTATUS orxFASTCALL orxObject_Attach(orxOBJECT *_pstObject, void *_pParent)
  */
 orxSTATUS orxFASTCALL orxObject_Detach(orxOBJECT *_pstObject)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);

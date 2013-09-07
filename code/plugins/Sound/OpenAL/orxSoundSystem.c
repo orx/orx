@@ -1295,7 +1295,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetSampleData(orxSOUNDSYSTEM_SAMPLE 
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+  orxSOUNDSYSTEM_SOUND *pstResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -1397,7 +1397,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
 {
-  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+  orxSOUNDSYSTEM_SOUND *pstResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -1966,7 +1966,7 @@ orxBOOL orxFASTCALL orxSoundSystem_OpenAL_IsLooping(const orxSOUNDSYSTEM_SOUND *
 
 orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);

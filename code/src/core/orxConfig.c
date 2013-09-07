@@ -994,8 +994,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxU32 _u32SectionID
  */
 static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
 {
-  orxCONFIG_ENTRY        *pstEntry;
-  orxCONFIG_STACK_ENTRY  *pstStackEntry;
+  orxCONFIG_ENTRY *pstEntry;
 
   /* Checks */
   orxASSERT(_pstSection != orxNULL);
@@ -1010,6 +1009,8 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   /* Not protected? */
   if(_pstSection->s32ProtectionCounter == 0)
   {
+    orxCONFIG_STACK_ENTRY *pstStackEntry;
+
     /* For all stack entries */
     for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
         pstStackEntry != orxNULL;
@@ -3316,7 +3317,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     }
 
     /* Valid file to open? */
-    if(((zResourceLocation = orxResource_GetLocation(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, _zFileName)) != orxNULL)
+    if(((zResourceLocation = orxResource_GetLocation(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, zFileName)) != orxNULL)
     && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
     {
       orxCONFIG_SECTION  *pstSection;
@@ -3350,7 +3351,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         zSectionName = orxString_GetFromID(pstSection->u32ID);
 
         /* No callback or should save it? */
-        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(zSectionName, orxNULL, _zFileName, _bUseEncryption) != orxFALSE))
+        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(zSectionName, orxNULL, zFileName, _bUseEncryption) != orxFALSE))
         {
           orxCONFIG_SECTION *pstParentSection = orxNULL;
           orxCONFIG_ENTRY   *pstEntry;
@@ -3404,7 +3405,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
             zKey = orxString_GetFromID(pstEntry->u32ID);
 
             /* No callback or should save it? */
-            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(zSectionName, zKey, _zFileName, _bUseEncryption) != orxFALSE))
+            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(zSectionName, zKey, zFileName, _bUseEncryption) != orxFALSE))
             {
               /* Not in block mode? */
               if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
@@ -3512,13 +3513,13 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file, can't open file on disk!", _zFileName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file, can't open file on disk!", zFileName);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file with encryption, no valid encryption key provided!", _zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file with encryption, no valid encryption key provided!", zFileName);
   }
 
   /* Profiles */

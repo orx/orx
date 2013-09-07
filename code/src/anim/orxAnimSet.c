@@ -735,7 +735,7 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDAT
  */
 static orxLINK_UPDATE_INFO *orxFASTCALL orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
-  orxLINK_UPDATE_INFO *pstInfo = orxNULL;
+  orxLINK_UPDATE_INFO *pstInfo;
   orxU32 u32Number;
 
   /* Checks */
@@ -854,7 +854,7 @@ static void orxFASTCALL orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLin
  */
 static orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CreateLinkTable(orxU32 _u32Size)
 {
-  orxANIMSET_LINK_TABLE *pstLinkTable = orxNULL;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* Checks */
   orxASSERT(_u32Size < 0xFFFF);
@@ -1439,7 +1439,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
  */
 orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxANIMSET *pstResult = orxNULL;
+  orxANIMSET *pstResult;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
@@ -1715,7 +1715,7 @@ void orxFASTCALL    orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
  */
 orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(const orxANIMSET *_pstAnimSet)
 {
-  orxANIMSET_LINK_TABLE *pstLinkTable = orxNULL;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);

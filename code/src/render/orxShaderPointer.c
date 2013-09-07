@@ -698,7 +698,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShader
  */
 const orxSHADER *orxFASTCALL orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index)
 {
-  const orxSHADER *pstResult = orxNULL;
+  const orxSHADER *pstResult;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);

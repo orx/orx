@@ -713,7 +713,7 @@ void orxFASTCALL orxCamera_Exit()
  */
 orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
 {
-  orxCAMERA *pstCamera = orxNULL;
+  orxCAMERA *pstCamera;
   orxFRAME  *pstFrame;
 
   /* Checks */

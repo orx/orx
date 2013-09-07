@@ -558,7 +558,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 orxCHAR                 acValue[64];
                 orxBOOL                 bUseStringMarker = orxFALSE;
                 const orxSTRING         zValue = acValue;
-                const orxCHAR          *pc;
 
                 /* Gets last stack entry */
                 pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCounter(sstCommand.pstResultBank) - 1);
@@ -578,6 +577,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     /* Is not in block? */
                     if(bInBlock == orxFALSE)
                     {
+                      const orxCHAR *pc;
+
                       /* For all characters */
                       for(pc = zValue; *pc != orxCHAR_NULL; pc++)
                       {

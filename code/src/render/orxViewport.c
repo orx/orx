@@ -379,7 +379,7 @@ void orxFASTCALL orxViewport_Exit()
  */
 orxVIEWPORT *orxFASTCALL orxViewport_Create()
 {
-  orxVIEWPORT *pstViewport = orxNULL;
+  orxVIEWPORT *pstViewport;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -1674,7 +1674,7 @@ void orxFASTCALL orxViewport_GetRelativeSize(const orxVIEWPORT *_pstViewport, or
  */
 orxAABOX *orxFASTCALL orxViewport_GetBox(const orxVIEWPORT *_pstViewport, orxAABOX *_pstBox)
 {
-  orxAABOX *pstResult = orxNULL;
+  orxAABOX *pstResult;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);

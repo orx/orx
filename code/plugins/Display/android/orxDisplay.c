@@ -3252,7 +3252,7 @@ orxU32 orxFASTCALL orxDisplay_Android_GetVideoModeCounter()
 
 orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_Android_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxDISPLAY_VIDEO_MODE *pstResult = orxNULL;
+  orxDISPLAY_VIDEO_MODE *pstResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);

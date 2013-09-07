@@ -454,7 +454,7 @@ void orxFASTCALL orxAnimPointer_Exit()
  */
 orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet)
 {
-  orxANIMPOINTER *pstAnimPointer = orxNULL;
+  orxANIMPOINTER *pstAnimPointer;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
@@ -1057,7 +1057,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimFromName(orxANIMPOINTER *_pst
 orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimFromName(orxANIMPOINTER *_pstAnimPointer, const orxSTRING _zAnimName)
 {
   orxU32    u32AnimID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);

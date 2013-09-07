@@ -104,7 +104,7 @@ static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable
  */
 orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
-  orxHASHTABLE *pstHashTable = orxNULL;
+  orxHASHTABLE *pstHashTable;
   orxU32        u32Size;
   orxU32        u32Flags;
 
@@ -202,7 +202,7 @@ orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
  */
 orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
 {
-  orxU32 u32Result = orxU32_UNDEFINED;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -370,10 +370,9 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
  */
 orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
 {
-  orxU32 u32Index;                          /* Hash table index */
-  orxHASHTABLE_CELL *pstCell = orxNULL;       /* Cell used to traverse */
-  orxHASHTABLE_CELL *pstRemoveCell = orxNULL; /* Cell to remove */
-  orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
+  orxU32 u32Index;                        /* Hash table index */
+  orxHASHTABLE_CELL *pstCell;             /* Cell used to traverse */
+  orxSTATUS eStatus = orxSTATUS_FAILURE;  /* Status to return */
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxHashTable_Remove");
@@ -410,6 +409,8 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
       /* Cell found ? (key should be on the next cell) */
       if(pstCell->pstNext != orxNULL)
       {
+        orxHASHTABLE_CELL *pstRemoveCell;
+
         /* We found it, remove this cell */
         pstRemoveCell = pstCell->pstNext;
         pstCell->pstNext = pstRemoveCell->pstNext;
@@ -536,7 +537,7 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
     if(astWorkBuffer != orxNULL)
     {
       orxU32              u32KeyIndex, u32BufferIndex, i;
-      orxHASHTABLE_CELL  *pstCell, *pstPreviousCell;
+      orxHASHTABLE_CELL  *pstCell;
 
       /* For all cells */
       for(i = 0, u32KeyIndex = 0, u32BufferIndex = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++, u32BufferIndex++)
@@ -563,6 +564,8 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
       /* For all ordered cells */
       for(i = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++)
       {
+        orxHASHTABLE_CELL *pstPreviousCell;
+
         /* Allocates new cell */
         pstPreviousCell = pstCell;
         pstCell         = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);

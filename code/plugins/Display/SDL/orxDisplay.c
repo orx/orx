@@ -1501,7 +1501,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
 
 orxBOOL orxFASTCALL orxDisplay_SDL_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1857,7 +1857,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
 
 orxBOOL orxFASTCALL orxDisplay_SDL_IsVSyncEnabled()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1928,7 +1928,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
 
 orxBOOL orxFASTCALL orxDisplay_SDL_IsFullScreen()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);

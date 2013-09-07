@@ -1012,7 +1012,7 @@ orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
  */
 const orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(const orxCLOCK *_pstClock)
 {
-  const orxCLOCK_INFO *pstClockInfo = orxNULL;
+  const orxCLOCK_INFO *pstClockInfo;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -1031,7 +1031,7 @@ const orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(const orxCLOCK *_pstClock)
  */
 orxCLOCK *orxFASTCALL orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxCLOCK *pstClock = orxNULL;
+  orxCLOCK *pstClock;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);

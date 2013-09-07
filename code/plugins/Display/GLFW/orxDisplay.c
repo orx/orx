@@ -2470,9 +2470,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  int             iFormat;
   orxU32          u32BufferSize;
-  const orxCHAR  *zExtension;
   orxU8          *pu8ImageData;
   orxSTATUS       eResult;
 
@@ -2493,7 +2491,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
     /* Gets bitmap data */
     if(orxDisplay_GLFW_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
     {
-      orxU32 u32Length;
+      const orxCHAR  *zExtension;
+      orxU32          u32Length;
+      int             iFormat;
 
       /* Gets file name's length */
       u32Length = orxString_GetLength(_zFilename);
@@ -2947,7 +2947,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
 
 orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -3623,7 +3623,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
 
 orxBOOL orxFASTCALL orxDisplay_GLFW_IsFullScreen()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -3956,9 +3956,8 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
       /* Successful? */
       if(pstShader != orxNULL)
       {
-        orxSHADER_PARAM  *pstParam;
-        orxCHAR          *pc;
-        orxS32            s32Free;
+        orxCHAR  *pc;
+        orxS32    s32Free;
 
         /* Inits shader code buffer */
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
@@ -3968,6 +3967,8 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         /* Has parameters? */
         if(_pstParamList != orxNULL)
         {
+          orxSHADER_PARAM *pstParam;
+
           /* For all parameters */
           for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
               pstParam != orxNULL;

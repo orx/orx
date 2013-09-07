@@ -63,7 +63,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   /* Non empty? */
   if(_pstList->u32Counter != 0)
   {
-    register orxLINKLIST_NODE *pstNode, *pstCurrent;
+    orxLINKLIST_NODE *pstNode;
 
     /* Gets first node */
     pstNode = _pstList->pstFirst;
@@ -71,6 +71,8 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
     /* Clean all nodes */
     while(pstNode != orxNULL)
     {
+      orxLINKLIST_NODE *pstCurrent;
+
       /* Backups current node */
       pstCurrent = pstNode;
 
