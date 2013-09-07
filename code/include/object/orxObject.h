@@ -604,36 +604,6 @@ extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOB
 /** @} */
 
 
-/** @name Color
- * @{ */
-/** Sets object color
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
-
-/** Clears object color
- * @param[in]   _pstObject      Concerned object
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearColor(orxOBJECT *_pstObject);
-
-/** Object has color accessor
- * @param[in]   _pstObject      Concerned object
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(const orxOBJECT *_pstObject);
-
-/** Gets object color
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pstColor       Object's color
- * @return      orxCOLOR / orxNULL
- */
-extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor);
-/** @} */
-
-
 /** @name FX
  * @{ */
 /** Adds an FX using its config ID
@@ -822,13 +792,43 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const o
 /** @} */
 
 
-/** @name Graphic / texture
+/** @name texture
  * @{ */
 /** Gets object working texture
  * @param[in]   _pstObject     Concerned object
  * @return orxTEXTURE / orxNULL
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const orxOBJECT *_pstObject);
+/** @} */
+
+
+/** @name graphic
+ * @{ */
+/** Sets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
+
+/** Clears object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearColor(orxOBJECT *_pstObject);
+
+/** Object has color accessor
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(const orxOBJECT *_pstObject);
+
+/** Gets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pstColor       Object's color
+ * @return      orxCOLOR / orxNULL
+ */
+extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor);
 
 
 /** Sets object repeat (wrap) values

@@ -1352,14 +1352,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
           /* Updates display color */
           orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
         }
-        /* Has graphic color? */
-        else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
-        {
-          orxCOLOR stColor;
-
-          /* Updates display color */
-          orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
-        }
         else
         {
           /* Applies white color */
@@ -1377,13 +1369,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         if(fRepeatY == orxFLOAT_0)
         {
           fRepeatY = orx2F(0.01f);
-        }
-
-        /* Default? */
-        if((fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
-        {
-          /* Gets repeat values */
-          orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
         }
 
         /* Sets transformation values */
@@ -1482,14 +1467,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
 
                 /* Updates display color */
                 orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
-              }
-              /* Has graphic color? */
-              else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
-              {
-                orxCOLOR stColor;
-
-                /* Updates display color */
-                orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
               }
               else
               {
@@ -1917,15 +1894,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                               eSmoothing = orxObject_GetSmoothing(pstObject);
                             }
 
-                            /* Gets graphic blend mode */
-                            eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
-
-                            /* None? */
-                            if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
-                            {
-                              /* Gets object blend mode */
-                              eBlendMode = orxObject_GetBlendMode(pstObject);
-                            }
+                            /* Gets object blend mode */
+                            eBlendMode = orxObject_GetBlendMode(pstObject);
 
                             /* Creates a render node */
                             pstRenderNode = (orxRENDER_NODE *)orxBank_Allocate(sstRender.pstRenderBank);

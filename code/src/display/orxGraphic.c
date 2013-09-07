@@ -694,6 +694,11 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
           }
         }
+        else
+        {
+          /* Defaults to alpha */
+          u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+        }
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, u32Flags, orxGRAPHIC_KU32_FLAG_NONE);

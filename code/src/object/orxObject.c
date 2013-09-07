@@ -67,7 +67,6 @@
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
 #define orxOBJECT_KU32_FLAG_2D                  0x00000010  /**< 2D flag */
-#define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000020  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
 #define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag  */
@@ -76,15 +75,6 @@
 #define orxOBJECT_KU32_FLAG_HAS_CHILDREN        0x02000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN  0x04000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_IS_JOINT_CHILD      0x08000000  /**< Is joint child flag */
-
-#define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
-
-#define orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA    0x00100000  /**< Blend mode alpha flag */
-#define orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY 0x00200000  /**< Blend mode multiply flag */
-#define orxOBJECT_KU32_FLAG_BLEND_MODE_ADD      0x00400000  /**< Blend mode add flag */
-#define orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL   0x00800000  /**< Blend mode premul flag */
-
-#define orxOBJECT_KU32_MASK_BLEND_MODE_ALL      0x00F00000  /**< Blend mode mask */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -170,13 +160,10 @@ struct __orxOBJECT_t
   const orxSTRING   zReference;                 /**< Config reference : 96 */
   orxFLOAT          fLifeTime;                  /**< Life time : 100 */
   orxFLOAT          fActiveTime;                /**< Active time : 104 */
-  orxFLOAT          fRepeatX;                   /**< Object repeat X : 108 */
-  orxFLOAT          fRepeatY;                   /**< Object repeat Y : 112 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 116 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 128 */
-  orxCOLOR          stColor;                    /**< Object color : 144 */
-  orxOBJECT        *pstChild;                   /**< Child: 148 */
-  orxOBJECT        *pstSibling;                 /**< Sibling: 152 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 108 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 120 */
+  orxOBJECT        *pstChild;                   /**< Child: 124 */
+  orxOBJECT        *pstSibling;                 /**< Sibling: 128 */
 };
 
 /** Static structure
@@ -2470,12 +2457,6 @@ orxOBJECT *orxFASTCALL orxObject_Create()
   /* Created? */
   if(pstObject != orxNULL)
   {
-    /* Clears its color */
-    orxObject_ClearColor(pstObject);
-
-    /* Inits repeat */
-    orxObject_SetRepeat(pstObject, orxFLOAT_1, orxFLOAT_1);
-
     /* Inits flags */
     orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
 
@@ -2616,7 +2597,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       orxU32          u32FrameFlags, u32Flags;
       orxS32          s32Number;
       orxVECTOR       vValue, vParentSize, vColor;
-      orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE;
+      orxCOLOR        stColor;
+      orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE;
 
       /* Defaults to 2D flags */
       u32Flags = orxOBJECT_KU32_FLAG_2D;
@@ -2875,57 +2857,66 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxObject_SetScale(pstResult, &vValue);
       }
 
+      /* Inits color */
+      orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
+
       /* Has color? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
       {
         /* Normalizes and applies it */
-        orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+        orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
 
-        /* Updates status flags */
-        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+        /* Updates status */
+        bHasColor = orxTRUE;
       }
       /* Has RGB values? */
       else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
       {
         /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_RGB, &(stColor.vRGB));
 
         /* Updates status */
-        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+        bHasColor = orxTRUE;
       }
       /* Has HSL values? */
       else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSL) != orxFALSE)
       {
         /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSL, &(stColor.vHSL));
 
         /* Stores its RGB equivalent */
-        orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
+        orxColor_FromHSLToRGB(&stColor, &stColor);
 
         /* Updates status */
-        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+        bHasColor = orxTRUE;
       }
       /* Has HSV values? */
       else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSV) != orxFALSE)
       {
         /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSV, &(pstResult->stColor.vHSV));
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_HSV, &(stColor.vHSV));
 
         /* Stores its RGB equivalent */
-        orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
+        orxColor_FromHSVToRGB(&stColor, &stColor);
 
         /* Updates status */
-        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+        bHasColor = orxTRUE;
       }
 
       /* Has alpha? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
       {
         /* Applies it */
-        orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
+        orxColor_SetAlpha(&stColor, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
 
-        /* Updates status */
-        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
+        /* Updates color */
+        orxObject_SetColor(pstResult, &stColor);
+      }
+      /* Should apply color? */
+      else if(bHasColor != orxFALSE)
+      {
+        /* Updates color */
+        orxObject_SetColor(pstResult, &stColor);
       }
 
       /* *** Body *** */
@@ -3223,40 +3214,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has blend mode? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
       {
-        const orxSTRING zBlendMode;
+        const orxSTRING       zBlendMode;
+        orxDISPLAY_BLEND_MODE eBlendMode;
 
         /* Gets blend mode value */
         zBlendMode = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE);
 
-        /* alpha blend mode? */
+        /* Alpha blend mode? */
         if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_ALPHA) == 0)
         {
-          /* Updates flags */
-          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA;
+          /* Updates blend mode */
+          eBlendMode = orxDISPLAY_BLEND_MODE_ALPHA;
         }
         /* Multiply blend mode? */
         else if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_MULTIPLY) == 0)
         {
-          /* Updates flags */
-          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY;
+          /* Updates blend mode */
+          eBlendMode = orxDISPLAY_BLEND_MODE_MULTIPLY;
         }
         /* Add blend mode? */
         else if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_ADD) == 0)
         {
-          /* Updates flags */
-          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ADD;
+          /* Updates blend mode */
+          eBlendMode = orxDISPLAY_BLEND_MODE_ADD;
         }
         /* Pre-multiplied alpha blend mode? */
         else if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_PREMUL) == 0)
         {
-          /* Updates flags */
-          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL;
+          /* Updates blend mode */
+          eBlendMode = orxDISPLAY_BLEND_MODE_PREMUL;
         }
-      }
-      else
-      {
-        /* Defaults to alpha */
-        u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA;
+
+        /* Updates it */
+        orxObject_SetBlendMode(pstResult, eBlendMode);
       }
 
       /* Should repeat? */
@@ -6313,119 +6303,6 @@ orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOB
   return pstResult;
 }
 
-/** Sets object color
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor)
-{
-  orxSTATUS eResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Valid? */
-  if(_pstColor != orxNULL)
-  {
-    /* Stores color */
-    orxColor_Copy(&(_pstObject->stColor), _pstColor);
-
-    /* Updates its flag */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-
-    /* Updates its flag */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Clears object color
- * @param[in]   _pstObject      Concerned object
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Updates its flag */
-  orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
-
-  /* Restores default color */
-  _pstObject->stColor.fAlpha = orxFLOAT_1;
-  orxVector_Copy(&(_pstObject->stColor.vRGB), &orxVECTOR_WHITE);
-
-  /* Done! */
-  return eResult;
-}
-
-/** Object has color accessor
- * @param[in]   _pstObject      Concerned object
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxObject_HasColor(const orxOBJECT *_pstObject)
-{
-  orxBOOL bResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Updates result */
-  bResult = orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR);
-
-  /* Done! */
-  return bResult;
-}
-
-/** Gets object color
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pstColor       Object's color
- * @return      orxCOLOR / orxNULL
- */
-orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor)
-{
-  orxCOLOR *pstResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pstColor != orxNULL);
-
-  /* Has color? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR))
-  {
-    /* Copies color */
-    orxColor_Copy(_pstColor, &(_pstObject->stColor));
-
-    /* Updates result */
-    pstResult = _pstColor;
-  }
-  else
-  {
-    /* Clears result */
-    pstResult = orxNULL;
-  }
-
-  /* Done! */
-  return pstResult;
-}
-
 /** Adds an FX using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
@@ -7375,6 +7252,148 @@ orxTEXTURE *orxFASTCALL orxObject_GetWorkingTexture(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
+/** Sets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Sets its color */
+    eResult = orxGraphic_SetColor(pstGraphic, _pstColor);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set color.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Clears object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Clears its color */
+    eResult = orxGraphic_ClearColor(pstGraphic);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't clear color.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Object has color accessor
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_HasColor(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Has color? */
+    bResult = orxGraphic_HasColor(pstGraphic);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't check has color.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pstColor       Object's color
+ * @return      orxCOLOR / orxNULL
+ */
+orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor)
+{
+  orxGRAPHIC *pstGraphic;
+  orxCOLOR   *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its color */
+    pstResult = orxGraphic_GetColor(pstGraphic, _pstColor);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get color.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Sets object repeat (wrap) values
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fRepeatX       X-axis repeat value
@@ -7383,26 +7402,26 @@ orxTEXTURE *orxFASTCALL orxObject_GetWorkingTexture(const orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_SetRepeat(orxOBJECT *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)
 {
-  orxSTATUS eResult;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Valid? */
-  if((_fRepeatX > orxFLOAT_0) && (_fRepeatY > orxFLOAT_0))
-  {
-    /* Stores values */
-    _pstObject->fRepeatX = _fRepeatX;
-    _pstObject->fRepeatY = _fRepeatY;
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Sets its repeat */
+    eResult = orxGraphic_SetRepeat(pstGraphic, _fRepeatX, _fRepeatY);
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid repeat values %f & %f.", _fRepeatX, _fRepeatY);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set repeat.", orxObject_GetName(_pstObject));
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -7420,7 +7439,8 @@ orxSTATUS orxFASTCALL orxObject_SetRepeat(orxOBJECT *_pstObject, orxFLOAT _fRepe
  */
 orxSTATUS orxFASTCALL orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -7428,9 +7448,23 @@ orxSTATUS orxFASTCALL orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT 
   orxASSERT(_pfRepeatX != orxNULL);
   orxASSERT(_pfRepeatY != orxNULL);
 
-  /* Stores values */
-  *_pfRepeatX = _pstObject->fRepeatX;
-  *_pfRepeatY = _pstObject->fRepeatY;
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its repeat */
+    eResult = orxGraphic_GetRepeat(pstGraphic, _pfRepeatX, _pfRepeatY);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get repeat.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -7443,57 +7477,29 @@ orxSTATUS orxFASTCALL orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT 
  */
 orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Depending on blend mode */
-  switch(_eBlendMode)
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
   {
-    case orxDISPLAY_BLEND_MODE_ALPHA:
-    {
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+    /* Sets its blend mode */
+    eResult = orxGraphic_SetBlendMode(pstGraphic, _eBlendMode);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set blend mode.", orxObject_GetName(_pstObject));
 
-      break;
-    }
-
-    case orxDISPLAY_BLEND_MODE_MULTIPLY:
-    {
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
-
-      break;
-    }
-
-    case orxDISPLAY_BLEND_MODE_ADD:
-    {
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_ADD, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
-
-      break;
-    }
-
-    case orxDISPLAY_BLEND_MODE_PREMUL:
-    {
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
-
-      break;
-    }
-
-    default:
-    {
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_NONE, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-
-      break;
-    }
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -7506,54 +7512,29 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
  */
 orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const orxOBJECT *_pstObject)
 {
+  orxGRAPHIC           *pstGraphic;
   orxDISPLAY_BLEND_MODE eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Depending on blend flags */
-  switch(orxStructure_GetFlags(_pstObject, orxOBJECT_KU32_MASK_BLEND_MODE_ALL))
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
   {
-    case orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+    /* Gets its repeat */
+    eResult = orxGraphic_GetBlendMode(pstGraphic);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get blend mode.", orxObject_GetName(_pstObject));
 
-      break;
-    }
-
-    case orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
-
-      break;
-    }
-
-    case orxOBJECT_KU32_FLAG_BLEND_MODE_ADD:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_ADD;
-
-      break;
-    }
-
-    case orxOBJECT_KU32_FLAG_BLEND_MODE_PREMUL:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_PREMUL;
-
-      break;
-    }
-
-    default:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_NONE;
-
-      break;
-    }
+    /* Updates result */
+    eResult = orxDISPLAY_BLEND_MODE_NONE;
   }
 
   /* Done! */
