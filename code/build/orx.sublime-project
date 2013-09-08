@@ -3,8 +3,8 @@
     [
         {
             "path": "..",
-            "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb"],
-            "folder_exclude_patterns": ["obj", "bin", "lib"]
+            "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb", "*.exe", "*.", "*.so", "*.dylib", "*.pdb", "*.ilk", "*.idb"],
+            "folder_exclude_patterns": ["obj", "lib"]
         },
         {
             "path": "../../extern",
@@ -18,8 +18,8 @@
         },
         {
             "path": "../../tutorial",
-            "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb"],
-            "folder_exclude_patterns": ["obj", "bin", "lib"]
+            "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb", "*.exe", "*.", "*.so", "*.dylib",  "*.pdb", "*.ilk", "*.idb"],
+            "folder_exclude_patterns": ["obj", "lib"]
         }
     ]
 }

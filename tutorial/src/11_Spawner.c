@@ -65,7 +65,6 @@
 /** Local storage
  */
 static orxS32       ss32ConfigID  = 0;
-static orxVIEWPORT *pstViewport   = orxNULL;
 static orxOBJECT   *pstScene      = orxNULL;
 
 
@@ -73,7 +72,8 @@ static orxOBJECT   *pstScene      = orxNULL;
  */
 static orxINLINE orxSTATUS LoadConfig()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxVIEWPORT  *pstViewport;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
 
   /* Deletes our scene */
   if(pstScene)
@@ -82,11 +82,11 @@ static orxINLINE orxSTATUS LoadConfig()
     pstScene = orxNULL;
   }
 
-  /* Deletes our viewport */
-  if(pstViewport)
+  /* For all the viewports */
+  while((pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT))) != orxNULL)
   {
+    /* Deletes it */
     orxViewport_Delete(pstViewport);
-    pstViewport = orxNULL;
   }
 
   /* Clears all config data */
@@ -107,8 +107,17 @@ static orxINLINE orxSTATUS LoadConfig()
     /* Can load it? */
     if((eResult = orxConfig_Load(zConfigFile)) != orxSTATUS_FAILURE)
     {
-      /* Creates viewport */
-      pstViewport = orxViewport_CreateFromConfig("Viewport");
+      orxS32 i;
+
+      /* Pushes tutorial section */
+      orxConfig_PushSection("Tutorial");
+
+      /* For all defined viewports */
+      for(i = 0; i < orxConfig_GetListCounter("ViewportList"); i++)
+      {
+        /* Creates it */
+        orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+      }
 
       /* Creates our scene */
       pstScene = orxObject_CreateFromConfig("Scene");
