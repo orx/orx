@@ -3244,6 +3244,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Updates blend mode */
           eBlendMode = orxDISPLAY_BLEND_MODE_PREMUL;
         }
+        else
+        {
+          /* Updates blend mode */
+          eBlendMode = orxDISPLAY_BLEND_MODE_NONE;
+        }
 
         /* Updates it */
         orxObject_SetBlendMode(pstResult, eBlendMode);
