@@ -1271,14 +1271,23 @@ orxSTRUCTURE *orxFASTCALL orxCamera_GetParent(const orxCAMERA *_pstCamera)
   /* Gets frame's parent */
   pstParentFrame = orxFrame_GetParent(pstFrame);
 
-  /* Gets its owner */
-  pstResult = orxStructure_GetOwner(pstParentFrame);
-
-  /* No owner? */
-  if(pstResult == orxNULL)
+  /* Valid? */
+  if(pstParentFrame != orxNULL)
   {
-    /* Updates result with frame itself */
-    pstResult = (orxSTRUCTURE *)pstParentFrame;
+    /* Gets its owner */
+    pstResult = orxStructure_GetOwner(pstParentFrame);
+
+    /* No owner? */
+    if(pstResult == orxNULL)
+    {
+      /* Updates result with frame itself */
+      pstResult = (orxSTRUCTURE *)pstParentFrame;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
   }
 
   /* Done! */
