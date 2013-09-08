@@ -832,11 +832,11 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
       }
 
-        /* Stores its reference key */
-        pstResult->zReference = orxConfig_GetCurrentSection();
+      /* Stores its reference key */
+      pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+      /* Protects it */
+      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
     }
 
     /* Pops previous section */
@@ -1468,7 +1468,7 @@ orxSTATUS orxFASTCALL orxViewport_SetBlendMode(orxVIEWPORT *_pstViewport, orxDIS
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT(_eBlendMode < orxDISPLAY_BLEND_MODE_NUMBER);
+  orxASSERT((_eBlendMode == orxDISPLAY_BLEND_MODE_NONE) || (_eBlendMode < orxDISPLAY_BLEND_MODE_NUMBER));
 
   /* Stores blend mode */
   _pstViewport->eBlendMode = _eBlendMode;

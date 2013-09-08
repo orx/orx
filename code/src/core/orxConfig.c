@@ -3289,8 +3289,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
  */
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
-  const orxSTRING zFileName;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxConfig_Save");
@@ -3302,6 +3301,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
     const orxSTRING zResourceLocation;
+    const orxSTRING zFileName;
     orxHANDLE       hResource;
 
     /* Is given an invalid file name? */
@@ -3519,7 +3519,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file with encryption, no valid encryption key provided!", zFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't save file with encryption, no valid encryption key provided!", _zFileName);
   }
 
   /* Profiles */
