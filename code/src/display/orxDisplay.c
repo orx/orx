@@ -34,12 +34,16 @@
 #include "plugin/orxPluginCore.h"
 
 
-/***************************************************************************
- orxDisplay_Setup
- Display module setup.
+/** Misc defines
+ */
+#define orxDISPLAY_KZ_ALPHA                       "alpha"
+#define orxDISPLAY_KZ_MULTIPLY                    "multiply"
+#define orxDISPLAY_KZ_ADD                         "add"
+#define orxDISPLAY_KZ_PREMUL                      "premul"
 
- returns: nothing
- ***************************************************************************/
+
+/** Display module setup
+ */
 void orxFASTCALL orxDisplay_Setup()
 {
   /* Adds module dependencies */
@@ -54,6 +58,48 @@ void orxFASTCALL orxDisplay_Setup()
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_RESOURCE);
 
   return;
+}
+
+/** Gets blend mode from a string
+ * @param[in]    _zBlendMode                          String to evaluate
+ * @return orxDISPLAY_BLEND_MODE
+ */
+orxDISPLAY_BLEND_MODE orxFASTCALL orxDisplay_GetBlendModeFromString(const orxSTRING _zBlendMode)
+{
+  orxDISPLAY_BLEND_MODE eResult;
+
+  /* Alpha blend mode? */
+  if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_ALPHA) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+  }
+  /* Multiply blend mode? */
+  else if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_MULTIPLY) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
+  }
+  /* Add blend mode? */
+  else if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_ADD) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_ADD;
+  }
+  /* Pre-multiplied alpha blend mode? */
+  else if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_PREMUL) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_PREMUL;
+  }
+  else
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_NONE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 
@@ -80,6 +126,8 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmaps, orxSTATUS, orxBITMAP **, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBlendMode, orxSTATUS, orxDISPLAY_BLEND_MODE);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxU32, orxU32, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
@@ -146,6 +194,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAPS, orxDisplay_SetDestinationBitmaps)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CLEAR_BITMAP, orxDisplay_ClearBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BLEND_MODE, orxDisplay_SetBlendMode)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_CLIPPING, orxDisplay_SetBitmapClipping)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR_KEY, orxDisplay_SetBitmapColorKey)
@@ -265,6 +315,11 @@ orxSTATUS orxFASTCALL orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pf
 orxSTATUS orxFASTCALL orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBlendMode)(_eBlendMode);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)

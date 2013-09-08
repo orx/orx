@@ -79,6 +79,7 @@
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
 #define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
+#define orxVIEWPORT_KZ_CONFIG_BLEND_MODE        "BlendMode"
 
 #define orxVIEWPORT_KZ_LEFT                     "left"
 #define orxVIEWPORT_KZ_RIGHT                    "right"
@@ -94,18 +95,19 @@
  */
 struct __orxVIEWPORT_t
 {
-  orxSTRUCTURE      stStructure;                                          /**< Public structure, first structure member : 32 */
-  orxFLOAT          fX;                                                   /**< X position (top left corner) : 36 */
-  orxFLOAT          fY;                                                   /**< Y position (top left corner) : 40 */
-  orxFLOAT          fWidth;                                               /**< Width : 44 */
-  orxFLOAT          fHeight;                                              /**< Height : 48 */
-  orxCOLOR          stBackgroundColor;                                    /**< Background color : 64 */
-  orxU32            u32TextureCounter;                                    /**< Associated texture counter : 68 */
-  orxCAMERA        *pstCamera;                                            /**< Associated camera : 72 / 76 */
-  orxSHADERPOINTER *pstShaderPointer;                                     /**< Shader pointer : 76 / 84 */
-  orxU32            u32TextureOwnerFlags;                                 /**< Texture owner flags : 80 / 88 */
-  const orxSTRING   zReference;                                           /**< Reference : 84 / 96 */
-  orxTEXTURE       *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 148 / 224 */
+  orxSTRUCTURE          stStructure;                                          /**< Public structure, first structure member : 32 */
+  orxFLOAT              fX;                                                   /**< X position (top left corner) : 36 */
+  orxFLOAT              fY;                                                   /**< Y position (top left corner) : 40 */
+  orxFLOAT              fWidth;                                               /**< Width : 44 */
+  orxFLOAT              fHeight;                                              /**< Height : 48 */
+  orxCOLOR              stBackgroundColor;                                    /**< Background color : 64 */
+  orxU32                u32TextureCounter;                                    /**< Associated texture counter : 68 */
+  orxCAMERA            *pstCamera;                                            /**< Associated camera : 72 / 76 */
+  orxSHADERPOINTER     *pstShaderPointer;                                     /**< Shader pointer : 76 / 84 */
+  orxU32                u32TextureOwnerFlags;                                 /**< Texture owner flags : 80 / 88 */
+  orxDISPLAY_BLEND_MODE eBlendMode;                                           /**< Blend mode : 84 / 92 */
+  const orxSTRING       zReference;                                           /**< Reference : 88 / 100 */
+  orxTEXTURE           *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 152 / 228 */
 };
 
 /** Static structure
@@ -712,6 +714,23 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           /* Adds it */
           orxViewport_AddShader(pstResult, orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER_LIST, i));
         }
+      }
+
+      /* Has blend mode? */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
+      {
+        const orxSTRING zBlendMode;
+
+        /* Gets blend mode value */
+        zBlendMode = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BLEND_MODE);
+
+        /* Stores it */
+        orxViewport_SetBlendMode(pstResult, orxDisplay_GetBlendModeFromString(zBlendMode));
+      }
+      else
+      {
+        /* Defaults to none */
+        orxViewport_SetBlendMode(pstResult, orxDISPLAY_BLEND_MODE_NONE);
       }
 
       /* *** Camera *** */
@@ -1436,6 +1455,45 @@ const orxSHADERPOINTER *orxFASTCALL orxViewport_GetShaderPointer(const orxVIEWPO
 
   /* Done! */
   return pstResult;
+}
+
+/** Sets a viewport blend mode (only used when has active shaders attached)
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _eBlendMode     Blend mode to set
+ */
+orxSTATUS orxFASTCALL orxViewport_SetBlendMode(orxVIEWPORT *_pstViewport, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_eBlendMode < orxDISPLAY_BLEND_MODE_NUMBER);
+
+  /* Stores blend mode */
+  _pstViewport->eBlendMode = _eBlendMode;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets a viewport blend mode
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return orxDISPLAY_BLEND_MODE
+ */
+orxDISPLAY_BLEND_MODE orxFASTCALL orxViewport_GetBlendMode(const orxVIEWPORT *_pstViewport)
+{
+  orxDISPLAY_BLEND_MODE eResult;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Updates result */
+  eResult = _pstViewport->eBlendMode;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets a viewport position

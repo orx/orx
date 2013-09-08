@@ -1066,58 +1066,8 @@ static orxINLINE void orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBitm
     }
   }
 
-  /* New blend mode? */
-  if(_eBlendMode != sstDisplay.eLastBlendMode)
-  {
-    /* Draws remaining items */
-    orxDisplay_Android_DrawArrays();
-
-    /* Stores it */
-    sstDisplay.eLastBlendMode = _eBlendMode;
-
-    /* Depending on blend mode */
-    switch(_eBlendMode)
-    {
-      case orxDISPLAY_BLEND_MODE_ALPHA:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-        break;
-      }
-      case orxDISPLAY_BLEND_MODE_MULTIPLY:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glASSERT();
-        break;
-      }
-      case orxDISPLAY_BLEND_MODE_ADD:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glASSERT();
-        break;
-      }
-      case orxDISPLAY_BLEND_MODE_PREMUL:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-        break;
-      }
-      default:
-      {
-        glDisable(GL_BLEND);
-        glASSERT();
-        break;
-      }
-    }
-  }
+  /* Sets blend mode */
+  orxDisplay_SetBlendMode(_eBlendMode);
 
   /* Done! */
   return;
@@ -1811,6 +1761,67 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
 
     /* Frees buffer */
     orxMemory_Free(astBuffer);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_Android_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
+  {
+    /* Draws remaining items */
+    orxDisplay_Android_DrawArrays();
+
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
+    {
+      case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+        break;
+      }
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+        break;
+      }
+      case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+        break;
+      }
+      case orxDISPLAY_BLEND_MODE_PREMUL:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+        break;
+      }
+      default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+        break;
+      }
+    }
   }
 
   /* Done! */
@@ -4308,6 +4319,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapSize, DISPLAY, GET_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetScreenBitmap, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapData, DISPLAY, SET_BITMAP_DATA);

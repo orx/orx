@@ -188,14 +188,21 @@ static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstE
 
     case orxRENDER_EVENT_VIEWPORT_STOP:
     {
+      orxVIEWPORT            *pstViewport;
       const orxSHADERPOINTER *pstShaderPointer;
 
-      /* Gets its shader pointer */
-      pstShaderPointer = orxViewport_GetShaderPointer(orxVIEWPORT(_pstEvent->hSender));
+      /* Gets viewport */
+      pstViewport = orxVIEWPORT(_pstEvent->hSender);
 
-      /* Found? */
-      if(pstShaderPointer != orxNULL)
+      /* Gets its shader pointer */
+      pstShaderPointer = orxViewport_GetShaderPointer(pstViewport);
+
+      /* Found and enabled? */
+      if((pstShaderPointer != orxNULL) && (orxShaderPointer_IsEnabled(pstShaderPointer) != orxFALSE))
       {
+        /* Updates blend mode */
+        orxDisplay_SetBlendMode(orxViewport_GetBlendMode(pstViewport));
+
         /* Starts & stops it */
         orxShaderPointer_Start(pstShaderPointer);
         orxShaderPointer_Stop(pstShaderPointer);

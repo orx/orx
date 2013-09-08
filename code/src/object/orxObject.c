@@ -129,10 +129,6 @@
 #define orxOBJECT_KZ_X                          "x"
 #define orxOBJECT_KZ_Y                          "y"
 #define orxOBJECT_KZ_BOTH                       "both"
-#define orxOBJECT_KZ_ALPHA                      "alpha"
-#define orxOBJECT_KZ_MULTIPLY                   "multiply"
-#define orxOBJECT_KZ_ADD                        "add"
-#define orxOBJECT_KZ_PREMUL                     "premul"
 #define orxOBJECT_KZ_SCALE                      "scale"
 #define orxOBJECT_KZ_POSITION                   "position"
 
@@ -3214,44 +3210,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has blend mode? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
       {
-        const orxSTRING       zBlendMode;
-        orxDISPLAY_BLEND_MODE eBlendMode;
+        const orxSTRING zBlendMode;
 
         /* Gets blend mode value */
         zBlendMode = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE);
 
-        /* Alpha blend mode? */
-        if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_ALPHA) == 0)
-        {
-          /* Updates blend mode */
-          eBlendMode = orxDISPLAY_BLEND_MODE_ALPHA;
-        }
-        /* Multiply blend mode? */
-        else if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_MULTIPLY) == 0)
-        {
-          /* Updates blend mode */
-          eBlendMode = orxDISPLAY_BLEND_MODE_MULTIPLY;
-        }
-        /* Add blend mode? */
-        else if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_ADD) == 0)
-        {
-          /* Updates blend mode */
-          eBlendMode = orxDISPLAY_BLEND_MODE_ADD;
-        }
-        /* Pre-multiplied alpha blend mode? */
-        else if(orxString_ICompare(zBlendMode, orxOBJECT_KZ_PREMUL) == 0)
-        {
-          /* Updates blend mode */
-          eBlendMode = orxDISPLAY_BLEND_MODE_PREMUL;
-        }
-        else
-        {
-          /* Updates blend mode */
-          eBlendMode = orxDISPLAY_BLEND_MODE_NONE;
-        }
-
-        /* Updates it */
-        orxObject_SetBlendMode(pstResult, eBlendMode);
+        /* Updates object's blend mode */
+        orxObject_SetBlendMode(pstResult, orxDisplay_GetBlendModeFromString(zBlendMode));
       }
 
       /* Should repeat? */

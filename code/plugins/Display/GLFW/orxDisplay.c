@@ -1040,67 +1040,8 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     }
   }
 
-  /* New blend mode? */
-  if(_eBlendMode != sstDisplay.eLastBlendMode)
-  {
-    /* Draws remaining items */
-    orxDisplay_GLFW_DrawArrays();
-
-    /* Stores it */
-    sstDisplay.eLastBlendMode = _eBlendMode;
-
-    /* Depending on blend mode */
-    switch(_eBlendMode)
-    {
-      case orxDISPLAY_BLEND_MODE_ALPHA:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_MULTIPLY:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_ADD:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_PREMUL:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-
-        break;
-      }
-
-      default:
-      {
-        glDisable(GL_BLEND);
-        glASSERT();
-
-        break;
-      }
-    }
-  }
+  /* Sets blend mode */
+  orxDisplay_SetBlendMode(_eBlendMode);
 
   /* Done! */
   return;
@@ -1833,6 +1774,76 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
 
     /* Frees buffer */
     orxMemory_Free(astBuffer);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
+  {
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
+    {
+      case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_PREMUL:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+
+        break;
+      }
+    }
   }
 
   /* Done! */
@@ -4570,6 +4581,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_LoadBitmap, DISPLAY, LOAD_BITMA
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SaveBitmap, DISPLAY, SAVE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapData, DISPLAY, SET_BITMAP_DATA);

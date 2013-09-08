@@ -48,6 +48,7 @@
 #include "core/orxClock.h"
 #include "render/orxCamera.h"
 #include "render/orxShaderPointer.h"
+#include "display/orxDisplay.h"
 #include "display/orxTexture.h"
 
 
@@ -214,6 +215,19 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsShaderEnabled(const 
  * @return      orxSHADERPOINTER / orxNULL
  */
 extern orxDLLAPI const orxSHADERPOINTER *orxFASTCALL orxViewport_GetShaderPointer(const orxVIEWPORT *_pstViewport);
+
+
+/** Sets a viewport blend mode (only used when has active shaders attached)
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _eBlendMode     Blend mode to set
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetBlendMode(orxVIEWPORT *_pstViewport, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Gets a viewport blend mode
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return orxDISPLAY_BLEND_MODE
+ */
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxViewport_GetBlendMode(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport position

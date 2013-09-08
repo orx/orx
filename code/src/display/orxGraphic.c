@@ -99,10 +99,6 @@
 #define orxGRAPHIC_KZ_X                           "x"
 #define orxGRAPHIC_KZ_Y                           "y"
 #define orxGRAPHIC_KZ_BOTH                        "both"
-#define orxGRAPHIC_KZ_ALPHA                       "alpha"
-#define orxGRAPHIC_KZ_MULTIPLY                    "multiply"
-#define orxGRAPHIC_KZ_ADD                         "add"
-#define orxGRAPHIC_KZ_PREMUL                      "premul"
 
 
 /***************************************************************************
@@ -664,34 +660,51 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has blend mode? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_BLEND_MODE) != orxFALSE)
         {
-          const orxSTRING zBlendMode;
+          const orxSTRING       zBlendMode;
+          orxDISPLAY_BLEND_MODE eBlendMode;
 
           /* Gets blend mode value */
           zBlendMode = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE);
+          eBlendMode = orxDisplay_GetBlendModeFromString(zBlendMode);
 
-          /* alpha blend mode? */
-          if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_ALPHA) == 0)
+          /* Depending on blend mode */
+          switch(eBlendMode)
           {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
-          }
-          /* Multiply blend mode? */
-          else if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_MULTIPLY) == 0)
-          {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
-          }
-          /* Add blend mode? */
-          else if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_ADD) == 0)
-          {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
-          }
-          /* Pre-multiplied alpha blend mode? */
-          else if(orxString_ICompare(zBlendMode, orxGRAPHIC_KZ_PREMUL) == 0)
-          {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
+            case orxDISPLAY_BLEND_MODE_ALPHA:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+
+              break;
+            }
+
+            case orxDISPLAY_BLEND_MODE_MULTIPLY:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
+
+              break;
+            }
+
+            case orxDISPLAY_BLEND_MODE_ADD:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
+
+              break;
+            }
+
+            case orxDISPLAY_BLEND_MODE_PREMUL:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
+
+              break;
+            }
+
+            default:
+            {
+            }
           }
         }
         else

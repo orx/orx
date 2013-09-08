@@ -791,6 +791,12 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
   return pstResult;
 }
 
+/** Gets blend mode from a string
+ * @param[in]    _zBlendMode                          String to evaluate
+ * @return orxDISPLAY_BLEND_MODE
+ */
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL    orxDisplay_GetBlendModeFromString(const orxSTRING _zBlendMode);
+
 
 /***************************************************************************
  * Functions extended by plugins
@@ -865,6 +871,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationB
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
+
+/** Sets current blend mode
+ * @param[in]   _eBlendMode                           Blend mode to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Sets a bitmap clipping for blitting (both as source and destination)
  * @param[in]   _pstBitmap                            Concerned bitmap

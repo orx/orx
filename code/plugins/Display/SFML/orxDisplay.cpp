@@ -389,6 +389,17 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitm
   return eResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Swap()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -2090,6 +2101,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapSize, DISPLAY, GET_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapData, DISPLAY, SET_BITMAP_DATA);

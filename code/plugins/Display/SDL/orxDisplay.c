@@ -608,64 +608,8 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     }
   }
 
-  /* New blend mode? */
-  if(_eBlendMode != sstDisplay.eLastBlendMode)
-  {
-    /* Stores it */
-    sstDisplay.eLastBlendMode = _eBlendMode;
-
-    /* Depending on blend mode */
-    switch(_eBlendMode)
-    {
-      case orxDISPLAY_BLEND_MODE_ALPHA:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_MULTIPLY:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_ADD:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_PREMUL:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-
-        break;
-      }
-
-      default:
-      {
-        glDisable(GL_BLEND);
-        glASSERT();
-
-        break;
-      }
-    }
-  }
+  /* Updates blend mode */
+  orxDisplay_SetBlendMode(_eBlendMode);
 
   /* Applies color */
   glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
@@ -873,6 +817,73 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
     glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
+  {
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
+    {
+      case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_PREMUL:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+
+        break;
+      }
+    }
   }
 
   /* Done! */
@@ -3180,6 +3191,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITM
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
