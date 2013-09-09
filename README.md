@@ -92,12 +92,10 @@ Everything compiles out-of-the-box for the hardware platforms cited above.
 The embedded versions currently use:
 
 - GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms
-- OpenAL-based (+libsndfile/stb_vorbis) plugins for sound for all non-Android platforms
+- OpenAL-based (+libsndfile/stb_vorbis/tremor) plugins for sound for all platforms
 - Box2D-based plugin for physics
 - homemade plugin for 2D rendering
-- OpenGL ES/OpenAL-based plugins for display and sound on iOS
-- OpenGL ES-based plugin for display on Android
-- NDK-based plugin for sound on Android
+- OpenGL ES plugins for display on iOS and Android
 - Touch/MultiTouch-based plugin for mouse on iOS and Android
 - Accelerometer-based plugin for joystick on iOS and Android
 
