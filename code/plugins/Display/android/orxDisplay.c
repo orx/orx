@@ -38,7 +38,6 @@
 #include "SOIL.h"
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
 #include "main/orxAndroid.h"
 
 #include <sys/endian.h>
@@ -3379,6 +3378,15 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
   /* Uses default shader */
   orxDisplay_StopShader(orxNULL);
+
+  /* Inits matrices */
+  sstDisplay.fLastOrthoRight  = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
+  sstDisplay.dLastOrthoBottom = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
+
+  orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+
+   /* Passes it to shader */
+   glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* For all texture units */
   for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
