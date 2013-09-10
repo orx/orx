@@ -1,5 +1,13 @@
 var NAVTREEINDEX11 =
 {
+"orx_camera_8h.html#gab9edd5fc69d31f154c27c87fa2e3022c":[3,0,0,12,0,11],
+"orx_camera_8h.html#gac8d9820499ba6883db51a6b2154c01d9":[3,0,0,12,0,15],
+"orx_camera_8h.html#gae0211ecc4d6230f17f6a489a7cebcf05":[3,0,0,12,0,19],
+"orx_camera_8h.html#gaf95c0fa671a3f6b6b069495a4b5c6008":[3,0,0,12,0,8],
+"orx_camera_8h_source.html":[3,0,0,12,0],
+"orx_clock_8h.html":[3,0,0,2,0],
+"orx_clock_8h.html#ga010f384574cf277ce84a64d4df4025b5":[3,0,0,2,0,26],
+"orx_clock_8h.html#ga02b0d4ee74c3f16cea7c87cb30e73533":[3,0,0,2,0,2],
 "orx_clock_8h.html#ga0aca451a4b2abd1ab42c6674b4a3198b":[3,0,0,2,0,19],
 "orx_clock_8h.html#ga153e90a40237dabd7a1e5025ec4b8e33":[3,0,0,2,0,9],
 "orx_clock_8h.html#ga2877a0cb560d9394397ce42b1cf71ec7":[3,0,0,2,0,12],
@@ -241,13 +249,5 @@ var NAVTREEINDEX11 =
 "orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba3bdb48bbeffbaa6e907d710c549a421f":[3,0,0,3,0,30,3],
 "orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba4d0a63b9dc12f7c6c4a1c1ed6224bae2":[3,0,0,3,0,30,1],
 "orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba58e62391440024b089fba36e0c96dcdb":[3,0,0,3,0,30,6],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba699428ca415508277a926f8d1df637d7":[3,0,0,3,0,30,0],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba852436f62180f4eb2b7886bcb5daf912":[3,0,0,3,0,30,4],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba86cd6712f1e582df5ef59afe7c21dd6d":[3,0,0,3,0,30,7],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba87423c8d257aebf0dd2e4b42b27c4cca":[3,0,0,3,0,30,16],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba8ccf1acaf74441c5e6c569004626bd36":[3,0,0,3,0,30,24],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba9aa230c0654ee625f8a0e96a719360bc":[3,0,0,3,0,30,12],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba9ec44d54308a652d42fdace958c45f1d":[3,0,0,3,0,30,13],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bbaa311745b210c357e432cecc2d177259f":[3,0,0,3,0,30,22],
-"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bbaa6acba1b9a9e4132847ac669ddb6b5e7":[3,0,0,3,0,30,20]
+"orx_debug_8h.html#ggaeb4ae42be59a5cb6239cee52d62e28bba699428ca415508277a926f8d1df637d7":[3,0,0,3,0,30,0]
 };
