@@ -28,7 +28,7 @@
  * @author iarwain@orx-project.org
  *
  * @todo
- * - Use matrix instead of disjoint position vector/angle float/scale vector
+ * - Use matrix instead of disjoint position vector/rotation float/scale vector
  * - Add 3D support
  */
 
@@ -160,9 +160,9 @@ extern orxDLLAPI void orxFASTCALL             orxFrame_SetPosition(orxFRAME *_ps
 /** Sets frame rotation
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @param[in]   _fAngle         Angle to set (radians)
+ * @param[in]   _fRotation      Rotation angle to set (radians)
  */
-extern orxDLLAPI void orxFASTCALL             orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT _fAngle);
+extern orxDLLAPI void orxFASTCALL             orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT _fRotation);
 
 /** Sets frame scale
  * @param[in]   _pstFrame       Concerned frame
@@ -194,6 +194,31 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetRotation(orxFRAME *_ps
  * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvScale);
+
+
+/** Transforms a position given its input space (local -> global or global -> local)
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Input coordinate space system to use
+ * @param[out]  _pvPos          Concerned position
+ * @return orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_TransformPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvPos);
+
+/** Transforms a rotation given its input space (local -> global or global -> local)
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Input coordinate space system to use
+ * @param[out]  _fRotation      Concerned rotation
+ * @return Transformed rotation (radians)
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_TransformRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT _fRotation);
+
+/** Transforms a scale given its input space (local -> global or global -> local)
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Input coordinate space system to use
+ * @param[out]  _pvScale        Concerned scale
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_TransformScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvScale);
 
 #endif /* _orxFRAME_H_ */
 
