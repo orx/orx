@@ -218,7 +218,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
 
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -O0
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9
