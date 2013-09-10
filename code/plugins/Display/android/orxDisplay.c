@@ -38,6 +38,7 @@
 #include "SOIL.h"
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 #include "main/orxAndroid.h"
 
 #include <sys/endian.h>
@@ -3381,7 +3382,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
   /* Inits matrices */
   sstDisplay.fLastOrthoRight  = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
-  sstDisplay.dLastOrthoBottom = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
+  sstDisplay.fLastOrthoBottom = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
 
   orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
