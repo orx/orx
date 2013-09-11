@@ -2355,14 +2355,79 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
 
 orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxU32          u32BufferSize;
+  orxU8          *pu8ImageData;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not supported on this platform.");
+  /* Gets buffer size */
+  u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
+
+  /* Allocates buffer */
+  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
+
+  /* Valid? */
+  if(pu8ImageData != orxNULL)
+  {
+    /* Gets bitmap data */
+    if(orxDisplay_Android_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
+    {
+      const orxCHAR  *zExtension;
+      orxU32          u32Length;
+      int             iFormat;
+
+      /* Gets file name's length */
+      u32Length = orxString_GetLength(_zFilename);
+
+      /* Gets extension */
+      zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+      /* PNG? */
+      if(orxString_ICompare(zExtension, "png") == 0)
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_PNG;
+      }
+      /* DDS? */
+      else if(orxString_ICompare(zExtension, "dds") == 0)
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_DDS;
+      }
+      /* BMP? */
+      else if(orxString_ICompare(zExtension, "bmp") == 0)
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_BMP;
+      }
+      /* TGA */
+      else
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_TGA;
+      }
+
+      /* Saves image to disk */
+      eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+
+    /* Frees buffer */
+    orxMemory_Free(pu8ImageData);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
