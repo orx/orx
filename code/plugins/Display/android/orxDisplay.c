@@ -375,6 +375,16 @@ static char gDDSTexIdentifier[5] = "DDS ";
 static const orxSTRING szDDSExtention = ".dds";
 static const orxSTRING szKTXExtention = ".ktx";
 
+#define GL_MAX_DRAW_BUFFERS                              0x8824
+GL_APICALL void           (* GL_APIENTRY glDrawBuffers) (GLsizei n, const GLenum* bufs);
+
+static orxBOOL gl3stubInit()
+{
+  glDrawBuffers =  (void (*)(GLsizei, const GLenum*)) eglGetProcAddress("glDrawBuffers");
+
+  return glDrawBuffers != orxNULL ? orxTRUE : orxFALSE;
+}
+
 static EGLConfig defaultEGLChooser(EGLDisplay disp)
 {
   EGLint count = 0;
@@ -2155,9 +2165,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
       /* Supports more than a single draw buffer? */
       if(sstDisplay.iDrawBufferNumber > 1)
       {
-        /* TODO Updates draw buffers */
-        //glDrawBuffers((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
-        //glASSERT();
+        /* Updates draw buffers */
+        glDrawBuffers((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
+        glASSERT();
       }
 
       /* Updates viewport info */
@@ -3541,9 +3551,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
         glASSERT();
 
-        /* Updates bound texture */
-        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
-
         /* Updates config info */
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
@@ -3557,9 +3564,18 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glASSERT();
         sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
-        // TODO query GL_MAX_DRAW_BUFFERS on GLES3.0
-        sstDisplay.iDrawBufferNumber = 1;
-        sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+        if(orxString_SearchString(zGlVersion, "OpenGL ES 3.") && gl3stubInit())
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "OpenGL ES 3 inited!");
+          glGetIntegerv(GL_MAX_DRAW_BUFFERS, &sstDisplay.iDrawBufferNumber);
+          glASSERT();
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GL_MAX_DRAW_BUFFERS = %d", sstDisplay.iDrawBufferNumber);
+          sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+        }
+        else
+        {
+          sstDisplay.iDrawBufferNumber = 1;
+        }
 
         /* Fills the list of draw buffer symbols */
         for(i = 0; i < (orxU32)sstDisplay.iDrawBufferNumber; i++)
@@ -3568,7 +3584,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         }
 
         /* hack for old Adreno drivers */
-        if(orxString_SearchString(zGlRenderer, "Adreno") != orxNULL)
+        if(orxString_SearchString(zGlRenderer, "Adreno") && orxString_SearchString(zGlVersion, "OpenGL ES 2.0"))
         {
           orxU32 u32Version;
           orxString_ToU32(zGlVersion + orxString_GetLength("OpenGL ES 2.0"), &u32Version, orxNULL);
@@ -3584,7 +3600,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Stores texture unit and draw buffer numbers */
         orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
-        orxConfig_SetU32("DrawBufferNumber", 1);
+        orxConfig_SetU32("DrawBufferNumber", (orxU32)sstDisplay.iDrawBufferNumber);
 
         /* Pops config section */
         orxConfig_PopSection();
