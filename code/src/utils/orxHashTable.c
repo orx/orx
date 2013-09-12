@@ -291,6 +291,9 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
       pstCell->pData    = _pData;
       pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
+      /* Updates counter */
+      _pstHashTable->u32Counter++;
+
       /* Inserts it */
       _pstHashTable->apstCell[u32Index] = pstCell;
     }

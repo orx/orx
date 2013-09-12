@@ -402,7 +402,7 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Target's list is not valid.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't remove node from list: it isn't part of any list.");
 
     /* Failed */
     eResult = orxSTATUS_FAILURE;

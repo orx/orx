@@ -885,20 +885,50 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJEC
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
 /** @} */
 
+/** @name Group
+ * @{ */
+/** Gets default group ID
+ * @return      Default group ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetDefaultGroupID();
+
+/** Gets object's group ID
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object's group ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT *_pstObject);
+
+/** Sets object's group ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32GroupID     Group ID to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+
+/** Gets next object in group
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+/** @} */
+
 
 /** @name Picking
  * @{ */
-/** Picks the first active object with graphic "under" the given position
+/** Picks the first active object with graphic "under" the given position, within a given group
  * @param[in]   _pvPosition     Position to pick from
+ * @param[in]   _u32GroupID     Group ID to consider, orxNULL for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32GroupID);
 
-/** Picks the first active object with graphic in contact with the given box
+/** Picks the first active object with graphic in contact with the given box, withing a given group
  * @param[in]   _pstBox         Box to use for picking
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox, orxU32 _u32GroupID);
 /** @} */
 
 #endif /* _orxOBJECT_H_ */

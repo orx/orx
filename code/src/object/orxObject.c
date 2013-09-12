@@ -90,6 +90,11 @@
  */
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
+#define orxOBJECT_KU32_GROUP_BANK_SIZE          64
+#define orxOBJECT_KU32_GROUP_TABLE_SIZE         64
+
+#define orxOBJECT_KZ_DEFAULT_GROUP              "default"
+
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
@@ -124,6 +129,7 @@
 #define orxOBJECT_KZ_CONFIG_PARENT_CAMERA       "ParentCamera"
 #define orxOBJECT_KZ_CONFIG_USE_RELATIVE_SPEED  "UseRelativeSpeed"
 #define orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE    "UseParentSpace"
+#define orxOBJECT_KZ_CONFIG_GROUP               "Group"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
@@ -154,20 +160,25 @@ struct __orxOBJECT_t
   orxOBJECT_STORAGE astStructureList[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 88 */
   void             *pUserData;                  /**< User data : 92 */
   const orxSTRING   zReference;                 /**< Config reference : 96 */
-  orxFLOAT          fLifeTime;                  /**< Life time : 100 */
-  orxFLOAT          fActiveTime;                /**< Active time : 104 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 108 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 120 */
-  orxOBJECT        *pstChild;                   /**< Child: 124 */
-  orxOBJECT        *pstSibling;                 /**< Sibling: 128 */
+  orxU32            u32GroupID;                 /**< Group ID : 100 */
+  orxFLOAT          fLifeTime;                  /**< Life time : 104 */
+  orxFLOAT          fActiveTime;                /**< Active time : 108 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 124 */
+  orxOBJECT        *pstChild;                   /**< Child: 128 */
+  orxOBJECT        *pstSibling;                 /**< Sibling: 132 */
+  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 144 */
 };
 
 /** Static structure
  */
 typedef struct __orxOBJECT_STATIC_t
 {
-  orxCLOCK *pstClock;                           /**< Clock */
-  orxU32    u32Flags;                           /**< Control flags */
+  orxCLOCK    *pstClock;                        /**< Clock */
+  orxU32       u32DefaultGroupID;               /**< Default group ID */
+  orxBANK     *pstGroupBank;                    /**< Group bank */
+  orxHASHTABLE *pstGroupTable;                  /**< Group table */
+  orxU32        u32Flags;                       /**< Control flags */
 
 } orxOBJECT_STATIC;
 
@@ -2318,6 +2329,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_COMMAND);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRING);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TEXTURE);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FONT);
@@ -2364,11 +2376,53 @@ orxSTATUS orxFASTCALL orxObject_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          /* Registers commands */
-          orxObject_RegisterCommands();
+          /* Creates group bank */
+          sstObject.pstGroupBank = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxLINKLIST), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-          /* Inits Flags */
-          sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
+          /* Success? */
+          if(sstObject.pstGroupBank != orxNULL)
+          {
+            /* Creates group table */
+            sstObject.pstGroupTable = orxHashTable_Create(orxOBJECT_KU32_GROUP_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+            /* Success? */
+            if(sstObject.pstGroupTable != orxNULL)
+            {
+              /* Registers commands */
+              orxObject_RegisterCommands();
+
+              /* Stores default group ID */
+              sstObject.u32DefaultGroupID = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
+
+              /* Inits Flags */
+              sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
+            }
+            else
+            {
+              /* Updates result */
+              eResult = orxSTATUS_FAILURE;
+
+              /* Deletes group bank */
+              orxBank_Delete(sstObject.pstGroupBank);
+
+              /* Unregisters from clock */
+              orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+
+              /* Unregisters structure type */
+              orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
+            }
+          }
+          else
+          {
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+
+            /* Unregisters from clock */
+            orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+
+            /* Unregisters structure type */
+            orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
+          }
         }
         else
         {
@@ -2458,6 +2512,9 @@ orxOBJECT *orxFASTCALL orxObject_Create()
 
     /* Inits active time */
     pstObject->fActiveTime = orxFLOAT_0;
+
+    /* Sets default group ID */
+    orxObject_SetGroupID(pstObject, sstObject.u32DefaultGroupID);
 
     /* Increases counter */
     orxStructure_IncreaseCounter(pstObject);
@@ -2598,6 +2655,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
       /* Defaults to 2D flags */
       u32Flags = orxOBJECT_KU32_FLAG_2D;
+
+      /* Has group? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_GROUP) != orxFALSE)
+      {
+        /* Sets it */
+        orxObject_SetGroupID(pstResult, orxString_GetID(orxConfig_GetString(orxOBJECT_KZ_CONFIG_GROUP)));
+      }
 
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
@@ -7590,11 +7654,153 @@ orxFLOAT orxFASTCALL orxObject_GetActiveTime(const orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Picks the first active object with graphic "under" the given position
- * @param[in]   _pvPosition     Position to pick from
+/** Gets default group ID
+ * @return      Default group ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetDefaultGroupID()
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  u32Result = sstObject.u32DefaultGroupID;
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets object's group ID
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object's group ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT *_pstObject)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  u32Result = _pstObject->u32GroupID;
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Sets object's group ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32GroupID     Group ID to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID)
+{
+  orxLINKLIST  *pstGroupList;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED));
+
+  /* Removes object from its current group */
+  if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
+  {
+    orxLinkList_Remove(&(_pstObject->stGroupNode));
+  }
+
+  /* Gets group list */
+  pstGroupList = (orxLINKLIST *)orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID);
+
+  /* Not found? */
+  if(pstGroupList == orxNULL)
+  {
+    /* Allocates it */
+    pstGroupList = (orxLINKLIST *)orxBank_Allocate(sstObject.pstGroupBank);
+
+    /* Stores it */
+    orxHashTable_Add(sstObject.pstGroupTable, _u32GroupID, pstGroupList);
+  }
+
+  /* Adds object to end of list */
+  orxLinkList_AddEnd(pstGroupList, &(_pstObject->stGroupNode));
+
+  /* Stores group ID */
+  _pstObject->u32GroupID = _u32GroupID;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets next object in group
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(orxOBJECT *_pstObject, orxU32 _u32GroupID)
+{
+  orxOBJECT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstObject == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pstObject) < orxSTRUCTURE_ID_NUMBER));
+  orxASSERT((_pstObject == orxNULL) || (_u32GroupID == orxU32_UNDEFINED) || (orxLinkList_GetList(&(_pstObject->stGroupNode)) == orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID)))
+
+  /* Has group? */
+  if(_u32GroupID != orxU32_UNDEFINED)
+  {
+    orxLINKLIST *pstGroupList;
+
+    /* Gets group list */
+    pstGroupList = (orxLINKLIST *)orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID);
+
+    /* Valid? */
+    if(pstGroupList != orxNULL)
+    {
+      orxLINKLIST_NODE *pstNode;
+
+      /* Gets node */
+      pstNode = (_pstObject == orxNULL) ? orxLinkList_GetFirst(pstGroupList) : orxLinkList_GetNext(&(_pstObject->stGroupNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Updates result */
+        pstResult = (orxOBJECT *)((orxU8 *)pstNode - (orxU8 *)&(((orxOBJECT *)0)->stGroupNode));
+      }
+      else
+      {
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't access object in group: invalid group [%s]/<0x%X>.", orxString_GetFromID(_u32GroupID), _u32GroupID);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = (_pstObject == orxNULL) ? orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)) : orxOBJECT(orxStructure_GetNext(_pstObject));
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Picks the first active object with graphic "under" the given position, within a given group
+ * @param[in]   _pvPosition     Position to pick from
+ * @param[in]   _u32GroupID     Group ID to consider, orxNULL for all
+ * @return      orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32GroupID)
 {
   orxFLOAT    fSelectedZ;
   orxOBJECT  *pstResult = orxNULL, *pstObject;
@@ -7604,9 +7810,9 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* For all objects */
-  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), fSelectedZ = _pvPosition->fZ;
+  for(pstObject = orxObject_GetNext(orxNULL, _u32GroupID), fSelectedZ = _pvPosition->fZ;
       pstObject != orxNULL;
-      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      pstObject = orxObject_GetNext(pstObject, _u32GroupID))
   {
     /* Is enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
@@ -7650,11 +7856,12 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
   return pstResult;
 }
 
-/** Picks the first active object with graphic in contact with the given box
+/** Picks the first active object with graphic in contact with the given box, within a given group
  * @param[in]   _pstBox         Box to use for picking
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox)
+orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxU32 _u32GroupID)
 {
   orxFLOAT    fSelectedZ;
   orxOBJECT  *pstResult = orxNULL, *pstObject;
@@ -7664,9 +7871,9 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox)
   orxASSERT(_pstBox != orxNULL);
 
   /* For all objects */
-  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), fSelectedZ = _pstBox->vPosition.fZ;
+  for(pstObject = orxObject_GetNext(orxNULL, _u32GroupID), fSelectedZ = _pstBox->vPosition.fZ;
       pstObject != orxNULL;
-      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      pstObject = orxObject_GetNext(pstObject, _u32GroupID))
   {
     /* Is enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
