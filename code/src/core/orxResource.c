@@ -557,6 +557,55 @@ void orxFASTCALL orxResource_Exit()
   return;
 }
 
+/** Gets number of resource groups
+ * @return Number of resource groups
+ */
+orxU32 orxFASTCALL orxResource_GetGroupCounter()
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  u32Result = orxBank_GetCounter(sstResource.pstGroupBank);
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets resource group at given index
+ * @param[in] _u32Index         Index of resource group
+ * @return Resource group if index is valid, orxNULL otherwise
+ */
+const orxSTRING orxFASTCALL orxResource_GetGroup(orxU32 _u32Index)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Valid index? */
+  if(_u32Index < orxBank_GetCounter(sstResource.pstGroupBank))
+  {
+    orxRESOURCE_GROUP *pstGroup;
+
+    /* Finds requested group */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        _u32Index > 0;
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup), _u32Index--);
+
+    /* Checks */
+    orxASSERT(pstGroup != orxNULL);
+
+    /* Updates result */
+    zResult = orxString_GetFromID(pstGroup->u32NameID);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Adds a storage for a given resource group, this storage will be used when looking for resources prior to any previously added storage
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Description of the storage, as understood by one of the resource type
@@ -706,145 +755,6 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
   return eResult;
 }
 
-/** Reloads storage from config
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxResource_ReloadStorage()
-{
-  orxU32    i, u32SectionCounter;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-
-  /* Pushes resource config section */
-  orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
-
-  /* For all keys */
-  for(i = 0, u32SectionCounter = orxConfig_GetKeyCounter(); i < u32SectionCounter; i++)
-  {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
-    const orxSTRING     zGroup;
-    orxU32              u32GroupID;
-    orxS32              j, jCounter;
-
-    /* Gets group name */
-    zGroup = orxConfig_GetKey(i);
-
-    /* Gets group ID */
-    u32GroupID = orxString_ToCRC(zGroup);
-
-    /* Finds it */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
-
-    /* For all storages in list */
-    for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
-    {
-      const orxSTRING zStorage;
-      orxBOOL         bAdd = orxTRUE;
-
-      /* Gets storage name */
-      zStorage = orxConfig_GetListString(zGroup, j);
-
-      /* Did the group exist? */
-      if(pstGroup != orxNULL)
-      {
-        orxRESOURCE_STORAGE  *pstStorage;
-        orxU32                u32StorageID;
-
-        /* Gets storage ID */
-        u32StorageID = orxString_ToCRC(zStorage);
-
-        /* For all storages in group */
-        for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
-            pstStorage != orxNULL;
-            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
-        {
-          /* Found? */
-          if(pstStorage->u32StorageID == u32StorageID)
-          {
-            /* Don't add it */
-            bAdd = orxFALSE;
-
-            break;
-          }
-        }
-      }
-
-      /* Should add storage? */
-      if(bAdd != orxFALSE)
-      {
-        /* Adds storage to group */
-        if(orxResource_AddStorage(zGroup, zStorage, orxFALSE) == orxSTATUS_FAILURE)
-        {
-          /* Updates */
-          eResult = orxSTATUS_FAILURE;
-        }
-      }
-    }
-
-    /* Updates status */
-    orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
-  }
-
-  /* Pops config section */
-  orxConfig_PopSection();
-
-  /* Done! */
-  return eResult;
-}
-
-/** Gets number of resource groups
- * @return Number of resource groups
- */
-orxU32 orxFASTCALL orxResource_GetGroupCounter()
-{
-  orxU32 u32Result = 0;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-
-  /* Updates result */
-  u32Result = orxBank_GetCounter(sstResource.pstGroupBank);
-
-  /* Done! */
-  return u32Result;
-}
-
-/** Gets resource group at given index
- * @param[in] _u32Index         Index of resource group
- * @return Resource group if index is valid, orxNULL otherwise
- */
-const orxSTRING orxFASTCALL orxResource_GetGroup(orxU32 _u32Index)
-{
-  const orxSTRING zResult = orxNULL;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-
-  /* Valid index? */
-  if(_u32Index < orxBank_GetCounter(sstResource.pstGroupBank))
-  {
-    orxRESOURCE_GROUP *pstGroup;
-
-    /* Finds requested group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        _u32Index > 0;
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup), _u32Index--);
-
-    /* Checks */
-    orxASSERT(pstGroup != orxNULL);
-
-    /* Updates result */
-    zResult = orxString_GetFromID(pstGroup->u32NameID);
-  }
-
-  /* Done! */
-  return zResult;
-}
-
 /** Gets number of storages for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @return Number of storages for this resource group
@@ -934,6 +844,96 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
 
   /* Done! */
   return zResult;
+}
+
+/** Reloads storage from config
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxResource_ReloadStorage()
+{
+  orxU32    i, u32SectionCounter;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Pushes resource config section */
+  orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+  /* For all keys */
+  for(i = 0, u32SectionCounter = orxConfig_GetKeyCounter(); i < u32SectionCounter; i++)
+  {
+    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    const orxSTRING     zGroup;
+    orxU32              u32GroupID;
+    orxS32              j, jCounter;
+
+    /* Gets group name */
+    zGroup = orxConfig_GetKey(i);
+
+    /* Gets group ID */
+    u32GroupID = orxString_ToCRC(zGroup);
+
+    /* Finds it */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+
+    /* For all storages in list */
+    for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
+    {
+      const orxSTRING zStorage;
+      orxBOOL         bAdd = orxTRUE;
+
+      /* Gets storage name */
+      zStorage = orxConfig_GetListString(zGroup, j);
+
+      /* Did the group exist? */
+      if(pstGroup != orxNULL)
+      {
+        orxRESOURCE_STORAGE  *pstStorage;
+        orxU32                u32StorageID;
+
+        /* Gets storage ID */
+        u32StorageID = orxString_ToCRC(zStorage);
+
+        /* For all storages in group */
+        for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
+            pstStorage != orxNULL;
+            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
+        {
+          /* Found? */
+          if(pstStorage->u32StorageID == u32StorageID)
+          {
+            /* Don't add it */
+            bAdd = orxFALSE;
+
+            break;
+          }
+        }
+      }
+
+      /* Should add storage? */
+      if(bAdd != orxFALSE)
+      {
+        /* Adds storage to group */
+        if(orxResource_AddStorage(zGroup, zStorage, orxFALSE) == orxSTATUS_FAILURE)
+        {
+          /* Updates */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+    }
+
+    /* Updates status */
+    orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets the location of an *existing* resource for a given group, location gets cached if found

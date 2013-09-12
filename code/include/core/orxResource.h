@@ -89,6 +89,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Init();
 extern orxDLLAPI void orxFASTCALL                         orxResource_Exit();
 
 
+/** Gets number of resource groups
+ * @return Number of resource groups
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetGroupCounter();
+
+/** Gets resource group at given index
+ * @param[in] _u32Index         Index of resource group
+ * @return Resource group if index is valid, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetGroup(orxU32 _u32Index);
+
+
 /** Adds a storage for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zStorage         Description of the storage, as understood by one of the resource type
@@ -104,24 +116,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage);
 
-/** Reloads storage from config
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ReloadStorage();
-
-
-/** Gets number of resource groups
- * @return Number of resource groups
- */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetGroupCounter();
-
-/** Gets resource group at given index
- * @param[in] _u32Index         Index of resource group
- * @return Resource group if index is valid, orxNULL otherwise
- */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetGroup(orxU32 _u32Index);
-
-
 /** Gets number of storages for a given resource group
  * @param[in] _zGroup           Concerned resource group
  * @return Number of storages for this resource group
@@ -134,6 +128,11 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetStorage
  * @return Storage if index is valid, orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetStorage(const orxSTRING _zGroup, orxU32 _u32Index);
+
+/** Reloads storage from config
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ReloadStorage();
 
 
 /** Gets the location of an *existing* resource for a given group, location gets cached if found
