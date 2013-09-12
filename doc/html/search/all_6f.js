@@ -2233,6 +2233,7 @@ var searchData=
   ['orxstring_5ftovector',['orxString_ToVector',['../group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15',1,'orxString.h']]],
   ['orxstring_5ftrue',['orxSTRING_TRUE',['../group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182',1,'orxType.h']]],
   ['orxstring_5fuppercase',['orxString_UpperCase',['../group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f',1,'orxString.h']]],
+  ['orxstruct_5fget_5ffrom_5ffield',['orxSTRUCT_GET_FROM_FIELD',['../group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d',1,'orxDecl.h']]],
   ['orxstructure',['orxSTRUCTURE',['../structorx_s_t_r_u_c_t_u_r_e.html',1,'orxSTRUCTURE'],['../group__orx_structure.html#ga4a2729d59779abcb7b3a54a6b4434a99',1,'orxSTRUCTURE():&#160;orxStructure.h'],['../group__orx_structure.html',1,'(Global Namespace)']]],
   ['orxstructure_2eh',['orxStructure.h',['../orx_structure_8h.html',1,'']]],
   ['orxstructure_5fassert',['orxSTRUCTURE_ASSERT',['../group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205',1,'orxStructure.h']]],

@@ -462,23 +462,25 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00374"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9108596dcc7bb4203fee1d30fd1db504">  374</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)</span></div>
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
-<div class="line"><a name="l00382"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">  382</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST_ALL(X, F) (((X) &amp; (F)) == (F))</span></div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00389"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">  389</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST(X, F) (((X) &amp; (F)) != 0)</span></div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00396"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">  396</a></span>&#160;<span class="preprocessor">#define orxFLAG_GET(X, M) ((X) &amp; (M))</span></div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00403"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">  403</a></span>&#160;<span class="preprocessor">#define orxFLAG_SET(X, A, R)  \</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">do                            \</span></div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor">{                             \</span></div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="preprocessor">  (X) &amp;= ~(R);                \</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">  (X) |= (A);                 \</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor">} while(orxFALSE)</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00414"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e">  414</a></span>&#160;<span class="preprocessor">#define orxFLAG_SWAP(X, S) ((X) ^= (S))</span></div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orxDECL_H_*/</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00378"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d">  378</a></span>&#160;<span class="preprocessor">#define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00385"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">  385</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST_ALL(X, F) (((X) &amp; (F)) == (F))</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00392"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">  392</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST(X, F) (((X) &amp; (F)) != 0)</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00399"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">  399</a></span>&#160;<span class="preprocessor">#define orxFLAG_GET(X, M) ((X) &amp; (M))</span></div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00406"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">  406</a></span>&#160;<span class="preprocessor">#define orxFLAG_SET(X, A, R)  \</span></div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">do                            \</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor">{                             \</span></div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">  (X) &amp;= ~(R);                \</span></div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="preprocessor">  (X) |= (A);                 \</span></div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="preprocessor">} while(orxFALSE)</span></div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00417"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e">  417</a></span>&#160;<span class="preprocessor">#define orxFLAG_SWAP(X, S) ((X) ^= (S))</span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orxDECL_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>

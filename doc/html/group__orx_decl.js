@@ -12,5 +12,6 @@ var group__orx_decl =
     [ "orxFLAG_SWAP", "group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e", null ],
     [ "orxFLAG_TEST", "group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88", null ],
     [ "orxFLAG_TEST_ALL", "group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b", null ],
-    [ "orxIMPORT", "group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929", null ]
+    [ "orxIMPORT", "group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929", null ],
+    [ "orxSTRUCT_GET_FROM_FIELD", "group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d", null ]
 ];

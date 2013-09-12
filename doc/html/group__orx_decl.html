@@ -137,6 +137,8 @@ Macros</h2></td></tr>
 <tr class="separator:ga7191791f19d4f02ca26020c70410924b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab970a40e167e4b5346aec7ae059d8929"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a></td></tr>
 <tr class="separator:gab970a40e167e4b5346aec7ae059d8929"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab7c66fa6bc13f251ee92b6883260aa1d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d">orxSTRUCT_GET_FROM_FIELD</a>(TYPE, FIELD, POINTER)&#160;&#160;&#160;((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))</td></tr>
+<tr class="separator:gab7c66fa6bc13f251ee92b6883260aa1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Base declarations </p>
@@ -299,7 +301,7 @@ Macros</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Masked flags </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00396">396</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00399">399</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -347,7 +349,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00403">403</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00406">406</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -383,7 +385,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00414">414</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00417">417</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -420,7 +422,7 @@ Macros</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if at least one flag is present </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00389">389</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00392">392</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -457,7 +459,7 @@ Macros</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if flags are all presents </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00382">382</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00385">385</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -472,6 +474,41 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00210">210</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gab7c66fa6bc13f251ee92b6883260aa1d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSTRUCT_GET_FROM_FIELD</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">TYPE, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">FIELD, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">POINTER&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Structure macros </p>
+
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00378">378</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
