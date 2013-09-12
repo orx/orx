@@ -7657,7 +7657,7 @@ orxFLOAT orxFASTCALL orxObject_GetActiveTime(const orxOBJECT *_pstObject)
 /** Gets default group ID
  * @return      Default group ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetDefaultGroupID()
+extern orxDLLAPI orxU32 orxFASTCALL orxObject_GetDefaultGroupID()
 {
   orxU32 u32Result;
 
@@ -7675,7 +7675,7 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetDefaultGroupID()
  * @param[in]   _pstObject      Concerned object
  * @return      Object's group ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT *_pstObject)
+extern orxDLLAPI orxU32 orxFASTCALL orxObject_GetGroupID(const orxOBJECT *_pstObject)
 {
   orxU32 u32Result;
 
@@ -7695,7 +7695,7 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT
  * @param[in]   _u32GroupID     Group ID to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID)
+extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID)
 {
   orxLINKLIST  *pstGroupList;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
@@ -7739,7 +7739,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pst
  * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(orxOBJECT *_pstObject, orxU32 _u32GroupID)
+extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(orxOBJECT *_pstObject, orxU32 _u32GroupID)
 {
   orxOBJECT *pstResult;
 
