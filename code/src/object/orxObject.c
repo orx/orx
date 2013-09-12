@@ -172,10 +172,12 @@ struct __orxOBJECT_t
  */
 typedef struct __orxOBJECT_STATIC_t
 {
-  orxCLOCK    *pstClock;                        /**< Clock */
-  orxU32       u32DefaultGroupID;               /**< Default group ID */
-  orxBANK     *pstGroupBank;                    /**< Group bank */
+  orxCLOCK     *pstClock;                       /**< Clock */
+  orxU32        u32DefaultGroupID;              /**< Default group ID */
+  orxBANK      *pstGroupBank;                   /**< Group bank */
   orxHASHTABLE *pstGroupTable;                  /**< Group table */
+  orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
+  orxU32        u32CachedGroupID;               /**< Cached group ID */
   orxU32        u32Flags;                       /**< Control flags */
 
 } orxOBJECT_STATIC;
@@ -2592,6 +2594,12 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     {
       /* Unprotects it */
       orxConfig_ProtectSection(_pstObject->zReference, orxFALSE);
+    }
+
+    /* Removes object from its current group */
+    if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
+    {
+      orxLinkList_Remove(&(_pstObject->stGroupNode));
     }
 
     /* Deletes structure */
@@ -7751,8 +7759,17 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(orxOBJECT *_pstObject,
   {
     orxLINKLIST *pstGroupList;
 
-    /* Gets group list */
-    pstGroupList = (orxLINKLIST *)orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID);
+    /* Is cached one? */
+    if(_u32GroupID == sstObject.u32CachedGroupID)
+    {
+      /* Gets group list */
+      pstGroupList = sstObject.pstCachedGroupList;
+    }
+    else
+    {
+      /* Gets group list */
+      pstGroupList = (orxLINKLIST *)orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID);
+    }
 
     /* Valid? */
     if(pstGroupList != orxNULL)
@@ -7773,6 +7790,10 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(orxOBJECT *_pstObject,
         /* Updates result */
         pstResult = orxNULL;
       }
+
+      /* Caches group list */
+      sstObject.pstCachedGroupList  = pstGroupList;
+      sstObject.u32CachedGroupID    = _u32GroupID;
     }
     else
     {
