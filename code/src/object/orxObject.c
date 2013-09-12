@@ -93,8 +93,6 @@
 #define orxOBJECT_KU32_GROUP_BANK_SIZE          64
 #define orxOBJECT_KU32_GROUP_TABLE_SIZE         64
 
-#define orxOBJECT_KZ_DEFAULT_GROUP              "default"
-
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"

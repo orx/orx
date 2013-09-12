@@ -60,6 +60,7 @@
 
 /** Misc defines
  */
+#define orxCAMERA_KZ_CONFIG_GROUP_LIST        "GroupList"
 #define orxCAMERA_KZ_CONFIG_ZOOM              "Zoom"
 #define orxCAMERA_KZ_CONFIG_POSITION          "Position"
 #define orxCAMERA_KZ_CONFIG_ROTATION          "Rotation"
@@ -84,8 +85,8 @@ struct __orxCAMERA_t
   orxFRAME       *pstFrame;                   /**< Frame : 20 */
   orxAABOX        stFrustum;                  /**< Frustum : 44 */
   const orxSTRING zReference;                 /**< Reference : 48 */
+  orxU32          au32GroupIDList[orxCAMERA_KU32_GROUP_ID_NUMBER]; /**< Group ID list : 112 */
 };
-
 
 /** Static structure
  */
@@ -744,6 +745,9 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
         /* Increases its reference counter */
         orxStructure_IncreaseCounter(pstFrame);
 
+        /* Adds default group ID */
+        orxCamera_AddGroupID(pstCamera, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP), orxFALSE);
+
         /* Updates flags */
         orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_FLAG_2D, orxCAMERA_KU32_FLAG_NONE);
 
@@ -820,6 +824,22 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         orxVECTOR       vPosition;
         const orxSTRING zParentName;
         orxFLOAT        fNear, fFar, fWidth, fHeight;
+
+        /* Has group list? */
+        if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_GROUP_LIST) != orxFALSE)
+        {
+          orxU32 i, u32Number;
+
+          /* Removes default group ID */
+          orxCamera_RemoveGroupID(pstResult, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP));
+
+          /* For all groups */
+          for(i = 0, u32Number = orxConfig_GetListCounter(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < u32Number; i++)
+          {
+            /* Adds it */
+            orxCamera_AddGroupID(pstResult, orxString_GetID(orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i)), orxFALSE);
+          }
+        }
 
         /* Gets frustum info */
         fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
@@ -957,6 +977,173 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
 
   /* Done! */
   return eResult;
+}
+
+/** Adds a group ID to a camera
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32GroupID       ID of the group to add
+ * @param[in] _bAddFirst        If true this group will be used *before* any already added ones, otherwise it'll be used *after* all of them
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID, orxBOOL _bAddFirst)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Valid? */
+  if((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED))
+  {
+    orxU32 u32Counter;
+
+    /* Gets number of current stored IDs */
+    u32Counter = orxCamera_GetGroupIDCounter(_pstCamera);
+
+    /* Room left? */
+    if(u32Counter < orxCAMERA_KU32_GROUP_ID_NUMBER)
+    {
+      /* Should add it first? */
+      if(_bAddFirst != orxFALSE)
+      {
+        /* For all stored IDs */
+        for(; u32Counter > 0; u32Counter--)
+        {
+          /* Pushes it one slot further */
+          _pstCamera->au32GroupIDList[u32Counter] = _pstCamera->au32GroupIDList[u32Counter - 1];
+        }
+
+        /* Stores new ID */
+        _pstCamera->au32GroupIDList[0] = _u32GroupID;
+      }
+      else
+      {
+        /* Stores it */
+        _pstCamera->au32GroupIDList[u32Counter] = _u32GroupID;
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: maximum of IDs <%u> already reached.", u32Counter);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: invalid ID [0x%X].", _u32GroupID);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a group ID from a camera
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32GroupID       ID of the group to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Valid? */
+  if((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED))
+  {
+    orxU32 i;
+
+    /* For all stored ID */
+    for(i = 0; (i < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->au32GroupIDList[i] != 0); i++)
+    {
+      /* Found? */
+      if(_pstCamera->au32GroupIDList[i] == _u32GroupID)
+      {
+        /* For all stored IDs after current one */
+        for(; (i < orxCAMERA_KU32_GROUP_ID_NUMBER - 1) && (_pstCamera->au32GroupIDList[i] != 0); i++)
+        {
+          /* Moves it one slot closer */
+          _pstCamera->au32GroupIDList[i] = _pstCamera->au32GroupIDList[i + 1];
+        }
+
+        /* Clears last slot */
+        _pstCamera->au32GroupIDList[i] = 0;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+
+    /* Not found? */
+    if(eResult == orxSTATUS_FAILURE)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: ID [0x%X] not found.", _u32GroupID);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: invalid ID [0x%X].", _u32GroupID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets number of group IDs of camera
+ * @param[in] _pstCamera        Concerned camera
+ * @return Number of group IDs of this camera
+ */
+orxU32 orxFASTCALL orxCamera_GetGroupIDCounter(const orxCAMERA *_pstCamera)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Updates result*/
+  for(u32Result = 0; (u32Result < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->au32GroupIDList[u32Result] != 0); u32Result++);
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets the group ID of a camera at the given index
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID
+ * @return Group ID if index is valid, orxU32_UNDEFINED otherwise
+ */
+orxU32 orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+  orxASSERT(_u32Index < orxCAMERA_KU32_GROUP_ID_NUMBER);
+
+  /* Updates result */
+  u32Result = (_pstCamera->au32GroupIDList[_u32Index] != 0) ? _pstCamera->au32GroupIDList[_u32Index] : orxU32_UNDEFINED;
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Sets camera frustum (3D rectangle for 2D camera)
@@ -1223,7 +1410,7 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 
         break;
       }
-      
+
       case orxSTRUCTURE_ID_SPAWNER:
       {
         /* Updates its parent */

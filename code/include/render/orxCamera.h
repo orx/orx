@@ -62,6 +62,11 @@
 #define orxCAMERA_KU32_MASK_USER_ALL                    0x000000FF /**< User all mask */
 
 
+/** Misc
+ */
+#define orxCAMERA_KU32_GROUP_ID_NUMBER                  16
+
+
 /** Internal camera structure
  */
 typedef struct __orxCAMERA_t                            orxCAMERA;
@@ -81,13 +86,13 @@ extern orxDLLAPI void orxFASTCALL                       orxCamera_Exit();
 
 
 /** Creates a camera
- * @param[in]   _u32Flags               Camera flags (2D / ...)
+ * @param[in]   _u32Flags       Camera flags (2D / ...)
  * @return      Created orxCAMERA / orxNULL
  */
 extern orxDLLAPI orxCAMERA *orxFASTCALL                 orxCamera_Create(orxU32 _u32Flags);
 
 /** Creates a camera from config
- * @param[in]   _zConfigID    Config ID
+ * @param[in]   _zConfigID      Config ID
  * @ return orxCAMERA / orxNULL
  */
 extern orxDLLAPI orxCAMERA *orxFASTCALL                 orxCamera_CreateFromConfig(const orxSTRING _zConfigID);
@@ -97,6 +102,35 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL                 orxCamera_CreateFromConf
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_Delete(orxCAMERA *_pstCamera);
+
+
+/** Adds a group ID to a camera
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32GroupID       ID of the group to add
+ * @param[in] _bAddFirst        If true this group will be used *before* any already added ones, otherwise it'll be used *after* all of them
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID, orxBOOL _bAddFirst);
+
+/** Removes a group ID from a camera
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32GroupID       ID of the group to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID);
+
+/** Gets number of group IDs of camera
+ * @param[in] _pstCamera        Concerned camera
+ * @return Number of group IDs of this camera
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupIDCounter(const orxCAMERA *_pstCamera);
+
+/** Gets the group ID of a camera at the given index
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID
+ * @return Group ID if index is valid, orxU32_UNDEFINED otherwise
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index);
 
 
 /** Sets camera frustum

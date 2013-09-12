@@ -90,7 +90,7 @@ static orxMEMORY_STATIC sstMemory;
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   SYSTEM_LOGICAL_PROCESSOR_INFORMATION *astProcessorInfoList;
-  orxU32                                u32InfoListSize = 0, u32Result = orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE, i, iNumber;
+  orxU32                                u32InfoListSize = 0, u32Result = orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE, i, u32Number;
 
   /* Requests total size of processors info */
   GetLogicalProcessorInformation(0, &u32InfoListSize);
@@ -102,8 +102,8 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
   GetLogicalProcessorInformation(astProcessorInfoList, &u32InfoListSize);
 
   /* For all processor info */
-  for(i = 0, iNumber = u32InfoListSize / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
-      i < iNumber;
+  for(i = 0, u32Number = u32InfoListSize / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
+      i < u32Number;
       i++)
   {
     /* Found first level cache info? */
