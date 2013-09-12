@@ -7768,7 +7768,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(orxOBJECT *_pstObject,
       if(pstNode != orxNULL)
       {
         /* Updates result */
-        pstResult = (orxOBJECT *)((orxU8 *)pstNode - (orxU8 *)&(((orxOBJECT *)0)->stGroupNode));
+        pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stGroupNode, pstNode);
       }
       else
       {

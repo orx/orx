@@ -854,7 +854,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(const orxCLOCK_INF
     orxSOUNDSYSTEM_SOUND *pstSound;
 
     /* Gets associated sound */
-    pstSound = (orxSOUNDSYSTEM_SOUND *)((orxU8 *)pstNode - (orxU8 *)&(((orxSOUNDSYSTEM_SOUND *)0)->stNode));
+    pstSound = orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_SOUND, stNode, pstNode);
 
     /* Fills its stream */
     orxSoundSystem_OpenAL_FillStream(pstSound);

@@ -1038,7 +1038,7 @@ orxCLOCK *orxFASTCALL orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo)
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Gets clock */
-  pstClock = (orxCLOCK *)((orxU8 *)_pstClockInfo - (orxU8 *)&(((orxCLOCK *)0)->stClockInfo));
+  pstClock = orxSTRUCT_GET_FROM_FIELD(orxCLOCK, stClockInfo, _pstClockInfo);
 
   /* Done! */
   return pstClock;

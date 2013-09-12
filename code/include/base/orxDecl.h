@@ -374,6 +374,9 @@
 #define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)
 
 
+/** Structure macros */
+#define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))
+
 /** Tests all flags
  * @param[in] X Flag container
  * @param[in] F Flags to test

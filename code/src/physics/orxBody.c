@@ -134,24 +134,24 @@
 
 /** Helpers
  */
-#define orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(BODY)                                                                         \
-  (orxLinkList_GetFirst(&(BODY->stSrcJointList)) != orxNULL)                                                                \
-? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetFirst(&(BODY->stSrcJointList)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stSrcNode))  \
+#define orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(BODY)                                                 \
+  (orxLinkList_GetFirst(&(BODY->stSrcJointList)) != orxNULL)                                        \
+? orxSTRUCT_GET_FROM_FIELD(orxBODY_JOINT, stSrcNode, orxLinkList_GetFirst(&(BODY->stSrcJointList))) \
 : orxNULL
 
-#define orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST(JOINT)                                                                         \
-  (orxLinkList_GetNext(&(JOINT->stSrcNode)) != orxNULL)                                                                     \
-? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetNext(&(JOINT->stSrcNode)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stSrcNode))       \
+#define orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST(JOINT)                                                 \
+  (orxLinkList_GetNext(&(JOINT->stSrcNode)) != orxNULL)                                             \
+? orxSTRUCT_GET_FROM_FIELD(orxBODY_JOINT, stSrcNode, orxLinkList_GetNext(&(JOINT->stSrcNode)))      \
 : orxNULL
 
-#define orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(BODY)                                                                         \
-  (orxLinkList_GetFirst(&(BODY->stDstJointList)) != orxNULL)                                                                \
-? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetFirst(&(BODY->stDstJointList)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stDstNode))  \
+#define orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(BODY)                                                 \
+  (orxLinkList_GetFirst(&(BODY->stDstJointList)) != orxNULL)                                        \
+? orxSTRUCT_GET_FROM_FIELD(orxBODY_JOINT, stDstNode, orxLinkList_GetFirst(&(BODY->stDstJointList))) \
 : orxNULL
 
-#define orxBODY_GET_NEXT_JOINT_FROM_DST_LIST(JOINT)                                                                         \
-  (orxLinkList_GetNext(&(JOINT->stDstNode)) != orxNULL)                                                                     \
-? (orxBODY_JOINT *) ((orxU8 *)orxLinkList_GetNext(&(JOINT->stDstNode)) - (orxU8 *)&(((orxBODY_JOINT *)0)->stDstNode))       \
+#define orxBODY_GET_NEXT_JOINT_FROM_DST_LIST(JOINT)                                                 \
+  (orxLinkList_GetNext(&(JOINT->stDstNode)) != orxNULL)                                             \
+? orxSTRUCT_GET_FROM_FIELD(orxBODY_JOINT, stDstNode, orxLinkList_GetNext(&(JOINT->stDstNode)))      \
 : orxNULL
 
 
@@ -1845,7 +1845,7 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
           zReference = pstBodyJoint->zReference;
 
           /* Gets destination body */
-          pstDstBody = (orxBODY *)((orxU8 *)orxLinkList_GetList(&(pstBodyJoint->stDstNode)) - (orxU8 *)&(((orxBODY *)0)->stDstJointList));
+          pstDstBody = orxSTRUCT_GET_FROM_FIELD(orxBODY, stDstJointList, orxLinkList_GetList(&(pstBodyJoint->stDstNode)));
 
           /* Removes part */
           orxBody_RemoveJoint(pstBodyJoint);
@@ -1875,7 +1875,7 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
           zReference = pstBodyJoint->zReference;
 
           /* Gets source body */
-          pstSrcBody = (orxBODY *)((orxU8 *)orxLinkList_GetList(&(pstBodyJoint->stSrcNode)) - (orxU8 *)&(((orxBODY *)0)->stSrcJointList));
+          pstSrcBody = orxSTRUCT_GET_FROM_FIELD(orxBODY, stSrcJointList, orxLinkList_GetList(&(pstBodyJoint->stSrcNode)));
 
           /* Removes part */
           orxBody_RemoveJoint(pstBodyJoint);
