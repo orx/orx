@@ -1,5 +1,13 @@
 var NAVTREEINDEX19 =
 {
+"orx_string_8h.html#ga981c39a82ad021ec08f84a8cb074a695":[3,0,0,14,2,18],
+"orx_string_8h.html#gaa2a656e10d7ec4fe736684cc5e4828ae":[3,0,0,14,2,1],
+"orx_string_8h.html#gaa62f828ae9bbcad9957df3195a4aca3b":[3,0,0,14,2,17],
+"orx_string_8h.html#gaa669788a1ddcb93b49b4a76711cb6f7b":[3,0,0,14,2,43],
+"orx_string_8h.html#gaa8986a6ede4e3a578f54f816488ce1b6":[3,0,0,14,2,4],
+"orx_string_8h.html#gac4aa5642b4c1106e8a2056515c3f5cbd":[3,0,0,14,2,9],
+"orx_string_8h.html#gac8646f825bc6df7e387d877970d56e91":[3,0,0,14,2,0],
+"orx_string_8h.html#gace05f65773927e3d5fa88f94ca845d15":[3,0,0,14,2,47],
 "orx_string_8h.html#gadb936702b689b61973806a33ca5b4726":[3,0,0,14,2,30],
 "orx_string_8h.html#gadc2711d674628689d58be645d319ea92":[3,0,0,14,2,37],
 "orx_string_8h.html#gae091c7e34dce2c46b5262a9d78e2faa9":[3,0,0,14,2,14],
@@ -241,13 +249,5 @@ var NAVTREEINDEX19 =
 "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a1c0f897b0c87e29f069b2b3f42d32f29":[3,0,0,1,2,9,1],
 "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a4b89ac4dca34cc2521377d537821a2c1":[3,0,0,1,2,9,3],
 "orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a5e05ecf7aeecad1539fbb9fa4798e027":[3,0,0,1,2,9,4],
-"orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba":[3,0,0,1,2,9,0],
-"orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915ac884d90cc7d4169b442cf667e54e702a":[3,0,0,1,2,9,2],
-"orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340da8eebe889e601ec634f60f02b456e11bf":[3,0,0,1,2,10,2],
-"orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29":[3,0,0,1,2,10,1],
-"orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340daedaf4b96685d2a752f629da7715f9745":[3,0,0,1,2,10,3],
-"orx_type_8h.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7":[3,0,0,1,2,10,0],
-"orx_type_8h_source.html":[3,0,0,1,2],
-"orx_utils_8h.html":[3,0,0,19],
-"orx_utils_8h_source.html":[3,0,0,19]
+"orx_type_8h.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba":[3,0,0,1,2,9,0]
 };
