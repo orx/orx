@@ -1,6 +1,7 @@
 var group__orx_object =
 [
     [ "orxOBJECT_GET_STRUCTURE", "group__orx_object.html#ga327727f4ebf89729d8518e90c918fddd", null ],
+    [ "orxOBJECT_KZ_DEFAULT_GROUP", "group__orx_object.html#ga5957f0de4c583012e4f102e026ed2599", null ],
     [ "orxOBJECT", "group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457", null ],
     [ "orxOBJECT_EVENT", "group__orx_object.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1", [
       [ "orxOBJECT_EVENT_CREATE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ac7d8eaaac17797c1acdec7f1b01b1a1a", null ],

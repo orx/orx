@@ -1,6 +1,7 @@
 var orx_object_8h =
 [
     [ "orxOBJECT_GET_STRUCTURE", "orx_object_8h.html#ga327727f4ebf89729d8518e90c918fddd", null ],
+    [ "orxOBJECT_KZ_DEFAULT_GROUP", "orx_object_8h.html#ga5957f0de4c583012e4f102e026ed2599", null ],
     [ "orxOBJECT", "orx_object_8h.html#ga780c6211b200bb2a9f0ca89eba707457", null ],
     [ "orxOBJECT_EVENT", "orx_object_8h.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1", [
       [ "orxOBJECT_EVENT_CREATE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ac7d8eaaac17797c1acdec7f1b01b1a1a", null ],

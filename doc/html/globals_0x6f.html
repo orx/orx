@@ -807,6 +807,9 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 : <a class="el" href="group__orx_structure.html#ga011da4f7705e8d470439b82abce23bfb">orxStructure.h</a>
 , <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCamera.h</a>
 </li>
+<li>orxCamera_AddGroupID()
+: <a class="el" href="group__orx_camera.html#ga0b0256bfff38ccfcd29a4ae353de6784">orxCamera.h</a>
+</li>
 <li>orxCamera_Create()
 : <a class="el" href="group__orx_camera.html#ga8366c7aadf1b7503e1f01b35a0c1dbff">orxCamera.h</a>
 </li>
@@ -827,6 +830,12 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 </li>
 <li>orxCamera_GetFrustum()
 : <a class="el" href="group__orx_camera.html#ga8b88cc610d014c016c46034f66014f9c">orxCamera.h</a>
+</li>
+<li>orxCamera_GetGroupID()
+: <a class="el" href="group__orx_camera.html#ga9f73655c6d4a2e1ae7a56242847b239b">orxCamera.h</a>
+</li>
+<li>orxCamera_GetGroupIDCounter()
+: <a class="el" href="group__orx_camera.html#gab823a96ae2a15065df5003325f119595">orxCamera.h</a>
 </li>
 <li>orxCamera_GetName()
 : <a class="el" href="group__orx_camera.html#gab9edd5fc69d31f154c27c87fa2e3022c">orxCamera.h</a>
@@ -852,8 +861,14 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 <li>orxCAMERA_KU32_FLAG_NONE
 : <a class="el" href="group__orx_camera.html#gaa7e36c65bb31a0dffaa87cd0212ba3a3">orxCamera.h</a>
 </li>
+<li>orxCAMERA_KU32_GROUP_ID_NUMBER
+: <a class="el" href="group__orx_camera.html#gaca7ead4667817f7601925ccac095f16f">orxCamera.h</a>
+</li>
 <li>orxCAMERA_KU32_MASK_USER_ALL
 : <a class="el" href="group__orx_camera.html#gab4b4bbdab06d1b31ea625840e4c5e5fd">orxCamera.h</a>
+</li>
+<li>orxCamera_RemoveGroupID()
+: <a class="el" href="group__orx_camera.html#ga8eef5d87f93174ec37e3deb832361012">orxCamera.h</a>
 </li>
 <li>orxCamera_SetFrustum()
 : <a class="el" href="group__orx_camera.html#ga9fecc3918027aebd2e2812470df8104e">orxCamera.h</a>
@@ -4270,6 +4285,9 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 <li>orxObject_IsTimeLineEnabled()
 : <a class="el" href="group__orx_object.html#ga99f5602ff1ae16280ff3e59b45f088a1">orxObject.h</a>
 </li>
+<li>orxOBJECT_KZ_DEFAULT_GROUP
+: <a class="el" href="group__orx_object.html#ga5957f0de4c583012e4f102e026ed2599">orxObject.h</a>
+</li>
 <li>orxObject_LinkStructure()
 : <a class="el" href="group__orx_object.html#ga11cb5defe143721910db791c2432bb4d">orxObject.h</a>
 </li>
@@ -4678,8 +4696,8 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 <li>orxPLUGIN_CORE_REGISTER_FUNCTION_NAME
 : <a class="el" href="group__orx_plugin.html#ga87c12bc67d2607a888c7d01cb1199676">orxPlugin_CoreDefine.h</a>
 </li>
-<li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION
-: <a class="el" href="group__orx_plugin.html#ga8dad35f3108817818eb52f76fad9ee7b">orxPlugin_CoreDefine.h</a>
+<li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
+: <a class="el" href="group__orx_plugin.html#ga2521b0142525880ca5a22a2f6d88cd7a">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_ENTRY_POINT
 : <a class="el" href="group__orx_plugin.html#ga071a2272df71ff393d741088a9537fd4">orxPluginUser.h</a>
@@ -6123,8 +6141,8 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 : <a class="el" href="group__orx_sound_system.html#ga211e61d56febbe41ad5c855ed704a3be">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
-, <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gaae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
+, <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
 </li>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#ga23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>
@@ -6871,8 +6889,8 @@ $(document).ready(function(){initNavTree('globals_0x6f.html','');});
 : <a class="el" href="group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a">orxTexture.h</a>
 </li>
 <li>orxTIMELINE
-: <a class="el" href="group__orx_time_line.html#gac2c4221766f0911011ba09609fddac32">orxTimeLine.h</a>
-, <a class="el" href="group__orx_structure.html#ga979076663165495c1f9d6b423f59e48e">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga979076663165495c1f9d6b423f59e48e">orxStructure.h</a>
+, <a class="el" href="group__orx_time_line.html#gac2c4221766f0911011ba09609fddac32">orxTimeLine.h</a>
 </li>
 <li>orxTimeLine_AddTrackFromConfig()
 : <a class="el" href="group__orx_time_line.html#ga1281081fa8cb1913b4b769a2a7343157">orxTimeLine.h</a>
