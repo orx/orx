@@ -3940,7 +3940,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         sstDisplay.u32EventInfoNumber         = 0;
 
         /* Updates bound texture */
-        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
+        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
         /* Updates config info */
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
@@ -3979,25 +3979,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
           /* Inits flags */
           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-
-          /* Tracks video memory */
-          orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
-
-          /* Creates texture for screen backup */
-          glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-          glASSERT();
-          glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-          glASSERT();
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-          glASSERT();
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-          glASSERT();
 
           /* Creates default shaders */
           sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);

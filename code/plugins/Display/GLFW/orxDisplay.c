@@ -3021,13 +3021,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Reactivates resize event */
       sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
 
-      /* Tracks video memory */
-      orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxFALSE);
-
-      /* Deletes screen backup texture */
-      glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
-      glASSERT();
-
       /* Stores screen info */
       sstDisplay.pstScreen->fWidth          = orxS2F(iWidth);
       sstDisplay.pstScreen->fHeight         = orxS2F(iHeight);
@@ -3039,27 +3032,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
       sstDisplay.pstScreen->u32DataSize     = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
 
-      /* Tracks video memory */
-      orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
-
-      /* Creates texture for screen backup */
-      glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-      glASSERT();
-      glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-      glASSERT();
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-      glASSERT();
-
       /* Updates bound texture */
-      sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
+      sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
       /* Clears destination bitmap */
       sstDisplay.apstDestinationBitmapList[0] = orxNULL;
@@ -3157,13 +3131,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
             }
           }
         }
-
-        /* Tracks video memory */
-        orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxFALSE);
-
-        /* Deletes screen backup texture */
-        glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
 
         /* Gets shader counter */
         s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
@@ -3393,31 +3360,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
 
-        /* Tracks video memory */
-        orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
-
-        /* Creates texture for screen backup */
-        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-
         /* Clears destination bitmap */
         sstDisplay.apstDestinationBitmapList[0] = orxNULL;
         sstDisplay.u32DestinationBitmapCounter  = 1;
 
         /* Updates bound texture */
-        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
+        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
         /* Clears new display surface */
         glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
