@@ -1933,50 +1933,78 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
   /* Gets buffer size */
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
-  if(_pstBitmap == sstDisplay.pstScreen)
+  /* Is size matching? */
+  if(_u32ByteNumber == u32BufferSize)
   {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "GetBitmapData() from Screen not implemented yet.");
-    eResult = orxSTATUS_FAILURE;
+    orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+    orxU32      u32BackupBitmapCounter;
+
+    /* Backups current destinations */
+    orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
+    u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
+
+    /* Sets new destination bitmap */
+    if((eResult = orxDisplay_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
+    {
+      orxU8  *pu8ImageBuffer;
+
+      /* Allocates buffer */
+      pu8ImageBuffer = (_pstBitmap != sstDisplay.pstScreen) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+
+      /* Checks */
+      orxASSERT(pu8ImageBuffer != orxNULL);
+
+      /* Reads OpenGL data */
+      glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glASSERT();
+
+      if(_pstBitmap == sstDisplay.pstScreen)
+      {
+        orxRGBA stOpaque;
+        orxU32  u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
+
+        /* Sets opaque pixel */
+        stOpaque = orx2RGBA(0x00, 0x00, 0x00, 0xFF);
+
+        /* Gets line sizes */
+        u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
+        u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
+
+        /* For all lines */
+        for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+            i < orxF2U(_pstBitmap->fHeight);
+            i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+        {
+          orxU32 j;
+
+          /* For all columns */
+          for(j = 0; j < orxF2U(_pstBitmap->fWidth); j++)
+          {
+            orxRGBA stPixel;
+
+            /* Gets opaque pixel */
+            stPixel.u32RGBA = ((orxRGBA *)(pu8ImageBuffer + u32SrcOffset))[j].u32RGBA | stOpaque.u32RGBA;
+
+            /* Stores it */
+            ((orxRGBA *)(_au8Data + u32DstOffset))[j] = stPixel;
+          }
+        }
+
+        /* Deletes buffer */
+        orxMemory_Free(pu8ImageBuffer);
+      }
+
+      /* Restores previous destinations */
+      orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
+    }
   }
   else
   {
-    /* Is size matching? */
-    if(_u32ByteNumber == u32BufferSize)
-    {
-      orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
-      orxU32      u32BackupBitmapCounter;
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap's data <0x%X> as the buffer size is %ld when it should be %ls.", _pstBitmap, _u32ByteNumber, u32BufferSize);
 
-      /* Backups current destinations */
-      orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
-      u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
-
-      /* Sets new destination bitmap */
-      if((eResult = orxDisplay_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
-      {
-        orxU8  *pu8ImageBuffer;
-
-        /* Allocates buffer */
-        pu8ImageBuffer = _au8Data;
-
-        /* Checks */
-        orxASSERT(pu8ImageBuffer != orxNULL);
-
-        /* Reads OpenGL data */
-        glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-        glASSERT();
-
-        /* Restores previous destinations */
-        orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
-      }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap's data <0x%X> as the buffer size is %ld when it should be %ls.", _pstBitmap, _u32ByteNumber, u32BufferSize);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -3694,25 +3722,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Tracks video memory */
         orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
-
-        /* Creates texture for screen backup */
-        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glASSERT();
-
-        /* Updates bound texture */
-        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = sstDisplay.pstScreen;
 
         /* Clears destination bitmap */
         sstDisplay.apstDestinationBitmapList[0] = orxNULL;
