@@ -7797,9 +7797,6 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(orxOBJECT *_pstObject,
     }
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't access object in group: invalid group [%s]/<0x%X>.", orxString_GetFromID(_u32GroupID), _u32GroupID);
-
       /* Updates result */
       pstResult = orxNULL;
     }
