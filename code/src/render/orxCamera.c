@@ -1038,7 +1038,7 @@ orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32Gro
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: invalid ID [0x%X].", _u32GroupID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: invalid ID <0x%X>.", _u32GroupID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1093,13 +1093,13 @@ orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32
     if(eResult == orxSTATUS_FAILURE)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: ID [0x%X] not found.", _u32GroupID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: ID <0x%X> not found.", _u32GroupID);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: invalid ID [0x%X].", _u32GroupID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: invalid ID <0x%X>.", _u32GroupID);
   }
 
   /* Done! */
