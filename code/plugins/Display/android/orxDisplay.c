@@ -3636,7 +3636,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
-        sstDisplay.pstScreen->u32DataSize    = 0;
+        sstDisplay.pstScreen->u32DataSize    = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
         sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
@@ -3720,12 +3720,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         /* Inits flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
-        /* Tracks video memory */
-        orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
-
         /* Clears destination bitmap */
         sstDisplay.apstDestinationBitmapList[0] = orxNULL;
         sstDisplay.u32DestinationBitmapCounter  = 1;
+
+        /* Updates bound texture */
+        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
         /* Creates default shaders */
         sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
