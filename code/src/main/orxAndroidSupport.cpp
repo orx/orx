@@ -245,6 +245,10 @@ static void orxAndroid_Exit(JNIEnv* env)
 
   free(sstAndroid.s_AndroidInternalFilesPath);
 
+  ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeCmd[0]);
+  ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0]);
+  ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeTouchEvent[0]);
+
   close(sstAndroid.pipeCmd[0]);
   close(sstAndroid.pipeCmd[1]);
   close(sstAndroid.pipeTouchEvent[0]);
