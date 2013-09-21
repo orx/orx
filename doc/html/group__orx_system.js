@@ -29,7 +29,7 @@ var group__orx_system =
     ] ],
     [ "orxSystem_Delay", "group__orx_system.html#ga619076c8c23194cbdcb437fff14335bd", null ],
     [ "orxSystem_Exit", "group__orx_system.html#ga74d43ae1172730cfce4c9ced3be48b8c", null ],
-    [ "orxSystem_GetRealTime", "group__orx_system.html#ga1442c7adb3923bc10fccb7fa2bd07bef", null ],
+    [ "orxSystem_GetRealTime", "group__orx_system.html#ga4b649194b085ba82221c05b5aa6170cd", null ],
     [ "orxSystem_GetSystemTime", "group__orx_system.html#gae1ae3f9be6749dda433622a0060a4a55", null ],
     [ "orxSystem_GetTime", "group__orx_system.html#gad0379fde6ecee8fba3a24a8e018debeb", null ],
     [ "orxSystem_Init", "group__orx_system.html#ga8f8e70a14127981e4a4632b3442c9ee4", null ],
