@@ -62,15 +62,15 @@ static orxINLINE orxU32 orxMath_Xor128()
  ***************************************************************************/
 
 /** Inits the random seed
- * @param[in]   _s32Seed                        Value to use as seed for random number generation
+ * @param[in]   _u32Seed                        Value to use as seed for random number generation
  */
-void orxFASTCALL orxMath_InitRandom(orxS32 _s32Seed)
+void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 {
   /* Inits random seed */
-  su32X = (orxU32)_s32Seed;
-  su32Y = su32X * (orxU32)_s32Seed;
-  su32Z = su32Y * (orxU32)_s32Seed;
-  su32W = su32Z * (orxU32)_s32Seed;
+  su32X = _u32Seed;
+  su32Y = su32X * _u32Seed;
+  su32Z = su32Y * _u32Seed;
+  su32W = su32Z * _u32Seed;
 }
 
 /** Gets a random orxFLOAT value

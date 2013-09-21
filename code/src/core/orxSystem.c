@@ -261,19 +261,19 @@ orxDOUBLE orxFASTCALL orxSystem_GetTime()
 /** Gets real time
  * @return Returns the amount of seconds elapsed since reference time
  */
-orxS32 orxFASTCALL orxSystem_GetRealTime()
+orxU64 orxFASTCALL orxSystem_GetRealTime()
 {
   time_t  stTime;
-  orxS32  s32Result;
+  orxU64  u64Result;
 
   /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets time */
-  s32Result = (orxS32)time(&stTime);
+  u64Result = (orxU64)time(&stTime);
 
   /* Done! */
-  return s32Result;
+  return u64Result;
 }
 
 orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()

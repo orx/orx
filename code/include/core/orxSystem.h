@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxSystem
- * 
+ *
  * Module file
  * Code that handles modules and their dependencies
  *
@@ -65,7 +65,7 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_TOUCH_END,
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
-  
+
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
@@ -120,7 +120,7 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetTime();
 /** Gets current real time (in seconds)
  * @return Current real time
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxSystem_GetRealTime();
+extern orxDLLAPI orxU64 orxFASTCALL     orxSystem_GetRealTime();
 
 /** Gets current internal system time (in seconds)
  * @return Current internal system time
