@@ -1771,6 +1771,26 @@ void orxFASTCALL orxCommand_CommandCRC(orxU32 _u32ArgNumber, const orxCOMMAND_VA
   return;
 }
 
+/* Command: GetStringID */
+void orxFASTCALL orxCommand_CommandGetStringID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = orxString_GetID(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/* Command: GetStringFromID */
+void orxFASTCALL orxCommand_CommandGetStringFromID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxString_GetFromID(_astArgList[0].u32Value);
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the command commands
  */
 static orxINLINE void orxCommand_RegisterCommands()
@@ -1829,6 +1849,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Compare, "Result", orxCOMMAND_VAR_TYPE_S32, 2, 1, {"String1", orxCOMMAND_VAR_TYPE_STRING}, {"String2", orxCOMMAND_VAR_TYPE_STRING}, {"CaseSensitive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: CRC */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, CRC, "CRC", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetStringID */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetStringFromID */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringFromID, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"ID", orxCOMMAND_VAR_TYPE_U32});
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
@@ -1903,6 +1927,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("String.Compare", "Command.Compare", orxNULL);
   /* Alias: String.CRC */
   orxCommand_AddAlias("String.CRC", "Command.CRC", orxNULL);
+
+  /* Alias: String.GetID */
+  orxCommand_AddAlias("String.GetID", "Command.GetStringID", orxNULL);
+  /* Alias: String.GetFromID */
+  orxCommand_AddAlias("String.GetFromID", "Command.GetStringFromID", orxNULL);
 }
 
 /** Unregisters all the command commands
@@ -1982,6 +2011,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("String.Compare");
   /* Alias: CRC */
   orxCommand_RemoveAlias("String.CRC");
+  /* Alias: String.GetID */
+  orxCommand_RemoveAlias("String.GetID");
+  /* Alias: String.GetFromID */
+  orxCommand_RemoveAlias("String.GetFromID");
 
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
@@ -2035,6 +2068,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Compare);
   /* Command: CRC */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, CRC);
+  /* Command: GetStringID */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringID);
+  /* Command: GetStringFromID */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringFromID);
 }
 
 /***************************************************************************
