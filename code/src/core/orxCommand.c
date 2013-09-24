@@ -437,22 +437,22 @@ static orxINLINE const orxCOMMAND *orxCommand_FindNext(const orxCOMMAND_TRIE_NOD
 
 static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandLine, const orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult)
 {
-  orxSTRING       zCommand;
+  const orxSTRING zCommand;
   orxCOMMAND_VAR *pstResult = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxCommand_Process");
 
   /* Gets start of command */
-  zCommand = (orxCHAR *)orxString_SkipWhiteSpaces(_zCommandLine);
+  zCommand = orxString_SkipWhiteSpaces(_zCommandLine);
 
   /* Valid? */
   if(zCommand != orxSTRING_EMPTY)
   {
-    orxU32      u32PushCounter;
-    orxCHAR    *pcCommandEnd, cBackupChar;
-    orxCOMMAND *pstCommand;
-    orxCHAR     acGUID[20];
+    orxU32          u32PushCounter;
+    const orxCHAR  *pcCommandEnd;
+    orxCOMMAND     *pstCommand;
+    orxCHAR         cBackupChar, acGUID[20];
 
     /* For all push markers / spaces */
     for(u32PushCounter = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (*zCommand == ' ') || (*zCommand == '\t'); zCommand++)
@@ -912,7 +912,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT))
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid command.", _zCommandLine);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
       }
     }
 
@@ -1025,6 +1025,17 @@ void orxFASTCALL orxCommand_CommandHelp(orxU32 _u32ArgNumber, const orxCOMMAND_V
     /* Updates result */
     _pstResult->zValue = orxCommand_GetPrototype(_astArgList[0].zValue);
   }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Echo
+ */
+void orxFASTCALL orxCommand_CommandEcho(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (_u32ArgNumber != 0) ? _astArgList[0].zValue : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -1782,6 +1793,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: EvaluateIf */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, EvaluateIf, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Command", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Command = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: Echo */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Echo, "Echo", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Parameter", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: If */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, If, "Select?", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Result", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Result = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: Not */
@@ -1818,6 +1832,9 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
+
+  /* Alias: Help */
+  orxCommand_AddAlias("Echo", "Command.Echo", orxNULL);
 
   /* Alias: Eval */
   orxCommand_AddAlias("Eval", "Command.Evaluate", orxNULL);
@@ -1895,6 +1912,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Help */
   orxCommand_RemoveAlias("Help");
 
+  /* Alias: Echo */
+  orxCommand_RemoveAlias("Echo");
+
   /* Alias: Eval */
   orxCommand_RemoveAlias("Eval");
   /* Alias: EvalIf */
@@ -1965,6 +1985,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
+
+  /* Command: Echo */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Echo);
 
   /* Command: ListCommands */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ListCommands);
