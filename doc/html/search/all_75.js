@@ -18,8 +18,6 @@ var searchData=
   ['u32rgba',['u32RGBA',['../structorx_r_g_b_a.html#a1d098c654c5068c202e1576293fe71b6',1,'orxRGBA']]],
   ['u32samplenumber',['u32SampleNumber',['../structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a5cce9ecad10aa6fa8390885373f43d8b',1,'orxSOUND_STREAM_PACKET']]],
   ['u32samplerate',['u32SampleRate',['../structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o.html#aeaf73be9cfa8e526e4724e5adca203b9',1,'orxSOUND_STREAM_INFO']]],
-  ['u32size',['u32Size',['../structorx_f_i_l_e___i_n_f_o.html#a201c42c11c9eb4b9b6863b96d77caa57',1,'orxFILE_INFO']]],
-  ['u32timestamp',['u32TimeStamp',['../structorx_f_i_l_e___i_n_f_o.html#a68b7054ff31b0c16337370fcc41976fd',1,'orxFILE_INFO']]],
   ['u32value',['u32Value',['../structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013',1,'orxCOMMAND_VAR']]],
   ['u32vertexcounter',['u32VertexCounter',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a77861c705d1e4a33603f25fcbc1f64df',1,'orxBODY_PART_DEF']]],
   ['u32width',['u32Width',['../structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#a2c2c632e5b79ae139080986155c6724d',1,'orxDISPLAY_VIDEO_MODE::u32Width()'],['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3dd9e7e575ea285a59e773dc78383e6d',1,'orxDISPLAY_EVENT_PAYLOAD::u32Width()']]],
