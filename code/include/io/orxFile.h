@@ -128,21 +128,21 @@ extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileN
 
 /** Reads data from a file
  * @param[out] _pReadData          Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
 /** writes data to a file
  * @param[in] _pDataToWrite        Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file

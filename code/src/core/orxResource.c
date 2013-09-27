@@ -273,7 +273,7 @@ static orxS64 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS64 _s6
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s64Result = orxFile_Read(_pBuffer, sizeof(orxCHAR), (orxU32)_s64Size, pstFile);
+  s64Result = orxFile_Read(_pBuffer, sizeof(orxCHAR), _s64Size, pstFile);
 
   /* Done! */
   return s64Result;
@@ -288,7 +288,7 @@ static orxS64 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS64 _s
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s64Result = orxFile_Write(_pBuffer, sizeof(orxCHAR), (orxU32)_s64Size, pstFile);
+  s64Result = orxFile_Write(_pBuffer, sizeof(orxCHAR), _s64Size, pstFile);
 
   /* Done! */
   return s64Result;

@@ -676,15 +676,15 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
 
 /** Reads data from a file
  * @param[out] _pReadData          Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
-  orxU32 u32Ret = 0;
+  orxS64 s64Ret = 0;
 
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -692,24 +692,24 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    u32Ret = (orxU32)fread(_pReadData, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
+    s64Ret = (orxS64)fread(_pReadData, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
   }
 
   /* Returns the number of read elements */
-  return u32Ret;
+  return s64Ret;
 }
 
 /** writes data to a file
  * @param[in] _pDataToWrite        Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-orxU32 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
-  orxU32 u32Ret = 0;
+  orxS64 s64Ret = 0;
 
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -720,11 +720,11 @@ orxU32 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxU32 _u32ElemSize,
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    u32Ret = (orxU32)fwrite(_pDataToWrite, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
+    s64Ret = (orxS64)fwrite(_pDataToWrite, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
   }
 
   /* Returns the number of read elements */
-  return u32Ret;
+  return s64Ret;
 }
 
 /** Seeks to a position in the given file
