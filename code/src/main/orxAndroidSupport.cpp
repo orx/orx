@@ -681,64 +681,64 @@ static void orxFASTCALL orxResource_APK_Close(orxHANDLE _hResource)
   AAsset_close(poAsset);
 }
 
-static orxS32 orxFASTCALL orxResource_APK_GetSize(orxHANDLE _hResource)
+static orxS64 orxFASTCALL orxResource_APK_GetSize(orxHANDLE _hResource)
 {
   AAsset   *poAsset;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets asset */
   poAsset = (AAsset *)_hResource;
 
   /* Updates result */
-  s32Result = AAsset_getLength(poAsset);
+  s64Result = (orxS64)AAsset_getLength(poAsset);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_APK_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+static orxS64 orxFASTCALL orxResource_APK_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
 {
   AAsset   *poAsset;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets asset */
   poAsset = (AAsset *)_hResource;
 
   /* Updates result */
-  s32Result = AAsset_seek(poAsset, _s32Offset, _eWhence);
+  s64Result = (orxS64)AAsset_seek(poAsset, (off_t)_s64Offset, _eWhence);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_APK_Tell(orxHANDLE _hResource)
+static orxS64 orxFASTCALL orxResource_APK_Tell(orxHANDLE _hResource)
 {
   AAsset   *poAsset;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets asset */
   poAsset = (AAsset *)_hResource;
 
   /* Updates result */
-  s32Result = AAsset_getLength(poAsset) - AAsset_getRemainingLength(poAsset);
+  s64Result = (orxS64)AAsset_getLength(poAsset) - (orxS64)AAsset_getRemainingLength(poAsset);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_APK_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+static orxS64 orxFASTCALL orxResource_APK_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer)
 {
   AAsset   *poAsset;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets asset */
   poAsset = (AAsset *)_hResource;
 
   /* Updates result */
-  s32Result = AAsset_read(poAsset, _pBuffer, sizeof(orxCHAR) * _s32Size) / sizeof(orxCHAR);
+  s64Result = (orxS64)AAsset_read(poAsset, _pBuffer, (size_t)(sizeof(orxCHAR) * _s64Size)) / sizeof(orxCHAR);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 orxSTATUS orxAndroid_RegisterAPKResource()
@@ -747,6 +747,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
   orxRESOURCE_TYPE_INFO stAPKTypeInfo;
 
   /* Inits apk type */
+  orxMemory_Zero(&stAPKTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
   stAPKTypeInfo.zTag       = (orxCHAR*) orxRESOURCE_KZ_TYPE_TAG_APK;
   stAPKTypeInfo.pfnLocate  = orxResource_APK_Locate;
   stAPKTypeInfo.pfnOpen    = orxResource_APK_Open;

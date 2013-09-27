@@ -52,11 +52,11 @@
 typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
 typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation, orxBOOL _bEraseMode);
 typedef void            (orxFASTCALL *orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource);
-typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _hResource);
-typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence);
-typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_TELL)(orxHANDLE _hResource);
-typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_READ)(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
-typedef orxS32          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _hResource);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_TELL)(orxHANDLE _hResource);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_READ)(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer);
 
 /** Resource type info
  */
@@ -156,6 +156,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetLocatio
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetName(const orxSTRING _zLocation);
 
+/** Gets the resource type from a location
+ * @param[in] _zLocation        Location of the concerned resource
+ * @return orxRESOURCE_TYPE_INFO if valid, orxNULL otherwise
+ */
+extern orxDLLAPI const orxRESOURCE_TYPE_INFO *orxFASTCALL orxResource_GetType(const orxSTRING _zLocation);
+
 
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open
@@ -173,37 +179,37 @@ extern orxDLLAPI void orxFASTCALL                         orxResource_Close(orxH
  * @param[in] _hResource        Concerned resource
  * @return Size of the resource, in bytes
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_GetSize(orxHANDLE _hResource);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetSize(orxHANDLE _hResource);
 
 /** Seeks a position in a given resource (moves cursor)
  * @param[in] _hResource        Concerned resource
- * @param[in] _s32Offset        Number of bytes to offset from 'origin'
+ * @param[in] _s64Offset        Number of bytes to offset from 'origin'
  * @param[in] _eWhence          Starting point for the offset computation (start, current position or end)
  * @return Absolute cursor position
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 
 /** Tells the position of the cursor in a given resource
  * @param[in] _hResource        Concerned resource
  * @return Position (offset), in bytes
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Tell(orxHANDLE _hResource);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Tell(orxHANDLE _hResource);
 
 /** Reads data from a resource
  * @param[in] _hResource        Concerned resource
- * @param[in] _s32Size          Size to read (in bytes)
+ * @param[in] _s64Size          Size to read (in bytes)
  * @param[out] _pBuffer         Buffer that will be filled by the read data
  * @return Size of the read data, in bytes
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer);
 
 /** Writes data to a resource
  * @param[in] _hResource        Concerned resource
- * @param[in] _s32Size          Size to write (in bytes)
+ * @param[in] _s64Size          Size to write (in bytes)
  * @param[out] _pBuffer         Buffer that will be written
  * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
  */
-extern orxDLLAPI orxS32 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer);
 
 
 /** Registers a new resource type

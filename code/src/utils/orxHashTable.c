@@ -480,12 +480,8 @@ orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, or
     pstCell   = orxNULL;
   }
 
-  /* Should search for next cell? */
-  if(pstCell == orxNULL)
-  {
-    /* Finds next head cell */
-    for(; (pstCell == orxNULL) && (u32Index < _pstHashTable->u32Size); pstCell = _pstHashTable->apstCell[u32Index++]);
-  }
+  /* Finds next head cell if needed */
+  for(; (pstCell == orxNULL) && (u32Index < _pstHashTable->u32Size); pstCell = _pstHashTable->apstCell[u32Index++]);
 
   /* Found? */
   if(pstCell != orxNULL)

@@ -219,79 +219,79 @@ static void orxFASTCALL orxResource_File_Close(orxHANDLE _hResource)
   orxFile_Close(pstFile);
 }
 
-static orxS32 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
+static orxS64 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
 {
   orxFILE  *pstFile;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets file */
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s32Result = orxFile_GetSize(pstFile);
+  s64Result = orxFile_GetSize(pstFile);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_File_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+static orxS64 orxFASTCALL orxResource_File_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
 {
   orxFILE  *pstFile;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets file */
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s32Result = orxFile_Seek(pstFile, _s32Offset, _eWhence);
+  s64Result = orxFile_Seek(pstFile, _s64Offset, _eWhence);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_File_Tell(orxHANDLE _hResource)
+static orxS64 orxFASTCALL orxResource_File_Tell(orxHANDLE _hResource)
 {
   orxFILE  *pstFile;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets file */
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s32Result = orxFile_Tell(pstFile);
+  s64Result = orxFile_Tell(pstFile);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+static orxS64 orxFASTCALL orxResource_File_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer)
 {
   orxFILE  *pstFile;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets file */
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s32Result = orxFile_Read(_pBuffer, sizeof(orxCHAR), _s32Size, pstFile);
+  s64Result = orxFile_Read(_pBuffer, sizeof(orxCHAR), (orxU32)_s64Size, pstFile);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
-static orxS32 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer)
+static orxS64 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer)
 {
   orxFILE  *pstFile;
-  orxS32    s32Result;
+  orxS64    s64Result;
 
   /* Gets file */
   pstFile = (orxFILE *)_hResource;
 
   /* Updates result */
-  s32Result = orxFile_Write(_pBuffer, sizeof(orxCHAR), _s32Size, pstFile);
+  s64Result = orxFile_Write(_pBuffer, sizeof(orxCHAR), (orxU32)_s64Size, pstFile);
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
@@ -499,7 +499,6 @@ void orxFASTCALL orxResource_Exit()
   if(sstResource.u32Flags & orxRESOURCE_KU32_STATIC_FLAG_READY)
   {
     orxRESOURCE_GROUP      *pstGroup;
-    orxRESOURCE_TYPE       *pstType;
     orxRESOURCE_OPEN_INFO  *pstOpenInfo;
 
     /* Has uncached location? */
@@ -520,15 +519,6 @@ void orxFASTCALL orxResource_Exit()
 
     /* Deletes group bank */
     orxBank_Delete(sstResource.pstGroupBank);
-
-    /* For all types */
-    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
-        pstType != orxNULL;
-        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
-    {
-      /* Deletes its tag */
-      orxString_Delete((orxSTRING)pstType->stInfo.zTag);
-    }
 
     /* Deletes type bank */
     orxBank_Delete(sstResource.pstTypeBank);
@@ -1203,6 +1193,52 @@ const orxSTRING orxFASTCALL orxResource_GetName(const orxSTRING _zLocation)
   return zResult;
 }
 
+/** Gets the resource type from a location
+ * @param[in] _zLocation        Location of the concerned resource
+ * @return orxRESOURCE_TYPE_INFO if valid, orxNULL otherwise
+ */
+const orxRESOURCE_TYPE_INFO *orxFASTCALL orxResource_GetType(const orxSTRING _zLocation)
+{
+  const orxRESOURCE_TYPE_INFO *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zLocation != orxNULL);
+
+  /* Valid? */
+  if(*_zLocation != orxCHAR_NULL)
+  {
+    orxRESOURCE_TYPE *pstType;
+
+    /* For all registered types */
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        pstType != orxNULL;
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
+    {
+      orxU32 u32TagLength;
+
+      /* Gets tag length */
+      u32TagLength = orxString_GetLength(pstType->stInfo.zTag);
+
+      /* Match tag? */
+      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
+      {
+        /* Valid? */
+        if(*(_zLocation + u32TagLength) == orxRESOURCE_KC_LOCATION_SEPARATOR)
+        {
+          /* Updates result */
+          pstResult = &(pstType->stInfo);
+        }
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open
  * @param[in] _bEraseMode       If true, the file will be erased if existing or created otherwise, if false, no content will get destroyed when opening
@@ -1312,9 +1348,9 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
  * @param[in] _hResource        Concerned resource
  * @return Size of the resource, in bytes
  */
-orxS32 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
+orxS64 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
 {
-  orxS32 s32Result = 0;
+  orxS64 s64Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -1328,22 +1364,22 @@ orxS32 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
     /* Updates result */
-    s32Result = pstOpenInfo->pstTypeInfo->pfnGetSize(pstOpenInfo->hResource);
+    s64Result = pstOpenInfo->pstTypeInfo->pfnGetSize(pstOpenInfo->hResource);
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Seeks a position in a given resource (moves cursor)
  * @param[in] _hResource        Concerned resource
- * @param[in] _s32Offset        Number of bytes to offset from 'origin'
+ * @param[in] _s64Offset        Number of bytes to offset from 'origin'
  * @param[in] _eWhence          Starting point for the offset computation (start, current position or end)
  * @return Absolute cursor position
 */
-orxS32 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
 {
-  orxS32 s32Result = 0;
+  orxS64 s64Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -1358,20 +1394,20 @@ orxS32 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS32 _s32Offset, orx
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
     /* Updates result */
-    s32Result = pstOpenInfo->pstTypeInfo->pfnSeek(pstOpenInfo->hResource, _s32Offset, _eWhence);
+    s64Result = pstOpenInfo->pstTypeInfo->pfnSeek(pstOpenInfo->hResource, _s64Offset, _eWhence);
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Tells the position of the cursor in a given resource
  * @param[in] _hResource        Concerned resource
  * @return Position (offset), in bytes
  */
-orxS32 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
+orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
 {
-  orxS32 s32Result = 0;
+  orxS64 s64Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -1385,26 +1421,25 @@ orxS32 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
     /* Updates result */
-    s32Result = pstOpenInfo->pstTypeInfo->pfnTell(pstOpenInfo->hResource);
+    s64Result = pstOpenInfo->pstTypeInfo->pfnTell(pstOpenInfo->hResource);
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Reads data from a resource
  * @param[in] _hResource        Concerned resource
- * @param[in] _s32Size          Size to read (in bytes)
+ * @param[in] _s64Size          Size to read (in bytes)
  * @param[out] _pBuffer         Buffer that will be filled by the read data
  * @return Size of the read data, in bytes
  */
-orxS32 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS32 _s32Size, void *_pBuffer)
+orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer)
 {
-  orxS32 s32Result = 0;
+  orxS64 s64Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-  orxASSERT(_s32Size >= 0);
   orxASSERT(_pBuffer != orxNULL);
 
   /* Valid? */
@@ -1416,26 +1451,25 @@ orxS32 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS32 _s32Size, void 
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
     /* Updates result */
-    s32Result = pstOpenInfo->pstTypeInfo->pfnRead(pstOpenInfo->hResource, _s32Size, _pBuffer);
+    s64Result = pstOpenInfo->pstTypeInfo->pfnRead(pstOpenInfo->hResource, _s64Size, _pBuffer);
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Writes data to a resource
  * @param[in] _hResource        Concerned resource
- * @param[in] _s32Size          Size to write (in bytes)
+ * @param[in] _s64Size          Size to write (in bytes)
  * @param[out] _pBuffer         Buffer that will be written
  * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
  */
-orxS32 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, const void *_pBuffer)
+orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer)
 {
-  orxS32 s32Result = 0;
+  orxS64 s64Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-  orxASSERT(_s32Size >= 0);
   orxASSERT(_pBuffer != orxNULL);
 
   /* Valid? */
@@ -1450,17 +1484,17 @@ orxS32 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS32 _s32Size, cons
     if(pstOpenInfo->pstTypeInfo->pfnWrite != orxNULL)
     {
       /* Updates result */
-      s32Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s32Size, _pBuffer);
+      s64Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s64Size, _pBuffer);
     }
     else
     {
       /* Updates result */
-      s32Result = -1;
+      s64Result = -1;
     }
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Registers a new resource type
@@ -1505,7 +1539,7 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
       /* Inits it */
       orxMemory_Zero(&(pstType->stNode), sizeof(orxLINKLIST_NODE));
       orxMemory_Copy(&(pstType->stInfo), _pstInfo, sizeof(orxRESOURCE_TYPE_INFO));
-      pstType->stInfo.zTag = orxString_Duplicate(_pstInfo->zTag);
+      pstType->stInfo.zTag = orxString_GetFromID(orxString_GetID(_pstInfo->zTag));
 
       /* Checks */
       orxASSERT(pstType->stInfo.zTag != orxNULL);

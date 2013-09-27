@@ -177,28 +177,28 @@ static ov_callbacks sstOggVorbis_Callbacks;
 
 static size_t read_func(void* ptr, size_t size, size_t nmemb, void* datasource)
 {
-  orxU32 u32Read = orxResource_Read((orxHANDLE) datasource, size * nmemb, ptr);
+  orxS64 s64Read = orxResource_Read((orxHANDLE) datasource, size * nmemb, ptr);
 
-  return u32Read;
+  return (size_t)s64Read;
 }
 
 static int seek_func(void* datasource, ogg_int64_t offset, int whence)
 {
-  orxResource_Seek((orxHANDLE) datasource, (orxS32) offset, (orxSEEK_OFFSET_WHENCE)whence);
+  orxResource_Seek((orxHANDLE)datasource, (orxS64)offset, (orxSEEK_OFFSET_WHENCE)whence);
 
   return 0;
 }
 
 static int close_func(void* datasource)
 {
-  orxResource_Close((orxHANDLE) datasource);
+  orxResource_Close((orxHANDLE)datasource);
 
   return 0;
 }
 
 static long tell_func(void* datasource)
 {
-  return orxResource_Tell((orxHANDLE) datasource);
+  return (long)orxResource_Tell((orxHANDLE)datasource);
 }
 
 static orxINLINE orxSTATUS orxSoundSystem_Android_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)

@@ -113,8 +113,8 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Stores info */
-  _pstFileInfo->u32Size       = _pstData->size;
-  _pstFileInfo->u32TimeStamp  = (orxU32)_pstData->time_write;
+  _pstFileInfo->s64Size       = (orxS64)_pstData->size;
+  _pstFileInfo->s64TimeStamp  = (orxS64)_pstData->time_write;
   orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
@@ -179,9 +179,9 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
     _pstFileInfo->u32Flags &= ~orxFILE_KU32_FLAG_INFO_NORMAL;
   }
 
-  /* Sets time and last file access time */
-  _pstFileInfo->u32Size       = stStat.st_size;
-  _pstFileInfo->u32TimeStamp  = stStat.st_mtime;
+  /* Sets size and last file access time */
+  _pstFileInfo->s64Size       = (orxS64)stStat.st_size;
+  _pstFileInfo->s64TimeStamp  = (orxS64)stStat.st_mtime;
 
   return;
 }
@@ -729,13 +729,13 @@ orxU32 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxU32 _u32ElemSize,
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
- * @param[in] _s32Position          Position (from start) where to set the indicator
+ * @param[in] _s64Position          Position (from start) where to set the indicator
  * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
  * @return Absolute cursor positionif succesful, -1 otherwise
  */
-orxS32 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position, orxSEEK_OFFSET_WHENCE _eWhence)
+orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_OFFSET_WHENCE _eWhence)
 {
-  orxS32 s32Result;
+  orxS64 s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -743,29 +743,29 @@ orxS32 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position, orxSEEK_
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-    fseek((FILE *)_pstFile, (size_t)_s32Position, _eWhence);
+    fseek((FILE *)_pstFile, (size_t)_s64Position, _eWhence);
 
     /* Updates result */
-    s32Result = orxFile_Tell(_pstFile);
+    s64Result = orxFile_Tell(_pstFile);
 
   }
   else
   {
     /* Updates result */
-    s32Result = -1;
+    s64Result = -1;
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file
  * @return Returns the current position of the file indicator, -1 if invalid
  */
-orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
 {
-  orxS32 s32Result;
+  orxS64 s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -774,26 +774,26 @@ orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
   if(_pstFile != orxNULL)
   {
     /* Updates result */
-    s32Result = ftell((FILE *)_pstFile);
+    s64Result = ftell((FILE *)_pstFile);
   }
   else
   {
     /* Updates result */
-    s32Result = -1;
+    s64Result = -1;
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Retrieves a file's size
  * @param[in] _pstFile              Concerned file
  * @return Returns the length of the file, <= 0 if invalid
  */
-orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 {
   struct stat stStat;
-  orxS32      s32Result;
+  orxS64      s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -814,16 +814,56 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 #endif /* __orxMSVC__ */
 
     /* Updates result */
-    s32Result = stStat.st_size;
+    s64Result = (orxS64)stStat.st_size;
   }
   else
   {
     /* Updates result */
-    s32Result = 0;
+    s64Result = 0;
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
+}
+
+/** Retrieves a file's last modification time
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the time of the last modification
+ */
+orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
+{
+  struct stat stStat;
+  orxS64      s64Result;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstFile != orxNULL)
+  {
+#ifdef __orxMSVC__
+
+    /* Gets file stats */
+    fstat(((FILE *)_pstFile)->_file, &stStat);
+
+#else /* __orxMSVC__ */
+
+    /* Gets file stats */
+    fstat(fileno((FILE *)_pstFile), &stStat);
+
+#endif /* __orxMSVC__ */
+
+    /* Updates result */
+    s64Result = (orxS64)stStat.st_mtime;
+  }
+  else
+  {
+    /* Updates result */
+    s64Result = 0;
+  }
+
+  /* Done! */
+  return s64Result;
 }
 
 /** Prints a formatted string to a file

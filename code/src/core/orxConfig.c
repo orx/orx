@@ -2680,9 +2680,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
     /* While file isn't empty */
-    for(u32Size = orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE, acBuffer), u32Offset = 0, bFirstTime = orxTRUE;
+    for(u32Size = (orxU32)orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE, acBuffer), u32Offset = 0, bFirstTime = orxTRUE;
         u32Size > 0;
-        u32Size = orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE - u32Offset, acBuffer + u32Offset) + u32Offset, bFirstTime = orxFALSE)
+        u32Size = (orxU32)orxResource_Read(hResource, (orxS64)(orxCONFIG_KU32_BUFFER_SIZE - u32Offset), acBuffer + u32Offset) + u32Offset, bFirstTime = orxFALSE)
     {
       orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
       orxBOOL   bBlockMode;
@@ -3392,7 +3392,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          orxResource_Write(hResource, u32BufferSize, acBuffer);
+          orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer);
 
           /* For all entries */
           for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
@@ -3478,7 +3478,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               }
 
               /* Saves it */
-              orxResource_Write(hResource, u32BufferSize, acBuffer);
+              orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer);
             }
           }
 
@@ -3493,7 +3493,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          orxResource_Write(hResource, u32BufferSize, acBuffer);
+          orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer);
         }
       }
 

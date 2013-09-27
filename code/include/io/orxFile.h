@@ -60,9 +60,9 @@
 /** Store datas about the current file. */
 typedef struct __orxFILE_INFO_t
 {
+  orxS64    s64Size;                                    /**< File's size (in bytes) */
+  orxS64    s64TimeStamp;                               /**< Timestamp of the last modification */
   orxU32    u32Flags;                                   /**< File attributes (see list of availables flags) */
-  orxU32    u32TimeStamp;                               /**< Timestamp of the last modification */
-  orxU32    u32Size;                                    /**< File's size (in bytes) */
   orxHANDLE hInternal;                                  /**< Internal use handle */
   orxCHAR   zName[256];                                 /**< File's name */
   orxCHAR   zPattern[256];                              /**< Search pattern */
@@ -146,23 +146,29 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(const void *_pDataToWr
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
- * @param[in] _s32Position          Position (from start) where to set the indicator
+ * @param[in] _s64Position          Position (from start) where to set the indicator
  * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
  * @return Absolute cursor positionif succesful, -1 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL         orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position, orxSEEK_OFFSET_WHENCE _eWhence);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_OFFSET_WHENCE _eWhence);
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file
  * @return Returns the current position of the file indicator, -1 is invalid
  */
-extern orxDLLAPI orxS32 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile);
 
 /** Retrieves a file's size
  * @param[in] _pstFile              Concerned file
  * @return Returns the length of the file, <= 0 if invalid
  */
-extern orxDLLAPI orxS32 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
+
+/** Retrieves a file's last modification time
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the time of the last modification
+ */
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetTime(const orxFILE *_pstFile);
 
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer on the file descriptor

@@ -2581,14 +2581,17 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)
     {
-      orxS32  s32Size;
+      orxS64  s64Size;
       orxU8  *pu8Buffer;
 
       /* Gets its size */
-      s32Size = orxResource_GetSize(hResource);
+      s64Size = orxResource_GetSize(hResource);
+
+      /* Checks */
+      orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
 
       /* Allocates buffer */
-      pu8Buffer = (orxU8 *)orxMemory_Allocate(s32Size, orxMEMORY_TYPE_MAIN);
+      pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
 
       /* Success? */
       if(pu8Buffer != orxNULL)
@@ -2597,10 +2600,10 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
         GLuint          uiWidth, uiHeight, uiBytesPerPixel;
 
         /* Loads data from resource */
-        s32Size = orxResource_Read(hResource, s32Size, pu8Buffer);
+        s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
 
         /* Loads image */
-        pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, s32Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+        pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
 
         /* Valid? */
         if(pu8ImageData != NULL)

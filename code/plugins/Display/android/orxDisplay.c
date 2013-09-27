@@ -2480,13 +2480,13 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
     if(hResource != orxHANDLE_UNDEFINED)
     {
       PVRTexHeader  stHeader;
-      orxS32        s32FileSize;
+      orxS64        s64FileSize;
 
       /* Gets file size */
-      s32FileSize = orxResource_GetSize(hResource);
+      s64FileSize = orxResource_GetSize(hResource);
 
       /* Loads PVR header from file */
-      if((s32FileSize >= (orxS32)sizeof(PVRTexHeader))
+      if((s64FileSize >= (orxS64)sizeof(PVRTexHeader))
       && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader) > 0))
       {
         /* Swaps the header's bytes to host format */
@@ -2625,7 +2625,7 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
             au8ImageBuffer = (orxU8 *)orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
             /* Reads the image content (mimaps will be ignored) */
-            if(orxResource_Read(hResource, u32DataSize, au8ImageBuffer) > 0)
+            if(orxResource_Read(hResource, (orxS64)u32DataSize, au8ImageBuffer) > 0)
             {
               /* Allocates bitmap */
               pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -2935,7 +2935,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
         au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
         /* Reads the image content (mimaps will be ignored) */
-        if(orxResource_Read(hResource, u32DataSize, au8ImageBuffer) > 0)
+        if(orxResource_Read(hResource, (orxS64)u32DataSize, au8ImageBuffer) > 0)
         {
           /* Allocates bitmap */
           pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3029,7 +3029,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)
     {
-      KTX_header    stHeader;
+      KTX_header stHeader;
 
       /* Loads KTX header from file */
       if(orxResource_Read(hResource, sizeof(KTX_header), &stHeader) > 0)
@@ -3079,7 +3079,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
           au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSizeRounded, orxMEMORY_TYPE_MAIN);
 
           /* Reads the image content (mimaps will be ignored) */
-          if(orxResource_Read(hResource, u32DataSizeRounded, au8ImageBuffer) > 0)
+          if(orxResource_Read(hResource, (orxS64)u32DataSizeRounded, au8ImageBuffer) > 0)
           {
             /* Allocates bitmap */
             pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3184,14 +3184,17 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
       /* Success? */
       if(hResource != orxHANDLE_UNDEFINED)
       {
-        orxS32  s32Size;
+        orxS64  s64Size;
         orxU8  *pu8Buffer;
 
         /* Gets its size */
-        s32Size = orxResource_GetSize(hResource);
+        s64Size = orxResource_GetSize(hResource);
+
+        /* Checks */
+        orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
 
         /* Allocates buffer */
-        pu8Buffer = (orxU8 *)orxMemory_Allocate(s32Size, orxMEMORY_TYPE_MAIN);
+        pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
 
         /* Success? */
         if(pu8Buffer != orxNULL)
@@ -3200,10 +3203,10 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
           GLuint          uiWidth, uiHeight, uiBytesPerPixel;
 
           /* Loads data from resource */
-          s32Size = orxResource_Read(hResource, s32Size, pu8Buffer);
+          s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
 
           /* Loads image */
-          pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, s32Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+          pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
 
           /* Valid? */
           if(pu8ImageData != NULL)

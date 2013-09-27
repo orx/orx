@@ -239,7 +239,7 @@ sf_count_t orxSoundSystem_OpenAL_Resource_Seek(sf_count_t _s64Offset, int _iWhen
   hResource = (orxHANDLE)_pData;
 
   /* Updates result */
-  s64Result = (sf_count_t)orxResource_Seek(hResource, (orxS32)_s64Offset, (orxSEEK_OFFSET_WHENCE)_iWhence);
+  s64Result = (sf_count_t)orxResource_Seek(hResource, (orxS64)_s64Offset, (orxSEEK_OFFSET_WHENCE)_iWhence);
 
   /* Done! */
   return s64Result;
@@ -269,7 +269,7 @@ sf_count_t orxSoundSystem_OpenAL_Resource_Read(void *_pBuffer, sf_count_t _s64Si
   hResource = (orxHANDLE)_pData;
 
   /* Updates result */
-  s64Result = (sf_count_t)orxResource_Read(hResource, (orxS32)_s64Size, _pBuffer);
+  s64Result = (sf_count_t)orxResource_Read(hResource, _s64Size, _pBuffer);
 
   /* Done! */
   return s64Result;

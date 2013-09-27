@@ -1708,13 +1708,13 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
   if(hResource != orxHANDLE_UNDEFINED)
   {
     PVRTexHeader  stHeader;
-    orxS32        s32FileSize;
+    orxS64        s64FileSize;
 
     /* Gets file size */
-    s32FileSize = orxResource_GetSize(hResource);
+    s64FileSize = orxResource_GetSize(hResource);
 
     /* Loads PVR header from file */
-    if((s32FileSize >= (orxS32)sizeof(PVRTexHeader))
+    if((s64FileSize >= (orxS64)sizeof(PVRTexHeader))
     && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader) > 0))
     {
       /* Swaps the header's bytes to host format */
@@ -1853,7 +1853,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
           au8ImageBuffer = orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
           /* Reads the image content (mimaps will be ignored) */
-          if(orxResource_Read(hResource, u32DataSize * sizeof(orxU8), au8ImageBuffer) > 0)
+          if(orxResource_Read(hResource, (orxS64)(u32DataSize * sizeof(orxU8)), au8ImageBuffer) > 0)
           {
             /* Allocates bitmap */
             pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3420,17 +3420,17 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       /* Valid? */
       if(hResource != orxHANDLE_UNDEFINED)
       {
-        orxS32    s32Size;
+        orxS64    s64Size;
         orxU8    *au8Buffer;
 
         /* Gets file size */
-        s32Size = orxResource_GetSize(hResource);
+        s64Size = orxResource_GetSize(hResource);
 
         /* Checks */
-        orxASSERT(s32Size > 0);
+        orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
 
         /* Allocates buffer */
-        au8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s32Size, orxMEMORY_TYPE_MAIN);
+        au8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
 
         /* Success? */
         if(au8Buffer != orxNULL)
@@ -3439,10 +3439,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
           UIImage  *poSourceImage;
 
           /* Loads data from resource */
-          orxResource_Read(hResource, s32Size, au8Buffer);
+          orxResource_Read(hResource, s64Size, au8Buffer);
 
           /* Creates NSData from memory */
-          poData = [[NSData alloc] initWithBytesNoCopy:au8Buffer length:s32Size freeWhenDone: NO];
+          poData = [[NSData alloc] initWithBytesNoCopy:au8Buffer length:(NSUInteger)s64Size freeWhenDone: NO];
 
           /* Gets image from it */
           poSourceImage = [[UIImage alloc] initWithData:poData];
