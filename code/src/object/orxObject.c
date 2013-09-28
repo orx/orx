@@ -3126,6 +3126,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Stores its owner */
             orxStructure_SetOwner(pstChild, pstResult);
 
+            /* Doesn't have a group? */
+            if(orxObject_GetGroupID(pstChild) == sstObject.u32DefaultGroupID)
+            {
+              /* Transfers group ID */
+              orxObject_SetGroupID(pstChild, pstResult->u32GroupID);
+            }
+
             /* Has last child? */
             if(pstLastChild != orxNULL)
             {
