@@ -74,6 +74,7 @@
 #define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          8                               /**< Open resource info bank size */
 
 #define orxRESOURCE_KU32_WATCH_ITERATION_LIMIT        2                               /**< Watch iteration limit */
+#define orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED     -1                              /**< Watch time uninitialized */
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
 
@@ -251,10 +252,16 @@ static orxS64 orxFASTCALL orxResource_File_GetTime(const orxSTRING _zLocation)
   orxS64        s64Result;
 
   /* Gets file info */
-  orxFile_GetInfo(_zLocation, &stFileInfo);
-
-  /* Updates result */
-  s64Result = stFileInfo.s64TimeStamp;
+  if(orxFile_GetInfo(_zLocation, &stFileInfo) != orxSTATUS_FAILURE)
+  {
+    /* Updates result */
+    s64Result = stFileInfo.s64TimeStamp;
+  }
+  else
+  {
+    /* Updates result */
+    s64Result = 0;
+  }
 
   /* Done! */
   return s64Result;
@@ -457,10 +464,29 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
           if(s64Time != pstResourceInfo->s64Time)
           {
             /* Not first inspection? */
-            if(pstResourceInfo->s64Time != 0)
+            if(pstResourceInfo->s64Time != orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED)
             {
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+              /* Removed? */
+              if(s64Time == 0)
+              {
+                /* Sends event */
+                orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+              }
+              else
+              {
+                /* Added? */
+                if(pstResourceInfo->s64Time == 0)
+                {
+                  /* Sends event */
+                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_ADD, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+                }
+                /* Updated */
+                else
+                {
+                  /* Sends event */
+                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+                }
+              }
             }
 
             /* Stores its new modification time */
@@ -1171,7 +1197,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
 
               /* Inits it */
               pstResourceInfo->pstTypeInfo  = &(pstType->stInfo);
-              pstResourceInfo->s64Time      = 0;
+              pstResourceInfo->s64Time      = orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED;
               pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_MAIN);
               orxASSERT(pstResourceInfo->zLocation != orxNULL);
               orxString_Print(pstResourceInfo->zLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
@@ -1393,7 +1419,7 @@ const orxRESOURCE_TYPE_INFO *orxFASTCALL orxResource_GetType(const orxSTRING _zL
 
 /** Gets the time of last modification of a resource
  * @param[in] _zLocation        Location of the concerned resource
- * @return Time of last modification, in seconds, since epoch
+ * @return Time of last modification, in seconds since epoch, if found, 0 otherwise
  */
 orxS64 orxFASTCALL orxResource_GetTime(const orxSTRING _zLocation)
 {

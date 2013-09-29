@@ -81,6 +81,8 @@ typedef struct __orxRESOURCE_TYPE_INFO_t
 typedef enum __orxRESOURCE_EVENT_t
 {
   orxRESOURCE_EVENT_UPDATE = 0,
+  orxRESOURCE_EVENT_ADD,
+  orxRESOURCE_EVENT_REMOVE,
 
   orxRESOURCE_EVENT_NUMBER,
 
@@ -179,7 +181,7 @@ extern orxDLLAPI const orxRESOURCE_TYPE_INFO *orxFASTCALL orxResource_GetType(co
 
 /** Gets the time of last modification of a resource
  * @param[in] _zLocation        Location of the concerned resource
- * @return Time of last modification, in seconds, since epoch
+ * @return Time of last modification, in seconds since epoch, if found, 0 otherwise
  */
 extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetTime(const orxSTRING _zLocation);
 
