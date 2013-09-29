@@ -1021,8 +1021,8 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   /* Has watch list? */
   if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
   {
-    /* Adds watch timer */
-    orxClock_AddGlobalTimer(orxResource_Watch, orxRESOURCE_KF_WATCH_DELAY, -1, orxNULL);
+    /* Registers watch callbacks */
+    orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
 
     /* Updates flags */
     orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH, orxRESOURCE_KU32_STATIC_FLAG_NONE);
