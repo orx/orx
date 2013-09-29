@@ -37,6 +37,7 @@ var searchData=
   ['orxplugin_5ffunction_5fbase_5fid_5fsoundsystem',['orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM',['../group__orx_plugin.html#ga52930271b93c1ba2aaad22d49a86117b',1,'orxPlugin_SoundSystem.h']]],
   ['orxplugin_5ffunction_5fid',['orxPLUGIN_FUNCTION_ID',['../group__orx_plugin.html#ga0f3199fcbbf71824559b9414d5daf6eb',1,'orxPluginType.h']]],
   ['orxrender_5fevent',['orxRENDER_EVENT',['../group__orx_render.html#gaf2df6db5cb046f3e29a234036b54c684',1,'orxRender.h']]],
+  ['orxresource_5fevent',['orxRESOURCE_EVENT',['../group__orx_resource.html#gadab8aee947370c4c45dd39916c4b56f2',1,'orxResource.h']]],
   ['orxseek_5foffset_5fwhence',['orxSEEK_OFFSET_WHENCE',['../group__orx_type.html#ga08815b27cb2e29018e06e3d847116915',1,'orxType.h']]],
   ['orxshader_5fevent',['orxSHADER_EVENT',['../group__orx_shader.html#ga90de18f99b8a163957f646599ffeeaca',1,'orxShader.h']]],
   ['orxshader_5fparam_5ftype',['orxSHADER_PARAM_TYPE',['../group__orx_shader.html#ga94512a95acea8de509b7346199eab3a1',1,'orxShader.h']]],

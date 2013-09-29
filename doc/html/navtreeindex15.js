@@ -1,5 +1,15 @@
 var NAVTREEINDEX15 =
 {
+"orx_math_8h.html#ga2e178157311b82151b8fe28a688387d6":[3,0,0,7,1,26],
+"orx_math_8h.html#ga34841c1401b13000e35b536cb54eb147":[3,0,0,7,1,34],
+"orx_math_8h.html#ga37162287085116728a64a2371791caec":[3,0,0,7,1,41],
+"orx_math_8h.html#ga37c3776ab28f243435203d961d10ba80":[3,0,0,7,1,22],
+"orx_math_8h.html#ga4208979e4d431cd5b81e97d8578d7018":[3,0,0,7,1,14],
+"orx_math_8h.html#ga4365ce1ca146ac561389bdfce1a70f76":[3,0,0,7,1,12],
+"orx_math_8h.html#ga47e3df68849bbe4ab409bc55ac8476f5":[3,0,0,7,1,3],
+"orx_math_8h.html#ga4bb456702b44d73ca808a4ab750302e3":[3,0,0,7,1,20],
+"orx_math_8h.html#ga4fdf762bf779e366f214dd1d2755ff59":[3,0,0,7,1,28],
+"orx_math_8h.html#ga5dcf474bebde8bd833a7898ec46cbf5b":[3,0,0,7,1,15],
 "orx_math_8h.html#ga62b8906f87f3de3e9af21a0b2e23f7b2":[3,0,0,7,1,38],
 "orx_math_8h.html#ga64408608eb30bc6e18c476f7719ee5f7":[3,0,0,7,1,6],
 "orx_math_8h.html#ga6c72f24ba256435c70dafea7e34b94e3":[3,0,0,7,1,32],
@@ -239,15 +249,5 @@ var NAVTREEINDEX15 =
 "orx_object_8h.html#gaad49507bbbad9f7c36a074e823198c34":[3,0,0,9,3,39],
 "orx_object_8h.html#gaaf2d8057e02da6ff38cd18031cd95c6f":[3,0,0,9,3,40],
 "orx_object_8h.html#gab083b96e18a265a0c7eb80df771adc5b":[3,0,0,9,3,112],
-"orx_object_8h.html#gab08d846f3d0dfad0ff5ec1dddfc45e98":[3,0,0,9,3,58],
-"orx_object_8h.html#gab0961cefa231821769f9288de56e5ded":[3,0,0,9,3,31],
-"orx_object_8h.html#gab166e5f18d9efe2cb4c63a955cc6d4af":[3,0,0,9,3,80],
-"orx_object_8h.html#gab2c1240e6bec4a872ea25570d1ecf0ca":[3,0,0,9,3,23],
-"orx_object_8h.html#gab328cf54c18b2efaf17e1b30704fc2bc":[3,0,0,9,3,30],
-"orx_object_8h.html#gab5eff9d2aa5ca146cc0e615a4179a6d3":[3,0,0,9,3,97],
-"orx_object_8h.html#gab7984329410d2c204fa54a2fc39d72bb":[3,0,0,9,3,109],
-"orx_object_8h.html#gaba6395e153b0e580949380fc06112acc":[3,0,0,9,3,93],
-"orx_object_8h.html#gabdcaee14a478db176742221062c1f495":[3,0,0,9,3,101],
-"orx_object_8h.html#gac05ae1a614b249d4f193e70bbb2e588c":[3,0,0,9,3,87],
-"orx_object_8h.html#gac43eb6ebd857fd938f9c0c92bbcd6a74":[3,0,0,9,3,15]
+"orx_object_8h.html#gab08d846f3d0dfad0ff5ec1dddfc45e98":[3,0,0,9,3,58]
 };

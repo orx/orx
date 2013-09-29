@@ -106,6 +106,7 @@ $(document).ready(function(){initNavTree('group__orx_resource.html','');});
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OrxResource</div>  </div>
@@ -128,6 +129,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:ga18128a057b971793cbabc173df5c8f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa3cffb91b6113ecf2d961889745e2a46"><td class="memItemLeft" align="right" valign="top">typedef orxS64(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaa3cffb91b6113ecf2d961889745e2a46">orxRESOURCE_FUNCTION_GET_SIZE</a> )(orxHANDLE _hResource)</td></tr>
 <tr class="separator:gaa3cffb91b6113ecf2d961889745e2a46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafba47518917df22b923d7fdfe712dd73"><td class="memItemLeft" align="right" valign="top">typedef orxS64(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gafba47518917df22b923d7fdfe712dd73">orxRESOURCE_FUNCTION_GET_TIME</a> )(const orxSTRING _zLocation)</td></tr>
+<tr class="separator:gafba47518917df22b923d7fdfe712dd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga08b89d67f9c4efd3b1f0bd588416e8c3"><td class="memItemLeft" align="right" valign="top">typedef const orxSTRING(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga08b89d67f9c4efd3b1f0bd588416e8c3">orxRESOURCE_FUNCTION_LOCATE</a> )(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)</td></tr>
 <tr class="separator:ga08b89d67f9c4efd3b1f0bd588416e8c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga60dbafd2606258fbd20ea66c1947e013"><td class="memItemLeft" align="right" valign="top">typedef orxHANDLE(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga60dbafd2606258fbd20ea66c1947e013">orxRESOURCE_FUNCTION_OPEN</a> )(const orxSTRING _zLocation, orxBOOL _bEraseMode)</td></tr>
@@ -140,6 +143,19 @@ Typedefs</h2></td></tr>
 <tr class="separator:ga4ad4377c2af029158e647b9c7b84543d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga948a63dd429cab823a250654fc7f88eb"><td class="memItemLeft" align="right" valign="top">typedef orxS64(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga948a63dd429cab823a250654fc7f88eb">orxRESOURCE_FUNCTION_WRITE</a> )(orxHANDLE _hResource, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
 <tr class="separator:ga948a63dd429cab823a250654fc7f88eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:gadab8aee947370c4c45dd39916c4b56f2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gadab8aee947370c4c45dd39916c4b56f2">orxRESOURCE_EVENT</a> { <br/>
+&#160;&#160;<a class="el" href="group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2ae6d48e721b088b48d350819b523d99b2">orxRESOURCE_EVENT_UPDATE</a> = 0, 
+<a class="el" href="group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2ac4933a561118f7662b246765128decb8">orxRESOURCE_EVENT_ADD</a>, 
+<a class="el" href="group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2ab30668fd5f2f7578a9efb4d9e170dda4">orxRESOURCE_EVENT_REMOVE</a>, 
+<a class="el" href="group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2aaaa4aa0b91704bdd0607fa7f54005cb4">orxRESOURCE_EVENT_NUMBER</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2a7ee1d130bd666d86316c756c72edd884">orxRESOURCE_EVENT_NONE</a> = orxENUM_NONE
+<br/>
+ }</td></tr>
+<tr class="separator:gadab8aee947370c4c45dd39916c4b56f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -169,6 +185,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gae578724bc22c4f38fee60e3faf0db8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga49e89a8530fc6af9dc992eb810c67f09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga49e89a8530fc6af9dc992eb810c67f09">orxResource_GetStorageCounter</a> (const orxSTRING _zGroup)</td></tr>
 <tr class="separator:ga49e89a8530fc6af9dc992eb810c67f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga80ce68bed4694865fb8c383697c11408"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga80ce68bed4694865fb8c383697c11408">orxResource_GetTime</a> (const orxSTRING _zLocation)</td></tr>
+<tr class="separator:ga80ce68bed4694865fb8c383697c11408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7bcd55bc36a9760dae50fb847dc31b20"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <br class="typebreak"/>
 <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html">orxRESOURCE_TYPE_INFO</a> <br class="typebreak"/>
 *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga7bcd55bc36a9760dae50fb847dc31b20">orxResource_GetType</a> (const orxSTRING _zLocation)</td></tr>
@@ -230,7 +248,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00054">54</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00055">55</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -244,7 +262,21 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00055">55</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00056">56</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gafba47518917df22b923d7fdfe712dd73"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxS64(orxFASTCALL * orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zLocation)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00053">53</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -273,7 +305,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00053">53</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00054">54</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -287,7 +319,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00058">58</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00059">59</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -301,7 +333,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00056">56</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00057">57</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -315,7 +347,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00057">57</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00058">58</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -329,7 +361,37 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00059">59</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00060">60</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="gadab8aee947370c4c45dd39916c4b56f2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_resource.html#gadab8aee947370c4c45dd39916c4b56f2">orxRESOURCE_EVENT</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Event enum </p>
+<dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="ggadab8aee947370c4c45dd39916c4b56f2ae6d48e721b088b48d350819b523d99b2"></a>orxRESOURCE_EVENT_UPDATE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggadab8aee947370c4c45dd39916c4b56f2ac4933a561118f7662b246765128decb8"></a>orxRESOURCE_EVENT_ADD</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggadab8aee947370c4c45dd39916c4b56f2ab30668fd5f2f7578a9efb4d9e170dda4"></a>orxRESOURCE_EVENT_REMOVE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggadab8aee947370c4c45dd39916c4b56f2aaaa4aa0b91704bdd0607fa7f54005cb4"></a>orxRESOURCE_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggadab8aee947370c4c45dd39916c4b56f2a7ee1d130bd666d86316c756c72edd884"></a>orxRESOURCE_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dd>
+</dl>
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00081">81</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -619,6 +681,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of storages for this resource group </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga80ce68bed4694865fb8c383697c11408"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL orxResource_GetTime </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zLocation</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the time of last modification of a resource </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zLocation</td><td>Location of the concerned resource </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Time of last modification, in seconds since epoch, if found, 0 otherwise </dd></dl>
 
 </div>
 </div>

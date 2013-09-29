@@ -1,5 +1,15 @@
 var NAVTREEINDEX16 =
 {
+"orx_object_8h.html#gab0961cefa231821769f9288de56e5ded":[3,0,0,9,3,31],
+"orx_object_8h.html#gab166e5f18d9efe2cb4c63a955cc6d4af":[3,0,0,9,3,80],
+"orx_object_8h.html#gab2c1240e6bec4a872ea25570d1ecf0ca":[3,0,0,9,3,23],
+"orx_object_8h.html#gab328cf54c18b2efaf17e1b30704fc2bc":[3,0,0,9,3,30],
+"orx_object_8h.html#gab5eff9d2aa5ca146cc0e615a4179a6d3":[3,0,0,9,3,97],
+"orx_object_8h.html#gab7984329410d2c204fa54a2fc39d72bb":[3,0,0,9,3,109],
+"orx_object_8h.html#gaba6395e153b0e580949380fc06112acc":[3,0,0,9,3,93],
+"orx_object_8h.html#gabdcaee14a478db176742221062c1f495":[3,0,0,9,3,101],
+"orx_object_8h.html#gac05ae1a614b249d4f193e70bbb2e588c":[3,0,0,9,3,87],
+"orx_object_8h.html#gac43eb6ebd857fd938f9c0c92bbcd6a74":[3,0,0,9,3,15],
 "orx_object_8h.html#gac60bf5ef1a20705b64ada55597510665":[3,0,0,9,3,47],
 "orx_object_8h.html#gac69b4f8092aed5ac984d87990086a61d":[3,0,0,9,3,92],
 "orx_object_8h.html#gac815dc87de5d4e260adc1f1cb7ef532d":[3,0,0,9,3,35],
@@ -239,15 +249,5 @@ var NAVTREEINDEX16 =
 "orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8":[3,0,0,11,0,4,0,7],
 "orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9":[3,0,0,11,0,4,0,6],
 "orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faac0796031a5c898079f75ebd3089d9458":[3,0,0,11,0,4,0,5],
-"orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f":[3,0,0,11,0,4,0,0],
-"orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335":[3,0,0,11,0,4,0,1],
-"orx_plugin___keyboard_8h_source.html":[3,0,0,11,0,4],
-"orx_plugin___mouse_8h.html":[3,0,0,11,0,5],
-"orx_plugin___mouse_8h.html#ga3c6ff2e6204f4529b348ab5f74b6cc3d":[3,0,0,11,0,5,0],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da081dde4592a702bec680d79024e45d89":[3,0,0,11,0,5,0,0],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da306951297060a4dcbe1b8de59bcb00ba":[3,0,0,11,0,5,0,8],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da4b3696274cc5072ee56b1712174916f2":[3,0,0,11,0,5,0,9],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da71cb8b8411f4707bd4d87b220681e5a1":[3,0,0,11,0,5,0,2],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da95aabe314b23bdcff7513fdd835e544f":[3,0,0,11,0,5,0,3],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3daae5c84483acc727d4d20c82cae8495ac":[3,0,0,11,0,5,0,4]
+"orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f":[3,0,0,11,0,4,0,0]
 };
