@@ -50,6 +50,7 @@
 /** Resource handlers
  */
 typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zLocation);
 typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation, orxBOOL _bEraseMode);
 typedef void            (orxFASTCALL *orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _hResource);
@@ -62,17 +63,30 @@ typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hRe
  */
 typedef struct __orxRESOURCE_TYPE_INFO_t
 {
-  const orxSTRING               zTag;
-  orxRESOURCE_FUNCTION_LOCATE   pfnLocate;
-  orxRESOURCE_FUNCTION_OPEN     pfnOpen;
-  orxRESOURCE_FUNCTION_CLOSE    pfnClose;
-  orxRESOURCE_FUNCTION_GET_SIZE pfnGetSize;
-  orxRESOURCE_FUNCTION_SEEK     pfnSeek;
-  orxRESOURCE_FUNCTION_TELL     pfnTell;
-  orxRESOURCE_FUNCTION_READ     pfnRead;
-  orxRESOURCE_FUNCTION_WRITE    pfnWrite;
+  const orxSTRING               zTag;                     /**< Unique tag, mandatory */
+  orxRESOURCE_FUNCTION_LOCATE   pfnLocate;                /**< Locate function, mandatory */
+  orxRESOURCE_FUNCTION_GET_TIME pfnGetTime;               /**< GetTime function, optional, for hotload support */
+  orxRESOURCE_FUNCTION_OPEN     pfnOpen;                  /**< Open function, mandatory */
+  orxRESOURCE_FUNCTION_CLOSE    pfnClose;                 /**< Close function, mandatory */
+  orxRESOURCE_FUNCTION_GET_SIZE pfnGetSize;               /**< GetSize function, mandatory */
+  orxRESOURCE_FUNCTION_SEEK     pfnSeek;                  /**< Seek function, mandatory */
+  orxRESOURCE_FUNCTION_TELL     pfnTell;                  /**< Tell function, mandatory */
+  orxRESOURCE_FUNCTION_READ     pfnRead;                  /**< Read function, mandatory */
+  orxRESOURCE_FUNCTION_WRITE    pfnWrite;                 /**< Write function, optional, for write support */
 
 } orxRESOURCE_TYPE_INFO;
+
+/** Event enum
+ */
+typedef enum __orxRESOURCE_EVENT_t
+{
+  orxRESOURCE_EVENT_UPDATE = 0,
+
+  orxRESOURCE_EVENT_NUMBER,
+
+  orxRESOURCE_EVENT_NONE = orxENUM_NONE
+
+} orxRESOURCE_EVENT;
 
 
 /** Resource module setup
@@ -162,6 +176,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetName(co
  */
 extern orxDLLAPI const orxRESOURCE_TYPE_INFO *orxFASTCALL orxResource_GetType(const orxSTRING _zLocation);
 
+
+/** Gets the time of last modification of a resource
+ * @param[in] _zLocation        Location of the concerned resource
+ * @return Time of last modification, in seconds, since epoch
+ */
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetTime(const orxSTRING _zLocation);
 
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open

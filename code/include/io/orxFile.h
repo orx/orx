@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxFile
- * 
+ *
  * File / file system module
  * Module that handles file / file system access
  *
@@ -42,7 +42,7 @@
 
 #ifndef _orxFILE_H_
 #define _orxFILE_H_
- 
+
 #include "orxInclude.h"
 
 
@@ -164,9 +164,9 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
 
-/** Retrieves a file's last modification time
+/** Retrieves a file's time of last modification
  * @param[in] _pstFile              Concerned file
- * @return Returns the time of the last modification
+ * @return Returns the time of the last modification, in seconds, since epoch
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetTime(const orxFILE *_pstFile);
 

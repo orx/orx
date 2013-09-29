@@ -826,9 +826,9 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   return s64Result;
 }
 
-/** Retrieves a file's last modification time
+/** Retrieves a file's time of last modification
  * @param[in] _pstFile              Concerned file
- * @return Returns the time of the last modification
+ * @return Returns the time of the last modification, in seconds, since epoch
  */
 orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
 {

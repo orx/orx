@@ -33,7 +33,10 @@
 #include "core/orxResource.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxClock.h"
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "debug/orxProfiler.h"
 #include "io/orxFile.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
@@ -53,6 +56,7 @@
 
 #define orxRESOURCE_KU32_STATIC_FLAG_READY            0x00000001                      /**< Ready flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED    0x00000002                      /**< Config loaded flag */
+#define orxRESOURCE_KU32_STATIC_FLAG_WATCH            0x00000004                      /**< Watch flag */
 
 #define orxRESOURCE_KU32_STATIC_MASK_ALL              0xFFFFFFFF                      /**< All mask */
 
@@ -69,6 +73,8 @@
 
 #define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          8                               /**< Open resource info bank size */
 
+#define orxRESOURCE_KF_WATCH_DELAY                    orxFLOAT_1                      /**< Watch timer delay */
+
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
 
 #define orxRESOURCE_KZ_TYPE_TAG_FILE                  "file"                          /**< Resource type file tag */
@@ -76,6 +82,7 @@
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
 
 #define orxRESOURCE_KZ_CONFIG_SECTION                 "Resource"                      /**< Config section name */
+#define orxRESOURCE_KZ_CONFIG_WATCH_LIST              "WatchList"                     /**< Config watch list */
 
 
 /***************************************************************************
@@ -113,12 +120,13 @@ typedef struct __orxRESOURCE_STORAGE_t
 
 /** Resource info
  */
-typedef struct __orxRESOURCE_LOCATION_t
+typedef struct __orxRESOURCE_INFO_t
 {
   orxSTRING                 zLocation;                                                /**< Resource literal location */
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
+  orxS64                    s64Time;                                                  /**< Resource modification time */
 
-} orxRESOURCE_LOCATION;
+} orxRESOURCE_INFO;
 
 /** Open resource info
  */
@@ -217,6 +225,9 @@ static void orxFASTCALL orxResource_File_Close(orxHANDLE _hResource)
 
   /* Closes it */
   orxFile_Close(pstFile);
+
+  /* Done! */
+  return;
 }
 
 static orxS64 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
@@ -229,6 +240,21 @@ static orxS64 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
 
   /* Updates result */
   s64Result = orxFile_GetSize(pstFile);
+
+  /* Done! */
+  return s64Result;
+}
+
+static orxS64 orxFASTCALL orxResource_File_GetTime(const orxSTRING _zLocation)
+{
+  orxFILE_INFO  stFileInfo;
+  orxS64        s64Result;
+
+  /* Gets file info */
+  orxFile_GetInfo(_zLocation, &stFileInfo);
+
+  /* Updates result */
+  s64Result = stFileInfo.s64TimeStamp;
 
   /* Done! */
   return s64Result;
@@ -296,9 +322,9 @@ static orxS64 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS64 _s
 
 static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
 {
-  orxRESOURCE_LOCATION *pstResourceInfo;
-  orxU32                u32Key;
-  orxHANDLE             hIterator;
+  orxRESOURCE_INFO *pstResourceInfo;
+  orxU32            u32Key;
+  orxHANDLE         hIterator;
 
   /* For all cached resources */
   for(hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
@@ -317,6 +343,9 @@ static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
 
   /* Deletes storage bank */
   orxBank_Delete(_pstGroup->pstStorageBank);
+
+  /* Done! */
+  return;
 }
 
 static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxU32 _u32GroupID)
@@ -366,6 +395,73 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxU32 _u32GroupID)
   return pstResult;
 }
 
+static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  orxU32 i, u32Counter;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Watch");
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+  /* For all watched groups */
+  for(i = 0, u32Counter = orxConfig_GetListCounter(orxRESOURCE_KZ_CONFIG_WATCH_LIST);
+      i < u32Counter;
+      i++)
+  {
+    orxRESOURCE_GROUP  *pstGroup;
+    orxU32              u32GroupID;
+
+    /* Gets its ID */
+    u32GroupID = orxString_ToCRC(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, i));
+
+    /* Looks for it in registered groups */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+
+    /* Found? */
+    if(pstGroup != orxNULL)
+    {
+      orxHANDLE         hIterator;
+      orxU32            u32Key;
+      orxRESOURCE_INFO *pstResourceInfo;
+
+      /* For all its cached resources */
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+      {
+        /* Does its type support time? */
+        if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
+        {
+          orxS64 s64Time;
+
+          /* Gets its modification time */
+          s64Time = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1);
+
+          /* Has been modified since last access? */
+          if(s64Time != pstResourceInfo->s64Time)
+          {
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+
+            /* Stores its new modification time */
+            pstResourceInfo->s64Time = s64Time;
+          }
+        }
+      }
+    }
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Pops config section */
+  orxConfig_PopSection();
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -379,7 +475,9 @@ void orxFASTCALL orxResource_Setup()
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_STRING);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_PROFILER);
 
   /* Done! */
   return;
@@ -399,7 +497,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
     orxMemory_Zero(&sstResource, sizeof(orxRESOURCE_STATIC));
 
     /* Creates resource info bank */
-    sstResource.pstResourceInfoBank = orxBank_Create(orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE, sizeof(orxRESOURCE_LOCATION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstResource.pstResourceInfoBank = orxBank_Create(orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE, sizeof(orxRESOURCE_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Creates open resource info bank */
     sstResource.pstOpenInfoBank     = orxBank_Create(orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE, sizeof(orxRESOURCE_OPEN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -415,12 +513,13 @@ orxSTATUS orxFASTCALL orxResource_Init()
     {
       orxRESOURCE_TYPE_INFO stTypeInfo;
 
-      /* Inits Flags */
+      /* Inits flags */
       sstResource.u32Flags = orxRESOURCE_KU32_STATIC_FLAG_READY;
 
       /* Inits file type */
       stTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_FILE;
       stTypeInfo.pfnLocate  = orxResource_File_Locate;
+      stTypeInfo.pfnGetTime = orxResource_File_GetTime;
       stTypeInfo.pfnOpen    = orxResource_File_Open;
       stTypeInfo.pfnClose   = orxResource_File_Close;
       stTypeInfo.pfnGetSize = orxResource_File_GetSize;
@@ -432,16 +531,16 @@ orxSTATUS orxFASTCALL orxResource_Init()
       /* Registers it */
       eResult = orxResource_RegisterType(&stTypeInfo);
 
-      #ifdef __orxANDROID__
-
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Registers APK type */
-        eResult = eResult & orxAndroid_RegisterAPKResource();
-      }
+#ifdef __orxANDROID__
 
-      #endif /* __orxANDROID__ */
+        /* Registers APK type */
+        eResult = orxAndroid_RegisterAPKResource();
+
+#endif /* __orxANDROID__ */
+      }
     }
 
     /* Failed? */
@@ -919,6 +1018,16 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
     orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
   }
 
+  /* Has watch list? */
+  if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
+  {
+    /* Adds watch timer */
+    orxClock_AddGlobalTimer(orxResource_Watch, orxRESOURCE_KF_WATCH_DELAY, -1, orxNULL);
+
+    /* Updates flags */
+    orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+  }
+
   /* Pops config section */
   orxConfig_PopSection();
 
@@ -971,14 +1080,14 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     /* Success? */
     if(pstGroup != orxNULL)
     {
-      orxU32                u32Key;
-      orxRESOURCE_LOCATION *pstResourceInfo;
+      orxU32            u32Key;
+      orxRESOURCE_INFO *pstResourceInfo;
 
       /* Gets resource info key */
       u32Key = orxString_ToCRC(_zName);
 
       /* Gets resource info from cache */
-      pstResourceInfo = (orxRESOURCE_LOCATION *)orxHashTable_Get(pstGroup->pstCacheTable, u32Key);
+      pstResourceInfo = (orxRESOURCE_INFO *)orxHashTable_Get(pstGroup->pstCacheTable, u32Key);
 
       /* Found? */
       if(pstResourceInfo != orxNULL)
@@ -1010,10 +1119,10 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
             /* Success? */
             if(zLocation != orxNULL)
             {
-              orxRESOURCE_LOCATION *pstResourceInfo;
+              orxRESOURCE_INFO *pstResourceInfo;
 
               /* Allocates resource info */
-              pstResourceInfo = (orxRESOURCE_LOCATION *)orxBank_Allocate(sstResource.pstResourceInfoBank);
+              pstResourceInfo = (orxRESOURCE_INFO *)orxBank_Allocate(sstResource.pstResourceInfoBank);
 
               /* Checks */
               orxASSERT(pstResourceInfo != orxNULL);
@@ -1029,6 +1138,22 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
 
               /* Updates result */
               zResult = pstResourceInfo->zLocation;
+
+              /* Watches resources? */
+              if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH))
+              {
+                /* Does type support time? */
+                if(pstType->stInfo.pfnGetTime != orxNULL)
+                {
+                  /* Stores its time */
+                  pstResourceInfo->s64Time = pstType->stInfo.pfnGetTime(zLocation);
+                }
+              }
+              else
+              {
+                /* Clears time */
+                pstResourceInfo->s64Time = 0;
+              }
 
               break;
             }
@@ -1237,6 +1362,56 @@ const orxRESOURCE_TYPE_INFO *orxFASTCALL orxResource_GetType(const orxSTRING _zL
 
   /* Done! */
   return pstResult;
+}
+
+/** Gets the time of last modification of a resource
+ * @param[in] _zLocation        Location of the concerned resource
+ * @return Time of last modification, in seconds, since epoch
+ */
+orxS64 orxFASTCALL orxResource_GetTime(const orxSTRING _zLocation)
+{
+  orxS64 s64Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zLocation != orxNULL);
+
+  /* Valid? */
+  if(*_zLocation != orxCHAR_NULL)
+  {
+    orxRESOURCE_TYPE *pstType;
+    orxU32            u32TagLength;
+
+    /* For all registered types */
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        pstType != orxNULL;
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
+    {
+      /* Gets tag length */
+      u32TagLength = orxString_GetLength(pstType->stInfo.zTag);
+
+      /* Match tag? */
+      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
+      {
+        /* Selects it */
+        break;
+      }
+    }
+
+    /* Found? */
+    if(pstType != orxNULL)
+    {
+      /* Supports time? */
+      if(pstType->stInfo.pfnGetTime != orxNULL)
+      {
+        /* Updates result */
+        s64Result = pstType->stInfo.pfnGetTime(_zLocation + u32TagLength + 1);
+      }
+    }
+  }
+
+  /* Done! */
+  return s64Result;
 }
 
 /** Opens the resource at the given location
@@ -1633,7 +1808,7 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
   {
     orxHANDLE         hIterator;
     orxU32            u32Key;
-    orxRESOURCE_LOCATION *pstResourceInfo;
+    orxRESOURCE_INFO *pstResourceInfo;
 
     /* For all cached resources */
     for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);

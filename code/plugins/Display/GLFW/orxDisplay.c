@@ -162,6 +162,7 @@ struct __orxBITMAP_t
   orxFLOAT                  fRecRealWidth, fRecRealHeight;
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
+  const orxSTRING           zLocation;
 };
 
 /** Internal texture info structure
@@ -1668,6 +1669,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+    pstBitmap->zLocation      = orxSTRING_EMPTY;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -2672,6 +2674,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
             pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
             pstResult->u32DataSize    = pstResult->u32RealWidth * pstResult->u32RealHeight * 4 * sizeof(orxU8);
             pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+            pstResult->zLocation      = zResourceName;
             orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
             orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
 
