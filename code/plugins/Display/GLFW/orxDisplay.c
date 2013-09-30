@@ -685,6 +685,178 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   return;
 }
 
+static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitmap)
+{
+  orxHANDLE hResource;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Opens resource */
+  hResource = orxResource_Open(_pstBitmap->zLocation, orxFALSE);
+
+  /* Success? */
+  if(hResource != orxHANDLE_UNDEFINED)
+  {
+    orxS64  s64Size;
+    orxU8  *pu8Buffer;
+
+    /* Gets its size */
+    s64Size = orxResource_GetSize(hResource);
+
+    /* Checks */
+    orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
+
+    /* Allocates buffer */
+    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
+
+    /* Success? */
+    if(pu8Buffer != orxNULL)
+    {
+      unsigned char  *pu8ImageData;
+      GLuint          uiWidth, uiHeight, uiBytesPerPixel;
+
+      /* Loads data from resource */
+      s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
+
+      /* Loads image */
+      pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+
+      /* Valid? */
+      if(pu8ImageData != NULL)
+      {
+        GLuint  uiRealWidth, uiRealHeight;
+        orxU8  *pu8ImageBuffer;
+
+        /* Has NPOT texture support? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+        {
+          /* Uses image buffer */
+          pu8ImageBuffer = pu8ImageData;
+
+          /* Gets real size */
+          uiRealWidth   = uiWidth;
+          uiRealHeight  = uiHeight;
+        }
+        else
+        {
+          GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
+
+          /* Gets real size */
+          uiRealWidth   = (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
+          uiRealHeight  = (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
+
+          /* Allocates buffer */
+          pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+          /* Checks */
+          orxASSERT(pu8ImageBuffer != orxNULL);
+
+          /* Gets line sizes */
+          uiLineSize      = uiWidth * 4 * sizeof(orxU8);
+          uiRealLineSize  = uiRealWidth * 4 * sizeof(orxU8);
+
+          /* Clears padding */
+          orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
+
+          /* For all lines */
+          for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
+              i < uiHeight;
+              i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
+          {
+            /* Copies data */
+            orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+
+            /* Adds padding */
+            orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+          }
+        }
+
+        /* Inits bitmap */
+        _pstBitmap->fWidth          = orxU2F(uiWidth);
+        _pstBitmap->fHeight         = orxU2F(uiHeight);
+        _pstBitmap->u32RealWidth    = (orxU32)uiRealWidth;
+        _pstBitmap->u32RealHeight   = (orxU32)uiRealHeight;
+        _pstBitmap->u32Depth        = 32;
+        _pstBitmap->fRecRealWidth   = orxFLOAT_1 / orxU2F(_pstBitmap->u32RealWidth);
+        _pstBitmap->fRecRealHeight  = orxFLOAT_1 / orxU2F(_pstBitmap->u32RealHeight);
+        _pstBitmap->u32DataSize     = _pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
+        orxVector_Copy(&(_pstBitmap->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(_pstBitmap->stClip.vBR), _pstBitmap->fWidth, _pstBitmap->fHeight, orxFLOAT_0);
+
+        /* Tracks video memory */
+        orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxTRUE);
+
+        /* Creates new texture */
+        glGenTextures(1, &_pstBitmap->uiTexture);
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (_pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (_pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+
+        /* Restores previous texture */
+        glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+        glASSERT();
+
+        /* Frees image buffer */
+        if(pu8ImageBuffer != pu8ImageData)
+        {
+          orxMemory_Free(pu8ImageBuffer);
+        }
+
+        /* Deletes surface */
+        SOIL_free_image_data(pu8ImageData);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+
+      /* Frees buffer */
+      orxMemory_Free(pu8Buffer);
+    }
+
+    /* Closes resource */
+    orxResource_Close(hResource);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
+{
+  orxS32 i;
+
+  /* For all bound bitmaps */
+  for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Is deleted bitmap? */
+    if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
+    {
+      /* Resets it */
+      sstDisplay.apstBoundBitmapList[i] = orxNULL;
+      sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+    }
+  }
+
+  /* Tracks video memory */
+  orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxFALSE);
+
+  /* Deletes its texture */
+  glDeleteTextures(1, &(_pstBitmap->uiTexture));
+  glASSERT();
+
+  /* Done! */
+  return;
+}
+
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
   static const orxCHAR *szVertexShaderSource =
@@ -1206,22 +1378,72 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
  */
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEvent)
 {
-  /* Render stop? */
-  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Depending on event type */
+  switch(_pstEvent->eType)
   {
-    /* Draws remaining items */
-    orxDisplay_GLFW_DrawArrays();
+    case orxEVENT_TYPE_RENDER:
+    {
+      /* Render stop? */
+      if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+      {
+        /* Draws remaining items */
+        orxDisplay_GLFW_DrawArrays();
 
-    /* Flushes pending commands */
-    glFlush();
-    glASSERT();
+        /* Flushes pending commands */
+        glFlush();
+        glASSERT();
 
-    /* Polls events */
-    glfwPollEvents();
+        /* Polls events */
+        glfwPollEvents();
+      }
+
+      break;
+    }
+
+    case orxEVENT_TYPE_RESOURCE:
+    {
+      /* Add/update resource? */
+      if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+      {
+        orxBITMAP      *pstBitmap;
+        const orxSTRING zLocation;
+
+        /* Gets resource location */
+        zLocation = (const orxSTRING)_pstEvent->hSender;
+
+        /* For all bitmaps */
+        for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL);
+            pstBitmap != orxNULL;
+            pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
+        {
+          /* Match? */
+          if(pstBitmap->zLocation == zLocation)
+          {
+            /* Checks */
+            orxASSERT(pstBitmap != sstDisplay.pstScreen);
+
+            /* Re-loads its data */
+            orxDisplay_GLFW_DeleteBitmapData(pstBitmap);
+            orxDisplay_GLFW_LoadBitmapData(pstBitmap);
+
+            break;
+          }
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
   }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreenBitmap()
@@ -1616,26 +1838,8 @@ void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    orxS32 i;
-
-    /* For all bound bitmaps */
-    for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
-    {
-      /* Is deleted bitmap? */
-      if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
-      {
-        /* Resets it */
-        sstDisplay.apstBoundBitmapList[i] = orxNULL;
-        sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
-      }
-    }
-
-    /* Tracks video memory */
-    orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxFALSE);
-
-    /* Deletes its texture */
-    glDeleteTextures(1, &(_pstBitmap->uiTexture));
-    glASSERT();
+    /* Deletes its data */
+    orxDisplay_GLFW_DeleteBitmapData(_pstBitmap);
 
     /* Deletes it */
     orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
@@ -2575,149 +2779,25 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
   /* Success? */
   if(zResourceName != orxNULL)
   {
-    orxHANDLE hResource;
+    /* Allocates bitmap */
+    pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-    /* Opens it */
-    hResource = orxResource_Open(zResourceName, orxFALSE);
-
-    /* Success? */
-    if(hResource != orxHANDLE_UNDEFINED)
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      orxS64  s64Size;
-      orxU8  *pu8Buffer;
+      /* Inits it */
+      pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
+      pstResult->zLocation  = zResourceName;
 
-      /* Gets its size */
-      s64Size = orxResource_GetSize(hResource);
-
-      /* Checks */
-      orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
-
-      /* Allocates buffer */
-      pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
-
-      /* Success? */
-      if(pu8Buffer != orxNULL)
+      /* Loads its data */
+      if(orxDisplay_GLFW_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
       {
-        unsigned char  *pu8ImageData;
-        GLuint          uiWidth, uiHeight, uiBytesPerPixel;
+        /* Deletes it */
+        orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
 
-        /* Loads data from resource */
-        s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
-
-        /* Loads image */
-        pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
-
-        /* Valid? */
-        if(pu8ImageData != NULL)
-        {
-          /* Allocates bitmap */
-          pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
-
-          /* Valid? */
-          if(pstResult != orxNULL)
-          {
-            GLuint  uiRealWidth, uiRealHeight;
-            orxU8  *pu8ImageBuffer;
-
-            /* Has NPOT texture support? */
-            if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-            {
-              /* Uses image buffer */
-              pu8ImageBuffer = pu8ImageData;
-
-              /* Gets real size */
-              uiRealWidth   = uiWidth;
-              uiRealHeight  = uiHeight;
-            }
-            else
-            {
-              GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
-
-              /* Gets real size */
-              uiRealWidth   = (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
-              uiRealHeight  = (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
-
-              /* Allocates buffer */
-              pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
-
-              /* Checks */
-              orxASSERT(pu8ImageBuffer != orxNULL);
-
-              /* Gets line sizes */
-              uiLineSize      = uiWidth * 4 * sizeof(orxU8);
-              uiRealLineSize  = uiRealWidth * 4 * sizeof(orxU8);
-
-              /* Clears padding */
-              orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
-
-              /* For all lines */
-              for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
-                  i < uiHeight;
-                  i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
-              {
-                /* Copies data */
-                orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
-
-                /* Adds padding */
-                orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
-              }
-            }
-
-            /* Inits bitmap */
-            pstResult->bSmoothing     = sstDisplay.bDefaultSmoothing;
-            pstResult->fWidth         = orxU2F(uiWidth);
-            pstResult->fHeight        = orxU2F(uiHeight);
-            pstResult->u32RealWidth   = (orxU32)uiRealWidth;
-            pstResult->u32RealHeight  = (orxU32)uiRealHeight;
-            pstResult->u32Depth       = 32;
-            pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
-            pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
-            pstResult->u32DataSize    = pstResult->u32RealWidth * pstResult->u32RealHeight * 4 * sizeof(orxU8);
-            pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-            pstResult->zLocation      = zResourceName;
-            orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
-            orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
-
-            /* Tracks video memory */
-            orxMEMORY_TRACK(VIDEO, pstResult->u32DataSize, orxTRUE);
-
-            /* Creates new texture */
-            glGenTextures(1, &pstResult->uiTexture);
-            glASSERT();
-            glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
-            glASSERT();
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstResult->u32RealWidth, (GLsizei)pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-            glASSERT();
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-            glASSERT();
-
-            /* Restores previous texture */
-            glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
-            glASSERT();
-
-            /* Frees image buffer */
-            if(pu8ImageBuffer != pu8ImageData)
-            {
-              orxMemory_Free(pu8ImageBuffer);
-            }
-          }
-
-          /* Deletes surface */
-          SOIL_free_image_data(pu8ImageData);
-        }
-
-        /* Frees buffer */
-        orxMemory_Free(pu8Buffer);
+        /* Updates result */
+        pstResult = orxNULL;
       }
-
-      /* Closes resource */
-      orxResource_Close(hResource);
     }
   }
 
@@ -3777,24 +3857,44 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             /* Gets clock */
             pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
-            /* Valid? */
-            if(pstClock != orxNULL)
+            /* Registers update function */
+            if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
             {
-              /* Registers update function */
-              eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER);
+              /* Adds resource event handler */
+              orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxDisplay_GLFW_EventHandler);
+
+              /* Shows mouse cursor */
+              glfwEnable(GLFW_MOUSE_CURSOR);
+
+              /* Ignores resize event for now */
+              sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+
+              /* Registers resize callback */
+              glfwSetWindowSizeCallback(orxDisplay_GLFW_ResizeCallback);
+
+              /* Reactivates resize event */
+              sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
             }
+            else
+            {
+              /* Terminates GLFW */
+              glfwTerminate();
 
-            /* Shows mouse cursor */
-            glfwEnable(GLFW_MOUSE_CURSOR);
+              /* Frees screen bitmap */
+              orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
 
-            /* Ignores resize event for now */
-            sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+              /* Deletes banks */
+              orxBank_Delete(sstDisplay.pstBitmapBank);
+              sstDisplay.pstBitmapBank = orxNULL;
+              orxBank_Delete(sstDisplay.pstShaderBank);
+              sstDisplay.pstShaderBank = orxNULL;
 
-            /* Registers resize callback */
-            glfwSetWindowSizeCallback(orxDisplay_GLFW_ResizeCallback);
+              /* Updates status */
+              orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-            /* Reactivates resize event */
-            sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to register GLFW/display event handler.");
+            }
           }
           else
           {
@@ -3874,7 +3974,8 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
     /* Exits from GLFW */
     glfwTerminate();
 
-    /* Removes event handler */
+    /* Removes event handlers */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxDisplay_GLFW_EventHandler);
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
