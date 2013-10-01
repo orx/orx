@@ -36,6 +36,7 @@
 #include "memory/orxMemory.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "display/orxFont.h"
 #include "display/orxGraphic.h"
 #include "display/orxText.h"
@@ -88,7 +89,6 @@ typedef struct __orxSHADER_PARAM_VALUE_t
   orxLINKLIST_NODE    stNode;                             /**< Linklist node : 12 */
   orxSHADER_PARAM    *pstParam;                           /**< Param definition : 16 */
   orxS32              s32ID;                              /**< Param ID : 20 */
-
   orxS32              s32Index;                           /**< Param index : 24 */
 
   union
@@ -111,6 +111,7 @@ struct __orxSHADER_t
   orxHANDLE       hData;                                  /**< Compiled shader data : 48 */
   orxBANK        *pstParamValueBank;                      /**< Parameter value bank : 52 */
   orxBANK        *pstParamBank;                           /**< Parameter bank : 56 */
+  orxU32          u32CodeID;                              /**< Code ID : 60 */
 };
 
 /** Static structure
@@ -135,6 +136,292 @@ static orxSHADER_STATIC sstShader;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Processes config data
+ */
+static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
+{
+  orxS32                  i, s32Number;
+  const orxSTRING         zCode;
+  orxSHADER_PARAM_VALUE  *pstParamValue;
+  orxSTATUS               eResult = orxSTATUS_FAILURE;
+
+  /* Pushes its section */
+  orxConfig_PushSection(_pstShader->zReference);
+
+  /* Use custom param? */
+  if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE)
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_NONE, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM);
+  }
+
+  /* For all current parameter values */
+  for(pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamValueList));
+      pstParamValue != orxNULL;
+      pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
+  {
+    /* Is a texture? */
+    if(pstParamValue->pstParam->eType == orxSHADER_PARAM_TYPE_TEXTURE)
+    {
+      /* Is valid? */
+      if(pstParamValue->pstValue != orxNULL)
+      {
+        /* Deletes it */
+        orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
+      }
+    }
+  }
+
+  /* Clears param banks */
+  orxBank_Clear(_pstShader->pstParamValueBank);
+  orxBank_Clear(_pstShader->pstParamBank);
+
+  /* For all parameters */
+  for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
+  {
+    orxBOOL         bIsList;
+    const orxSTRING zParamName;
+
+    /* Gets its name */
+    zParamName = orxConfig_GetListString(orxSHADER_KZ_CONFIG_PARAM_LIST, i);
+
+    /* Updates list status */
+    bIsList = ((orxConfig_IsList(zParamName) != orxFALSE) && (orxConfig_IsInheritedValue(zParamName) == orxFALSE));
+
+    /* Valid? */
+    if((zParamName != orxNULL) && (zParamName != orxSTRING_EMPTY))
+    {
+      orxS8   as8ValueBuffer[256 * sizeof(orxVECTOR)];
+      orxS32  s32ParamListCounter;
+
+      /* Gets param's list counter */
+      s32ParamListCounter = (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0;
+
+      /* Is a vector? */
+      if(orxConfig_GetVector(zParamName, &(((orxVECTOR *)as8ValueBuffer)[0])) != orxNULL)
+      {
+        /* Is a list? */
+        if(bIsList != orxFALSE)
+        {
+          orxS32 j;
+
+          /* For all defined entries */
+          for(j = 0; j < s32ParamListCounter; j++)
+          {
+            /* Stores its vector */
+            orxConfig_GetListVector(zParamName, j, &(((orxVECTOR *)as8ValueBuffer)[j]));
+          }
+        }
+
+        /* Adds vector param */
+        orxShader_AddVectorParam(_pstShader, zParamName, s32ParamListCounter, (orxVECTOR *)as8ValueBuffer);
+      }
+      else
+      {
+        const orxSTRING zValue;
+
+        /* Gets its literal value */
+        zValue = orxConfig_GetString(zParamName);
+
+        /* Is a float? */
+        if(orxString_ToFloat(zValue, (orxFLOAT *)as8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Is a list? */
+          if(bIsList != orxFALSE)
+          {
+            orxS32 j;
+
+            /* For all defined entries */
+            for(j = 0; j < s32ParamListCounter; j++)
+            {
+              /* Stores its vector */
+              ((orxFLOAT *)as8ValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
+            }
+          }
+
+          /* Adds float param */
+          orxShader_AddFloatParam(_pstShader, zParamName, s32ParamListCounter, (orxFLOAT *)as8ValueBuffer);
+        }
+        else
+        {
+          orxBOOL bIsTime = orxFALSE;
+
+          /* Is a list? */
+          if(bIsList != orxFALSE)
+          {
+            orxS32 j;
+
+            /* For all defined entries */
+            for(j = 0; j < s32ParamListCounter; j++)
+            {
+              /* Stores its vector */
+              zValue = orxConfig_GetListString(zParamName, j);
+
+              /* Valid? */
+              if(zValue != orxSTRING_EMPTY)
+              {
+                /* Is time? */
+                if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
+                {
+                  /* Marks as time */
+                  bIsTime = orxTRUE;
+
+                  /* Is not using custom param? */
+                  if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
+                  {
+                    /* Forces it */
+                    orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+
+                    /* Logs message */
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", _pstShader->zReference, _pstShader, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
+                  }
+
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't use array for time parameter. <%s> will be declared as a regular variable.", _pstShader->zReference, _pstShader, zParamName);
+
+                  break;
+                }
+
+                /* Creates texture */
+                ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue);
+              }
+              else
+              {
+                /* No texture */
+                ((orxTEXTURE **)as8ValueBuffer)[j] = orxNULL;
+              }
+            }
+          }
+          else
+          {
+            /* Valid? */
+            if(zValue != orxSTRING_EMPTY)
+            {
+              /* Is time? */
+              if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
+              {
+                /* Marks as time */
+                bIsTime = orxTRUE;
+
+                /* Is not using custom param? */
+                if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
+                {
+                  /* Forces it */
+                  orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", _pstShader->zReference, _pstShader, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
+                }
+              }
+
+              /* Creates texture */
+              ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue);
+            }
+            else
+            {
+              /* No texture */
+              ((orxTEXTURE **)as8ValueBuffer)[0] = orxNULL;
+            }
+          }
+
+          /* Is time? */
+          if(bIsTime != orxFALSE)
+          {
+            /* Adds time param */
+            orxShader_AddTimeParam(_pstShader, zParamName);
+          }
+          else
+          {
+            /* Adds texture param */
+            orxShader_AddTextureParam(_pstShader, zParamName, s32ParamListCounter, (const orxTEXTURE **)as8ValueBuffer);
+          }
+        }
+      }
+    }
+  }
+
+  /* Gets code */
+  zCode = orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE);
+
+  /* Valid? */
+  if(zCode != orxSTRING_EMPTY)
+  {
+    /* Sets it */
+    if((eResult = orxShader_CompileCode(_pstShader, zCode)) != orxSTATUS_FAILURE)
+    {
+      /* Stores code ID */
+      _pstShader->u32CodeID = orxString_ToCRC(zCode);
+    }
+    else
+    {
+      _pstShader->u32CodeID = 0;
+    }
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return eResult;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+    orxSHADER                  *pstShader;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* For all shaders */
+    for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
+        pstShader != orxNULL;
+        pstShader = orxSHADER(orxStructure_GetNext(pstShader)))
+    {
+      /* Has reference? */
+      if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
+      {
+        const orxSTRING zOrigin;
+
+        /* Gets its origin */
+        zOrigin = orxConfig_GetOrigin(pstShader->zReference);
+
+        /* Matches? */
+        if(orxString_Compare(zOrigin, pstPayload->zName) == 0)
+        {
+          /* Pushes its config section */
+          orxConfig_PushSection(pstShader->zReference);
+
+          /* Did code change? */
+          if(pstShader->u32CodeID != orxString_ToCRC(orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE)))
+          {
+            /* Re-processes its config data */
+            orxShader_ProcessConfigData(pstShader);
+          }
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
 
 /** Deletes all the shaders
  */
@@ -173,6 +460,7 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);
@@ -201,6 +489,13 @@ orxSTATUS orxFASTCALL orxShader_Init()
     {
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(SHADER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Adds event handler */
+        orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxShader_EventHandler);
+      }
     }
     else
     {
@@ -235,6 +530,9 @@ void orxFASTCALL orxShader_Exit()
   /* Initialized? */
   if(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxShader_EventHandler);
+
     /* Deletes shader list */
     orxShader_DeleteAll();
 
@@ -281,7 +579,8 @@ orxSHADER *orxFASTCALL orxShader_Create()
     && (pstResult->pstParamBank != orxNULL))
     {
       /* Clears its data */
-      pstResult->hData = orxHANDLE_UNDEFINED;
+      pstResult->hData      = orxHANDLE_UNDEFINED;
+      pstResult->zReference = orxSTRING_EMPTY;
 
       /* Inits flags */
       orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_ENABLED, orxSHADER_KU32_MASK_ALL);
@@ -306,7 +605,7 @@ orxSHADER *orxFASTCALL orxShader_Create()
 
       /* Deletes shader */
       orxStructure_Delete(pstResult);
-      
+
       /* Updates result */
       pstResult = orxNULL;
     }
@@ -361,195 +660,11 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
         /* Adds it to reference table */
         if(orxHashTable_Add(sstShader.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
-          orxS32          i, s32Number;
-          const orxSTRING zCode;
-
           /* Stores its reference */
           pstResult->zReference = orxConfig_GetCurrentSection();
 
           /* Protects it */
           orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
-          /* Use custom param? */
-          if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE)
-          {
-            /* Updates status */
-            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
-          }
-
-          /* For all parameters */
-          for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
-          {
-            orxBOOL         bIsList;
-            const orxSTRING zParamName;
-
-            /* Gets its name */
-            zParamName = orxConfig_GetListString(orxSHADER_KZ_CONFIG_PARAM_LIST, i);
-
-            /* Updates list status */
-            bIsList = ((orxConfig_IsList(zParamName) != orxFALSE) && (orxConfig_IsInheritedValue(zParamName) == orxFALSE));
-
-            /* Valid? */
-            if((zParamName != orxNULL) && (zParamName != orxSTRING_EMPTY))
-            {
-              orxS8   as8ValueBuffer[256 * sizeof(orxVECTOR)];
-              orxS32  s32ParamListCounter;
-
-              /* Gets param's list counter */
-              s32ParamListCounter = (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0;
-
-              /* Is a vector? */
-              if(orxConfig_GetVector(zParamName, &(((orxVECTOR *)as8ValueBuffer)[0])) != orxNULL)
-              {
-                /* Is a list? */
-                if(bIsList != orxFALSE)
-                {
-                  orxS32 j;
-
-                  /* For all defined entries */
-                  for(j = 0; j < s32ParamListCounter; j++)
-                  {
-                    /* Stores its vector */
-                    orxConfig_GetListVector(zParamName, j, &(((orxVECTOR *)as8ValueBuffer)[j]));
-                  }
-                }
-
-                /* Adds vector param */
-                orxShader_AddVectorParam(pstResult, zParamName, s32ParamListCounter, (orxVECTOR *)as8ValueBuffer);
-              }
-              else
-              {
-                const orxSTRING zValue;
-
-                /* Gets its literal value */
-                zValue = orxConfig_GetString(zParamName);
-
-                /* Is a float? */
-                if(orxString_ToFloat(zValue, (orxFLOAT *)as8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
-                {
-                  /* Is a list? */
-                  if(bIsList != orxFALSE)
-                  {
-                    orxS32 j;
-
-                    /* For all defined entries */
-                    for(j = 0; j < s32ParamListCounter; j++)
-                    {
-                      /* Stores its vector */
-                      ((orxFLOAT *)as8ValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
-                    }
-                  }
-
-                  /* Adds float param */
-                  orxShader_AddFloatParam(pstResult, zParamName, s32ParamListCounter, (orxFLOAT *)as8ValueBuffer);
-                }
-                else
-                {
-                  orxBOOL bIsTime = orxFALSE;
-
-                  /* Is a list? */
-                  if(bIsList != orxFALSE)
-                  {
-                    orxS32 j;
-
-                    /* For all defined entries */
-                    for(j = 0; j < s32ParamListCounter; j++)
-                    {
-                      /* Stores its vector */
-                      zValue = orxConfig_GetListString(zParamName, j);
-
-                      /* Valid? */
-                      if(zValue != orxSTRING_EMPTY)
-                      {
-                        /* Is time? */
-                        if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
-                        {
-                          /* Marks as time */
-                          bIsTime = orxTRUE;
-  
-                          /* Is not using custom param? */
-                          if(!orxStructure_TestFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
-                          {
-                            /* Forces it */
-                            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
-
-                            /* Logs message */
-                            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", pstResult->zReference, pstResult, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
-                          }
-
-                          /* Logs message */
-                          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't use array for time parameter. <%s> will be declared as a regular variable.", pstResult->zReference, pstResult, zParamName);
-
-                          break;
-                        }
-
-                        /* Creates texture */
-                        ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue);
-                      }
-                      else
-                      {
-                        /* No texture */
-                        ((orxTEXTURE **)as8ValueBuffer)[j] = orxNULL;
-                      }
-                    }
-                  }
-                  else
-                  {
-                    /* Valid? */
-                    if(zValue != orxSTRING_EMPTY)
-                    {
-                      /* Is time? */
-                      if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
-                      {
-                        /* Marks as time */
-                        bIsTime = orxTRUE;
-
-                        /* Is not using custom param? */
-                        if(!orxStructure_TestFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
-                        {
-                          /* Forces it */
-                          orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
-
-                          /* Logs message */
-                          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", pstResult->zReference, pstResult, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
-                        }
-                      }
-
-                      /* Creates texture */
-                      ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue);
-                    }
-                    else
-                    {
-                      /* No texture */
-                      ((orxTEXTURE **)as8ValueBuffer)[0] = orxNULL;
-                    }
-                  }
-
-                  /* Is time? */
-                  if(bIsTime != orxFALSE)
-                  {
-                    /* Adds time param */
-                    orxShader_AddTimeParam(pstResult, zParamName);
-                  }
-                  else
-                  {
-                    /* Adds texture param */
-                    orxShader_AddTextureParam(pstResult, zParamName, s32ParamListCounter, (const orxTEXTURE **)as8ValueBuffer);
-                  }
-                }
-              }
-            }
-          }
-
-          /* Gets code */
-          zCode = orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE);
-
-          /* Valid? */
-          if(zCode != orxSTRING_EMPTY)
-          {
-            /* Sets it */
-            orxShader_CompileCode(pstResult, zCode);
-          }
 
           /* Should keep it in cache? */
           if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
@@ -557,6 +672,9 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
             /* Increases its reference counter to keep it in cache table */
             orxStructure_IncreaseCounter(pstResult);
           }
+
+          /* Processes its data */
+          orxShader_ProcessConfigData(pstResult);
         }
         else
         {

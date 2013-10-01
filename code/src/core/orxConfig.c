@@ -278,6 +278,32 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    {
+      /* Reloads file */
+      orxConfig_Load(pstPayload->zName);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Computes a working config value (process random, inheritance and list attributes)
  * @param[in] _pstValue         Concerned config value
  */
@@ -2315,6 +2341,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       /* Pops section */
       orxConfig_PopSection();
 
+      /* Adds event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxConfig_EventHandler);
+
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
     }
@@ -2372,6 +2401,9 @@ void orxFASTCALL orxConfig_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxConfig_EventHandler);
+
     /* Unregisters commands */
     orxConfig_UnregisterCommands();
 
