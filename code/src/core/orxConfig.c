@@ -82,7 +82,6 @@
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          1024        /**< Default section bank size */
 #define orxCONFIG_KU32_STACK_BANK_SIZE            8           /**< Default stack bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            2048        /**< Default entry bank size */
-#define orxCONFIG_KU32_ORIGIN_BANK_SIZE           32          /**< Default origin bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          4           /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 
@@ -195,15 +194,6 @@ typedef struct __orxCONFIG_ENTRY_t
 
 } orxCONFIG_ENTRY;
 
-/** Config origin
- */
-typedef struct __orxCONFIG_ORIGIN_t
-{
-  orxU32            u32NameID;              /**< Name ID : 4 */
-  orxU32            u32RefCounter;          /**< Reference counter : 8 */
-
-} orxCONFIG_ORIGIN;
-
 /** Config section structure
  */
 typedef struct __orxCONFIG_SECTION_t
@@ -212,7 +202,7 @@ typedef struct __orxCONFIG_SECTION_t
   orxU32            u32ParentID;            /**< Parent ID : 16 */
   orxU32            u32ID;                  /**< Section ID : 20 */
   orxS32            s32ProtectionCounter;   /**< Protection counter : 24 */
-  orxCONFIG_ORIGIN *pstOrigin;              /**< Origin : 28 */
+  orxU32            u32OriginID;            /**< Origin : 28 */
   orxLINKLIST       stEntryList;            /**< Entry list : 40 */
 
 } orxCONFIG_SECTION;
@@ -235,7 +225,6 @@ typedef struct __orxCONFIG_STATIC_t
   orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
   orxBANK            *pstHistoryBank;       /**< History bank */
   orxBANK            *pstStackBank;         /**< Stack bank */
-  orxBANK            *pstOriginBank;        /**< Origin bank */
   orxLINKLIST         stStackList;          /**< Stack list */
   orxU32              u32Flags;             /**< Control flags */
   orxU32              u32LoadCounter;       /**< Load counter */
@@ -288,52 +277,6 @@ static struct __orxCONFIG_BOM_DEFINITION_t
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-static orxINLINE orxCONFIG_ORIGIN *orxConfig_CreateOrigin()
-{
-  orxCONFIG_ORIGIN *pstResult;
-
-  /* Finds current origin */
-  for(pstResult = (orxCONFIG_ORIGIN *)orxBank_GetNext(sstConfig.pstOriginBank, orxNULL);
-      (pstResult != orxNULL) && (pstResult->u32NameID != sstConfig.u32LoadFileID);
-      pstResult = (orxCONFIG_ORIGIN *)orxBank_GetNext(sstConfig.pstOriginBank, pstResult));
-
-  /* Not found? */
-  if(pstResult == orxNULL)
-  {
-    /* Creates it */
-    pstResult = (orxCONFIG_ORIGIN *)orxBank_Allocate(sstConfig.pstOriginBank);
-
-    /* Checks */
-    orxASSERT(pstResult != orxNULL);
-
-    /* Inits */
-    orxMemory_Zero(pstResult, sizeof(orxCONFIG_ORIGIN));
-    pstResult->u32NameID = sstConfig.u32LoadFileID;
-  }
-
-  /* Updates its counter */
-  pstResult->u32RefCounter++;
-
-  /* Done! */
-  return pstResult;
-}
-
-static orxINLINE void orxConfig_DeleteOrigin(orxCONFIG_ORIGIN *_pstOrigin)
-{
-  /* Updates its counter */
-  _pstOrigin->u32RefCounter--;
-
-  /* Last one? */
-  if(_pstOrigin->u32RefCounter == 0)
-  {
-    /* Deletes origin */
-    orxBank_Free(sstConfig.pstOriginBank, _pstOrigin);
-  }
-
-  /* Done! */
-  return;
-}
 
 /** Computes a working config value (process random, inheritance and list attributes)
  * @param[in] _pstValue         Concerned config value
@@ -957,7 +900,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxU32 _u32SectionID
     if(pstSection != orxNULL)
     {
       /* Creates origin */
-      pstSection->pstOrigin = orxConfig_CreateOrigin();
+      pstSection->u32OriginID = sstConfig.u32LoadFileID;
 
       /* Clears its entry list */
       orxMemory_Zero(&(pstSection->stEntryList), sizeof(orxLINKLIST));
@@ -1036,9 +979,6 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
       /* Deselects it */
       sstConfig.pstCurrentSection = orxNULL;
     }
-
-    /* Deletes its origin */
-    orxConfig_DeleteOrigin(_pstSection->pstOrigin);
 
     /* Removes it from list */
     orxLinkList_Remove(&(_pstSection->stNode));
@@ -1906,12 +1846,12 @@ orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectionName, 
 #ifdef __orxWINDOWS__
 
   /* Updates result */
-  bResult = ((_zKeyName != orxNULL) || (orxString_ICompare(_zFileName, orxConfig_GetSectionOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
+  bResult = ((_zKeyName != orxNULL) || (orxString_ICompare(_zFileName, orxConfig_GetOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
 
 #else /* __orxWINDOWS__ */
 
   /* Updates result */
-  bResult = ((_zKeyName != orxNULL) || (orxString_Compare(_zFileName, orxConfig_GetSectionOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
+  bResult = ((_zKeyName != orxNULL) || (orxString_Compare(_zFileName, orxConfig_GetOrigin(_zSectionName)) == 0)) ? orxTRUE : orxFALSE;
 
 #endif /* __orxWINDOWS__ */
 
@@ -1947,6 +1887,17 @@ void orxFASTCALL orxConfig_CommandReload(orxU32 _u32ArgNumber, const orxCOMMAND_
 {
   /* Updates result */
   _pstResult->bValue = (orxConfig_ReloadHistory() != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetOrigin
+ */
+void orxFASTCALL orxConfig_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxConfig_GetOrigin(_astArgList[0].zValue);
 
   /* Done! */
   return;
@@ -2181,6 +2132,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: Reload */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Reload, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
+  /* Command: GetOrigin */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetParent */
@@ -2237,6 +2190,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   /* Command: Reload */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Reload);
 
+  /* Command: GetOrigin */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetOrigin);
   /* Command: GetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
   /* Command: SetParent */
@@ -2328,9 +2283,8 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       orxConfig_SetEncryptionKey(orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY);
     }
 
-    /* Creates stack bank, origin bank, history bank & section bank/table */
+    /* Creates stack bank, history bank & section bank/table */
     sstConfig.pstStackBank    = orxBank_Create(orxCONFIG_KU32_STACK_BANK_SIZE, sizeof(orxCONFIG_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
-    sstConfig.pstOriginBank   = orxBank_Create(orxCONFIG_KU32_ORIGIN_BANK_SIZE, sizeof(orxCONFIG_ORIGIN), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxU32), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
@@ -2338,7 +2292,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
-    if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstOriginBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
+    if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
       /* Inits values */
       sstConfig.u32LoadFileID = 0;
@@ -2371,13 +2325,6 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       {
         /* Deletes it */
         orxBank_Delete(sstConfig.pstStackBank);
-      }
-
-      /* Should delete origin bank? */
-      if(sstConfig.pstOriginBank != orxNULL)
-      {
-        /* Deletes it */
-        orxBank_Delete(sstConfig.pstOriginBank);
       }
 
       /* Should delete history bank? */
@@ -2449,10 +2396,6 @@ void orxFASTCALL orxConfig_Exit()
     /* Deletes history bank */
     orxBank_Delete(sstConfig.pstHistoryBank);
     sstConfig.pstHistoryBank = orxNULL;
-
-    /* Deletes origin bank */
-    orxBank_Delete(sstConfig.pstOriginBank);
-    sstConfig.pstOriginBank = orxNULL;
 
     /* Deletes stack bank */
     orxBank_Delete(sstConfig.pstStackBank);
@@ -4295,7 +4238,7 @@ orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, or
  * @param[in] _zSectionName     Concerned section name
  * @return orxSTRING if found, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxConfig_GetSectionOrigin(const orxSTRING _zSectionName)
+const orxSTRING orxFASTCALL orxConfig_GetOrigin(const orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
   orxU32              u32ID;
@@ -4312,10 +4255,10 @@ const orxSTRING orxFASTCALL orxConfig_GetSectionOrigin(const orxSTRING _zSection
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ID);
 
   /* Valid? */
-  if(pstSection != orxNULL)
+  if((pstSection != orxNULL) && (pstSection->u32OriginID != 0))
   {
     /* Updates result */
-    zResult = orxString_GetFromID(pstSection->pstOrigin->u32NameID);
+    zResult = orxString_GetFromID(pstSection->u32OriginID);
   }
 
   /* Done! */
