@@ -180,6 +180,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memitem:ga747a224b80a0c047b3aa7d31794d4053"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga747a224b80a0c047b3aa7d31794d4053">orxConfig_GetMainFileName</a> ()</td></tr>
 <tr class="separator:ga747a224b80a0c047b3aa7d31794d4053"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4939987f72a20bb800f868eba8bee3d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga4939987f72a20bb800f868eba8bee3d2">orxConfig_GetOrigin</a> (const orxSTRING _zSectionName)</td></tr>
+<tr class="separator:ga4939987f72a20bb800f868eba8bee3d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9c67829801e603be067ba7d3bfa5127e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9c67829801e603be067ba7d3bfa5127e">orxConfig_GetParent</a> (const orxSTRING _zSectionName)</td></tr>
 <tr class="separator:ga9c67829801e603be067ba7d3bfa5127e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,9 +195,6 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga58f521eb01abf13b8663ebdf1fdd7a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5aeab0b7b913b93887aa1d701be9cac0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5aeab0b7b913b93887aa1d701be9cac0">orxConfig_GetSectionCounter</a> ()</td></tr>
 <tr class="separator:ga5aeab0b7b913b93887aa1d701be9cac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaafd0328311c70393415ea21f4f66f5a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaafd0328311c70393415ea21f4f66f5a5">orxConfig_GetSectionOrigin</a> (const orxSTRING _zSectionName)</td></tr>
-<tr class="separator:gaafd0328311c70393415ea21f4f66f5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5d903626427ae7fcb638130cadc09ec4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5d903626427ae7fcb638130cadc09ec4">orxConfig_GetString</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga5d903626427ae7fcb638130cadc09ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -910,6 +910,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga4939987f72a20bb800f868eba8bee3d2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetOrigin </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSectionName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets section origin (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTRING if found, orxSTRING_EMPTY otherwise </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga9c67829801e603be067ba7d3bfa5127e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1020,30 +1044,6 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Gets section counter </p>
 <dl class="section return"><dt>Returns</dt><dd>Section counter </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaafd0328311c70393415ea21f4f66f5a5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetSectionOrigin </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zSectionName</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets section origin (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section name </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTRING if found, orxSTRING_EMPTY otherwise </dd></dl>
 
 </div>
 </div>
