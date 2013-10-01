@@ -404,13 +404,17 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxU32 _u32GroupID)
 
 static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  static orxS32 ss32GroupIndex = 0;
-  orxS32        s32ListCounter;
-  orxU32        u32WatchCounter = 0;
-  orxBOOL       bAbort = orxFALSE;
+  static orxS32             ss32GroupIndex = 0;
+  orxS32                    s32ListCounter;
+  orxU32                    u32WatchCounter = 0;
+  orxBOOL                   bAbort = orxFALSE;
+  orxRESOURCE_EVENT_PAYLOAD stPayload;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxResource_Watch");
+
+  /* Clears payload */
+  orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
 
   /* Pushes config section */
   orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
@@ -437,6 +441,9 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
       orxU32            u32Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
+      /* Inits payload group */
+      stPayload.u32GroupID = u32GroupID;
+
       /* New group? */
       if(u32GroupID != su32LastGroupID)
       {
@@ -456,9 +463,13 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
         if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
         {
           orxS64 s64Time;
+          orxU32 u32NameOffset;
+
+          /* Gets name offset */
+          u32NameOffset = orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1;
 
           /* Gets its modification time */
-          s64Time = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1);
+          s64Time = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + u32NameOffset);
 
           /* Has been modified since last access? */
           if(s64Time != pstResourceInfo->s64Time)
@@ -466,11 +477,17 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
             /* Not first inspection? */
             if(pstResourceInfo->s64Time != orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED)
             {
+              /* Inits rest of payload */
+              stPayload.s64Time     = s64Time;
+              stPayload.zLocation   = pstResourceInfo->zLocation;
+              stPayload.zName       = pstResourceInfo->zLocation + u32NameOffset;
+              stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
+
               /* Removed? */
               if(s64Time == 0)
               {
                 /* Sends event */
-                orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+                orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, orxNULL, orxNULL, &stPayload);
               }
               else
               {
@@ -478,13 +495,13 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
                 if(pstResourceInfo->s64Time == 0)
                 {
                   /* Sends event */
-                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_ADD, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_ADD, orxNULL, orxNULL, &stPayload);
                 }
                 /* Updated */
                 else
                 {
                   /* Sends event */
-                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, (orxHANDLE)pstResourceInfo->zLocation, orxNULL, orxNULL);
+                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, orxNULL, orxNULL, &stPayload);
                 }
               }
             }

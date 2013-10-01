@@ -1407,11 +1407,11 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
       /* Add/update resource? */
       if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
       {
-        orxBITMAP      *pstBitmap;
-        const orxSTRING zLocation;
+        orxBITMAP                  *pstBitmap;
+        orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
 
-        /* Gets resource location */
-        zLocation = (const orxSTRING)_pstEvent->hSender;
+        /* Gets payload */
+        pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* For all bitmaps */
         for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL);
@@ -1419,7 +1419,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
             pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
         {
           /* Match? */
-          if(pstBitmap->zLocation == zLocation)
+          if(pstBitmap->zLocation == pstPayload->zLocation)
           {
             /* Checks */
             orxASSERT(pstBitmap != sstDisplay.pstScreen);

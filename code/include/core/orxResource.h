@@ -90,6 +90,18 @@ typedef enum __orxRESOURCE_EVENT_t
 
 } orxRESOURCE_EVENT;
 
+/** Event payload
+ */
+typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
+{
+  orxS64                        s64Time;                  /**< New resource time : 8 */
+  const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
+  const orxSTRING               zName;                    /**< Resource name : 16 / 24 */
+  const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 20 / 32 */
+  orxU32                        u32GroupID;               /**< Group ID : 24 / 36 */
+
+} orxRESOURCE_EVENT_PAYLOAD;
+
 
 /** Resource module setup
  */
