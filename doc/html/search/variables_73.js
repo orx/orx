@@ -4,6 +4,7 @@ var searchData=
   ['s32paramindex',['s32ParamIndex',['../structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#abbc2346a709d730ead0d9375a65e1b69',1,'orxSHADER_EVENT_PAYLOAD']]],
   ['s32value',['s32Value',['../structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d',1,'orxCOMMAND_VAR']]],
   ['s64size',['s64Size',['../structorx_f_i_l_e___i_n_f_o.html#a8b146b47d476608ee798cd126ffd62a4',1,'orxFILE_INFO']]],
+  ['s64time',['s64Time',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a3471d95d9572c67a0c466ba3a40dbb3b',1,'orxRESOURCE_EVENT_PAYLOAD']]],
   ['s64timestamp',['s64TimeStamp',['../structorx_f_i_l_e___i_n_f_o.html#ade13600f1c4d82dff5ea2a9b25cb786b',1,'orxFILE_INFO']]],
   ['s64value',['s64Value',['../structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc',1,'orxCOMMAND_VAR']]],
   ['sau32crctable',['sau32CRCTable',['../group__orx_string.html#ga73224238694302a058d934102e6a84d1',1,'orxString.h']]],

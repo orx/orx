@@ -1892,6 +1892,7 @@ var searchData=
   ['orxresource_5fevent_5fadd',['orxRESOURCE_EVENT_ADD',['../group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2ac4933a561118f7662b246765128decb8',1,'orxResource.h']]],
   ['orxresource_5fevent_5fnone',['orxRESOURCE_EVENT_NONE',['../group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2a7ee1d130bd666d86316c756c72edd884',1,'orxResource.h']]],
   ['orxresource_5fevent_5fnumber',['orxRESOURCE_EVENT_NUMBER',['../group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2aaaa4aa0b91704bdd0607fa7f54005cb4',1,'orxResource.h']]],
+  ['orxresource_5fevent_5fpayload',['orxRESOURCE_EVENT_PAYLOAD',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxresource_5fevent_5fremove',['orxRESOURCE_EVENT_REMOVE',['../group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2ab30668fd5f2f7578a9efb4d9e170dda4',1,'orxResource.h']]],
   ['orxresource_5fevent_5fupdate',['orxRESOURCE_EVENT_UPDATE',['../group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2ae6d48e721b088b48d350819b523d99b2',1,'orxResource.h']]],
   ['orxresource_5fexit',['orxResource_Exit',['../group__orx_resource.html#gaf3389231bc1f977bbf51c943ee8f8cce',1,'orxResource.h']]],

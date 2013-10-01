@@ -31,5 +31,6 @@ var searchData=
   ['pstsound',['pstSound',['../structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a4d5dfe7a57f3ddcf6be0c804e3d0f023',1,'orxSOUND_EVENT_PAYLOAD']]],
   ['psttimeline',['pstTimeLine',['../structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a662ae17a1541e6c892fe9561294d9156',1,'orxTIMELINE_EVENT_PAYLOAD']]],
   ['psttree',['pstTree',['../structorx_t_r_e_e___n_o_d_e.html#a233f841c3a069f150739d1a8ae25d990',1,'orxTREE_NODE']]],
+  ['psttypeinfo',['pstTypeInfo',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a38a4889cbe0abe36904f0552802f442a',1,'orxRESOURCE_EVENT_PAYLOAD']]],
   ['pstvalue',['pstValue',['../structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#adcccd8c1da60b3b7692de23cd44932f5',1,'orxSHADER_EVENT_PAYLOAD']]]
 ];
