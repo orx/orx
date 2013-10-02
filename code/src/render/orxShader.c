@@ -37,6 +37,7 @@
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
+#include "debug/orxProfiler.h"
 #include "display/orxFont.h"
 #include "display/orxGraphic.h"
 #include "display/orxText.h"
@@ -468,7 +469,9 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);
+  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_PROFILER);
 
+  /* Done! */
   return;
 }
 
@@ -1582,6 +1585,9 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShader);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxShader_CompileCode");
+
   /* Has a compiled shader? */
   if(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_COMPILED))
   {
@@ -1621,6 +1627,9 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
       eResult = orxSTATUS_FAILURE;
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;

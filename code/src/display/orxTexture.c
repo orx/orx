@@ -139,6 +139,9 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
           orxBITMAP      *pstBitmap;
           const orxSTRING zName;
 
+          /* Profiles */
+          orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+
           /* Gets current texture name */
           zName = orxTexture_GetName(pstTexture);
 
@@ -155,6 +158,9 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
             /* Updates flags */
             orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
           }
+
+          /* Profiles */
+          orxPROFILER_POP_MARKER();
         }
       }
     }
