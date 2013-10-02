@@ -304,7 +304,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iOS_OpenRecordingFile()
 
 static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
 {
-  const orxSTRING zResourceName;
+  const orxSTRING zResourceLocation;
   orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -312,15 +312,15 @@ static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilenam
   orxASSERT(_pstData != orxNULL);
 
   /* Gets resource name */
-  zResourceName = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
+  zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Success? */
-  if(zResourceName != orxNULL)
+  if(zResourceLocation != orxNULL)
   {
     orxHANDLE hResource;
 
     /* Opens resource */
-    hResource = orxResource_Open(zResourceName, orxFALSE);
+    hResource = orxResource_Open(zResourceLocation, orxFALSE);
 
     /* Success? */
     if(hResource != orxHANDLE_UNDEFINED)
@@ -354,7 +354,7 @@ static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilenam
         orxResource_Close(hResource);
       }
     }
-    
+
     /* Not a valid ogg vorbis? */
     if(eResult == orxSTATUS_FAILURE)
     {
@@ -362,7 +362,7 @@ static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilenam
       NSURL    *poURL;
 
       /* Gets NSString */
-      poName = [NSString stringWithCString:orxResource_GetName(zResourceName) encoding:NSUTF8StringEncoding];
+      poName = [NSString stringWithCString:orxResource_GetPath(zResourceLocation) encoding:NSUTF8StringEncoding];
 
       /* Gets associated URL */
       poURL = [NSURL fileURLWithPath:poName];

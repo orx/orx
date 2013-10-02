@@ -3373,22 +3373,22 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
 
 orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
 {
-  const orxSTRING zResourceName;
+  const orxSTRING zResourceLocation;
   orxBITMAP      *pstBitmap = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Locates resource */
-  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+  zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Success? */
-  if(zResourceName != orxNULL)
+  if(zResourceLocation != orxNULL)
   {
     NSString *poName;
 
     /* Gets NSString */
-    poName = [NSString stringWithCString:orxResource_GetName(zResourceName) encoding:NSASCIIStringEncoding];
+    poName = [NSString stringWithCString:orxResource_GetPath(zResourceLocation) encoding:NSASCIIStringEncoding];
 
     /* PVR texture? */
     if([[poName pathExtension] isEqualToString:@"pvr"] != NO)
@@ -3397,7 +3397,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       if([sstDisplay.poView bCompressedTextureSupport] != NO)
       {
         /* Loads texture */
-        pstBitmap = orxDisplay_iOS_LoadPVRBitmap(zResourceName);
+        pstBitmap = orxDisplay_iOS_LoadPVRBitmap(zResourceLocation);
       }
       else
       {
@@ -3415,7 +3415,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       orxHANDLE hResource;
 
       /* Opens resource */
-      hResource = orxResource_Open(zResourceName, orxFALSE);
+      hResource = orxResource_Open(zResourceLocation, orxFALSE);
 
       /* Valid? */
       if(hResource != orxHANDLE_UNDEFINED)

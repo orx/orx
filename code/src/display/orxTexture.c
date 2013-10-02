@@ -34,6 +34,7 @@
 
 #include "core/orxCommand.h"
 #include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "display/orxDisplay.h"
@@ -78,20 +79,21 @@
 struct __orxTEXTURE_t
 {
   orxSTRUCTURE    stStructure;                  /**< Public structure, first structure member : 32 */
-  const orxSTRING zDataName;                    /**< Associated bitmap name : 20 */
-  orxFLOAT        fWidth;                       /**< Width : 24 */
-  orxFLOAT        fHeight;                      /**< Height : 28 */
-  orxHANDLE       hData;                        /**< Data : 32 */
+  orxU32          u32ID;                        /**< Associated name ID : 36 */
+  orxFLOAT        fWidth;                       /**< Width : 40 */
+  orxFLOAT        fHeight;                      /**< Height : 44 */
+  orxHANDLE       hData;                        /**< Data : 48 */
 };
 
 /** Static structure
  */
 typedef struct __orxTEXTURE_STATIC_t
 {
-  orxHASHTABLE   *pstTable;                     /**< Bitmap hashtable : 4 */
-  orxTEXTURE     *pstScreen;                    /**< Screen texture : 8 */
-  orxTEXTURE     *pstPixel;                     /**< Pixel texture : 12 */
-  orxU32          u32Flags;                     /**< Control flags : 16 */
+  orxHASHTABLE   *pstTable;                     /**< Bitmap hashtable */
+  orxTEXTURE     *pstScreen;                    /**< Screen texture */
+  orxTEXTURE     *pstPixel;                     /**< Pixel texture */
+  orxU32          u32ResourceGroupID;           /**< Resource group ID */
+  orxU32          u32Flags;                     /**< Control flags */
 
 } orxTEXTURE_STATIC;
 
@@ -106,6 +108,61 @@ static orxTEXTURE_STATIC sstTexture;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is texture group? */
+    if(pstPayload->u32GroupID == sstTexture.u32ResourceGroupID)
+    {
+      orxTEXTURE *pstTexture;
+
+      /* For all textures */
+      for(pstTexture = orxTEXTURE(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE));
+          pstTexture != orxNULL;
+          pstTexture = orxTEXTURE(orxStructure_GetNext(pstTexture)))
+      {
+        /* Matches? */
+        if(pstTexture->u32ID == pstPayload->u32NameID)
+        {
+          orxBITMAP      *pstBitmap;
+          const orxSTRING zName;
+
+          /* Gets current texture name */
+          zName = orxTexture_GetName(pstTexture);
+
+          /* Unlinks current bitmap */
+          orxTexture_UnlinkBitmap(pstTexture);
+
+          /* Re-loads bitmap */
+          pstBitmap = orxDisplay_LoadBitmap(zName);
+
+          /* Assigns given bitmap to it */
+          if((pstBitmap != orxNULL)
+          && (orxTexture_LinkBitmap(pstTexture, pstBitmap, zName) != orxSTATUS_FAILURE))
+          {
+            /* Updates flags */
+            orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
 
 /** Deletes all textures
  */
@@ -440,6 +497,12 @@ orxSTATUS orxFASTCALL orxTexture_Init()
                 {
                   /* Updates its flag */
                   orxStructure_SetFlags(sstTexture.pstPixel, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+
+                  /* Inits values */
+                  sstTexture.u32ResourceGroupID = orxString_GetID(orxTEXTURE_KZ_RESOURCE_GROUP);
+
+                  /* Adds event handler */
+                  orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTexture_EventHandler);
                 }
                 else
                 {
@@ -528,6 +591,9 @@ void orxFASTCALL orxTexture_Exit()
   /* Initialized? */
   if(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxTexture_EventHandler);
+
     /* Unregisters commands */
     orxTexture_UnregisterCommands();
 
@@ -731,9 +797,13 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) == orxFALSE)
   {
     orxTEXTURE *pstTexture;
+    orxU32      u32ID;
 
-    /* Search for a texture using this bitmap */
-    pstTexture = orxTexture_FindByName(_zDataName);
+    /* Gets ID */
+    u32ID = orxString_GetID(_zDataName);
+
+    /* Gets texture from hash table */
+    pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, u32ID);
 
     /* Not found? */
     if(pstTexture == orxNULL)
@@ -747,11 +817,11 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
       /* Gets bitmap size */
       orxDisplay_GetBitmapSize(_pstBitmap, &(_pstTexture->fWidth), &(_pstTexture->fHeight));
 
-      /* Updates texture name */
-      _pstTexture->zDataName = orxString_GetFromID(orxString_GetID(_zDataName));
+      /* Updates texture ID */
+      _pstTexture->u32ID = u32ID;
 
       /* Adds it to hash table */
-      orxHashTable_Add(sstTexture.pstTable, orxString_ToCRC(_zDataName), _pstTexture);
+      orxHashTable_Add(sstTexture.pstTable, u32ID, _pstTexture);
     }
     else
     {
@@ -804,10 +874,10 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     _pstTexture->hData = orxHANDLE_UNDEFINED;
 
     /* Removes from hash table */
-    orxHashTable_Remove(sstTexture.pstTable, orxString_ToCRC(_pstTexture->zDataName));
+    orxHashTable_Remove(sstTexture.pstTable, _pstTexture->u32ID);
 
-    /* Clears name */
-    _pstTexture->zDataName = orxNULL;
+    /* Clears ID */
+    _pstTexture->u32ID = 0;
   }
   else
   {
@@ -893,18 +963,18 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
 
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture
- * @return      Texture name / orxNULL
+ * @return      Texture name / orxSTRING_EMPTY
  */
 const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
 {
-  const orxSTRING zResult = orxNULL;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTexture);
 
   /* Updates result */
-  zResult = _pstTexture->zDataName;
+  zResult = (_pstTexture->u32ID != 0) ? orxString_GetFromID(_pstTexture->u32ID) : orxSTRING_EMPTY;
 
   /* Done! */
   return zResult;

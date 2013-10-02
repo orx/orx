@@ -103,7 +103,7 @@ typedef struct __orxRESOURCE_TYPE_t
  */
 typedef struct __orxRESOURCE_GROUP_t
 {
-  orxU32                    u32NameID;                                                /**< Group name ID */
+  orxU32                    u32ID;                                                    /**< Group name ID */
   orxLINKLIST               stStorageList;                                            /**< Group storage list */
   orxBANK                  *pstStorageBank;                                           /**< Group storage bank */
   orxHASHTABLE             *pstCacheTable;                                            /**< Group cache table */
@@ -126,6 +126,7 @@ typedef struct __orxRESOURCE_INFO_t
   orxSTRING                 zLocation;                                                /**< Resource literal location */
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxS64                    s64Time;                                                  /**< Resource modification time */
+  orxU32                    u32NameID;                                                /**< Resource name ID */
 
 } orxRESOURCE_INFO;
 
@@ -195,19 +196,19 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zSto
   return zResult;
 }
 
-static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
+static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zPath, orxBOOL _bEraseMode)
 {
   orxFILE  *pstFile;
   orxHANDLE hResult;
 
   /* Opens file */
-  pstFile = orxFile_Open(_zLocation, (_bEraseMode != orxFALSE) ? orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY : orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+  pstFile = orxFile_Open(_zPath, (_bEraseMode != orxFALSE) ? orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY : orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
   /* Not in erase mode and couldn't open it? */
   if((_bEraseMode == orxFALSE) && (pstFile == orxNULL))
   {
     /* Opens it in read-only mode */
-    pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+    pstFile = orxFile_Open(_zPath, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
   }
 
   /* Updates result */
@@ -246,13 +247,13 @@ static orxS64 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
   return s64Result;
 }
 
-static orxS64 orxFASTCALL orxResource_File_GetTime(const orxSTRING _zLocation)
+static orxS64 orxFASTCALL orxResource_File_GetTime(const orxSTRING _zPath)
 {
   orxFILE_INFO  stFileInfo;
   orxS64        s64Result;
 
   /* Gets file info */
-  if(orxFile_GetInfo(_zLocation, &stFileInfo) != orxSTATUS_FAILURE)
+  if(orxFile_GetInfo(_zPath, &stFileInfo) != orxSTATUS_FAILURE)
   {
     /* Updates result */
     s64Result = stFileInfo.s64TimeStamp;
@@ -368,7 +369,7 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxU32 _u32GroupID)
     orxRESOURCE_STORAGE *pstStorage;
 
     /* Inits it */
-    pstResult->u32NameID      = _u32GroupID;
+    pstResult->u32ID          = _u32GroupID;
     pstResult->pstStorageBank = orxBank_Create(orxRESOURCE_KU32_STORAGE_BANK_SIZE, sizeof(orxRESOURCE_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     pstResult->pstCacheTable  = orxHashTable_Create(orxRESOURCE_KU32_CACHE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     orxMemory_Zero(&(pstResult->stStorageList), sizeof(orxLINKLIST));
@@ -431,7 +432,7 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
 
     /* Looks for it in registered groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Found? */
@@ -463,13 +464,13 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
         if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
         {
           orxS64 s64Time;
-          orxU32 u32NameOffset;
+          orxU32 u32PathOffset;
 
-          /* Gets name offset */
-          u32NameOffset = orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1;
+          /* Gets path offset */
+          u32PathOffset = orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1;
 
           /* Gets its modification time */
-          s64Time = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + u32NameOffset);
+          s64Time = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + u32PathOffset);
 
           /* Has been modified since last access? */
           if(s64Time != pstResourceInfo->s64Time)
@@ -480,8 +481,9 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
               /* Inits rest of payload */
               stPayload.s64Time     = s64Time;
               stPayload.zLocation   = pstResourceInfo->zLocation;
-              stPayload.zName       = pstResourceInfo->zLocation + u32NameOffset;
+              stPayload.zPath       = pstResourceInfo->zLocation + u32PathOffset;
               stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
+              stPayload.u32NameID   = u32Key;
 
               /* Removed? */
               if(s64Time == 0)
@@ -773,7 +775,7 @@ const orxSTRING orxFASTCALL orxResource_GetGroup(orxU32 _u32Index)
     orxASSERT(pstGroup != orxNULL);
 
     /* Updates result */
-    zResult = orxString_GetFromID(pstGroup->u32NameID);
+    zResult = orxString_GetFromID(pstGroup->u32ID);
   }
 
   /* Done! */
@@ -806,7 +808,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Not found? */
@@ -890,7 +892,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Success? */
@@ -952,7 +954,7 @@ orxU32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Success? */
@@ -991,7 +993,7 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Success? */
@@ -1042,7 +1044,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
     orxU32              u32GroupID;
     orxS32              j, jCounter;
 
-    /* Gets group name */
+    /* Gets group */
     zGroup = orxConfig_GetKey(i);
 
     /* Gets group ID */
@@ -1050,7 +1052,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
 
     /* Finds it */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* For all storages in list */
@@ -1059,7 +1061,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
       const orxSTRING zStorage;
       orxBOOL         bAdd = orxTRUE;
 
-      /* Gets storage name */
+      /* Gets storage */
       zStorage = orxConfig_GetListString(zGroup, j);
 
       /* Did the group exist? */
@@ -1152,7 +1154,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Not found? */
@@ -1270,7 +1272,7 @@ const orxSTRING orxFASTCALL orxResource_GetLocation(const orxSTRING _zGroup, con
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32NameID != u32GroupID);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
     /* Not found? */
@@ -1342,11 +1344,11 @@ const orxSTRING orxFASTCALL orxResource_GetLocation(const orxSTRING _zGroup, con
   return zResult;
 }
 
-/** Gets the resource name from a location
+/** Gets the resource path from a location
  * @param[in] _zLocation        Location of the concerned resource
- * @return Name string if valid, orxSTRING_EMPTY otherwise
+ * @return Path string if valid, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxResource_GetName(const orxSTRING _zLocation)
+const orxSTRING orxFASTCALL orxResource_GetPath(const orxSTRING _zLocation)
 {
   const orxSTRING zResult = orxSTRING_EMPTY;
 

@@ -50,8 +50,8 @@
 /** Resource handlers
  */
 typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
-typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zLocation);
-typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation, orxBOOL _bEraseMode);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zPath);
+typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zPath, orxBOOL _bEraseMode);
 typedef void            (orxFASTCALL *orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _hResource);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
@@ -96,9 +96,10 @@ typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
 {
   orxS64                        s64Time;                  /**< New resource time : 8 */
   const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
-  const orxSTRING               zName;                    /**< Resource name : 16 / 24 */
+  const orxSTRING               zPath;                    /**< Resource path : 16 / 24 */
   const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 20 / 32 */
   orxU32                        u32GroupID;               /**< Group ID : 24 / 36 */
+  orxU32                        u32NameID;                /**< Name ID : 28 / 40 */
 
 } orxRESOURCE_EVENT_PAYLOAD;
 
@@ -178,11 +179,11 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_Locate(con
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName);
 
-/** Gets the resource name from a location
+/** Gets the resource path from a location
  * @param[in] _zLocation        Location of the concerned resource
- * @return Name string if valid, orxSTRING_EMPTY otherwise
+ * @return Path string if valid, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetName(const orxSTRING _zLocation);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetPath(const orxSTRING _zLocation);
 
 /** Gets the resource type from a location
  * @param[in] _zLocation        Location of the concerned resource

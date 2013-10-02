@@ -380,40 +380,45 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
   /* Add or update? */
   if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
   {
-    orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
-    orxSHADER                  *pstShader;
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
 
     /* Gets payload */
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* For all shaders */
-    for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
-        pstShader != orxNULL;
-        pstShader = orxSHADER(orxStructure_GetNext(pstShader)))
+    /* Is config group? */
+    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
     {
-      /* Has reference? */
-      if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
+      orxSHADER *pstShader;
+
+      /* For all shaders */
+      for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
+          pstShader != orxNULL;
+          pstShader = orxSHADER(orxStructure_GetNext(pstShader)))
       {
-        const orxSTRING zOrigin;
-
-        /* Gets its origin */
-        zOrigin = orxConfig_GetOrigin(pstShader->zReference);
-
-        /* Matches? */
-        if(orxString_Compare(zOrigin, pstPayload->zName) == 0)
+        /* Has reference? */
+        if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
         {
-          /* Pushes its config section */
-          orxConfig_PushSection(pstShader->zReference);
+          const orxSTRING zOrigin;
 
-          /* Did code change? */
-          if(pstShader->u32CodeID != orxString_ToCRC(orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE)))
+          /* Gets its origin */
+          zOrigin = orxConfig_GetOrigin(pstShader->zReference);
+
+          /* Matches? */
+          if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
           {
-            /* Re-processes its config data */
-            orxShader_ProcessConfigData(pstShader);
-          }
+            /* Pushes its config section */
+            orxConfig_PushSection(pstShader->zReference);
 
-          /* Pops config section */
-          orxConfig_PopSection();
+            /* Did code change? */
+            if(pstShader->u32CodeID != orxString_ToCRC(orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE)))
+            {
+              /* Re-processes its config data */
+              orxShader_ProcessConfigData(pstShader);
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
         }
       }
     }
@@ -460,7 +465,6 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
-  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);

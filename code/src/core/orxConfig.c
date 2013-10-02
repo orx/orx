@@ -102,8 +102,6 @@
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_DEFAULT_PARENT        "DefaultParent" /**< Default parent for sections */
 
-#define orxCONFIG_KZ_RESOURCE_GROUP               "Config"    /**< Config resource group */
-
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
 #define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH      4           /**< Encryption file tag length */
@@ -227,6 +225,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxBANK            *pstStackBank;         /**< Stack bank */
   orxLINKLIST         stStackList;          /**< Stack list */
   orxU32              u32Flags;             /**< Control flags */
+  orxU32              u32ResourceGroupID;   /**< Resource group ID */
   orxU32              u32LoadCounter;       /**< Load counter */
   orxSTRING           zEncryptionKey;       /**< Encryption key */
   orxU32              u32LoadFileID;        /**< Loading file ID */
@@ -293,10 +292,10 @@ static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->u32GroupID == sstConfig.u32ResourceGroupID)
     {
       /* Reloads file */
-      orxConfig_Load(pstPayload->zName);
+      orxConfig_Load(pstPayload->zPath);
     }
   }
 
@@ -2322,6 +2321,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     {
       /* Inits values */
       sstConfig.u32LoadFileID = 0;
+      sstConfig.u32ResourceGroupID  = orxString_GetID(orxCONFIG_KZ_RESOURCE_GROUP);
 
       /* Inits flags */
       orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY | orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_MASK_ALL);

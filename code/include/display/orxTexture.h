@@ -136,7 +136,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(const orxTEXTURE *_
 
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture
- * @return      Texture name / orxNULL
+ * @return      Texture name / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture);
 

@@ -1380,66 +1380,18 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Depending on event type */
-  switch(_pstEvent->eType)
+  /* Render stop? */
+  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
   {
-    case orxEVENT_TYPE_RENDER:
-    {
-      /* Render stop? */
-      if(_pstEvent->eID == orxRENDER_EVENT_STOP)
-      {
-        /* Draws remaining items */
-        orxDisplay_GLFW_DrawArrays();
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
 
-        /* Flushes pending commands */
-        glFlush();
-        glASSERT();
+    /* Flushes pending commands */
+    glFlush();
+    glASSERT();
 
-        /* Polls events */
-        glfwPollEvents();
-      }
-
-      break;
-    }
-
-    case orxEVENT_TYPE_RESOURCE:
-    {
-      /* Add/update resource? */
-      if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
-      {
-        orxBITMAP                  *pstBitmap;
-        orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
-
-        /* Gets payload */
-        pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-        /* For all bitmaps */
-        for(pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, orxNULL);
-            pstBitmap != orxNULL;
-            pstBitmap = (orxBITMAP *)orxBank_GetNext(sstDisplay.pstBitmapBank, pstBitmap))
-        {
-          /* Match? */
-          if(pstBitmap->zLocation == pstPayload->zLocation)
-          {
-            /* Checks */
-            orxASSERT(pstBitmap != sstDisplay.pstScreen);
-
-            /* Re-loads its data */
-            orxDisplay_GLFW_DeleteBitmapData(pstBitmap);
-            orxDisplay_GLFW_LoadBitmapData(pstBitmap);
-
-            break;
-          }
-        }
-      }
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
+    /* Polls events */
+    glfwPollEvents();
   }
 
   /* Done! */
@@ -3860,9 +3812,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             /* Registers update function */
             if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
             {
-              /* Adds resource event handler */
-              orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxDisplay_GLFW_EventHandler);
-
               /* Shows mouse cursor */
               glfwEnable(GLFW_MOUSE_CURSOR);
 
@@ -3974,8 +3923,7 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
     /* Exits from GLFW */
     glfwTerminate();
 
-    /* Removes event handlers */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxDisplay_GLFW_EventHandler);
+    /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
