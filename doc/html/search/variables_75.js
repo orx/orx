@@ -11,6 +11,7 @@ var searchData=
   ['u32groupid',['u32GroupID',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a6b6fb37a55c9ba2090bba063dad63b01',1,'orxRESOURCE_EVENT_PAYLOAD']]],
   ['u32height',['u32Height',['../structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#ae8dd87854b785d2499e35d446cc2e57a',1,'orxDISPLAY_VIDEO_MODE::u32Height()'],['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3',1,'orxDISPLAY_EVENT_PAYLOAD::u32Height()']]],
   ['u32id',['u32ID',['../structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#acac2246d17351b95043ae2ccc1bf707d',1,'orxSYSTEM_EVENT_PAYLOAD']]],
+  ['u32nameid',['u32NameID',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#aded91e1ae9177539702f9abc8ab67bc1',1,'orxRESOURCE_EVENT_PAYLOAD']]],
   ['u32previousdepth',['u32PreviousDepth',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a680f22e8d18e09ca63319d563c295242',1,'orxDISPLAY_EVENT_PAYLOAD']]],
   ['u32previousheight',['u32PreviousHeight',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a80c983b650878822e3c0919ffe75ad54',1,'orxDISPLAY_EVENT_PAYLOAD']]],
   ['u32previousrefreshrate',['u32PreviousRefreshRate',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a',1,'orxDISPLAY_EVENT_PAYLOAD']]],

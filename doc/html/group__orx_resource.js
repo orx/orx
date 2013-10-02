@@ -4,8 +4,9 @@ var group__orx_resource =
       [ "pstTypeInfo", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a38a4889cbe0abe36904f0552802f442a", null ],
       [ "s64Time", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a3471d95d9572c67a0c466ba3a40dbb3b", null ],
       [ "u32GroupID", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a6b6fb37a55c9ba2090bba063dad63b01", null ],
+      [ "u32NameID", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#aded91e1ae9177539702f9abc8ab67bc1", null ],
       [ "zLocation", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a820a5364548a39a718d68679bfe3e02a", null ],
-      [ "zName", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a714fc6e17cc7e7e3c57079d42d37262e", null ]
+      [ "zPath", "structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#ac691ffc4b33aefefff92892baaa0b984", null ]
     ] ],
     [ "orxRESOURCE_TYPE_INFO", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html", [
       [ "pfnClose", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a05d5a7fb1e936d5b5409af368ae5a071", null ],
@@ -22,9 +23,9 @@ var group__orx_resource =
     [ "orxRESOURCE_KC_LOCATION_SEPARATOR", "group__orx_resource.html#ga94e822a8f417dccd9de2b8a2c8999ed8", null ],
     [ "orxRESOURCE_FUNCTION_CLOSE", "group__orx_resource.html#ga18128a057b971793cbabc173df5c8f6c", null ],
     [ "orxRESOURCE_FUNCTION_GET_SIZE", "group__orx_resource.html#gaa3cffb91b6113ecf2d961889745e2a46", null ],
-    [ "orxRESOURCE_FUNCTION_GET_TIME", "group__orx_resource.html#gafba47518917df22b923d7fdfe712dd73", null ],
+    [ "orxRESOURCE_FUNCTION_GET_TIME", "group__orx_resource.html#gac11be078a224266cab772d63606e7ca8", null ],
     [ "orxRESOURCE_FUNCTION_LOCATE", "group__orx_resource.html#ga08b89d67f9c4efd3b1f0bd588416e8c3", null ],
-    [ "orxRESOURCE_FUNCTION_OPEN", "group__orx_resource.html#ga60dbafd2606258fbd20ea66c1947e013", null ],
+    [ "orxRESOURCE_FUNCTION_OPEN", "group__orx_resource.html#ga14f7244256f346dc788223dde5d2beab", null ],
     [ "orxRESOURCE_FUNCTION_READ", "group__orx_resource.html#gab02d1e1be4011fc76536660275a5220d", null ],
     [ "orxRESOURCE_FUNCTION_SEEK", "group__orx_resource.html#ga00b4469e95f77dd256bb08a8464ff158", null ],
     [ "orxRESOURCE_FUNCTION_TELL", "group__orx_resource.html#ga4ad4377c2af029158e647b9c7b84543d", null ],
@@ -43,7 +44,7 @@ var group__orx_resource =
     [ "orxResource_GetGroup", "group__orx_resource.html#gaf70cf038b10873bb96b6e5e18930d95d", null ],
     [ "orxResource_GetGroupCounter", "group__orx_resource.html#gac52d43702eed0d52efc4da779c8f8f6c", null ],
     [ "orxResource_GetLocation", "group__orx_resource.html#gaf62cd57c7b0d0ede2cb0c04228965af4", null ],
-    [ "orxResource_GetName", "group__orx_resource.html#ga527ac1c0f75af84010c89f977223a0b1", null ],
+    [ "orxResource_GetPath", "group__orx_resource.html#ga31ca51910d18dd1a9a47efbe3c0adb66", null ],
     [ "orxResource_GetSize", "group__orx_resource.html#gadfccb6c1430c35c86489c4b6f54be41c", null ],
     [ "orxResource_GetStorage", "group__orx_resource.html#gae578724bc22c4f38fee60e3faf0db8a5", null ],
     [ "orxResource_GetStorageCounter", "group__orx_resource.html#ga49e89a8530fc6af9dc992eb810c67f09", null ],

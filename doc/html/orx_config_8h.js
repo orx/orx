@@ -1,5 +1,6 @@
 var orx_config_8h =
 [
+    [ "orxCONFIG_KZ_RESOURCE_GROUP", "orx_config_8h.html#ga292cacf010a38b185f65e2e54bce8733", null ],
     [ "orxCONFIG_SAVE_FUNCTION", "orx_config_8h.html#ga7e6115a8a97bcce5c51485a75445d52a", null ],
     [ "orxCONFIG_EVENT", "orx_config_8h.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267", [
       [ "orxCONFIG_EVENT_RELOAD_START", "orx_config_8h.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f", null ],
