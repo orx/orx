@@ -56,7 +56,7 @@
 
 #define orxRESOURCE_KU32_STATIC_FLAG_READY            0x00000001                      /**< Ready flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED    0x00000002                      /**< Config loaded flag */
-#define orxRESOURCE_KU32_STATIC_FLAG_WATCH            0x00000004                      /**< Watch flag */
+#define orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET        0x00000004                      /**< Watch set flag */
 
 #define orxRESOURCE_KU32_STATIC_MASK_ALL              0xFFFFFFFF                      /**< All mask */
 
@@ -1050,69 +1050,63 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
     /* Gets group ID */
     u32GroupID = orxString_ToCRC(zGroup);
 
-    /* Finds it */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
-
-    /* For all storages in list */
-    for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
+    /* Is not watch list? */
+    if(u32GroupID != orxString_ToCRC(orxRESOURCE_KZ_CONFIG_WATCH_LIST))
     {
-      const orxSTRING zStorage;
-      orxBOOL         bAdd = orxTRUE;
+      /* Finds it */
+      for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+          (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
+          pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
 
-      /* Gets storage */
-      zStorage = orxConfig_GetListString(zGroup, j);
-
-      /* Did the group exist? */
-      if(pstGroup != orxNULL)
+      /* For all storages in list */
+      for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
       {
-        orxRESOURCE_STORAGE  *pstStorage;
-        orxU32                u32StorageID;
+        const orxSTRING zStorage;
+        orxBOOL         bAdd = orxTRUE;
 
-        /* Gets storage ID */
-        u32StorageID = orxString_ToCRC(zStorage);
+        /* Gets storage */
+        zStorage = orxConfig_GetListString(zGroup, j);
 
-        /* For all storages in group */
-        for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
-            pstStorage != orxNULL;
-            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
+        /* Did the group exist? */
+        if(pstGroup != orxNULL)
         {
-          /* Found? */
-          if(pstStorage->u32StorageID == u32StorageID)
-          {
-            /* Don't add it */
-            bAdd = orxFALSE;
+          orxRESOURCE_STORAGE  *pstStorage;
+          orxU32                u32StorageID;
 
-            break;
+          /* Gets storage ID */
+          u32StorageID = orxString_ToCRC(zStorage);
+
+          /* For all storages in group */
+          for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
+              pstStorage != orxNULL;
+              pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
+          {
+            /* Found? */
+            if(pstStorage->u32StorageID == u32StorageID)
+            {
+              /* Don't add it */
+              bAdd = orxFALSE;
+
+              break;
+            }
           }
         }
-      }
 
-      /* Should add storage? */
-      if(bAdd != orxFALSE)
-      {
-        /* Adds storage to group */
-        if(orxResource_AddStorage(zGroup, zStorage, orxFALSE) == orxSTATUS_FAILURE)
+        /* Should add storage? */
+        if(bAdd != orxFALSE)
         {
-          /* Updates */
-          eResult = orxSTATUS_FAILURE;
+          /* Adds storage to group */
+          if(orxResource_AddStorage(zGroup, zStorage, orxFALSE) == orxSTATUS_FAILURE)
+          {
+            /* Updates */
+            eResult = orxSTATUS_FAILURE;
+          }
         }
       }
     }
 
     /* Updates status */
     orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
-  }
-
-  /* Has watch list? */
-  if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
-  {
-    /* Registers watch callbacks */
-    orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
-
-    /* Updates flags */
-    orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH, orxRESOURCE_KU32_STATIC_FLAG_NONE);
   }
 
   /* Pops config section */
@@ -1141,6 +1135,32 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   {
     /* Reloads storage */
     orxResource_ReloadStorage();
+  }
+  else
+  {
+    /* Doesn't have watch */
+    if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
+    {
+      /* Is clock module initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+      {
+        /* Pushes resource config section */
+        orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+        /* Has watch list? */
+        if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
+        {
+          /* Registers watch callbacks */
+          orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Updates flags */
+        orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+      }
+    }
   }
 
   /* Valid? */
