@@ -65,7 +65,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor;
+  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor, bUpdateCursor;
   orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
@@ -133,15 +133,8 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
   /* Registers mouse wheel callback */
   glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
 
-  /* Restores cursor status */
-  if(sstMouse.bShowCursor != orxFALSE)
-  {
-    glfwEnable(GLFW_MOUSE_CURSOR);
-  }
-  else
-  {
-    glfwDisable(GLFW_MOUSE_CURSOR);
-  }
+  /* Asks for cursor update */
+  sstMouse.bUpdateCursor = orxTRUE;
 
   /* Done! */
   return eResult;
@@ -153,6 +146,23 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxMouse_Update");
+
+  /* Should update cursor? */
+  if(sstMouse.bUpdateCursor != orxFALSE)
+  {
+    /* Restores cursor status */
+    if(sstMouse.bShowCursor != orxFALSE)
+    {
+      glfwEnable(GLFW_MOUSE_CURSOR);
+    }
+    else
+    {
+      glfwDisable(GLFW_MOUSE_CURSOR);
+    }
+
+    /* Updates status */
+    sstMouse.bUpdateCursor = orxFALSE;
+  }
 
   /* Is left button pressed? */
   if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
