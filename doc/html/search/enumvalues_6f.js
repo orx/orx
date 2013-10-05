@@ -426,6 +426,8 @@ var searchData=
   ['orxmouse_5fbutton_5fwheel_5fup',['orxMOUSE_BUTTON_WHEEL_UP',['../group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181aed46aacad1fe42b50a5dfb1a2ed9091b',1,'orxMouse.h']]],
   ['orxobject_5fevent_5fcreate',['orxOBJECT_EVENT_CREATE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ac7d8eaaac17797c1acdec7f1b01b1a1a',1,'orxObject.h']]],
   ['orxobject_5fevent_5fdelete',['orxOBJECT_EVENT_DELETE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a7758a0718fb8208481577f472793ed11',1,'orxObject.h']]],
+  ['orxobject_5fevent_5fdisable',['orxOBJECT_EVENT_DISABLE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f',1,'orxObject.h']]],
+  ['orxobject_5fevent_5fenable',['orxOBJECT_EVENT_ENABLE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960',1,'orxObject.h']]],
   ['orxobject_5fevent_5fnone',['orxOBJECT_EVENT_NONE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a67c375a6b5d3f7ae7599a35a79da3449',1,'orxObject.h']]],
   ['orxobject_5fevent_5fnumber',['orxOBJECT_EVENT_NUMBER',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9',1,'orxObject.h']]],
   ['orxphysics_5fevent_5fcontact_5fadd',['orxPHYSICS_EVENT_CONTACT_ADD',['../group__orx_physics.html#gga1c4aaa4ece57611bd21ae6470a07a29da5e985e7f1f008b88a1d9d5c5e2b3a762',1,'orxPhysics.h']]],

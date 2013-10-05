@@ -1,5 +1,7 @@
 var NAVTREEINDEX14 =
 {
+"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a40fe7fc2eb538abe00c366c07c849c13":[3,0,0,5,2,4,1],
+"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a563608794ca8c24e0f1eb4c620e170da":[3,0,0,5,2,4,24],
 "orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a5885213a8f24f370e7465cec7be914bf":[3,0,0,5,2,4,0],
 "orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a5a6cd47131182561508c823fca20135e":[3,0,0,5,2,4,6],
 "orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45":[3,0,0,5,2,4,7],
@@ -247,7 +249,5 @@ var NAVTREEINDEX14 =
 "orx_math_8h.html":[3,0,0,7,1],
 "orx_math_8h.html#ga04060c5441b3236a18a5f8c90fb00ca9":[3,0,0,7,1,30],
 "orx_math_8h.html#ga0861eef61e81d17d189e0635b746864c":[3,0,0,7,1,10],
-"orx_math_8h.html#ga0a15841df971c4440d3f8ffe69494e15":[3,0,0,7,1,23],
-"orx_math_8h.html#ga1dc37dcb2455dfe64f0ede9dd01fe8f9":[3,0,0,7,1,25],
-"orx_math_8h.html#ga200337a54e068d3ee9f03817d7364bc2":[3,0,0,7,1,27]
+"orx_math_8h.html#ga0a15841df971c4440d3f8ffe69494e15":[3,0,0,7,1,23]
 };
