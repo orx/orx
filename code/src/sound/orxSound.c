@@ -465,7 +465,7 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
  */
 orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxSOUND *pstResult = orxNULL;
+  orxSOUND *pstResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
@@ -475,19 +475,19 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    /* Is a sound? */
-    if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_SOUND) != orxFALSE)
+    /* Creates sound */
+    pstResult = orxSound_Create();
+
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Sound)");
-
-      /* Creates sound */
-      pstResult = orxSound_Create();
-
-      /* Valid? */
-      if(pstResult != orxNULL)
+      /* Is a sound? */
+      if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_SOUND) != orxFALSE)
       {
         const orxSTRING zSoundName;
+
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Sound)");
 
         /* Gets sound name */
         zSoundName = orxConfig_GetString(orxSOUND_KZ_CONFIG_SOUND);
@@ -504,18 +504,12 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if(pstResult->pstData != orxNULL)
           {
-            /* Stores its reference */
-            pstResult->zReference = orxConfig_GetCurrentSection();
-
-            /* Protects it */
-            orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
             /* Updates its status */
             orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_SAMPLE, orxSOUND_KU32_MASK_ALL);
           }
           else
           {
-            /* Deletes sample */
+            /* Unloads its sample */
             orxSound_UnloadSample(pstResult->pstSample);
 
             /* Removes its reference */
@@ -525,60 +519,52 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
             orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_MASK_ALL);
           }
         }
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
       }
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
-    }
-    /* Is a music? */
-    else if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_MUSIC) != orxFALSE)
-    {
-      const orxSTRING zMusicName;
-
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Music)");
-
-      /* Gets music name */
-      zMusicName = orxConfig_GetString(orxSOUND_KZ_CONFIG_MUSIC);
-
-      /* Is empty stream ? */
-      if(orxString_ICompare(zMusicName, orxSOUND_KZ_CONFIG_EMPTY_STREAM) == 0)
+      /* Is a music? */
+      else if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_MUSIC) != orxFALSE)
       {
-        /* Creates empty stream */
-        pstResult = orxSound_CreateWithEmptyStream(orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE, orxSOUND_KZ_CONFIG_EMPTY_STREAM);
-      }
-      else
-      {
-        /* Creates sound */
-        pstResult = orxSound_Create();
+        const orxSTRING zMusicName;
 
-        /* Valid? */
-        if(pstResult != orxNULL)
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Music)");
+
+        /* Gets music name */
+        zMusicName = orxConfig_GetString(orxSOUND_KZ_CONFIG_MUSIC);
+
+        /* Is empty stream ? */
+        if(orxString_ICompare(zMusicName, orxSOUND_KZ_CONFIG_EMPTY_STREAM) == 0)
+        {
+          /* Creates empty stream */
+          pstResult->pstData = orxSoundSystem_CreateStream(orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE, orxSOUND_KZ_CONFIG_EMPTY_STREAM);
+        }
+        else
         {
           /* Loads it */
           pstResult->pstData = orxSoundSystem_CreateStreamFromFile(zMusicName, pstResult->zReference);
-
-          /* Stores its ID */
-          pstResult->zReference = orxConfig_GetCurrentSection();
-
-          /* Protects it */
-          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
-          /* Updates its status */
-          orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_MASK_ALL);
         }
+
+        /* Updates its status */
+        orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_MASK_ALL);
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
       }
 
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
-    }
-
-    /* Valid sound? */
-    if(pstResult != orxNULL)
-    {
       /* Valid content? */
       if(pstResult->pstData != orxNULL)
       {
+        /* Stores its reference */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
+        /* Updates its status */
+        orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_INTERNAL_REFERENCE, orxSOUND_KU32_MASK_ALL);
+
         /* Should loop? */
         if(orxConfig_GetBool(orxSOUND_KZ_CONFIG_LOOP) != orxFALSE)
         {
@@ -650,6 +636,11 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
         /* Updates result */
         pstResult = orxNULL;
       }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound <%s>: can't allocate memory.", _zConfigID);
     }
 
     /* Pops previous section */
