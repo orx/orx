@@ -138,9 +138,13 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
         {
           orxBITMAP      *pstBitmap;
           const orxSTRING zName;
+          orxBOOL         bInternal;
 
           /* Profiles */
           orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+
+          /* Stores status */
+          bInternal = orxStructure_TestFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL);
 
           /* Gets current texture name */
           zName = orxTexture_GetName(pstTexture);
@@ -155,8 +159,12 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
           if((pstBitmap != orxNULL)
           && (orxTexture_LinkBitmap(pstTexture, pstBitmap, zName) != orxSTATUS_FAILURE))
           {
-            /* Updates flags */
-            orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+            /* Was internal? */
+            if(bInternal != orxFALSE)
+            {
+              /* Updates flags */
+              orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+            }
           }
 
           /* Profiles */
