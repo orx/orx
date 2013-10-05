@@ -37,6 +37,7 @@
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
@@ -1015,6 +1016,32 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
   return;
 }
 
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxInput_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    {
+      /* Reloads input */
+      orxInput_Load(orxNULL);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -1081,6 +1108,9 @@ orxSTATUS orxFASTCALL orxInput_Init()
 
           /* Registers commands */
           orxInput_RegisterCommands();
+
+          /* Adds event handler */
+          orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxInput_EventHandler);
         }
         else
         {
@@ -1120,6 +1150,9 @@ void orxFASTCALL orxInput_Exit()
   {
     orxCLOCK     *pstClock;
     orxINPUT_SET *pstSet;
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxInput_EventHandler);
 
     /* Unregisters commands */
     orxInput_UnregisterCommands();
