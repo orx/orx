@@ -3536,11 +3536,17 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_ENABLE, _pstObject, orxNULL, orxNULL);
+
     /* Updates status flags */
     orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
   }
   else
   {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DISABLE, _pstObject, orxNULL, orxNULL);
+
     /* Updates status flags */
     orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
   }
