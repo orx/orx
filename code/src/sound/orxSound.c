@@ -235,6 +235,7 @@ static orxINLINE void orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
     _pstSample->u32Counter--;
   }
 
+  /* Done! */
   return;
 }
 
@@ -257,6 +258,7 @@ static orxINLINE void orxSound_UnloadAllSample()
     pstSample = (orxSOUND_SAMPLE *)orxBank_GetNext(sstSound.pstSampleBank, orxNULL);
   }
 
+  /* Done! */
   return;
 }
 
@@ -701,6 +703,7 @@ static orxINLINE void orxSound_DeleteAll()
     pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
   }
 
+  /* Done! */
   return;
 }
 
@@ -725,6 +728,7 @@ void orxFASTCALL orxSound_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CLOCK);
 
+  /* Done! */
   return;
 }
 
@@ -828,6 +832,7 @@ void orxFASTCALL orxSound_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to exit from sound module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
