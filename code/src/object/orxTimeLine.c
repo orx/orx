@@ -39,6 +39,7 @@
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "object/orxObject.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
@@ -237,7 +238,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
       if(pstResult != orxNULL)
       {
         /* Stores its ID */
-        pstResult->u32ID = orxString_ToCRC(_zTrackID);
+        pstResult->u32ID = orxString_GetID(orxConfig_GetCurrentSection());
 
         /* Adds it to reference table */
         if(orxHashTable_Add(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
@@ -287,10 +288,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           }
 
           /* Stores its reference */
-          pstResult->zReference = orxConfig_GetCurrentSection();
-
-          /* Protects it */
-          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+          pstResult->zReference = orxString_GetFromID(pstResult->u32ID);
 
           /* Updates track counters */
           pstResult->u32RefCounter    = 1;
@@ -356,9 +354,6 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
     {
       /* Removes it from the table */
       orxHashTable_Remove(sstTimeLine.pstTrackTable, _pstTrack->u32ID);
-
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstTrack->zReference, orxFALSE);
     }
 
     /* Deletes it */
@@ -367,6 +362,108 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
 
   /* Done! */
   return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    {
+      orxHANDLE           hIterator;
+      orxU32              u32Key;
+      orxTIMELINE_TRACK  *pstTrack;
+
+      /* For all tracks */
+      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstTrack);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u32Key, (void **)&pstTrack))
+      {
+        const orxSTRING zOrigin;
+
+        /* Gets its origin */
+        zOrigin = orxConfig_GetOrigin(pstTrack->zReference);
+
+        /* Matches? */
+        if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
+        {
+          orxTIMELINE        *pstTimeLine;
+          orxTIMELINE_TRACK  *pstNewTrack;
+          orxU32              u32Counter, u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+          const orxSTRING     zReference;
+
+          /* Backups counter & reference */
+          u32Counter  = pstTrack->u32RefCounter;
+          zReference  = pstTrack->zReference;
+
+          /* Sets counter for deletion */
+          pstTrack->u32RefCounter = 1;
+
+          /* Deletes it */
+          orxTimeLine_DeleteTrack(pstTrack);
+
+          /* Creates new track */
+          pstNewTrack = orxTimeLine_CreateTrack(zReference);
+
+          /* Success? */
+          if(pstNewTrack != orxNULL)
+          {
+            /* Restores its counter */
+            pstNewTrack->u32RefCounter = u32Counter;
+
+            /* Pushes its config section */
+            orxConfig_PushSection(zReference);
+
+            /* Should loop? */
+            if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_LOOP) != orxFALSE)
+            {
+              /* Updates flags */
+              u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_LOOP;
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
+
+          /* For all timelines */
+          for(pstTimeLine = orxTIMELINE(orxStructure_GetFirst(orxSTRUCTURE_ID_TIMELINE));
+              pstTimeLine != orxNULL;
+              pstTimeLine = orxTIMELINE(orxStructure_GetNext(pstTimeLine)))
+          {
+            orxU32 u32Index;
+
+            /* For all its track */
+            for(u32Index = 0; u32Index < orxTIMELINE_KU32_TRACK_NUMBER; u32Index++)
+            {
+              /* Matches? */
+              if(pstTimeLine->astTrackList[u32Index].pstTrack == pstTrack)
+              {
+                /* Updates its data */
+                pstTimeLine->astTrackList[u32Index].pstTrack = pstNewTrack;
+
+                /* Updates its flags */
+                orxFLAG_SET(pstTimeLine->astTrackList[u32Index].u32Flags, u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_LOOP);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Deletes all the TimeLines
@@ -629,6 +726,9 @@ orxSTATUS orxFASTCALL orxTimeLine_Init()
   {
     /* Inits Flags */
     orxFLAG_SET(sstTimeLine.u32Flags, orxTIMELINE_KU32_STATIC_FLAG_READY, orxTIMELINE_KU32_STATIC_FLAG_NONE);
+
+    /* Adds event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTimeLine_EventHandler);
   }
   else
   {
@@ -651,6 +751,9 @@ void orxFASTCALL orxTimeLine_Exit()
   if(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY)
   {
     orxTIMELINE_TRACK *pstTrack;
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxTimeLine_EventHandler);
 
     /* Deletes TimeLine list */
     orxTimeLine_DeleteAll();
