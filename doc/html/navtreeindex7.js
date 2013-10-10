@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a35dbbafc980b35f2dbbe36fa43e17e4c":[1,38,32,23],
 "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a4ea3ac690e0c605a16068b749ffce8d2":[1,38,32,46],
 "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a53aad8fc397709150328e4c024531a18":[1,38,32,14],
 "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a54c5160bfb1b69af7f974cd27541842e":[1,38,32,21],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_shader_pointer.html#ga62346e36c00d0678c6428be5562c3631":[1,44,15],
 "group__orx_shader_pointer.html#ga6467e441b95b2d3c4fc6821199016e1b":[1,44,12],
 "group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211":[1,44,1],
-"group__orx_shader_pointer.html#ga74ad326fadbef929e1ebf41429674782":[1,44,2],
-"group__orx_shader_pointer.html#ga7f9ed712c9be7b7ae522f9de99de5218":[1,44,13]
+"group__orx_shader_pointer.html#ga74ad326fadbef929e1ebf41429674782":[1,44,2]
 };

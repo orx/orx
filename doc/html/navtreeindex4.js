@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ada98e017a19ebd935e8a3af035cf059e":[1,26,4,15],
 "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642aebcaf5e4dc85324bcf62178c1768242b":[1,26,4,28],
 "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642af46ac50052444612b728dd2fa0d8f73f":[1,26,4,3],
 "group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba00047beb2e98349d698a556c2c0510c6":[1,26,5,11],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "group__orx_math.html#gaa4644e7bdd17dc9c9fd6fef360dc3432":[1,30,2],
 "group__orx_math.html#gaa71920a94ecdfe982b54d6e3e065308e":[1,30,16],
 "group__orx_math.html#gabb0d42bcd5c9cc2425cdf4cef5102298":[1,30,1],
-"group__orx_math.html#gabe67e9a02ee83aeb7d6dd6891468ea74":[1,30,4],
-"group__orx_math.html#gac12332640c9c6f2d2302b725294f3807":[1,30,18]
+"group__orx_math.html#gabe67e9a02ee83aeb7d6dd6891468ea74":[1,30,4]
 };
