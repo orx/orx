@@ -118,7 +118,7 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
   /* Add or update? */
   if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
   {
-    orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
 
     /* Gets payload */
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
