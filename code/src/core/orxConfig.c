@@ -295,7 +295,7 @@ static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
     if(pstPayload->u32GroupID == sstConfig.u32ResourceGroupID)
     {
       /* Reloads file */
-      orxConfig_Load(pstPayload->zPath);
+      orxConfig_Load(orxString_GetFromID(pstPayload->u32NameID));
     }
   }
 
@@ -2860,16 +2860,24 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
                     /* Restores literal value */
                     orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
-                    /* Logs */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                    /* Different? */
+                    if(orxString_Compare(pcValueStart, pstEntry->stValue.zValue) != 0)
+                    {
+                      /* Logs */
+                      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                    }
 
                     /* Recomputes working value */
                     orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
                   }
                   else
                   {
-                    /* Logs */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                    /* Different? */
+                    if(orxString_Compare(pcValueStart, pstEntry->stValue.zValue) != 0)
+                    {
+                      /* Logs */
+                      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zFileName, orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                    }
                   }
                 }
               }
@@ -4272,9 +4280,35 @@ orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, or
  */
 const orxSTRING orxFASTCALL orxConfig_GetOrigin(const orxSTRING _zSectionName)
 {
+  orxU32          u32ID;
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+
+  /* Gets origin ID */
+  u32ID = orxConfig_GetOriginID(_zSectionName);
+
+  /* Valid? */
+  if(u32ID != 0)
+  {
+    /* Updates result */
+    zResult = orxString_GetFromID(u32ID);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets section origin ID (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file)
+ * @param[in] _zSectionName     Concerned section name
+ * @return String ID if found, 0 otherwise
+ */
+orxU32 orxFASTCALL orxConfig_GetOriginID(const orxSTRING _zSectionName)
+{
   orxCONFIG_SECTION  *pstSection;
-  orxU32              u32ID;
-  const orxSTRING     zResult = orxSTRING_EMPTY;
+  orxU32              u32ID, u32Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -4287,14 +4321,14 @@ const orxSTRING orxFASTCALL orxConfig_GetOrigin(const orxSTRING _zSectionName)
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, u32ID);
 
   /* Valid? */
-  if((pstSection != orxNULL) && (pstSection->u32OriginID != 0))
+  if(pstSection != orxNULL)
   {
     /* Updates result */
-    zResult = orxString_GetFromID(pstSection->u32OriginID);
+    u32Result = pstSection->u32OriginID;
   }
 
   /* Done! */
-  return zResult;
+  return u32Result;
 }
 
 /** Gets section counter

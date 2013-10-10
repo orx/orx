@@ -596,13 +596,8 @@ static orxSTATUS orxFASTCALL orxFont_EventHandler(const orxEVENT *_pstEvent)
         /* Not default one and has reference? */
         if((pstFont != sstFont.pstDefaultFont) && (pstFont->zReference != orxNULL) && (pstFont->zReference != orxSTRING_EMPTY))
         {
-          const orxSTRING zOrigin;
-
-          /* Gets its origin */
-          zOrigin = orxConfig_GetOrigin(pstFont->zReference);
-
-          /* Matches? */
-          if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
+          /* Match origin? */
+          if(orxConfig_GetOriginID(pstFont->zReference) == pstPayload->u32NameID)
           {
             /* Re-processes its config data */
             orxFont_ProcessConfigData(pstFont);

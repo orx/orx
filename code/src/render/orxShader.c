@@ -179,7 +179,9 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     }
   }
 
-  /* Clears param banks */
+  /* Clears param lists & banks */
+  orxMemory_Zero(&(_pstShader->stParamValueList), sizeof(orxLINKLIST));
+  orxMemory_Zero(&(_pstShader->stParamList), sizeof(orxLINKLIST));
   orxBank_Clear(_pstShader->pstParamValueBank);
   orxBank_Clear(_pstShader->pstParamBank);
 
@@ -399,13 +401,8 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
         /* Has reference? */
         if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
         {
-          const orxSTRING zOrigin;
-
-          /* Gets its origin */
-          zOrigin = orxConfig_GetOrigin(pstShader->zReference);
-
-          /* Matches? */
-          if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
+          /* Match origin? */
+          if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->u32NameID)
           {
             /* Pushes its config section */
             orxConfig_PushSection(pstShader->zReference);

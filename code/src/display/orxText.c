@@ -325,13 +325,8 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             pstText != orxNULL;
             pstText = orxTEXT(orxStructure_GetNext(pstText)))
         {
-          const orxSTRING zOrigin;
-
-          /* Gets its origin */
-          zOrigin = orxConfig_GetOrigin(pstText->zReference);
-
-          /* Matches? */
-          if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
+          /* Match origin? */
+          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->u32NameID)
           {
             /* Re-processes its config data */
             orxText_ProcessConfigData(pstText);

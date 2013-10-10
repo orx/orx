@@ -390,13 +390,8 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
           hIterator != orxHANDLE_UNDEFINED;
           hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u32Key, (void **)&pstTrack))
       {
-        const orxSTRING zOrigin;
-
-        /* Gets its origin */
-        zOrigin = orxConfig_GetOrigin(pstTrack->zReference);
-
-        /* Matches? */
-        if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
+        /* Match origin? */
+        if(orxConfig_GetOriginID(pstTrack->zReference) == pstPayload->u32NameID)
         {
           orxTIMELINE        *pstTimeLine;
           orxTIMELINE_TRACK  *pstNewTrack;
