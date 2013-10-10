@@ -35,7 +35,10 @@ function initconfigurations ()
         {
             "Embedded Dynamic Debug",
             "Embedded Dynamic Profile",
-            "Embedded Dynamic Release"
+            "Embedded Dynamic Release",
+            "Dynamic Debug",
+            "Dynamic Profile",
+            "Dynamic Release"
         }
     else
         return
@@ -45,7 +48,13 @@ function initconfigurations ()
             "Embedded Dynamic Release",
             "Embedded Static Debug",
             "Embedded Static Profile",
-            "Embedded Static Release"
+            "Embedded Static Release",
+            "Dynamic Debug",
+            "Dynamic Profile",
+            "Dynamic Release",
+            "Static Debug",
+            "Static Profile",
+            "Static Release"
         }
     end
 end
