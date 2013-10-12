@@ -404,18 +404,8 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
           /* Match origin? */
           if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->u32NameID)
           {
-            /* Pushes its config section */
-            orxConfig_PushSection(pstShader->zReference);
-
-            /* Did code change? */
-            if(pstShader->u32CodeID != orxString_ToCRC(orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE)))
-            {
-              /* Re-processes its config data */
-              orxShader_ProcessConfigData(pstShader);
-            }
-
-            /* Pops config section */
-            orxConfig_PopSection();
+            /* Re-processes its config data */
+            orxShader_ProcessConfigData(pstShader);
           }
         }
       }
