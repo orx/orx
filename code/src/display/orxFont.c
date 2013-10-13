@@ -497,9 +497,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               if((orxFont_SetCharacterHeight(_pstFont, fCharacterHeight) != orxSTATUS_FAILURE)
               && (orxFont_SetCharacterWidthList(_pstFont, u32CharacterCounter, afCharacterWidthList) != orxSTATUS_FAILURE))
               {
-                /* Adds it to reference table */
-                orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(_pstFont->zReference), _pstFont);
-
                 /* Updates status flags */
                 orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
               }
@@ -921,7 +918,12 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
 
         /* Processes its config data */
-        if(orxFont_ProcessConfigData(pstResult) == orxSTATUS_FAILURE)
+        if(orxFont_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)
+        {
+          /* Adds it to reference table */
+          orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+        }
+        else
         {
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process config data for font <%s>.", _zConfigID);
