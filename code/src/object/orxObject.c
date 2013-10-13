@@ -174,6 +174,7 @@ typedef struct __orxOBJECT_STATIC_t
 {
   orxCLOCK     *pstClock;                       /**< Clock */
   orxU32        u32DefaultGroupID;              /**< Default group ID */
+  orxU32        u32CurrentGroupID;              /**< Current group ID */
   orxBANK      *pstGroupBank;                   /**< Group bank */
   orxHASHTABLE *pstGroupTable;                  /**< Group table */
   orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
@@ -2439,6 +2440,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
 
               /* Stores default group ID */
               sstObject.u32DefaultGroupID = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
+              sstObject.u32CurrentGroupID = sstObject.u32DefaultGroupID;
 
               /* Inits Flags */
               sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
@@ -2713,6 +2715,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       {
         /* Sets it */
         orxObject_SetGroupID(pstResult, orxString_GetID(orxConfig_GetString(orxOBJECT_KZ_CONFIG_GROUP)));
+      }
+      /* Has current group ID? */
+      else if(sstObject.u32CurrentGroupID != sstObject.u32DefaultGroupID)
+      {
+        /* Sets it */
+        orxObject_SetGroupID(pstResult, sstObject.u32CurrentGroupID);
       }
 
       /* Stores reference */
@@ -3163,21 +3171,20 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           orxOBJECT *pstChild;
 
+          /* Stores current group ID */
+          sstObject.u32CurrentGroupID = pstResult->u32GroupID;
+
           /* Creates it */
           pstChild = orxObject_CreateFromConfig(orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_LIST, i));
+
+          /* Clears current group ID */
+          sstObject.u32CurrentGroupID = sstObject.u32DefaultGroupID;
 
           /* Valid? */
           if(pstChild != orxNULL)
           {
             /* Stores its owner */
             orxStructure_SetOwner(pstChild, pstResult);
-
-            /* Doesn't have a group? */
-            if(orxObject_GetGroupID(pstChild) == sstObject.u32DefaultGroupID)
-            {
-              /* Transfers group ID */
-              orxObject_SetGroupID(pstChild, pstResult->u32GroupID);
-            }
 
             /* Has last child? */
             if(pstLastChild != orxNULL)
