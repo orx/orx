@@ -1,10 +1,58 @@
-changel
-Orx - Portable Game Engine  (Version 1.4)
+Orx - Portable Game Engine  (Version 1.5rc0)
+=========================================
 
-=============================================================================
+orx 1.5rc0
+-----
+* IMPORTANT: Added Resource module
+* IMPORTANT: Added resource WatchList dev concept + hotreload for: configs, sounds, textures, shaders, texts, fonts, timelines & spawners
+* IMPORTANT: Added concept of group to objects, cameras and rendering + added orxObject_GetNext() for group browsing
+* IMPORTANT: Added MRT (Multiple Render Targets) support on computers + Android/OpenGL ES 3.0
+* IMPORTANT: Textures are not Y-reverted at runtime anymore: no need to manually Y-revert compressed textures and shader UV coordinates
+* IMPORTNAT: Added String ID support (using hash as key/comparison value + central content storage)
+* IMPORTANT: No more screen-as-texture support, render-to-texture should be used at all time
+* IMPORTANT: Viewports are now rendered in their order of creation (was previously reverse order)
+* IMPORTANT: Added memory tracking, including resource-related dependencies: sound, textures, physics (displayed in the profiler screen)
+* IMPORTANT: KEY_TILDE has been renamed to KEY_BACKQUOTE
+* IMPORTANT: Added short-term history to profiler + histogram + pause/replay/navigation
+* IMPORTANT: Added support for gl_Color in custom shaders (mapped to object's color/alpha)
+* IMPORTANT: Fixed iOS XCode project
+* IMPORTANT: Added support for Sync-or-Tear on Windows/Linux (GLFW plugins)
+* IMPORTANT: Added support for premultiplied alpha
+* IMPORTANT: Added support for background input sets
+* IMPORTANT: orxRender_GetWorldPosition() takes an additional viewport parameter
+* IMPORTANT: Rendering has been broken into two phases for greater CPU/GPU parallelism
+* IMPORTANT: Added ownership concept to all orxSTRUCTUREs + full hierarchy support to orxOBJECTs
+* IMPORTANT: Alpha, color, repeat and blend mode are only stored on orxGRAPHIC and not on orxOBJECTs anymore
+* IMPORTANT: Added local<->global transformation functions in orxFrame module for position/rotation/scale
+
+* Added Sublime Text 2/3 project
+* Modified time-related functions to be Y38-ready
+* Intermediate textures used for render-to-texture will be handled entirely by viewports
+* Added support for orxDisplay_SaveBitmap() to Android
+* Compositing can now be done by using a viewport shader instead of using camera+intermediate object
+* No more fixed pipeline when shaders are supported on computers (GLFW plugins)
+* Unified mouse cursor handling across different OSes + screen<->world coordinates conversions
+* Added much better batching for objects using custom shaders
+* Added a bunch of new commands
+* Calling orxDisplay_GetVideoMode(orxU32_UNDEFINED) will now return the default/desktop mode
+* Calling orxDisplay_GetVideoMode() with an index > number of modes will return the current mode
+* Batches for FPS, console & profiler display won't appear in the profile stats anymore
+* orxSystem_GetSystemTime() is now public
+* Fixed windows property AllowResize not working when Mouse.ShowCursor was set to true
+* Tighter waterstamping in profiler
+* Better support for tiny animations (< 1 frame)
+* Fixed bank segment alignment
+* Added APK resource type for Android, based on the new Resource module
+* Remove obsolete Config.IgnorePath property
+* Better refresh rate estimation with GLFW plugins
+* Fixed console history loading crash when history was full
+* Better detection of cache line size on most platforms
+* Improved orxDisplay_DrawMesh (all implementations)
+* Improved orxFontGen tool
+* Misc fixes, optimizations and additions
 
 orx 1.4
----
+-----
 * IMPORTANT: Android native version has been deprecated and removed in favor of the standard Android version
 * IMPORTANT: Android OS minimum version has been raised from 2.1 to 2.3
 * IMPORTANT: Android: NDK_MODULE_PATH should now point to orx/code (or orx/dev-android) folder instead of /orx
@@ -12,6 +60,7 @@ orx 1.4
 * IMPORTANT: Literal names can be used for Body properties CheckMask and SelfFlags, instead of numerical values
 * IMPORTANT: Added conditional commands (If, EvalIf), logical ones (Not, And, Or, XOr) and numerical ones (AreEqual, Sub, Add, Div, Mul)
 * IMPORTANT: orxFontGen will now center glyphs when executed in monospace mode
+
 * orxFontGen tool now exports directly to .png format instead of .tga
 * Font config property TextureCorner has been renamed to TextureOrigin for more consistency
 * Command Config.GetValue can now resolve numerical randoms (~)
@@ -27,7 +76,7 @@ orx 1.4
 * Misc fixes and additions
 
 orx 1.4rc0
----
+-----
 * IMPORTANT: Using the default launcher is now deprecated and all tutorials are stand alones
 * IMPORTANT: Added TimeLine module for non-interactive timed sequences (can be defined in config)
 * IMPORTANT: Added Command module that can evaluate/execute literal commands at runtime (commands can also be registered by user at runtime)
@@ -122,7 +171,7 @@ orx 1.4rc0
 * Misc fixes, optimizations and additions
 
 orx 1.3rc0
----
+-----
 * *** Added new platform with full support: android/android native. ***
 * IMPORTANT: Added very easy to use CPU profiler module with optional runtime graphical display (#define __orxPROFILER__)
 * IMPORTANT: Added OpenGL ES 2.0 support for iPhone/iPod Touch/iPad + full shader pipeline (including custom shader support)
@@ -145,6 +194,7 @@ orx 1.3rc0
 * IMPORTANT: orxCamera_GetFrustum now returns a frustum in camera's local space
 * IMPORTANT: Config save callback now takes an extra parameter: the file name
 * IMPORTANT: orxLOG() will now use the current debug flags so it's possible to globally enable/disable file/console logging, even for orx's generated logs
+
 * Optimized home render plugin to batch objects by texture (5-15% FPS boost, depending on scenes)
 * Optimized frame update for orphan objects (6-8% FPS boost)
 * Optimized GLFW and iPhone rendering: batching + indexing + interlacing -> 10 - 100% FPS boost
@@ -199,6 +249,7 @@ orx 1.2
 * IMPORTANT: Added an OpenAL/libsndfile/stb_vorbis audio plugin as SFML audio plugin counterpart.
 * IMPORTANT: SDL & GLFW now handle per-object shaders in a correct manner: shader is only applied when the object is rendered and only on it. This behavior can't be obtained with SFML plugins.
 * IMPORTANT: Added an internal texture called "pixel" that holds a white pixel with full opacity. This can be used for all fade in/out effects and more.
+
 * Added automatically generated coordinates for shader textures: Texture MyTex -> MyTex_Top, MyTex_Left, MyTex_Right & MyTex_Bottom are generated by orx in a consistant way across all platforms/plugins.
 * GLFW plugins are now the default plugins for embedded mode. SFML plugins are still the only existing plugins for non-embedded mode.
 * GLFW and SDL plugins also use SOIL library for handling graphic files I/O
