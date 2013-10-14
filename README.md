@@ -22,7 +22,10 @@ The current features of orx engine are:
 
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
+- advanced rendering features such as MRT (Multiple Render Targets) support and easy compositing
 - powerful config system that makes orx data-driven and provides an easy to use load/save system
+- powerful resource management allowing for easy multi-platform data support and patching
+- automatic hotloading of resources upon modification on disk shortens drastically iteration times
 - timelines and commands modules allow for config-driven scripting-like features
 - interactive console can execute commands at runtime (very useful for tweaking/debug purposes)
 - animation engine (including a chaining graph & custom animation events for synchronization)
