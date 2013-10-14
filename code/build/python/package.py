@@ -57,7 +57,8 @@ basefileinfolist = [
     {'src': '../CHANGELOG',                                             'dst': None},
     {'src': '../COPYRIGHT',                                             'dst': None},
     {'src': '../LICENSE',                                               'dst': None},
-    {'src': '../README',                                                'dst': None}
+    {'src': '../README.md',                                             'dst': None},
+    {'src': '../README.html',                                           'dst': None}
 ]
 
 docfileinfolist = basefileinfolist
@@ -133,7 +134,7 @@ iosfileinfolist = devfileinfolist + [
     {'src': '../extern/Box2D_2.1.3/License.txt',                        'dst': None},
     {'src': '../liborx-fat-*',                                          'dst': None},
     {'src': 'build/mac/xcode/Info.plist',                               'dst': None},
-    {'src': 'demo/iOS/ReadMe-iOS.txt',                                  'dst': '..'}
+    {'src': 'demo/iOS/ReadMe-iOS.html',                                 'dst': '..'}
 ]
 
 androidfileinfolist = devfileinfolist + [
