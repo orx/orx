@@ -241,7 +241,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
         pstResult->u32ID = orxString_GetID(orxConfig_GetCurrentSection());
 
         /* Adds it to reference table */
-        if(orxHashTable_Add(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
+        if(orxHashTable_Set(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
         {
           orxU32 u32EventIndex;
 
@@ -395,18 +395,16 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
         {
           orxTIMELINE        *pstTimeLine;
           orxTIMELINE_TRACK  *pstNewTrack;
-          orxU32              u32Counter, u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+          orxU32              u32Counter, u32ID, u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
           const orxSTRING     zReference;
 
-          /* Backups counter & reference */
+          /* Backups counter, ID & reference */
           u32Counter  = pstTrack->u32RefCounter;
+          u32ID       = pstTrack->u32ID;
           zReference  = pstTrack->zReference;
 
-          /* Sets counter for deletion */
-          pstTrack->u32RefCounter = 1;
-
-          /* Deletes it */
-          orxTimeLine_DeleteTrack(pstTrack);
+          /* Deletes it (but keeps it reference in the hashtable to prevent infinite loop upon table changes) */
+          orxMemory_Free(pstTrack);
 
           /* Creates new track */
           pstNewTrack = orxTimeLine_CreateTrack(zReference);
@@ -429,6 +427,11 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
 
             /* Pops config section */
             orxConfig_PopSection();
+          }
+          else
+          {
+            /* Removes old reference from the table */
+            orxHashTable_Remove(sstTimeLine.pstTrackTable, u32ID);
           }
 
           /* For all timelines */
