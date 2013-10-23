@@ -139,6 +139,8 @@ var group__orx_physics =
     [ "orxPhysics_GetCollisionFlagValue", "group__orx_physics.html#ga79914d7697ad2fa005ac5cc28d4e7f82", null ],
     [ "orxPhysics_GetCustomGravity", "group__orx_physics.html#ga7ae6c8d8d9ac108d9749e99131347bb5", null ],
     [ "orxPhysics_GetGravity", "group__orx_physics.html#ga4f5cef16bea9bfb5be65e31c96876d9a", null ],
+    [ "orxPhysics_GetJointReactionForce", "group__orx_physics.html#ga3c99e4241ad20497f4aaa8d6428615d7", null ],
+    [ "orxPhysics_GetJointReactionTorque", "group__orx_physics.html#ga94beef919ead8969687b4030d1f1a25e", null ],
     [ "orxPhysics_GetLinearDamping", "group__orx_physics.html#ga6fb24bdbb705cb8fc0f5cd79f7ab20dc", null ],
     [ "orxPhysics_GetMass", "group__orx_physics.html#ga062a4703991ccb8642032451adfb5f38", null ],
     [ "orxPhysics_GetMassCenter", "group__orx_physics.html#gaca6fa6728a3c527c57cc54f8465a9fa3", null ],

@@ -1,5 +1,13 @@
 var NAVTREEINDEX13 =
 {
+"orx_f_x_8h.html#gae8f2811c408370bc68644656b1806654":[3,0,0,9,1,4],
+"orx_f_x_8h.html#gaee18582f78a97610b4e29e38ca13679d":[3,0,0,9,1,18],
+"orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24a533523a077bed33f3b1c45a7eb7e634f":[3,0,0,9,1,5,3],
+"orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24a5423d1739c57e377ee1aba4d78f7a103":[3,0,0,9,1,5,5],
+"orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24a5451b4d7eb7619d9ab4c8e2aed1bbf7b":[3,0,0,9,1,5,2],
+"orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24a861ad9daad411ee3d5f90adb652b53de":[3,0,0,9,1,5,6],
+"orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24a9bb5a24783bedbf5b3ce516d9315e91d":[3,0,0,9,1,5,4],
+"orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24acbc29fadd51da81893d78360adbe4dbf":[3,0,0,9,1,5,0],
 "orx_f_x_8h.html#gga441cf7ac90620ea72e8a285745011b24ad0e783771174594869f0316a44ec90af":[3,0,0,9,1,5,1],
 "orx_f_x_8h.html#ggae8f2811c408370bc68644656b1806654a0c2264dd32d4ee1fdea56c13c2a8c780":[3,0,0,9,1,4,3],
 "orx_f_x_8h.html#ggae8f2811c408370bc68644656b1806654a2601e7aaf0cdf28963a1c42c55d82a9e":[3,0,0,9,1,4,2],
@@ -241,13 +249,5 @@ var NAVTREEINDEX13 =
 "orx_joystick_8h.html#ga779713e175b7febb6a95ff83a66d1ae4":[3,0,0,5,2,2],
 "orx_joystick_8h.html#ga8ec42a6835a3fc1b604a48bc8f4f5687":[3,0,0,5,2,6],
 "orx_joystick_8h.html#ga9fa9d45b47c18a7b1730eece66c7e398":[3,0,0,5,2,9],
-"orx_joystick_8h.html#gaac676f97aec33fc1dad588ae845d5642":[3,0,0,5,2,4],
-"orx_joystick_8h.html#gab4d99f5c125f889b72714e10e58a3c66":[3,0,0,5,2,8],
-"orx_joystick_8h.html#gab6cecefc4e8f1578ed021880bb9cc94b":[3,0,0,5,2,5],
-"orx_joystick_8h.html#gaba48214ed8a0a4c7601d68d4bdd75be8":[3,0,0,5,2,0],
-"orx_joystick_8h.html#gad8902abd753c78b918deacfeacdab4c5":[3,0,0,5,2,1],
-"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a05a4f6c5ec171dc7ec531ffce6205372":[3,0,0,5,2,4,19],
-"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a1b1e6b00c00d27ae757705bcca6b2731":[3,0,0,5,2,4,18],
-"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a1c1a0fde9f3900c2296528a9cb5114fc":[3,0,0,5,2,4,23],
-"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642a215bfc4dbbf955daaf9d5cb6a48a28f7":[3,0,0,5,2,4,16]
+"orx_joystick_8h.html#gaac676f97aec33fc1dad588ae845d5642":[3,0,0,5,2,4]
 };
