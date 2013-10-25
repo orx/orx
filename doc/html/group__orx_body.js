@@ -21,6 +21,8 @@ var group__orx_body =
     [ "orxBody_GetCustomGravity", "group__orx_body.html#ga22049df6febcbcf010cfd7ac1c9ca8ff", null ],
     [ "orxBody_GetDefFlags", "group__orx_body.html#gaafb5f87f508ca1f29f548560998456d4", null ],
     [ "orxBody_GetJointName", "group__orx_body.html#ga79d37130ab40eb8e4617ebe23b7ac6f8", null ],
+    [ "orxBody_GetJointReactionForce", "group__orx_body.html#gaa65d1974ceb8cf8e2bb1b06d8b96e20d", null ],
+    [ "orxBody_GetJointReactionTorque", "group__orx_body.html#ga45eb847eadced86787baeb134a0f2218", null ],
     [ "orxBody_GetLinearDamping", "group__orx_body.html#ga74e07998f3b1303b4592372d8e306b5a", null ],
     [ "orxBody_GetMass", "group__orx_body.html#ga9382982502a79dd94490893ac1326b00", null ],
     [ "orxBody_GetMassCenter", "group__orx_body.html#ga7968024ef3058cdbcc5e9ba863d5b69b", null ],

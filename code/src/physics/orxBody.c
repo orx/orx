@@ -1710,6 +1710,62 @@ orxSTATUS orxFASTCALL orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoin
   return eResult;
 }
 
+/** Gets the reaction force on the attached body at the joint anchor
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[out]  _pvForce                              Reaction force
+ * @return      Reaction force in Newtons
+ */
+orxVECTOR *orxFASTCALL orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
+{
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    /* Updates result */
+    pvResult = orxPhysics_GetJointReactionForce(_pstBodyJoint->pstData, _pvForce);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets the reaction torque on the attached body
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @return      Reaction torque
+ */
+orxFLOAT orxFASTCALL orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxPhysics_GetJointReactionTorque(_pstBodyJoint->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvPosition     Position to set

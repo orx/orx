@@ -2239,7 +2239,7 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
     u32Anim = _u32SrcAnim;
 
     /* Gets routing animation in simulation mode */
-    u32RoutingAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_u32DstAnim != orxU32_UNDEFINED) ? _u32DstAnim : orxU32_UNDEFINED, orxTRUE);
+    u32RoutingAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxTRUE);
 
     /* Valid? */
     if(u32RoutingAnim != orxU32_UNDEFINED)
@@ -2258,7 +2258,7 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
     if(*_pbCut != orxFALSE)
     {
       /* Get next animation according to destination aim */
-      u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_u32DstAnim != orxU32_UNDEFINED) ? _u32DstAnim : orxU32_UNDEFINED, orxFALSE);
+      u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxFALSE);
 
       /* Resets time stamp */
       *_pfTime = orxFLOAT_0;
@@ -2289,7 +2289,7 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
       if((fLength == orxFLOAT_0) || (*_pfTime > fLength))
       {
         /* Get next animation */
-        u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_u32DstAnim != orxU32_UNDEFINED) ? _u32DstAnim : orxU32_UNDEFINED, orxFALSE);
+        u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxFALSE);
 
         /* Updates timestamp */
         *_pfTime -= fLength;
@@ -2321,6 +2321,33 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         }
       }
     }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Finds next Anim given current and destination Anim IDs
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32SrcAnim                         Source (current) Anim ID
+ * @param[in]   _u32DstAnim                         Destination Anim ID, if none (auto mode) set it to orxU32_UNDEFINED
+ * @return Next Anim ID if found, orxU32_UNDEFINED otherwise
+*/
+orxU32 orxFASTCALL orxAnimSet_FindNextAnim(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
+{
+  orxU32 u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimSet);
+  orxASSERT(_u32SrcAnim < orxAnimSet_GetAnimCounter(_pstAnimSet));
+  orxASSERT((_u32DstAnim < orxAnimSet_GetAnimCounter(_pstAnimSet)) || (_u32DstAnim == orxU32_UNDEFINED));
+
+  /* Computes link table if needed */
+  if(orxAnimSet_ComputeLinkTable(_pstAnimSet->pstLinkTable) != orxSTATUS_FAILURE)
+  {
+    /* Updates result */
+    u32Result = orxAnimSet_ComputeNextAnim(_pstAnimSet->pstLinkTable, _u32SrcAnim, _u32DstAnim, orxTRUE);
   }
 
   /* Done! */

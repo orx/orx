@@ -5221,14 +5221,23 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
   /* Gets frame's parent */
   pstParentFrame = orxFrame_GetChild(pstFrame);
 
-  /* Gets its owner */
-  pstResult = orxStructure_GetOwner(pstParentFrame);
-
-  /* No owner? */
-  if(pstResult == orxNULL)
+  /* Valid? */
+  if(pstParentFrame != orxNULL)
   {
-    /* Updates result with frame itself */
-    pstResult = (orxSTRUCTURE *)pstParentFrame;
+    /* Gets its owner */
+    pstResult = orxStructure_GetOwner(pstParentFrame);
+
+    /* No owner? */
+    if(pstResult == orxNULL)
+    {
+      /* Updates result with frame itself */
+      pstResult = (orxSTRUCTURE *)pstParentFrame;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
   }
 
   /* Done! */
@@ -5257,14 +5266,23 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
   /* Gets frame's parent */
   pstParentFrame = orxFrame_GetSibling(pstFrame);
 
-  /* Gets its owner */
-  pstResult = orxStructure_GetOwner(pstParentFrame);
-
-  /* No owner? */
-  if(pstResult == orxNULL)
+  /* Valid? */
+  if(pstParentFrame != orxNULL)
   {
-    /* Updates result with frame itself */
-    pstResult = (orxSTRUCTURE *)pstParentFrame;
+    /* Gets its owner */
+    pstResult = orxStructure_GetOwner(pstParentFrame);
+
+    /* No owner? */
+    if(pstResult == orxNULL)
+    {
+      /* Updates result with frame itself */
+      pstResult = (orxSTRUCTURE *)pstParentFrame;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
   }
 
   /* Done! */

@@ -123,6 +123,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxU32                      u32Iterations;      /**< Simulation iterations per step */
   orxFLOAT                    fDimensionRatio;    /**< Dimension ratio */
   orxFLOAT                    fRecDimensionRatio; /**< Reciprocal dimension ratio */
+  orxFLOAT                    fLastDT;            /**< Last DT */
   orxLINKLIST                 stEventList;        /**< Event link list */
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
@@ -804,6 +805,9 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
     orxFLOAT fDT;
+
+    /* Stores DT */
+    sstPhysics.fLastDT = _pstClockInfo->fDT;
 
     /* For all passed cycles */
     for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
@@ -1590,6 +1594,48 @@ extern "C" void orxFASTCALL orxPhysics_Box2D_SetJointMaxMotorTorque(orxPHYSICS_B
 
   /* Done! */
   return;
+}
+
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
+{
+  const b2Joint  *poJoint;
+  b2Vec2          vForce;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Gets joint */
+  poJoint = (const b2Joint *)_pstBodyJoint;
+
+  /* Gets reaction force */
+  vForce = poJoint->GetReactionForce((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / orxPhysics::sfMaxDT);
+
+  /* Updates result */
+  orxVector_Set(_pvForce, orx2F(vForce.x), orx2F(vForce.y), orxFLOAT_0);
+
+  /* Done! */
+  return _pvForce;
+}
+
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetJointReactionTorque(const orxPHYSICS_BODY_JOINT *_pstBodyJoint)
+{
+  const b2Joint  *poJoint;
+  orxFLOAT        fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+
+  /* Gets joint */
+  poJoint = (const b2Joint *)_pstBodyJoint;
+
+  /* Updates result */
+  fResult = orx2F(poJoint->GetReactionTorque((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / orxPhysics::sfMaxDT));
+
+  /* Done! */
+  return fResult;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
@@ -2653,6 +2699,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartSolid, PHYSICS, SET_PAR
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableMotor, PHYSICS, ENABLE_MOTOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionForce, PHYSICS, GET_JOINT_REACTION_FORCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionTorque, PHYSICS, GET_JOINT_REACTION_TORQUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -439,6 +439,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMotorSpeed(orxBODY
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
+/** Gets the reaction force on the attached body at the joint anchor
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[out]  _pvForce                              Reaction force
+ * @return      Reaction force in Newtons
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce);
+
+/** Gets the reaction torque on the attached body
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @return      Reaction torque
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint);
+
+
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvStart        Start of raycast
  * @param[in]   _pvEnd          End of raycast

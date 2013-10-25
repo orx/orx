@@ -141,7 +141,8 @@ androidfileinfolist = devfileinfolist + [
     {'src': 'build/android/*.sh',                                       'dst': None},
     {'src': 'build/android/*.properties',                               'dst': None},
     {'src': 'build/android/obj/local/armeabi/liborx*.a',                'dst': 'lib/static/android/armeabi'},
-    {'src': 'build/android/obj/local/armeabi-v7a/liborx*.a',            'dst': 'lib/static/android/armeabi-v7a'}
+    {'src': 'build/android/obj/local/armeabi-v7a/liborx*.a',            'dst': 'lib/static/android/armeabi-v7a'},
+    {'src': 'build/android/obj/local/x86/liborx*.a',                    'dst': 'lib/static/android/x86'}
 ]
 
 # List of folder info
