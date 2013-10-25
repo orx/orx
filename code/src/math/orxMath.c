@@ -178,7 +178,7 @@ orxS64 orxFASTCALL orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max)
 /** Gets the current random seeds
  * @param[out]  _au32Seeds[4]                   Current seeds
  */
-void orxFASTCALL orxMath_GetSeeds(orxU32 _au32Seeds[4])
+void orxFASTCALL orxMath_GetRandomSeeds(orxU32 _au32Seeds[4])
 {
   /* Gets all seeds */
   _au32Seeds[0] = su32X;
@@ -193,7 +193,7 @@ void orxFASTCALL orxMath_GetSeeds(orxU32 _au32Seeds[4])
 /** Sets (replaces) the current random seeds
  * @param[in]   _au32Seeds[4]                   Seeds to set
  */
-void orxFASTCALL orxMath_SetSeeds(const orxU32 _au32Seeds[4])
+void orxFASTCALL orxMath_SetRandomSeeds(const orxU32 _au32Seeds[4])
 {
   /* Gets all seeds */
   su32X = _au32Seeds[0];

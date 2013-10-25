@@ -155,12 +155,12 @@ extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetRandomS64(orxS64 _s64Min, orxS6
 /** Gets the current random seeds
  * @param[out]  _au32Seeds[4]                   Current seeds
  */
-extern orxDLLAPI void orxFASTCALL     orxMath_GetSeeds(orxU32 _au32Seeds[4]);
+extern orxDLLAPI void orxFASTCALL     orxMath_GetRandomSeeds(orxU32 _au32Seeds[4]);
 
 /** Sets (replaces) the current random seeds
  * @param[in]   _au32Seeds[4]                   Seeds to set
  */
-extern orxDLLAPI void orxFASTCALL     orxMath_SetSeeds(const orxU32 _au32Seeds[4]);
+extern orxDLLAPI void orxFASTCALL     orxMath_SetRandomSeeds(const orxU32 _au32Seeds[4]);
 
 
 /*** Inlined functions *** */
