@@ -475,29 +475,27 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
 
 static void orxAndroid_Display_CreateContext()
 {
-  if(sstDisplay.display == EGL_NO_DISPLAY)
+  EGLBoolean result;
+
+  if(sstDisplay.display == EGL_NO_DISPLAY || sstDisplay.context == EGL_NO_CONTEXT)
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Starting up OpenGL ES");
 
     sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglASSERT();
+    orxASSERT(sstDisplay.display != EGL_NO_DISPLAY);
 
     eglInitialize(sstDisplay.display, 0, 0);
     eglASSERT();
     sstDisplay.config = defaultEGLChooser(sstDisplay.display);
+    orxASSERT(sstDisplay.config != orxNULL);
 
     eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
     eglASSERT();
     EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
     sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
     eglASSERT();
-  }
-
-  if(sstDisplay.context == EGL_NO_CONTEXT)
-  {
-    EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-    sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
-    eglASSERT();
+    orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
   }
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
@@ -505,30 +503,17 @@ static void orxAndroid_Display_CreateContext()
   ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
   orxAndroid_JNI_SetWindowFormat(sstDisplay.u32Depth == 16 ? 4 /* PixelFormat.RGB_565 */ : 1 /* PixelFormat.RGBA_888 */);
 
-  EGLSurface surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
+  sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
   eglASSERT();
 
-  eglQuerySurface(sstDisplay.display, surface, EGL_WIDTH, &sstDisplay.width);
+  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &sstDisplay.width);
   eglASSERT();
-  eglQuerySurface(sstDisplay.display, surface, EGL_HEIGHT, &sstDisplay.height);
+  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &sstDisplay.height);
   eglASSERT();
 
-  if(eglMakeCurrent(sstDisplay.display, surface, surface, sstDisplay.context) == EGL_FALSE)
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "EGL Context doesnt work, trying with a new one");
-
-    EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-    sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
-    eglASSERT();
-
-    if(eglMakeCurrent(sstDisplay.display, surface, surface, sstDisplay.context) == EGL_FALSE)
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed making EGL Context current");
-      eglASSERT();
-    }
-  }
-
-  sstDisplay.surface = surface;
+  result = eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
+  eglASSERT();
+  orxASSERT(result == EGL_TRUE);
 }
 
 static orxINLINE orxBOOL initGLESConfig()
