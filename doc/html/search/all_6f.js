@@ -2229,6 +2229,7 @@ var searchData=
   ['orxstring_5fgetutf8characterlength',['orxString_GetUTF8CharacterLength',['../group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b',1,'orxString.h']]],
   ['orxstring_5ficompare',['orxString_ICompare',['../group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695',1,'orxString.h']]],
   ['orxstring_5finit',['orxString_Init',['../group__orx_string.html#ga70a6c603e21569ac76e5e4033737ecd6',1,'orxString.h']]],
+  ['orxstring_5fischaracteralphanumeric',['orxString_IsCharacterAlphaNumeric',['../group__orx_string.html#ga1eb3d24da2276d7d86e291039b6fd00c',1,'orxString.h']]],
   ['orxstring_5fischaracterascii',['orxString_IsCharacterASCII',['../group__orx_string.html#gaf875887c7a49a423aefcacdfa143bc5d',1,'orxString.h']]],
   ['orxstring_5fkc_5fvector_5fend',['orxSTRING_KC_VECTOR_END',['../group__orx_string.html#gac8646f825bc6df7e387d877970d56e91',1,'orxString.h']]],
   ['orxstring_5fkc_5fvector_5fend_5falt',['orxSTRING_KC_VECTOR_END_ALT',['../group__orx_string.html#gaa2a656e10d7ec4fe736684cc5e4828ae',1,'orxString.h']]],

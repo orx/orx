@@ -1,5 +1,7 @@
 var NAVTREEINDEX21 =
 {
+"structorx_c_l_o_c_k___i_n_f_o.html#adefcf726b9f7e39542f92ca0e5f76655":[1,9,0,2],
+"structorx_c_o_l_o_r.html":[1,15,2],
 "structorx_c_o_l_o_r.html#a1fb6cb6b737986f7016e82e8c95fcf7b":[1,15,2,2],
 "structorx_c_o_l_o_r.html#aa5b80a4cd29c306189c13a62850ae949":[1,15,2,3],
 "structorx_c_o_l_o_r.html#aa8b139033d2288b7b473390a6c042d10":[1,15,2,1],

@@ -1053,6 +1053,7 @@ var searchData=
   ['orxstring_5fgetutf8characterlength',['orxString_GetUTF8CharacterLength',['../group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b',1,'orxString.h']]],
   ['orxstring_5ficompare',['orxString_ICompare',['../group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695',1,'orxString.h']]],
   ['orxstring_5finit',['orxString_Init',['../group__orx_string.html#ga70a6c603e21569ac76e5e4033737ecd6',1,'orxString.h']]],
+  ['orxstring_5fischaracteralphanumeric',['orxString_IsCharacterAlphaNumeric',['../group__orx_string.html#ga1eb3d24da2276d7d86e291039b6fd00c',1,'orxString.h']]],
   ['orxstring_5fischaracterascii',['orxString_IsCharacterASCII',['../group__orx_string.html#gaf875887c7a49a423aefcacdfa143bc5d',1,'orxString.h']]],
   ['orxstring_5flowercase',['orxString_LowerCase',['../group__orx_string.html#ga688414a65e9accbe3faa0f5d78b7316d',1,'orxString.h']]],
   ['orxstring_5fncompare',['orxString_NCompare',['../group__orx_string.html#gae19745a57dd2d6f3769a4ce4ce608657',1,'orxString.h']]],

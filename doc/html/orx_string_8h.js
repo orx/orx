@@ -20,6 +20,7 @@ var orx_string_8h =
     [ "orxString_GetUTF8CharacterLength", "orx_string_8h.html#gaa62f828ae9bbcad9957df3195a4aca3b", null ],
     [ "orxString_ICompare", "orx_string_8h.html#ga981c39a82ad021ec08f84a8cb074a695", null ],
     [ "orxString_Init", "orx_string_8h.html#ga70a6c603e21569ac76e5e4033737ecd6", null ],
+    [ "orxString_IsCharacterAlphaNumeric", "orx_string_8h.html#ga1eb3d24da2276d7d86e291039b6fd00c", null ],
     [ "orxString_IsCharacterASCII", "orx_string_8h.html#gaf875887c7a49a423aefcacdfa143bc5d", null ],
     [ "orxString_LowerCase", "orx_string_8h.html#ga688414a65e9accbe3faa0f5d78b7316d", null ],
     [ "orxString_NCompare", "orx_string_8h.html#gae19745a57dd2d6f3769a4ce4ce608657", null ],
