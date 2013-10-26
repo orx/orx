@@ -440,8 +440,8 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
           sstFontGen.vCharacterSize.fX = sstFontGen.vCharacterSize.fY;
 
           // Updates character spacing
-          sstFontGen.vCharacterSpacing.fX = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fX * (orxFLOAT_1 / orx2F(32.0f)));
-          sstFontGen.vCharacterSpacing.fY = orx2F(2.0f) * orxMath_Ceil(sstFontGen.vCharacterSize.fY * (orxFLOAT_1 / orx2F(32.0f)));
+          sstFontGen.vCharacterSpacing.fX = orx2F(2.0f);
+          sstFontGen.vCharacterSpacing.fY = orx2F(2.0f);
 
           // Stores scale
           sstFontGen.fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(sstFontGen.pstFontFace->bbox.yMax - sstFontGen.pstFontFace->bbox.yMin);
@@ -836,7 +836,7 @@ static void Run()
         }
 
         // Updates height
-        s32Height = s32Y + orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding + sstFontGen.vCharacterSpacing.fY);
+        s32Height = s32Y + orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding);
       }
       else
       {
@@ -901,13 +901,19 @@ static void Run()
       // Valid?
       if(pu8ImageBuffer)
       {
-        orxU32            u32Size, s32Index;
+        orxU32            u32Size, s32Index, i;
         orxS32            s32X, s32Y;
         orxFONTGEN_GLYPH *pstGlyph;
         orxCHAR           acBuffer[orxFONTGEN_KU32_BUFFER_SIZE], *pc;
 
         // Clears bitmap
-        orxMemory_Zero(pu8ImageBuffer, s32Width * s32Height * sizeof(orxRGBA));
+        for(i = 0; i < s32Width * s32Height * sizeof(orxRGBA); i+= 4)
+        {
+          pu8ImageBuffer[i]     = 0xFF;
+          pu8ImageBuffer[i + 1] = 0xFF;
+          pu8ImageBuffer[i + 2] = 0xFF;
+          pu8ImageBuffer[i + 3] = 0x00;
+        }
 
         // For all defined glyphs
         for(s32Index = 0, pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), pc = acBuffer, u32Size = orxFONTGEN_KU32_BUFFER_SIZE - 1, s32X = 0, s32Y = s32BaseLine;
@@ -1023,7 +1029,6 @@ static void Run()
                     j++, pu8Src++, pu8Dst += sizeof(orxRGBA))
                 {
                   // Sets texture's pixel
-                  pu8Dst[0] = pu8Dst[1] = pu8Dst[2] = 0xFF;
                   pu8Dst[3] = pu8Src[0];
                 }
               }

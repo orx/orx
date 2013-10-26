@@ -5205,7 +5205,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
  */
 orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
 {
-  orxFRAME     *pstFrame, *pstParentFrame;
+  orxFRAME     *pstFrame, *pstChildFrame;
   orxSTRUCTURE *pstResult;
 
   /* Checks */
@@ -5218,20 +5218,20 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
   /* Checks */
   orxSTRUCTURE_ASSERT(pstFrame);
 
-  /* Gets frame's parent */
-  pstParentFrame = orxFrame_GetChild(pstFrame);
+  /* Gets frame's child */
+  pstChildFrame = orxFrame_GetChild(pstFrame);
 
   /* Valid? */
-  if(pstParentFrame != orxNULL)
+  if(pstChildFrame != orxNULL)
   {
     /* Gets its owner */
-    pstResult = orxStructure_GetOwner(pstParentFrame);
+    pstResult = orxStructure_GetOwner(pstChildFrame);
 
     /* No owner? */
     if(pstResult == orxNULL)
     {
       /* Updates result with frame itself */
-      pstResult = (orxSTRUCTURE *)pstParentFrame;
+      pstResult = (orxSTRUCTURE *)pstChildFrame;
     }
   }
   else
@@ -5250,7 +5250,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
  */
 orxSTRUCTURE *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
 {
-  orxFRAME     *pstFrame, *pstParentFrame;
+  orxFRAME     *pstFrame, *pstSiblingFrame;
   orxSTRUCTURE *pstResult;
 
   /* Checks */
@@ -5263,20 +5263,20 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
   /* Checks */
   orxSTRUCTURE_ASSERT(pstFrame);
 
-  /* Gets frame's parent */
-  pstParentFrame = orxFrame_GetSibling(pstFrame);
+  /* Gets frame's sibling */
+  pstSiblingFrame = orxFrame_GetSibling(pstFrame);
 
   /* Valid? */
-  if(pstParentFrame != orxNULL)
+  if(pstSiblingFrame != orxNULL)
   {
     /* Gets its owner */
-    pstResult = orxStructure_GetOwner(pstParentFrame);
+    pstResult = orxStructure_GetOwner(pstSiblingFrame);
 
     /* No owner? */
     if(pstResult == orxNULL)
     {
       /* Updates result with frame itself */
-      pstResult = (orxSTRUCTURE *)pstParentFrame;
+      pstResult = (orxSTRUCTURE *)pstSiblingFrame;
     }
   }
   else
