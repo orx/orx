@@ -228,7 +228,20 @@ static orxINLINE orxU32                                   orxString_GetLength(co
  */
 static orxINLINE orxBOOL                                  orxString_IsCharacterASCII(orxU32 _u32CharacterCodePoint)
 {
+  /* Done! */
   return((_u32CharacterCodePoint < 0x80) ? orxTRUE : orxFALSE);
+}
+
+/** Tells if a character is alpha-numeric from its ID
+ * @param[in] _u32CharacterCodePoint    Concerned character code
+ * @return                              orxTRUE is it's a non-extended ASCII alpha-numerical character, orxFALSE otherwise
+ */
+static orxINLINE orxBOOL                                  orxString_IsCharacterAlphaNumeric(orxU32 _u32CharacterCodePoint)
+{
+  /* Done! */
+  return (((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
+       || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
+       || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
 }
 
 /** Gets the UTF-8 encoding length of given character
