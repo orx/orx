@@ -1021,7 +1021,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     orxU32                  u32Counter, u32PeakCounter, u32Size, u32PeakSize, u32OperationCounter, u32UnitIndex;
     orxFLOAT                fSize, fPeakSize;
-    static const orxFLOAT   sfSaturationThreshold = orxFLOAT_1 / orxU2F(128 * 1024 * 1024);
+    static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (128.0f * 1024.0f * 1024.0f));
     static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
 
     /* Updates position */
