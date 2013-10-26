@@ -130,7 +130,7 @@ static orxINLINE const orxSTRING orxText_GetLocalKey(const orxTEXT *_pstText, co
     if(zString != orxNULL)
     {
       /* Begins with locale marker? */
-      if(*zString == orxTEXT_KC_LOCALE_MARKER)
+      if((*zString == orxTEXT_KC_LOCALE_MARKER) && (*(zString + 1) != orxTEXT_KC_LOCALE_MARKER))
       {
         /* Updates result */
         zResult = zString + 1;
@@ -161,7 +161,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zName == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Gets its locale value */
-    zName = orxLocale_GetString(zName + 1);
+    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
   }
 
   /* Valid? */
@@ -215,7 +215,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zString == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Stores its locale value */
-    eResult = orxText_SetString(_pstText, orxLocale_GetString(zString + 1));
+    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1));
   }
   else
   {
