@@ -77,6 +77,7 @@
 #define orxVIEWPORT_KZ_CONFIG_SIZE              "Size"
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE     "RelativeSize"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
+#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA  "BackgroundAlpha"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
 #define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
 #define orxVIEWPORT_KZ_CONFIG_BLEND_MODE        "BlendMode"
@@ -768,7 +769,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* Gets color vector */
         orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
         orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-        stColor.fAlpha = orxFLOAT_1;
+        stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
 
         /* Applies it */
         orxViewport_SetBackgroundColor(pstResult, &stColor);
