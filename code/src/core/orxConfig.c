@@ -2072,20 +2072,6 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
             /* Updates result */
             _pstResult->zValue = sstConfig.acCommandBuffer;
           }
-          else
-          {
-            orxFLOAT fResult;
-
-            /* Gets float value */
-            if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fResult) != orxSTATUS_FAILURE)
-            {
-              /* Prints it */
-              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%g", fResult);
-
-              /* Updates result */
-              _pstResult->zValue = sstConfig.acCommandBuffer;
-            }
-          }
         }
 
         /* Restores config debug level state */
