@@ -93,6 +93,9 @@ typedef struct __orxANDROID_STATIC_t {
         orxBOOL bPaused;
         orxBOOL bDestroyRequested;
 
+        ANativeWindow* pendingWindow;
+        ANativeWindow* window;
+
 } orxANDROID_STATIC;
 
 /***************************************************************************
@@ -104,8 +107,6 @@ typedef struct __orxANDROID_STATIC_t {
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t mThreadKey;
 static JavaVM* mJavaVM;
-static ANativeWindow* pendingWindow;
-static ANativeWindow* window;
 
 /*******************************************************************************
                                Globals
@@ -227,7 +228,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
     sstAndroid.bSurfaceReady = orxFALSE;
     sstAndroid.bPaused = orxFALSE;
     sstAndroid.bDestroyRequested = orxFALSE;
-    window = orxNULL;
+    sstAndroid.window = orxNULL;
 
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
@@ -373,7 +374,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(JNIEnv* env,
 // SurfaceCreated
 extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, jobject thiz, jobject surface)
 {
-  pendingWindow = ANativeWindow_fromSurface(env, surface);
+  sstAndroid.pendingWindow = ANativeWindow_fromSurface(env, surface);
   app_write_cmd(APP_CMD_SURFACE_READY);
 }
 
@@ -422,13 +423,13 @@ int LocalReferenceHolder::s_active;
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
   LOGI("orxAndroid_GetNativeWindow()");
-  while(window == orxNULL) {
+  while(sstAndroid.window == orxNULL) {
     // no window received yet
     LOGI("no window received yet");
     orxAndroid_PumpEvents();
   }
 
-  return window;
+  return sstAndroid.window;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
@@ -519,13 +520,13 @@ extern "C" void orxAndroid_PumpEvents()
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
         sstAndroid.bSurfaceReady = orxFALSE;
-        ANativeWindow_release(window);
-        window = orxNULL;
+        ANativeWindow_release(sstAndroid.window);
+        sstAndroid.window = orxNULL;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
       }
       if(cmd == APP_CMD_SURFACE_READY) {
         LOGI("APP_CMD_SURFACE_READY");
-        window = pendingWindow;
+        sstAndroid.window = sstAndroid.pendingWindow;
         sstAndroid.bSurfaceReady = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
       }
