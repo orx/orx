@@ -8,6 +8,8 @@ var orx_object_8h =
       [ "orxOBJECT_EVENT_DELETE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a7758a0718fb8208481577f472793ed11", null ],
       [ "orxOBJECT_EVENT_ENABLE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960", null ],
       [ "orxOBJECT_EVENT_DISABLE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f", null ],
+      [ "orxOBJECT_EVENT_PAUSE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a5c8676393ce32fb527fb52ee3ebb3112", null ],
+      [ "orxOBJECT_EVENT_UNPAUSE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1aef8246d995cbf5d495ca50ed0862cfce", null ],
       [ "orxOBJECT_EVENT_NUMBER", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9", null ],
       [ "orxOBJECT_EVENT_NONE", "orx_object_8h.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a67c375a6b5d3f7ae7599a35a79da3449", null ]
     ] ],
