@@ -19,10 +19,10 @@ public class OrxDemo extends OrxActivity {
 	}
 
 	@Override
-	protected int getOrxGLSurfaceViewId() {
+	protected int getSurfaceViewId() {
 		/*
 		 * Override this if you want to use a custom layout
-		 * return the OrxGLSurfaceView id
+		 * return the SurfaceView id
 		 */
 		return 0;
 	}

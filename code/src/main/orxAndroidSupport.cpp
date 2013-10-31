@@ -266,7 +266,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject t
     LOGI("nativeCreate()");
 
     /* Cleans static controller */
-    orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
+    memset(&sstAndroid, 0, sizeof(orxANDROID_STATIC));
 
     // setup looper for commandes
     if (pipe(sstAndroid.pipeCmd)) {
@@ -288,7 +288,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject t
 }
 
 // Start up the Orx app
-extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxActivity_runOrx(JNIEnv* env, jobject thiz)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     orxAndroid_Init(env, thiz);
